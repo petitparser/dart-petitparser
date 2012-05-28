@@ -365,13 +365,13 @@ PredicateParser any([String message]) {
     message != null ? message : 'input expected');
 }
 
-PredicateParser anyOf(List<Dynamic> list, [String message]) {
+PredicateParser anyOf(Dynamic elements, [String message]) {
   return new PredicateParser(1,
-    (each) => list.indexOf(each) >= 0,
-    message != null ? message : 'any of $list expected');
+    (each) => elements.indexOf(each) >= 0,
+    message != null ? message : 'any of $elements expected');
 }
 
-PredicateParser char(String element, [String message]) {
+PredicateParser char(Dynamic element, [String message]) {
   return new PredicateParser(1,
     (String each) => element == each,
     message != null ? message : '$element expected');
@@ -390,46 +390,38 @@ PredicateParser stringIgnoreCase(String element, [String message]) {
     message != null ? message : '$element expected');
 }
 
+PredicateParser pattern(String element, [String message]) {
+  final RegExp matcher = new RegExp('[$element]');
+  return new PredicateParser(1, matcher.hasMatch,
+    message != null ? message : '[$element] expected');
+}
+
 PredicateParser range(String start, String stop, [String message]) {
-  return new PredicateParser(1,
-    (each) => start.charCodeAt(0) <= each.charCodeAt(0) && each.charCodeAt(0) <= stop.charCodeAt(0),
-    message != null ? message : '$start..$stop expected');
+  return pattern('$start-$stop', message != null ? message : '$start..$stop expected');
 }
 
 PredicateParser whitespace([String message]) {
-  return new PredicateParser(1,
-    (each) => ' \t\n\r\f'.indexOf(each) >= 0,
-    message != null ? message : 'whitespace expected');
+  return pattern(@'\s', message != null ? message : 'whitespace expected');
 }
 
 PredicateParser digit([String message]) {
-  return new PredicateParser(1,
-    (each) => '0123456789'.indexOf(each) >= 0,
-    message != null ? message : 'digit expected');
+  return pattern(@'\d', message != null ? message : 'digit expected');
 }
 
 PredicateParser letter([String message]) {
-  return new PredicateParser(1,
-    (each) => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
-    message != null ? message : 'letter expected');
+  return pattern(@'a-zA-Z', message != null ? message : 'letter expected');
 }
 
 PredicateParser lowercase([String message]) {
-  return new PredicateParser(1,
-    (each) => 'abcdefghijklmnopqrstuvwxyz'.indexOf(each) >= 0,
-    message != null ? message : 'lowercase letter expected');
+  return pattern(@'a-z', message != null ? message : 'lowercase letter expected');
 }
 
 PredicateParser uppercase([String message]) {
-  return new PredicateParser(1,
-    (each) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
-    message != null ? message : 'uppercase letter expected');
+  return pattern(@'A-Z', message != null ? message : 'uppercase letter expected');
 }
 
 PredicateParser word([String message]) {
-  return new PredicateParser(1,
-    (each) => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
-    message != null ? message : 'letter or digit expected');
+  return pattern(@'\w', message != null ? message : 'letter or digit expected');
 }
 
 /**

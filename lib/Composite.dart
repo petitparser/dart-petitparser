@@ -16,21 +16,24 @@ abstract class CompositeParser extends DelegateParser {
   }
 
   Parser ref(String name) {
-    if (_defined.containsKey(name)) {
-      return _defined[name];
-    }
-    if (_undefined.containsKey(name)) {
-      return _undefined[name];
-    }
-    Parser parser = new FailureParser('Undefined parser: $name');
-    return _undefined[name] = new _MutableDelegateParser(parser);
+    return _undefined.putIfAbsent(name, () {
+      return new _MutableDelegateParser();
+    });
   }
 
   void def(String name, Parser parser) {
     if (_defined.containsKey(name)) {
-      throw new Exception('Repeated definition: $name');
+      throw new Exception('Duplicated definition: $name');
     } else {
       _defined[name] = parser;
+    }
+  }
+
+  void redef(String name, Function function) {
+    if (!_defined.containsKey(name)) {
+      throw new Exception('Invalid redefinition: $name');
+    } else {
+      _defined[name] = function(_defined[name]);
     }
   }
 
@@ -40,6 +43,6 @@ abstract class CompositeParser extends DelegateParser {
 
 class _MutableDelegateParser extends Parser {
   Parser parser;
-  _MutableDelegateParser(this.parser);
+  _MutableDelegateParser();
   Result _parse(Context context) => parser._parse(context);
 }
