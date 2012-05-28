@@ -59,6 +59,15 @@ abstract class Parser {
       return result;
     });
   }
+  Parser withoutSeparators() {
+    return map((List list) {
+      List result = new List();
+      for (int i = 0; i < list.length; i += 2) {
+        result.add(list[i]);
+      }
+      return result;
+    });
+  }
 
 }
 
