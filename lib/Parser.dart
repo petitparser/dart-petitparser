@@ -51,6 +51,15 @@ abstract class Parser {
   Parser map(Function function) => new ActionParser(this, function);
   Parser end([String message]) => new EndOfInputParser(this, message);
 
+  Parser separatedBy(Parser separator) {
+    return new SequenceParser([this, new SequenceParser([separator, this]).star()]).map((List list) {
+      List result = new List();
+      result.add(list[0]);
+      list[1].forEach(result.addAll);
+      return result;
+    });
+  }
+
 }
 
 /**

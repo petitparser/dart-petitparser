@@ -102,11 +102,21 @@ main() {
     });
     test('repeat', () {
       Parser parser = char('a').repeat(2, 3);
-      expectFailure(parser, '', message: 'a expected');
+      expectFailure(parser, '', 0, 'a expected');
       expectFailure(parser, 'a', 1, 'a expected');
       expectSuccess(parser, 'aa', ['a', 'a']);
       expectSuccess(parser, 'aaa', ['a', 'a', 'a']);
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
+    });
+    test('separated by', () {
+      Parser parser = char('a').separatedBy(char('b'));
+      expectFailure(parser, '', 0, 'a expected');
+      expectSuccess(parser, 'a', ['a']);
+      expectSuccess(parser, 'ab', ['a'], 1);
+      expectSuccess(parser, 'aba', ['a', 'b', 'a']);
+      expectSuccess(parser, 'abab', ['a', 'b', 'a'], 3);
+      expectSuccess(parser, 'ababa', ['a', 'b', 'a', 'b', 'a']);
+      expectSuccess(parser, 'ababab', ['a', 'b', 'a', 'b', 'a'], 5);
     });
     test('sequence of two', () {
       Parser parser = char('a').seq(char('b'));
