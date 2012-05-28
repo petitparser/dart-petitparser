@@ -227,6 +227,28 @@ main() {
       expectFailure(parser, 'f');
       expectFailure(parser, 'Fo');
     });
+    test('pattern with characters', () {
+      Parser parser = pattern('abc');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectFailure(parser, 'd');
+    });
+    test('pattern with range of characters', () {
+      Parser parser = pattern('a-c');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectFailure(parser, 'd');
+    });
+    test('pattern with negation', () {
+      Parser parser = pattern('^a-cd');
+      expectFailure(parser, 'a');
+      expectFailure(parser, 'b');
+      expectFailure(parser, 'c');
+      expectFailure(parser, 'd');
+      expectSuccess(parser, 'e', 'e');
+    });
     test('digit', () {
       Parser parser = digit();
       expectSuccess(parser, '1', '1');
@@ -321,7 +343,7 @@ main() {
       expectSuccess(IDENTIFIER, 'a1b', 'a1b');
     });
     test('incomplete identifier', () {
-      expectSuccess(IDENTIFIER, 'a_', 'a', 1);
+      expectSuccess(IDENTIFIER, 'a=', 'a', 1);
       expectSuccess(IDENTIFIER, 'a1-', 'a1', 2);
       expectSuccess(IDENTIFIER, 'a12+', 'a12', 3);
       expectSuccess(IDENTIFIER, 'ab ', 'ab', 2);

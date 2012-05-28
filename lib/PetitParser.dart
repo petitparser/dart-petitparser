@@ -4,3 +4,4 @@
 
 #source('Context.dart');
 #source('Parser.dart');
+#source('Composite.dart');
