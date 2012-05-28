@@ -13,12 +13,19 @@ class Context {
   Dynamic get buffer() => _buffer;
   int get position() => _position;
 
+  bool isSuccess() => false;
+  bool isFailure() => false;
+
   Success success(Dynamic result, [int position]) {
     return new Success(_buffer, position == null ? _position : position, result);
   }
 
   Failure failure(String message, [int position]) {
     return new Failure(_buffer, position == null ? _position : position, message);
+  }
+
+  String toString() {
+    return 'Context[$_position]';
   }
 
 }
@@ -31,10 +38,7 @@ class Result extends Context {
   Result(buffer, position)
     : super(buffer, position);
 
-  bool isSuccess() => false;
-  bool isFailure() => false;
-
-  abstract Dynamic getValue();
+  abstract Dynamic getResult();
   abstract String getMessage();
 
 }
@@ -51,12 +55,16 @@ class Success extends Result {
 
   bool isSuccess() => true;
 
-  Dynamic getValue() {
+  Dynamic getResult() {
     return _result;
   }
 
   String getMessage() {
     return null;
+  }
+
+  String toString() {
+    return 'Success[$_position]: $_result';
   }
 
 }
@@ -73,12 +81,16 @@ class Failure extends Result {
 
   bool isFailure() => true;
 
-  Dynamic getValue() {
-    throw new UnsupportedOperationException("Parse failure: $_message");
+  Dynamic getResult() {
+    throw new UnsupportedOperationException(_message);
   }
 
   String getMessage() {
     return _message;
+  }
+
+  String toString() {
+    return 'Success[$_position]: $_message';
   }
 
 }
