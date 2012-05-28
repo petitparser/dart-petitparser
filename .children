@@ -1,2 +1,4 @@
 test/AllTests.dart
+examples/Json.dart
 lib/PetitParser.dart
+examples/JsonTests.dart
