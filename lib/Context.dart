@@ -90,7 +90,7 @@ class Failure extends Result {
   }
 
   String toString() {
-    return 'Success[$_position]: $_message';
+    return 'Failure[$_position]: $_message';
   }
 
 }
