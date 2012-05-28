@@ -18,16 +18,14 @@ abstract class Parser {
   /** Returns a list of all successful overlapping parses of the input. */
   List<Dynamic> matches(Dynamic input) {
     List<Dynamic> list = new List();
-    and().map((each) => list.add(each)).seq(any()).or(any()).star()
-      .parse(input);
+    and().map(list.add).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
   /** Returns a list of all successful non-overlapping parses of the input. */
   List<Dynamic> matchesSkipping(Dynamic input) {
     List<Dynamic> list = new List();
-    map((each) => list.add(each)).or(any()).star()
-      .parse(input);
+    map(list.add).or(any()).star().parse(input);
     return list;
   }
 
@@ -45,12 +43,13 @@ abstract class Parser {
 
   Parser and() => new AndParser(this);
   Parser not([String message]) => new NotParser(this, message);
+  Parser neg([String message]) => not(message).seq(any()).map((each) => each[1]);
 
-  Parser end([String message]) => new EndOfInputParser(this, message);
   Parser wrapped() => new DelegateParser(this);
   Parser flatten() => new FlattenParser(this);
   Parser trim([Parser trimmer]) => new TrimmingParser(this, trimmer);
   Parser map(Function function) => new ActionParser(this, function);
+  Parser end([String message]) => new EndOfInputParser(this, message);
 
 }
 
@@ -352,80 +351,96 @@ class ChoiceParser extends ListParser {
 }
 
 PredicateParser any([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => true,
     message != null ? message : 'input expected');
 }
 
 PredicateParser anyOf(List<Dynamic> list, [String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => list.indexOf(each) >= 0,
     message != null ? message : 'any of $list expected');
 }
 
-PredicateParser char(Dynamic element, [String message]) {
-  return new PredicateParser(
-    (each) => element == each,
+PredicateParser char(String element, [String message]) {
+  return new PredicateParser(1,
+    (String each) => element == each,
+    message != null ? message : '$element expected');
+}
+
+PredicateParser string(String element, [String message]) {
+  return new PredicateParser(element.length,
+    (String each) => element == each,
+    message != null ? message : '$element expected');
+}
+
+PredicateParser stringIgnoreCase(String element, [String message]) {
+  final lowerElement = element.toLowerCase();
+  return new PredicateParser(element.length,
+    (String each) => lowerElement == each.toLowerCase(),
     message != null ? message : '$element expected');
 }
 
 PredicateParser range(String start, String stop, [String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => start.charCodeAt(0) <= each.charCodeAt(0) && each.charCodeAt(0) <= stop.charCodeAt(0),
     message != null ? message : '$start..$stop expected');
 }
 
 PredicateParser whitespace([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => ' \t\n\r\f'.indexOf(each) >= 0,
     message != null ? message : 'whitespace expected');
 }
 
 PredicateParser digit([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => '0123456789'.indexOf(each) >= 0,
     message != null ? message : 'digit expected');
 }
 
 PredicateParser letter([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
     message != null ? message : 'letter expected');
 }
 
 PredicateParser lowercase([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => 'abcdefghijklmnopqrstuvwxyz'.indexOf(each) >= 0,
     message != null ? message : 'lowercase letter expected');
 }
 
 PredicateParser uppercase([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
     message != null ? message : 'uppercase letter expected');
 }
 
 PredicateParser word([String message]) {
-  return new PredicateParser(
+  return new PredicateParser(1,
     (each) => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(each) >= 0,
     message != null ? message : 'letter or digit expected');
 }
 
 /**
- * A parser for a single element satisfying a predicate.
+ * A parser for a single literal satisfying a predicate.
  */
 class PredicateParser extends Parser {
 
+  final int _length;
   final Function _predicate;
   final String _message;
 
-  PredicateParser(this._predicate, this._message);
+  PredicateParser(this._length, this._predicate, this._message);
 
   Result _parse(Context context) {
-    if (context.position < context.buffer.length) {
-      Dynamic result = context.buffer[context.position];
-      if (_predicate(context.buffer[context.position])) {
-        return context.success(result, context.position + 1);
+    final int start = context.position;
+    final int stop = start + _length;
+    if (stop <= context.buffer.length) {
+      Dynamic result = context.buffer.substring(start, stop);
+      if (_predicate(result)) {
+        return context.success(result, stop);
       }
     }
     return context.failure(_message);

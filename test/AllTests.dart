@@ -177,6 +177,14 @@ main() {
       expectFailure(parser, '', 0, 'failure');
       expectFailure(parser, 'a', 0, 'failure');
     });
+    test('negate', () {
+      Parser parser = digit().neg('no digit expected');
+      expectFailure(parser, '1', 0, 'no digit expected');
+      expectFailure(parser, '9', 0, 'no digit expected');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, ' ', ' ');
+      expectFailure(parser, '', 0, 'input expected');
+    });
   });
 
   group('Predicate', () {
@@ -191,6 +199,23 @@ main() {
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'b');
       expectFailure(parser, '');
+    });
+    test('string', () {
+      Parser parser = string('foo');
+      expectSuccess(parser, 'foo', 'foo');
+      expectFailure(parser, '');
+      expectFailure(parser, 'f');
+      expectFailure(parser, 'fo');
+      expectFailure(parser, 'Foo');
+    });
+    test('string ignore case', () {
+      Parser parser = stringIgnoreCase('foo');
+      expectSuccess(parser, 'foo', 'foo');
+      expectSuccess(parser, 'FOO', 'FOO');
+      expectSuccess(parser, 'fOo', 'fOo');
+      expectFailure(parser, '');
+      expectFailure(parser, 'f');
+      expectFailure(parser, 'Fo');
     });
     test('digit', () {
       Parser parser = digit();
@@ -262,6 +287,104 @@ main() {
     test('matches skipping', () {
       Parser parser = digit().seq(digit()).flatten();
       expect(['12', '45']).equals(parser.matchesSkipping('a123b45'));
+    });
+  });
+
+  group('Example', () {
+    final Parser IDENTIFIER = letter().seq(word().star()).flatten();
+    final Parser NUMBER = char('-').optional().seq(digit().plus())
+        .seq(char('.').seq(digit().plus()).optional()).flatten();
+    final Parser STRING = char('"')
+        .seq(char('"').neg().star()).seq(char('"')).flatten();
+    final Parser RETURN = string('return')
+        .seq(whitespace().plus().flatten()).seq(IDENTIFIER.or(NUMBER).or(STRING))
+        .map((list) => list.last());
+    final Parser JAVADOC = string('/**')
+        .seq(string('*/').neg().star())
+        .seq(string('*/'))
+        .flatten();
+    test('valid identifier', () {
+      expectSuccess(IDENTIFIER, 'a', 'a');
+      expectSuccess(IDENTIFIER, 'a1', 'a1');
+      expectSuccess(IDENTIFIER, 'a12', 'a12');
+      expectSuccess(IDENTIFIER, 'ab', 'ab');
+      expectSuccess(IDENTIFIER, 'a1b', 'a1b');
+    });
+    test('incomplete identifier', () {
+      expectSuccess(IDENTIFIER, 'a_', 'a', 1);
+      expectSuccess(IDENTIFIER, 'a1-', 'a1', 2);
+      expectSuccess(IDENTIFIER, 'a12+', 'a12', 3);
+      expectSuccess(IDENTIFIER, 'ab ', 'ab', 2);
+    });
+    test('invalid identifier', () {
+      expectFailure(IDENTIFIER, '', 0, 'letter expected');
+      expectFailure(IDENTIFIER, '1', 0, 'letter expected');
+      expectFailure(IDENTIFIER, '1a', 0, 'letter expected');
+    });
+    test('positive number', () {
+      expectSuccess(NUMBER, '1', '1');
+      expectSuccess(NUMBER, '12', '12');
+      expectSuccess(NUMBER, '12.3', '12.3');
+      expectSuccess(NUMBER, '12.34', '12.34');
+    });
+    test('negative number', () {
+      expectSuccess(NUMBER, '-1', '-1');
+      expectSuccess(NUMBER, '-12', '-12');
+      expectSuccess(NUMBER, '-12.3', '-12.3');
+      expectSuccess(NUMBER, '-12.34', '-12.34');
+    });
+    test('incomplete number', () {
+      expectSuccess(NUMBER, '1..', '1', 1);
+      expectSuccess(NUMBER, '12-', '12', 2);
+      expectSuccess(NUMBER, '12.3.', '12.3', 4);
+      expectSuccess(NUMBER, '12.34.', '12.34', 5);
+    });
+    test('invalid number', () {
+      expectFailure(NUMBER, '', 0, 'digit expected');
+      expectFailure(NUMBER, '-', 1, 'digit expected');
+      expectFailure(NUMBER, '-x', 1, 'digit expected');
+      expectFailure(NUMBER, '.', 0, 'digit expected');
+      expectFailure(NUMBER, '.1', 0, 'digit expected');
+    });
+    test('valid string', () {
+      expectSuccess(STRING, '""', '""');
+      expectSuccess(STRING, '"a"', '"a"');
+      expectSuccess(STRING, '"ab"', '"ab"');
+      expectSuccess(STRING, '"abc"', '"abc"');
+    });
+    test('incomplete string', () {
+      expectSuccess(STRING, '""x', '""', 2);
+      expectSuccess(STRING, '"a"x', '"a"', 3);
+      expectSuccess(STRING, '"ab"x', '"ab"', 4);
+      expectSuccess(STRING, '"abc"x', '"abc"', 5);
+    });
+    test('invalid string', () {
+      expectFailure(STRING, '"', 1, '" expected');
+      expectFailure(STRING, '"a', 2, '" expected');
+      expectFailure(STRING, '"ab', 3, '" expected');
+      expectFailure(STRING, 'a"', 0, '" expected');
+      expectFailure(STRING, 'ab"', 0, '" expected');
+    });
+    test('return statement', () {
+      expectSuccess(RETURN, 'return f', 'f');
+      expectSuccess(RETURN, 'return  f', 'f');
+      expectSuccess(RETURN, 'return foo', 'foo');
+      expectSuccess(RETURN, 'return    foo', 'foo');
+      expectSuccess(RETURN, 'return 1', '1');
+      expectSuccess(RETURN, 'return  1', '1');
+      expectSuccess(RETURN, 'return -2.3', '-2.3');
+      expectSuccess(RETURN, 'return    -2.3', '-2.3');
+      expectSuccess(RETURN, 'return "a"', '"a"');
+      expectSuccess(RETURN, 'return  "a"', '"a"');
+    });
+    test('invalid statement', () {
+      expectFailure(RETURN, 'retur f', 0, 'return expected');
+      expectFailure(RETURN, 'return1', 6, 'whitespace expected');
+      expectFailure(RETURN, 'return  _', 8, '" expected');
+    });
+    test('javadoc', () {
+      expectSuccess(JAVADOC, '/** foo */', '/** foo */');
+      expectSuccess(JAVADOC, '/** * * */', '/** * * */');
     });
   });
 
