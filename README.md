@@ -10,3 +10,7 @@ Tasks
 * Use character predicates in `PredicateParser` as soon as Dart provides them in the standard library.
 * Figure out why #import('dart:unittest') does not work.
 * Needs to patch Expectation.equals to make the test framework compare lists correctly (http://code.google.com/p/dart/issues/detail?id=3274)
+
+Need to find workarounds for the following problems in Reflection.dart:
+* Copying objects is not easily possible (http://code.google.com/p/dart/issues/detail?id=3367)
+* hashCode() based on the object identity is not available (http://code.google.com/p/dart/issues/detail?id=3369)

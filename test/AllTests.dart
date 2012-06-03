@@ -172,7 +172,7 @@ main() {
       expectFailure(parser, '**b', 2, 'a expected');
     });
     test('wrapped', () {
-      Parser parser = char('a').wrapped();
+      Parser parser = char('a').wrapper();
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'b', message: 'a expected');
       expectFailure(parser, '');

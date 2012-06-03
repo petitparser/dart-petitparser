@@ -1,27 +1,36 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-abstract class CompositeParser extends _MutableDelegateParser {
+/**
+ * Helper to compose complex grammars from various primitive parsers. To create
+ * a new complex grammar subclass {@link CompositeParser}. Override the method
+ * [initialize()] and for every production call [define(String, Parser)] giving
+ * the parsers a name. The start production must be named 'start'. To refer to
+ * other produtions use [ref(String)].
+ */
+abstract class CompositeParser extends DelegateParser {
 
   final Map<String, Parser> _defined;
-  final Map<String, _MutableDelegateParser> _undefined;
+  final Map<String, DelegateParser> _undefined;
 
   CompositeParser()
-    : _defined = new Map(),
+    : super(null),
+      _defined = new Map(),
       _undefined = new Map() {
     initialize();
-    _parser = ref('start');
-    _undefined.forEach((name, parser) {
+    _delegate = ref('start');
+    _undefined.forEach((String name, DelegateParser parser) {
       if (!_defined.containsKey(name)) {
-        throw new Exception('Missing production definition: $name');
+        throw new Exception('Missing production: $name');
       }
-      parser._parser = _defined[name];
+      parser._delegate = _defined[name];
     });
+    replace(children[0], ref('start'));
   }
 
   /** Returns a reference to a production with a [name]. */
   Parser ref(String name) {
     return _undefined.putIfAbsent(name, () {
-      return new _MutableDelegateParser();
+      return new FailureParser('Uninitalized production: $name').wrapper();
     });
   }
 
@@ -51,10 +60,4 @@ abstract class CompositeParser extends _MutableDelegateParser {
   /** Initializes the composite grammar. */
   abstract void initialize();
 
-}
-
-class _MutableDelegateParser extends Parser {
-  Parser _parser;
-  _MutableDelegateParser();
-  Result _parse(Context context) => _parser._parse(context);
 }

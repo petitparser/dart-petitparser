@@ -10,23 +10,30 @@ class Context {
 
   Context(this._buffer, [this._position = 0]);
 
+  /** The buffer we are working on. */
   Dynamic get buffer() => _buffer;
+
+  /** The current position in the buffer. */
   int get position() => _position;
 
+  /** Returns [true] if this context indicates a parse success. */
   bool isSuccess() => false;
+
+  /** Returns [true] if this context indicates a parse failure. */
   bool isFailure() => false;
 
+  /** Copies the current context to indicate a parse success. */
   Success success(Dynamic result, [int position]) {
     return new Success(_buffer, position == null ? _position : position, result);
   }
 
+  /** Copies the current context to indicate a parse failure. */
   Failure failure(String message, [int position]) {
     return new Failure(_buffer, position == null ? _position : position, message);
   }
 
-  String toString() {
-    return 'Context[$_position]';
-  }
+  /** Returns a human readable string of the current context */
+  String toString() => 'Context[$_position]';
 
 }
 
@@ -35,10 +42,12 @@ class Context {
  */
 class Result extends Context {
 
-  Result(buffer, position)
-    : super(buffer, position);
+  Result(buffer, position) : super(buffer, position);
 
+  /** Returns the parse result of the current context. */
   abstract Dynamic getResult();
+
+  /** Returns the parse message of the current context. */
   abstract String getMessage();
 
 }
@@ -50,22 +59,14 @@ class Success extends Result {
 
   final Dynamic _result;
 
-  Success(buffer, position, this._result)
-    : super(buffer, position);
+  Success(buffer, position, this._result) : super(buffer, position);
 
   bool isSuccess() => true;
 
-  Dynamic getResult() {
-    return _result;
-  }
+  Dynamic getResult() => _result;
+  String getMessage() => null;
 
-  String getMessage() {
-    return null;
-  }
-
-  String toString() {
-    return 'Success[$_position]: $_result';
-  }
+  String toString() => 'Success[$_position]: $_result';
 
 }
 
@@ -76,21 +77,13 @@ class Failure extends Result {
 
   final String _message;
 
-  Failure(buffer, position, this._message)
-    : super(buffer, position);
+  Failure(buffer, position, this._message) : super(buffer, position);
 
   bool isFailure() => true;
 
-  Dynamic getResult() {
-    throw new UnsupportedOperationException(_message);
-  }
+  Dynamic getResult() { throw new UnsupportedOperationException(_message); }
+  String getMessage() => _message;
 
-  String getMessage() {
-    return _message;
-  }
-
-  String toString() {
-    return 'Failure[$_position]: $_message';
-  }
+  String toString() => 'Failure[$_position]: $_message';
 
 }

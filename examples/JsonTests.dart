@@ -21,7 +21,8 @@ void main() {
       expect(json.parse('["a", "b", "c"]').getResult()).equals(['a', 'b', 'c']);
     });
     test('nested', () {
-      expect(json.parse('[["a"]]').getResult()).equals([['a']]);
+      // TODO(renggli): avoid the toString() conversion
+      expect(json.parse('[["a"]]').getResult().toString()).equals([['a']].toString());
     });
     test('invalid', () {
       expect(json.parse('[').isFailure()).isTrue();
@@ -44,7 +45,8 @@ void main() {
       expect(json.parse('{"a": 1, "b": 2, "c": 3}').getResult()).equals({'a': 1, 'b': 2, 'c': 3});
     });
     test('nested', () {
-      expect(json.parse('{"obj": {"a": 1}}').getResult()).equals({'obj': {"a": 1}});
+      // TODO(renggli): avoid the toString() conversion
+      expect(json.parse('{"obj": {"a": 1}}').getResult().toString()).equals({'obj': {"a": 1}}.toString());
     });
     test('invalid', () {
       expect(json.parse('{').isFailure()).isTrue();
@@ -114,13 +116,13 @@ void main() {
       expect(json.parse('"foo bar"').getResult()).equals('foo bar');
     });
     test('escaped string', () {
-      expect(json.parse(@'\"').getResult()).equals('"');
-      expect(json.parse(@'\\').getResult()).equals('\\');
-      expect(json.parse(@'\b').getResult()).equals('\b');
-      expect(json.parse(@'\f').getResult()).equals('\f');
-      expect(json.parse(@'\n').getResult()).equals('\n');
-      expect(json.parse(@'\r').getResult()).equals('\r');
-      expect(json.parse(@'\t').getResult()).equals('\t');
+      expect(json.parse(@'"\""').getResult()).equals('"');
+      expect(json.parse(@'"\\"').getResult()).equals('\\');
+      expect(json.parse(@'"\b"').getResult()).equals('\b');
+      expect(json.parse(@'"\f"').getResult()).equals('\f');
+      expect(json.parse(@'"\n"').getResult()).equals('\n');
+      expect(json.parse(@'"\r"').getResult()).equals('\r');
+      expect(json.parse(@'"\t"').getResult()).equals('\t');
     });
     test('invalid string', () {
       expect(json.parse('"').isFailure()).isTrue();
@@ -143,6 +145,5 @@ void main() {
       expect(json.parse(input).isSuccess()).isTrue();
     });
   });
-
 
 }

@@ -5,12 +5,18 @@
  */
 abstract class Parser {
 
+  // parsing related functions
+  // // // // // // // // // // // // // // // // // // // // // // // //
+
+  /** Internal abstract method doing the actual parsing. */
+  abstract Result _parse(Context context);
+
   /** Returns the parse result of the input. */
   Result parse(Dynamic input) {
     return _parse(new Context(input));
   }
 
-  /** Returns true if the input can be successfully parsed. */
+  /** Tests if the input can be successfully parsed. */
   bool accept(Dynamic input) {
     return parse(input).isSuccess();
   }
@@ -29,8 +35,8 @@ abstract class Parser {
     return list;
   }
 
-  /** Internal abstract method doing the actual parsing. */
-  abstract Result _parse(Context context);
+  // parser combinator functions
+  // // // // // // // // // // // // // // // // // // // // // // // //
 
   Parser optional() => new OptionalParser(this);
   Parser star() => new RepeatingParser(this, 0, 65536);
@@ -45,7 +51,7 @@ abstract class Parser {
   Parser not([String message]) => new NotParser(this, message);
   Parser neg([String message]) => not(message).seq(any()).map((each) => each[1]);
 
-  Parser wrapped() => new DelegateParser(this);
+  Parser wrapper() => new WrapperParser(this);
   Parser flatten() => new FlattenParser(this);
   Parser trim([Parser trimmer]) => new TrimmingParser(this, trimmer);
   Parser map(Function function) => new ActionParser(this, function);
@@ -67,6 +73,17 @@ abstract class Parser {
       }
       return result;
     });
+  }
+
+  // reflection functions
+  // // // // // // // // // // // // // // // // // // // // // // // //
+
+  /** Returns a list of directly referring parsers. */
+  List<Parser> get children() => [];
+
+  /** Replaces [source] with [target], if [source] exists. */
+  void replace(Parser source, Parser target) {
+    // no children, nothing to do
   }
 
 }
@@ -100,9 +117,9 @@ class FailureParser extends Parser {
 /**
  * A parser that delegates to another one.
  */
-class DelegateParser extends Parser {
+abstract class DelegateParser extends Parser {
 
-  final Parser _delegate;
+  Parser _delegate;
 
   DelegateParser(this._delegate);
 
@@ -110,7 +127,24 @@ class DelegateParser extends Parser {
     return _delegate._parse(context);
   }
 
+  List<Parser> get children() => [_delegate];
+
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    if (_delegate == source) {
+      _delegate = target;
+    }
+  }
+
 }
+
+/**
+ * A parser that wraps to another one.
+ */
+class WrapperParser extends DelegateParser {
+  WrapperParser(parser) : super(parser);
+}
+
 
 /**
  * A parser that performs a transformation with a given function on the
@@ -223,7 +257,7 @@ class FlattenParser extends DelegateParser {
  */
 class TrimmingParser extends DelegateParser {
 
-  final Parser _trimmer;
+  Parser _trimmer;
 
   TrimmingParser(parser, [Parser trimmer])
     : super(parser),
@@ -243,6 +277,15 @@ class TrimmingParser extends DelegateParser {
       current = _trimmer._parse(current);
     } while (current.isSuccess());
     return current.success(result.getResult());
+  }
+
+  List<Parser> get children() => [_delegate, _trimmer];
+
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    if (_trimmer == source) {
+      _trimmer = target;
+    }
   }
 
 }
@@ -309,6 +352,18 @@ abstract class ListParser extends Parser {
   final List<Parser> _parsers;
 
   ListParser(this._parsers);
+
+  List<Parser> get children() => _parsers;
+
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    for (int i = 0; i < _parsers.length; i++) {
+      if (_parsers[i] == source) {
+        _parsers[i] = target;
+      }
+    }
+  }
+
 }
 
 /**
