@@ -1,4 +1,6 @@
 test/AllTests.dart
-examples/Json.dart
+grammars/xml/XmlTests.dart
+grammars/json/JsonTests.dart
+grammars/json/Json.dart
 lib/PetitParser.dart
-examples/JsonTests.dart
+grammars/xml/Xml.dart

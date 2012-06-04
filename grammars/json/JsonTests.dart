@@ -4,7 +4,7 @@
 
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
-#import('../lib/PetitParser.dart');
+#import('../../lib/PetitParser.dart');
 #import('Json.dart');
 
 void main() {

@@ -2,7 +2,7 @@
 
 #library('Json');
 
-#import('../lib/PetitParser.dart');
+#import('../../lib/PetitParser.dart');
 
 /**
  * JSON grammar definition.
@@ -74,10 +74,10 @@ class JsonParser extends JsonGrammar {
   void initialize() {
     super.initialize();
 
-    attach('array', (each) => each[1] != null ? each[1] : new List());
+    action('array', (each) => each[1] != null ? each[1] : new List());
     redefine('elements', (parser) => parser.withoutSeparators());
     redefine('members', (parser) => parser.withoutSeparators());
-    attach('object', (each) {
+    action('object', (each) {
       Map result = new LinkedHashMap();
       if (each[1] != null) {
         for (List element in each[1]) {
@@ -87,11 +87,11 @@ class JsonParser extends JsonGrammar {
       return result;
     });
 
-    attach('trueToken', (each) => true);
-    attach('falseToken', (each) => false);
-    attach('nullToken', (each) => null);
+    action('trueToken', (each) => true);
+    action('falseToken', (each) => false);
+    action('nullToken', (each) => null);
     redefine('stringToken', (parser) => ref('stringPrimitive').trim());
-    attach('numberToken', (each) {
+    action('numberToken', (each) {
       double floating = Math.parseDouble(each);
       int integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
@@ -101,9 +101,9 @@ class JsonParser extends JsonGrammar {
       }
     });
 
-    attach('stringPrimitive', (each) => Strings.join(each[1], ''));
-    attach('characterEscape', (each) => ESCAPE_TABLE[each[1]]);
-    attach('characterOctal', (each) {
+    action('stringPrimitive', (each) => Strings.join(each[1], ''));
+    action('characterEscape', (each) => ESCAPE_TABLE[each[1]]);
+    action('characterOctal', (each) {
       throw new UnsupportedOperationException('Octal characters not supported yet');
     });
 
