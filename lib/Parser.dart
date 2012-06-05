@@ -423,68 +423,68 @@ class ChoiceParser extends ListParser {
 
 }
 
-PredicateParser any([String message]) {
+Parser any([String message]) {
   return new PredicateParser(1,
     (each) => true,
     message != null ? message : 'input expected');
 }
 
-PredicateParser anyOf(Dynamic elements, [String message]) {
+Parser anyOf(Dynamic elements, [String message]) {
   return new PredicateParser(1,
     (each) => elements.indexOf(each) >= 0,
     message != null ? message : 'any of $elements expected');
 }
 
-PredicateParser char(Dynamic element, [String message]) {
+Parser char(Dynamic element, [String message]) {
   return new PredicateParser(1,
     (String each) => element == each,
     message != null ? message : '$element expected');
 }
 
-PredicateParser string(String element, [String message]) {
+Parser string(String element, [String message]) {
   return new PredicateParser(element.length,
     (String each) => element == each,
     message != null ? message : '$element expected');
 }
 
-PredicateParser stringIgnoreCase(String element, [String message]) {
+Parser stringIgnoreCase(String element, [String message]) {
   final lowerElement = element.toLowerCase();
   return new PredicateParser(element.length,
     (String each) => lowerElement == each.toLowerCase(),
     message != null ? message : '$element expected');
 }
 
-PredicateParser pattern(String element, [String message]) {
+Parser pattern(String element, [String message]) {
   final RegExp matcher = new RegExp('[$element]');
   return new PredicateParser(1, matcher.hasMatch,
     message != null ? message : '[$element] expected');
 }
 
-PredicateParser range(String start, String stop, [String message]) {
+Parser range(String start, String stop, [String message]) {
   return pattern('$start-$stop', message != null ? message : '$start..$stop expected');
 }
 
-PredicateParser whitespace([String message]) {
+Parser whitespace([String message]) {
   return pattern(@'\s', message != null ? message : 'whitespace expected');
 }
 
-PredicateParser digit([String message]) {
+Parser digit([String message]) {
   return pattern(@'\d', message != null ? message : 'digit expected');
 }
 
-PredicateParser letter([String message]) {
+Parser letter([String message]) {
   return pattern(@'a-zA-Z', message != null ? message : 'letter expected');
 }
 
-PredicateParser lowercase([String message]) {
+Parser lowercase([String message]) {
   return pattern(@'a-z', message != null ? message : 'lowercase letter expected');
 }
 
-PredicateParser uppercase([String message]) {
+Parser uppercase([String message]) {
   return pattern(@'A-Z', message != null ? message : 'uppercase letter expected');
 }
 
-PredicateParser word([String message]) {
+Parser word([String message]) {
   return pattern(@'\w', message != null ? message : 'letter or digit expected');
 }
 
