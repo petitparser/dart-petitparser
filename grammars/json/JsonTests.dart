@@ -12,16 +12,19 @@ void main() {
 
   group('arrays', () {
     test('empty', () {
-      expect(json.parse('[]').getResult()).equals([]);
+      // TODO(renggli): compare actual objects when expect() is fixed
+      expect(json.parse('[]').getResult().toString()).equals([].toString());
     });
     test('small', () {
-      expect(json.parse('["a"]').getResult()).equals(['a']);
+      // TODO(renggli): compare actual objects when expect() is fixed
+      expect(json.parse('["a"]').getResult().toString()).equals(['a'].toString());
     });
     test('large', () {
-      expect(json.parse('["a", "b", "c"]').getResult()).equals(['a', 'b', 'c']);
+      // TODO(renggli): compare actual objects when expect() is fixed
+      expect(json.parse('["a", "b", "c"]').getResult().toString()).equals(['a', 'b', 'c'].toString());
     });
     test('nested', () {
-      // TODO(renggli): avoid the toString() conversion
+      // TODO(renggli): compare actual objects when expect() is fixed
       expect(json.parse('[["a"]]').getResult().toString()).equals([['a']].toString());
     });
     test('invalid', () {
@@ -45,7 +48,7 @@ void main() {
       expect(json.parse('{"a": 1, "b": 2, "c": 3}').getResult()).equals({'a': 1, 'b': 2, 'c': 3});
     });
     test('nested', () {
-      // TODO(renggli): avoid the toString() conversion
+      // TODO(renggli): compare actual objects when expect() is fixed
       expect(json.parse('{"obj": {"a": 1}}').getResult().toString()).equals({'obj': {"a": 1}}.toString());
     });
     test('invalid', () {

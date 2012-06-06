@@ -109,13 +109,6 @@ abstract class XmlNode implements Iterable<XmlNode> {
    * Answer a print string of the receiver.
    */
   String toString() {
-    return super.toString() + ' (' + toXmlString() + ')';
-  }
-
-  /**
-   * Answer an XML string of the receiver.
-   */
-  String toXmlString() {
     StringBuffer buffer = new StringBuffer();
     writeTo(buffer);
     return buffer.toString();
@@ -336,13 +329,9 @@ class XmlName {
 
   String getLocal() => _local;
   String getPrefix() => _prefix;
-  String getQualified() => toXmlString();
+  String getQualified() => toString();
 
   String toString() {
-    return super.toString() + ' (' + toXmlString() + ')';
-  }
-
-  String toXmlString() {
     StringBuffer buffer = new StringBuffer();
     writeTo(buffer);
     return buffer.toString();

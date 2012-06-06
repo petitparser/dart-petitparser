@@ -11,7 +11,8 @@ void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position
   Result result = parser.parse(input);
   expect(result.isSuccess()).isTrue();
   expect(result.isFailure()).isFalse();
-  expect(result.getResult()).equals(expected);
+  // TODO(renggli): compare actual objects when expect() is fixed
+  expect(result.getResult().toString()).equals(expected.toString());
   expect(result.position).equals(position != null ? position : input.length);
 }
 
@@ -314,11 +315,13 @@ main() {
     });
     test('matches', () {
       Parser parser = digit().seq(digit()).flatten();
-      expect(['12', '23', '45']).equals(parser.matches('a123b45'));
+      // TODO(renggli): compare actual objects when expect() is fixed
+      expect(['12', '23', '45'].toString()).equals(parser.matches('a123b45').toString());
     });
     test('matches skipping', () {
       Parser parser = digit().seq(digit()).flatten();
-      expect(['12', '45']).equals(parser.matchesSkipping('a123b45'));
+      // TODO(renggli): compare actual objects when expect() is fixed
+      expect(['12', '45'].toString()).equals(parser.matchesSkipping('a123b45').toString());
     });
   });
 

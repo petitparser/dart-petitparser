@@ -10,8 +10,8 @@
 void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).getResult();
   assertTreeInvariants(tree);
-  XmlNode copy = parser.parse(tree.toXmlString()).getResult();
-  expect(tree.toXmlString()).equals(copy.toXmlString());
+  XmlNode copy = parser.parse(tree.toString()).getResult();
+  expect(tree.toString()).equals(copy.toString());
 }
 
 void assertTreeInvariants(XmlNode xml) {
@@ -90,7 +90,7 @@ void assertQualifiedInvariant(XmlName name) {
     expect(name.getQualified().startsWith(name.getPrefix())).isTrue();
     expect(name.getPrefix().length).equals(name.getQualified().indexOf(':'));
   }
-  expect(name.getQualified()).equals(name.toXmlString());
+  expect(name.getQualified()).equals(name.toString());
   expect(name.toString()).isNotNull();
 }
 
@@ -120,16 +120,19 @@ void main() {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- <foo></foo> --></schema>');
   });
   test('complicated', () {
-    validate(parser, '<?xml foo?>\n' + '<foo>\n'
-      + '  <bar a="fasdfasdf">\n'
-      + '    <zork/>\n' + '    <zonk/>\n'
-      + '  </bar>\n'
-      + '  <!-- with comment -->\n' + '</foo>');
+    validate(parser, '<?xml foo?>\n'
+      '<foo>\n'
+      '  <bar a="fasdfasdf">\n'
+      '    <zork/>\n'
+      '    <zonk/>\n'
+      '  </bar>\n'
+      '  <!-- with comment -->\n'
+      '</foo>');
   });
   test('doctype', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
-      + '  <!DOCTYPE freaking <schema> [ <!-- schema --> ]  >\n'
-      + '  <schema></schema>');
+      '  <!DOCTYPE freaking <schema> [ <!-- schema --> ]  >\n'
+      '  <schema></schema>');
   });
   test('empty element', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema/>');
@@ -148,83 +151,88 @@ void main() {
   });
   test('whitespace after prolog', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
-      + '  <schema></schema>\n');
+      '  <schema></schema>\n');
   });
   test('bookstore', () {
     validate(parser, '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
-      + '<bookstore>\n'
-      + '  <book>\n'
-      + '    <title lang="eng">Harry Potter</title>\n'
-      + '    <price>29.99</price>\n'
-      + '  </book>\n'
-      + '  <book>\n'
-      + '    <title lang="eng">Learning XML</title>\n'
-      + '    <price>39.95</price>\n'
-      + '  </book>\n'
-      + '</bookstore>');
+      '<bookstore>\n'
+      '  <book>\n'
+      '    <title lang="eng">Harry Potter</title>\n'
+      '    <price>29.99</price>\n'
+      '  </book>\n'
+      '  <book>\n'
+      '    <title lang="eng">Learning XML</title>\n'
+      '    <price>39.95</price>\n'
+      '  </book>\n'
+      '</bookstore>');
   });
   test('shiporder', () {
     validate(parser, '<?xml version="1.0"?>\n'
-      + '<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n'
-      + '\n'
-      + '  <xsd:annotation>\n'
-      + '    <xsd:documentation xml:lang="en">\n'
-      + '     Purchase order schema for Example.com.\n'
-      + '     Copyright 2000 Example.com. All rights reserved.\n'
-      + '    </xsd:documentation>\n'
-      + '  </xsd:annotation>\n'
-      + '\n'
-      + '  <xsd:element name="purchaseOrder" type="PurchaseOrderType"/>\n'
-      + '\n'
-      + '  <xsd:element name="comment" type="xsd:string"/>\n'
-      + '\n'
-      + '  <xsd:complexType name="PurchaseOrderType">\n'
-      + '    <xsd:sequence>\n'
-      + '      <xsd:element name="shipTo" type="USAddress"/>\n'
-      + '      <xsd:element name="billTo" type="USAddress"/>\n'
-      + '      <xsd:element ref="comment" minOccurs="0"/>\n'
-      + '      <xsd:element name="items"  type="Items"/>\n'
-      + '    </xsd:sequence>\n'
-      + '    <xsd:attribute name="orderDate" type="xsd:date"/>\n'
-      + '  </xsd:complexType>\n'
-      + '\n'
-      + '  <xsd:complexType name="USAddress">\n'
-      + '    <xsd:sequence>\n'
-      + '      <xsd:element name="name"   type="xsd:string"/>\n'
-      + '      <xsd:element name="street" type="xsd:string"/>\n'
-      + '      <xsd:element name="city"   type="xsd:string"/>\n'
-      + '      <xsd:element name="state"  type="xsd:string"/>\n'
-      + '      <xsd:element name="zip"    type="xsd:decimal"/>\n'
-      + '    </xsd:sequence>\n'
-      + '    <xsd:attribute name="country" type="xsd:NMTOKEN"\n'
-      + '                   fixed="US"/>\n'
-      + '  </xsd:complexType>\n'
-      + '\n'
-      + '  <xsd:complexType name="Items">\n'
-      + '    <xsd:sequence>\n'
-      + '      <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">\n'
-      + '        <xsd:complexType>\n'
-      + '          <xsd:sequence>\n'
-      + '            <xsd:element name="productName" type="xsd:string"/>\n'
-      + '            <xsd:element name="quantity">\n'
-      + '              <xsd:simpleType>\n'
-      + '                <xsd:restriction base="xsd:positiveInteger">\n'
-      + '                  <xsd:maxExclusive value="100"/>\n'
-      + '                </xsd:restriction>\n'
-      + '              </xsd:simpleType>\n'
-      + '            </xsd:element>\n'
-      + '            <xsd:element name="USPrice"  type="xsd:decimal"/>\n'
-      + '            <xsd:element ref="comment"   minOccurs="0"/>\n'
-      + '            <xsd:element name="shipDate" type="xsd:date" minOccurs="0"/>\n'
-      + '          </xsd:sequence>\n'
-      + '          <xsd:attribute name="partNum" type="SKU" use="required"/>\n'
-      + '        </xsd:complexType>\n' + '      </xsd:element>\n'
-      + '    </xsd:sequence>\n' + '  </xsd:complexType>\n' + '\n'
-      + '  <!-- Stock Keeping Unit, a code for identifying products -->\n'
-      + '  <xsd:simpleType name="SKU">\n'
-      + '    <xsd:restriction base="xsd:string">\n'
-      + '      <xsd:pattern value="\\d{3}-[A-Z]{2}"/>\n'
-      + '    </xsd:restriction>\n' + '  </xsd:simpleType>\n' + '\n'
-      + '</xsd:schema>');
+      '<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n'
+      '\n'
+      '  <xsd:annotation>\n'
+      '    <xsd:documentation xml:lang="en">\n'
+      '     Purchase order schema for Example.com.\n'
+      '     Copyright 2000 Example.com. All rights reserved.\n'
+      '    </xsd:documentation>\n'
+      '  </xsd:annotation>\n'
+      '\n'
+      '  <xsd:element name="purchaseOrder" type="PurchaseOrderType"/>\n'
+      '\n'
+      '  <xsd:element name="comment" type="xsd:string"/>\n'
+      '\n'
+      '  <xsd:complexType name="PurchaseOrderType">\n'
+      '    <xsd:sequence>\n'
+      '      <xsd:element name="shipTo" type="USAddress"/>\n'
+      '      <xsd:element name="billTo" type="USAddress"/>\n'
+      '      <xsd:element ref="comment" minOccurs="0"/>\n'
+      '      <xsd:element name="items"  type="Items"/>\n'
+      '    </xsd:sequence>\n'
+      '    <xsd:attribute name="orderDate" type="xsd:date"/>\n'
+      '  </xsd:complexType>\n'
+      '\n'
+      '  <xsd:complexType name="USAddress">\n'
+      '    <xsd:sequence>\n'
+      '      <xsd:element name="name"   type="xsd:string"/>\n'
+      '      <xsd:element name="street" type="xsd:string"/>\n'
+      '      <xsd:element name="city"   type="xsd:string"/>\n'
+      '      <xsd:element name="state"  type="xsd:string"/>\n'
+      '      <xsd:element name="zip"    type="xsd:decimal"/>\n'
+      '    </xsd:sequence>\n'
+      '    <xsd:attribute name="country" type="xsd:NMTOKEN"\n'
+      '                   fixed="US"/>\n'
+      '  </xsd:complexType>\n'
+      '\n'
+      '  <xsd:complexType name="Items">\n'
+      '    <xsd:sequence>\n'
+      '      <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">\n'
+      '        <xsd:complexType>\n'
+      '          <xsd:sequence>\n'
+      '            <xsd:element name="productName" type="xsd:string"/>\n'
+      '            <xsd:element name="quantity">\n'
+      '              <xsd:simpleType>\n'
+      '                <xsd:restriction base="xsd:positiveInteger">\n'
+      '                  <xsd:maxExclusive value="100"/>\n'
+      '                </xsd:restriction>\n'
+      '              </xsd:simpleType>\n'
+      '            </xsd:element>\n'
+      '            <xsd:element name="USPrice"  type="xsd:decimal"/>\n'
+      '            <xsd:element ref="comment"   minOccurs="0"/>\n'
+      '            <xsd:element name="shipDate" type="xsd:date" minOccurs="0"/>\n'
+      '          </xsd:sequence>\n'
+      '          <xsd:attribute name="partNum" type="SKU" use="required"/>\n'
+      '        </xsd:complexType>\n'
+      '      </xsd:element>\n'
+      '    </xsd:sequence>\n'
+      '  </xsd:complexType>\n'
+      '\n'
+      '  <!-- Stock Keeping Unit, a code for identifying products -->\n'
+      '  <xsd:simpleType name="SKU">\n'
+      '    <xsd:restriction base="xsd:string">\n'
+      '      <xsd:pattern value="\\d{3}-[A-Z]{2}"/>\n'
+      '    </xsd:restriction>\n'
+      '  </xsd:simpleType>\n'
+      '\n'
+      '</xsd:schema>');
   });
 }

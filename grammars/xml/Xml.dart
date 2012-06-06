@@ -12,9 +12,9 @@
 class XmlGrammar extends CompositeParser {
 
   static final String NAME_START_CHARS = ':A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF'
-      + '\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001\uD7FF'
-      + '\uF900-\uFDCF\uFDF0-\uFFFD';
-  static final String NAME_CHARS = '-.0-9\u00B7\u0300-\u036F\u203F-\u2040' + NAME_START_CHARS;
+      '\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001\uD7FF'
+      '\uF900-\uFDCF\uFDF0-\uFFFD';
+  static final String NAME_CHARS = '-.0-9\u00B7\u0300-\u036F\u203F-\u2040$NAME_START_CHARS';
 
   void initialize() {
     define('start', ref('document').end());
@@ -82,7 +82,7 @@ class XmlGrammar extends CompositeParser {
           if (list[1] == list[4][3]) {
             return [list[1], list[2], list[4][1]];
           } else {
-            throw new IllegalArgumentException('Expected </' + list[1] + '>');
+            throw new IllegalArgumentException('Expected </${list[1]}>');
           }
         }
       }));
