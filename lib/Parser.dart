@@ -23,14 +23,14 @@ abstract class Parser {
 
   /** Returns a list of all successful overlapping parses of the input. */
   List<Dynamic> matches(Dynamic input) {
-    List<Dynamic> list = new List();
+    var list = new List();
     and().map(list.add).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
   /** Returns a list of all successful non-overlapping parses of the input. */
   List<Dynamic> matchesSkipping(Dynamic input) {
-    List<Dynamic> list = new List();
+    var list = new List();
     map(list.add).or(any()).star().parse(input);
     return list;
   }
@@ -59,7 +59,7 @@ abstract class Parser {
 
   Parser separatedBy(Parser separator) {
     return new SequenceParser([this, new SequenceParser([separator, this]).star()]).map((List list) {
-      List result = new List();
+      var result = new List();
       result.add(list[0]);
       list[1].forEach(result.addAll);
       return result;
@@ -67,8 +67,8 @@ abstract class Parser {
   }
   Parser withoutSeparators() {
     return map((List list) {
-      List result = new List();
-      for (int i = 0; i < list.length; i += 2) {
+      var result = new List();
+      for (var i = 0; i < list.length; i += 2) {
         result.add(list[i]);
       }
       return result;
@@ -158,7 +158,7 @@ class ActionParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isSuccess()) {
       return result.success(_function(result.getResult()));
     } else {
@@ -178,7 +178,7 @@ class AndParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isSuccess()) {
       return context.success(result.getResult());
     } else {
@@ -200,7 +200,7 @@ class NotParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isFailure()) {
       return context.success(null);
     } else {
@@ -222,7 +222,7 @@ class EndOfInputParser extends DelegateParser {
       _message = message != null ? message : "end of input expected";
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isFailure() || result.position == result.buffer.length) {
       return result;
     }
@@ -240,10 +240,9 @@ class FlattenParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isSuccess()) {
-      String flattened = context.buffer
-          .substring(context.position, result.position);
+      var flattened = context.buffer.substring(context.position, result.position);
       return result.success(flattened);
     } else {
       return result;
@@ -264,11 +263,11 @@ class TrimmingParser extends DelegateParser {
       _trimmer = trimmer != null ? trimmer : whitespace();
 
   Result _parse(Context context) {
-    Context current = context;
+    var current = context;
     do {
       current = _trimmer._parse(current);
     } while (current.isSuccess());
-    Result result = super._parse(current);
+    var result = super._parse(current);
     if (result.isFailure()) {
       return result;
     }
@@ -299,7 +298,7 @@ class OptionalParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Result result = super._parse(context);
+    var result = super._parse(context);
     if (result.isSuccess()) {
       return result;
     } else {
@@ -321,10 +320,10 @@ class RepeatingParser extends DelegateParser {
     : super(parser);
 
   Result _parse(Context context) {
-    Context current = context;
-    List<Dynamic> elements = new List();
+    var current = context;
+    var elements = new List();
     while (elements.length < _min) {
-      Result result = super._parse(current);
+      var result = super._parse(current);
       if (result.isFailure()) {
         return result;
       }
@@ -332,7 +331,7 @@ class RepeatingParser extends DelegateParser {
       current = result;
     }
     while (elements.length < _max) {
-      Result result = super._parse(current);
+      var result = super._parse(current);
       if (result.isFailure()) {
         return current.success(elements);
       }
@@ -357,7 +356,7 @@ abstract class ListParser extends Parser {
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    for (int i = 0; i < _parsers.length; i++) {
+    for (var i = 0; i < _parsers.length; i++) {
       if (_parsers[i] == source) {
         _parsers[i] = target;
       }
@@ -375,10 +374,10 @@ class SequenceParser extends ListParser {
     : super(_parsers);
 
   Result _parse(Context context) {
-    Context current = context;
-    List<Dynamic> elements = new List<Dynamic>();
-    for (Parser parser in _parsers) {
-      Result result = parser._parse(current);
+    var current = context;
+    var elements = new List<Dynamic>();
+    for (var parser in _parsers) {
+      var result = parser._parse(current);
       if (result.isFailure()) {
         return result;
       }
@@ -389,7 +388,7 @@ class SequenceParser extends ListParser {
   }
 
   Parser seq(Parser other) {
-    List<Parser> parsers = new List.from(_parsers);
+    var parsers = new List.from(_parsers);
     parsers.addLast(other);
     return new SequenceParser(parsers);
   }
@@ -405,8 +404,8 @@ class ChoiceParser extends ListParser {
     : super(_parsers);
 
   Result _parse(Context context) {
-    Result result = context.failure('Empty choice');
-    for (Parser parser in _parsers) {
+    var result = context.failure('Empty choice');
+    for (var parser in _parsers) {
       result = parser._parse(context);
       if (result.isSuccess()) {
         return result;
@@ -416,7 +415,7 @@ class ChoiceParser extends ListParser {
   }
 
   Parser or(Parser other) {
-    List<Parser> parsers = new List.from(_parsers);
+    var parsers = new List.from(_parsers);
     parsers.addLast(other);
     return new ChoiceParser(parsers);
   }
@@ -455,7 +454,7 @@ Parser stringIgnoreCase(String element, [String message]) {
 }
 
 Parser pattern(String element, [String message]) {
-  final RegExp matcher = new RegExp('[$element]');
+  final matcher = new RegExp('[$element]');
   return new PredicateParser(1, matcher.hasMatch,
     message != null ? message : '[$element] expected');
 }
@@ -500,10 +499,10 @@ class PredicateParser extends Parser {
   PredicateParser(this._length, this._predicate, this._message);
 
   Result _parse(Context context) {
-    final int start = context.position;
-    final int stop = start + _length;
+    final start = context.position;
+    final stop = start + _length;
     if (stop <= context.buffer.length) {
-      Dynamic result = context.buffer.substring(start, stop);
+      var result = context.buffer.substring(start, stop);
       if (_predicate(result)) {
         return context.success(result, stop);
       }

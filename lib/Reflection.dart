@@ -33,7 +33,7 @@ class ParserIterator implements Iterator<Parser> {
     if (_todo.isEmpty()) {
       throw const NoMoreElementsException();
     }
-    Parser parser = _todo.removeLast();
+    var parser = _todo.removeLast();
     _done.add(parser);
     _todo.addAll(parser.children.filter((each) => !_done.contains(each)));
     return parser;
@@ -45,18 +45,19 @@ class ParserIterator implements Iterator<Parser> {
 class Transformations {
 
   /** Pluggable transformation starting at [root]. */
-  static Parser transform(Parser root, Function function) {
-    Map<Parser, Parser> mapping = new Map();
-    for (Parser parser in new ParserIterable(root)) {
-      mapping[parser] = function(parser.copy());
+  static Parser transform(Parser root, Parser function(Parser parser)) {
+    var mapping = new Map();
+    for (var parser in new ParserIterable(root)) {
+      // TODO(renggli): need to copy parser, but how?
+      mapping[parser] = function(parser);
     }
     bool changed;
     root = mapping[root];
     do {
       changed = false;
-      for (Parser parent in new ParserIterable(root)) {
-        for (Parser oldParser in parent.children) {
-          Parser newParser = mapping[oldParser];
+      for (var parent in new ParserIterable(root)) {
+        for (var oldParser in parent.children) {
+          var newParser = mapping[oldParser];
           if (newParser != null) {
             parent.replace(oldParser, newParser);
             changed = true;
@@ -69,7 +70,7 @@ class Transformations {
 
   /** Removes all wrappers starting at [root]. */
   static Parser removeWrappers(Parser root) {
-    transform(root, (Parser each) => each is WrapperParser ? each.children[0] : each);
+    transform(root, (each) => each is WrapperParser ? each.children[0] : each);
   }
 
 }

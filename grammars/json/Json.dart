@@ -78,7 +78,7 @@ class JsonParser extends JsonGrammar {
     redefine('elements', (parser) => parser.withoutSeparators());
     redefine('members', (parser) => parser.withoutSeparators());
     action('object', (each) {
-      Map result = new LinkedHashMap();
+      var result = new LinkedHashMap();
       if (each[1] != null) {
         for (List element in each[1]) {
           result[element[0]] = element[2];
@@ -92,8 +92,8 @@ class JsonParser extends JsonGrammar {
     action('nullToken', (each) => null);
     redefine('stringToken', (parser) => ref('stringPrimitive').trim());
     action('numberToken', (each) {
-      double floating = Math.parseDouble(each);
-      int integral = floating.toInt();
+      var floating = Math.parseDouble(each);
+      var integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
         return integral;
       } else {
