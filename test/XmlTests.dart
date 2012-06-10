@@ -4,8 +4,8 @@
 
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
-#import('../../lib/PetitParser.dart');
-#import('Xml.dart');
+#import('../lib/PetitParser.dart');
+#import('../grammar/xml/Xml.dart');
 
 void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).getResult();
@@ -113,13 +113,13 @@ void assertAttributeInvariant(XmlNode xml) {
 void main() {
   final Parser parser = new XmlParser();
 
-  test('comment', () {
+  test('Comment', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- comment --></schema>');
   });
-  test('comment with xml', () {
+  test('Comment with xml', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- <foo></foo> --></schema>');
   });
-  test('complicated', () {
+  test('Complicated', () {
     validate(parser, '<?xml foo?>\n'
       '<foo>\n'
       '  <bar a="fasdfasdf">\n'
@@ -129,31 +129,31 @@ void main() {
       '  <!-- with comment -->\n'
       '</foo>');
   });
-  test('doctype', () {
+  test('Doctype', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
       '  <!DOCTYPE freaking <schema> [ <!-- schema --> ]  >\n'
       '  <schema></schema>');
   });
-  test('empty element', () {
+  test('Empty element', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema/>');
   });
-  test('namespace', () {
+  test('Namespace', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><xs:schema></xs:schema>');
   });
-  test('simple', () {
+  test('Simple', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema></schema>');
   });
-  test('simple attribute', () {
+  test('Simple attribute', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema foo="bar"></schema>');
   });
-  test('simple single quote attribute', () {
+  test('Simple single quote attribute', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema foo=\'bar\'></schema>');
   });
-  test('whitespace after prolog', () {
+  test('Whitespace after prolog', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
       '  <schema></schema>\n');
   });
-  test('bookstore', () {
+  test('Bookstore', () {
     validate(parser, '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
       '<bookstore>\n'
       '  <book>\n'
@@ -166,7 +166,7 @@ void main() {
       '  </book>\n'
       '</bookstore>');
   });
-  test('shiporder', () {
+  test('Shiporder', () {
     validate(parser, '<?xml version="1.0"?>\n'
       '<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n'
       '\n'

@@ -53,9 +53,9 @@ abstract class Parser {
 
   Parser wrapper() => new WrapperParser(this);
   Parser flatten() => new FlattenParser(this);
-  Parser trim([Parser trimmer]) => new TrimmingParser(this, trimmer);
+  Parser trim([Parser trimmer]) => new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
   Parser map(Function function) => new ActionParser(this, function);
-  Parser end([String message]) => new EndOfInputParser(this, message);
+  Parser end([String message]) => new EndOfInputParser(this, message == null ? 'end of input expected' : message);
 
   Parser separatedBy(Parser separator) {
     return new SequenceParser([this, new SequenceParser([separator, this]).star()]).map((List list) {
@@ -196,7 +196,7 @@ class NotParser extends DelegateParser {
 
   final String _message;
 
-  NotParser(parser, [this._message])
+  NotParser(parser, this._message)
     : super(parser);
 
   Result _parse(Context context) {
@@ -217,9 +217,8 @@ class EndOfInputParser extends DelegateParser {
 
   final String _message;
 
-  EndOfInputParser(parser, [String message])
-    : super(parser),
-      _message = message != null ? message : "end of input expected";
+  EndOfInputParser(parser, this._message)
+    : super(parser);
 
   Result _parse(Context context) {
     var result = super._parse(context);
@@ -258,9 +257,8 @@ class TrimmingParser extends DelegateParser {
 
   Parser _trimmer;
 
-  TrimmingParser(parser, [Parser trimmer])
-    : super(parser),
-      _trimmer = trimmer != null ? trimmer : whitespace();
+  TrimmingParser(parser, this._trimmer)
+    : super(parser);
 
   Result _parse(Context context) {
     var current = context;

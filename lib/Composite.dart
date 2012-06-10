@@ -24,6 +24,7 @@ abstract class CompositeParser extends DelegateParser {
       }
       parser._delegate = _defined[name];
     });
+    // TODO(renggli): remove the delegates as soon as dart allows object copying
     replace(children[0], ref('start'));
   }
 
@@ -52,8 +53,8 @@ abstract class CompositeParser extends DelegateParser {
     }
   }
 
-  /** Attaches an action to an existing production. */
-  void action(String name, Function function) {
+  /** Attaches an action [function] to an existing production [name]. */
+  void action(String name, Dynamic function(Dynamic)) {
     redefine(name, (parser) => parser.map(function));
   }
 
