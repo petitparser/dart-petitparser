@@ -24,14 +24,14 @@ abstract class Parser {
   /** Returns a list of all successful overlapping parses of the input. */
   List<Dynamic> matches(Dynamic input) {
     var list = new List();
-    and().map(list.add).seq(any()).or(any()).star().parse(input);
+    and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
   /** Returns a list of all successful non-overlapping parses of the input. */
   List<Dynamic> matchesSkipping(Dynamic input) {
     var list = new List();
-    map(list.add).or(any()).star().parse(input);
+    map((each) => list.add(each)).or(any()).star().parse(input);
     return list;
   }
 
@@ -61,7 +61,7 @@ abstract class Parser {
     return new SequenceParser([this, new SequenceParser([separator, this]).star()]).map((List list) {
       var result = new List();
       result.add(list[0]);
-      list[1].forEach(result.addAll);
+      list[1].forEach((each) => result.addAll(each));
       return result;
     });
   }
