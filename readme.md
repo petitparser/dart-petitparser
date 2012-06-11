@@ -9,10 +9,10 @@ Tasks
 -----
 
 * Get rid of the global functions creating `PredicateParser` instances.
-* Implement more efficient character predicate parsers.
+* Investigate if working on character codes than on sub-strings would improve performance.
 * Use constructor initializiers in `PredicateParser` as soon as Dart allows functions in constructor initializers.
-* Figure out why #import('dart:unittest') does not work.
-* Needs to patch Expectation.equals to make the test framework compare lists correctly (http://code.google.com/p/dart/issues/detail?id=3274)
+* Use #import('dart:unittest') as soon as Dart officially blesses the testing framework.
+* Remove the use of .toString() to compare lists (http://code.google.com/p/dart/issues/detail?id=3274)
 
 Need to find workarounds for the following problems in Reflection.dart:
 
