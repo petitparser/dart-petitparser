@@ -1,11 +1,11 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('JsonTests');
+#library('json_tests');
 
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
-#import('../lib/PetitParser.dart');
-#import('../grammar/json/Json.dart');
+#import('../lib/petitparser.dart');
+#import('../grammar/json/json.dart');
 
 void main() {
   final Parser json = new JsonParser();

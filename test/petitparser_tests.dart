@@ -1,11 +1,10 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('PetitParserTests');
+#library('petitparser_tests');
 
-#import('dart:core');
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
-#import('../lib/PetitParser.dart');
+#import('../lib/petitparser.dart');
 
 void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position]) {
   Result result = parser.parse(input);

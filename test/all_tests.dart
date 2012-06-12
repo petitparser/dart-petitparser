@@ -1,12 +1,12 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('AllTests');
+#library('all_tests');
 
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
-#import('PetitParserTests.dart', prefix: 'petitparser');
-#import('JsonTests.dart', prefix: 'json');
-#import('XmlTests.dart', prefix: 'xml');
+#import('petitparser_tests.dart', prefix: 'petitparser');
+#import('json_tests.dart', prefix: 'json');
+#import('xml_tests.dart', prefix: 'xml');
 
 void main() {
   group('PetitParser -', petitparser.main);
