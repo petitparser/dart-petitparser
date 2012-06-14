@@ -11,7 +11,7 @@ void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).getResult();
   assertTreeInvariants(tree);
   XmlNode copy = parser.parse(tree.toString()).getResult();
-  expect(tree.toString()).equals(copy.toString());
+  expect(tree.toString(), equals(copy.toString()));
 }
 
 void assertTreeInvariants(XmlNode xml) {
@@ -26,23 +26,23 @@ void assertTreeInvariants(XmlNode xml) {
 void assertDocumentInvariant(XmlNode xml) {
   XmlNode root = xml.getRoot();
   for (XmlNode child in xml) {
-    expect(root).same(child.getRoot());
-    expect(root).same(child.getDocument());
+    expect(root, same(child.getRoot()));
+    expect(root, same(child.getDocument()));
   }
   XmlDocument document = xml;
-  expect(document.getChildren().indexOf(document.getRootElement()) != -1).isTrue();
+  expect(document.getChildren(), contains(document.getRootElement()));
 }
 
 void assertParentInvariant(XmlNode xml) {
   for (XmlNode node in xml) {
     if (node is XmlDocument) {
-      expect(node.getParent()).isNull();
+      expect(node.getParent(), isNull);
     }
     for (XmlNode child in node.getChildren()) {
-      expect(child.getParent()).same(node);
+      expect(child.getParent(), same(node));
     }
     for (XmlNode attribute in node.getAttributes()) {
-      expect(attribute.getParent()).same(node);
+      expect(attribute.getParent(), same(node));
     }
   }
 }
@@ -51,10 +51,10 @@ void assertForwardInvariant(XmlNode xml) {
   for (XmlNode node in xml) {
     XmlNode current = node.getFirstChild();
     for (int i = 0; i < node.getChildren().length; i++) {
-      expect(node.getChildren()[i]).same(current);
+      expect(node.getChildren()[i], same(current));
       current = current.getNextSibling();
     }
-    expect(current).isNull();
+    expect(current, isNull);
   }
 }
 
@@ -62,10 +62,10 @@ void assertBackwardInvariant(XmlNode xml) {
   for (XmlNode node in xml) {
     XmlNode current = node.getLastChild();
     for (int i = node.getChildren().length - 1; i >= 0; i--) {
-      expect(node.getChildren()[i]).same(current);
+      expect(node.getChildren()[i], same(current));
       current = current.getPreviousSibling();
     }
-    expect(current).isNull();
+    expect(current, isNull);
   }
 }
 
@@ -83,15 +83,12 @@ void assertNameInvariant(XmlNode xml) {
 }
 
 void assertQualifiedInvariant(XmlName name) {
-  expect(name.getLocal().isEmpty()).isFalse();
-  expect(name.getQualified().endsWith(name.getLocal())).isTrue();
+  expect(name.getLocal(), isNot(isEmpty));
+  expect(name.getQualified(), endsWith(name.getLocal()));
   if (name.getPrefix() != null) {
-    expect(name.getPrefix().isEmpty()).isFalse();
-    expect(name.getQualified().startsWith(name.getPrefix())).isTrue();
-    expect(name.getPrefix().length).equals(name.getQualified().indexOf(':'));
+    expect(name.getQualified(), startsWith(name.getPrefix()));
   }
-  expect(name.getQualified()).equals(name.toString());
-  expect(name.toString()).isNotNull();
+  expect(name.getQualified(), equals(name.toString()));
 }
 
 void assertAttributeInvariant(XmlNode xml) {
@@ -99,12 +96,12 @@ void assertAttributeInvariant(XmlNode xml) {
     if (node is XmlElement) {
       XmlElement element = node;
       for (XmlAttribute attribute in element.getAttributes()) {
-        expect(attribute.getValue()).equals(element.getAttribute(attribute.getName().getLocal()));
-        expect(attribute).same(element.getAttributeNode(attribute.getName().getLocal()));
+        expect(attribute.getValue(), same(element.getAttribute(attribute.getName().getLocal())));
+        expect(attribute, same(element.getAttributeNode(attribute.getName().getLocal())));
       }
       if (element.getAttributes().isEmpty()) {
-        expect(element.getAttribute('foo')).isNull();
-        expect(element.getAttributeNode('foo')).isNull();
+        expect(element.getAttribute('foo'), isNull);
+        expect(element.getAttributeNode('foo'), isNull);
       }
     }
   }

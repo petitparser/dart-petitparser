@@ -8,7 +8,7 @@ class Context {
   final Dynamic _buffer;
   final int _position;
 
-  Context(this._buffer, [this._position = 0]);
+  Context(this._buffer, this._position);
 
   /** The buffer we are working on. */
   Dynamic get buffer() => _buffer;

@@ -44,16 +44,16 @@ class JsonGrammar extends CompositeParser {
         .or(ref('characterOctal'))
         .or(ref('characterNormal')));
     define('characterEscape',
-      char('\\').seq(anyOf(new List.from(ESCAPE_TABLE.getKeys()))));
+      char('\\').seq(anyIn(new List.from(ESCAPE_TABLE.getKeys()))));
     define('characterNormal',
-      anyOf('"\\').neg());
+      anyIn('"\\').neg());
     define('characterOctal',
       string('\\u').seq(pattern("0-9A-Fa-f").times(4).flatten()));
     define('numberPrimitive',
       char('-').optional()
         .seq(char('0').or(digit().plus()))
         .seq(char('.').seq(digit().plus()).optional())
-        .seq(anyOf('eE').seq(anyOf('-+').optional()).seq(digit().plus()).optional()));
+        .seq(anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional()));
     define('stringPrimitive',
       char('"')
         .seq(ref('characterPrimitive').star())

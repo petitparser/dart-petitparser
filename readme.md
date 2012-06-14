@@ -12,7 +12,6 @@ Tasks
 * Investigate if working on character codes than on sub-strings would improve performance.
 * Use constructor initializiers in `PredicateParser` as soon as Dart allows functions in constructor initializers.
 * Use #import('dart:unittest') as soon as Dart officially blesses the testing framework.
-* Remove the use of .toString() to compare lists (http://code.google.com/p/dart/issues/detail?id=3274)
 
 Need to find workarounds for the following problems in Reflection.dart:
 

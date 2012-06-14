@@ -19,11 +19,11 @@ class ParserIterable implements Iterable<Parser> {
 class ParserIterator implements Iterator<Parser> {
 
   final List<Parser> _todo;
-  final Set<Parser> _done;
+  final List<Parser> _done;
 
   ParserIterator(Parser root)
       : _todo = new List.from([root]),
-        _done = new Set();
+        _done = new List();
 
   bool hasNext() {
     return !_todo.isEmpty();
@@ -35,7 +35,7 @@ class ParserIterator implements Iterator<Parser> {
     }
     var parser = _todo.removeLast();
     _done.add(parser);
-    _todo.addAll(parser.children.filter((each) => !_done.contains(each)));
+    _todo.addAll(parser.children.filter((each) => _done.indexOf(each) == -1));
     return parser;
   }
 
@@ -70,6 +70,7 @@ class Transformations {
 
   /** Removes all wrappers starting at [root]. */
   static Parser removeWrappers(Parser root) {
+    // TODO(renggli): replace with exact class check
     transform(root, (each) => each is WrapperParser ? each.children[0] : each);
   }
 

@@ -8,20 +8,19 @@
 
 void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position]) {
   Result result = parser.parse(input);
-  expect(result.isSuccess()).isTrue();
-  expect(result.isFailure()).isFalse();
-  // TODO(renggli): compare actual objects when expect() is fixed
-  expect(result.getResult().toString()).equals(expected.toString());
-  expect(result.position).equals(position != null ? position : input.length);
+  expect(result.isSuccess(), isTrue);
+  expect(result.isFailure(), isFalse);
+  expect(result.getResult(), recursivelyMatches(expected));
+  expect(result.position, equals(position != null ? position : input.length));
 }
 
 void expectFailure(Parser parser, Dynamic input, [int position = 0, String message]) {
   Result result = parser.parse(input);
-  expect(result.isFailure()).isTrue();
-  expect(result.isSuccess()).isFalse();
-  expect(result.position).equals(position);
+  expect(result.isFailure(), isTrue);
+  expect(result.isSuccess(), isFalse);
+  expect(result.position, equals(position));
   if (message != null) {
-    expect(result.getMessage()).equals(message);
+    expect(result.getMessage(), equals(message));
   }
 }
 
@@ -204,6 +203,13 @@ main() {
       expectSuccess(parser, 'b', 'b');
       expectFailure(parser, '', message: 'input expected');
     });
+    test('Any In', () {
+      Parser parser = anyIn(['a', 'b']);
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectFailure(parser, 'c');
+      expectFailure(parser, '');
+    });
     test('Char', () {
       Parser parser = char('a');
       expectSuccess(parser, 'a', 'a');
@@ -304,23 +310,21 @@ main() {
   group('Parsing -', () {
     test('Parse', () {
       Parser parser = char('a');
-      expect(parser.parse('a').isSuccess()).isTrue();
-      expect(parser.parse('b').isSuccess()).isFalse();
+      expect(parser.parse('a').isSuccess(), isTrue);
+      expect(parser.parse('b').isSuccess(), isFalse);
     });
     test('Accept', () {
       Parser parser = char('a');
-      expect(parser.accept('a')).isTrue();
-      expect(parser.accept('b')).isFalse();
+      expect(parser.accept('a'), isTrue);
+      expect(parser.accept('b'), isFalse);
     });
     test('Matches', () {
       Parser parser = digit().seq(digit()).flatten();
-      // TODO(renggli): compare actual objects when expect() is fixed
-      expect(['12', '23', '45'].toString()).equals(parser.matches('a123b45').toString());
+      expect(parser.matches('a123b45'), recursivelyMatches(['12', '23', '45']));
     });
     test('Matches skipping', () {
       Parser parser = digit().seq(digit()).flatten();
-      // TODO(renggli): compare actual objects when expect() is fixed
-      expect(['12', '45'].toString()).equals(parser.matchesSkipping('a123b45').toString());
+      expect(parser.matchesSkipping('a123b45'), recursivelyMatches(['12', '45']));
     });
   });
 
@@ -420,6 +424,10 @@ main() {
       expectSuccess(JAVADOC, '/** foo */', '/** foo */');
       expectSuccess(JAVADOC, '/** * * */', '/** * * */');
     });
+  });
+
+  group('Reflection - ', () {
+    test('', () {});
   });
 
 }

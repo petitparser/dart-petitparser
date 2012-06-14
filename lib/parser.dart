@@ -13,7 +13,7 @@ abstract class Parser {
 
   /** Returns the parse result of the input. */
   Result parse(Dynamic input) {
-    return _parse(new Context(input));
+    return _parse(new Context(input, 0));
   }
 
   /** Tests if the input can be successfully parsed. */
@@ -426,7 +426,7 @@ Parser any([String message]) {
     message != null ? message : 'input expected');
 }
 
-Parser anyOf(Dynamic elements, [String message]) {
+Parser anyIn(Dynamic elements, [String message]) {
   return new PredicateParser(1,
     (each) => elements.indexOf(each) >= 0,
     message != null ? message : 'any of $elements expected');
