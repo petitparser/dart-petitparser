@@ -4,5 +4,6 @@
 
 #source('context.dart');
 #source('parser.dart');
+#source('characters.dart');
 #source('reflection.dart');
 #source('composite.dart');

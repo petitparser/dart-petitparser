@@ -432,12 +432,6 @@ Parser anyIn(Dynamic elements, [String message]) {
     message != null ? message : 'any of $elements expected');
 }
 
-Parser char(Dynamic element, [String message]) {
-  return new PredicateParser(1,
-    (String each) => element == each,
-    message != null ? message : '$element expected');
-}
-
 Parser string(String element, [String message]) {
   return new PredicateParser(element.length,
     (String each) => element == each,
@@ -455,34 +449,6 @@ Parser pattern(String element, [String message]) {
   final matcher = new RegExp('[$element]');
   return new PredicateParser(1, matcher.hasMatch,
     message != null ? message : '[$element] expected');
-}
-
-Parser range(String start, String stop, [String message]) {
-  return pattern('$start-$stop', message != null ? message : '$start..$stop expected');
-}
-
-Parser whitespace([String message]) {
-  return pattern(@'\s', message != null ? message : 'whitespace expected');
-}
-
-Parser digit([String message]) {
-  return pattern(@'\d', message != null ? message : 'digit expected');
-}
-
-Parser letter([String message]) {
-  return pattern(@'a-zA-Z', message != null ? message : 'letter expected');
-}
-
-Parser lowercase([String message]) {
-  return pattern(@'a-z', message != null ? message : 'lowercase letter expected');
-}
-
-Parser uppercase([String message]) {
-  return pattern(@'A-Z', message != null ? message : 'uppercase letter expected');
-}
-
-Parser word([String message]) {
-  return pattern(@'\w', message != null ? message : 'letter or digit expected');
 }
 
 /**

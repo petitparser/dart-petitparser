@@ -90,7 +90,7 @@ main() {
       expectSuccess(parser, '', null);
     });
     test('Neg', () {
-      Parser parser = digit().neg('no digit expected');
+      Parser parser = digit().wrapper().neg('no digit expected');
       expectFailure(parser, '1', 0, 'no digit expected');
       expectFailure(parser, '9', 0, 'no digit expected');
       expectSuccess(parser, 'a', 'a');
@@ -196,6 +196,143 @@ main() {
     });
   });
 
+  group('characters', () {
+
+    test('char()', () {
+      Parser parser = char('a');
+      expectSuccess(parser, 'a', 'a');
+      expectFailure(parser, 'b', message: 'a expected');
+      expectFailure(parser, '');
+    });
+    test('char().neg()', () {
+      Parser parser = char('a').neg();
+      expectSuccess(parser, 'b', 'b');
+      expectFailure(parser, 'a', message: 'no a expected');
+      expectFailure(parser, '');
+    });
+
+    test('digit()', () {
+      Parser parser = digit();
+      expectSuccess(parser, '1', '1');
+      expectSuccess(parser, '9', '9');
+      expectFailure(parser, 'a', message: 'digit expected');
+      expectFailure(parser, '');
+    });
+    test('digit().neg()', () {
+      Parser parser = digit().neg();
+      expectSuccess(parser, 'a', 'a');
+      expectFailure(parser, '0', message: 'no digit expected');
+      expectFailure(parser, '');
+    });
+
+    test('letter()', () {
+      Parser parser = letter();
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'X', 'X');
+      expectFailure(parser, '0', message: 'letter expected');
+      expectFailure(parser, '');
+    });
+    test('letter().neg()', () {
+      Parser parser = letter().neg();
+      expectSuccess(parser, '0', '0');
+      expectSuccess(parser, ' ', ' ');
+      expectFailure(parser, 'f', message: 'no letter expected');
+      expectFailure(parser, '');
+    });
+
+    test('lowercase', () {
+      Parser parser = lowercase();
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'z', 'z');
+      expectFailure(parser, 'A', message: 'lowercase letter expected');
+      expectFailure(parser, '0', message: 'lowercase letter expected');
+      expectFailure(parser, '');
+    });
+    test('lowercase().neg()', () {
+      Parser parser = lowercase().neg();
+      expectSuccess(parser, 'A', 'A');
+      expectSuccess(parser, '0', '0');
+      expectFailure(parser, 'a', message: 'no lowercase letter expected');
+      expectFailure(parser, 'z', message: 'no lowercase letter expected');
+      expectFailure(parser, '');
+    });
+
+    test('range()', () {
+      Parser parser = range('e', 'o');
+      expectSuccess(parser, 'e', 'e');
+      expectSuccess(parser, 'i', 'i');
+      expectSuccess(parser, 'o', 'o');
+      expectFailure(parser, 'p', message: 'e..o expected');
+      expectFailure(parser, 'd', message: 'e..o expected');
+      expectFailure(parser, '');
+    });
+    test('range().neg()', () {
+      Parser parser = range('e', 'o').neg();
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'p', 'p');
+      expectFailure(parser, 'e', message: 'no e..o expected');
+      expectFailure(parser, 'i', message: 'no e..o expected');
+      expectFailure(parser, 'o', message: 'no e..o expected');
+      expectFailure(parser, '');
+    });
+
+    test('uppercase()', () {
+      Parser parser = uppercase();
+      expectSuccess(parser, 'A', 'A');
+      expectSuccess(parser, 'Z', 'Z');
+      expectFailure(parser, 'a', message: 'uppercase letter expected');
+      expectFailure(parser, '0', message: 'uppercase letter expected');
+      expectFailure(parser, '');
+    });
+    test('uppercase().neg()', () {
+      Parser parser = uppercase().neg();
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'z', 'z');
+      expectFailure(parser, 'A', message: 'no uppercase letter expected');
+      expectFailure(parser, 'Z', message: 'no uppercase letter expected');
+      expectFailure(parser, '');
+    });
+
+    test('whitespace()', () {
+      Parser parser = whitespace();
+      expectSuccess(parser, ' ', ' ');
+      expectSuccess(parser, '\t', '\t');
+      expectSuccess(parser, '\r', '\r');
+      expectSuccess(parser, '\f', '\f');
+      expectFailure(parser, 'z', message: 'whitespace expected');
+      expectFailure(parser, '');
+    });
+    test('whitespace().neg()', () {
+      Parser parser = whitespace().neg();
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, '0', '0');
+      expectFailure(parser, ' ', message: 'no whitespace expected');
+      expectFailure(parser, '');
+    });
+
+    test('word()', () {
+      Parser parser = word();
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'z', 'z');
+      expectSuccess(parser, 'A', 'A');
+      expectSuccess(parser, 'Z', 'Z');
+      expectSuccess(parser, '0', '0');
+      expectSuccess(parser, '9', '9');
+      expectFailure(parser, '-', message: 'letter or digit expected');
+      expectFailure(parser, '');
+    });
+    test('word().neg()', () {
+      Parser parser = word().neg();
+      expectSuccess(parser, '-', '-');
+      expectSuccess(parser, '!', '!');
+      expectFailure(parser, 'e', message: 'no letter or digit expected');
+      expectFailure(parser, 'E', message: 'no letter or digit expected');
+      expectFailure(parser, '5', message: 'no letter or digit expected');
+      expectFailure(parser, '');
+    });
+
+  });
+
   group('Predicate -', () {
     test('Any', () {
       Parser parser = any();
@@ -208,12 +345,6 @@ main() {
       expectSuccess(parser, 'a', 'a');
       expectSuccess(parser, 'b', 'b');
       expectFailure(parser, 'c');
-      expectFailure(parser, '');
-    });
-    test('Char', () {
-      Parser parser = char('a');
-      expectSuccess(parser, 'a', 'a');
-      expectFailure(parser, 'b');
       expectFailure(parser, '');
     });
     test('String', () {
@@ -254,56 +385,6 @@ main() {
       expectFailure(parser, 'c');
       expectFailure(parser, 'd');
       expectSuccess(parser, 'e', 'e');
-    });
-    test('Digit', () {
-      Parser parser = digit();
-      expectSuccess(parser, '1', '1');
-      expectSuccess(parser, '9', '9');
-      expectFailure(parser, 'a', message: 'digit expected');
-      expectFailure(parser, '');
-    });
-    test('Letter', () {
-      Parser parser = letter();
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'X', 'X');
-      expectFailure(parser, '0', message: 'letter expected');
-      expectFailure(parser, '');
-    });
-    test('Lowercase', () {
-      Parser parser = lowercase();
-      expectSuccess(parser, 'a', 'a');
-      expectFailure(parser, 'A', message: 'lowercase letter expected');
-      expectFailure(parser, '0', message: 'lowercase letter expected');
-      expectFailure(parser, '');
-    });
-    test('Range', () {
-      Parser parser = range('e', 'o');
-      expectFailure(parser, 'd', message: 'e..o expected');
-      expectSuccess(parser, 'e', 'e');
-      expectSuccess(parser, 'i', 'i');
-      expectSuccess(parser, 'o', 'o');
-      expectFailure(parser, 'p', message: 'e..o expected');
-    });
-    test('Uppercase', () {
-      Parser parser = uppercase();
-      expectSuccess(parser, 'Z', 'Z');
-      expectFailure(parser, 'z', message: 'uppercase letter expected');
-      expectFailure(parser, '0', message: 'uppercase letter expected');
-      expectFailure(parser, '');
-    });
-    test('Whitespace', () {
-      Parser parser = whitespace();
-      expectSuccess(parser, ' ', ' ');
-      expectFailure(parser, 'z', message: 'whitespace expected');
-      expectFailure(parser, '-', message: 'whitespace expected');
-      expectFailure(parser, '');
-    });
-    test('Word', () {
-      Parser parser = word();
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, '0', '0');
-      expectFailure(parser, '-', message: 'letter or digit expected');
-      expectFailure(parser, '');
     });
   });
 
