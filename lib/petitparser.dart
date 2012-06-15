@@ -3,7 +3,7 @@
 #library('petitparser');
 
 #source('context.dart');
-#source('parser.dart');
+#source('parsers.dart');
 #source('characters.dart');
 #source('composite.dart');
 #source('reflection.dart');

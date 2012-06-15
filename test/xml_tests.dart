@@ -110,13 +110,13 @@ void assertAttributeInvariant(XmlNode xml) {
 void main() {
   final Parser parser = new XmlParser();
 
-  test('Comment', () {
+  test('comment', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- comment --></schema>');
   });
-  test('Comment with xml', () {
+  test('comment with xml', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- <foo></foo> --></schema>');
   });
-  test('Complicated', () {
+  test('complicated', () {
     validate(parser, '<?xml foo?>\n'
       '<foo>\n'
       '  <bar a="fasdfasdf">\n'
@@ -126,31 +126,31 @@ void main() {
       '  <!-- with comment -->\n'
       '</foo>');
   });
-  test('Doctype', () {
+  test('doctype', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
       '  <!DOCTYPE freaking <schema> [ <!-- schema --> ]  >\n'
       '  <schema></schema>');
   });
-  test('Empty element', () {
+  test('empty element', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema/>');
   });
-  test('Namespace', () {
+  test('namespace', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><xs:schema></xs:schema>');
   });
-  test('Simple', () {
+  test('simple', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema></schema>');
   });
-  test('Simple attribute', () {
+  test('simple attribute', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema foo="bar"></schema>');
   });
-  test('Simple single quote attribute', () {
+  test('simple single quote attribute', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema foo=\'bar\'></schema>');
   });
-  test('Whitespace after prolog', () {
+  test('whitespace after prolog', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
       '  <schema></schema>\n');
   });
-  test('Bookstore', () {
+  test('bookstore', () {
     validate(parser, '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
       '<bookstore>\n'
       '  <book>\n'
@@ -163,7 +163,7 @@ void main() {
       '  </book>\n'
       '</bookstore>');
   });
-  test('Shiporder', () {
+  test('shiporder', () {
     validate(parser, '<?xml version="1.0"?>\n'
       '<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n'
       '\n'
@@ -232,4 +232,5 @@ void main() {
       '\n'
       '</xsd:schema>');
   });
+
 }

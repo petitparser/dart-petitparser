@@ -10,20 +10,20 @@
 void main() {
   final Parser json = new JsonParser();
 
-  group('Arrays -', () {
-    test('Empty', () {
+  group('arrays', () {
+    test('empty', () {
       expect(json.parse('[]').getResult(), recursivelyMatches([]));
     });
-    test('Small', () {
+    test('small', () {
       expect(json.parse('["a"]').getResult(), recursivelyMatches(['a']));
     });
-    test('Large', () {
+    test('large', () {
       expect(json.parse('["a", "b", "c"]').getResult(), recursivelyMatches(['a', 'b', 'c']));
     });
-    test('Nested', () {
+    test('nested', () {
       expect(json.parse('[["a"]]').getResult(), recursivelyMatches([['a']]));
     });
-    test('Invalid', () {
+    test('invalid', () {
       expect(json.parse('[').isFailure(), isTrue);
       expect(json.parse('[1').isFailure(), isTrue);
       expect(json.parse('[1,').isFailure(), isTrue);
@@ -33,20 +33,20 @@ void main() {
     });
   });
 
-  group('Objects -', () {
-    test('Empty', () {
+  group('objects', () {
+    test('empty', () {
       expect(json.parse('{}').getResult(), recursivelyMatches({}));
     });
-    test('Small', () {
+    test('small', () {
       expect(json.parse('{"a": 1}').getResult(), recursivelyMatches({'a': 1}));
     });
-    test('Large', () {
+    test('large', () {
       expect(json.parse('{"a": 1, "b": 2, "c": 3}').getResult(), recursivelyMatches({'a': 1, 'b': 2, 'c': 3}));
     });
-    test('Nested', () {
+    test('nested', () {
       expect(json.parse('{"obj": {"a": 1}}').getResult(), recursivelyMatches({'obj': {"a": 1}}));
     });
-    test('Invalid', () {
+    test('invalid', () {
       expect(json.parse('{').isFailure(), isTrue);
       expect(json.parse('{\'a\'').isFailure(), isTrue);
       expect(json.parse('{\'a\':').isFailure(), isTrue);
@@ -59,32 +59,32 @@ void main() {
     });
   });
 
-  group('Literals -', () {
-    test('Valid true', () {
+  group('literals', () {
+    test('valid true', () {
       expect(json.parse('true').getResult(), isTrue);
     });
-    test('Invalid true', () {
+    test('invalid true', () {
       expect(json.parse('tr').isFailure(), isTrue);
       expect(json.parse('trace').isFailure(), isTrue);
       expect(json.parse('truest').isFailure(), isTrue);
     });
-    test('Valid false', () {
+    test('valid false', () {
       expect(json.parse('false').getResult(), isFalse);
     });
-    test('Invalid false', () {
+    test('invalid false', () {
       expect(json.parse('fa').isFailure(), isTrue);
       expect(json.parse('falsely').isFailure(), isTrue);
       expect(json.parse('fabulous').isFailure(), isTrue);
     });
-    test('Valid null', () {
+    test('valid null', () {
       expect(json.parse('null').getResult(), isNull);
     });
-    test('Invalid null', () {
+    test('invalid null', () {
       expect(json.parse('nu').isFailure(), isTrue);
       expect(json.parse('nuclear').isFailure(), isTrue);
       expect(json.parse('nullified').isFailure(), isTrue);
     });
-    test('Valid integer', () {
+    test('valid integer', () {
       expect(json.parse('0').getResult(), equals(0));
       expect(json.parse('1').getResult(), equals(1));
       expect(json.parse('-1').getResult(), equals(-1));
@@ -93,11 +93,11 @@ void main() {
       expect(json.parse('1e2').getResult(), equals(100));
       expect(json.parse('1e+2').getResult(), equals(100));
     });
-    test('Invalid integer', () {
+    test('invalid integer', () {
       expect(json.parse('00').isFailure(), isTrue);
       expect(json.parse('01').isFailure(), isTrue);
     });
-    test('Valid float', () {
+    test('valid float', () {
       expect(json.parse('0.0').getResult(), equals(0.0));
       expect(json.parse('0.12').getResult(), equals(0.12));
       expect(json.parse('-0.12').getResult(), equals(-0.12));
@@ -106,16 +106,16 @@ void main() {
       expect(json.parse('1.2e-1').getResult(), equals(1.2e-1));
       expect(json.parse('1.2E-1').getResult(), equals(1.2e-1));
     });
-    test('Invalid float', () {
+    test('invalid float', () {
       expect(json.parse('.1').isFailure(), isTrue);
       expect(json.parse('0.1.1').isFailure(), isTrue);
     });
-    test('Plain string', () {
+    test('plain string', () {
       expect(json.parse('""').getResult(), equals(''));
       expect(json.parse('"foo"').getResult(), equals('foo'));
       expect(json.parse('"foo bar"').getResult(), equals('foo bar'));
     });
-    test('Escaped string', () {
+    test('escaped string', () {
       expect(json.parse(@'"\""').getResult(), equals('"'));
       expect(json.parse(@'"\\"').getResult(), equals('\\'));
       expect(json.parse(@'"\b"').getResult(), equals('\b'));
@@ -124,14 +124,14 @@ void main() {
       expect(json.parse(@'"\r"').getResult(), equals('\r'));
       expect(json.parse(@'"\t"').getResult(), equals('\t'));
     });
-    test('Invalid string', () {
+    test('invalid string', () {
       expect(json.parse('"').isFailure(), isTrue);
       expect(json.parse('"a').isFailure(), isTrue);
       expect(json.parse('"a\\\"').isFailure(), isTrue);
     });
   });
 
-  group('Browser -', () {
+  group('browser', () {
     test('Internet Explorer', () {
       var input = '{"recordset": null, "type": "change", "fromElement": null, "toElement": null, "altLeft": false, "keyCode": 0, "repeat": false, "reason": 0, "behaviorCookie": 0, "contentOverflow": false, "behaviorPart": 0, "dataTransfer": null, "ctrlKey": false, "shiftLeft": false, "dataFld": "", "qualifier": "", "wheelDelta": 0, "bookmarks": null, "button": 0, "srcFilter": null, "nextPage": "", "cancelBubble": false, "x": 89, "y": 502, "screenX": 231, "screenY": 1694, "srcUrn": "", "boundElements": {"length": 0}, "clientX": 89, "clientY": 502, "propertyName": "", "shiftKey": false, "ctrlLeft": false, "offsetX": 25, "offsetY": 2, "altKey": false}';
       expect(json.parse(input).isSuccess(), isTrue);

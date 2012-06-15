@@ -9,7 +9,7 @@
 #import('xml_tests.dart', prefix: 'xml');
 
 void main() {
-  group('PetitParser -', petitparser.main);
-  group('JSON -', json.main);
-  group('XML -', xml.main);
+  group('PetitParser', petitparser.main);
+  group('JSON', json.main);
+  group('XML', xml.main);
 }
