@@ -257,6 +257,41 @@ main() {
       expectFailure(parser, '');
     });
 
+    test('pattern() with simple', () {
+      Parser parser = pattern('abc');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectFailure(parser, 'd', message: '[abc] expected');
+      expectFailure(parser, '');
+    });
+    test('pattern() with range', () {
+      Parser parser = pattern('a-c');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectFailure(parser, 'd', message: '[a-c] expected');
+      expectFailure(parser, '');
+    });
+    test('pattern() with composed', () {
+      Parser parser = pattern('ac-df-');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'f', 'f');
+      expectSuccess(parser, '-', '-');
+      expectFailure(parser, 'b', message: '[ac-df-] expected');
+      expectFailure(parser, 'e', message: '[ac-df-] expected');
+      expectFailure(parser, 'g', message: '[ac-df-] expected');
+      expectFailure(parser, '');
+    });
+    test('pattern() with negation', () {
+      Parser parser = pattern('^a');
+      expectSuccess(parser, 'b', 'b');
+      expectFailure(parser, 'a', message: '[^a] expected');
+      expectFailure(parser, '');
+    });
+
     test('range()', () {
       Parser parser = range('e', 'o');
       expectSuccess(parser, 'e', 'e');
@@ -364,28 +399,7 @@ main() {
       expectFailure(parser, 'f');
       expectFailure(parser, 'Fo');
     });
-    test('Pattern with characters', () {
-      Parser parser = pattern('abc');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectFailure(parser, 'd');
-    });
-    test('Pattern with range of characters', () {
-      Parser parser = pattern('a-c');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectFailure(parser, 'd');
-    });
-    test('Pattern with negation', () {
-      Parser parser = pattern('^a-cd');
-      expectFailure(parser, 'a');
-      expectFailure(parser, 'b');
-      expectFailure(parser, 'c');
-      expectFailure(parser, 'd');
-      expectSuccess(parser, 'e', 'e');
-    });
+
   });
 
   group('Parsing -', () {

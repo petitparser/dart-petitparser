@@ -5,16 +5,16 @@ int _toCharCode(Dynamic element) {
   if (element is int) {
     return element;
   }
-  String string = element.toString();
-  if (string.length != 1) {
-    throw new IllegalArgumentException('$string is not a character');
+  String value = element.toString();
+  if (value.length != 1) {
+    throw new IllegalArgumentException('$value is not a character');
   }
-  return element.charCodeAt(0);
+  return value.charCodeAt(0);
 }
 
 /** Internal abstract parser class for character classes. */
 abstract class _CharacterParser extends Parser {
-  final String _message;
+  String _message;
   _CharacterParser(this._message);
   Result _parse(Context context) {
     final buffer = context.buffer;
@@ -38,6 +38,20 @@ class _NegatedCharacterParser extends _CharacterParser {
   Parser neg([String message]) => _parser;
 }
 
+/** Internal parser class for alternative character classes. */
+class _AlternativeCharacterParser extends _CharacterParser {
+  final List<_CharacterParser> _parsers;
+  _AlternativeCharacterParser(String message, this._parsers) : super(message);
+  bool _match(int value) {
+    for (final parser in _parsers) {
+      if (parser._match(value)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 /** Returns a parser that accepts a specific character only. */
 Parser char(Dynamic element, [String message]) {
   return new _CharParser(message != null ? message : '$element expected', _toCharCode(element));
@@ -47,28 +61,6 @@ class _CharParser extends _CharacterParser {
   final int _char;
   _CharParser(String message, this._char) : super(message);
   bool _match(int value) => _char === value;
-}
-
-/** Returns a parser that accepts any character in the range between [start] and [stop]. */
-Parser range(Dynamic start, Dynamic stop, [String message]) {
-  return new _RangeParser( message != null ? message : '$start..$stop expected', _toCharCode(start), _toCharCode(stop));
-}
-
-class _RangeParser extends _CharacterParser {
-  final int _start;
-  final int _stop;
-  _RangeParser(String message, this._start, this._stop) : super(message);
-  bool _match(int value) => _start <= value && value <= _stop;
-}
-
-/** Returns a parser that accepts any whitespace character. */
-Parser whitespace([String message]) {
-  return new _WhitespaceParser(message != null ? message : 'whitespace expected');
-}
-
-class _WhitespaceParser extends _CharacterParser {
-  _WhitespaceParser(String message) : super(message);
-  bool _match(int value) => value === 9 || value === 10 || value === 12 || value == 13 || value === 32;
 }
 
 /** Returns a parser that accepts any digit character. */
@@ -101,6 +93,41 @@ class _LowercaseParser extends _CharacterParser {
   bool _match(int value) => 97 <= value && value <= 122;
 }
 
+/** Returns a parser that accepts the given character class. */
+Parser pattern(String element, [String message]) {
+  if (_pattern == null) {
+    final single = any().map((each) {
+      return char(each);
+    });
+    final multiple = any().seq(char('-')).seq(any()).map((each) {
+      return range(each[0], each[2]);
+    });
+    final positive = multiple.or(single).plus().map((each) {
+      return each.length == 1 ? each[0] : new _AlternativeCharacterParser(null, each);
+    });
+    _pattern = char('^').optional().seq(positive).map((each) {
+      return each[0] == null ? each[1] : each[1].neg();
+    });
+  }
+  _CharacterParser parser = _pattern.parse(element).getResult();
+  parser._message = message != null ? message : '[$element] expected';
+  return parser;
+}
+
+Parser _pattern;
+
+/** Returns a parser that accepts any character in the range between [start] and [stop]. */
+Parser range(Dynamic start, Dynamic stop, [String message]) {
+  return new _RangeParser( message != null ? message : '$start..$stop expected', _toCharCode(start), _toCharCode(stop));
+}
+
+class _RangeParser extends _CharacterParser {
+  final int _start;
+  final int _stop;
+  _RangeParser(String message, this._start, this._stop) : super(message);
+  bool _match(int value) => _start <= value && value <= _stop;
+}
+
 /** Returns a parser that accepts any uppercase character. */
 Parser uppercase([String message]) {
   return new _UppercaseParser(message != null ? message : 'uppercase letter expected');
@@ -109,6 +136,16 @@ Parser uppercase([String message]) {
 class _UppercaseParser extends _CharacterParser {
   _UppercaseParser(String message) : super(message);
   bool _match(int value) => 65 <= value && value <= 90;
+}
+
+/** Returns a parser that accepts any whitespace character. */
+Parser whitespace([String message]) {
+  return new _WhitespaceParser(message != null ? message : 'whitespace expected');
+}
+
+class _WhitespaceParser extends _CharacterParser {
+  _WhitespaceParser(String message) : super(message);
+  bool _match(int value) => value === 9 || value === 10 || value === 12 || value == 13 || value === 32;
 }
 
 /** Returns a parser that accepts any word character. */

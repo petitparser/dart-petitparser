@@ -445,12 +445,6 @@ Parser stringIgnoreCase(String element, [String message]) {
     message != null ? message : '$element expected');
 }
 
-Parser pattern(String element, [String message]) {
-  final matcher = new RegExp('[$element]');
-  return new PredicateParser(1, matcher.hasMatch,
-    message != null ? message : '[$element] expected');
-}
-
 /**
  * A parser for a single literal satisfying a predicate.
  */
