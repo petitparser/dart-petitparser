@@ -65,6 +65,27 @@ class _AlternativeCharacterParser extends _CharacterParser {
   }
 }
 
+/** Internal parser class that does a binary search. */
+class _BinarySearchCharacterParser extends _CharacterParser {
+  final List<int> _codes;
+  _BinarySearchCharacterParser(String message, this._codes) : super(message);
+  bool _match(int value) {
+    int lo = 0;
+    int hi = _codes.length - 1;
+    while (lo <= hi) {
+      int index = (lo + hi) ~/ 2;
+      if (value < _codes[index]) {
+        hi = index - 1;
+      } else if (value > _codes[index]) {
+        lo = index + 1;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 /** Returns a parser that accepts a specific character only. */
 Parser char(Dynamic element, [String message]) {
   return new _CharParser(message != null ? message : '$element expected', _toCharCode(element));
@@ -158,7 +179,9 @@ Parser whitespace([String message]) {
 
 class _WhitespaceParser extends _CharacterParser {
   _WhitespaceParser(String message) : super(message);
-  bool _match(int value) => value === 9 || value === 10 || value === 12 || value == 13 || value === 32;
+  bool _match(int value) => (9 <= value && value <= 13) || (value === 32) || (value === 160) 
+      || (value === 5760) || (value === 6158) || (8192 <= value && value <= 8202) || (value === 8232)
+      || (value === 8233) || (value === 8239) || (value === 8287) || (value === 12288);
 }
 
 /** Returns a parser that accepts any word character. */
@@ -168,5 +191,5 @@ Parser word([String message]) {
 
 class _WordParser extends _CharacterParser {
   _WordParser(String message) : super(message);
-  bool _match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122) || (48 <= value && value <= 57);
+  bool _match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122) || (48 <= value && value <= 57) || (value === 95);
 }

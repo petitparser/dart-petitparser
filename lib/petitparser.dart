@@ -2,8 +2,10 @@
 
 #library('petitparser');
 
+#source('characters.dart');
+#source('combinators.dart');
+#source('composite.dart');
 #source('context.dart');
 #source('parsers.dart');
-#source('characters.dart');
-#source('composite.dart');
 #source('reflection.dart');
+#source('actions.dart');

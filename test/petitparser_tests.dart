@@ -10,7 +10,7 @@ void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position
   Result result = parser.parse(input);
   expect(result.isSuccess(), isTrue);
   expect(result.isFailure(), isFalse);
-  expect(result.getResult(), recursivelyMatches(expected));
+  expect(result.getResult(), expected is Matcher ? expected : recursivelyMatches(expected));
   expect(result.position, equals(position != null ? position : input.length));
 }
 
@@ -72,6 +72,17 @@ main() {
       expectSuccess(parser, '12', '12');
       expectSuccess(parser, '123', '123');
       expectSuccess(parser, '1234', '1234');
+    });
+    test('token()', () {
+      Parser parser = digit().plus().token().trim();
+      expectFailure(parser, '');
+      expectFailure(parser, 'a');
+      Token token = parser.parse('  123 ').getResult();
+      expect(token.length, equals(3));
+      expect(token.start, equals(2));
+      expect(token.stop, equals(5));
+      expect(token.value, equals('123'));
+      expect(token.toString(), equals('Token[start: 2, stop: 5, value: 123]'));
     });
     test('action()', () {
       Parser parser = digit().map((String each) {
