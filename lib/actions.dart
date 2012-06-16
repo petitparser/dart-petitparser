@@ -105,11 +105,12 @@ class Token {
       && _start === other._start
       && _stop === other._stop;
 
-  Dynamic get buffer() => _buffer;
   int get start() => _start;
   int get stop() => _stop;
   int get length() => _stop - _start;
-  int get value() => _buffer.substring(_start, _stop);
+
+  Dynamic get buffer() => _buffer;
+  Dynamic get value() => _buffer.substring(_start, _stop);
 
   /** Returns the line number of this token. */
   int get line() {
