@@ -27,6 +27,7 @@ abstract class _CharacterParser extends Parser {
     return context.failure(_message);
   }
   abstract bool _match(int value);
+  Parser or(Parser other) => other is! _CharacterParser ? super.or(other) : new _AlternativeCharacterParser([this, other]);
   Parser neg([String message]) => new _NegatedCharacterParser(message != null ? message : 'no $_message', this);
 }
 
@@ -41,7 +42,9 @@ class _NegatedCharacterParser extends _CharacterParser {
 /** Internal parser class for alternative character classes. */
 class _AlternativeCharacterParser extends _CharacterParser {
   final List<_CharacterParser> _parsers;
-  _AlternativeCharacterParser(String message, this._parsers) : super(message);
+  _AlternativeCharacterParser(parsers)
+      : super(parsers[0]._message),
+        _parsers = parsers;
   bool _match(int value) {
     for (final parser in _parsers) {
       if (parser._match(value)) {
@@ -49,6 +52,16 @@ class _AlternativeCharacterParser extends _CharacterParser {
       }
     }
     return false;
+  }
+  Parser or(Parser other) {
+    if (other is _CharacterParser) {
+      var list = new List();
+      list.addAll(_parsers);
+      list.add(other);
+      return new _AlternativeCharacterParser(list);
+    } else {
+      return super.or(other);
+    }
   }
 }
 
@@ -103,7 +116,7 @@ Parser pattern(String element, [String message]) {
       return range(each[0], each[2]);
     });
     final positive = multiple.or(single).plus().map((each) {
-      return each.length == 1 ? each[0] : new _AlternativeCharacterParser(null, each);
+      return each.length == 1 ? each[0] : new _AlternativeCharacterParser(each);
     });
     _pattern = char('^').optional().seq(positive).map((each) {
       return each[0] == null ? each[1] : each[1].neg();
