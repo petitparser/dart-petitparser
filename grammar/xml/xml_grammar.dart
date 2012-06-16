@@ -11,37 +11,37 @@ class XmlGrammar extends CompositeParser {
   static final String NAME_CHARS = '-.0-9\u00B7\u0300-\u036F\u203F-\u2040$NAME_START_CHARS';
 
   void initialize() {
-    define('start', ref('document').end());
+    def('start', ref('document').end());
 
-    define('attribute', ref('qualified')
+    def('attribute', ref('qualified')
       .seq(ref('whitespace').optional())
       .seq(char('='))
       .seq(ref('whitespace').optional())
       .seq(ref('attributeValue'))
       .map((list) => [list[0], list[4]]));
-    define('attributeValue', ref('attributeValueDouble')
+    def('attributeValue', ref('attributeValueDouble')
       .or(ref('attributeValueSingle'))
       .map((list) => list[1]));
-    define('attributeValueDouble', char('"')
+    def('attributeValueDouble', char('"')
       .seq(char('"').neg().star().flatten())
       .seq(char('"')));
-    define('attributeValueSingle', char("'")
+    def('attributeValueSingle', char("'")
       .seq(char("'").neg().star().flatten())
       .seq(char("'")));
-    define('attributes', ref('whitespace')
+    def('attributes', ref('whitespace')
       .seq(ref('attribute'))
       .map((list) => list[1])
       .star());
-    define('comment', string('<!--')
+    def('comment', string('<!--')
       .seq(string('-->').neg().star().flatten())
       .seq(string('-->'))
       .map((list) => list[1]));
-    define('content', ref('characterData')
+    def('content', ref('characterData')
       .or(ref('element'))
       .or(ref('processing'))
       .or(ref('comment'))
       .star());
-    define('doctype', string('<!DOCTYPE')
+    def('doctype', string('<!DOCTYPE')
       .seq(ref('whitespace').optional())
       .seq(char('[').neg().star()
         .seq(char('['))
@@ -51,14 +51,14 @@ class XmlGrammar extends CompositeParser {
       .seq(ref('whitespace').optional())
       .seq(char('>'))
       .map((list) => list[2]));
-    define('document', ref('processing').optional()
+    def('document', ref('processing').optional()
       .seq(ref('misc'))
       .seq(ref('doctype').optional())
       .seq(ref('misc'))
       .seq(ref('element'))
       .seq(ref('misc'))
       .map((list) => [list[0], list[2], list[4]].filter((each) => each != null)));
-    define('element', char('<')
+    def('element', char('<')
       .seq(ref('qualified'))
       .seq(ref('attributes'))
       .seq(ref('whitespace').optional())
@@ -80,7 +80,7 @@ class XmlGrammar extends CompositeParser {
           }
         }
       }));
-    define('processing', string('<?')
+    def('processing', string('<?')
       .seq(ref('nameToken'))
       .seq(ref('whitespace')
         .seq(string('?>').neg().star())
@@ -88,20 +88,20 @@ class XmlGrammar extends CompositeParser {
         .flatten())
       .seq(string('?>'))
       .map((list) => [list[1], list[2]]));
-    define('qualified', ref('nameToken'));
+    def('qualified', ref('nameToken'));
 
-    define('characterData', char('<').neg().plus().flatten());
-    define('misc', ref('whitespace')
+    def('characterData', char('<').neg().plus().flatten());
+    def('misc', ref('whitespace')
       .or(ref('comment'))
       .or(ref('processing'))
       .star());
-    define('whitespace', whitespace().plus());
+    def('whitespace', whitespace().plus());
 
-    define('nameToken', ref('nameStartChar')
+    def('nameToken', ref('nameStartChar')
       .seq(ref('nameStartChar').star())
       .flatten());
-    define('nameStartChar', pattern(NAME_START_CHARS));
-    define('nameChar', pattern(NAME_CHARS));
+    def('nameStartChar', pattern(NAME_START_CHARS));
+    def('nameChar', pattern(NAME_CHARS));
   }
 
 }

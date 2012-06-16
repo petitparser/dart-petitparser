@@ -6,25 +6,25 @@
 class JsonGrammar extends CompositeParser {
 
   void initialize() {
-    define('start', ref('value').end());
+    def('start', ref('value').end());
 
-    define('array',
+    def('array',
       char('[').trim()
         .seq(ref('elements').optional())
         .seq(char(']').trim()));
-    define('elements',
+    def('elements',
       ref('value').separatedBy(char(',').trim()));
-    define('members',
+    def('members',
       ref('pair').separatedBy(char(',').trim()));
-    define('object',
+    def('object',
       char('{').trim()
         .seq(ref('members').optional())
         .seq(char('}').trim()));
-    define('pair',
+    def('pair',
       ref('stringToken')
         .seq(char(':').trim())
         .seq(ref('value')));
-    define('value',
+    def('value',
       ref('stringToken')
         .or(ref('numberToken'))
         .or(ref('object'))
@@ -33,28 +33,28 @@ class JsonGrammar extends CompositeParser {
         .or(ref('falseToken'))
         .or(ref('nullToken')));
 
-    define('trueToken', string('true').flatten().trim());
-    define('falseToken', string('false').flatten().trim());
-    define('nullToken', string('null').flatten().trim());
-    define('stringToken', ref('stringPrimitive').flatten().trim());
-    define('numberToken', ref('numberPrimitive').flatten().trim());
+    def('trueToken', string('true').flatten().trim());
+    def('falseToken', string('false').flatten().trim());
+    def('nullToken', string('null').flatten().trim());
+    def('stringToken', ref('stringPrimitive').flatten().trim());
+    def('numberToken', ref('numberPrimitive').flatten().trim());
 
-    define('characterPrimitive',
+    def('characterPrimitive',
       ref('characterEscape')
         .or(ref('characterOctal'))
         .or(ref('characterNormal')));
-    define('characterEscape',
+    def('characterEscape',
       char('\\').seq(anyIn(new List.from(ESCAPE_TABLE.getKeys()))));
-    define('characterNormal',
+    def('characterNormal',
       anyIn('"\\').neg());
-    define('characterOctal',
+    def('characterOctal',
       string('\\u').seq(pattern("0-9A-Fa-f").times(4).flatten()));
-    define('numberPrimitive',
+    def('numberPrimitive',
       char('-').optional()
         .seq(char('0').or(digit().plus()))
         .seq(char('.').seq(digit().plus()).optional())
         .seq(anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional()));
-    define('stringPrimitive',
+    def('stringPrimitive',
       char('"')
         .seq(ref('characterPrimitive').star())
         .seq(char('"')));

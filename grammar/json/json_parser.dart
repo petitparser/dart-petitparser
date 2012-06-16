@@ -9,8 +9,8 @@ class JsonParser extends JsonGrammar {
     super.initialize();
 
     action('array', (each) => each[1] != null ? each[1] : new List());
-    redefine('elements', (parser) => parser.withoutSeparators());
-    redefine('members', (parser) => parser.withoutSeparators());
+    redef('elements', (parser) => parser.withoutSeparators());
+    redef('members', (parser) => parser.withoutSeparators());
     action('object', (each) {
       var result = new LinkedHashMap();
       if (each[1] != null) {
@@ -24,7 +24,7 @@ class JsonParser extends JsonGrammar {
     action('trueToken', (each) => true);
     action('falseToken', (each) => false);
     action('nullToken', (each) => null);
-    redefine('stringToken', (parser) => ref('stringPrimitive').trim());
+    redef('stringToken', (parser) => ref('stringPrimitive').trim());
     action('numberToken', (each) {
       var floating = Math.parseDouble(each);
       var integral = floating.toInt();
