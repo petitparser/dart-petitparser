@@ -50,7 +50,7 @@ class TrimmingParser extends DelegateParser {
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (_trimmer == source) {
+    if (_trimmer === source) {
       _trimmer = target;
     }
   }
@@ -99,13 +99,13 @@ class Token {
   final int _stop;
 
   Token(this._buffer, this._start, this._stop);
-  Token.on(String buffer): _buffer = buffer, _start = 0, _stop = buffer.length;
 
   bool operator == (Token other) => other is Token
       && _buffer === other._buffer
       && _start === other._start
       && _stop === other._stop;
 
+  Dynamic get buffer() => _buffer;
   int get start() => _start;
   int get stop() => _stop;
   int get length() => _stop - _start;
@@ -114,15 +114,11 @@ class Token {
   /** Returns the line number of this token. */
   int get line() {
     int line = 1;
-    try {
-      getLinefeedParser().token().matchesSkipping((Token token) {
-        if (start <= token.start) {
-          throw new NonLocalReturn(line);
-        }
-        line++;
-      });
-    } catch (NonLocalReturn e) {
-      return e.value();
+    for (Token each in getLinefeedParser().token().matchesSkipping(buffer)) {
+      if (start < each.stop) {
+        return line;
+      }
+      line++;
     }
     return line;
   }
@@ -130,26 +126,21 @@ class Token {
   /** Returns the column number of this token. */
   int get column() {
     int position = 0;
-    try {
-      getLinefeedParser().token().matchesSkipping((Token token) {
-        if (start <= token.start) {
-          throw new NonLocalReturn(start - position);
-        }
-        position = token.start;
-      });
-    } catch (NonLocalReturn e) {
-      return e.value();
+    for (Token each in getLinefeedParser().token().matchesSkipping(buffer)) {
+      if (start < each.stop) {
+        return start - position + 1;
+      }
+      position = each.stop;
     }
-    return start - position;
+    return start - position + 1;
   }
 
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
   static Parser LINEFEED_PARSER;
-
   static Parser getLinefeedParser() {
-    if (LINEFEED_PARSER == null) {
-      LINEFEED_PARSER = char('\n').or(char('\r').seq(char('\f').optional()));
+    if (LINEFEED_PARSER === null) {
+      LINEFEED_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
     }
     return LINEFEED_PARSER;
   }

@@ -84,6 +84,16 @@ main() {
       expect(token.value, equals('123'));
       expect(token.toString(), equals('Token[start: 2, stop: 5, value: 123]'));
     });
+    test('token() line', () {
+      Parser parser = any().token().star().map((List list) => list.map((Token token) => token.line));
+      expect(parser.parse('1\r12\r\n123\n1234').getResult(),
+        recursivelyMatches([1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]));
+    });
+    test('token() column', () {
+      Parser parser = any().token().star().map((list) => list.map((token) => token.column));
+      expect(parser.parse('1\r12\r\n123\n1234').getResult(),
+        recursivelyMatches([1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]));
+    });
     test('action()', () {
       Parser parser = digit().map((String each) {
         return each.charCodeAt(0) - '0'.charCodeAt(0);

@@ -35,7 +35,7 @@ class ParserIterator implements Iterator<Parser> {
     }
     var parser = _todo.removeLast();
     _done.add(parser);
-    _todo.addAll(parser.children.filter((each) => _done.indexOf(each) == -1));
+    _todo.addAll(parser.children.filter((each) => _done.indexOf(each) === -1));
     return parser;
   }
 
