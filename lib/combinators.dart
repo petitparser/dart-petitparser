@@ -27,7 +27,7 @@ class ChoiceParser extends ListParser {
   ChoiceParser(_parsers) : super(_parsers);
 
   Result _parse(Context context) {
-    var result = context.failure('Empty choice');
+    var result;
     for (var parser in _parsers) {
       result = parser._parse(context);
       if (result.isSuccess()) {
@@ -149,13 +149,13 @@ class SequenceParser extends ListParser {
 
   Result _parse(Context context) {
     var current = context;
-    var elements = new List<Dynamic>();
-    for (var parser in _parsers) {
-      var result = parser._parse(current);
+    var elements = new List(_parsers.length);
+    for (var i = 0; i < _parsers.length; i++) {
+      var result = _parsers[i]._parse(current);
       if (result.isFailure()) {
         return result;
       }
-      elements.add(result.getResult());
+      elements[i] = result.getResult();
       current = result;
     }
     return current.success(elements);
