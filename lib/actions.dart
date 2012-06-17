@@ -1,12 +1,15 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+/** Function interface for parse actions. */
+typedef Dynamic Action(Dynamic argument);
+
 /**
  * A parser that performs a transformation with a given function on the
  * successful parse result of the delegate.
  */
 class ActionParser extends DelegateParser {
 
-  final Function _function;
+  final Action _function;
 
   ActionParser(parser, this._function) : super(parser);
 
@@ -98,7 +101,7 @@ class Token {
   final int _start;
   final int _stop;
 
-  Token(this._buffer, this._start, this._stop);
+  const Token(this._buffer, this._start, this._stop);
 
   bool operator == (Token other) => other is Token
       && _buffer === other._buffer
@@ -145,11 +148,4 @@ class Token {
     }
     return LINEFEED_PARSER;
   }
-}
-
-/** Non local return. */
-class NonLocalReturn<T> implements Exception {
-  final T _value;
-  NonLocalReturn(this._value);
-  T get value() => _value;
 }
