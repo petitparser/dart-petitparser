@@ -55,8 +55,7 @@ class _AlternativeCharacterParser extends _CharacterParser {
   }
   Parser or(Parser other) {
     if (other is _CharacterParser) {
-      var list = new List();
-      list.addAll(_parsers);
+      var list = new List.from(_parsers);
       list.add(other);
       return new _AlternativeCharacterParser(list);
     } else {
@@ -127,7 +126,7 @@ class _LowercaseParser extends _CharacterParser {
   bool _match(int value) => 97 <= value && value <= 122;
 }
 
-/** Returns a parser that accepts the given character class. */
+/** Returns a parser that accepts the given character class pattern. */
 Parser pattern(String element, [String message]) {
   if (_pattern == null) {
     final single = any().map((each) {
