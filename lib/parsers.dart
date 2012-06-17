@@ -22,14 +22,14 @@ abstract class Parser {
   }
 
   /** Returns a list of all successful overlapping parses of the input. */
-  List<Dynamic> matches(Dynamic input) {
+  Iterable matches(Dynamic input) {
     var list = new List();
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
   /** Returns a list of all successful non-overlapping parses of the input. */
-  List<Dynamic> matchesSkipping(Dynamic input) {
+  Iterable matchesSkipping(Dynamic input) {
     var list = new List();
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;
