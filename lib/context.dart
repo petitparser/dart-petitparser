@@ -8,7 +8,7 @@ class Context {
   final Dynamic _buffer;
   final int _position;
 
-  Context(this._buffer, this._position);
+  const Context(this._buffer, this._position);
 
   /** The buffer we are working on. */
   Dynamic get buffer() => _buffer;
@@ -42,7 +42,7 @@ class Context {
  */
 class Result extends Context {
 
-  Result(buffer, position) : super(buffer, position);
+  const Result(buffer, position) : super(buffer, position);
 
   /** Returns the parse result of the current context. */
   abstract Dynamic getResult();
@@ -59,7 +59,7 @@ class Success extends Result {
 
   final Dynamic _result;
 
-  Success(buffer, position, this._result) : super(buffer, position);
+  const Success(buffer, position, this._result) : super(buffer, position);
 
   bool isSuccess() => true;
 
@@ -77,7 +77,7 @@ class Failure extends Result {
 
   final String _message;
 
-  Failure(buffer, position, this._message) : super(buffer, position);
+  const Failure(buffer, position, this._message) : super(buffer, position);
 
   bool isFailure() => true;
 
