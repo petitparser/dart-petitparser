@@ -11,7 +11,6 @@ Tasks
 -----
 
 * Get rid of the global functions creating `PredicateParser` instances.
-* Investigate if working on character codes than on sub-strings would improve performance.
 * Use constructor initializiers in `PredicateParser` as soon as Dart allows functions in constructor initializers.
 * Use #import('dart:unittest') as soon as Dart officially blesses the testing framework.
 
