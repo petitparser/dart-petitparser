@@ -118,7 +118,7 @@ class Token {
   /** Returns the line number of this token. */
   int get line() {
     int line = 1;
-    for (Token each in getLinefeedParser().token().matchesSkipping(buffer)) {
+    for (Token each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return line;
       }
@@ -130,7 +130,7 @@ class Token {
   /** Returns the column number of this token. */
   int get column() {
     int position = 0;
-    for (Token each in getLinefeedParser().token().matchesSkipping(buffer)) {
+    for (Token each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return start - position + 1;
       }
@@ -141,11 +141,11 @@ class Token {
 
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
-  static Parser LINEFEED_PARSER;
-  static Parser getLinefeedParser() {
-    if (LINEFEED_PARSER === null) {
-      LINEFEED_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
+  static Parser NEWLINE_PARSER;
+  static Parser newlineParser() {
+    if (NEWLINE_PARSER === null) {
+      NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
     }
-    return LINEFEED_PARSER;
+    return NEWLINE_PARSER;
   }
 }
