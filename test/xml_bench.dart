@@ -134,6 +134,8 @@ void main() {
      parser.parse(input).getResult();
    }
    int stop = Clock.now();
+
+   print('${new List.from(new ParserIterable(parser)).length} parsers');
    print('${(stop - start) / Clock.frequency()}s');
 
 }
