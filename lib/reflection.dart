@@ -46,32 +46,33 @@ class Transformations {
 
   /** Pluggable transformation starting at [root]. */
   static Parser transform(Parser root, Parser function(Parser parser)) {
-    var mapping = new Map();
-    for (var parser in new ParserIterable(root)) {
-      // TODO(renggli): need to copy parser, but how?
-      mapping[parser] = function(parser);
-    }
-    bool changed;
-    root = mapping[root];
+    var sources, targets;
     do {
-      changed = false;
-      for (var parent in new ParserIterable(root)) {
-        for (var oldParser in parent.children) {
-          var newParser = mapping[oldParser];
-          if (newParser != null) {
-            parent.replace(oldParser, newParser);
-            changed = true;
+      sources = new List(); targets = new List();
+      var parsers = new List.from(new ParserIterable(root));
+      parsers.forEach((source) {
+        var target = function(source);
+        if (target != null && source !== target) {
+          if (source === root) {
+            root = target;
           }
+          sources.add(source);
+          targets.add(target);
         }
-      }
-    } while (changed);
+      });
+      parsers.forEach((parser) {
+        for (var i = 0; i < sources.length; i++) {
+          parser.replace(sources[i], targets[i]);
+        }
+      });
+    } while (!sources.isEmpty());
     return root;
   }
 
   /** Removes all wrappers starting at [root]. */
   static Parser removeWrappers(Parser root) {
     // TODO(renggli): replace with exact class check
-    transform(root, (each) => each is WrapperParser ? each.children[0] : each);
+    return transform(root, (each) => each is WrapperParser ? each.children[0] : each);
   }
 
 }

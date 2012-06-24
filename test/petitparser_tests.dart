@@ -527,5 +527,49 @@ main() {
       expectSuccess(JAVADOC, '/** * * */', '/** * * */');
     });
   });
+  group('reflection', () {
+    test('iterator single', () {
+      var parser1 = lowercase();
+      var parsers = new List.from(new ParserIterable(parser1));
+      expect(parsers, recursivelyMatches([parser1]));
+    });
+    test('iterator nested', () {
+      var parser3 = lowercase();
+      var parser2 = parser3.star();
+      var parser1 = parser2.flatten();
+      var parsers = new List.from(new ParserIterable(parser1));
+      expect(parsers, recursivelyMatches([parser1, parser2, parser3]));
+    });
+    test('iterator branched', () {
+      var parser3 = lowercase();
+      var parser2 = uppercase();
+      var parser1 = parser2.seq(parser3);
+      var parsers = new List.from(new ParserIterable(parser1));
+      expect(parsers, recursivelyMatches([parser1, parser3, parser2]));
+    });
+    test('iterator looping', () {
+      var parser1 = new WrapperParser(null);
+      var parser2 = new WrapperParser(null);
+      var parser3 = new WrapperParser(null);
+      parser1.replace(null, parser2);
+      parser2.replace(null, parser3);
+      parser3.replace(null, parser1);
+      var parsers = new List.from(new ParserIterable(parser1));
+      expect(parsers, recursivelyMatches([parser1, parser2, parser3]));
+    });
+    test('iterator over end', () {
+      var parser1 = lowercase();
+      var iterator = new ParserIterator(parser1);
+      expect(iterator.next(), equals(parser1));
+      expect(iterator.hasNext(), isFalse);
+      expect(() => iterator.next(), throwsException);
+    });
+    test('remove wrappers', () {
+      var parser2 = lowercase();
+      var parser1 = parser2.wrapper();
+      var root = Transformations.removeWrappers(parser1);
+      expect(root, equals(parser2));
+    });
+  });
 
 }
