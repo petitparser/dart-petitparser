@@ -12,7 +12,7 @@
 abstract class CompositeParser extends DelegateParser {
 
   final Map<String, Parser> _defined;
-  final Map<String, DelegateParser> _undefined;
+  final Map<String, WrapperParser> _undefined;
 
   CompositeParser()
       : super(null),
@@ -20,14 +20,13 @@ abstract class CompositeParser extends DelegateParser {
         _undefined = new Map() {
     initialize();
     _delegate = ref('start');
-    _undefined.forEach((String name, DelegateParser parser) {
+    _undefined.forEach((String name, WrapperParser parser) {
       if (!_defined.containsKey(name)) {
         throw new Exception('Missing production: $name');
       }
       parser._delegate = _defined[name];
     });
-    // TODO(renggli): remove the delegates as soon as dart allows object copying
-    replace(children[0], ref('start'));
+    replace(children[0], Transformations.removeWrappers(ref('start')));
   }
 
   /** Initializes the composite grammar. */
