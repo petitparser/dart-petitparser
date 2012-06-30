@@ -11,7 +11,7 @@ void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).getResult();
   assertTreeInvariants(tree);
   XmlNode copy = parser.parse(tree.toString()).getResult();
-  expect(tree.toString(), equals(copy.toString()));
+  expect(tree.toString(), copy.toString());
 }
 
 void assertTreeInvariants(XmlNode xml) {
@@ -88,7 +88,7 @@ void assertQualifiedInvariant(XmlName name) {
   if (name.getPrefix() != null) {
     expect(name.getQualified(), startsWith(name.getPrefix()));
   }
-  expect(name.getQualified(), equals(name.toString()));
+  expect(name.getQualified(), name.toString());
 }
 
 void assertAttributeInvariant(XmlNode xml) {

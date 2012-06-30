@@ -10,17 +10,17 @@ void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position
   Result result = parser.parse(input);
   expect(result.isSuccess(), isTrue);
   expect(result.isFailure(), isFalse);
-  expect(result.getResult(), expected is Matcher ? expected : recursivelyMatches(expected));
-  expect(result.position, equals(position != null ? position : input.length));
+  expect(result.getResult(), expected);
+  expect(result.position, position != null ? position : input.length);
 }
 
 void expectFailure(Parser parser, Dynamic input, [int position = 0, String message]) {
   Result result = parser.parse(input);
   expect(result.isFailure(), isTrue);
   expect(result.isSuccess(), isFalse);
-  expect(result.position, equals(position));
+  expect(result.position, position);
   if (message != null) {
-    expect(result.getMessage(), equals(message));
+    expect(result.getMessage(), message);
   }
 }
 
@@ -78,21 +78,21 @@ main() {
       expectFailure(parser, '');
       expectFailure(parser, 'a');
       Token token = parser.parse('  123 ').getResult();
-      expect(token.length, equals(3));
-      expect(token.start, equals(2));
-      expect(token.stop, equals(5));
-      expect(token.value, equals('123'));
-      expect(token.toString(), equals('Token[start: 2, stop: 5, value: 123]'));
+      expect(token.length, 3);
+      expect(token.start, 2);
+      expect(token.stop, 5);
+      expect(token.value, '123');
+      expect(token.toString(), 'Token[start: 2, stop: 5, value: 123]');
     });
     test('token() line', () {
       Parser parser = any().token().star().map((List list) => list.map((Token token) => token.line));
       expect(parser.parse('1\r12\r\n123\n1234').getResult(),
-        recursivelyMatches([1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]));
+             [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
     test('token() column', () {
       Parser parser = any().token().star().map((list) => list.map((token) => token.column));
       expect(parser.parse('1\r12\r\n123\n1234').getResult(),
-        recursivelyMatches([1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]));
+             [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
     test('action()', () {
       Parser parser = digit().map((String each) {
@@ -423,11 +423,11 @@ main() {
     });
     test('matches()', () {
       Parser parser = digit().seq(digit()).flatten();
-      expect(parser.matches('a123b45'), recursivelyMatches(['12', '23', '45']));
+      expect(parser.matches('a123b45'), ['12', '23', '45']);
     });
     test('matchesSkipping()', () {
       Parser parser = digit().seq(digit()).flatten();
-      expect(parser.matchesSkipping('a123b45'), recursivelyMatches(['12', '45']));
+      expect(parser.matchesSkipping('a123b45'), ['12', '45']);
     });
   });
   group('examples', () {
@@ -436,7 +436,7 @@ main() {
         .seq(char('.').seq(digit().plus()).optional()).flatten();
     final Parser STRING = char('"')
         .seq(char('"').neg().star()).seq(char('"')).flatten();
-    final Parser RETURN = string('return')
+    final Parser KEYWORD = string('return')
         .seq(whitespace().plus().flatten()).seq(IDENTIFIER.or(NUMBER).or(STRING))
         .map((list) => list.last());
     final Parser JAVADOC = string('/**')
@@ -506,21 +506,21 @@ main() {
       expectFailure(STRING, 'ab"', 0, '" expected');
     });
     test('return statement', () {
-      expectSuccess(RETURN, 'return f', 'f');
-      expectSuccess(RETURN, 'return  f', 'f');
-      expectSuccess(RETURN, 'return foo', 'foo');
-      expectSuccess(RETURN, 'return    foo', 'foo');
-      expectSuccess(RETURN, 'return 1', '1');
-      expectSuccess(RETURN, 'return  1', '1');
-      expectSuccess(RETURN, 'return -2.3', '-2.3');
-      expectSuccess(RETURN, 'return    -2.3', '-2.3');
-      expectSuccess(RETURN, 'return "a"', '"a"');
-      expectSuccess(RETURN, 'return  "a"', '"a"');
+      expectSuccess(KEYWORD, 'return f', 'f');
+      expectSuccess(KEYWORD, 'return  f', 'f');
+      expectSuccess(KEYWORD, 'return foo', 'foo');
+      expectSuccess(KEYWORD, 'return    foo', 'foo');
+      expectSuccess(KEYWORD, 'return 1', '1');
+      expectSuccess(KEYWORD, 'return  1', '1');
+      expectSuccess(KEYWORD, 'return -2.3', '-2.3');
+      expectSuccess(KEYWORD, 'return    -2.3', '-2.3');
+      expectSuccess(KEYWORD, 'return "a"', '"a"');
+      expectSuccess(KEYWORD, 'return  "a"', '"a"');
     });
     test('invalid statement', () {
-      expectFailure(RETURN, 'retur f', 0, 'return expected');
-      expectFailure(RETURN, 'return1', 6, 'whitespace expected');
-      expectFailure(RETURN, 'return  _', 8, '" expected');
+      expectFailure(KEYWORD, 'retur f', 0, 'return expected');
+      expectFailure(KEYWORD, 'return1', 6, 'whitespace expected');
+      expectFailure(KEYWORD, 'return  _', 8, '" expected');
     });
     test('javadoc', () {
       expectSuccess(JAVADOC, '/** foo */', '/** foo */');
@@ -531,21 +531,21 @@ main() {
     test('iterator single', () {
       var parser1 = lowercase();
       var parsers = new List.from(new ParserIterable(parser1));
-      expect(parsers, recursivelyMatches([parser1]));
+      expect(parsers, [parser1]);
     });
     test('iterator nested', () {
       var parser3 = lowercase();
       var parser2 = parser3.star();
       var parser1 = parser2.flatten();
       var parsers = new List.from(new ParserIterable(parser1));
-      expect(parsers, recursivelyMatches([parser1, parser2, parser3]));
+      expect(parsers, [parser1, parser2, parser3]);
     });
     test('iterator branched', () {
       var parser3 = lowercase();
       var parser2 = uppercase();
       var parser1 = parser2.seq(parser3);
       var parsers = new List.from(new ParserIterable(parser1));
-      expect(parsers, recursivelyMatches([parser1, parser3, parser2]));
+      expect(parsers, [parser1, parser3, parser2]);
     });
     test('iterator looping', () {
       var parser1 = new WrapperParser(null);
@@ -555,12 +555,12 @@ main() {
       parser2.replace(null, parser3);
       parser3.replace(null, parser1);
       var parsers = new List.from(new ParserIterable(parser1));
-      expect(parsers, recursivelyMatches([parser1, parser2, parser3]));
+      expect(parsers, [parser1, parser2, parser3]);
     });
     test('iterator over end', () {
       var parser1 = lowercase();
       var iterator = new ParserIterator(parser1);
-      expect(iterator.next(), equals(parser1));
+      expect(iterator.next(), parser1);
       expect(iterator.hasNext(), isFalse);
       expect(() => iterator.next(), throwsException);
     });
@@ -568,7 +568,7 @@ main() {
       var parser2 = lowercase();
       var parser1 = parser2.wrapper();
       var root = Transformations.removeWrappers(parser1);
-      expect(root, equals(parser2));
+      expect(root, parser2);
     });
   });
 
