@@ -1,7 +1,5 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-// This is not working yet, please ignore or see README.md
-
 /** Iterable over all parsers reachable from a [root]. */
 class ParserIterable implements Iterable<Parser> {
 
