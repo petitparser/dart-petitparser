@@ -89,30 +89,20 @@ abstract class Parser {
 
 }
 
-/**
- * A parser that consumes nothing and always succeeds.
- */
-class EpsilonParser extends Parser {
+/** Returns a parser that consumes nothing and succeeds. */
+Parser epsilon() => new _EpsilonParser();
 
-  Result _parse(Context context) {
-    return context.success(null);
-  }
-
+class _EpsilonParser extends Parser {
+  Result _parse(Context context) => context.success(null);
 }
 
-/**
- * A parser that consumes nothing and always fails.
- */
-class FailureParser extends Parser {
+/** Returns a parser that consumes nothing and fails. */
+Parser failure(String message) => new _FailureParser(message);
 
+class _FailureParser extends Parser {
   final String _message;
-
-  FailureParser(this._message);
-
-  Result _parse(Context context) {
-    return context.failure(_message);
-  }
-
+  _FailureParser(this._message);
+  Result _parse(Context context) => context.failure(_message);
 }
 
 /**

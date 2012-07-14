@@ -55,12 +55,12 @@ main() {
       expectFailure(parser, 'aa', 1, 'end of input expected');
     });
     test('epsilon()', () {
-      Parser parser = new EpsilonParser();
+      Parser parser = epsilon();
       expectSuccess(parser, '', null);
       expectSuccess(parser, 'a', null, 0);
     });
     test('failure()', () {
-      Parser parser = new FailureParser('failure');
+      Parser parser = failure('failure');
       expectFailure(parser, '', 0, 'failure');
       expectFailure(parser, 'a', 0, 'failure');
     });

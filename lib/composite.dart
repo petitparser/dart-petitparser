@@ -22,7 +22,7 @@ abstract class CompositeParser extends DelegateParser {
     _delegate = ref('start');
     _undefined.forEach((String name, WrapperParser parser) {
       if (!_defined.containsKey(name)) {
-        throw new Exception('Missing production: $name');
+        throw new Exception('Undefined production: $name');
       }
       parser._delegate = _defined[name];
     });
@@ -35,7 +35,7 @@ abstract class CompositeParser extends DelegateParser {
   /** Returns a reference to a production with a [name]. */
   Parser ref(String name) {
     return _undefined.putIfAbsent(name, () {
-      return new FailureParser('Uninitalized production: $name').wrapper();
+      return failure('Uninitalized production: $name').wrapper();
     });
   }
 
