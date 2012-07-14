@@ -28,17 +28,17 @@ class LispGrammar extends CompositeParser {
         .or(ref('list []'))
         .or(ref('list {}')));
     def('list ()',
-      char('(').flatten()
+      char('(')
         .seq(ref('atoms'))
-        .seq(char(')').flatten()));
+        .seq(char(')')));
     def('list []',
-      char('[').flatten()
+      char('[')
         .seq(ref('atoms'))
-        .seq(char(']').flatten()));
+        .seq(char(']')));
     def('list {}',
-      char('{').flatten()
+      char('{')
         .seq(ref('atoms'))
-        .seq(char('}').flatten()));
+        .seq(char('}')));
     
     def('string',
       char('"')
