@@ -11,9 +11,9 @@
 #source('parser.dart');
 
 void process(Parser parser, Environment environment, InputStream input, OutputStream output) {
-  new StringInputStream(input)
-    .onLine((String line) {
-      output.writeString(parser.parse(line).getResult().eval(environment));
+  var lines = new StringInputStream(input);
+  lines.onLine(() {
+      output.writeString(parser.parse(lines.readLine()).getResult().eval(environment));
     });
 }
 
