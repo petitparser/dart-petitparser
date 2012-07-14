@@ -12,9 +12,9 @@
 
 void process(Parser parser, Environment environment, InputStream input, OutputStream output) {
   var lines = new StringInputStream(input);
-  lines.onLine(() {
-      output.writeString(parser.parse(lines.readLine()).getResult().eval(environment));
-    });
+  lines.onLine = () {
+    output.writeString(parser.parse(lines.readLine()).getResult().eval(environment));
+  };
 }
 
 void main() {

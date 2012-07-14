@@ -6,6 +6,8 @@
 class LispParser extends LispGrammar {
 
   void initialize() {
+    super.initialize();
+
     action('list', (each) => each[1]);
 
     action('cell', (each) => new ConsCell(each[0], each[1]));
