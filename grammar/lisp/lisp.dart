@@ -2,14 +2,11 @@
 
 #library('lisp');
 
-#import('../../lib/petitparser.dart');
 #import('dart:builtin');
 #import('dart:io');
 
-#source('cells.dart');
-#source('environment.dart');
-#source('grammar.dart');
-#source('parser.dart');
+#import('../../lib/petitparser.dart');
+#import('lisplib.dart');
 
 class _NullStream implements OutputStream {
   bool write(List<int> buffer, [bool copyBuffer]) { return true; }
