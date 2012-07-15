@@ -8,7 +8,7 @@
 #import('../grammar/json/json.dart');
 
 void main() {
-  final Parser json = new JsonParser();
+  Parser json = new JsonParser();
 
   group('arrays', () {
     test('empty', () {

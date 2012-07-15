@@ -62,4 +62,10 @@ abstract class CompositeParser extends DelegateParser {
     redef(name, (parser) => parser.map(function));
   }
 
+  /**
+   * Returns a reference to a defined production named [name]. This method should
+   * only be called for fully initialized instances.
+   */
+  Parser operator [](String name) => _defined[name];
+
 }
