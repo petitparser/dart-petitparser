@@ -4,9 +4,6 @@
 
 #import('../../lib/petitparser.dart');
 
-#import('dart:builtin');
-#import('dart:io');
-
 #source('cells.dart');
 #source('environment.dart');
 #source('grammar.dart');

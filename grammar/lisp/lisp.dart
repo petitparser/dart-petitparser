@@ -66,21 +66,19 @@ void mainWithOptions(Options options) {
 
   // evaluation context
   var parser = new LispParser();
-  var environment = new Environment();
+  var environment = new RootEnvironment();
   var nullout = new _NullStream();
 
   // process standard library
   if (standardLibrary) {
     var stream = new File('default.lisp').openInputStream();
     process(parser, environment, stream, nullout);
-    stream.close();
   }
 
   // process files given as argument
   files.forEach((each) {
     var stream = each.openInputStream();
     process(parser, environment, stream, nullout);
-    stream.close();
   });
 
   // process console input
@@ -88,7 +86,6 @@ void mainWithOptions(Options options) {
     process(parser, environment, stdin, stdout);
   }
 
->>>>>>> - getting basic REPL working
 }
 
 void main() {
