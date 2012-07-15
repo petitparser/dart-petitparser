@@ -18,7 +18,15 @@ class LispParser extends LispGrammar {
     action('character raw', (each) => each.charCodeAt(0));
 
     action('symbol', (each) => new SymbolCell(each));
-    action('number', (each) => new NumberCell(Math.parseInt(each)));
+    action('number', (each) {
+      var floating = Math.parseDouble(each);
+      var integral = floating.toInt();
+      if (floating == integral && each.indexOf('.') == -1) {
+        return new NumberCell(integral);
+      } else {
+        return new NumberCell(floating);
+      }
+    });
   }
 
 }
