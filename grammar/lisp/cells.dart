@@ -33,6 +33,7 @@ class _NullCell extends Cell {
 class NumberCell extends Cell {
   final num _value;
   NumberCell(this._value);
+  num get value() => _value;
   bool operator == (NumberCell cell) {
     return cell is NumberCell && _value == cell._value;
   }
@@ -45,6 +46,7 @@ class NumberCell extends Cell {
 class StringCell extends Cell {
   final String _value;
   StringCell(this._value);
+  String get value() => _value;
   bool operator == (StringCell cell) {
     return cell is StringCell && _value == cell._value;
   }
@@ -52,7 +54,7 @@ class StringCell extends Cell {
     buffer.add('"');
     for (int i = 0; i < _value.length; i++) {
       if (_value[i] == '"') {
-        buffer.add('\"');
+        buffer.add('\\"');
       } else {
         buffer.add(_value[i]);
       }
@@ -75,6 +77,7 @@ class SymbolCell extends Cell {
 
   final String _name;
   SymbolCell._internal(this._name);
+  String get name() => _name;
   void writeTo(StringBuffer buffer) {
     buffer.add(_name);
   }
