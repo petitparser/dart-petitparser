@@ -35,7 +35,7 @@ class RootEnvironment extends Environment {
   /** Register the minimal functions needed for bootstrap. */
   RootEnvironment() {
 
-    /** Defines a function in the root environment. */
+    /** Defines a value in the root environment. */
     _define('define', (Environment env, Dynamic args) {
       return this[args.head] = eval(env, args.tail.head);
     });

@@ -41,8 +41,11 @@ class Natives {
         return result;
       };
     };
+    _natives['quote'] = (Environment env, Dynamic args) {
+      return args;
+    };
     _natives['eval'] = (Environment env, Dynamic args) {
-      return eval(env, args);
+      return eval(env.create(), args);
     };
     _natives['let'] = (Environment env, Dynamic args) {
       var inner = env.create();
@@ -59,18 +62,21 @@ class Natives {
       }
       return eval(inner, statement);
     };
+    _natives['set!'] = (Environment env, Dynamic args) {
+      return env[args.head] = eval(env, args.tail.head);
+    };
     _natives['print'] = (Environment env, Dynamic args) {
-      print(args.toString());
+      while (args is Cons) {
+        print(eval(env, args.head));
+        args = args.tail;
+      }
+      return null;
     };
   }
 
   static void _controlStructures() {
     _natives['if'] = (Environment env, Dynamic args) {
-      if (eval(env, args.head)) {
-        return eval(env, args.tail.head);
-      } else {
-        return eval(env, args.tail.tail);
-      }
+      return eval(env, eval(env, args.head) ? args.tail.head : args.tail.tail);
     };
     _natives['while'] = (Environment env, Dynamic args) {
       var result = null;
@@ -86,7 +92,7 @@ class Natives {
         }
         args = args.tail;
       }
-      return true;
+      return eval(env, args) == true;
     };
     _natives['or'] = (Environment env, Dynamic args) {
       while (args is Cons) {
@@ -95,61 +101,45 @@ class Natives {
         }
         args = args.tail;
       }
-      return false;
+      return eval(env, args) == true;
     };
   }
 
   static void _arithmeticMethods() {
     _natives['add'] = (Environment env, Dynamic args) {
-      if (args is Cons) {
-        num value = args.head;
-        for (args = args.tail; args != null; args = args.tail) {
-          value += args.head;
-        }
-        return value;
-      } else if (args is num) {
-        return args;
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        value += eval(env, args.head);
       }
+      return value;
     };
     _natives['sub'] = (Environment env, Dynamic args) {
-      if (args is Cons) {
-        num value = args.head;
-        for (args = args.tail; args != null; args = args.tail) {
-          value -= args.head;
-        }
-        return value;
-      } else if (args is num) {
-        return -args;
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        value -= eval(env, args.head);
       }
+      return value;
     };
     _natives['mul'] = (Environment env, Dynamic args) {
-      if (args is Cons) {
-        num value = args.head;
-        for (args = args.tail; args != null; args = args.tail) {
-          value *= args.head;
-        }
-        return value;
-      } else if (args is num) {
-        return args;
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        value *= eval(env, args.head);
       }
+      return value;
     };
     _natives['div'] = (Environment env, Dynamic args) {
-      if (args is Cons) {
-        num value = args.head;
-        for (args = args.tail; args != null; args = args.tail) {
-          value /= args.head;
-        }
-        return value;
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        value /= eval(env, args.head);
       }
+      return value;
     };
     _natives['mod'] = (Environment env, Dynamic args) {
-      if (args is Cons) {
-        num value = args.head;
-        for (args = args.tail; args != null; args = args.tail) {
-          value %= args.head;
-        }
-        return value;
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        value %= eval(env, args.head);
       }
+      return value;
     };
   }
 
@@ -206,13 +196,13 @@ class Natives {
 
   static void _listOperators() {
     _natives['cons'] = (Environment env, Dynamic args) {
-      return new Cons(args.head, args.tail);
+      return new Cons(eval(env, args.head), eval(env, args.tail));
     };
     _natives['car'] = (Environment env, Dynamic args) {
-      return args is Cons ? args.head : null;
+      return args is Cons ? eval(env, args.head) : null;
     };
     _natives['cdr'] = (Environment env, Dynamic args) {
-      return args is Cons ? args.tail : null;
+      return args is Cons ? eval(env, args.tail) : null;
     };
   }
 

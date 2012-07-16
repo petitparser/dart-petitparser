@@ -2,7 +2,10 @@
 
 ; basic functions
 (define lambda (native "lambda"))
+(define quote (native "quote"))
 (define let (native "let"))
+(define eval (native "eval"))
+(define set! (native "set!"))
 (define print (native "print"))
 
 ; control structures
