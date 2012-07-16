@@ -12,136 +12,112 @@ void main() {
 
   group('Cell', () {
     test('Symbol', () {
-      var cell1 = new SymbolCell('foo');
-      var cell2 = new SymbolCell('foo');
-      var cell3 = new SymbolCell('bar');
+      var cell1 = new Symbol('foo');
+      var cell2 = new Symbol('foo');
+      var cell3 = new Symbol('bar');
       expect(cell1, cell2);
       expect(cell1, same(cell2));
       expect(cell1, isNot(cell3));
       expect(cell1, isNot(same(cell3)));
     });
-    test('String', () {
-      var cell1 = new StringCell('foo');
-      var cell2 = new StringCell('foo');
-      var cell3 = new StringCell('bar');
-      expect(cell1, cell2);
-      expect(cell1, isNot(same(cell2)));
-      expect(cell1, isNot(cell3));
-      expect(cell1, isNot(same(cell3)));
-    });
-    test('Number', () {
-      var cell1 = new NumberCell(1);
-      var cell2 = new NumberCell(1);
-      var cell3 = new NumberCell(2);
-      expect(cell1, cell2);
-      expect(cell1, isNot(same(cell2)));
-      expect(cell1, isNot(cell3));
-      expect(cell1, isNot(same(cell3)));
+    test('Cons', () {
+      var cell = new Cons(1, 2);
+      expect(cell.head, 1);
+      expect(cell.tail, 2);
+      cell.head = 3;
+      expect(cell.head, 3);
+      expect(cell.tail, 2);
+      cell.tail = 4;
+      expect(cell.head, 3);
+      expect(cell.tail, 4);
     });
   });
   group('Parser', () {
     test('Symbol', () {
       var cell = atom.parse('foo').getResult();
-      expect(cell, new isInstanceOf<SymbolCell>());
+      expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, 'foo');
       expect(cell.toString(), 'foo');
     });
     test('Symbol for operator', () {
       var cell = atom.parse('+').getResult();
-      expect(cell, new isInstanceOf<SymbolCell>());
+      expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, '+');
-      expect(cell.toString(), '+');
     });
     test('Symbol for special', () {
       var cell = atom.parse('set!').getResult();
-      expect(cell, new isInstanceOf<SymbolCell>());
+      expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, 'set!');
-      expect(cell.toString(), 'set!');
     });
     test('String', () {
       var cell = atom.parse('"foo"').getResult();
-      expect(cell, new isInstanceOf<StringCell>());
-      expect(cell.value, 'foo');
-      expect(cell.toString(), '"foo"');
+      expect(cell, new isInstanceOf<String>());
+      expect(cell, 'foo');
     });
     test('String with escape', () {
       var cell = atom.parse('"\\""').getResult();
-      expect(cell, new isInstanceOf<StringCell>());
-      expect(cell.value, '"');
-      expect(cell.toString(), '"\\""');
+      expect(cell, '"');
     });
     test('Number integer', () {
       var cell = atom.parse('123').getResult();
-      expect(cell, new isInstanceOf<NumberCell>());
-      expect(cell.value, 123);
-      expect(cell.toString(), '123');
+      expect(cell, 123);
     });
     test('Number negative integer', () {
       var cell = atom.parse('-123').getResult();
-      expect(cell, new isInstanceOf<NumberCell>());
-      expect(cell.value, -123);
-      expect(cell.toString(), '-123');
+      expect(cell, -123);
     });
     test('Number positive integer', () {
       var cell = atom.parse('+123').getResult();
-      expect(cell, new isInstanceOf<NumberCell>());
-      expect(cell.value, 123);
-      expect(cell.toString(), '123');
+      expect(cell, 123);
     });
     test('Number floating', () {
       var cell = atom.parse('123.45').getResult();
-      expect(cell, new isInstanceOf<NumberCell>());
-      expect(cell.value, 123.45);
-      expect(cell.toString(), '123.45');
+      expect(cell, 123.45);
     });
     test('Number floating exponential', () {
       var cell = atom.parse('1.23e4').getResult();
-      expect(cell, new isInstanceOf<NumberCell>());
-      expect(cell.value, 1.23e4);
-      expect(cell.toString(), '12300.0');
+      expect(cell, 1.23e4);
     });
     test('List empty', () {
       var cell = atom.parse('()').getResult();
-      expect(cell, same(NULL));
+      expect(cell, isNull);
     });
     test('List empty []', () {
       var cell = atom.parse('[ ]').getResult();
-      expect(cell, same(NULL));
+      expect(cell, isNull);
     });
     test('List empty {}', () {
       var cell = atom.parse('{   }').getResult();
-      expect(cell, same(NULL));
+      expect(cell, isNull);
     });
     test('List one element', () {
       var cell = atom.parse('(1)').getResult();
-      expect(cell, new isInstanceOf<ConsCell>());
-      expect(cell.head, new isInstanceOf<NumberCell>());
-      expect(cell.head.value, 1);
-      expect(cell.tail, same(NULL));
+      expect(cell, new isInstanceOf<Cons>());
+      expect(cell.head, 1);
+      expect(cell.tail, isNull);
     });
     test('List two elements', () {
       var cell = atom.parse('(1 2)').getResult();
-      expect(cell, new isInstanceOf<ConsCell>());
-      expect(cell.head, new isInstanceOf<NumberCell>());
-      expect(cell.head.value, 1);
-      expect(cell.tail, new isInstanceOf<ConsCell>());
-      expect(cell.tail.head, new isInstanceOf<NumberCell>());
-      expect(cell.tail.head.value, 2);
-      expect(cell.tail.tail, same(NULL));
+      expect(cell, new isInstanceOf<Cons>());
+      expect(cell.head, 1);
+      expect(cell.tail, new isInstanceOf<Cons>());
+      expect(cell.tail.head, 2);
+      expect(cell.tail.tail, isNull);
     });
     test('List three elements', () {
       var cell = atom.parse('(+ 1 2)').getResult();
-      expect(cell, new isInstanceOf<ConsCell>());
-      expect(cell.head, new isInstanceOf<SymbolCell>());
+      expect(cell, new isInstanceOf<Cons>());
+      expect(cell.head, new isInstanceOf<Symbol>());
       expect(cell.head.name, '+');
-      expect(cell.tail, new isInstanceOf<ConsCell>());
-      expect(cell.tail.head, new isInstanceOf<NumberCell>());
-      expect(cell.tail.head.value, 1);
-      expect(cell.tail.tail, new isInstanceOf<ConsCell>());
-      expect(cell.tail.tail.head, new isInstanceOf<NumberCell>());
-      expect(cell.tail.tail.head.value, 2);
-      expect(cell.tail.tail.tail, same(NULL));
+      expect(cell.tail, new isInstanceOf<Cons>());
+      expect(cell.tail.head, 1);
+      expect(cell.tail.tail, new isInstanceOf<Cons>());
+      expect(cell.tail.tail.head, 2);
+      expect(cell.tail.tail.tail, isNull);
     });
+  });
+  group('Evaluate', () {
+
   });
 
 }

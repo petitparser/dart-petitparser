@@ -6,7 +6,7 @@
 class LispGrammar extends CompositeParser {
 
   void initialize() {
-    def('start', ref('atom').end());
+    def('start', ref('atom').star().end());
 
     def('atom',
       ref('list')
@@ -17,7 +17,7 @@ class LispGrammar extends CompositeParser {
         .or(ref('quasiquote'))
         .or(ref('unquote'))
         .or(ref('splice'))
-        .trim());
+        .trim(ref('whitespace')));
 
     def('list',
       bracket('()', 'atoms')
@@ -30,7 +30,7 @@ class LispGrammar extends CompositeParser {
       ref('atom')
         .seq(ref('atoms')));
     def('null',
-      whitespace().star());
+      ref('whitespace').star());
 
     def('string',
       char('"')
@@ -60,12 +60,18 @@ class LispGrammar extends CompositeParser {
     def('quasiquote', char('`').seq(ref('atom')));
     def('unquote', char(',').seq(ref('atom')));
     def('splice', char('@').seq(ref('atom')));
+
+    def('whitespace', whitespace()
+      .or(ref('comment')));
+    def('comment', string(';')
+      .seq(Token.newlineParser().neg().star()));
   }
 
+  /** Defines a bracketed reference. */
   Parser bracket(String brackets, String reference) {
     return char(brackets[0])
         .seq(ref(reference))
-        .seq(char(brackets[1]).trim());
+        .seq(char(brackets[1]));
   }
 
 }

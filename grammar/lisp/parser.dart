@@ -10,21 +10,21 @@ class LispParser extends LispGrammar {
 
     action('list', (each) => each[1]);
 
-    action('cell', (each) => new ConsCell(each[0], each[1]));
-    action('null', (each) => NULL);
+    action('cell', (each) => new Cons(each[0], each[1]));
+    action('null', (each) => null);
 
-    action('string', (each) => new StringCell(new String.fromCharCodes(each[1])));
+    action('string', (each) => new String.fromCharCodes(each[1]));
     action('character escape', (each) => each[1].charCodeAt(0));
     action('character raw', (each) => each.charCodeAt(0));
 
-    action('symbol', (each) => new SymbolCell(each));
+    action('symbol', (each) => new Symbol(each));
     action('number', (each) {
       var floating = Math.parseDouble(each);
       var integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
-        return new NumberCell(integral);
+        return integral;
       } else {
-        return new NumberCell(floating);
+        return floating;
       }
     });
   }
