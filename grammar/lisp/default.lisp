@@ -13,6 +13,7 @@
 (define while (native "while"))
 (define and (native "and"))
 (define or (native "or"))
+(define not (native "not"))
 
 ; arithmetic methods
 (define + (native "add"))

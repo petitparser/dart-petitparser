@@ -86,7 +86,7 @@ class Natives {
       return result;
     };
     _natives['and'] = (Environment env, Dynamic args) {
-      while (args is Cons) {
+      while (args is Cond) {
         if (eval(env, args.head)) {
           return false;
         }
@@ -102,6 +102,9 @@ class Natives {
         args = args.tail;
       }
       return eval(env, args) == true;
+    };
+    _natives['not'] = (Environment env, Dynamic args) {
+      return !eval(env, args.head);
     };
   }
 
@@ -145,52 +148,22 @@ class Natives {
 
   static void _arithmeticComparators() {
     _natives['less'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head >= cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) < eval(env, args.tail.head);
     };
     _natives['less_equal'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head > cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) <= eval(env, args.tail.head);
     };
     _natives['equal'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head != cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) == eval(env, args.tail.head);
     };
     _natives['not_equal'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head == cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) != eval(env, args.tail.head);
     };
     _natives['larger'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head <= cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) > eval(env, args.tail.head);
     };
     _natives['larger_equal'] = (Environment env, Dynamic args) {
-      for (var cell = args; args.tail != null; cell = cell.tail) {
-        if (cell.head < cell.tail.head) {
-          return false;
-        }
-      }
-      return true;
+      return eval(env, args.head) >= eval(env, args.tail.head);
     };
   }
 
