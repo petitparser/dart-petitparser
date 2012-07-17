@@ -40,7 +40,7 @@ class RootEnvironment extends Environment {
       return this[args.head] = eval(env, args.tail.head);
     });
 
-    /** Looks up a native function. */
+    /** Lookup a native function. */
     _define('native', (Environment env, Dynamic args) {
       return Natives.find(args.head);
     });
