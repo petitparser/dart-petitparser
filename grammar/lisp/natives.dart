@@ -51,7 +51,7 @@ class Natives {
       var inner = env.create();
       var binding = args.head;
       while (binding is Cons) {
-        inner[binding.head.head] = eval(env, binding.head.tail);
+        inner[binding.head.head] = eval(env, binding.head.tail.head);
         binding = binding.tail;
       }
       var result = null;
@@ -86,7 +86,7 @@ class Natives {
       return result;
     };
     _natives['and'] = (Environment env, Dynamic args) {
-      while (args is Cond) {
+      while (args is Cons) {
         if (eval(env, args.head)) {
           return false;
         }
