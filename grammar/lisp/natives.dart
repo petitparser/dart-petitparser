@@ -117,11 +117,15 @@ class Natives {
       return value;
     };
     _natives['sub'] = (Environment env, Dynamic args) {
-      var value = eval(env, args.head);
-      for (args = args.tail; args != null; args = args.tail) {
-        value -= eval(env, args.head);
+      if (args.tail == null) {
+        return -eval(env, args.head);
+      } else {
+        var value = eval(env, args.head);
+        for (args = args.tail; args != null; args = args.tail) {
+          value -= eval(env, args.head);
+        }
+        return value;
       }
-      return value;
     };
     _natives['mul'] = (Environment env, Dynamic args) {
       var value = eval(env, args.head);
