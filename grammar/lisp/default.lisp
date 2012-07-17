@@ -9,11 +9,15 @@
 (define print (native "print"))
 
 ; control structures
-(define if (native "if"))
-(define while (native "while"))
 (define and (native "and"))
 (define or (native "or"))
 (define not (native "not"))
+
+(define true (and))
+(define false (or))
+
+(define if (native "if"))
+(define while (native "while"))
 
 ; arithmetic methods
 (define + (native "add"))
@@ -34,3 +38,6 @@
 (define cons (native "cons"))
 (define car (native "car"))
 (define cdr (native "cdr"))
+
+(define head car)
+(define tail cdr)
