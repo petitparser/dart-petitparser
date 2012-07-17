@@ -214,8 +214,18 @@ class Natives {
     _natives['car'] = (Environment env, Dynamic args) {
       return args is Cons ? eval(env, args.head) : null;
     };
+    _natives['car!'] = (Environment env, Dynamic args) {
+      if (args.head is Cons) {
+        return args.head.head = eval(env, args.tail.head);
+      }
+    };
     _natives['cdr'] = (Environment env, Dynamic args) {
       return args is Cons ? eval(env, args.tail) : null;
+    };
+    _natives['cdr!'] = (Environment env, Dynamic args) {
+      if (args.head is Cons) {
+        return args.head.tail = eval(env, args.tail.head);
+      }
     };
   }
 
