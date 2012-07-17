@@ -152,22 +152,58 @@ class Natives {
 
   static void _arithmeticComparators() {
     _natives['less'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) < eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) < value) {
+          return false;
+        }
+      }
+      return true;
     };
     _natives['less_equal'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) <= eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) <= value) {
+          return false;
+        }
+      }
+      return true;
     };
     _natives['equal'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) == eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) != value) {
+          return false;
+        }
+      }
+      return true;
     };
     _natives['not_equal'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) != eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) == value) {
+          return false;
+        }
+      }
+      return true;
     };
     _natives['larger'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) > eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) > value) {
+          return false;
+        }
+      }
+      return true;
     };
     _natives['larger_equal'] = (Environment env, Dynamic args) {
-      return eval(env, args.head) >= eval(env, args.tail.head);
+      var value = eval(env, args.head);
+      for (args = args.tail; args != null; args = args.tail) {
+        if (eval(env, args.head) >= value) {
+          return false;
+        }
+      }
+      return true;
     };
   }
 
