@@ -76,32 +76,32 @@ class Natives {
 
   static void _controlStructures() {
     _natives['if'] = (Environment env, Dynamic args) {
-      return eval(env, eval(env, args.head) ? args.tail.head : args.tail.tail);
+      return eval(env, eval(env, args.head) ? args.tail.head : args.tail.tail.head);
     };
     _natives['while'] = (Environment env, Dynamic args) {
       var result = null;
       while (eval(env, args.head)) {
-        result = eval(env, args.tail);
+        result = eval(env, args.tail.head);
       }
       return result;
     };
     _natives['and'] = (Environment env, Dynamic args) {
-      while (args is Cons) {
-        if (eval(env, args.head)) {
+      while (args != null) {
+        if (!eval(env, args.head)) {
           return false;
         }
         args = args.tail;
       }
-      return eval(env, args) == true;
+      return true;
     };
     _natives['or'] = (Environment env, Dynamic args) {
-      while (args is Cons) {
+      while (args != null) {
         if (eval(env, args.head)) {
           return true;
         }
         args = args.tail;
       }
-      return eval(env, args) == true;
+      return false;
     };
     _natives['not'] = (Environment env, Dynamic args) {
       return !eval(env, args.head);
