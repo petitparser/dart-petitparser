@@ -8,23 +8,6 @@
 #import('../../lib/petitparser.dart');
 #import('lisplib.dart');
 
-/** Reads and evaluates a script [contents]. */
-Dynamic read(Parser parser, Environment env, String script) {
-  var result = null;
-  for (var cell in parser.parse(script).getResult()) {
-    result = eval(env, cell);
-  }
-  return result;
-}
-
-/** Read, evaluate, print loop. */
-void repl(Parser parser, Environment env, InputStream input, OutputStream output) {
-  var stream = new StringInputStream(input);
-  stream.onLine = () {
-    output.writeString('${read(parser, env, stream.readLine())}\n');
-  };
-}
-
 void mainWithOptions(Options options) {
 
   // default options
@@ -66,17 +49,17 @@ void mainWithOptions(Options options) {
   // process standard library
   if (standardLibrary) {
     var file = new File('/Users/renggli/Programming/dart/PetitParser/grammar/lisp/default.lisp');
-    read(parser, environment, file.readAsTextSync());
+    evalString(parser, environment, file.readAsTextSync());
   }
 
   // process files given as argument
   files.forEach((file) {
-    read(parser, environment, file.readAsTextSync());
+    evalString(parser, environment, file.readAsTextSync());
   });
 
   // process console input
   if (interactiveMode || files.isEmpty()) {
-    repl(parser, environment, stdin, stdout);
+    evalInteractive(parser, environment, stdin, stdout);
   }
 
 }
