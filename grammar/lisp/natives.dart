@@ -54,7 +54,7 @@ class Natives {
       return args;
     };
     _natives['eval'] = (Environment env, Dynamic args) {
-      return eval(env.create(), args);
+      return eval(env.create(), eval(env, args.head));
     };
     _natives['let'] = (Environment env, Dynamic args) {
       var inner = env.create();

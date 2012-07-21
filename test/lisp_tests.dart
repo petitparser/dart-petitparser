@@ -136,16 +136,22 @@ void main() {
     test('Quote', () {
       expect(exec('(quote)'), null);
       expect(exec('(quote 1)'), new Cons(1, null));
-      expect(exec('(quote 1 a)'), new Cons(1, new Cons(new Symbol('a'), null)));
+      expect(exec('(quote + 1)'), new Cons(new Symbol('+'), new Cons(1, null)));
     });
     test('Eval', () {
-      // TODO(renggli)
+      expect(exec('(eval (quote + 1 2))'), 3);
     });
     test('Let', () {
-      // TODO(renggli)
+      expect(exec('(let ((a 1)) a)'), 1);
+      expect(exec('(let ((a 1) (b 2)) a)'), 1);
+      expect(exec('(let ((a 1) (b 2)) b)'), 2);
+      expect(exec('(let ((a 1) (b 2)) (+ a b))'), 3);
+      expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
     });
     test('Set!', () {
-      // TODO(renggli)
+      expect(exec('(set! a 1)'), 1);
+      expect(exec('(set! b (+ 1 2))'), 3);
+      expect(exec('(set! c (+ 1 2)) (+ c 1)'), 4);
     });
     test('If', () {
       expect(exec('(if true)'), isNull);
@@ -156,7 +162,7 @@ void main() {
       expect(exec('(if false 1 2)'), 2);
     });
     test('While', () {
-      // TODO(renggli)
+      expect(exec('(set! i 0) (while (< i 3) (set! i (+ i 1))) i'), 3);
     });
     test('And', () {
       expect(exec('(and)'), isTrue);
