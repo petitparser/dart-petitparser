@@ -1,24 +1,33 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-/** Collection of all native functions. */
+/** Collection of native functions. */
 class Natives {
 
-  static Map<String, Function> _natives;
+  static Map<String, Dynamic> _natives;
 
-  static Function find(String name) {
-    if (_natives == null) {
-      _natives = new Map();
-      _initialize();
-    }
+  /** Looks a native function up. */
+  static Dynamic find(String name) {
+    _initialize();
     return _natives[name];
+  }
+  
+  /** Imports all the native functions into the [environment]. */
+  static void importAllInto(Environment env) {
+    _initialize();
+    _natives.forEach((key, value) {
+      env[new Symbol(key)] = value;
+    });
   }
 
   static void _initialize() {
-    _basicFunctions();
-    _controlStructures();
-    _arithmeticMethods();
-    _arithmeticComparators();
-    _listOperators();
+    if (_natives == null) {
+      _natives = new Map();
+      _basicFunctions();
+      _controlStructures();
+      _arithmeticMethods();
+      _arithmeticComparators();
+      _listOperators();
+    }
   }
 
   static void _basicFunctions() {
@@ -27,14 +36,14 @@ class Natives {
         var inner = lambda_env.create();
         var names = lambda_args.head;
         var values = evalArgs(env, args);
-        while (names is Cons && values is Cons) {
+        while (names != null && values != null) {
           inner[names.head] = values.head;
           names = names.tail;
           values = values.tail;
         }
         var result = null;
         var stmt = lambda_args.tail;
-        while (stmt is Cons) {
+        while (stmt != null) {
           result = eval(inner, stmt.head);
           stmt = stmt.tail;
         }
@@ -50,23 +59,23 @@ class Natives {
     _natives['let'] = (Environment env, Dynamic args) {
       var inner = env.create();
       var binding = args.head;
-      while (binding is Cons) {
+      while (binding != null) {
         inner[binding.head.head] = eval(env, binding.head.tail.head);
         binding = binding.tail;
       }
       var result = null;
-      var statement = args.tail;
-      while (statement is Cons) {
-        result = eval(inner, statement.head);
-        statement = statement.tail;
+      var stmt = args.tail;
+      while (stmt != null) {
+        result = eval(inner, stmt.head);
+        stmt = stmt.tail;
       }
-      return eval(inner, statement);
+      return result;
     };
     _natives['set!'] = (Environment env, Dynamic args) {
       return env[args.head] = eval(env, args.tail.head);
     };
     _natives['print'] = (Environment env, Dynamic args) {
-      while (args is Cons) {
+      while (args != null) {
         print(eval(env, args.head));
         args = args.tail;
       }
@@ -85,6 +94,8 @@ class Natives {
       }
       return result;
     };
+    _natives['true'] = true;
+    _natives['false'] = false;
     _natives['and'] = (Environment env, Dynamic args) {
       while (args != null) {
         if (!eval(env, args.head)) {
