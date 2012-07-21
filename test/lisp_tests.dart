@@ -2,13 +2,22 @@
 
 #library('lisp_tests');
 
+#import('dart:io');
 #import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
 
 #import('../grammar/lisp/lisplib.dart');
 #import('../lib/petitparser.dart');
 
 void main() {
-  Parser atom = new LispParser()['atom'];
+  CompositeParser parser = new LispParser();
+  Parser atom = parser['atom'];
+
+  Environment root = new RootEnvironment();
+  Natives.importAllInto(root);
+
+  Dynamic exec(String value, [Environment env]) {
+    return evalString(parser, env != null ? env : root.create(), value);
+  }
 
   group('Cell', () {
     test('Symbol', () {
@@ -116,8 +125,137 @@ void main() {
       expect(cell.tail.tail.tail, isNull);
     });
   });
-  group('Evaluate', () {
-
+  group('Natives', () {
+    test('Lambda', () {
+      expect(exec('((lambda () 1) 2)'), 1);
+      expect(exec('((lambda (x) x) 2)'), 2);
+      expect(exec('((lambda (x) (+ x x)) 2)'), 4);
+      expect(exec('((lambda (x y) (+ x y)) 2 4)'), 6);
+      expect(exec('((lambda (x y z) (+ x y z)) 2 4 6)'), 12);
+    });
+    test('Quote', () {
+      expect(exec('(quote)'), null);
+      expect(exec('(quote 1)'), new Cons(1, null));
+      expect(exec('(quote 1 a)'), new Cons(1, new Cons(new Symbol('a'), null)));
+    });
+    test('Eval', () {
+      // TODO(renggli)
+    });
+    test('Let', () {
+      // TODO(renggli)
+    });
+    test('Set!', () {
+      // TODO(renggli)
+    });
+    test('If', () {
+      expect(exec('(if true)'), isNull);
+      expect(exec('(if false)'), isNull);
+      expect(exec('(if true 1)'), 1);
+      expect(exec('(if false 1)'), isNull);
+      expect(exec('(if true 1 2)'), 1);
+      expect(exec('(if false 1 2)'), 2);
+    });
+    test('While', () {
+      // TODO(renggli)
+    });
+    test('And', () {
+      expect(exec('(and)'), isTrue);
+      expect(exec('(and true)'), isTrue);
+      expect(exec('(and false)'), isFalse);
+      expect(exec('(and true true)'), isTrue);
+      expect(exec('(and true false)'), isFalse);
+      expect(exec('(and false true)'), isFalse);
+      expect(exec('(and false false)'), isFalse);
+    });
+    test('Or', () {
+      expect(exec('(or)'), isFalse);
+      expect(exec('(or true)'), isTrue);
+      expect(exec('(or false)'), isFalse);
+      expect(exec('(or true true)'), isTrue);
+      expect(exec('(or true false)'), isTrue);
+      expect(exec('(or false true)'), isTrue);
+      expect(exec('(or false false)'), isFalse);
+    });
+    test('Not', () {
+      expect(exec('(not true)'), isFalse);
+      expect(exec('(not false)'), isTrue);
+    });
+    test('Add', () {
+      expect(exec('(+ 1)'), 1);
+      expect(exec('(+ 1 2)'), 3);
+      expect(exec('(+ 1 2 3)'), 6);
+      expect(exec('(+ 1 2 3 4)'), 10);
+    });
+    test('Sub', () {
+      expect(exec('(- 1)'), -1);
+      expect(exec('(- 1 2)'), -1);
+      expect(exec('(- 1 2 3)'), -4);
+      expect(exec('(- 1 2 3 4)'), -8);
+    });
+    test('Mul', () {
+      expect(exec('(* 2)'), 2);
+      expect(exec('(* 2 3)'), 6);
+      expect(exec('(* 2 3 4)'), 24);
+    });
+    test('Div', () {
+      expect(exec('(/ 24)'), 24);
+      expect(exec('(/ 24 3)'), 8);
+      expect(exec('(/ 24 3 2)'), 4);
+    });
+    test('Mod', () {
+      expect(exec('(% 24)'), 24);
+      expect(exec('(% 24 5)'), 4);
+      expect(exec('(% 24 5 3)'), 1);
+    });
+    test('Less', () {
+      expect(exec('(< 1 2)'), isTrue);
+      expect(exec('(< 1 1)'), isFalse);
+      expect(exec('(< 2 1)'), isFalse);
+    });
+    test('Less equal', () {
+      expect(exec('(<= 1 2)'), isTrue);
+      expect(exec('(<= 1 1)'), isTrue);
+      expect(exec('(<= 2 1)'), isFalse);
+    });
+    test('Equal', () {
+      expect(exec('(= 1 1)'), isTrue);
+      expect(exec('(= 1 2)'), isFalse);
+      expect(exec('(= 2 1)'), isFalse);
+    });
+    test('Not equal', () {
+      expect(exec('(!= 1 1)'), isFalse);
+      expect(exec('(!= 1 2)'), isTrue);
+      expect(exec('(!= 2 1)'), isTrue);
+    });
+    test('Larger', () {
+      expect(exec('(> 1 1)'), isFalse);
+      expect(exec('(> 1 2)'), isFalse);
+      expect(exec('(> 2 1)'), isTrue);
+    });
+    test('Larger equal', () {
+      expect(exec('(>= 1 1)'), isTrue);
+      expect(exec('(>= 1 2)'), isFalse);
+      expect(exec('(>= 2 1)'), isTrue);
+    });
+    test('Cons', () {
+      expect(exec('(cons 1 2)'), new Cons(1, 2));
+    });
+    test('Car', () {
+      expect(exec('(car null)'), isNull);
+      expect(exec('(car (cons 1 2))'), 1);
+    });
+    test('Car!', () {
+      expect(exec('(car! null 3)'), isNull);
+      expect(exec('(car! (cons 1 2) 3)'), new Cons(3, 2));
+    });
+    test('Cdr', () {
+      expect(exec('(cdr null)'), isNull);
+      expect(exec('(cdr (cons 1 2))'), 2);
+    });
+    test('Cdr!', () {
+      expect(exec('(cdr! null 3)'), isNull);
+      expect(exec('(cdr! (cons 1 2) 3)'), new Cons(1, 3));
+    });
   });
 
 }
