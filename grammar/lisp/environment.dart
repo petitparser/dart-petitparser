@@ -1,5 +1,6 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+/** Abstract enviornment of bindings. */
 abstract class Environment {
 
   /** The internal environment bindings. */
@@ -11,10 +12,11 @@ abstract class Environment {
   /** Constructor for a nested environment. */
   Environment create() => new NestedEnvironment(this);
 
-  /** Returns the cell defined by a [key]. */
+  /** Returns the value defined by a [key]. */
   Dynamic operator [](Symbol key) {
-    var value = _bindings[key];
-    return value != null ? value : _notFound(key);
+    return _bindings.containsKey(key)
+        ? _bindings[key]
+        : _notFound(key);
   }
 
   /** Defines or redefines the cell with [value] of a [key]. */
@@ -22,11 +24,12 @@ abstract class Environment {
     _bindings[key] = value;
   }
 
-  /** Abstract behavior called when an non-existing binding is accessed. */
+  /** Called when a missing binding is accessed. */
   abstract Dynamic _notFound(Symbol key);
 
 }
 
+/** The root environment of the execution. */
 class RootEnvironment extends Environment {
 
   /** Return null if the value does not exist. */
@@ -54,6 +57,7 @@ class RootEnvironment extends Environment {
 
 }
 
+/** The default execution environment with a parent. */
 class NestedEnvironment extends Environment {
 
   /** The owning environemnt. */

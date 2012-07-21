@@ -15,7 +15,7 @@ abstract class CompositeParser extends DelegateParser {
   final Map<String, WrapperParser> _undefined;
 
   CompositeParser()
-      : super(null),
+      : super(failure('Uninitalized production: start')),
         _defined = new Map(),
         _undefined = new Map() {
     initialize();

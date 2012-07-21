@@ -1,9 +1,9 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-/** Cell reqpresenting a symbol. */
+/** Cell reqpresenting an unique symbol. */
 class Symbol implements Hashable {
 
-  /** The interned symbol cells. */
+  /** The interned symbols. */
   static Map<String, Symbol> _interned;
 
   /** Factory for new symbol cells. */
@@ -52,16 +52,17 @@ class Cons {
   Dynamic get tail()             => _tail;
           set tail(Dynamic tail) => _tail = tail;
 
-  /** Returns the string representation of the cell. */
+  /** Returns the string representation of the cons. */
   String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.add('(');
     var current = this;
     while (current != null) {
       buffer.add(current.head.toString());
-      if ((current = current.tail) != null) {
+      if (current.tail != null) {
         buffer.add(' ');
       }
+      current = current.tail;
     }
     buffer.add(')');
     return buffer.toString();
