@@ -35,7 +35,7 @@ class Natives {
       return (Environment env, Dynamic args) {
         var inner = lambda_env.create();
         var names = lambda_args.head;
-        var values = evalArgs(env, args);
+        var values = evalArguments(env, args);
         while (names != null && values != null) {
           inner[names.head] = values.head;
           names = names.tail;
@@ -55,6 +55,9 @@ class Natives {
     };
     _natives['eval'] = (Environment env, Dynamic args) {
       return eval(env.create(), eval(env, args.head));
+    };
+    _natives['apply'] = (Environment env, Dynamic args) {
+      return eval(env, args.head)(env.create(), args.tail);
     };
     _natives['let'] = (Environment env, Dynamic args) {
       var inner = env.create();

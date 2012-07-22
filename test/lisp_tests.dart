@@ -138,8 +138,17 @@ void main() {
       expect(exec('(quote 1)'), new Cons(1, null));
       expect(exec('(quote + 1)'), new Cons(new Symbol('+'), new Cons(1, null)));
     });
+    test('Quote (syntax)', () {
+      expect(exec('\'()'), null);
+      expect(exec('\'(1)'), new Cons(1, null));
+      expect(exec('\'(+ 1)'), new Cons(new Symbol('+'), new Cons(1, null)));
+    });
     test('Eval', () {
       expect(exec('(eval (quote + 1 2))'), 3);
+    });
+    test('Apply', () {
+      expect(exec('(apply + 1 2 3)'), 6);
+      expect(exec('(apply + 1 2 3 (+ 2 2))'), 10);
     });
     test('Let', () {
       expect(exec('(let ((a 1)) a)'), 1);
@@ -161,6 +170,10 @@ void main() {
       expect(exec('(if true 1 2)'), 1);
       expect(exec('(if false 1 2)'), 2);
     });
+    test('If (lazyness)', () {
+      expect(exec('(if (= 1 1) (set! a 1) (set! b 2)) (cons a b)'), new Cons(1, null));
+      expect(exec('(if (= 1 2) (set! a 1) (set! b 2)) (cons a b)'), new Cons(null, 2));
+    });
     test('While', () {
       expect(exec('(set! i 0) (while (< i 3) (set! i (+ i 1))) i'), 3);
     });
@@ -173,6 +186,10 @@ void main() {
       expect(exec('(and false true)'), isFalse);
       expect(exec('(and false false)'), isFalse);
     });
+    test('And (lazyness)', () {
+      expect(exec('(and false (set! a true)) a'), isNull);
+      expect(exec('(and true (set! a true)) a'), isTrue);
+    });
     test('Or', () {
       expect(exec('(or)'), isFalse);
       expect(exec('(or true)'), isTrue);
@@ -181,6 +198,10 @@ void main() {
       expect(exec('(or true false)'), isTrue);
       expect(exec('(or false true)'), isTrue);
       expect(exec('(or false false)'), isFalse);
+    });
+    test('Or (lazyness)', () {
+      expect(exec('(or false (set! a true)) a'), isTrue);
+      expect(exec('(or true (set! a true)) a'), isNull);
     });
     test('Not', () {
       expect(exec('(not true)'), isFalse);
