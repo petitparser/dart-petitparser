@@ -27,6 +27,8 @@ class LispParser extends LispGrammar {
         return floating;
       }
     });
+
+    action('quote', (each) => new Cons(Natives.find('quote'), each[1]));
   }
 
 }

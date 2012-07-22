@@ -56,10 +56,10 @@ class LispGrammar extends CompositeParser {
         .seq(anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional())
         .flatten());
 
-    def('quote', char('\'').seq(ref('atom')));
-    def('quasiquote', char('`').seq(ref('atom')));
-    def('unquote', char(',').seq(ref('atom')));
-    def('splice', char('@').seq(ref('atom')));
+    def('quote', char('\'').seq(ref('list')));
+    def('quasiquote', char('`').seq(ref('list')));
+    def('unquote', char(',').seq(ref('list')));
+    def('splice', char('@').seq(ref('list')));
 
     def('whitespace', whitespace()
       .or(ref('comment')));
