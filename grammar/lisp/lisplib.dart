@@ -7,11 +7,12 @@
 
 #import('../../lib/petitparser.dart');
 
-#source('cells.dart');
+#source('cons.dart');
 #source('environment.dart');
 #source('grammar.dart');
 #source('natives.dart');
 #source('parser.dart');
+#source('symbol.dart');
 
 /** The evaluation function. */
 Dynamic eval(Environment env, Dynamic expr) {
@@ -25,9 +26,9 @@ Dynamic eval(Environment env, Dynamic expr) {
 }
 
 /** The arguments evaluatation function. */
-Dynamic evalArgs(Environment env, Dynamic args) {
-  if (args is Cons) {
-    return new Cons(eval(env, args.head), evalArgs(env, args.tail));
+Dynamic evalArguments(Environment env, Dynamic args) {
+  if (args != null) {
+    return new Cons(eval(env, args.head), evalArguments(env, args.tail));
   } else {
     return args;
   }
