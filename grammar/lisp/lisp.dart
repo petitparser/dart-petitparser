@@ -8,7 +8,7 @@
 #import('../../lib/petitparser.dart');
 #import('lisplib.dart');
 
-void mainWithOptions(Options options) {
+void main() {
 
   // default options
   bool standardLibrary = true;
@@ -16,6 +16,7 @@ void mainWithOptions(Options options) {
   List files = new List();
 
   // parse arguments
+  var options = new Options();
   for (var option in options.arguments) {
     if (option.startsWith('-') && files.isEmpty()) {
       if (option == '-n') {
@@ -61,9 +62,4 @@ void mainWithOptions(Options options) {
   if (interactiveMode || files.isEmpty()) {
     evalInteractive(parser, environment, stdin, stdout);
   }
-
-}
-
-void main() {
-  mainWithOptions(new Options());
 }
