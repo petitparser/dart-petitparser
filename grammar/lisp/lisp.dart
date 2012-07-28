@@ -8,6 +8,15 @@
 #import('../../lib/petitparser.dart');
 #import('lisplib.dart');
 
+/** Read, evaluate, print loop. */
+void evalInteractive(Parser parser, Environment env, InputStream input, OutputStream output) {
+  var stream = new StringInputStream(input);
+  stream.onLine = () {
+    output.writeString('${evalString(parser, env, stream.readLine())}\n');
+  };
+}
+
+/** Entry point for the command line interpreter. */
 void main() {
 
   // default options

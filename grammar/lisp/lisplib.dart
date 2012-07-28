@@ -2,9 +2,6 @@
 
 #library('lisplib');
 
-#import('dart:builtin');
-#import('dart:io');
-
 #import('../../lib/petitparser.dart');
 
 #source('cons.dart');
@@ -41,12 +38,4 @@ Dynamic evalString(Parser parser, Environment env, String script) {
     result = eval(env, cell);
   }
   return result;
-}
-
-/** Read, evaluate, print loop. */
-void evalInteractive(Parser parser, Environment env, InputStream input, OutputStream output) {
-  var stream = new StringInputStream(input);
-  stream.onLine = () {
-    output.writeString('${evalString(parser, env, stream.readLine())}\n');
-  };
 }
