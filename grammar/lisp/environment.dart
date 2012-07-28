@@ -24,6 +24,12 @@ abstract class Environment {
     _bindings[key] = value;
   }
 
+  /** Returns the keys of the bindings. */
+  Collection<Symbol> get keys() => _bindings.getKeys();
+
+  /** Returns the parent of the bindings. */
+  Environment get parent() => null;
+
   /** Called when a missing binding is accessed. */
   abstract Dynamic _notFound(Symbol key);
 
@@ -40,12 +46,22 @@ class RootEnvironment extends Environment {
 
     /** Defines a value in the root environment. */
     _define('define', (Environment env, Dynamic args) {
-      return this[args.head] = eval(env, args.tail.head);
+      if (args.head is Cons) {
+        var definition = new Cons(args.head.tail, args.tail);
+        return this[args.head.head] = Natives.find('lambda')(env, definition);
+      } else {
+        return this[args.head] = eval(env, args.tail.head);
+      }
     });
 
     /** Lookup a native function. */
     _define('native', (Environment env, Dynamic args) {
       return Natives.find(args.head);
+    });
+
+    /** Defines all native functions. */
+    _define('native-import-all', (Environment env, Dynamic args) {
+      return Natives.importAllInto(this);
     });
 
   }
@@ -65,6 +81,9 @@ class NestedEnvironment extends Environment {
 
   /** Constructs a nested environment. */
   NestedEnvironment(this._owner);
+
+  /** Returns the parent of the bindings. */
+  Environment get parent() => _owner;
 
   /** Lookup values in the parent environment. */
   _notFound(Symbol key) => _owner[key];

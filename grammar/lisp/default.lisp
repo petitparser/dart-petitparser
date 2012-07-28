@@ -1,43 +1,49 @@
 ; Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-; basic functions
-(define lambda (native "lambda"))
-(define quote (native "quote"))
-(define let (native "let"))
-(define eval (native "eval"))
-(define set! (native "set!"))
-(define print (native "print"))
+; native functions
+(native-import-all)
 
-; control structures
-(define and (native "and"))
-(define or (native "or"))
-(define not (native "not"))
+(define null '())
+(define (null? x) (= '() x))
 
-(define true (and))
-(define false (or))
+; list functions
+(define (length list)
+  (if (null? list)
+      0
+      (+ 1 (length (cdr list)))))
 
-(define if (native "if"))
-(define while (native "while"))
+(define (append list1 list2)
+  (if (null? list1)
+    list2
+    (cons (car list1) (append (cdr list1) list2))))
 
-; arithmetic methods
-(define + (native "add"))
-(define - (native "sub"))
-(define * (native "mul"))
-(define / (native "div"))
-(define % (native "mod"))
+(define (for-each list proc)
+  (while (null? list)
+    (proc (car list))
+    (set! list (cdr list))))
 
-; arithmetic comparators
-(define < (native "less"))
-(define <= (native "less_equal"))
-(define == (native "equal"))
-(define != (native "not_equal"))
-(define >= (native "larger"))
-(define > (native "larger_equal"))
+(define (list-head list index)
+  (if (= index 0)
+    (car list)
+    (list-head
+      (cdr list)
+      (- index 1))))
 
-; list operations
-(define cons (native "cons"))
-(define car (native "car"))
-(define cdr (native "cdr"))
+(define (list-tail list index)
+  (if (= index 0)
+    (cdr list)
+    (list-tail
+      (cdr list)
+      (- index 1))))
 
-(define head car)
-(define tail cdr)
+(define (map list proc)
+  (if (null? list)
+    '()
+    (cons (proc (car list))
+          (map (cdr list) proc))))
+
+(define (inject list value proc)
+  (while (not (null? list))
+    (set! value (proc value (car list)))
+    (set! list (cdr list)))
+  value)
