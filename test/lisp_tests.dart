@@ -185,6 +185,14 @@ void main() {
       expect(exec('(and true false)'), isFalse);
       expect(exec('(and false true)'), isFalse);
       expect(exec('(and false false)'), isFalse);
+      expect(exec('(and true true true)'), isTrue);
+      expect(exec('(and true true false)'), isFalse);
+      expect(exec('(and true false true)'), isFalse);
+      expect(exec('(and true false false)'), isFalse);
+      expect(exec('(and false true true)'), isFalse);
+      expect(exec('(and false true false)'), isFalse);
+      expect(exec('(and false false true)'), isFalse);
+      expect(exec('(and false false false)'), isFalse);
     });
     test('And (lazyness)', () {
       expect(exec('(and false (set! a true)) a'), isNull);
@@ -198,6 +206,14 @@ void main() {
       expect(exec('(or true false)'), isTrue);
       expect(exec('(or false true)'), isTrue);
       expect(exec('(or false false)'), isFalse);
+      expect(exec('(or true true true)'), isTrue);
+      expect(exec('(or true true false)'), isTrue);
+      expect(exec('(or true false true)'), isTrue);
+      expect(exec('(or true false false)'), isTrue);
+      expect(exec('(or false true true)'), isTrue);
+      expect(exec('(or false true false)'), isTrue);
+      expect(exec('(or false false true)'), isTrue);
+      expect(exec('(or false false false)'), isFalse);
     });
     test('Or (lazyness)', () {
       expect(exec('(or false (set! a true)) a'), isTrue);
@@ -284,5 +300,4 @@ void main() {
       expect(exec('(cdr! (cons 1 2) 3)'), new Cons(1, 3));
     });
   });
-
 }
