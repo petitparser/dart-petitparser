@@ -12,11 +12,12 @@ class Natives {
   }
 
   /** Imports all the native functions into the [environment]. */
-  static void importAllInto(Environment env) {
+  static Environment importAllInto(Environment env) {
     _initialize();
     _natives.forEach((key, value) {
       env[new Symbol(key)] = value;
     });
+    return env;
   }
 
   static void _initialize() {
@@ -31,6 +32,12 @@ class Natives {
   }
 
   static void _basicFunctions() {
+    _natives['define'] = (Environment env, Dynamic args) {
+      var definition = args.head;
+      if (definition is Symbol) {
+
+      }
+    };
     _natives['lambda'] = (Environment lambda_env, Dynamic lambda_args) {
       return (Environment env, Dynamic args) {
         var inner = lambda_env.create();

@@ -1,7 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
 /** Function interface for parse actions. */
-typedef Dynamic Action(Dynamic argument);
+typedef Dynamic _ActionFunction(Dynamic argument);
 
 /**
  * A parser that performs a transformation with a given function on the
@@ -9,7 +9,7 @@ typedef Dynamic Action(Dynamic argument);
  */
 class ActionParser extends DelegateParser {
 
-  final Action _function;
+  final _ActionFunction _function;
 
   ActionParser(parser, this._function) : super(parser);
 
