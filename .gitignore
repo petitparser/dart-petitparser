@@ -1,3 +1,6 @@
+packages/
+pubspec.lock
+
 .children
 .project
 *.js

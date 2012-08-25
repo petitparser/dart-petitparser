@@ -2,7 +2,7 @@
 
 #library('json_tests');
 
-#import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
+#import('package:unittest/unittest.dart');
 
 #import('../lib/petitparser.dart');
 #import('../grammar/json/json.dart');

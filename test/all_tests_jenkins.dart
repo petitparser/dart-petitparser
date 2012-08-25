@@ -2,7 +2,7 @@
 
 #library('all_tests_jenkins');
 
-#import('/Applications/Dart/dart-sdk/lib/unittest/unittest.dart');
+#import('package:unittest/unittest.dart');
 
 #import('all_tests.dart', prefix: 'all');
 

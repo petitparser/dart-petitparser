@@ -2,7 +2,7 @@
 
 #library('all_tests_html');
 
-#import('/Applications/Dart/dart-sdk/lib/unittest/html_enhanced_config.dart');
+#import('package:unittest/html_enhanced_config.dart');
 #import('all_tests.dart', prefix: 'all');
 
 void main() {
