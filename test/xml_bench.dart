@@ -129,13 +129,15 @@ void main() {
       '   </book>'
       '</catalog>';
 
-   int start = Clock.now();
+   Stopwatch stopwatch = new Stopwatch();
+
+   stopwatch.start();
    for (int i = 0; i < 2000; i++) {
      parser.parse(input).getResult();
    }
-   int stop = Clock.now();
+   stopwatch.stop();
 
    print('${new List.from(new ParserIterable(parser)).length} parsers');
-   print('${(stop - start) / Clock.frequency()}s');
+   print('${stopwatch.elapsedInMs() / 1000}s');
 
 }
