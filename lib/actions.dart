@@ -148,4 +148,5 @@ class Token {
     }
     return NEWLINE_PARSER;
   }
+
 }
