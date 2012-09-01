@@ -21,7 +21,7 @@ class Symbol implements Hashable {
   final int _hash;
 
   /** Returns the name of the symbol. */
-  String get name() => _name;
+  String get name => _name;
 
   /** Internal constructor for symbol. */
   Symbol._internal(this._name, this._hash);

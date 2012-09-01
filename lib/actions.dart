@@ -49,7 +49,7 @@ class TrimmingParser extends DelegateParser {
     return current.success(result.getResult());
   }
 
-  List<Parser> get children() => [_delegate, _trimmer];
+  List<Parser> get children => [_delegate, _trimmer];
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
@@ -108,15 +108,15 @@ class Token {
       && _start === other._start
       && _stop === other._stop;
 
-  int get start() => _start;
-  int get stop() => _stop;
-  int get length() => _stop - _start;
+  int get start => _start;
+  int get stop => _stop;
+  int get length => _stop - _start;
 
-  Dynamic get buffer() => _buffer;
-  Dynamic get value() => _buffer.substring(_start, _stop);
+  Dynamic get buffer => _buffer;
+  Dynamic get value => _buffer.substring(_start, _stop);
 
   /** Returns the line number of this token. */
-  int get line() {
+  int get line {
     int line = 1;
     for (Token each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
@@ -128,7 +128,7 @@ class Token {
   }
 
   /** Returns the column number of this token. */
-  int get column() {
+  int get column {
     int position = 0;
     for (Token each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {

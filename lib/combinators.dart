@@ -54,7 +54,7 @@ abstract class ListParser extends Parser {
 
   ListParser(this._parsers);
 
-  List<Parser> get children() => _parsers;
+  List<Parser> get children => _parsers;
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);

@@ -80,7 +80,7 @@ abstract class Parser {
   // // // // // // // // // // // // // // // // // // // // // // // //
 
   /** Returns a list of directly referring parsers. */
-  List<Parser> get children() => [];
+  List<Parser> get children => [];
 
   /** Replaces [source] with [target], if [source] exists. */
   void replace(Parser source, Parser target) {
@@ -118,7 +118,7 @@ abstract class DelegateParser extends Parser {
     return _delegate._parse(context);
   }
 
-  List<Parser> get children() => [_delegate];
+  List<Parser> get children => [_delegate];
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);

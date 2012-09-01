@@ -11,10 +11,10 @@ class Context {
   const Context(this._buffer, this._position);
 
   /** The buffer we are working on. */
-  Dynamic get buffer() => _buffer;
+  Dynamic get buffer => _buffer;
 
   /** The current position in the buffer. */
-  int get position() => _position;
+  int get position => _position;
 
   /** Returns [true] if this context indicates a parse success. */
   bool isSuccess() => false;

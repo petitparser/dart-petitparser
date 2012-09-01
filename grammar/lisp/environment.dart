@@ -25,10 +25,10 @@ abstract class Environment {
   }
 
   /** Returns the keys of the bindings. */
-  Collection<Symbol> get keys() => _bindings.getKeys();
+  Collection<Symbol> get keys => _bindings.getKeys();
 
   /** Returns the parent of the bindings. */
-  Environment get parent() => null;
+  Environment get parent => null;
 
   /** Called when a missing binding is accessed. */
   abstract Dynamic _notFound(Symbol key);
@@ -83,7 +83,7 @@ class NestedEnvironment extends Environment {
   NestedEnvironment(this._owner);
 
   /** Returns the parent of the bindings. */
-  Environment get parent() => _owner;
+  Environment get parent => _owner;
 
   /** Lookup values in the parent environment. */
   _notFound(Symbol key) => _owner[key];
