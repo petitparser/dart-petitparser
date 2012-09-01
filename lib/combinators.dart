@@ -50,6 +50,7 @@ class ChoiceParser extends ListParser {
  * the subclasses).
  */
 abstract class ListParser extends Parser {
+
   final List<Parser> _parsers;
 
   ListParser(this._parsers);
