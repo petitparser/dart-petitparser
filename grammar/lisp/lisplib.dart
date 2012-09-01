@@ -2,6 +2,8 @@
 
 #library('lisplib');
 
+#import('dart:math');
+
 #import('../../lib/petitparser.dart');
 
 #source('cons.dart');

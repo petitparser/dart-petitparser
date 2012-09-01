@@ -2,6 +2,8 @@
 
 #library('json');
 
+#import('dart:math');
+
 #import('../../lib/petitparser.dart');
 
 #source('json_grammar.dart');
