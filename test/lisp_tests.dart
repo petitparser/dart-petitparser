@@ -3,7 +3,7 @@
 #library('lisp_tests');
 
 #import('dart:io');
-#import('package:unittest/unittest.dart');
+#import('../packages/unittest/unittest.dart');
 
 #import('../grammar/lisp/lisplib.dart');
 #import('../lib/petitparser.dart');
