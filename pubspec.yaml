@@ -1,6 +1,4 @@
-# Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
-
-name: PetitParser
+name: petitparser
 description: Dynamic Grammars in Dart
 version: 0.0.1
 dependencies:
