@@ -2,11 +2,10 @@
 
 #library('lisp_tests');
 
-#import('dart:io');
-#import('../packages/unittest/unittest.dart');
+#import('package:unittest/unittest.dart');
+#import('package:petitparser/petitparser.dart');
 
 #import('../grammar/lisp/lisplib.dart');
-#import('../lib/petitparser.dart');
 
 void main() {
   CompositeParser parser = new LispParser();

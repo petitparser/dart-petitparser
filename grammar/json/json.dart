@@ -4,7 +4,7 @@
 
 #import('dart:math');
 
-#import('../../lib/petitparser.dart');
+#import('package:petitparser/petitparser.dart');
 
 #source('json_grammar.dart');
 #source('json_parser.dart');

@@ -5,7 +5,8 @@
 #import('dart:builtin');
 #import('dart:io');
 
-#import('../../lib/petitparser.dart');
+#import('package:petitparser/petitparser.dart');
+
 #import('lisplib.dart');
 
 /** Read, evaluate, print loop. */

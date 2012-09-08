@@ -2,7 +2,7 @@
 
 #library('xml');
 
-#import('../../lib/petitparser.dart');
+#import('package:petitparser/petitparser.dart');
 
 #source('xml_grammar.dart');
 #source('xml_parser.dart');

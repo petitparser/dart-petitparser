@@ -2,9 +2,9 @@
 
 #library('xml_tests');
 
-#import('../packages/unittest/unittest.dart');
+#import('package:unittest/unittest.dart');
+#import('package:petitparser/petitparser.dart');
 
-#import('../lib/petitparser.dart');
 #import('../grammar/xml/xml.dart');
 
 void validate(Parser parser, String input) {

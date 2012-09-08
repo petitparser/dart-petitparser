@@ -2,7 +2,8 @@
 
 #library('xml_bench');
 
-#import('../lib/petitparser.dart');
+#import('package:petitparser/petitparser.dart');
+
 #import('../grammar/xml/xml.dart');
 
 void main() {

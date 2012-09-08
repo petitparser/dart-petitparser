@@ -2,7 +2,8 @@
 
 #library('all_tests');
 
-#import('../packages/unittest/unittest.dart');
+#import('package:unittest/unittest.dart');
+#import('package:petitparser/petitparser.dart');
 
 #import('petitparser_tests.dart', prefix: 'petitparser');
 #import('json_tests.dart', prefix: 'json');

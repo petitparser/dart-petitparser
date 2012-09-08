@@ -2,9 +2,8 @@
 
 #library('petitparser_tests');
 
-#import('../packages/unittest/unittest.dart');
-
-#import('../lib/petitparser.dart');
+#import('package:unittest/unittest.dart');
+#import('package:petitparser/petitparser.dart');
 
 void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position]) {
   Result result = parser.parse(input);

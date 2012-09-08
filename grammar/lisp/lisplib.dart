@@ -4,7 +4,7 @@
 
 #import('dart:math');
 
-#import('../../lib/petitparser.dart');
+#import('package:petitparser/petitparser.dart');
 
 #source('cons.dart');
 #source('environment.dart');
