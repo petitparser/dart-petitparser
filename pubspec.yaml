@@ -1,5 +1,5 @@
 name: petitparser
-description: Dynamic Grammars in Dart
+description: Parser framework for dynamic grammars
 version: 0.0.1
 dependencies:
   unittest:
