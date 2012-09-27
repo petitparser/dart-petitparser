@@ -3,8 +3,7 @@
 #library('xml_bench');
 
 #import('package:petitparser/petitparser.dart');
-
-#import('../grammar/xml/xml.dart');
+#import('package:petitparser/xml.dart');
 
 void main() {
 

@@ -2,12 +2,10 @@
 
 #library('lisp');
 
-#import('dart:builtin');
 #import('dart:io');
 
 #import('package:petitparser/petitparser.dart');
-
-#import('lisplib.dart');
+#import('package:petitparser/lisplib.dart');
 
 /** Read, evaluate, print loop. */
 void evalInteractive(Parser parser, Environment env, InputStream input, OutputStream output) {

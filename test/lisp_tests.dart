@@ -3,9 +3,9 @@
 #library('lisp_tests');
 
 #import('package:unittest/unittest.dart');
-#import('package:petitparser/petitparser.dart');
 
-#import('../grammar/lisp/lisplib.dart');
+#import('package:petitparser/petitparser.dart');
+#import('package:petitparser/lisplib.dart');
 
 void main() {
   CompositeParser parser = new LispParser();

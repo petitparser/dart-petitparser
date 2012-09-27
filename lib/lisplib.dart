@@ -6,12 +6,12 @@
 
 #import('package:petitparser/petitparser.dart');
 
-#source('cons.dart');
-#source('environment.dart');
-#source('grammar.dart');
-#source('natives.dart');
-#source('parser.dart');
-#source('symbol.dart');
+#source('src/lisp/cons.dart');
+#source('src/lisp/environment.dart');
+#source('src/lisp/grammar.dart');
+#source('src/lisp/natives.dart');
+#source('src/lisp/parser.dart');
+#source('src/lisp/symbol.dart');
 
 /** The evaluation function. */
 Dynamic eval(Environment env, Dynamic expr) {

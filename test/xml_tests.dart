@@ -3,9 +3,9 @@
 #library('xml_tests');
 
 #import('package:unittest/unittest.dart');
-#import('package:petitparser/petitparser.dart');
 
-#import('../grammar/xml/xml.dart');
+#import('package:petitparser/petitparser.dart');
+#import('package:petitparser/xml.dart');
 
 void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).getResult();

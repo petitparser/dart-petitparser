@@ -4,6 +4,6 @@
 
 #import('package:petitparser/petitparser.dart');
 
-#source('xml_grammar.dart');
-#source('xml_parser.dart');
-#source('xml_nodes.dart');
+#source('src/xml/grammar.dart');
+#source('src/xml/parser.dart');
+#source('src/xml/nodes.dart');

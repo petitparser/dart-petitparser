@@ -5,8 +5,7 @@
 #import('dart:html');
 
 #import('package:petitparser/petitparser.dart');
-
-#import('lisplib.dart');
+#import('package:petitparser/lisplib.dart');
 
 void inspector(Element element, Environment environment) {
   var result = '';

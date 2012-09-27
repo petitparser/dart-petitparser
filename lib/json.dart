@@ -6,8 +6,8 @@
 
 #import('package:petitparser/petitparser.dart');
 
-#source('json_grammar.dart');
-#source('json_parser.dart');
+#source('src/json/grammar.dart');
+#source('src/json/parser.dart');
 
 final ESCAPE_TABLE = const {
   '\\': '\\',
