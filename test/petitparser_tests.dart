@@ -10,7 +10,7 @@ void expectSuccess(Parser parser, Dynamic input, Dynamic expected, [int position
   Result result = parser.parse(input);
   expect(result.isSuccess(), isTrue);
   expect(result.isFailure(), isFalse);
-  expect(result.getResult(), expected);
+  expect(result.result, expected);
   expect(result.position, position != null ? position : input.length);
 }
 
@@ -20,7 +20,7 @@ void expectFailure(Parser parser, Dynamic input, [int position = 0, String messa
   expect(result.isSuccess(), isFalse);
   expect(result.position, position);
   if (message != null) {
-    expect(result.getMessage(), message);
+    expect(result.message, message);
   }
 }
 
@@ -77,7 +77,7 @@ main() {
       Parser parser = digit().plus().token().trim();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
-      Token token = parser.parse('  123 ').getResult();
+      Token token = parser.parse('  123 ').result;
       expect(token.length, 3);
       expect(token.start, 2);
       expect(token.stop, 5);
@@ -86,12 +86,12 @@ main() {
     });
     test('token() line', () {
       Parser parser = any().token().star().map((List list) => list.map((Token token) => token.line));
-      expect(parser.parse('1\r12\r\n123\n1234').getResult(),
+      expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
     test('token() column', () {
       Parser parser = any().token().star().map((list) => list.map((token) => token.column));
-      expect(parser.parse('1\r12\r\n123\n1234').getResult(),
+      expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
     test('action()', () {

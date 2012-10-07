@@ -133,7 +133,7 @@ void main() {
 
    stopwatch.start();
    for (int i = 0; i < 2000; i++) {
-     parser.parse(input).getResult();
+     parser.parse(input).result;
    }
    stopwatch.stop();
 

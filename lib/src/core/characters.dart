@@ -142,7 +142,7 @@ Parser pattern(String element, [String message]) {
       return each[0] == null ? each[1] : each[1].neg();
     });
   }
-  _CharacterParser parser = _pattern.parse(element).getResult();
+  _CharacterParser parser = _pattern.parse(element).result;
   parser._message = message != null ? message : '[$element] expected';
   return parser;
 }

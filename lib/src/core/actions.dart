@@ -16,7 +16,7 @@ class ActionParser extends DelegateParser {
   Result _parse(Context context) {
     var result = super._parse(context);
     if (result.isSuccess()) {
-      return result.success(_function(result.getResult()));
+      return result.success(_function(result.result));
     } else {
       return result;
     }
@@ -46,7 +46,7 @@ class TrimmingParser extends DelegateParser {
     do {
       current = _trimmer._parse(current);
     } while (current.isSuccess());
-    return current.success(result.getResult());
+    return current.success(result.result);
   }
 
   List<Parser> get children => [_delegate, _trimmer];

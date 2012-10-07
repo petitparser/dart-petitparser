@@ -8,9 +8,9 @@
 #import('package:petitparser/xml.dart');
 
 void validate(Parser parser, String input) {
-  XmlNode tree = parser.parse(input).getResult();
+  XmlNode tree = parser.parse(input).result;
   assertTreeInvariants(tree);
-  XmlNode copy = parser.parse(tree.toString()).getResult();
+  XmlNode copy = parser.parse(tree.toString()).result;
   expect(tree.toString(), copy.toString());
 }
 

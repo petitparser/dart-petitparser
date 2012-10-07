@@ -11,7 +11,7 @@ class AndParser extends DelegateParser {
   Result _parse(Context context) {
     var result = super._parse(context);
     if (result.isSuccess()) {
-      return context.success(result.getResult());
+      return context.success(result.result);
     } else {
       return result;
     }
@@ -125,7 +125,7 @@ class RepeatingParser extends DelegateParser {
       if (result.isFailure()) {
         return result;
       }
-      elements.add(result.getResult());
+      elements.add(result.result);
       current = result;
     }
     while (elements.length < _max) {
@@ -133,7 +133,7 @@ class RepeatingParser extends DelegateParser {
       if (result.isFailure()) {
         return current.success(elements);
       }
-      elements.add(result.getResult());
+      elements.add(result.result);
       current = result;
     }
     return current.success(elements);
@@ -156,7 +156,7 @@ class SequenceParser extends ListParser {
       if (result.isFailure()) {
         return result;
       }
-      elements[i] = result.getResult();
+      elements[i] = result.result;
       current = result;
     }
     return current.success(elements);

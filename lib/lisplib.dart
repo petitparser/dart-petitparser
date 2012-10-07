@@ -36,7 +36,7 @@ Dynamic evalArguments(Environment env, Dynamic args) {
 /** Reads and evaluates a script [contents]. */
 Dynamic evalString(Parser parser, Environment env, String script) {
   var result = null;
-  for (var cell in parser.parse(script).getResult()) {
+  for (var cell in parser.parse(script).result) {
     result = eval(env, cell);
   }
   return result;

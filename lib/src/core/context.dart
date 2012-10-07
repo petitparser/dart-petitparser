@@ -40,15 +40,15 @@ class Context {
 /**
  * An immutable parse result.
  */
-class Result extends Context {
+abstract class Result extends Context {
 
   const Result(buffer, position) : super(buffer, position);
 
   /** Returns the parse result of the current context. */
-  abstract Dynamic getResult();
+  abstract Dynamic get result;
 
   /** Returns the parse message of the current context. */
-  abstract String getMessage();
+  abstract String get message;
 
 }
 
@@ -63,8 +63,8 @@ class Success extends Result {
 
   bool isSuccess() => true;
 
-  Dynamic getResult() => _result;
-  String getMessage() => null;
+  Dynamic get result => _result;
+  String get message => null;
 
   String toString() => 'Success[$_position]: $_result';
 
@@ -81,8 +81,8 @@ class Failure extends Result {
 
   bool isFailure() => true;
 
-  Dynamic getResult() { throw new UnsupportedOperationException(_message); }
-  String getMessage() => _message;
+  Dynamic get result => throw new UnsupportedOperationException(_message);
+  String get message => _message;
 
   String toString() => 'Failure[$_position]: $_message';
 

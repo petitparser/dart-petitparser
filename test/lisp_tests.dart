@@ -42,70 +42,70 @@ void main() {
   });
   group('Parser', () {
     test('Symbol', () {
-      var cell = atom.parse('foo').getResult();
+      var cell = atom.parse('foo').result;
       expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, 'foo');
       expect(cell.toString(), 'foo');
     });
     test('Symbol for operator', () {
-      var cell = atom.parse('+').getResult();
+      var cell = atom.parse('+').result;
       expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, '+');
     });
     test('Symbol for special', () {
-      var cell = atom.parse('set!').getResult();
+      var cell = atom.parse('set!').result;
       expect(cell, new isInstanceOf<Symbol>());
       expect(cell.name, 'set!');
     });
     test('String', () {
-      var cell = atom.parse('"foo"').getResult();
+      var cell = atom.parse('"foo"').result;
       expect(cell, new isInstanceOf<String>());
       expect(cell, 'foo');
     });
     test('String with escape', () {
-      var cell = atom.parse('"\\""').getResult();
+      var cell = atom.parse('"\\""').result;
       expect(cell, '"');
     });
     test('Number integer', () {
-      var cell = atom.parse('123').getResult();
+      var cell = atom.parse('123').result;
       expect(cell, 123);
     });
     test('Number negative integer', () {
-      var cell = atom.parse('-123').getResult();
+      var cell = atom.parse('-123').result;
       expect(cell, -123);
     });
     test('Number positive integer', () {
-      var cell = atom.parse('+123').getResult();
+      var cell = atom.parse('+123').result;
       expect(cell, 123);
     });
     test('Number floating', () {
-      var cell = atom.parse('123.45').getResult();
+      var cell = atom.parse('123.45').result;
       expect(cell, 123.45);
     });
     test('Number floating exponential', () {
-      var cell = atom.parse('1.23e4').getResult();
+      var cell = atom.parse('1.23e4').result;
       expect(cell, 1.23e4);
     });
     test('List empty', () {
-      var cell = atom.parse('()').getResult();
+      var cell = atom.parse('()').result;
       expect(cell, isNull);
     });
     test('List empty []', () {
-      var cell = atom.parse('[ ]').getResult();
+      var cell = atom.parse('[ ]').result;
       expect(cell, isNull);
     });
     test('List empty {}', () {
-      var cell = atom.parse('{   }').getResult();
+      var cell = atom.parse('{   }').result;
       expect(cell, isNull);
     });
     test('List one element', () {
-      var cell = atom.parse('(1)').getResult();
+      var cell = atom.parse('(1)').result;
       expect(cell, new isInstanceOf<Cons>());
       expect(cell.head, 1);
       expect(cell.tail, isNull);
     });
     test('List two elements', () {
-      var cell = atom.parse('(1 2)').getResult();
+      var cell = atom.parse('(1 2)').result;
       expect(cell, new isInstanceOf<Cons>());
       expect(cell.head, 1);
       expect(cell.tail, new isInstanceOf<Cons>());
@@ -113,7 +113,7 @@ void main() {
       expect(cell.tail.tail, isNull);
     });
     test('List three elements', () {
-      var cell = atom.parse('(+ 1 2)').getResult();
+      var cell = atom.parse('(+ 1 2)').result;
       expect(cell, new isInstanceOf<Cons>());
       expect(cell.head, new isInstanceOf<Symbol>());
       expect(cell.head.name, '+');
