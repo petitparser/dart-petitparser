@@ -15,6 +15,10 @@ class JenkinsConfiguration extends Configuration {
 
   bool printed = false;
 
+  void onStart() {
+    // nothing to do
+  }
+
   void onDone(int passed, int failed, int errors, List<TestCase> results, String uncaughtError) {
     if (!printed) {
       print('<?xml version="1.0" encoding="UTF-8" ?>');
