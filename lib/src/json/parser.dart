@@ -26,7 +26,7 @@ class JsonParser extends JsonGrammar {
     action('nullToken', (each) => null);
     redef('stringToken', (parser) => ref('stringPrimitive').trim());
     action('numberToken', (each) {
-      var floating = parseDouble(each);
+      var floating = double.parse(each);
       var integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
         return integral;

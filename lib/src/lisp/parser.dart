@@ -19,7 +19,7 @@ class LispParser extends LispGrammar {
 
     action('symbol', (each) => new Symbol(each));
     action('number', (each) {
-      var floating = parseDouble(each);
+      var floating = double.parse(each);
       var integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
         return integral;
