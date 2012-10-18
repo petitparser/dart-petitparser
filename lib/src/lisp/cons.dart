@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of lisplib;
+
 /**
  * The basic data structure of any
  */

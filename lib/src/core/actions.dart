@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /** Function interface for parse actions. */
 typedef Dynamic _ActionFunction(Dynamic argument);
 

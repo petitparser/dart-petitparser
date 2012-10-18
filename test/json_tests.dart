@@ -1,11 +1,10 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('json_tests');
+library json_tests;
 
-#import('package:unittest/unittest.dart');
-
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/json.dart');
+import 'package:unittest/unittest.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/json.dart';
 
 void main() {
   Parser json = new JsonParser();
@@ -116,13 +115,13 @@ void main() {
       expect(json.parse('"foo bar"').result, 'foo bar');
     });
     test('escaped string', () {
-      expect(json.parse(@'"\""').result, '"');
-      expect(json.parse(@'"\\"').result, '\\');
-      expect(json.parse(@'"\b"').result, '\b');
-      expect(json.parse(@'"\f"').result, '\f');
-      expect(json.parse(@'"\n"').result, '\n');
-      expect(json.parse(@'"\r"').result, '\r');
-      expect(json.parse(@'"\t"').result, '\t');
+      expect(json.parse('"\\""').result, '"');
+      expect(json.parse('"\\\\"').result, '\\');
+      expect(json.parse('"\\b"').result, '\b');
+      expect(json.parse('"\\f"').result, '\f');
+      expect(json.parse('"\\n"').result, '\n');
+      expect(json.parse('"\\r"').result, '\r');
+      expect(json.parse('"\\t"').result, '\t');
     });
     test('invalid string', () {
       expect(json.parse('"').isFailure());

@@ -1,13 +1,12 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('json');
+library json;
 
-#import('dart:math');
+import 'dart:math';
+import 'package:petitparser/petitparser.dart';
 
-#import('package:petitparser/petitparser.dart');
-
-#source('src/json/grammar.dart');
-#source('src/json/parser.dart');
+part 'src/json/grammar.dart';
+part 'src/json/parser.dart';
 
 final ESCAPE_TABLE = const {
   '\\': '\\',

@@ -1,11 +1,10 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('xml_tests');
+library xml_tests;
 
-#import('package:unittest/unittest.dart');
-
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/xml.dart');
+import 'package:unittest/unittest.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/xml.dart';
 
 void validate(Parser parser, String input) {
   XmlNode tree = parser.parse(input).result;

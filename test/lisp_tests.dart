@@ -1,11 +1,10 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('lisp_tests');
+library lisp_tests;
 
-#import('package:unittest/unittest.dart');
-
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/lisplib.dart');
+import 'package:unittest/unittest.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/lisplib.dart';
 
 void main() {
   CompositeParser parser = new LispParser();

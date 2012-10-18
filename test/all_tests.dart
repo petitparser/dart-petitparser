@@ -1,14 +1,14 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('all_tests');
+library all_tests;
 
-#import('package:unittest/unittest.dart');
-#import('package:petitparser/petitparser.dart');
+import 'package:unittest/unittest.dart';
+import 'package:petitparser/petitparser.dart';
 
-#import('petitparser_tests.dart', prefix: 'petitparser');
-#import('json_tests.dart', prefix: 'json');
-#import('xml_tests.dart', prefix: 'xml');
-#import('lisp_tests.dart', prefix: 'lisp');
+import 'petitparser_tests.dart' as petitparser;
+import 'json_tests.dart' as json;
+import 'xml_tests.dart' as xml;
+import 'lisp_tests.dart' as lisp;
 
 void main() {
   group('PetitParser', petitparser.main);

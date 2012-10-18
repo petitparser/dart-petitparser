@@ -1,12 +1,12 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('petitparser');
+library petitparser;
 
-#source('src/core/actions.dart');
-#source('src/core/characters.dart');
-#source('src/core/combinators.dart');
-#source('src/core/composite.dart');
-#source('src/core/context.dart');
-#source('src/core/parsers.dart');
-#source('src/core/predicates.dart');
-#source('src/core/reflection.dart');
+part 'src/core/actions.dart';
+part 'src/core/characters.dart';
+part 'src/core/combinators.dart';
+part 'src/core/composite.dart';
+part 'src/core/context.dart';
+part 'src/core/parsers.dart';
+part 'src/core/predicates.dart';
+part 'src/core/reflection.dart';

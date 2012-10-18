@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /** Internal method to convert an element to a character code. */
 int _toCharCode(Dynamic element) {
   if (element is int) {

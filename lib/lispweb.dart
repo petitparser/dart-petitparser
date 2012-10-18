@@ -1,11 +1,10 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('lispweb');
+library lispweb;
 
-#import('dart:html');
-
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/lisplib.dart');
+import 'dart:html';
+import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/lisplib.dart';
 
 void inspector(Element element, Environment environment) {
   var result = '';

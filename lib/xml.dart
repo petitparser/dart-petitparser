@@ -1,9 +1,9 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('xml');
+library xml;
 
-#import('package:petitparser/petitparser.dart');
+import 'package:petitparser/petitparser.dart';
 
-#source('src/xml/grammar.dart');
-#source('src/xml/parser.dart');
-#source('src/xml/nodes.dart');
+part 'src/xml/grammar.dart';
+part 'src/xml/parser.dart';
+part 'src/xml/nodes.dart';

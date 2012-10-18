@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of lisplib;
+
 /** Abstract enviornment of bindings. */
 abstract class Environment {
 

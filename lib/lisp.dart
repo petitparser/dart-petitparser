@@ -1,14 +1,12 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('lisp');
+library lisp;
 
-#import('dart:io');
-
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/lisplib.dart');
+import 'dart:io';
+import 'package:petitparser/lisplib.dart';
 
 /** Read, evaluate, print loop. */
-void evalInteractive(Parser parser, Environment env, InputStream input, OutputStream output) {
+void evalInteractive(LispParser parser, Environment env, InputStream input, OutputStream output) {
   var stream = new StringInputStream(input);
   stream.onLine = () {
     output.writeString('${evalString(parser, env, stream.readLine())}\n');
@@ -57,7 +55,7 @@ void main() {
 
   // process standard library
   if (standardLibrary) {
-    var file = new File('/Users/renggli/Programming/dart/PetitParser/grammar/lisp/default.lisp');
+    var file = new File('lisplib.lisp');
     evalString(parser, environment, file.readAsTextSync());
   }
 

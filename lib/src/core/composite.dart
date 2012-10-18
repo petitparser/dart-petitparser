@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /**
  * Helper to compose complex grammars from various primitive parsers.
  *

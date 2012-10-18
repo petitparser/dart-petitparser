@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /**
  * Abstract base class for all parsers.
  */

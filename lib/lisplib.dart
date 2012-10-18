@@ -1,17 +1,16 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('lisplib');
+library lisplib;
 
-#import('dart:math');
+import 'dart:math';
+import 'package:petitparser/petitparser.dart';
 
-#import('package:petitparser/petitparser.dart');
-
-#source('src/lisp/cons.dart');
-#source('src/lisp/environment.dart');
-#source('src/lisp/grammar.dart');
-#source('src/lisp/natives.dart');
-#source('src/lisp/parser.dart');
-#source('src/lisp/symbol.dart');
+part 'src/lisp/cons.dart';
+part 'src/lisp/environment.dart';
+part 'src/lisp/grammar.dart';
+part 'src/lisp/natives.dart';
+part 'src/lisp/parser.dart';
+part 'src/lisp/symbol.dart';
 
 /** The evaluation function. */
 Dynamic eval(Environment env, Dynamic expr) {

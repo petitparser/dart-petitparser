@@ -1,10 +1,9 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('all_tests_jenkins');
+library all_tests_jenkins;
 
-#import('package:unittest/unittest.dart');
-
-#import('all_tests.dart', prefix: 'all');
+import 'package:unittest/unittest.dart';
+import 'all_tests.dart' as all;
 
 void main() {
   configure(new JenkinsConfiguration());

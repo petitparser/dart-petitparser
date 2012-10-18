@@ -1,9 +1,9 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-#library('xml_bench');
+library xml_bench;
 
-#import('package:petitparser/petitparser.dart');
-#import('package:petitparser/xml.dart');
+import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/xml.dart';
 
 void main() {
 

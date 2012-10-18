@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /** Iterable over all parsers reachable from a [root]. */
 class ParserIterable implements Iterable<Parser> {
 

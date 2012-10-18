@@ -1,5 +1,7 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
+part of petitparser;
+
 /** Predicate that accepts any input. */
 Parser any([String message]) {
   return new _AnyPredicateParser(message != null ? message : 'input expected');
