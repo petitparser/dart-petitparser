@@ -4,7 +4,7 @@ library lispweb;
 
 import 'dart:html';
 import 'package:petitparser/petitparser.dart';
-import 'package:petitparser/lisplib.dart';
+import 'package:petitparser/lisp.dart';
 
 void inspector(Element element, Environment environment) {
   var result = '';
@@ -22,8 +22,8 @@ void inspector(Element element, Environment environment) {
 main() {
   Parser parser = new LispParser();
   Environment root = new RootEnvironment();
-  Environment natives = Natives.importAllInto(root.create());
-  Environment environment = natives.create();
+  evalString(parser, root, Natives.standardLibrary);
+  Environment environment = root.create();
 
   TextAreaElement input = query('#input');
   TextAreaElement output = query('#output');

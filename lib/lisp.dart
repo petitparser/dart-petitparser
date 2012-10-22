@@ -2,70 +2,41 @@
 
 library lisp;
 
-import 'dart:io';
-import 'package:petitparser/lisplib.dart';
+import 'dart:math';
+import 'package:petitparser/petitparser.dart';
 
-/** Read, evaluate, print loop. */
-void evalInteractive(LispParser parser, Environment env, InputStream input, OutputStream output) {
-  var stream = new StringInputStream(input);
-  stream.onLine = () {
-    output.writeString('${evalString(parser, env, stream.readLine())}\n');
-  };
+part 'src/lisp/cons.dart';
+part 'src/lisp/environment.dart';
+part 'src/lisp/grammar.dart';
+part 'src/lisp/natives.dart';
+part 'src/lisp/parser.dart';
+part 'src/lisp/symbol.dart';
+
+/** The evaluation function. */
+Dynamic eval(Environment env, Dynamic expr) {
+  if (expr is Cons) {
+    return eval(env, expr.head)(env, expr.tail);
+  } else if (expr is Symbol) {
+    return env[expr];
+  } else {
+    return expr;
+  }
 }
 
-/** Entry point for the command line interpreter. */
-void main() {
-
-  // default options
-  bool standardLibrary = true;
-  bool interactiveMode = false;
-  List files = new List();
-
-  // parse arguments
-  var options = new Options();
-  for (var option in options.arguments) {
-    if (option.startsWith('-') && files.isEmpty()) {
-      if (option == '-n') {
-        standardLibrary = false;
-      } else if (option == '-i') {
-        interactiveMode = true;
-      } else if (option == '-?') {
-        print('${options.executable} lisp.dart -n -i [files]');
-        print(' -i enforces the interactive mode');
-        print(' -n does not load the standard library');
-        exit(0);
-      } else {
-        print('Unknown option: $option');
-        exit(1);
-      }
-    } else {
-      var file = new File(option);
-      if (file.existsSync()) {
-        files.add(file);
-      } else {
-        print('File not found: $option');
-        exit(2);
-      }
-    }
+/** The arguments evaluatation function. */
+Dynamic evalArguments(Environment env, Dynamic args) {
+  if (args != null) {
+    return new Cons(eval(env, args.head), evalArguments(env, args.tail));
+  } else {
+    return args;
   }
+}
 
-  // evaluation context
-  var parser = new LispParser();
-  var environment = new RootEnvironment();
-
-  // process standard library
-  if (standardLibrary) {
-    var file = new File('lisplib.lisp');
-    evalString(parser, environment, file.readAsTextSync());
+/** Reads and evaluates a script [contents]. */
+Dynamic evalString(Parser parser, Environment env, String script) {
+  var result = null;
+  for (var cell in parser.parse(script).result) {
+    result = eval(env, cell);
   }
-
-  // process files given as argument
-  files.forEach((file) {
-    evalString(parser, environment, file.readAsTextSync());
-  });
-
-  // process console input
-  if (interactiveMode || files.isEmpty()) {
-    evalInteractive(parser, environment, stdin, stdout);
-  }
+  return result;
 }

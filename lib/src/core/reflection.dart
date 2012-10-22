@@ -19,11 +19,11 @@ class ParserIterable implements Iterable<Parser> {
 class ParserIterator implements Iterator<Parser> {
 
   final List<Parser> _todo;
-  final List<Parser> _done;
+  final Set<Parser> _done;
 
   ParserIterator(Parser root)
       : _todo = new List.from([root]),
-        _done = new List();
+        _done = new Set();
 
   bool hasNext() {
     return !_todo.isEmpty();
@@ -35,7 +35,7 @@ class ParserIterator implements Iterator<Parser> {
     }
     var parser = _todo.removeLast();
     _done.add(parser);
-    _todo.addAll(parser.children.filter((each) => _done.indexOf(each) === -1));
+    _todo.addAll(parser.children.filter((each) => !_done.contains(each)));
     return parser;
   }
 
