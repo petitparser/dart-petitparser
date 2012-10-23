@@ -26,12 +26,12 @@ class Context {
 
   /** Copies the current context to indicate a parse success. */
   Success success(Dynamic result, [int position]) {
-    return new Success(_buffer, position === null ? _position : position, result);
+    return new Success(_buffer, position == null ? _position : position, result);
   }
 
   /** Copies the current context to indicate a parse failure. */
   Failure failure(String message, [int position]) {
-    return new Failure(_buffer, position === null ? _position : position, message);
+    return new Failure(_buffer, position == null ? _position : position, message);
   }
 
   /** Returns a human readable string of the current context */

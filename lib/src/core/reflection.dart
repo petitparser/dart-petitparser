@@ -52,8 +52,8 @@ class Transformations {
       var parsers = new List.from(new ParserIterable(root));
       parsers.forEach((source) {
         var target = function(source);
-        if (target != null && source !== target) {
-          if (source === root) {
+        if (target != null && !identical(source, target)) {
+          if (identical(source, root)) {
             root = target;
           }
           sources.add(source);

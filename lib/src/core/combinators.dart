@@ -62,7 +62,7 @@ abstract class ListParser extends Parser {
   void replace(Parser source, Parser target) {
     super.replace(source, target);
     for (var i = 0; i < _parsers.length; i++) {
-      if (_parsers[i] === source) {
+      if (identical(_parsers[i], source)) {
         _parsers[i] = target;
       }
     }

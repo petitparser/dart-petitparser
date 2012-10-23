@@ -95,7 +95,7 @@ Parser char(Dynamic element, [String message]) {
 class _CharParser extends _CharacterParser {
   final int _char;
   _CharParser(String message, this._char) : super(message);
-  bool _match(int value) => _char === value;
+  bool _match(int value) => identical(_char, value);
 }
 
 /** Returns a parser that accepts any digit character. */
@@ -180,9 +180,9 @@ Parser whitespace([String message]) {
 
 class _WhitespaceParser extends _CharacterParser {
   _WhitespaceParser(String message) : super(message);
-  bool _match(int value) => (9 <= value && value <= 13) || (value === 32) || (value === 160)
-      || (value === 5760) || (value === 6158) || (8192 <= value && value <= 8202) || (value === 8232)
-      || (value === 8233) || (value === 8239) || (value === 8287) || (value === 12288);
+  bool _match(int value) => (9 <= value && value <= 13) || (value == 32) || (value == 160)
+      || (value == 5760) || (value == 6158) || (8192 <= value && value <= 8202) || (value == 8232)
+      || (value == 8233) || (value == 8239) || (value == 8287) || (value == 12288);
 }
 
 /** Returns a parser that accepts any word character. */
@@ -193,5 +193,5 @@ Parser word([String message]) {
 class _WordParser extends _CharacterParser {
   _WordParser(String message) : super(message);
   bool _match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
-      || (48 <= value && value <= 57) || (value === 95);
+      || (48 <= value && value <= 57) || (value == 95);
 }

@@ -124,7 +124,7 @@ abstract class DelegateParser extends Parser {
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (_delegate === source) {
+    if (identical(_delegate, source)) {
       _delegate = target;
     }
   }

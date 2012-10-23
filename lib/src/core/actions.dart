@@ -55,7 +55,7 @@ class TrimmingParser extends DelegateParser {
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (_trimmer === source) {
+    if (identical(_trimmer, source)) {
       _trimmer = target;
     }
   }
@@ -106,9 +106,9 @@ class Token {
   const Token(this._buffer, this._start, this._stop);
 
   bool operator == (Token other) => other is Token
-      && _buffer === other._buffer
-      && _start === other._start
-      && _stop === other._stop;
+      && _buffer == other._buffer
+      && _start == other._start
+      && _stop == other._stop;
 
   int get start => _start;
   int get stop => _stop;
@@ -145,7 +145,7 @@ class Token {
 
   static Parser NEWLINE_PARSER;
   static Parser newlineParser() {
-    if (NEWLINE_PARSER === null) {
+    if (NEWLINE_PARSER == null) {
       NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
     }
     return NEWLINE_PARSER;
