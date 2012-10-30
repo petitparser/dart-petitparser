@@ -12,17 +12,17 @@ abstract class XmlNode implements Iterable<XmlNode> {
   /**
    * Answer the parent node of the receiver, or [null] if there is none.
    */
-  XmlNode getParent() => _parent;
+  XmlNode get parent => _parent;
 
   /**
    * Answer the attribute nodes of the receiver.
    */
-  List<XmlAttribute> getAttributes() => [];
+  List<XmlAttribute> get attributes => [];
 
   /**
    * Answer the child nodes of the receiver.
    */
-  List<XmlNode> getChildren() => [];
+  List<XmlNode> get children => [];
 
   /**
    * Answer an iterator over the receiver, all attributes and nested children.
@@ -35,8 +35,8 @@ abstract class XmlNode implements Iterable<XmlNode> {
 
   void _allAllNodesTo(List<XmlNode> nodes) {
     nodes.add(this);
-    nodes.addAll(getAttributes());
-    for (XmlNode node in getChildren()) {
+    nodes.addAll(attributes);
+    for (XmlNode node in children) {
       node._allAllNodesTo(nodes);
     }
   }
@@ -45,46 +45,42 @@ abstract class XmlNode implements Iterable<XmlNode> {
    * Answer the root of the subtree in which this node is found, whether that's
    * a document or another element.
    */
-  XmlNode getRoot() {
-    return _parent == null ? this : _parent.getRoot();
+  XmlNode get root {
+    return parent == null ? this : parent.root;
   }
 
   /**
    * Answer the document that contains this node, or [null] if the node is
    * not part of a document.
    */
-  XmlDocument getDocument() {
-    return _parent == null ? null : _parent.getDocument();
+  XmlDocument get document {
+    return parent == null ? null : parent.document;
   }
 
   /**
    * Answer the first child of the receiver or [null].
    */
-  XmlNode getFirstChild() {
-    List<XmlNode> children = getChildren();
+  XmlNode get firstChild {
     return children.length > 0 ? children[0] : null;
   }
 
   /**
    * Answer the last child of the receiver or [null].
    */
-  XmlNode getLastChild() {
-    List<XmlNode> children = getChildren();
+  XmlNode get lastChild {
     return children.length > 0 ? children[children.length - 1] : null;
   }
 
   /**
    * Answer the next sibling of the receiver or [null].
    */
-  XmlNode getNextSibling() {
-    XmlNode parent = getParent();
-    if (parent == null) {
-      return null;
-    }
-    List<XmlNode> children = parent.getChildren();
-    for (int i = 0; i < children.length - 1; i++) {
-      if (children[i] == this) {
-        return children[i + 1];
+  XmlNode get nextSibling {
+    if (parent != null) {
+      List<XmlNode> siblings = parent.children;
+      for (int i = 0; i < siblings.length - 1; i++) {
+        if (siblings[i] == this) {
+          return siblings[i + 1];
+        }
       }
     }
     return null;
@@ -93,15 +89,13 @@ abstract class XmlNode implements Iterable<XmlNode> {
   /**
    * Answer the previous sibling of the receiver or [null].
    */
-  XmlNode getPreviousSibling() {
-    XmlNode parent = getParent();
-    if (parent == null) {
-      return null;
-    }
-    List<XmlNode> children = parent.getChildren();
-    for (int i = 1; i < children.length; i++) {
-      if (children[i] == this) {
-        return children[i - 1];
+  XmlNode get previousSibling {
+    if (parent != null) {
+      List<XmlNode> siblings = parent.children;
+      for (int i = 1; i < siblings.length; i++) {
+        if (siblings[i] == this) {
+          return siblings[i - 1];
+        }
       }
     }
     return null;
@@ -133,12 +127,12 @@ class XmlAttribute extends XmlNode {
 
   XmlAttribute(this._name, this._value);
 
-  XmlName getName() => _name;
-  String getValue() => _value;
+  XmlName get name => _name;
+  String get value => _value;
 
   void writeTo(StringBuffer buffer) {
-    getName().writeTo(buffer);
-    buffer.add('="').add(getValue()).add('"');
+    name.writeTo(buffer);
+    buffer.add('="').add(value).add('"');
   }
 
 }
@@ -152,7 +146,7 @@ abstract class XmlData extends XmlNode {
 
   XmlData(this._data);
 
-  String getData() => _data;
+  String get data => _data;
 
 }
 
@@ -164,7 +158,7 @@ class XmlComment extends XmlData {
   XmlComment(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!--').add(getData()).add('-->');
+    buffer.add('<!--').add(data).add('-->');
   }
 
 }
@@ -177,7 +171,7 @@ class XmlDoctype extends XmlData {
   XmlDoctype(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!DOCTYPE').add(getData()).add('>');
+    buffer.add('<!DOCTYPE').add(data).add('>');
   }
 
 }
@@ -191,10 +185,10 @@ class XmlProcessing extends XmlData {
 
   XmlProcessing(this._target, String data) : super(data);
 
-  String getTarget() => _target;
+  String get target => _target;
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<?').add(getTarget()).add(getData()).add('?>');
+    buffer.add('<?').add(target).add(data).add('?>');
   }
 
 }
@@ -207,7 +201,7 @@ class XmlText extends XmlData {
   XmlText(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add(getData());
+    buffer.add(data);
   }
 
 }
@@ -226,10 +220,10 @@ abstract class XmlParent extends XmlNode {
     }
   }
 
-  List<XmlNode> getChildren() => _children;
+  List<XmlNode> get children => _children;
 
   void writeTo(StringBuffer buffer) {
-    for (XmlNode node in getChildren()) {
+    for (XmlNode node in children) {
       node.writeTo(buffer);
     }
   }
@@ -243,10 +237,10 @@ class XmlDocument extends XmlParent {
 
   XmlDocument(Collection<XmlNode> children) : super(children);
 
-  XmlDocument getDocument() => this;
+  XmlDocument get document => this;
 
-  XmlElement getRootElement() {
-    for (XmlNode node in getChildren()) {
+  XmlElement get rootElement {
+    for (XmlNode node in children) {
       if (node is XmlElement) {
         return node;
       }
@@ -271,17 +265,17 @@ class XmlElement extends XmlParent {
     }
   }
 
-  XmlName getName() => _name;
-  List<XmlAttribute> getAttributes() => _attributes;
+  XmlName get name => _name;
+  List<XmlAttribute> get attributes => _attributes;
 
   String getAttribute(String key) {
     XmlAttribute attribute = getAttributeNode(key);
-    return attribute != null ? attribute.getValue() : null;
+    return attribute != null ? attribute.value : null;
   }
 
   XmlAttribute getAttributeNode(String key) {
-    for (XmlAttribute attribute in getAttributes()) {
-      if (attribute.getName().getLocal() == key) {
+    for (XmlAttribute attribute in attributes) {
+      if (attribute.name.local == key) {
         return attribute;
       }
     }
@@ -290,18 +284,18 @@ class XmlElement extends XmlParent {
 
   void writeTo(StringBuffer buffer) {
     buffer.add('<');
-    getName().writeTo(buffer);
-    for (XmlAttribute attribute in getAttributes()) {
+    name.writeTo(buffer);
+    for (XmlAttribute attribute in attributes) {
       buffer.add(' ');
       attribute.writeTo(buffer);
     }
-    if (getChildren().isEmpty) {
+    if (children.isEmpty) {
       buffer.add(' />');
     } else {
       buffer.add('>');
       super.writeTo(buffer);
       buffer.add('</');
-      getName().writeTo(buffer);
+      name.writeTo(buffer);
       buffer.add('>');
     }
   }
@@ -329,9 +323,9 @@ class XmlName {
     }
   }
 
-  String getLocal() => _local;
-  String getPrefix() => _prefix;
-  String getQualified() => toString();
+  String get local => _local;
+  String get prefix => _prefix;
+  String get qualified => toString();
 
   String toString() {
     StringBuffer buffer = new StringBuffer();
@@ -340,14 +334,14 @@ class XmlName {
   }
 
   void writeTo(StringBuffer buffer) {
-    if (_prefix != null) {
-      buffer.add(_prefix).add(':');
+    if (prefix != null) {
+      buffer.add(prefix).add(':');
     }
-    buffer.add(_local);
+    buffer.add(local);
   }
 
   bool operator == (XmlName obj) {
-    return obj is XmlName && obj._local == _local && obj._prefix == _prefix;
+    return obj is XmlName && obj.local == local && obj.prefix == prefix;
   }
 
 }
