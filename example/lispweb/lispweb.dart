@@ -14,6 +14,7 @@ void inspector(Element element, Environment environment) {
       result = '$result<li><b>$symbol</b>: ${environment[symbol]}</li>';
     }
     result = '$result</ul>';
+    result = '$result<hr/>';
     environment = environment.parent;
   }
   element.innerHTML = result;
@@ -21,7 +22,7 @@ void inspector(Element element, Environment environment) {
 
 main() {
   Parser parser = new LispParser();
-  Environment root = new RootEnvironment();
+  Environment root = new RootEnvironment().create();
   evalString(parser, root, Natives.standardLibrary);
   Environment environment = root.create();
 

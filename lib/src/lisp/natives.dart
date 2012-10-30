@@ -29,6 +29,7 @@ class Natives {
 ; native functions
 (native-import-all)
 
+; null functions
 (define null '())
 (define (null? x) (= '() x))
 
@@ -88,7 +89,7 @@ class Natives {
   static void _basicFunctions() {
     _natives['define'] = (Environment env, dynamic args) {
       if (args.head is Symbol) {
-        return env[args.head] = args.tail;
+        return env[args.head] = args.tail.head;
       } else if (args.head.head is Symbol) {
         return env[args.head.head] = _natives['lambda'](env,
             new Cons(args.head.tail, args.tail));

@@ -27,7 +27,7 @@ abstract class Environment {
   }
 
   /** Returns the keys of the bindings. */
-  Collection<Symbol> get keys => _bindings.getKeys();
+  Collection<Symbol> get keys => _bindings.keys;
 
   /** Returns the parent of the bindings. */
   Environment get parent => null;
