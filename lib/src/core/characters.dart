@@ -28,7 +28,7 @@ abstract class _CharacterParser extends Parser {
     }
     return context.failure(_message);
   }
-  abstract bool _match(int value);
+  bool _match(int value);
   Parser or(Parser other) => other is _CharacterParser ? new _AlternativeCharacterParser([this, other]) : super.or(other);
   Parser neg([String message]) => new _NegatedCharacterParser(message != null ? message : 'no $_message', this);
 }

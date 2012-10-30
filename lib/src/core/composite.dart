@@ -32,7 +32,7 @@ abstract class CompositeParser extends DelegateParser {
   }
 
   /** Initializes the composite grammar. */
-  abstract void initialize();
+  void initialize();
 
   /** Returns a reference to a production with a [name]. */
   Parser ref(String name) {

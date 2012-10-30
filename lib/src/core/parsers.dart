@@ -11,7 +11,7 @@ abstract class Parser {
   // // // // // // // // // // // // // // // // // // // // // // // //
 
   /** Internal abstract method doing the actual parsing. */
-  abstract Result _parse(Context context);
+  Result _parse(Context context);
 
   /** Returns the parse result of the input. */
   Result parse(dynamic input) {

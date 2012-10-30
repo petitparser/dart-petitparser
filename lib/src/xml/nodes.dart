@@ -113,7 +113,7 @@ abstract class XmlNode implements Iterable<XmlNode> {
   /**
    * Writes the XML string of the receiver to a {@code buffer}.
    */
-  abstract void writeTo(StringBuffer buffer);
+  void writeTo(StringBuffer buffer);
 
 }
 

@@ -33,7 +33,7 @@ abstract class Environment {
   Environment get parent => null;
 
   /** Called when a missing binding is accessed. */
-  abstract dynamic _notFound(Symbol key);
+  dynamic _notFound(Symbol key);
 
 }
 
