@@ -2,8 +2,8 @@
 
 library petitparser_tests;
 
-import 'package:unittest/unittest.dart';
 import 'package:petitparser/petitparser.dart';
+import 'package:unittest/unittest.dart';
 
 void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position]) {
   Result result = parser.parse(input);

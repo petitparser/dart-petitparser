@@ -2,9 +2,9 @@
 
 library json_tests;
 
-import 'package:unittest/unittest.dart';
-import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/json.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:unittest/unittest.dart';
 
 void main() {
   Parser json = new JsonParser();

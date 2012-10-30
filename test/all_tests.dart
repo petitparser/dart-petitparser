@@ -2,13 +2,12 @@
 
 library all_tests;
 
-import 'package:unittest/unittest.dart';
 import 'package:petitparser/petitparser.dart';
-
-import 'petitparser_tests.dart' as petitparser;
+import 'package:unittest/unittest.dart';
 import 'json_tests.dart' as json;
-import 'xml_tests.dart' as xml;
 import 'lisp_tests.dart' as lisp;
+import 'petitparser_tests.dart' as petitparser;
+import 'xml_tests.dart' as xml;
 
 void main() {
   group('PetitParser', petitparser.main);

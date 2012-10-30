@@ -2,9 +2,9 @@
 
 library lisp_tests;
 
-import 'package:unittest/unittest.dart';
-import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:unittest/unittest.dart';
 
 void main() {
   CompositeParser parser = new LispParser();
