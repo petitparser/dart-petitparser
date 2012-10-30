@@ -3,7 +3,7 @@
 part of petitparser;
 
 /** Internal method to convert an element to a character code. */
-int _toCharCode(Dynamic element) {
+int _toCharCode(dynamic element) {
   if (element is int) {
     return element;
   }
@@ -88,7 +88,7 @@ class _BinarySearchCharacterParser extends _CharacterParser {
 }
 
 /** Returns a parser that accepts a specific character only. */
-Parser char(Dynamic element, [String message]) {
+Parser char(dynamic element, [String message]) {
   return new _CharParser(message != null ? message : '$element expected', _toCharCode(element));
 }
 
@@ -152,7 +152,7 @@ Parser pattern(String element, [String message]) {
 Parser _pattern;
 
 /** Returns a parser that accepts any character in the range between [start] and [stop]. */
-Parser range(Dynamic start, Dynamic stop, [String message]) {
+Parser range(dynamic start, dynamic stop, [String message]) {
   return new _RangeParser( message != null ? message : '$start..$stop expected', _toCharCode(start), _toCharCode(stop));
 }
 

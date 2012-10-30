@@ -21,7 +21,7 @@ class _AnyPredicateParser extends Parser {
   }
 }
 
-Parser anyIn(Dynamic elements, [String message]) {
+Parser anyIn(dynamic elements, [String message]) {
   return new PredicateParser(1,
     (each) => elements.indexOf(each) >= 0,
     message != null ? message : 'any of $elements expected');

@@ -46,7 +46,7 @@ class JsonGrammar extends CompositeParser {
         .or(ref('characterOctal'))
         .or(ref('characterNormal')));
     def('characterEscape',
-      char('\\').seq(anyIn(new List.from(ESCAPE_TABLE.getKeys()))));
+      char('\\').seq(anyIn(new List.from(ESCAPE_TABLE.keys))));
     def('characterNormal',
       anyIn('"\\').neg());
     def('characterOctal',

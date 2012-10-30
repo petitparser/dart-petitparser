@@ -40,7 +40,7 @@ class JsonParser extends JsonGrammar {
     action('stringPrimitive', (each) => Strings.join(each[1], ''));
     action('characterEscape', (each) => ESCAPE_TABLE[each[1]]);
     action('characterOctal', (each) {
-      throw new UnsupportedOperationException('Octal characters not supported yet');
+      throw new UnsupportedError('Octal characters not supported yet');
     });
 
   }

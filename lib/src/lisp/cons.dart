@@ -8,21 +8,21 @@ part of lisplib;
 class Cons {
 
   /** The head of the cons. */
-  Dynamic _head;
+  dynamic _head;
 
   /** The tail of the cons. */
-  Dynamic _tail;
+  dynamic _tail;
 
   /** Constructs a cons. */
   Cons(this._head, this._tail);
 
   /** Accessors for the head of this cons. */
-  Dynamic get head => _head;
-  set head(Dynamic head) => _head = head;
+  dynamic get head => _head;
+  set head(dynamic head) => _head = head;
 
   /** Accessors for the tail of this cons. */
-  Dynamic get tail => _tail;
-  set tail(Dynamic tail) => _tail = tail;
+  dynamic get tail => _tail;
+  set tail(dynamic tail) => _tail = tail;
 
   /** Compare the cells. */
   bool operator ==(Cons cons) {

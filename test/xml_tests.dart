@@ -98,7 +98,7 @@ void assertAttributeInvariant(XmlNode xml) {
         expect(attribute.getValue(), same(element.getAttribute(attribute.getName().getLocal())));
         expect(attribute, same(element.getAttributeNode(attribute.getName().getLocal())));
       }
-      if (element.getAttributes().isEmpty()) {
+      if (element.getAttributes().isEmpty) {
         expect(element.getAttribute('foo'), isNull);
         expect(element.getAttributeNode('foo'), isNull);
       }

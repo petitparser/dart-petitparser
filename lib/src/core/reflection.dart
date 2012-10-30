@@ -25,13 +25,13 @@ class ParserIterator implements Iterator<Parser> {
       : _todo = new List.from([root]),
         _done = new Set();
 
-  bool hasNext() {
-    return !_todo.isEmpty();
+  bool get hasNext {
+    return !_todo.isEmpty;
   }
 
   Parser next() {
-    if (_todo.isEmpty()) {
-      throw const NoMoreElementsException();
+    if (_todo.isEmpty) {
+      throw new StateError("No more elements");
     }
     var parser = _todo.removeLast();
     _done.add(parser);
@@ -65,7 +65,7 @@ class Transformations {
           parser.replace(sources[i], targets[i]);
         }
       });
-    } while (!sources.isEmpty());
+    } while (!sources.isEmpty);
     return root;
   }
 

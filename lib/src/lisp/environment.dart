@@ -6,7 +6,7 @@ part of lisplib;
 abstract class Environment {
 
   /** The internal environment bindings. */
-  final Map<Symbol, Dynamic> _bindings;
+  final Map<Symbol, dynamic> _bindings;
 
   /** Constructor for the environment. */
   Environment() : _bindings = new Map();
@@ -15,14 +15,14 @@ abstract class Environment {
   Environment create() => new NestedEnvironment(this);
 
   /** Returns the value defined by a [key]. */
-  Dynamic operator [](Symbol key) {
+  dynamic operator [](Symbol key) {
     return _bindings.containsKey(key)
         ? _bindings[key]
         : _notFound(key);
   }
 
   /** Defines or redefines the cell with [value] of a [key]. */
-  void operator []=(Symbol key, Dynamic value) {
+  void operator []=(Symbol key, dynamic value) {
     _bindings[key] = value;
   }
 
@@ -33,7 +33,7 @@ abstract class Environment {
   Environment get parent => null;
 
   /** Called when a missing binding is accessed. */
-  abstract Dynamic _notFound(Symbol key);
+  abstract dynamic _notFound(Symbol key);
 
 }
 
@@ -47,7 +47,7 @@ class RootEnvironment extends Environment {
   RootEnvironment() {
 
     /** Defines a value in the root environment. */
-    _define('define', (Environment env, Dynamic args) {
+    _define('define', (Environment env, dynamic args) {
       if (args.head is Cons) {
         var definition = new Cons(args.head.tail, args.tail);
         return this[args.head.head] = Natives.find('lambda')(env, definition);
@@ -57,19 +57,19 @@ class RootEnvironment extends Environment {
     });
 
     /** Lookup a native function. */
-    _define('native', (Environment env, Dynamic args) {
+    _define('native', (Environment env, dynamic args) {
       return Natives.find(args.head);
     });
 
     /** Defines all native functions. */
-    _define('native-import-all', (Environment env, Dynamic args) {
+    _define('native-import-all', (Environment env, dynamic args) {
       return Natives.importAllInto(this);
     });
 
   }
 
   /** Private function to define primitives. */
-  _define(String key, Dynamic cell) {
+  _define(String key, dynamic cell) {
     this[new Symbol(key)] = cell;
   }
 

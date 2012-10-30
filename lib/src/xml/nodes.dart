@@ -295,7 +295,7 @@ class XmlElement extends XmlParent {
       buffer.add(' ');
       attribute.writeTo(buffer);
     }
-    if (getChildren().isEmpty()) {
+    if (getChildren().isEmpty) {
       buffer.add(' />');
     } else {
       buffer.add('>');

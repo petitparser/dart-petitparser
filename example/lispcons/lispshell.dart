@@ -24,7 +24,7 @@ void main() {
   // parse arguments
   var options = new Options();
   for (var option in options.arguments) {
-    if (option.startsWith('-') && files.isEmpty()) {
+    if (option.startsWith('-') && files.isEmpty) {
       if (option == '-n') {
         standardLibrary = false;
       } else if (option == '-i') {
@@ -64,7 +64,7 @@ void main() {
   });
 
   // process console input
-  if (interactiveMode || files.isEmpty()) {
+  if (interactiveMode || files.isEmpty) {
     evalInteractive(parser, environment, stdin, stdout);
   }
 }

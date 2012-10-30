@@ -5,10 +5,10 @@ part of lisplib;
 /** Collection of native functions. */
 class Natives {
 
-  static Map<String, Dynamic> _natives;
+  static Map<String, dynamic> _natives;
 
   /** Looks a native function up. */
-  static Dynamic find(String name) {
+  static dynamic find(String name) {
     _initialize();
     return _natives[name];
   }
@@ -86,7 +86,7 @@ class Natives {
   }
 
   static void _basicFunctions() {
-    _natives['define'] = (Environment env, Dynamic args) {
+    _natives['define'] = (Environment env, dynamic args) {
       if (args.head is Symbol) {
         return env[args.head] = args.tail;
       } else if (args.head.head is Symbol) {
@@ -96,8 +96,8 @@ class Natives {
         return null;
       }
     };
-    _natives['lambda'] = (Environment lambda_env, Dynamic lambda_args) {
-      return (Environment env, Dynamic args) {
+    _natives['lambda'] = (Environment lambda_env, dynamic lambda_args) {
+      return (Environment env, dynamic args) {
         var inner = lambda_env.create();
         var names = lambda_args.head;
         var values = evalArguments(env, args);
@@ -115,16 +115,16 @@ class Natives {
         return result;
       };
     };
-    _natives['quote'] = (Environment env, Dynamic args) {
+    _natives['quote'] = (Environment env, dynamic args) {
       return args;
     };
-    _natives['eval'] = (Environment env, Dynamic args) {
+    _natives['eval'] = (Environment env, dynamic args) {
       return eval(env.create(), eval(env, args.head));
     };
-    _natives['apply'] = (Environment env, Dynamic args) {
+    _natives['apply'] = (Environment env, dynamic args) {
       return eval(env, args.head)(env.create(), args.tail);
     };
-    _natives['let'] = (Environment env, Dynamic args) {
+    _natives['let'] = (Environment env, dynamic args) {
       var inner = env.create();
       var binding = args.head;
       while (binding != null) {
@@ -139,10 +139,10 @@ class Natives {
       }
       return result;
     };
-    _natives['set!'] = (Environment env, Dynamic args) {
+    _natives['set!'] = (Environment env, dynamic args) {
       return env[args.head] = eval(env, args.tail.head);
     };
-    _natives['print'] = (Environment env, Dynamic args) {
+    _natives['print'] = (Environment env, dynamic args) {
       while (args != null) {
         print(eval(env, args.head));
         args = args.tail;
@@ -152,7 +152,7 @@ class Natives {
   }
 
   static void _controlStructures() {
-    _natives['if'] = (Environment env, Dynamic args) {
+    _natives['if'] = (Environment env, dynamic args) {
       var condition = eval(env, args.head);
       if (condition) {
         if (args.tail != null) {
@@ -165,7 +165,7 @@ class Natives {
       }
       return null;
     };
-    _natives['while'] = (Environment env, Dynamic args) {
+    _natives['while'] = (Environment env, dynamic args) {
       var result = null;
       while (eval(env, args.head)) {
         result = eval(env, args.tail.head);
@@ -174,7 +174,7 @@ class Natives {
     };
     _natives['true'] = true;
     _natives['false'] = false;
-    _natives['and'] = (Environment env, Dynamic args) {
+    _natives['and'] = (Environment env, dynamic args) {
       while (args != null) {
         if (!eval(env, args.head)) {
           return false;
@@ -183,7 +183,7 @@ class Natives {
       }
       return true;
     };
-    _natives['or'] = (Environment env, Dynamic args) {
+    _natives['or'] = (Environment env, dynamic args) {
       while (args != null) {
         if (eval(env, args.head)) {
           return true;
@@ -192,20 +192,20 @@ class Natives {
       }
       return false;
     };
-    _natives['not'] = (Environment env, Dynamic args) {
+    _natives['not'] = (Environment env, dynamic args) {
       return !eval(env, args.head);
     };
   }
 
   static void _arithmeticMethods() {
-    _natives['+'] = (Environment env, Dynamic args) {
+    _natives['+'] = (Environment env, dynamic args) {
       var value = eval(env, args.head);
       for (args = args.tail; args != null; args = args.tail) {
         value += eval(env, args.head);
       }
       return value;
     };
-    _natives['-'] = (Environment env, Dynamic args) {
+    _natives['-'] = (Environment env, dynamic args) {
       var value = eval(env, args.head);
       if (args.tail == null) {
         return -value;
@@ -215,21 +215,21 @@ class Natives {
       }
       return value;
     };
-    _natives['*'] = (Environment env, Dynamic args) {
+    _natives['*'] = (Environment env, dynamic args) {
       var value = eval(env, args.head);
       for (args = args.tail; args != null; args = args.tail) {
         value *= eval(env, args.head);
       }
       return value;
     };
-    _natives['/'] = (Environment env, Dynamic args) {
+    _natives['/'] = (Environment env, dynamic args) {
       var value = eval(env, args.head);
       for (args = args.tail; args != null; args = args.tail) {
         value /= eval(env, args.head);
       }
       return value;
     };
-    _natives['%'] = (Environment env, Dynamic args) {
+    _natives['%'] = (Environment env, dynamic args) {
       var value = eval(env, args.head);
       for (args = args.tail; args != null; args = args.tail) {
         value %= eval(env, args.head);
@@ -239,46 +239,46 @@ class Natives {
   }
 
   static void _arithmeticComparators() {
-    _natives['<'] = (Environment env, Dynamic args) {
+    _natives['<'] = (Environment env, dynamic args) {
       return eval(env, args.head) < eval(env, args.tail.head);
     };
-    _natives['<='] = (Environment env, Dynamic args) {
+    _natives['<='] = (Environment env, dynamic args) {
       return eval(env, args.head) <= eval(env, args.tail.head);
     };
-    _natives['='] = (Environment env, Dynamic args) {
+    _natives['='] = (Environment env, dynamic args) {
       return eval(env, args.head) == eval(env, args.tail.head);
     };
-    _natives['!='] = (Environment env, Dynamic args) {
+    _natives['!='] = (Environment env, dynamic args) {
       return eval(env, args.head) != eval(env, args.tail.head);
     };
-    _natives['>'] = (Environment env, Dynamic args) {
+    _natives['>'] = (Environment env, dynamic args) {
       return eval(env, args.head) > eval(env, args.tail.head);
     };
-    _natives['>='] = (Environment env, Dynamic args) {
+    _natives['>='] = (Environment env, dynamic args) {
       return eval(env, args.head) >= eval(env, args.tail.head);
     };
   }
 
   static void _listOperators() {
-    _natives['cons'] = (Environment env, Dynamic args) {
+    _natives['cons'] = (Environment env, dynamic args) {
       return new Cons(eval(env, args.head), eval(env, args.tail.head));
     };
-    _natives['car'] = (Environment env, Dynamic args) {
+    _natives['car'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
       return cons != null ? cons.head : null;
     };
-    _natives['car!'] = (Environment env, Dynamic args) {
+    _natives['car!'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
       if (cons != null) {
         cons.head = eval(env, args.tail.head);
       }
       return cons;
     };
-    _natives['cdr'] = (Environment env, Dynamic args) {
+    _natives['cdr'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
       return cons != null ? cons.tail : null;
     };
-    _natives['cdr!'] = (Environment env, Dynamic args) {
+    _natives['cdr!'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
       if (cons != null) {
         cons.tail = eval(env, args.tail.head);

@@ -14,24 +14,24 @@ abstract class Parser {
   abstract Result _parse(Context context);
 
   /** Returns the parse result of the input. */
-  Result parse(Dynamic input) {
+  Result parse(dynamic input) {
     return _parse(new Context(input, 0));
   }
 
   /** Tests if the input can be successfully parsed. */
-  bool accept(Dynamic input) {
+  bool accept(dynamic input) {
     return parse(input).isSuccess();
   }
 
   /** Returns a list of all successful overlapping parses of the input. */
-  Iterable matches(Dynamic input) {
+  Iterable matches(dynamic input) {
     var list = new List();
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
   /** Returns a list of all successful non-overlapping parses of the input. */
-  Iterable matchesSkipping(Dynamic input) {
+  Iterable matchesSkipping(dynamic input) {
     var list = new List();
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;

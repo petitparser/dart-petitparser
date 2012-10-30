@@ -13,7 +13,7 @@ class Symbol implements Hashable {
   /** Factory for new symbol cells. */
   factory Symbol(String name) {
     if (_interned == null) _interned = new HashMap();
-    return _interned.putIfAbsent(name, () => new Symbol._internal(name, name.hashCode()));
+    return _interned.putIfAbsent(name, () => new Symbol._internal(name, name.hashCode));
   }
 
   /** The name of the symbol. */
@@ -32,6 +32,6 @@ class Symbol implements Hashable {
   String toString() => _name;
 
   /** Returns the hash code of the receiver. */
-  int hashCode() => _hash;
+  int get hashCode => _hash;
 
 }

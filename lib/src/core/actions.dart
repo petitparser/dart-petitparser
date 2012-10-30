@@ -3,7 +3,7 @@
 part of petitparser;
 
 /** Function interface for parse actions. */
-typedef Dynamic _ActionFunction(Dynamic argument);
+typedef dynamic _ActionFunction(dynamic argument);
 
 /**
  * A parser that performs a transformation with a given function on the
@@ -78,7 +78,7 @@ class FlattenParser extends DelegateParser {
     }
   }
 
-  Dynamic _flatten(Dynamic buffer, int start, int stop) => buffer.substring(start, stop);
+  dynamic _flatten(dynamic buffer, int start, int stop) => buffer.substring(start, stop);
 
 }
 
@@ -89,7 +89,7 @@ class TokenParser extends FlattenParser {
 
   TokenParser(parser) : super(parser);
 
-  Dynamic _flatten(Dynamic buffer, int start, int stop) => new Token(buffer, start, stop);
+  dynamic _flatten(dynamic buffer, int start, int stop) => new Token(buffer, start, stop);
 
 }
 
@@ -99,7 +99,7 @@ class TokenParser extends FlattenParser {
  * within that buffer.
  */
 class Token {
-  final Dynamic _buffer;
+  final dynamic _buffer;
   final int _start;
   final int _stop;
 
@@ -114,8 +114,8 @@ class Token {
   int get stop => _stop;
   int get length => _stop - _start;
 
-  Dynamic get buffer => _buffer;
-  Dynamic get value => _buffer.substring(_start, _stop);
+  dynamic get buffer => _buffer;
+  dynamic get value => _buffer.substring(_start, _stop);
 
   /** Returns the line number of this token. */
   int get line {

@@ -7,13 +7,13 @@ part of petitparser;
  */
 class Context {
 
-  final Dynamic _buffer;
+  final dynamic _buffer;
   final int _position;
 
   const Context(this._buffer, this._position);
 
   /** The buffer we are working on. */
-  Dynamic get buffer => _buffer;
+  dynamic get buffer => _buffer;
 
   /** The current position in the buffer. */
   int get position => _position;
@@ -25,7 +25,7 @@ class Context {
   bool isFailure() => false;
 
   /** Copies the current context to indicate a parse success. */
-  Success success(Dynamic result, [int position]) {
+  Success success(dynamic result, [int position]) {
     return new Success(_buffer, position == null ? _position : position, result);
   }
 
@@ -47,7 +47,7 @@ abstract class Result extends Context {
   const Result(buffer, position) : super(buffer, position);
 
   /** Returns the parse result of the current context. */
-  abstract Dynamic get result;
+  abstract dynamic get result;
 
   /** Returns the parse message of the current context. */
   abstract String get message;
@@ -59,13 +59,13 @@ abstract class Result extends Context {
  */
 class Success extends Result {
 
-  final Dynamic _result;
+  final dynamic _result;
 
   const Success(buffer, position, this._result) : super(buffer, position);
 
   bool isSuccess() => true;
 
-  Dynamic get result => _result;
+  dynamic get result => _result;
   String get message => null;
 
   String toString() => 'Success[$_position]: $_result';
@@ -83,7 +83,7 @@ class Failure extends Result {
 
   bool isFailure() => true;
 
-  Dynamic get result => throw new UnsupportedOperationException(_message);
+  dynamic get result { throw new UnsupportedError(_message); }
   String get message => _message;
 
   String toString() => 'Failure[$_position]: $_message';

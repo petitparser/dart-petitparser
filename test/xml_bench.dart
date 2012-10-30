@@ -138,6 +138,6 @@ void main() {
    stopwatch.stop();
 
    print('${new List.from(new ParserIterable(parser)).length} parsers');
-   print('${stopwatch.elapsedInMs() / 1000}s');
+   print('${stopwatch.elapsedMilliseconds / 1000}s');
 
 }

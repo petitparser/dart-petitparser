@@ -13,7 +13,7 @@ void main() {
   Environment root = new RootEnvironment();
   Natives.importAllInto(root);
 
-  Dynamic exec(String value, [Environment env]) {
+  dynamic exec(String value, [Environment env]) {
     return evalString(parser, env != null ? env : root.create(), value);
   }
 

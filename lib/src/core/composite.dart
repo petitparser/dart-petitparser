@@ -60,7 +60,7 @@ abstract class CompositeParser extends DelegateParser {
   }
 
   /** Attaches an action [function] to an existing production [name]. */
-  void action(String name, Dynamic function(Dynamic)) {
+  void action(String name, dynamic function(Dynamic)) {
     redef(name, (parser) => parser.map(function));
   }
 
