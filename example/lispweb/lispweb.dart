@@ -22,8 +22,8 @@ void inspector(Element element, Environment environment) {
 
 main() {
   Parser parser = new LispParser();
-  Environment root = new RootEnvironment().create();
-  evalString(parser, root, Natives.standardLibrary);
+  Environment root = new RootEnvironment();
+  Natives.importStandard(root);
   Environment environment = root.create();
 
   TextAreaElement input = query('#input');

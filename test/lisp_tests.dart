@@ -11,7 +11,7 @@ void main() {
   Parser atom = parser['atom'];
 
   Environment root = new RootEnvironment();
-  Natives.importAllInto(root);
+  Natives.importStandard(root);
 
   dynamic exec(String value, [Environment env]) {
     return evalString(parser, env != null ? env : root.create(), value);
@@ -124,6 +124,14 @@ void main() {
     });
   });
   group('Natives', () {
+    test('Define', () {
+      expect(exec('(define a 1)'), 1);
+      expect(exec('(define a 2) a'), 2);
+      expect(exec('((define (a) 3))'), 3);
+      expect(exec('(define (a) 4) (a)'), 4);
+      expect(exec('((define (a x) x) 5)'), 5);
+      expect(exec('(define (a x) x) (a 6)'), 6);
+    });
     test('Lambda', () {
       expect(exec('((lambda () 1) 2)'), 1);
       expect(exec('((lambda (x) x) 2)'), 2);
@@ -174,6 +182,12 @@ void main() {
     });
     test('While', () {
       expect(exec('(set! i 0) (while (< i 3) (set! i (+ i 1))) i'), 3);
+    });
+    test('True', () {
+      expect(exec('true'), isTrue);
+    });
+    test('False', () {
+      expect(exec('false'), isFalse);
     });
     test('And', () {
       expect(exec('(and)'), isTrue);
@@ -296,6 +310,31 @@ void main() {
     test('Cdr!', () {
       expect(exec('(cdr! null 3)'), isNull);
       expect(exec('(cdr! (cons 1 2) 3)'), new Cons(1, 3));
+    });
+  });
+  group('Library', () {
+    test('Null', () {
+      expect(exec('null'), isNull);
+    });
+    test('Null? (true)', () {
+      expect(exec('(null? \'())'), isTrue);
+      expect(exec('(null? null)'), isTrue);
+      expect(exec('(null? a)'), isTrue);
+    });
+    test('Null? (false)', () {
+      expect(exec('(null? 1)'), isFalse);
+      expect(exec('(null? "a")'), isFalse);
+      expect(exec('(null? (quote a))'), isFalse);
+      expect(exec('(null? true)'), isFalse);
+      expect(exec('(null? false)'), isFalse);
+    });
+    test('Length', () {
+      expect(exec('(length \'())'), 0);
+      expect(exec('(length \'(1))'), 1);
+      expect(exec('(length \'(1 1))'), 2);
+      expect(exec('(length \'(1 1 1))'), 3);
+      expect(exec('(length \'(1 1 1 1))'), 4);
+      expect(exec('(length \'(1 1 1 1 1))'), 5);
     });
   });
 }

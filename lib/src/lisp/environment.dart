@@ -63,7 +63,7 @@ class RootEnvironment extends Environment {
 
     /** Defines all native functions. */
     _define('native-import-all', (Environment env, dynamic args) {
-      return Natives.importAllInto(this);
+      return Natives.importNatives(this);
     });
 
   }

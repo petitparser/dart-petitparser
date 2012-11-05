@@ -55,7 +55,9 @@ void main() {
 
   // process standard library
   if (standardLibrary) {
-    evalString(parser, environment, Natives.standardLibrary);
+    Natives.importStandard(environment);
+  } else {
+    Natives.importNatives(environment);
   }
 
   // process files given as argument

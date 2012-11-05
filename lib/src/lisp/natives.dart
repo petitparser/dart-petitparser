@@ -14,7 +14,7 @@ class Natives {
   }
 
   /** Imports all the native functions into the [environment]. */
-  static Environment importAllInto(Environment env) {
+  static Environment importNatives(Environment env) {
     _initialize();
     _natives.forEach((key, value) {
       env[new Symbol(key)] = value;
@@ -22,15 +22,20 @@ class Natives {
     return env;
   }
 
+  /** Imports the standard ibrary into the [envoronment]. */
+  static Environment importStandard(Environment env) {
+    evalString(new LispParser(), env, _standardLibrary);
+    return env;
+  }
+
   /** A simple standard library, should be moved to external file. */
-  static String standardLibrary = """
+  static String _standardLibrary = """
 ; Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
 ; native functions
 (native-import-all)
 
 ; null functions
-(define null '())
 (define (null? x) (= '() x))
 
 ; list functions
@@ -266,22 +271,22 @@ class Natives {
     };
     _natives['car'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
-      return cons != null ? cons.head : null;
+      return cons is Cons ? cons.head : null;
     };
     _natives['car!'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
-      if (cons != null) {
+      if (cons is Cons) {
         cons.head = eval(env, args.tail.head);
       }
       return cons;
     };
     _natives['cdr'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
-      return cons != null ? cons.tail : null;
+      return cons is Cons ? cons.tail : null;
     };
     _natives['cdr!'] = (Environment env, dynamic args) {
       var cons = eval(env, args.head);
-      if (cons != null) {
+      if (cons is Cons) {
         cons.tail = eval(env, args.tail.head);
       }
       return cons;
