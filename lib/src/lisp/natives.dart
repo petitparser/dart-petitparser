@@ -50,9 +50,10 @@ class Natives {
     (cons (car list1) (append (cdr list1) list2))))
 
 (define (for-each list proc)
-  (while (null? list)
-    (proc (car list))
-    (set! list (cdr list))))
+  (if (not (null? list))
+    (for-each
+      (cdr list)
+      (proc (car list)))))
 
 (define (list-head list index)
   (if (= index 0)
@@ -75,10 +76,13 @@ class Natives {
           (map (cdr list) proc))))
 
 (define (inject list value proc)
-  (while (not (null? list))
-    (set! value (proc value (car list)))
-    (set! list (cdr list)))
-  value)""";
+  (if (null? list)
+    value
+    (inject
+      (cdr list)
+      (proc value (car list)) 
+      proc)))
+""";
 
   static void _initialize() {
     if (_natives == null) {
