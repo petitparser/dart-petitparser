@@ -3,7 +3,7 @@
 part of lisplib;
 
 /**
- * The basic data structure of any
+ * The basic data structure of LISP.
  */
 class Cons {
 
