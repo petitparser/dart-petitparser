@@ -49,12 +49,6 @@ class Natives {
     list2
     (cons (car list1) (append (cdr list1) list2))))
 
-(define (for-each list proc)
-  (if (not (null? list))
-    (for-each
-      (cdr list)
-      (proc (car list)))))
-
 (define (list-head list index)
   (if (= index 0)
     (car list)
@@ -68,6 +62,11 @@ class Natives {
     (list-tail
       (cdr list)
       (- index 1))))
+
+(define (for-each list proc)
+  (while (not (null? list))
+    (proc (car list))
+    (set! list (cdr list))))
 
 (define (map list proc)
   (if (null? list)
