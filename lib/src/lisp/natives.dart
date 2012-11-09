@@ -153,10 +153,12 @@ class Natives {
       return env[args.head] = eval(env, args.tail.head);
     };
     _natives['print'] = (Environment env, dynamic args) {
+      StringBuffer buffer = new StringBuffer();
       while (args != null) {
-        print(eval(env, args.head));
+        buffer.add(eval(env, args.head));
         args = args.tail;
       }
+      print(buffer.toString());
       return null;
     };
   }
@@ -178,7 +180,7 @@ class Natives {
     _natives['while'] = (Environment env, dynamic args) {
       var result = null;
       while (eval(env, args.head)) {
-        result = eval(env, args.tail.head);
+        result = evalList(env, args.tail);
       }
       return result;
     };
