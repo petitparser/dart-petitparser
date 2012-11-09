@@ -338,11 +338,11 @@ void main() {
     });
     test('Append', () {
       expect(exec('(append \'() \'())'), isNull);
-      expect(exec('(append \'(1) \'())'), new Cons(1, null));
-      expect(exec('(append \'() \'(1))'), new Cons(1, null));
-      expect(exec('(append \'(1) \'(2))'), new Cons(1, new Cons(2, null)));
-      expect(exec('(append \'(1 2) \'(3))'), new Cons(1, new Cons(2, new Cons(3, null))));
-      expect(exec('(append \'(1) \'(2 3))'), new Cons(1, new Cons(2, new Cons(3, null))));
+      expect(exec('(append \'(1) \'())'), exec('\'(1)'));
+      expect(exec('(append \'() \'(1))'), exec('\'(1)'));
+      expect(exec('(append \'(1) \'(2))'), exec('\'(1 2)'));
+      expect(exec('(append \'(1 2) \'(3))'), exec('\'(1 2 3)'));
+      expect(exec('(append \'(1) \'(2 3))'), exec('\'(1 2 3)'));
     });
     test('List Head', () {
       expect(exec('(list-head \'(5 6 7) 0)'), 5);
