@@ -23,6 +23,17 @@ dynamic eval(Environment env, dynamic expr) {
   }
 }
 
+/** Evaluate a cons of instructions. */
+dynamic evalList(Environment env, dynamic expr) {
+  var result = null;
+  var stmt = expr;
+  while (stmt is Cons) {
+    result = eval(env, stmt.head);
+    stmt = stmt.tail;
+  }
+  return result;
+}
+
 /** The arguments evaluatation function. */
 dynamic evalArguments(Environment env, dynamic args) {
   if (args != null) {

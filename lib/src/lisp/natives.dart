@@ -116,13 +116,7 @@ class Natives {
           names = names.tail;
           values = values.tail;
         }
-        var result = null;
-        var stmt = lambda_args.tail;
-        while (stmt != null) {
-          result = eval(inner, stmt.head);
-          stmt = stmt.tail;
-        }
-        return result;
+        return evalList(inner, lambda_args.tail);
       };
     };
     _natives['quote'] = (Environment env, dynamic args) {
@@ -141,13 +135,7 @@ class Natives {
         inner[binding.head.head] = eval(env, binding.head.tail.head);
         binding = binding.tail;
       }
-      var result = null;
-      var stmt = args.tail;
-      while (stmt != null) {
-        result = eval(inner, stmt.head);
-        stmt = stmt.tail;
-      }
-      return result;
+      return evalList(inner, args.tail);
     };
     _natives['set!'] = (Environment env, dynamic args) {
       return env[args.head] = eval(env, args.tail.head);
