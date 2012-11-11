@@ -9,7 +9,7 @@ int _toCharCode(dynamic element) {
   }
   String value = element.toString();
   if (value.length != 1) {
-    throw new IllegalArgumentException('$value is not a character');
+    throw new ArgumentError('$value is not a character');
   }
   return value.charCodeAt(0);
 }

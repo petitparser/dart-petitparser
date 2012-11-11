@@ -24,7 +24,7 @@ abstract class CompositeParser extends DelegateParser {
     _delegate = ref('start');
     _undefined.forEach((String name, WrapperParser parser) {
       if (!_defined.containsKey(name)) {
-        throw new Exception('Undefined production: $name');
+        throw new StateError('Undefined production: $name');
       }
       parser._delegate = _defined[name];
     });
@@ -44,7 +44,7 @@ abstract class CompositeParser extends DelegateParser {
   /** Defines a production with a [name] and a [parser]. */
   void def(String name, Parser parser) {
     if (_defined.containsKey(name)) {
-      throw new Exception('Duplicate production: $name');
+      throw new StateError('Duplicate production: $name');
     } else {
       _defined[name] = parser;
     }
@@ -53,7 +53,7 @@ abstract class CompositeParser extends DelegateParser {
   /** Redefinies an existing production with a [name] and a [function] producing a new parser. */
   void redef(String name, Parser function(Parser)) {
     if (!_defined.containsKey(name)) {
-      throw new Exception('Undefined production: $name');
+      throw new StateError('Undefined production: $name');
     } else {
       _defined[name] = function(_defined[name]);
     }

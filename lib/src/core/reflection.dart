@@ -46,9 +46,9 @@ class Transformations {
 
   /** Pluggable transformation starting at [root]. */
   static Parser transform(Parser root, Parser function(Parser parser)) {
-    var sources, targets;
+    var sources = new List(), targets = new List();
     do {
-      sources = new List(); targets = new List();
+      sources.clear(); targets.clear();
       var parsers = new List.from(new ParserIterable(root));
       parsers.forEach((source) {
         var target = function(source);
