@@ -14,16 +14,31 @@ abstract class Environment {
   /** Constructor for a nested environment. */
   Environment create() => new NestedEnvironment(this);
 
-  /** Returns the value defined by a [key]. */
+  /** Return the binding for [key]. */
   dynamic operator [](Symbol key) {
-    return _bindings.containsKey(key)
-        ? _bindings[key]
-        : _notFound(key);
+    if (_bindings.containsKey(key)) {
+      return _bindings[key];
+    } else if (parent != null) {
+      return parent[key];
+    } else {
+      return _invalidBinding(key);
+    }
   }
 
-  /** Defines or redefines the cell with [value] of a [key]. */
-  void operator []=(Symbol key, dynamic value) {
-    _bindings[key] = value;
+  /** Updates the binding for [key] with a [value]. */
+  dynamic operator []=(Symbol key, dynamic value) {
+    if (_bindings.containsKey(key)) {
+      return _bindings[key] = value;
+    } else if (parent != null) {
+      return parent[key] = value;
+    } else {
+      return _invalidBinding(key);
+    }
+  }
+
+  /** Defines a new binding from [key] to [value]. */
+  dynamic define(Symbol key, dynamic value) {
+    return _bindings[key] = value;
   }
 
   /** Returns the keys of the bindings. */
@@ -33,44 +48,40 @@ abstract class Environment {
   Environment get parent => null;
 
   /** Called when a missing binding is accessed. */
-  dynamic _notFound(Symbol key);
+  dynamic _invalidBinding(Symbol key) {
+    throw new IllegalArgumentException('Unknown binding for $key');
+  }
 
 }
 
 /** The root environment of the execution. */
 class RootEnvironment extends Environment {
 
-  /** Return null if the value does not exist. */
-  _notFound(Symbol key) => null;
-
   /** Register the minimal functions needed for bootstrap. */
   RootEnvironment() {
 
     /** Defines a value in the root environment. */
-    _define('define', (Environment env, dynamic args) {
-      if (args.head is Cons) {
-        var definition = new Cons(args.head.tail, args.tail);
-        return this[args.head.head] = Natives.find('lambda')(env, definition);
+    define(new Symbol('define'), (Environment env, dynamic args) {
+      if (args.head is Symbol) {
+        return env.define(args.head, args.tail.head);
+      } else if (args.head.head is Symbol) {
+        return env.define(args.head.head, Natives.find('lambda')(env,
+            new Cons(args.head.tail, args.tail)));
       } else {
-        return this[args.head] = eval(env, args.tail.head);
+        throw new ArgumentError('Invalid define: $args');
       }
     });
 
     /** Lookup a native function. */
-    _define('native', (Environment env, dynamic args) {
+    define(new Symbol('native'), (Environment env, dynamic args) {
       return Natives.find(args.head);
     });
 
     /** Defines all native functions. */
-    _define('native-import-all', (Environment env, dynamic args) {
+    define(new Symbol('native-import-all'), (Environment env, dynamic args) {
       return Natives.importNatives(this);
     });
 
-  }
-
-  /** Private function to define primitives. */
-  _define(String key, dynamic cell) {
-    this[new Symbol(key)] = cell;
   }
 
 }
@@ -86,8 +97,5 @@ class NestedEnvironment extends Environment {
 
   /** Returns the parent of the bindings. */
   Environment get parent => _owner;
-
-  /** Lookup values in the parent environment. */
-  _notFound(Symbol key) => _owner[key];
 
 }

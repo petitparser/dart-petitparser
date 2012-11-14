@@ -11,10 +11,11 @@ void main() {
   Parser atom = parser['atom'];
 
   Environment root = new RootEnvironment();
-  Natives.importStandard(root);
+  Environment native = Natives.importNatives(root);
+  Environment standard = Natives.importStandard(native);
 
   dynamic exec(String value, [Environment env]) {
-    return evalString(parser, env != null ? env : root.create(), value);
+    return evalString(parser, env != null ? env : standard.create(), value);
   }
 
   group('Cell', () {
@@ -164,9 +165,15 @@ void main() {
       expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
     });
     test('Set!', () {
-      expect(exec('(set! a 1)'), 1);
-      expect(exec('(set! b (+ 1 2))'), 3);
-      expect(exec('(set! c (+ 1 2)) (+ c 1)'), 4);
+      Environment env = standard.create();
+      env.define(new Symbol('a'), null);
+      expect(exec('(set! a 1)', env), 1);
+      expect(exec('(set! a (+ 1 2))', env), 3);
+      expect(exec('(set! a (+ 1 2)) (+ a 1)', env), 4);
+    });
+    test('Set! (undefined)', () {
+      expect(() => exec('(set! a 1)'), throws);
+      expect(() => standard[new Symbol('a')], throws);
     });
     test('If', () {
       expect(exec('(if true)'), isNull);
@@ -177,11 +184,14 @@ void main() {
       expect(exec('(if false 1 2)'), 2);
     });
     test('If (lazyness)', () {
-      expect(exec('(if (= 1 1) (set! a 1) (set! b 2)) (cons a b)'), new Cons(1, null));
-      expect(exec('(if (= 1 2) (set! a 1) (set! b 2)) (cons a b)'), new Cons(null, 2));
+      expect(exec('(if (= 1 1) 3 4)'), 3);
+      expect(exec('(if (= 1 2) 3 4)'), 4);
     });
     test('While', () {
-      expect(exec('(set! i 0) (while (< i 3) (set! i (+ i 1))) i'), 3);
+      Environment env = standard.create();
+      env.define(new Symbol('a'), 0);
+      exec('(while (< a 3) (set! a (+ a 1)))', env);
+      expect(env[new Symbol('a')], 3);
     });
     test('True', () {
       expect(exec('true'), isTrue);
@@ -207,8 +217,12 @@ void main() {
       expect(exec('(and false false false)'), isFalse);
     });
     test('And (lazyness)', () {
-      expect(exec('(and false (set! a true)) a'), isNull);
-      expect(exec('(and true (set! a true)) a'), isTrue);
+      Environment env = standard.create();
+      env.define(new Symbol('a'), null);
+      exec('(and false (set! a true))', env);
+      expect(env[new Symbol('a')], isNull);
+      exec('(and true (set! a true))', env);
+      expect(env[new Symbol('a')], isTrue);
     });
     test('Or', () {
       expect(exec('(or)'), isFalse);
@@ -228,8 +242,12 @@ void main() {
       expect(exec('(or false false false)'), isFalse);
     });
     test('Or (lazyness)', () {
-      expect(exec('(or false (set! a true)) a'), isTrue);
-      expect(exec('(or true (set! a true)) a'), isNull);
+      Environment env = standard.create();
+      env.define(new Symbol('a'), null);
+      exec('(or true (set! a true))', env);
+      expect(env[new Symbol('a')], isNull);
+      exec('(or false (set! a true))', env);
+      expect(env[new Symbol('a')], isTrue);
     });
     test('Not', () {
       expect(exec('(not true)'), isFalse);
@@ -319,7 +337,6 @@ void main() {
     test('Null? (true)', () {
       expect(exec('(null? \'())'), isTrue);
       expect(exec('(null? null)'), isTrue);
-      expect(exec('(null? a)'), isTrue);
     });
     test('Null? (false)', () {
       expect(exec('(null? 1)'), isFalse);

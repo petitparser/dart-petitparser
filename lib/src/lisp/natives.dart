@@ -16,27 +16,30 @@ class Natives {
   /** Imports all the native functions into the [environment]. */
   static Environment importNatives(Environment env) {
     _initialize();
+    var target = env.create();
     _natives.forEach((key, value) {
-      env[new Symbol(key)] = value;
+      target.define(new Symbol(key), value);
     });
-    return env;
+    return target;
   }
 
-  /** Imports the standard ibrary into the [envoronment]. */
+  /** Imports the standard library into the [envoronment]. */
   static Environment importStandard(Environment env) {
-    evalString(new LispParser(), env, _standardLibrary);
-    return env;
+    var target = env.create();
+    evalString(new LispParser(), target, _standardLibrary);
+    return target;
   }
 
   /** A simple standard library, should be moved to external file. */
   static String _standardLibrary = """
 ; Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-; native functions
+; native
 (native-import-all)
 
 ; null functions
-(define (null? x) (= '() x))
+(define null '())
+(define (null? x) (= null x))
 
 ; list functions
 (define (length list)
@@ -95,23 +98,13 @@ class Natives {
   }
 
   static void _basicFunctions() {
-    _natives['define'] = (Environment env, dynamic args) {
-      if (args.head is Symbol) {
-        return env[args.head] = args.tail.head;
-      } else if (args.head.head is Symbol) {
-        return env[args.head.head] = _natives['lambda'](env,
-            new Cons(args.head.tail, args.tail));
-      } else {
-        return null;
-      }
-    };
     _natives['lambda'] = (Environment lambda_env, dynamic lambda_args) {
       return (Environment env, dynamic args) {
         var inner = lambda_env.create();
         var names = lambda_args.head;
         var values = evalArguments(env, args);
         while (names != null && values != null) {
-          inner[names.head] = values.head;
+          inner.define(names.head, values.head);
           names = names.tail;
           values = values.tail;
         }
@@ -131,7 +124,7 @@ class Natives {
       var inner = env.create();
       var binding = args.head;
       while (binding != null) {
-        inner[binding.head.head] = eval(env, binding.head.tail.head);
+        inner.define(binding.head.head, eval(env, binding.head.tail.head));
         binding = binding.tail;
       }
       return evalList(inner, args.tail);
