@@ -16,30 +16,25 @@ class Natives {
   /** Imports all the native functions into the [environment]. */
   static Environment importNatives(Environment env) {
     _initialize();
-    var target = env.create();
     _natives.forEach((key, value) {
-      target.define(new Symbol(key), value);
+      env.define(new Symbol(key), value);
     });
-    return target;
+    return env;
   }
 
   /** Imports the standard library into the [envoronment]. */
   static Environment importStandard(Environment env) {
-    var target = env.create();
-    evalString(new LispParser(), target, _standardLibrary);
-    return target;
+    evalString(new LispParser(), env, _standardLibrary);
+    return env;
   }
 
   /** A simple standard library, should be moved to external file. */
   static String _standardLibrary = """
 ; Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-; native
-(native-import-all)
-
 ; null functions
 (define null '())
-(define (null? x) (= null x))
+(define (null? x) (= '() x))
 
 ; list functions
 (define (length list)
@@ -98,6 +93,16 @@ class Natives {
   }
 
   static void _basicFunctions() {
+    _natives['define'] = (Environment env, dynamic args) {
+      if (args.head is Symbol) {
+        return env.define(args.head, evalList(env, args.tail));
+      } else if (args.head.head is Symbol) {
+        return env.define(args.head.head, _natives['lambda'](env,
+            new Cons(args.head.tail, args.tail)));
+      } else {
+        throw new ArgumentError('Invalid define: $args');
+      }
+    };
     _natives['lambda'] = (Environment lambda_env, dynamic lambda_args) {
       return (Environment env, dynamic args) {
         var inner = lambda_env.create();

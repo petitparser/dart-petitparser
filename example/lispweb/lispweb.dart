@@ -15,16 +15,18 @@ void inspector(Element element, Environment environment) {
     }
     result = '$result</ul>';
     result = '$result<hr/>';
-    environment = environment.parent;
+    environment = environment.owner;
   }
   element.innerHTML = result;
 }
 
-main() {
+void main() {
   Parser parser = new LispParser();
-  Environment root = new RootEnvironment();
-  Natives.importStandard(root);
-  Environment environment = root.create();
+
+  Environment root = new Environment();
+  Environment native = Natives.importNatives(root);
+  Environment standard = Natives.importStandard(native.create());
+  Environment environment = standard.create();
 
   TextAreaElement input = query('#input');
   TextAreaElement output = query('#output');

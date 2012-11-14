@@ -51,14 +51,15 @@ void main() {
 
   // evaluation context
   var parser = new LispParser();
-  var environment = new RootEnvironment();
+  var environment = Natives.importNatives(new Environment());
 
   // process standard library
   if (standardLibrary) {
-    Natives.importStandard(environment);
-  } else {
-    Natives.importNatives(environment);
+    environment = Natives.importStandard(environment.create());
   }
+
+  // create empty context
+  environment = environment.create();
 
   // process files given as argument
   files.forEach((file) {

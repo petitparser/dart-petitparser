@@ -8,11 +8,10 @@ import 'package:unittest/unittest.dart';
 
 void main() {
   CompositeParser parser = new LispParser();
-  Parser atom = parser['atom'];
 
-  Environment root = new RootEnvironment();
+  Environment root = new Environment();
   Environment native = Natives.importNatives(root);
-  Environment standard = Natives.importStandard(native);
+  Environment standard = Natives.importStandard(native.create());
 
   dynamic exec(String value, [Environment env]) {
     return evalString(parser, env != null ? env : standard.create(), value);
@@ -41,6 +40,7 @@ void main() {
     });
   });
   group('Parser', () {
+    var atom = parser['atom'];
     test('Symbol', () {
       var cell = atom.parse('foo').result;
       expect(cell, new isInstanceOf<Symbol>());
