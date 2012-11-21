@@ -384,4 +384,42 @@ void main() {
       expect(exec('(inject \'(2 3) 5 (lambda (s e) (+ s e 1)))'), 12);
     });
   });
+  group('Examples', () {
+    test('Fibonacci', () {
+      Environment env = standard.create();
+      exec('(define (fib n)'
+           '  (if (<= n 1)'
+           '    1'
+           '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
+      expect(exec('(fib 0)', env), 1);
+      expect(exec('(fib 1)', env), 1);
+      expect(exec('(fib 2)', env), 2);
+      expect(exec('(fib 3)', env), 3);
+      expect(exec('(fib 4)', env), 5);
+      expect(exec('(fib 5)', env), 8);
+    });
+    test('Closure', () {
+      Environment env = standard.create();
+      exec('(define (mul n)'
+           '  (lambda (x) (* n x)))', env);
+      expect(exec('((mul 2) 3)', env), 6);
+      expect(exec('((mul 3) 4)', env), 12);
+      expect(exec('((mul 4) 5)', env), 20);
+    });
+    test('Object', () {
+      Environment env = standard.create();
+      exec('(define (counter start)'
+           '  (let ((count start))'
+           '    (lambda ()'
+           '      (set! count (+ count 1)))))', env);
+      exec('(define a (counter 10))', env);
+      exec('(define b (counter 20))', env);
+      expect(exec('(a)', env), 11);
+      expect(exec('(b)', env), 21);
+      expect(exec('(a)', env), 12);
+      expect(exec('(b)', env), 22);
+      expect(exec('(a)', env), 13);
+      expect(exec('(b)', env), 23);
+    });
+  });
 }
