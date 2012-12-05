@@ -1,5 +1,5 @@
 name: petitparser
-version: 0.1.0
+version: 0.2.0
 description: >
   PetitParser is a generic parser framework combinding
   ideas from scannerless parsing, parser combinators,
