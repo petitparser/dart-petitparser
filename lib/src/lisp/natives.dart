@@ -77,7 +77,7 @@ class Natives {
     value
     (inject
       (cdr list)
-      (proc value (car list)) 
+      (proc value (car list))
       proc)))
 """;
 

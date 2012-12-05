@@ -10,5 +10,4 @@ description: >
 author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/renggli/PetitParserDart
 dependencies:
-  unittest:
-    sdk: unittest
+  unittest: 0.2.7
