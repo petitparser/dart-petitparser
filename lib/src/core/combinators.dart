@@ -51,7 +51,7 @@ class ChoiceParser extends ListParser {
  * Abstract parser that parses a list of things in some way (to be specified by
  * the subclasses).
  */
-abstract class ListParser extends Parser {
+class ListParser extends Parser {
 
   final List<Parser> _parsers;
 

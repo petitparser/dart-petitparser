@@ -42,15 +42,15 @@ class Context {
 /**
  * An immutable parse result.
  */
-abstract class Result extends Context {
+class Result extends Context {
 
   const Result(buffer, position) : super(buffer, position);
 
   /** Returns the parse result of the current context. */
-  dynamic get result;
+  abstract dynamic get result;
 
   /** Returns the parse message of the current context. */
-  String get message;
+  abstract String get message;
 
 }
 

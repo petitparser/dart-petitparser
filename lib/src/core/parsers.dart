@@ -145,7 +145,7 @@ class _FailureParser extends Parser {
 /**
  * A parser that delegates to another one.
  */
-abstract class DelegateParser extends Parser {
+class DelegateParser extends Parser {
 
   Parser _delegate;
 
