@@ -5,32 +5,67 @@ part of petitparser;
 /**
  * Abstract base class for all parsers.
  */
-abstract class Parser {
+class Parser {
 
   // parsing related functions
   // // // // // // // // // // // // // // // // // // // // // // // //
 
-  /** Internal abstract method doing the actual parsing. */
-  Result _parse(Context context);
+  /**
+   * Internal abstract method doing the actual parsing.
+   *
+   * The methods takes a parse [context] and returns the resulting context,
+   * which is either a [Success] or [Failure] context.
+   */
+  abstract Result _parse(Context context);
 
-  /** Returns the parse result of the input. */
+  /**
+   * Returns the parse result of the [input].
+   *
+   * The implementation creates a default parse context on the input and calls
+   * the internal parsing logic of the receiving parser.
+   *
+   * For example, [:letter().plus().parse('abc'):] results in an instance of
+   * [Success], where [Success#position] is [:3:] and [Success.result] is
+   * [:[a, b, c]:].
+   *
+   * Similarly, [:letter().plus().parse('123'):]results in an instance of
+   * [Failure], where [Success#position] is [:0:] and [Success.message] is
+   * ['letter expected'].
+   */
   Result parse(dynamic input) {
     return _parse(new Context(input, 0));
   }
 
-  /** Tests if the input can be successfully parsed. */
+  /**
+   * Tests if the [input] can be successfully parsed.
+   *
+   * For example, [:letter().plus().accept('abc'):] returns [:true:], and
+   * [:letter().plus().accept('123'):] returns [:false:].
+   */
   bool accept(dynamic input) {
     return parse(input).isSuccess();
   }
 
-  /** Returns a list of all successful overlapping parses of the input. */
+  /**
+   * Returns a list of all successful overlapping parses of the [input].
+   *
+   * For example, [:letter().plus().matches('abc de'):] results in the list
+   * [:[[a, b, c], [b, c], [c], [d, e], [e]]:]. See [Parser#matchesSkipping]
+   * to retrieve non-overlapping parse results.
+   */
   Iterable matches(dynamic input) {
     var list = new List();
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
-  /** Returns a list of all successful non-overlapping parses of the input. */
+  /**
+   * Returns a list of all successful non-overlapping parses of the input.
+   *
+   * For example, [:letter().plus().matchesSkipping('abc de'):] results in the
+   * list [:[[a, b, c], [d, e]]:]. See [Parser#matches] to retrieve overlapping
+   * parse results.
+   */
   Iterable matchesSkipping(dynamic input) {
     var list = new List();
     map((each) => list.add(each)).or(any()).star().parse(input);
