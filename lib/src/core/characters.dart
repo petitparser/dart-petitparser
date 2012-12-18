@@ -7,7 +7,7 @@ int _toCharCode(dynamic element) {
   if (element is int) {
     return element;
   }
-  String value = element.toString();
+  var value = element.toString();
   if (value.length != 1) {
     throw new ArgumentError('$value is not a character');
   }
@@ -71,10 +71,10 @@ class _BinarySearchCharacterParser extends _CharacterParser {
   final List<int> _codes;
   _BinarySearchCharacterParser(String message, this._codes) : super(message);
   bool _match(int value) {
-    int lo = 0;
-    int hi = _codes.length - 1;
+    var lo = 0;
+    var hi = _codes.length - 1;
     while (lo <= hi) {
-      int index = (lo + hi) ~/ 2;
+      var index = (lo + hi) ~/ 2;
       if (value < _codes[index]) {
         hi = index - 1;
       } else if (value > _codes[index]) {
@@ -144,7 +144,7 @@ Parser pattern(String element, [String message]) {
       return each[0] == null ? each[1] : each[1].neg();
     });
   }
-  _CharacterParser parser = _pattern.parse(element).result;
+  var parser = _pattern.parse(element).result;
   parser._message = message != null ? message : '[$element] expected';
   return parser;
 }

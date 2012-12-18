@@ -16,7 +16,7 @@ class JsonParser extends JsonGrammar {
     action('object', (each) {
       var result = new LinkedHashMap();
       if (each[1] != null) {
-        for (List element in each[1]) {
+        for (var element in each[1]) {
           result[element[0]] = element[2];
         }
       }

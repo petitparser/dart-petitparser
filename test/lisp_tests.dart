@@ -7,11 +7,11 @@ import 'package:petitparser/petitparser.dart';
 import 'package:unittest/unittest.dart';
 
 void main() {
-  CompositeParser parser = new LispParser();
+  var parser = new LispParser();
 
-  Environment root = new Environment();
-  Environment native = Natives.importNatives(root);
-  Environment standard = Natives.importStandard(native.create());
+  var root = new Environment();
+  var native = Natives.importNatives(root);
+  var standard = Natives.importStandard(native.create());
 
   dynamic exec(String value, [Environment env]) {
     return evalString(parser, env != null ? env : standard.create(), value);
@@ -165,7 +165,7 @@ void main() {
       expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
     });
     test('Set!', () {
-      Environment env = standard.create();
+      var env = standard.create();
       env.define(new Symbol('a'), null);
       expect(exec('(set! a 1)', env), 1);
       expect(exec('(set! a (+ 1 2))', env), 3);
@@ -188,7 +188,7 @@ void main() {
       expect(exec('(if (= 1 2) 3 4)'), 4);
     });
     test('While', () {
-      Environment env = standard.create();
+      var env = standard.create();
       env.define(new Symbol('a'), 0);
       exec('(while (< a 3) (set! a (+ a 1)))', env);
       expect(env[new Symbol('a')], 3);
@@ -217,7 +217,7 @@ void main() {
       expect(exec('(and false false false)'), isFalse);
     });
     test('And (lazyness)', () {
-      Environment env = standard.create();
+      var env = standard.create();
       env.define(new Symbol('a'), null);
       exec('(and false (set! a true))', env);
       expect(env[new Symbol('a')], isNull);
@@ -242,7 +242,7 @@ void main() {
       expect(exec('(or false false false)'), isFalse);
     });
     test('Or (lazyness)', () {
-      Environment env = standard.create();
+      var env = standard.create();
       env.define(new Symbol('a'), null);
       exec('(or true (set! a true))', env);
       expect(env[new Symbol('a')], isNull);
@@ -386,7 +386,7 @@ void main() {
   });
   group('Examples', () {
     test('Fibonacci', () {
-      Environment env = standard.create();
+      var env = standard.create();
       exec('(define (fib n)'
            '  (if (<= n 1)'
            '    1'
@@ -399,7 +399,7 @@ void main() {
       expect(exec('(fib 5)', env), 8);
     });
     test('Closure', () {
-      Environment env = standard.create();
+      var env = standard.create();
       exec('(define (mul n)'
            '  (lambda (x) (* n x)))', env);
       expect(exec('((mul 2) 3)', env), 6);
@@ -407,7 +407,7 @@ void main() {
       expect(exec('((mul 4) 5)', env), 20);
     });
     test('Object', () {
-      Environment env = standard.create();
+      var env = standard.create();
       exec('(define (counter start)'
            '  (let ((count start))'
            '    (lambda ()'

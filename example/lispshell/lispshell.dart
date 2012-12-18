@@ -17,9 +17,9 @@ void evalInteractive(LispParser parser, Environment env, InputStream input, Outp
 void main() {
 
   // default options
-  bool standardLibrary = true;
-  bool interactiveMode = false;
-  List files = new List();
+  var standardLibrary = true;
+  var interactiveMode = false;
+  var files = new List();
 
   // parse arguments
   var options = new Options();

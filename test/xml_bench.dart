@@ -7,8 +7,8 @@ import 'package:petitparser/xml.dart';
 
 void main() {
 
-  Parser parser = new XmlParser();
-  String input = '<?xml version="1.0"?>'
+  var parser = new XmlParser();
+  var input = '<?xml version="1.0"?>'
       '<catalog>'
       '   <book id="bk101">'
       '      <author>Gambardella, Matthew</author>'
@@ -129,10 +129,10 @@ void main() {
       '   </book>'
       '</catalog>';
 
-   Stopwatch stopwatch = new Stopwatch();
+   var stopwatch = new Stopwatch();
 
    stopwatch.start();
-   for (int i = 0; i < 2000; i++) {
+   for (var i = 0; i < 2000; i++) {
      parser.parse(input).result;
    }
    stopwatch.stop();

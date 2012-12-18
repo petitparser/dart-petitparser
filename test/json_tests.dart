@@ -7,7 +7,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:unittest/unittest.dart';
 
 void main() {
-  Parser json = new JsonParser();
+  var json = new JsonParser();
 
   group('arrays', () {
     test('empty', () {

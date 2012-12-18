@@ -7,9 +7,9 @@ import 'package:petitparser/xml.dart';
 import 'package:unittest/unittest.dart';
 
 void validate(Parser parser, String input) {
-  XmlNode tree = parser.parse(input).result;
+  var tree = parser.parse(input).result;
   assertTreeInvariants(tree);
-  XmlNode copy = parser.parse(tree.toString()).result;
+  var copy = parser.parse(tree.toString()).result;
   expect(tree.toString(), copy.toString());
 }
 
@@ -23,33 +23,33 @@ void assertTreeInvariants(XmlNode xml) {
 }
 
 void assertDocumentInvariant(XmlNode xml) {
-  XmlNode root = xml.root;
-  for (XmlNode child in xml) {
+  var root = xml.root;
+  for (var child in xml) {
     expect(root, same(child.root));
     expect(root, same(child.document));
   }
-  XmlDocument document = xml;
+  var document = xml;
   expect(document.children, contains(document.rootElement));
 }
 
 void assertParentInvariant(XmlNode xml) {
-  for (XmlNode node in xml) {
+  for (var node in xml) {
     if (node is XmlDocument) {
       expect(node.parent, isNull);
     }
-    for (XmlNode child in node.children) {
+    for (var child in node.children) {
       expect(child.parent, same(node));
     }
-    for (XmlNode attribute in node.attributes) {
+    for (var attribute in node.attributes) {
       expect(attribute.parent, same(node));
     }
   }
 }
 
 void assertForwardInvariant(XmlNode xml) {
-  for (XmlNode node in xml) {
-    XmlNode current = node.firstChild;
-    for (int i = 0; i < node.children.length; i++) {
+  for (var node in xml) {
+    var current = node.firstChild;
+    for (var i = 0; i < node.children.length; i++) {
       expect(node.children[i], same(current));
       current = current.nextSibling;
     }
@@ -58,9 +58,9 @@ void assertForwardInvariant(XmlNode xml) {
 }
 
 void assertBackwardInvariant(XmlNode xml) {
-  for (XmlNode node in xml) {
-    XmlNode current = node.lastChild;
-    for (int i = node.children.length - 1; i >= 0; i--) {
+  for (var node in xml) {
+    var current = node.lastChild;
+    for (var i = node.children.length - 1; i >= 0; i--) {
       expect(node.children[i], same(current));
       current = current.previousSibling;
     }
@@ -69,13 +69,13 @@ void assertBackwardInvariant(XmlNode xml) {
 }
 
 void assertNameInvariant(XmlNode xml) {
-  for (XmlNode node in xml) {
+  for (var node in xml) {
     if (node is XmlElement) {
-      XmlElement element = node;
+      var element = node;
       assertQualifiedInvariant(element.name);
     }
     if (node is XmlAttribute) {
-      XmlAttribute attribute = node;
+      var attribute = node;
       assertQualifiedInvariant(attribute.name);
     }
   }
@@ -91,10 +91,10 @@ void assertQualifiedInvariant(XmlName name) {
 }
 
 void assertAttributeInvariant(XmlNode xml) {
-  for (XmlNode node in xml) {
+  for (var node in xml) {
     if (node is XmlElement) {
-      XmlElement element = node;
-      for (XmlAttribute attribute in element.attributes) {
+      var element = node;
+      for (var attribute in element.attributes) {
         expect(attribute.value, same(element.getAttribute(attribute.name.local)));
         expect(attribute, same(element.getAttributeNode(attribute.name.local)));
       }
@@ -107,7 +107,7 @@ void assertAttributeInvariant(XmlNode xml) {
 }
 
 void main() {
-  final Parser parser = new XmlParser();
+  final parser = new XmlParser();
 
   test('comment', () {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?><schema><!-- comment --></schema>');

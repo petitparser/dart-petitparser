@@ -119,8 +119,8 @@ class Token {
 
   /** Returns the line number of this token. */
   int get line {
-    int line = 1;
-    for (Token each in newlineParser().token().matchesSkipping(buffer)) {
+    var line = 1;
+    for (var each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return line;
       }
@@ -131,8 +131,8 @@ class Token {
 
   /** Returns the column number of this token. */
   int get column {
-    int position = 0;
-    for (Token each in newlineParser().token().matchesSkipping(buffer)) {
+    var position = 0;
+    for (var each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return start - position + 1;
       }

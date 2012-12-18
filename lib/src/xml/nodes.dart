@@ -28,7 +28,7 @@ abstract class XmlNode implements Iterable<XmlNode> {
    * Answer an iterator over the receiver, all attributes and nested children.
    */
   Iterator<XmlNode> iterator() {
-    List<XmlNode> nodes = new List();
+    var nodes = new List();
     _allAllNodesTo(nodes);
     return nodes.iterator();
   }
@@ -36,7 +36,7 @@ abstract class XmlNode implements Iterable<XmlNode> {
   void _allAllNodesTo(List<XmlNode> nodes) {
     nodes.add(this);
     nodes.addAll(attributes);
-    for (XmlNode node in children) {
+    for (var node in children) {
       node._allAllNodesTo(nodes);
     }
   }
@@ -76,8 +76,8 @@ abstract class XmlNode implements Iterable<XmlNode> {
    */
   XmlNode get nextSibling {
     if (parent != null) {
-      List<XmlNode> siblings = parent.children;
-      for (int i = 0; i < siblings.length - 1; i++) {
+      var siblings = parent.children;
+      for (var i = 0; i < siblings.length - 1; i++) {
         if (siblings[i] == this) {
           return siblings[i + 1];
         }
@@ -91,8 +91,8 @@ abstract class XmlNode implements Iterable<XmlNode> {
    */
   XmlNode get previousSibling {
     if (parent != null) {
-      List<XmlNode> siblings = parent.children;
-      for (int i = 1; i < siblings.length; i++) {
+      var siblings = parent.children;
+      for (var i = 1; i < siblings.length; i++) {
         if (siblings[i] == this) {
           return siblings[i - 1];
         }
@@ -105,7 +105,7 @@ abstract class XmlNode implements Iterable<XmlNode> {
    * Answer a print string of the receiver.
    */
   String toString() {
-    StringBuffer buffer = new StringBuffer();
+    var buffer = new StringBuffer();
     writeTo(buffer);
     return buffer.toString();
   }
@@ -215,7 +215,7 @@ abstract class XmlParent extends XmlNode {
 
   XmlParent(Collection<XmlNode> children)
       : _children = new List.from(children) {
-    for (XmlNode child in children) {
+    for (var child in children) {
       child._parent = this;
     }
   }
@@ -223,7 +223,7 @@ abstract class XmlParent extends XmlNode {
   List<XmlNode> get children => _children;
 
   void writeTo(StringBuffer buffer) {
-    for (XmlNode node in children) {
+    for (var node in children) {
       node.writeTo(buffer);
     }
   }
@@ -240,7 +240,7 @@ class XmlDocument extends XmlParent {
   XmlDocument get document => this;
 
   XmlElement get rootElement {
-    for (XmlNode node in children) {
+    for (var node in children) {
       if (node is XmlElement) {
         return node;
       }
@@ -260,7 +260,7 @@ class XmlElement extends XmlParent {
 
   XmlElement(XmlName name, Collection<XmlAttribute> attributes, Collection<XmlNode> children)
       : super(children), _name = name, _attributes = new List.from(attributes) {
-    for (XmlAttribute attribute in attributes) {
+    for (var attribute in attributes) {
       attribute._parent = this;
     }
   }
@@ -269,12 +269,12 @@ class XmlElement extends XmlParent {
   List<XmlAttribute> get attributes => _attributes;
 
   String getAttribute(String key) {
-    XmlAttribute attribute = getAttributeNode(key);
+    var attribute = getAttributeNode(key);
     return attribute != null ? attribute.value : null;
   }
 
   XmlAttribute getAttributeNode(String key) {
-    for (XmlAttribute attribute in attributes) {
+    for (var attribute in attributes) {
       if (attribute.name.local == key) {
         return attribute;
       }
@@ -285,7 +285,7 @@ class XmlElement extends XmlParent {
   void writeTo(StringBuffer buffer) {
     buffer.add('<');
     name.writeTo(buffer);
-    for (XmlAttribute attribute in attributes) {
+    for (var attribute in attributes) {
       buffer.add(' ');
       attribute.writeTo(buffer);
     }
@@ -313,7 +313,7 @@ class XmlName {
   XmlName._internal(this._prefix, this._local);
 
   factory XmlName(String name) {
-    int index = name.indexOf(':');
+    var index = name.indexOf(':');
     if (index < 0) {
       return new XmlName._internal(null, name);
     } else {
@@ -328,7 +328,7 @@ class XmlName {
   String get qualified => toString();
 
   String toString() {
-    StringBuffer buffer = new StringBuffer();
+    var buffer = new StringBuffer();
     writeTo(buffer);
     return buffer.toString();
   }

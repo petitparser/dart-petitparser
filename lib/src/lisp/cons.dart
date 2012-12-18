@@ -31,7 +31,7 @@ class Cons {
 
   /** Returns the string representation of the cons. */
   String toString() {
-    StringBuffer buffer = new StringBuffer();
+    var buffer = new StringBuffer();
     buffer.add('(');
     var current = this;
     while (current is Cons) {

@@ -138,7 +138,7 @@ class Natives {
       return env[args.head] = eval(env, args.tail.head);
     };
     _natives['print'] = (Environment env, dynamic args) {
-      StringBuffer buffer = new StringBuffer();
+      var buffer = new StringBuffer();
       while (args != null) {
         buffer.add(eval(env, args.head));
         args = args.tail;

@@ -21,15 +21,15 @@ void inspector(Element element, Environment environment) {
 }
 
 void main() {
-  Parser parser = new LispParser();
+  var parser = new LispParser();
 
-  Environment root = new Environment();
-  Environment native = Natives.importNatives(root);
-  Environment standard = Natives.importStandard(native.create());
-  Environment environment = standard.create();
+  var root = new Environment();
+  var native = Natives.importNatives(root);
+  var standard = Natives.importStandard(native.create());
+  var environment = standard.create();
 
-  TextAreaElement input = query('#input');
-  TextAreaElement output = query('#output');
+  var input = query('#input');
+  var output = query('#output');
 
   query('#evaluate').on.click.add((event) {
     var result = evalString(parser, environment, input.value);
