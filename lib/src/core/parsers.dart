@@ -7,11 +7,8 @@ part of petitparser;
  */
 class Parser {
 
-  // parsing related functions
-  // // // // // // // // // // // // // // // // // // // // // // // //
-
   /**
-   * Internal abstract method doing the actual parsing.
+   * Private abstract method doing the actual parsing.
    *
    * The methods takes a parse [context] and returns the resulting context,
    * which is either a [Success] or [Failure] context.
@@ -28,7 +25,7 @@ class Parser {
    * [Success], where [Success#position] is [:3:] and [Success.result] is
    * [:[a, b, c]:].
    *
-   * Similarly, [:letter().plus().parse('123'):]results in an instance of
+   * Similarly, [:letter().plus().parse('123'):] results in an instance of
    * [Failure], where [Success#position] is [:0:] and [Success.message] is
    * ['letter expected'].
    */
@@ -72,13 +69,34 @@ class Parser {
     return list;
   }
 
-  // parser combinator functions
-  // // // // // // // // // // // // // // // // // // // // // // // //
-
+  /**
+   * Returns new parser that parses the receiver, if possible. The resulting
+   * parser returns the result of the receiver, or [:null:] if not applicable.
+   */
   Parser optional() => new OptionalParser(this);
-  Parser star() => new RepeatingParser(this, 0, 65536);
-  Parser plus() => new RepeatingParser(this, 1, 65536);
-  Parser times(int count) => new RepeatingParser(this, count, count);
+
+  /**
+   * Returns a parser that parses the receiver zero or more times. The
+   * resulting parser returns a list of the parse results of the receiver.
+   */
+  Parser star() => repeat(0, 65536);
+
+  /**
+   * Returns a parser that parses the receiver one or more times. The
+   * resulting parser returns a list of the parse results of the receiver.
+   */
+  Parser plus() => repeat(1, 65536);
+
+  /**
+   * Returns a parser that parses the receiver exactly [count] times. The
+   * resulting parser returns a list of the parse results of the receiver.
+   */
+  Parser times(int count) => repeat(count, count);
+
+  /**
+   * Returns a parser that parses the receiver between [min] and [max] times.
+   * The resulting parser returns a list of the parse results of the receiver.
+   */
   Parser repeat(int min, int max) => new RepeatingParser(this, min, max);
 
   Parser seq(Parser other) => new SequenceParser([this, other]);
