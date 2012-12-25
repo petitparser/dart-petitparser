@@ -70,41 +70,69 @@ class Parser {
   }
 
   /**
-   * Returns new parser that parses the receiver, if possible. The resulting
+   * Returns new parser that accepts the receiver, if possible. The resulting
    * parser returns the result of the receiver, or [:null:] if not applicable.
    */
   Parser optional() => new OptionalParser(this);
 
   /**
-   * Returns a parser that parses the receiver zero or more times. The
+   * Returns a parser that accepts the receiver zero or more times. The
    * resulting parser returns a list of the parse results of the receiver.
    */
   Parser star() => repeat(0, 65536);
 
   /**
-   * Returns a parser that parses the receiver one or more times. The
+   * Returns a parser that accepts the receiver one or more times. The
    * resulting parser returns a list of the parse results of the receiver.
    */
   Parser plus() => repeat(1, 65536);
 
   /**
-   * Returns a parser that parses the receiver exactly [count] times. The
+   * Returns a parser that accepts the receiver exactly [count] times. The
    * resulting parser returns a list of the parse results of the receiver.
    */
   Parser times(int count) => repeat(count, count);
 
   /**
-   * Returns a parser that parses the receiver between [min] and [max] times.
+   * Returns a parser that accepts the receiver between [min] and [max] times.
    * The resulting parser returns a list of the parse results of the receiver.
    */
   Parser repeat(int min, int max) => new RepeatingParser(this, min, max);
 
+  /**
+   * Returns a parser that accepts the receiver followed by [other]. The
+   * resulting parser returns a list of the parse result of the receiver
+   * followed by the parse result of [other]. Calling [SequenceParser#seq]
+   * causes the sequences to be concatenated instead of nested.
+   */
   Parser seq(Parser other) => new SequenceParser([this, other]);
+
+  /**
+   * Returns a parser that accepts the receiver or [other]. The resulting
+   * parser returns the parse result of the receiver, if the receiver fails
+   * it returns the parse result of [other] (exclusive ordered choice).
+   */
   Parser or(Parser other) => new ChoiceParser([this, other]);
 
+  /**
+   * Returns a parser (logical and-predicate) that succeeds whenever the
+   * receiver does, but never consumes input.
+   */
   Parser and() => new AndParser(this);
+
+  /**
+   * Returns a parser (logical not-predicate) that succeeds whenever the
+   * receiver fails, but never consumes input.
+   */
   Parser not([String message]) => new NotParser(this, message);
-  Parser neg([String message]) => not(message).seq(any()).map((each) => each[1]);
+
+  /**
+   * Returns a parser that consumes any input token (character) but the
+   * receiver.
+   */
+  Parser neg([String message]) {
+    return not(message).seq(any()).map((each) => each[1]);
+  }
 
   Parser wrapper() => new WrapperParser(this);
   Parser flatten() => new FlattenParser(this);
