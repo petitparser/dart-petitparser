@@ -96,14 +96,16 @@ class NotParser extends DelegateParser {
  */
 class OptionalParser extends DelegateParser {
 
-  OptionalParser(parser) : super(parser);
+  final dynamic _otherwise;
+
+  OptionalParser(parser, this._otherwise) : super(parser);
 
   Result _parse(Context context) {
     var result = super._parse(context);
     if (result.isSuccess()) {
       return result;
     } else {
-      return context.success(null);
+      return context.success(_otherwise);
     }
   }
 
