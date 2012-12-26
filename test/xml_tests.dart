@@ -28,7 +28,7 @@ void assertDocumentInvariant(XmlNode xml) {
     expect(root, same(child.root));
     expect(root, same(child.document));
   }
-  var document = xml;
+  var document = xml.document;
   expect(document.children, contains(document.rootElement));
 }
 
