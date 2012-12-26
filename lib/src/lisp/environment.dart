@@ -1,6 +1,6 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-part of lisplib;
+part of lisp;
 
 /** Environment of bindings. */
 class Environment {
@@ -29,13 +29,13 @@ class Environment {
   }
 
   /** Updates the binding for [key] with a [value]. */
-  dynamic operator []=(Symbol key, dynamic value) {
+  void operator []=(Symbol key, dynamic value) {
     if (_bindings.containsKey(key)) {
-      return _bindings[key] = value;
+      _bindings[key] = value;
     } else if (_owner != null) {
-      return _owner[key] = value;
+      _owner[key] = value;
     } else {
-      return _invalidBinding(key);
+      _invalidBinding(key);
     }
   }
 
@@ -52,7 +52,7 @@ class Environment {
 
   /** Called when a missing binding is accessed. */
   dynamic _invalidBinding(Symbol key) {
-    throw new IllegalArgumentException('Unknown binding for $key');
+    throw new ArgumentError('Unknown binding for $key');
   }
 
 }

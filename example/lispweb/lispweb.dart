@@ -17,7 +17,7 @@ void inspector(Element element, Environment environment) {
     result = '$result<hr/>';
     environment = environment.owner;
   }
-  element.innerHTML = result;
+  element.innerHtml = result;
 }
 
 void main() {
@@ -33,7 +33,7 @@ void main() {
 
   query('#evaluate').on.click.add((event) {
     var result = evalString(parser, environment, input.value);
-    output.innerHTML = result.toString();
+    output.innerHtml = result.toString();
     inspector(query('#inspector'), environment);
   });
   inspector(query('#inspector'), environment);

@@ -5,7 +5,7 @@ part of xml;
 /**
  * Abstract XML node.
  */
-class XmlNode implements Iterable<XmlNode> {
+abstract class XmlNode implements Iterable<XmlNode> {
 
   XmlNode _parent;
 
@@ -113,7 +113,7 @@ class XmlNode implements Iterable<XmlNode> {
   /**
    * Writes the XML string of the receiver to a {@code buffer}.
    */
-  abstract void writeTo(StringBuffer buffer);
+  void writeTo(StringBuffer buffer);
 
 }
 
@@ -140,7 +140,7 @@ class XmlAttribute extends XmlNode {
 /**
  * Abstract XML data node.
  */
-class XmlData extends XmlNode {
+abstract class XmlData extends XmlNode {
 
   final String _data;
 
@@ -209,7 +209,7 @@ class XmlText extends XmlData {
 /**
  * Abstract XML node with actual children.
  */
-class XmlParent extends XmlNode {
+abstract class XmlParent extends XmlNode {
 
   final List<XmlNode> _children;
 

@@ -1,6 +1,6 @@
 // Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
 
-part of lisplib;
+part of lisp;
 
 /**
  * Lisp grammar definition.
