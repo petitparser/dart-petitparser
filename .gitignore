@@ -1,6 +1,8 @@
+out
 packages
 pubspec.lock
 
+.settings
 .children
 .project
 *.js

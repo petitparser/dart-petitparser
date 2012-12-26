@@ -5,7 +5,7 @@ part of petitparser;
 /**
  * Abstract base class for all parsers.
  */
-class Parser {
+abstract class Parser {
 
   /**
    * Private abstract method doing the actual parsing.
@@ -13,7 +13,7 @@ class Parser {
    * The methods takes a parse [context] and returns the resulting context,
    * which is either a [Success] or [Failure] context.
    */
-  abstract Result _parse(Context context);
+  Result _parse(Context context);
 
   /**
    * Returns the parse result of the [input].
@@ -159,7 +159,7 @@ class Parser {
    * Returns a parser that transforms a successful parse result by returning
    * the permutated elements at [indexes] of a list.
    */
-  Parser perm(List<integer> indexes) {
+  Parser perm(List<int> indexes) {
     return this.map((List list) => indexes.map((index) => list[index]));
   }
 

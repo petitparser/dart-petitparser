@@ -11,7 +11,7 @@ part of petitparser;
  * other produtions use [ref]. To redefine or attach actions to productions
  * use [redef] and [action].
  */
-class CompositeParser extends DelegateParser {
+abstract class CompositeParser extends DelegateParser {
 
   final Map<String, Parser> _defined;
   final Map<String, WrapperParser> _undefined;
@@ -32,7 +32,7 @@ class CompositeParser extends DelegateParser {
   }
 
   /** Initializes the composite grammar. */
-  abstract void initialize();
+  void initialize();
 
   /** Returns a reference to a production with a [name]. */
   Parser ref(String name) {
