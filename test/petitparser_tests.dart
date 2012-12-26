@@ -93,7 +93,7 @@ main() {
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
-    test('action()', () {
+    test('map()', () {
       var parser = digit().map((String each) {
         return each.charCodeAt(0) - '0'.charCodeAt(0);
       });
@@ -102,6 +102,22 @@ main() {
       expectSuccess(parser, '9', 9);
       expectFailure(parser, '');
       expectFailure(parser, 'a');
+    });
+    test('pick()', () {
+      var parser = digit().seq(letter()).pick(1);
+      expectSuccess(parser, '1a', 'a');
+      expectSuccess(parser, '2b', 'b');
+      expectFailure(parser, '');
+      expectFailure(parser, '1', 1, 'letter expected');
+      expectFailure(parser, '12', 1, 'letter expected');
+    });
+    test('permute()', () {
+      var parser = digit().seq(letter()).perm([1, 0]);
+      expectSuccess(parser, '1a', ['a', '1']);
+      expectSuccess(parser, '2b', ['b', '2']);
+      expectFailure(parser, '');
+      expectFailure(parser, '1', 1, 'letter expected');
+      expectFailure(parser, '12', 1, 'letter expected');
     });
     test('not()', () {
       var parser = char('a').not('not a expected');
@@ -215,7 +231,6 @@ main() {
       expectFailure(parser, '');
     });
   });
-
   group('characters', () {
     test('char()', () {
       var parser = char('a');
