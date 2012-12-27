@@ -47,8 +47,8 @@ abstract class Parser {
    * Returns a list of all successful overlapping parses of the [input].
    *
    * For example, [:letter().plus().matches('abc de'):] results in the list
-   * [:[[a, b, c], [b, c], [c], [d, e], [e]]:]. See [Parser#matchesSkipping]
-   * to retrieve non-overlapping parse results.
+   * [:[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]:]. See
+   * [Parser.matchesSkipping] to retrieve non-overlapping parse results.
    */
   Iterable matches(dynamic input) {
     var list = new List();
@@ -60,8 +60,8 @@ abstract class Parser {
    * Returns a list of all successful non-overlapping parses of the input.
    *
    * For example, [:letter().plus().matchesSkipping('abc de'):] results in the
-   * list [:[[a, b, c], [d, e]]:]. See [Parser#matches] to retrieve overlapping
-   * parse results.
+   * list [:[['a', 'b', 'c'], ['d', 'e']]:]. See [Parser.matches] to retrieve
+   * overlapping parse results.
    */
   Iterable matchesSkipping(dynamic input) {
     var list = new List();
@@ -83,24 +83,46 @@ abstract class Parser {
   /**
    * Returns a parser that accepts the receiver zero or more times. The
    * resulting parser returns a list of the parse results of the receiver.
+   *
+   * This is a greedy and blind implementation that tries to consume as much
+   * input as possible and that does not consider what comes afterwards.
+   *
+   * For example, the parser [:letter().star():] accepts the empty string or
+   * any sequence of letters and returns a possibly empty list of the parsed
+   * letters.
    */
   Parser star() => repeat(0, 65536);
 
   /**
    * Returns a parser that accepts the receiver one or more times. The
    * resulting parser returns a list of the parse results of the receiver.
+   *
+   * This is a greedy and blind implementation that tries to consume as much
+   * input as possible and that does not consider what comes afterwards.
+   *
+   * For example, the parser [:letter().plus():] accepts any sequence of
+   * letters and returns a list of the parsed letters.
    */
   Parser plus() => repeat(1, 65536);
 
   /**
    * Returns a parser that accepts the receiver exactly [count] times. The
    * resulting parser returns a list of the parse results of the receiver.
+   *
+   * For example, the parser [:letter().times(2):] accepts two letters and
+   * returns a list of the two parsed letters.
    */
   Parser times(int count) => repeat(count, count);
 
   /**
    * Returns a parser that accepts the receiver between [min] and [max] times.
    * The resulting parser returns a list of the parse results of the receiver.
+   *
+   * This is a greedy and blind implementation that tries to consume as much
+   * input as possible and that does not consider what comes afterwards.
+   *
+   * For example, the parser [:letter().repeat(2, 4):] accepts a sequence of
+   * two, three, or four letters and returns the accepted letters as a list.
    */
   Parser repeat(int min, int max) => new RepeatingParser(this, min, max);
 
@@ -109,6 +131,10 @@ abstract class Parser {
    * resulting parser returns a list of the parse result of the receiver
    * followed by the parse result of [other]. Calling [SequenceParser#seq]
    * causes the sequences to be concatenated instead of nested.
+   *
+   * For example, the parser [:letter().seq(digit()).seq(letter()):] accepts a
+   * letter followed by a digit and another letter. The parse result of the
+   * input string [:'a1b':] is the list [:['a', '1', 'b']:].
    */
   Parser seq(Parser other) => new SequenceParser([this, other]);
 
@@ -116,24 +142,46 @@ abstract class Parser {
    * Returns a parser that accepts the receiver or [other]. The resulting
    * parser returns the parse result of the receiver, if the receiver fails
    * it returns the parse result of [other] (exclusive ordered choice).
+   *
+   * For example, the parser [:letter().or(digit()):] accepts a letter or a
+   * digit. An example where the order matters is the following choice between
+   * overlapping parsers: [:letter().or(char('a')):]. In the example the parser
+   * [:char('a'):] will never be activated, because the input is always consumed
+   * [:letter():]. This can be problematic if the author intended to attach a
+   * production action to [:char('a'):].
    */
   Parser or(Parser other) => new ChoiceParser([this, other]);
 
   /**
    * Returns a parser (logical and-predicate) that succeeds whenever the
    * receiver does, but never consumes input.
+   *
+   * For example, the parser [:char('_').and().seq(identifier):] accepts
+   * identifiers that start with an underscore character. Since the predicate
+   * does not consume accepted input, the parser [:identifier:] is given the
+   * ability to process the complete identifier.
    */
   Parser and() => new AndParser(this);
 
   /**
    * Returns a parser (logical not-predicate) that succeeds whenever the
    * receiver fails, but never consumes input.
+   *
+   * For example, the parser [:char('_').not().seq(identifier):] accepts
+   * identifiers that do not start with an underscore character. If the parser
+   * [:char('_'):] accepts the input, the negation and subsequently the
+   * complete parser fails. Otherwise the parser [:identifier:] is given the
+   * ability to process the complete identifier.
    */
   Parser not([String message]) => new NotParser(this, message);
 
   /**
    * Returns a parser that consumes any input token (character), but the
    * receiver.
+   *
+   * For example, the parser [:letter().neg():] accepts any input but a letter.
+   * The parser fails for inputs like [:'a':], but succeeds for input like
+   * [:'1':], [:'_':] or [:'$':].
    */
   Parser neg([String message]) => not(message).seq(any()).pick(1);
 
