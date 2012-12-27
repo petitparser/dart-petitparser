@@ -2,7 +2,9 @@
 
 part of petitparser;
 
-/** Predicate that accepts any input. */
+/**
+ * Returns a parser that accepts any input element.
+ */
 Parser any([String message]) {
   return new _AnyPredicateParser(message != null ? message : 'input expected');
 }
@@ -21,18 +23,27 @@ class _AnyPredicateParser extends Parser {
   }
 }
 
+/**
+ * Returns a parser that accepts any of the [elements].
+ */
 Parser anyIn(dynamic elements, [String message]) {
   return new PredicateParser(1,
     (each) => elements.indexOf(each) >= 0,
     message != null ? message : 'any of $elements expected');
 }
 
+/**
+ * Returns a parser that accepts the string [element].
+ */
 Parser string(String element, [String message]) {
   return new PredicateParser(element.length,
     (String each) => element == each,
     message != null ? message : '$element expected');
 }
 
+/**
+ * Returns a parser that accepts the string [element] ignoring the case.
+ */
 Parser stringIgnoreCase(String element, [String message]) {
   final lowerElement = element.toLowerCase();
   return new PredicateParser(element.length,
