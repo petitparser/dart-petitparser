@@ -180,16 +180,49 @@ abstract class Parser {
    * receiver.
    *
    * For example, the parser [:letter().neg():] accepts any input but a letter.
-   * The parser fails for inputs like [:'a':], but succeeds for input like
-   * [:'1':], [:'_':] or [:'$':].
+   * The parser fails for inputs like [:'a':] or [:'Z':], but succeeds for
+   * input like [:'1':], [:'_':] or [:'$':].
    */
   Parser neg([String message]) => not(message).seq(any()).pick(1);
 
   Parser wrapper() => new WrapperParser(this);
+
+  /**
+   * Returns a parser that discards the result of the receiver, and returns
+   * a sub-string of the consumed elements in the string/list being parsed.
+   *
+   * For example, the parser [:letter().plus().flatten():] returns [:'abc':]
+   * for the input [:'abc':]. In contrast, the parser [:letter().plus():] would
+   * return [:['a', 'b', 'c']:] for the same input instead.
+   */
   Parser flatten() => new FlattenParser(this);
+
+  /**
+   * Returns a parser that discards the result of the receiver and returns
+   * a [Token]. The token carries information about where the token started and
+   * stopped in the input stream.
+   *
+   * For example, the parser [:letter().plus().token():] returns the token
+   * [:Token[start: 0, stop: 3, value: abc]:] for the input [:'abc':].
+   */
   Parser token() => new TokenParser(this);
-  Parser trim([Parser trimmer]) => new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
-  Parser end([String message]) => new EndOfInputParser(this, message == null ? 'end of input expected' : message);
+
+  /**
+   * Returns a parser that consumes input before and after the receiver. The
+   * optional argument [trimmer] is a parser that consumes the excess input. By
+   * default [:whitespace():] is used.
+   *
+   * For example, the parser [:letter().plus().trim():] returns [:['a', 'b']:]
+   * for the input [:' ab\n':] and consumes the complete input string.
+   */
+  Parser trim([Parser trimmer]) {
+    return new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
+  }
+
+  Parser end([String message]) {
+    return new EndOfInputParser(this, message == null
+        ? 'end of input expected' : message);
+  }
 
   /**
    * Returns a parser that evaluates [function] as action handler on success
