@@ -185,8 +185,6 @@ abstract class Parser {
    */
   Parser neg([String message]) => not(message).seq(any()).pick(1);
 
-  Parser wrapper() => new WrapperParser(this);
-
   /**
    * Returns a parser that discards the result of the receiver, and returns
    * a sub-string of the consumed elements in the string/list being parsed.
@@ -219,6 +217,14 @@ abstract class Parser {
     return new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
   }
 
+  /**
+   * Returns a parser that succeeds only if the receiver consumes the complete
+   * input, otherwise return a failure with the optional [message].
+   *
+   * For example, the parser [:letter().end():] succeeds on the input [:'a':]
+   * and fails on [:'ab':]. In contrast the parser [:letter():] alone would
+   * succeed on both inputs, but not consume everything for the second input.
+   */
   Parser end([String message]) {
     return new EndOfInputParser(this, message == null
         ? 'end of input expected' : message);
@@ -244,19 +250,29 @@ abstract class Parser {
     return this.map((List list) => indexes.map((index) => list[index]));
   }
 
-  Parser separatedBy(Parser separator) {
-    return new SequenceParser([this, new SequenceParser([separator, this]).star()]).map((List list) {
+  /**
+   * Returns a parser that consumes the receiver one or more times separated
+   * by the [separator] parser. The resulting parser returns a flat list of
+   * the parse results of the receiver and interleaved with the parse result
+   * of the separator parser. If the optional argument [includeSeparators] is
+   * set to [:false:], then the separators are not included in the parse result.
+   * If the optional argument [optionalSeparatorAtEnd] is set to [:true:] the
+   * parser also accepts an optional separator at the end.
+   */
+  Parser separatedBy(Parser separator, {bool includeSeparators: true,
+      bool optionalSeparatorAtEnd: false}) {
+    var repeater = new SequenceParser([separator, this]).star();
+    var parser = new SequenceParser(optionalSeparatorAtEnd
+        ? [this, repeater, separator.optional(separator)]
+        : [this, repeater]);
+    return parser.map((List list) {
       var result = new List();
       result.add(list[0]);
-      list[1].forEach((each) => result.addAll(each));
-      return result;
-    });
-  }
-  Parser withoutSeparators() {
-    return map((List list) {
-      var result = new List();
-      for (var i = 0; i < list.length; i += 2) {
-        result.add(list[i]);
+      for (var i = 0; i < list[1].length; i += includeSeparators ? 1 : 2) {
+        result.add(list[1][i]);
+      }
+      if (includeSeparators && optionalSeparatorAtEnd && list[2] != separator) {
+        result.add(list[2]);
       }
       return result;
     });
