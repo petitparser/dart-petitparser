@@ -181,6 +181,26 @@ main() {
       expectSuccess(parser, 'ababa', ['a', 'a', 'a']);
       expectSuccess(parser, 'ababab', ['a', 'a', 'a'], 5);
     });
+    test('separatedBy() separator at end', () {
+      var parser = char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
+      expectFailure(parser, '', 0, 'a expected');
+      expectSuccess(parser, 'a', ['a']);
+      expectSuccess(parser, 'ab', ['a', 'b']);
+      expectSuccess(parser, 'aba', ['a', 'b', 'a']);
+      expectSuccess(parser, 'abab', ['a', 'b', 'a', 'b']);
+      expectSuccess(parser, 'ababa', ['a', 'b', 'a', 'b', 'a']);
+      expectSuccess(parser, 'ababab', ['a', 'b', 'a', 'b', 'a', 'b']);
+    });
+    test('separatedBy() without separators & separator at end', () {
+      var parser = char('a').separatedBy(char('b'), includeSeparators: false, optionalSeparatorAtEnd: true);
+      expectFailure(parser, '', 0, 'a expected');
+      expectSuccess(parser, 'a', ['a']);
+      expectSuccess(parser, 'ab', ['a']);
+      expectSuccess(parser, 'aba', ['a', 'a']);
+      expectSuccess(parser, 'abab', ['a', 'a']);
+      expectSuccess(parser, 'ababa', ['a', 'a', 'a']);
+      expectSuccess(parser, 'ababab', ['a', 'a', 'a']);
+    });
     test('seq() of two', () {
       var parser = char('a').seq(char('b'));
       expectSuccess(parser, 'ab', ['a', 'b']);
