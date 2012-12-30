@@ -171,6 +171,16 @@ main() {
       expectSuccess(parser, 'ababa', ['a', 'b', 'a', 'b', 'a']);
       expectSuccess(parser, 'ababab', ['a', 'b', 'a', 'b', 'a'], 5);
     });
+    test('separatedBy() without separators', () {
+      var parser = char('a').separatedBy(char('b'), includeSeparators: false);
+      expectFailure(parser, '', 0, 'a expected');
+      expectSuccess(parser, 'a', ['a']);
+      expectSuccess(parser, 'ab', ['a'], 1);
+      expectSuccess(parser, 'aba', ['a', 'a']);
+      expectSuccess(parser, 'abab', ['a', 'a'], 3);
+      expectSuccess(parser, 'ababa', ['a', 'a', 'a']);
+      expectSuccess(parser, 'ababab', ['a', 'a', 'a'], 5);
+    });
     test('seq() of two', () {
       var parser = char('a').seq(char('b'));
       expectSuccess(parser, 'ab', ['a', 'b']);

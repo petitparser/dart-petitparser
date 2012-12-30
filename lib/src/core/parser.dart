@@ -231,6 +231,11 @@ abstract class Parser {
   }
 
   /**
+   * Returns a parser that simply delegates to the receiver.
+   */
+  Parser wrapper() => new WrapperParser(this);
+
+  /**
    * Returns a parser that evaluates [function] as action handler on success
    * of the receiver.
    */
@@ -253,11 +258,13 @@ abstract class Parser {
   /**
    * Returns a parser that consumes the receiver one or more times separated
    * by the [separator] parser. The resulting parser returns a flat list of
-   * the parse results of the receiver and interleaved with the parse result
-   * of the separator parser. If the optional argument [includeSeparators] is
-   * set to [:false:], then the separators are not included in the parse result.
-   * If the optional argument [optionalSeparatorAtEnd] is set to [:true:] the
-   * parser also accepts an optional separator at the end.
+   * the parse results of the receiver interleaved with the parse result of the
+   * separator parser.
+   *
+   * If the optional argument [includeSeparators] is set to [:false:], then the
+   * separators are not included in the parse result. If the optional argument
+   * [optionalSeparatorAtEnd] is set to [:true:] the parser also accepts an
+   * optional separator at the end.
    */
   Parser separatedBy(Parser separator, {bool includeSeparators: true,
       bool optionalSeparatorAtEnd: false}) {
@@ -268,10 +275,13 @@ abstract class Parser {
     return parser.map((List list) {
       var result = new List();
       result.add(list[0]);
-      for (var i = 0; i < list[1].length; i += includeSeparators ? 1 : 2) {
-        result.add(list[1][i]);
+      for (var tuple in list[1]) {
+        if (includeSeparators) {
+          result.add(tuple[0]);
+        }
+        result.add(tuple[1]);
       }
-      if (includeSeparators && optionalSeparatorAtEnd && list[2] != separator) {
+      if (includeSeparators && optionalSeparatorAtEnd && !identical(list[2], separator)) {
         result.add(list[2]);
       }
       return result;
