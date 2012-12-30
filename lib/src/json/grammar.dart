@@ -15,9 +15,9 @@ class JsonGrammar extends CompositeParser {
         .seq(ref('elements').optional())
         .seq(char(']').trim()));
     def('elements',
-      ref('value').separatedBy(char(',').trim()));
+      ref('value').separatedBy(char(',').trim(), includeSeparators: false));
     def('members',
-      ref('pair').separatedBy(char(',').trim()));
+      ref('pair').separatedBy(char(',').trim(), includeSeparators: false));
     def('object',
       char('{').trim()
         .seq(ref('members').optional())

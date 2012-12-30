@@ -11,8 +11,6 @@ class JsonParser extends JsonGrammar {
     super.initialize();
 
     action('array', (each) => each[1] != null ? each[1] : new List());
-    redef('elements', (parser) => parser.withoutSeparators());
-    redef('members', (parser) => parser.withoutSeparators());
     action('object', (each) {
       var result = new LinkedHashMap();
       if (each[1] != null) {
