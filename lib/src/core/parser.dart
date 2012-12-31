@@ -232,27 +232,50 @@ abstract class Parser {
 
   /**
    * Returns a parser that simply delegates to the receiver.
+   *
+   * For example, the parser [:letter().wrapper():] behaves exactly the same
+   * as [:letter():].
    */
   Parser wrapper() => new WrapperParser(this);
 
   /**
    * Returns a parser that evaluates [function] as action handler on success
    * of the receiver.
+   *
+   * For example, the parser [:digit().map((char) => int.parse(char)):] returns
+   * the number [:1:] for the input string [:'1':].
    */
   Parser map(Function function) => new ActionParser(this, function);
 
   /**
    * Returns a parser that transform a successful parse result by returning
-   * the element at [index] of a list.
+   * the element at [index] of a list. A negative index can be used to access
+   * the elements from the back of the list.
+   *
+   * For example, the parser [:letter().star().pick(-1):] returns the last
+   * letter parsed. For the input [:'abc':] it returns ['c'].
    */
-  Parser pick(int index) => this.map((List list) => list[index]);
+  Parser pick(int index) {
+    return this.map((List list) {
+      return list[index < 0 ? list.length + index : index];
+    });
+  }
 
   /**
    * Returns a parser that transforms a successful parse result by returning
-   * the permutated elements at [indexes] of a list.
+   * the permutated elements at [indexes] of a list. Negative indexes can be
+   * used to access the elements from the back of the list.
+   *
+   * For example, the parser [:letter().star().perm([0, -1]):] returns the
+   * first and last letter parsed. For the input [:'abc':] it returns
+   * [:['a', 'c']:].
    */
   Parser perm(List<int> indexes) {
-    return this.map((List list) => indexes.map((index) => list[index]));
+    return this.map((List list) {
+      return indexes.map((index) {
+        return list[index < 0 ? list.length + index : index];
+      });
+    });
   }
 
   /**
@@ -265,6 +288,10 @@ abstract class Parser {
    * separators are not included in the parse result. If the optional argument
    * [optionalSeparatorAtEnd] is set to [:true:] the parser also accepts an
    * optional separator at the end.
+   *
+   * For example, the parser [:digit().separatedBy(char('-')):] returns a parser
+   * that consumes input like [:'1-2-3':] and returns a list of the elements and
+   * separators: [:['1', '-', '2', '-', '3']:].
    */
   Parser separatedBy(Parser separator, {bool includeSeparators: true,
       bool optionalSeparatorAtEnd: false}) {
