@@ -9,3 +9,5 @@ pubspec.lock
 .project
 *.js
 *.js_
+*.js.map
+*.js.deps

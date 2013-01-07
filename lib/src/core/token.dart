@@ -54,7 +54,7 @@ class Token {
    */
   int get line {
     var line = 1;
-    for (var each in _newlineParser().token().matchesSkipping(buffer)) {
+    for (var each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return line;
       }
@@ -68,7 +68,7 @@ class Token {
    */
   int get column {
     var position = 0;
-    for (var each in _newlineParser().token().matchesSkipping(buffer)) {
+    for (var each in newlineParser().token().matchesSkipping(buffer)) {
       if (start < each.stop) {
         return start - position + 1;
       }
@@ -81,7 +81,7 @@ class Token {
 
   static Parser _NEWLINE_PARSER;
 
-  static Parser _newlineParser() {
+  static Parser newlineParser() {
     if (_NEWLINE_PARSER == null) {
       _NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
     }
