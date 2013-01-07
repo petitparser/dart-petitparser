@@ -78,7 +78,7 @@ abstract class Parser {
    * and returns that letter. When given something else the parser succeeds as
    * well, does not consume anything and returns [:null:].
    */
-  Parser optional([dynamic otherwise]) => new OptionalParser(this, otherwise);
+  Parser optional([dynamic otherwise]) => new _OptionalParser(this, otherwise);
 
   /**
    * Returns a parser that accepts the receiver zero or more times. The
@@ -124,7 +124,7 @@ abstract class Parser {
    * For example, the parser [:letter().repeat(2, 4):] accepts a sequence of
    * two, three, or four letters and returns the accepted letters as a list.
    */
-  Parser repeat(int min, int max) => new RepeatingParser(this, min, max);
+  Parser repeat(int min, int max) => new _RepeatingParser(this, min, max);
 
   /**
    * Returns a parser that accepts the receiver followed by [other]. The
@@ -136,7 +136,7 @@ abstract class Parser {
    * letter followed by a digit and another letter. The parse result of the
    * input string [:'a1b':] is the list [:['a', '1', 'b']:].
    */
-  Parser seq(Parser other) => new SequenceParser([this, other]);
+  Parser seq(Parser other) => new _SequenceParser([this, other]);
 
   /**
    * Returns a parser that accepts the receiver or [other]. The resulting
@@ -150,7 +150,7 @@ abstract class Parser {
    * [:letter():]. This can be problematic if the author intended to attach a
    * production action to [:char('a'):].
    */
-  Parser or(Parser other) => new ChoiceParser([this, other]);
+  Parser or(Parser other) => new _ChoiceParser([this, other]);
 
   /**
    * Returns a parser (logical and-predicate) that succeeds whenever the
@@ -161,7 +161,7 @@ abstract class Parser {
    * does not consume accepted input, the parser [:identifier:] is given the
    * ability to process the complete identifier.
    */
-  Parser and() => new AndParser(this);
+  Parser and() => new _AndParser(this);
 
   /**
    * Returns a parser (logical not-predicate) that succeeds whenever the
@@ -173,7 +173,7 @@ abstract class Parser {
    * complete parser fails. Otherwise the parser [:identifier:] is given the
    * ability to process the complete identifier.
    */
-  Parser not([String message]) => new NotParser(this, message);
+  Parser not([String message]) => new _NotParser(this, message);
 
   /**
    * Returns a parser that consumes any input token (character), but the
@@ -193,7 +193,7 @@ abstract class Parser {
    * for the input [:'abc':]. In contrast, the parser [:letter().plus():] would
    * return [:['a', 'b', 'c']:] for the same input instead.
    */
-  Parser flatten() => new FlattenParser(this);
+  Parser flatten() => new _FlattenParser(this);
 
   /**
    * Returns a parser that discards the result of the receiver and returns
@@ -203,7 +203,7 @@ abstract class Parser {
    * For example, the parser [:letter().plus().token():] returns the token
    * [:Token[start: 0, stop: 3, value: abc]:] for the input [:'abc':].
    */
-  Parser token() => new TokenParser(this);
+  Parser token() => new _TokenParser(this);
 
   /**
    * Returns a parser that consumes input before and after the receiver. The
@@ -214,7 +214,7 @@ abstract class Parser {
    * for the input [:' ab\n':] and consumes the complete input string.
    */
   Parser trim([Parser trimmer]) {
-    return new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
+    return new _TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
   }
 
   /**
@@ -226,7 +226,7 @@ abstract class Parser {
    * succeed on both inputs, but not consume everything for the second input.
    */
   Parser end([String message]) {
-    return new EndOfInputParser(this, message == null
+    return new _EndOfInputParser(this, message == null
         ? 'end of input expected' : message);
   }
 
@@ -236,7 +236,7 @@ abstract class Parser {
    * For example, the parser [:letter().wrapper():] behaves exactly the same
    * as [:letter():].
    */
-  Parser wrapper() => new WrapperParser(this);
+  Parser wrapper() => new _WrapperParser(this);
 
   /**
    * Returns a parser that evaluates [function] as action handler on success
@@ -245,7 +245,7 @@ abstract class Parser {
    * For example, the parser [:digit().map((char) => int.parse(char)):] returns
    * the number [:1:] for the input string [:'1':].
    */
-  Parser map(Function function) => new ActionParser(this, function);
+  Parser map(Function function) => new _ActionParser(this, function);
 
   /**
    * Returns a parser that transform a successful parse result by returning
@@ -263,14 +263,14 @@ abstract class Parser {
 
   /**
    * Returns a parser that transforms a successful parse result by returning
-   * the permutated elements at [indexes] of a list. Negative indexes can be
+   * the permuted elements at [indexes] of a list. Negative indexes can be
    * used to access the elements from the back of the list.
    *
    * For example, the parser [:letter().star().perm([0, -1]):] returns the
    * first and last letter parsed. For the input [:'abc':] it returns
    * [:['a', 'c']:].
    */
-  Parser perm(List<int> indexes) {
+  Parser permute(List<int> indexes) {
     return this.map((List list) {
       return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
@@ -295,8 +295,8 @@ abstract class Parser {
    */
   Parser separatedBy(Parser separator, {bool includeSeparators: true,
       bool optionalSeparatorAtEnd: false}) {
-    var repeater = new SequenceParser([separator, this]).star();
-    var parser = new SequenceParser(optionalSeparatorAtEnd
+    var repeater = new _SequenceParser([separator, this]).star();
+    var parser = new _SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional(separator)]
         : [this, repeater]);
     return parser.map((List list) {
@@ -308,7 +308,8 @@ abstract class Parser {
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators && optionalSeparatorAtEnd && !identical(list[2], separator)) {
+      if (includeSeparators && optionalSeparatorAtEnd
+          && !identical(list[2], separator)) {
         result.add(list[2]);
       }
       return result;

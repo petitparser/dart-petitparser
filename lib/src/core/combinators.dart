@@ -3,12 +3,65 @@
 part of petitparser;
 
 /**
+ * A parser that delegates to another one. Normally users do not need to
+ * directly use a delegate parser.
+ */
+class _DelegateParser extends Parser {
+
+  Parser _delegate;
+
+  _DelegateParser(this._delegate);
+
+  Result _parse(Context context) {
+    return _delegate._parse(context);
+  }
+
+  List<Parser> get children => [_delegate];
+
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    if (identical(_delegate, source)) {
+      _delegate = target;
+    }
+  }
+
+}
+
+/**
+ * A parser that wraps another one.
+ */
+class _WrapperParser extends _DelegateParser {
+
+  _WrapperParser(parser) : super(parser);
+
+}
+
+/**
+ * A parser that succeeds only at the end of the input.
+ */
+class _EndOfInputParser extends _DelegateParser {
+
+  final String _message;
+
+  _EndOfInputParser(parser, this._message) : super(parser);
+
+  Result _parse(Context context) {
+    var result = super._parse(context);
+    if (result.isFailure() || result.position == result.buffer.length) {
+      return result;
+    }
+    return result.failure(_message, result.position);
+  }
+
+}
+
+/**
  * The and-predicate, a parser that succeeds whenever its delegate does, but
  * does not consume the input stream [Parr 1994, 1995].
  */
-class AndParser extends DelegateParser {
+class _AndParser extends _DelegateParser {
 
-  AndParser(parser) : super(parser);
+  _AndParser(parser) : super(parser);
 
   Result _parse(Context context) {
     var result = super._parse(context);
@@ -22,63 +75,14 @@ class AndParser extends DelegateParser {
 }
 
 /**
- * A parser that uses the first parser that succeeds.
+ * The not-predicate, a parser that succeeds whenever its delegate does not,
+ * but consumes no input [Parr 1994, 1995].
  */
-class ChoiceParser extends ListParser {
-
-  ChoiceParser(_parsers) : super(_parsers);
-
-  Result _parse(Context context) {
-    var result;
-    for (var parser in _parsers) {
-      result = parser._parse(context);
-      if (result.isSuccess()) {
-        return result;
-      }
-    }
-    return result;
-  }
-
-  Parser or(Parser other) {
-    var parsers = new List.from(_parsers);
-    parsers.addLast(other);
-    return new ChoiceParser(parsers);
-  }
-
-}
-
-/**
- * Abstract parser that parses a list of things in some way (to be specified by
- * the subclasses).
- */
-abstract class ListParser extends Parser {
-
-  final List<Parser> _parsers;
-
-  ListParser(this._parsers);
-
-  List<Parser> get children => _parsers;
-
-  void replace(Parser source, Parser target) {
-    super.replace(source, target);
-    for (var i = 0; i < _parsers.length; i++) {
-      if (identical(_parsers[i], source)) {
-        _parsers[i] = target;
-      }
-    }
-  }
-
-}
-
-/**
- * The not-predicate, a parser that succeeds whenever its delegate does not, but
- * consumes no input [Parr 1994, 1995].
- */
-class NotParser extends DelegateParser {
+class _NotParser extends _DelegateParser {
 
   final String _message;
 
-  NotParser(parser, this._message) : super(parser);
+  _NotParser(parser, this._message) : super(parser);
 
   Result _parse(Context context) {
     var result = super._parse(context);
@@ -94,11 +98,11 @@ class NotParser extends DelegateParser {
 /**
  * A parser that optionally parsers its delegate, or answers nil.
  */
-class OptionalParser extends DelegateParser {
+class _OptionalParser extends _DelegateParser {
 
   final dynamic _otherwise;
 
-  OptionalParser(parser, this._otherwise) : super(parser);
+  _OptionalParser(parser, this._otherwise) : super(parser);
 
   Result _parse(Context context) {
     var result = super._parse(context);
@@ -114,12 +118,12 @@ class OptionalParser extends DelegateParser {
 /**
  * A parser that repeatedly parses a sequence of parsers.
  */
-class RepeatingParser extends DelegateParser {
+class _RepeatingParser extends _DelegateParser {
 
   final int _min;
   final int _max;
 
-  RepeatingParser(parser, this._min, this._max) : super(parser);
+  _RepeatingParser(parser, this._min, this._max) : super(parser);
 
   Result _parse(Context context) {
     var current = context;
@@ -146,11 +150,59 @@ class RepeatingParser extends DelegateParser {
 }
 
 /**
+ * Abstract parser that parses a list of things in some way.
+ */
+abstract class _ListParser extends Parser {
+
+  final List<Parser> _parsers;
+
+  _ListParser(this._parsers);
+
+  List<Parser> get children => _parsers;
+
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    for (var i = 0; i < _parsers.length; i++) {
+      if (identical(_parsers[i], source)) {
+        _parsers[i] = target;
+      }
+    }
+  }
+
+}
+
+/**
+ * A parser that uses the first parser that succeeds.
+ */
+class _ChoiceParser extends _ListParser {
+
+  _ChoiceParser(parsers) : super(parsers);
+
+  Result _parse(Context context) {
+    var result;
+    for (var parser in _parsers) {
+      result = parser._parse(context);
+      if (result.isSuccess()) {
+        return result;
+      }
+    }
+    return result;
+  }
+
+  Parser or(Parser other) {
+    var parsers = new List.from(_parsers);
+    parsers.addLast(other);
+    return new _ChoiceParser(parsers);
+  }
+
+}
+
+/**
  * A parser that parses a sequence of parsers.
  */
-class SequenceParser extends ListParser {
+class _SequenceParser extends _ListParser {
 
-  SequenceParser(_parsers) : super(_parsers);
+  _SequenceParser(_parsers) : super(_parsers);
 
   Result _parse(Context context) {
     var current = context;
@@ -169,14 +221,7 @@ class SequenceParser extends ListParser {
   Parser seq(Parser other) {
     var parsers = new List.from(_parsers);
     parsers.addLast(other);
-    return new SequenceParser(parsers);
+    return new _SequenceParser(parsers);
   }
 
-}
-
-/**
- * A parser that wraps another one.
- */
-class WrapperParser extends DelegateParser {
-  WrapperParser(parser) : super(parser);
 }

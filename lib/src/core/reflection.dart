@@ -72,7 +72,9 @@ class Transformations {
   /** Removes all wrappers starting at [root]. */
   static Parser removeWrappers(Parser root) {
     // TODO(renggli): replace with exact class check
-    return transform(root, (each) => each is WrapperParser ? each.children[0] : each);
+    return transform(root, (each) {
+      return each is _WrapperParser ? each.children[0] : each;
+    });
   }
 
 }

@@ -84,7 +84,7 @@ main() {
       expect(token.toString(), 'Token[start: 2, stop: 5, value: 123]');
     });
     test('token() line', () {
-      var parser = any().token().star().map((List list) => list.map((Token token) => token.line));
+      var parser = any().token().star().map((List list) => list.map((token) => token.line));
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
@@ -112,7 +112,7 @@ main() {
       expectFailure(parser, '12', 1, 'letter expected');
     });
     test('permute()', () {
-      var parser = digit().seq(letter()).perm([1, 0]);
+      var parser = digit().seq(letter()).permute([1, 0]);
       expectSuccess(parser, '1a', ['a', '1']);
       expectSuccess(parser, '2b', ['b', '2']);
       expectFailure(parser, '');
@@ -592,12 +592,12 @@ main() {
       expect(parsers, [parser1, parser3, parser2]);
     });
     test('iterator looping', () {
-      var parser1 = new WrapperParser(null);
-      var parser2 = new WrapperParser(null);
-      var parser3 = new WrapperParser(null);
-      parser1.replace(null, parser2);
-      parser2.replace(null, parser3);
-      parser3.replace(null, parser1);
+      var parser1 = epsilon().wrapper();
+      var parser2 = epsilon().wrapper();
+      var parser3 = epsilon().wrapper();
+      parser1.replace(parser1.children[0], parser2);
+      parser2.replace(parser2.children[0], parser3);
+      parser3.replace(parser3.children[0], parser1);
       var parsers = new List.from(new ParserIterable(parser1));
       expect(parsers, [parser1, parser2, parser3]);
     });

@@ -11,10 +11,10 @@ part of petitparser;
  * other produtions use [ref]. To redefine or attach actions to productions
  * use [redef] and [action].
  */
-abstract class CompositeParser extends DelegateParser {
+abstract class CompositeParser extends _DelegateParser {
 
   final Map<String, Parser> _defined;
-  final Map<String, WrapperParser> _undefined;
+  final Map<String, _WrapperParser> _undefined;
 
   CompositeParser()
       : super(failure('Uninitalized production: start')),
@@ -22,7 +22,7 @@ abstract class CompositeParser extends DelegateParser {
         _undefined = new Map() {
     initialize();
     _delegate = ref('start');
-    _undefined.forEach((String name, WrapperParser parser) {
+    _undefined.forEach((name, parser) {
       if (!_defined.containsKey(name)) {
         throw new StateError('Undefined production: $name');
       }
@@ -31,17 +31,23 @@ abstract class CompositeParser extends DelegateParser {
     replace(children[0], Transformations.removeWrappers(ref('start')));
   }
 
-  /** Initializes the composite grammar. */
+  /**
+   * Initializes the composite grammar.
+   */
   void initialize();
 
-  /** Returns a reference to a production with a [name]. */
+  /**
+   * Returns a reference to a production with a [name].
+   */
   Parser ref(String name) {
     return _undefined.putIfAbsent(name, () {
       return failure('Uninitalized production: $name').wrapper();
     });
   }
 
-  /** Defines a production with a [name] and a [parser]. */
+  /**
+   * Defines a production with a [name] and a [parser].
+   */
   void def(String name, Parser parser) {
     if (_defined.containsKey(name)) {
       throw new StateError('Duplicate production: $name');
@@ -50,7 +56,10 @@ abstract class CompositeParser extends DelegateParser {
     }
   }
 
-  /** Redefinies an existing production with a [name] and a [function] producing a new parser. */
+  /**
+   * Redefinies an existing production with a [name] and a [function]
+   * producing a new parser.
+   */
   void redef(String name, Parser function(Parser)) {
     if (!_defined.containsKey(name)) {
       throw new StateError('Undefined production: $name');
@@ -59,14 +68,16 @@ abstract class CompositeParser extends DelegateParser {
     }
   }
 
-  /** Attaches an action [function] to an existing production [name]. */
+  /**
+   * Attaches an action [function] to an existing production [name].
+   */
   void action(String name, dynamic function(Dynamic)) {
     redef(name, (parser) => parser.map(function));
   }
 
   /**
-   * Returns a reference to a defined production named [name]. This method should
-   * only be called for fully initialized instances.
+   * Returns a reference to a defined production named [name]. This method
+   * should only be called for fully initialized instances.
    */
   Parser operator [](String name) => _defined[name];
 
