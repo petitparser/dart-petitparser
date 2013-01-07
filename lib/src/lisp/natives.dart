@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
+// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 part of lisp;
 
@@ -30,7 +30,7 @@ class Natives {
 
   /** A simple standard library, should be moved to external file. */
   static String _standardLibrary = """
-; Copyright (c) 2012, Lukas Renggli <renggli@gmail.com>
+; Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 ; null functions
 (define null '())
