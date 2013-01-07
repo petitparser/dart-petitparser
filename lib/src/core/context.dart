@@ -19,10 +19,10 @@ class Context {
   int get position => _position;
 
   /** Returns [true] if this context indicates a parse success. */
-  bool isSuccess() => false;
+  bool get isSuccess => false;
 
   /** Returns [true] if this context indicates a parse failure. */
-  bool isFailure() => false;
+  bool get isFailure => false;
 
   /** Copies the current context to indicate a parse success. */
   Success success(dynamic result, [int position]) {
@@ -63,9 +63,10 @@ class Success extends Result {
 
   const Success(buffer, position, this._result) : super(buffer, position);
 
-  bool isSuccess() => true;
+  bool get isSuccess => true;
 
   dynamic get result => _result;
+
   String get message => null;
 
   String toString() => 'Success[$_position]: $_result';
@@ -81,9 +82,10 @@ class Failure extends Result {
 
   const Failure(buffer, position, this._message) : super(buffer, position);
 
-  bool isFailure() => true;
+  bool get isFailure => true;
 
   dynamic get result { throw new UnsupportedError(_message); }
+
   String get message => _message;
 
   String toString() => 'Failure[$_position]: $_message';

@@ -7,16 +7,16 @@ import 'package:unittest/unittest.dart';
 
 void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position]) {
   var result = parser.parse(input);
-  expect(result.isSuccess(), isTrue);
-  expect(result.isFailure(), isFalse);
+  expect(result.isSuccess, isTrue);
+  expect(result.isFailure, isFalse);
   expect(result.result, expected);
   expect(result.position, position != null ? position : input.length);
 }
 
 void expectFailure(Parser parser, dynamic input, [int position = 0, String message]) {
   var result = parser.parse(input);
-  expect(result.isFailure(), isTrue);
-  expect(result.isSuccess(), isFalse);
+  expect(result.isFailure, isTrue);
+  expect(result.isSuccess, isFalse);
   expect(result.position, position);
   if (message != null) {
     expect(result.message, message);
@@ -457,8 +457,8 @@ main() {
   group('parsing', () {
     test('parse()', () {
       var parser = char('a');
-      expect(parser.parse('a').isSuccess(), isTrue);
-      expect(parser.parse('b').isSuccess(), isFalse);
+      expect(parser.parse('a').isSuccess, isTrue);
+      expect(parser.parse('b').isSuccess, isFalse);
     });
     test('accept()', () {
       var parser = char('a');

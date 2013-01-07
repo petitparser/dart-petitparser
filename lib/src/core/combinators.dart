@@ -47,7 +47,7 @@ class _EndOfInputParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isFailure() || result.position == result.buffer.length) {
+    if (result.isFailure || result.position == result.buffer.length) {
       return result;
     }
     return result.failure(_message, result.position);
@@ -65,7 +65,7 @@ class _AndParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isSuccess()) {
+    if (result.isSuccess) {
       return context.success(result.result);
     } else {
       return result;
@@ -86,7 +86,7 @@ class _NotParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return context.success(null);
     } else {
       return context.failure(_message);
@@ -106,7 +106,7 @@ class _OptionalParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isSuccess()) {
+    if (result.isSuccess) {
       return result;
     } else {
       return context.success(_otherwise);
@@ -130,7 +130,7 @@ class _RepeatingParser extends _DelegateParser {
     var elements = new List();
     while (elements.length < _min) {
       var result = super._parse(current);
-      if (result.isFailure()) {
+      if (result.isFailure) {
         return result;
       }
       elements.add(result.result);
@@ -138,7 +138,7 @@ class _RepeatingParser extends _DelegateParser {
     }
     while (elements.length < _max) {
       var result = super._parse(current);
-      if (result.isFailure()) {
+      if (result.isFailure) {
         return current.success(elements);
       }
       elements.add(result.result);
@@ -182,7 +182,7 @@ class _ChoiceParser extends _ListParser {
     var result;
     for (var parser in _parsers) {
       result = parser._parse(context);
-      if (result.isSuccess()) {
+      if (result.isSuccess) {
         return result;
       }
     }
@@ -209,7 +209,7 @@ class _SequenceParser extends _ListParser {
     var elements = new List(_parsers.length);
     for (var i = 0; i < _parsers.length; i++) {
       var result = _parsers[i]._parse(current);
-      if (result.isFailure()) {
+      if (result.isFailure) {
         return result;
       }
       elements[i] = result.result;

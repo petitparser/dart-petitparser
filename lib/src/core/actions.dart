@@ -17,7 +17,7 @@ class _ActionParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isSuccess()) {
+    if (result.isSuccess) {
       return result.success(_function(result.result));
     } else {
       return result;
@@ -39,15 +39,15 @@ class _TrimmingParser extends _DelegateParser {
     var current = context;
     do {
       current = _trimmer._parse(current);
-    } while (current.isSuccess());
+    } while (current.isSuccess);
     var result = super._parse(current);
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return result;
     }
     current = result;
     do {
       current = _trimmer._parse(current);
-    } while (current.isSuccess());
+    } while (current.isSuccess);
     return current.success(result.result);
   }
 
@@ -71,7 +71,7 @@ class _FlattenParser extends _DelegateParser {
 
   Result _parse(Context context) {
     var result = super._parse(context);
-    if (result.isSuccess()) {
+    if (result.isSuccess) {
       return result.success(_flatten(context.buffer, context.position,
                                      result.position));
     } else {

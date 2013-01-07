@@ -40,7 +40,7 @@ abstract class Parser {
    * [:letter().plus().accept('123'):] returns [:false:].
    */
   bool accept(dynamic input) {
-    return parse(input).isSuccess();
+    return parse(input).isSuccess;
   }
 
   /**
