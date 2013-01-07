@@ -1,12 +1,6 @@
 name: petitparser
-version: 0.2.0
-description: >
-  PetitParser is a generic parser framework combinding
-  ideas from scannerless parsing, parser combinators,
-  parsing expression grammars and packrat parsers.
-  PetitParser models grammars and parsers as objects that
-  can be reconfigured dynamically. The package includes
-  JSON, XML and LISP parsers as examples.
+version: 0.2.1
+description: Dynamic parser combinator framework.
 author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/renggli/PetitParserDart
 dependencies:
