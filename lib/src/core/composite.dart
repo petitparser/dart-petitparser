@@ -11,7 +11,7 @@ part of petitparser;
  * other produtions use [ref]. To redefine or attach actions to productions
  * use [redef] and [action].
  */
-abstract class CompositeParser extends _DelegateParser {
+abstract class CompositeParser extends _WrapperParser {
 
   final Map<String, Parser> _defined;
   final Map<String, _WrapperParser> _undefined;
@@ -26,9 +26,9 @@ abstract class CompositeParser extends _DelegateParser {
       if (!_defined.containsKey(name)) {
         throw new StateError('Undefined production: $name');
       }
-      parser._delegate = _defined[name];
+      parser.set(_defined[name]);
     });
-    replace(children[0], Transformations.removeWrappers(ref('start')));
+    set(Transformations.removeWrappers(ref('start')));
   }
 
   /**

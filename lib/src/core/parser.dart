@@ -236,7 +236,7 @@ abstract class Parser {
    * For example, the parser [:letter().wrapper():] behaves exactly the same
    * as [:letter():].
    */
-  Parser wrapper() => new _WrapperParser(this);
+  _WrapperParser wrapper() => new _WrapperParser(this);
 
   /**
    * Returns a parser that evaluates [function] as action handler on success

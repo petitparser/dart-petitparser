@@ -33,3 +33,21 @@ class _FailureParser extends Parser {
   Result _parse(Context context) => context.failure(_message);
 
 }
+
+/**
+ * Returns a parser that is not defined yet, but that can be set later on.
+ *
+ * For example, the following code sets up a parser that refers to itself:
+ *
+ *     var p = undefined();
+ *     p.set(char('a').or(char('b').seq(p)));
+ */
+_WrapperParser undefined() => failure('Undefined parser').wrapper();
+
+class _WrapperParser extends _DelegateParser {
+
+  _WrapperParser(parser) : super(parser);
+
+  void set(Parser parser) => _delegate = parser;
+
+}

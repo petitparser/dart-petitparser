@@ -7,15 +7,17 @@
  * example, to write a grammar that can parse identifiers that start with
  * a letter followed by zero or more letter or digits is defined as follows:
  *
- *     Parser id = letter().seq(word().star());
+ *     Parser id = letter().seq(letter().or(digit()).star());
  *
- * If you look at the object [:identifier:] in the debugger, you'll notice
- * that the code above built a tree of parser objects:
+ * If you look at the object [:id:] in the debugger, you'll notice
+ * that the code above buils a tree of parser objects:
  *
  *     Sequence: This parser accepts a sequence of parsers.
- *       Predicate: This parser accepts a single letter.
- *       Repeater: This parser accepts zero or more times another parser.
- *         Predicate: This parser accepts a single word character.
+ *        Predicate: This parser accepts a single letter.
+ *        Repeater: This parser accepts zero or more times another parser.
+ *           Choice: This parser accepts a single word character.
+ *              Predicate: This parser accepts a single letter.
+ *              Predicate: This parser accepts a single digit.
  *
  * # Parsing Some Input
  *
@@ -26,25 +28,26 @@
  *     Result id2 = id.parse('f12');
  *
  * The method [Parser#parse] returns a parse [Result], which is either an
- * instance of [Success] or [Failure]. In the examples above we are
- * successful and can retrieve the parse result through [Result#result]:
+ * instance of [Success] or [Failure]. In both examples above we are
+ * successful and can retrieve the parse result using [Success#result]:
  *
- *     print(id1.value);                   // ['y' ['e' 'a' 'h']]
- *     print(id2.value);                   // ['f' ['1' '2']]
+ *     print(id1.result);                  // ['y' ['e' 'a' 'h']]
+ *     print(id2.result);                  // ['f' ['1' '2']]
  *
  * While it seems odd to get these nested arrays with characters as a return
  * value, this is the default decomposition of the input into a parse tree.
  * We'll see in a while how that can be customized.
  *
  * If we try to parse something invalid we get an instance of [Failure] as
- * an answer:
+ * an answer and we can retrieve a descriptive error message using
+ * [Failure#message]:
  *
  *     Result id3 = id.parse('123');
  *     print(id3.message)                  // 'letter expected at 0'
  *
  * Trying to retrieve the parse result by calling [Result#result] would throw
- * an exception. [Result#isSuccess] and [Result#isFailure] can be used to
- * decide if the parse was successful.
+ * the exception [UnsupportedError]. [Result#isSuccess] and [Result#isFailure]
+ * can be used to decide if the parse was successful.
  *
  * If you are only interested if a given string matches or not you can use the
  * helper method [Parser#accept]:
@@ -53,9 +56,10 @@
  *     print(id.accept('123'));            // false
  *
  * Furthermore, to find all matches in a given input string you can use
- * [Parser#matches]:
+ * [Parser#matchesSkipping]:
  *
- *     List matches = id.matches('foo 123 bar12'));
+ *     List matches = id.matchesSkipping('foo 123 bar12'));
+ *     print(matches);                    // ['foo' 'bar12']
  *
  * # Different Kinds of Parsers
  *
@@ -70,29 +74,27 @@
  *   * [:letter():] parses any letter from a to z and A to Z.
  *   * [:word():] parses any letter or digit.
  *
- * Petitparser provides some other factory methods that can be used to build
- * more complex terminal parsers.
+ * So instead of using the letter and digit predicate, we could have written
+ * our identifier parser like this:
+ *
+ *     Parser id = letter().seq(word().star());
  *
  * The next set of parsers are used to combine other parsers together:
  *
  *   * [:p1.seq(p2):] parses p1 followed by p2 (sequence).
  *   * [:p1.or(p2):] parses p1, if that doesn't work parses p2 (ordered choice).
- *   * [:p.star():] parses zero or more p.
- *   * [:p.plus():] parses one or more p.
- *   * [:p.optional():] parses p if possible.
- *   * [:p.and():] parses p but does not consume its input.
+ *   * [:p.star():] parses p zero or more times.
+ *   * [:p.plus():] parses p one or more times.
+ *   * [:p.optional():] parses p, if possible.
+ *   * [:p.and():] parses p, but does not consume its input.
  *   * [:p.not():] parses p and succeed when p fails, but does not consume its input.
  *   * [:p.end():] parses p and succeed at the end of the input.
- *
- * So instead of using the [word()] predicated we could have written our
- * identifier parser like this:
- *
- *     Parser id = letter().seq(letter().or(digit()).star());
  *
  * To attach an action or transformation to a parser we can use the following
  * methods:
  *
  *   * [:p.map((value) => ...):] performs the transformation given the function.
+ *   * [:p.pick(n):] returns the n-th element of the list p returns.
  *   * [:p.flatten():] creates a string from the result of p.
  *   * [:p.token():] creates a token from the result of p.
  *   * [:p.trim():] trims whitespaces before and after p.
@@ -104,7 +106,7 @@
  *
  * These are the basic elements to build parsers. There are a few more well
  * documented and tested factory methods in the [Parser] class. If you want
- * browse their documentation.
+ * browse their documentation and tests.
  *
  * # Writing a More Complicated Grammar
  *
@@ -117,7 +119,7 @@
  * Then we define the productions for addition and multiplication in order of
  * precedence. Note that we instantiate the productions with undefined parsers
  * upfront, because they recursively refer to each other. Later on we can
- * resolve this recursion by replacing the reference.
+ * resolve this recursion by setting their reference:
  *
  *     Parser term := undefined();
  *     Parser prod := undefined();

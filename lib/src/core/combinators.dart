@@ -28,15 +28,6 @@ class _DelegateParser extends Parser {
 }
 
 /**
- * A parser that wraps another one.
- */
-class _WrapperParser extends _DelegateParser {
-
-  _WrapperParser(parser) : super(parser);
-
-}
-
-/**
  * A parser that succeeds only at the end of the input.
  */
 class _EndOfInputParser extends _DelegateParser {
