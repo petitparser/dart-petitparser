@@ -126,12 +126,12 @@ main() {
       expectSuccess(parser, '', null);
     });
     test('neg()', () {
-      var parser = digit().wrapper().neg('no digit expected');
+      var parser = digit().neg('no digit expected');
       expectFailure(parser, '1', 0, 'no digit expected');
       expectFailure(parser, '9', 0, 'no digit expected');
       expectSuccess(parser, 'a', 'a');
       expectSuccess(parser, ' ', ' ');
-      expectFailure(parser, '', 0, 'input expected');
+      expectFailure(parser, '', 0, 'no digit expected');
     });
     test('optional()', () {
       var parser = char('a').optional();
@@ -599,12 +599,12 @@ main() {
       expect(parsers, [parser1, parser3, parser2]);
     });
     test('iterator looping', () {
-      var parser1 = epsilon().wrapper();
-      var parser2 = epsilon().wrapper();
-      var parser3 = epsilon().wrapper();
-      parser1.replace(parser1.children[0], parser2);
-      parser2.replace(parser2.children[0], parser3);
-      parser3.replace(parser3.children[0], parser1);
+      var parser1 = undefined();
+      var parser2 = undefined();
+      var parser3 = undefined();
+      parser1.set(parser2);
+      parser2.set(parser3);
+      parser3.set(parser1);
       var parsers = new List.from(new ParserIterable(parser1));
       expect(parsers, [parser1, parser2, parser3]);
     });
@@ -615,10 +615,10 @@ main() {
       expect(iterator.hasNext, isFalse);
       expect(() => iterator.next(), throws);
     });
-    test('remove wrappers', () {
+    test('remove setables', () {
       var parser2 = lowercase();
-      var parser1 = parser2.wrapper();
-      var root = Transformations.removeWrappers(parser1);
+      var parser1 = parser2.setable();
+      var root = Transformations.removeSetables(parser1);
       expect(root, parser2);
     });
   });
