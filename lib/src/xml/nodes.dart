@@ -5,7 +5,7 @@ part of xml;
 /**
  * Abstract XML node.
  */
-abstract class XmlNode implements Iterable<XmlNode> {
+abstract class XmlNode extends Iterable<XmlNode> {
 
   XmlNode _parent;
 
