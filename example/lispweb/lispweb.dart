@@ -32,8 +32,8 @@ void main() {
   var output = query('#output');
 
   query('#evaluate').on.click.add((event) {
-    var result = evalString(parser, environment, input.value);
-    output.innerHtml = result.toString();
+    var result = evalString(parser, environment, input.text);
+    output.text = result.toString();
     inspector(query('#inspector'), environment);
   });
   inspector(query('#inspector'), environment);
