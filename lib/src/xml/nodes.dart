@@ -132,7 +132,9 @@ class XmlAttribute extends XmlNode {
 
   void writeTo(StringBuffer buffer) {
     name.writeTo(buffer);
-    buffer.add('="').add(value).add('"');
+    buffer.add('="');
+    buffer.add(value);
+    buffer.add('"');
   }
 
 }
@@ -158,7 +160,9 @@ class XmlComment extends XmlData {
   XmlComment(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!--').add(data).add('-->');
+    buffer.add('<!--');
+    buffer.add(data);
+    buffer.add('-->');
   }
 
 }
@@ -171,7 +175,9 @@ class XmlDoctype extends XmlData {
   XmlDoctype(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!DOCTYPE').add(data).add('>');
+    buffer.add('<!DOCTYPE');
+    buffer.add(data);
+    buffer.add('>');
   }
 
 }
@@ -188,7 +194,10 @@ class XmlProcessing extends XmlData {
   String get target => _target;
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<?').add(target).add(data).add('?>');
+    buffer.add('<?');
+    buffer.add(target);
+    buffer.add(data);
+    buffer.add('?>');
   }
 
 }
@@ -335,7 +344,8 @@ class XmlName {
 
   void writeTo(StringBuffer buffer) {
     if (prefix != null) {
-      buffer.add(prefix).add(':');
+      buffer.add(prefix);
+      buffer.add(':');
     }
     buffer.add(local);
   }
