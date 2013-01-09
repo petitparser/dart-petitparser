@@ -32,27 +32,25 @@ class _FailureParser extends Parser {
 }
 
 /**
- * Returns a parser that is not defined yet, but that can be set later on. A
+ * Returns a parser that is not defined, but that can be set at a later
+ * point in time.
  *
- * For example, the following code sets up a parser that refers to itself:
+ * For example, the following code sets up a parser that points to itself
+ * and that accepts a sequence of a's ended with the letter b.
  *
  *     var p = undefined();
  *     p.set(char('a').seq(p).or(char('b')));
- *
- * The parser above accepts a sequence of a's followed by b.
  */
 SetableParser undefined([String message = 'undefined parser']) {
   return failure(message).setable();
 }
 
 /**
- * Interface of a parser that can be redefined using [SetableParser#set()].
+ * Interface of a parser that can be redefined using [SetableParser#set].
  */
 abstract class SetableParser implements Parser {
 
-  /**
-   * Tells this parser to become [parser].
-   */
+  /** Sets the receiver to delegate to [parser]. */
   void set(Parser parser);
 
 }
