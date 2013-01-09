@@ -11,10 +11,10 @@ part of petitparser;
  * other produtions use [ref]. To redefine or attach actions to productions
  * use [redef] and [action].
  */
-abstract class CompositeParser extends _WrapperParser {
+abstract class CompositeParser extends _SetableParser {
 
   final Map<String, Parser> _defined;
-  final Map<String, _WrapperParser> _undefined;
+  final Map<String, SetableParser> _undefined;
 
   CompositeParser()
       : super(failure('Uninitalized production: start')),
@@ -28,7 +28,7 @@ abstract class CompositeParser extends _WrapperParser {
       }
       parser.set(_defined[name]);
     });
-    set(Transformations.removeWrappers(ref('start')));
+    set(Transformations.removeSetables(ref('start')));
   }
 
   /**
@@ -41,7 +41,7 @@ abstract class CompositeParser extends _WrapperParser {
    */
   Parser ref(String name) {
     return _undefined.putIfAbsent(name, () {
-      return failure('Uninitalized production: $name').wrapper();
+      return failure('Uninitalized production: $name').setable();
     });
   }
 

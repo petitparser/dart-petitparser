@@ -254,8 +254,15 @@ main() {
       expectFailure(parser, '*b', 1, 'a expected');
       expectFailure(parser, '**b', 2, 'a expected');
     });
-    test('wrapped()', () {
-      var parser = char('a').wrapper();
+    test('undefined()', () {
+      var parser = undefined();
+      expectFailure(parser, '', 0, 'undefined parser');
+      expectFailure(parser, 'a', 0, 'undefined parser');
+      parser.set(char('a'));
+      expectSuccess(parser, 'a', 'a');
+    });
+    test('setable()', () {
+      var parser = char('a').setable();
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'b', 0, 'a expected');
       expectFailure(parser, '');

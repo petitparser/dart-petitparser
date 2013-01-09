@@ -225,9 +225,8 @@ abstract class Parser {
    * and fails on [:'ab':]. In contrast the parser [:letter():] alone would
    * succeed on both inputs, but not consume everything for the second input.
    */
-  Parser end([String message]) {
-    return new _EndOfInputParser(this, message == null
-        ? 'end of input expected' : message);
+  Parser end([String message = 'end of input expected']) {
+    return new _EndOfInputParser(this, message);
   }
 
   /**
@@ -236,7 +235,7 @@ abstract class Parser {
    * For example, the parser [:letter().wrapper():] behaves exactly the same
    * as [:letter():].
    */
-  _WrapperParser wrapper() => new _WrapperParser(this);
+  SetableParser setable() => new _SetableParser(this);
 
   /**
    * Returns a parser that evaluates [function] as action handler on success
