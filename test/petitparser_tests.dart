@@ -73,7 +73,7 @@ main() {
       expectSuccess(parser, '1234', '1234');
     });
     test('token()', () {
-      var parser = digit().plus().token().trim();
+      var parser = digit().plus().flatten().token().trim();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
       var token = parser.parse('  123 ').result;

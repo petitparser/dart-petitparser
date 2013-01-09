@@ -72,15 +72,31 @@ class _FlattenParser extends _DelegateParser {
   Result _parse(Context context) {
     var result = super._parse(context);
     if (result.isSuccess) {
-      return result.success(_flatten(context.buffer, context.position,
-                                     result.position));
+      var output = context.buffer.substring(context.position, result.position);
+      return result.success(output);
     } else {
       return result;
     }
   }
 
-  dynamic _flatten(dynamic buffer, int start, int stop) {
-    return buffer.substring(start, stop);
+}
+
+/**
+ * A parser that answers a token of the result its delegate parses.
+ */
+class _TokenParser extends _DelegateParser {
+
+  _TokenParser(parser) : super(parser);
+
+  Result _parse(Context context) {
+    var result = super._parse(context);
+    if (result.isSuccess) {
+      var token = new Token(result.result, context.buffer,
+          context.position, result.position);
+      return result.success(token);
+    } else {
+      return result;
+    }
   }
 
 }
