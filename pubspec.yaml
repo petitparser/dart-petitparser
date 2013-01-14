@@ -5,3 +5,4 @@ author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/renggli/PetitParserDart
 dependencies:
   unittest: any
+  browser: any
