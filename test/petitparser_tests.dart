@@ -622,5 +622,42 @@ main() {
       expect(root, parser2);
     });
   });
+  group('tutorial', () {
+    test('simple grammar', () {
+      var id = letter().seq(letter().or(digit()).star());
+      var id1 = id.parse('yeah');
+      var id2 = id.parse('f12');
+      expect(id1.result, ['y', ['e', 'a', 'h']]);
+      expect(id2.result, ['f', ['1', '2']]);
+      Result id3 = id.parse('123');
+      expect(id3.message, 'letter expected');
+      expect(id3.position, 0);
+      expect(id.accept('foo'), isTrue);
+      expect(id.accept('123'), isFalse);
+    });
+    test('different parsers', () {
+      var id = letter().seq(word().star()).flatten();
+      var matches = id.matchesSkipping('foo 123 bar4');
+      expect(matches, ['foo', 'bar4']);
+    });
+    test('complicated grammar', () {
+      var number = digit().plus().flatten().trim().map(int.parse);
+      var term = undefined();
+      var prod = undefined();
+      var prim = undefined();
+      term.set(prod.seq(char('+').trim()).seq(term).map((values) {
+        return values[0] + values[2];
+      }).or(prod));
+      prod.set(prim.seq(char('*').trim()).seq(prod).map((values) {
+        return values[0] * values[2];
+      }).or(prim));
+      prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
+        return values[1];
+      }).or(number));
+      var start = term.end();
+      expect(7, start.parse('1 + 2 * 3').result);
+      expect(9, start.parse('(1 + 2) * 3').result);
+    });
+  });
 
 }

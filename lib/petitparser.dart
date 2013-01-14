@@ -13,11 +13,11 @@
  * that the code above buils a tree of parser objects:
  *
  *     Sequence: This parser accepts a sequence of parsers.
- *        Predicate: This parser accepts a single letter.
- *        Repeater: This parser accepts zero or more times another parser.
- *           Choice: This parser accepts a single word character.
- *              Predicate: This parser accepts a single letter.
- *              Predicate: This parser accepts a single digit.
+ *       Predicate: This parser accepts a single letter.
+ *       Repeater: This parser accepts zero or more times another parser.
+ *         Choice: This parser accepts a single word character.
+ *           Predicate: This parser accepts a single letter.
+ *           Predicate: This parser accepts a single digit.
  *
  * # Parsing Some Input
  *
@@ -31,8 +31,8 @@
  * instance of [Success] or [Failure]. In both examples above we are
  * successful and can retrieve the parse result using [Success#result]:
  *
- *     print(id1.result);                  // ['y' ['e' 'a' 'h']]
- *     print(id2.result);                  // ['f' ['1' '2']]
+ *     print(id1.result);                  // ['y', ['e', 'a', 'h']]
+ *     print(id2.result);                  // ['f', ['1', '2']]
  *
  * While it seems odd to get these nested arrays with characters as a return
  * value, this is the default decomposition of the input into a parse tree.
@@ -43,7 +43,8 @@
  * [Failure#message]:
  *
  *     Result id3 = id.parse('123');
- *     print(id3.message)                  // 'letter expected at 0'
+ *     print(id3.message);                // 'letter expected'
+ *     print(id3.position);               // 0
  *
  * Trying to retrieve the parse result by calling [Result#result] would throw
  * the exception [UnsupportedError]. [Result#isSuccess] and [Result#isFailure]
@@ -54,12 +55,6 @@
  *
  *     print(id.accept('foo'));            // true
  *     print(id.accept('123'));            // false
- *
- * Furthermore, to find all matches in a given input string you can use
- * [Parser#matchesSkipping]:
- *
- *     List matches = id.matchesSkipping('foo 123 bar12'));
- *     print(matches);                    // ['foo' 'bar12']
  *
  * # Different Kinds of Parsers
  *
@@ -77,7 +72,7 @@
  * So instead of using the letter and digit predicate, we could have written
  * our identifier parser like this:
  *
- *     Parser id = letter().seq(word().star());
+ *     var id = letter().seq(word().star());
  *
  * The next set of parsers are used to combine other parsers together:
  *
@@ -102,7 +97,14 @@
  * To return a string of the parsed identifier, we can modify our parser like
  * this:
  *
- *     Parser id = letter().seq(word().star()).flatten();
+ *     var id = letter().seq(word().star()).flatten();
+ *
+ * To conveniently find all matches in a given input string you can use
+ * [Parser#matchesSkipping]:
+ *
+ *     var matches = id.matchesSkipping('foo 123 bar4');
+ *     print(matches);                    // ['foo', 'bar4']
+ *
  *
  * These are the basic elements to build parsers. There are a few more well
  * documented and tested factory methods in the [Parser] class. If you want
@@ -114,16 +116,16 @@
  * arithmetic expressions. Within a file we start with the grammar for a
  * number (actually an integer):
  *
- *     Parser number = digit().plus().flatten().trim().map(int.parse);
+ *     var number = digit().plus().flatten().trim().map(int.parse);
  *
  * Then we define the productions for addition and multiplication in order of
  * precedence. Note that we instantiate the productions with undefined parsers
  * upfront, because they recursively refer to each other. Later on we can
  * resolve this recursion by setting their reference:
  *
- *     Parser term := undefined();
- *     Parser prod := undefined();
- *     Parser prim := undefined();
+ *     var term = undefined();
+ *     var prod = undefined();
+ *     var prim = undefined();
  *
  *     term.set(prod.seq(char('+').trim()).seq(term).map((values) {
  *       return values[0] + values[2];
@@ -131,14 +133,14 @@
  *     prod.set(prim.seq(char('*').trim()).seq(prod).map((values) {
  *       return values[0] * values[2];
  *     }).or(prim));
- *     prim.set(char('(').trim().seq(term).seq(char(')'.trim()).map((values) {
+ *     prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
  *       return values[1];
  *     }).or(number));
  *
  * To make sure that our parser consumes all input we wrap it with the [:end():]
  * parser into the start production:
  *
- *     Parser start = term.end();
+ *     var start = term.end();
  *
  * That's it, now we can test our parser and evaluator:
  *
@@ -147,7 +149,7 @@
  *
  * As an exercise we could extend the parser to also accept negative numbers
  * and floating point numbers, not only integers. Furthermore it would be
- * useful to add support subtraction and division as well. All these features
+ * useful to support subtraction and division as well. All these features
  * can be added with a few lines of PetitParser code.
  */
 library petitparser;

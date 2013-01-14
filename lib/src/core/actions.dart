@@ -2,16 +2,13 @@
 
 part of petitparser;
 
-/** Function interface for parse actions. */
-typedef dynamic _ActionFunction(dynamic argument);
-
 /**
  * A parser that performs a transformation with a given function on the
  * successful parse result of the delegate.
  */
 class _ActionParser extends _DelegateParser {
 
-  final _ActionFunction _function;
+  final Function _function;
 
   _ActionParser(parser, this._function) : super(parser);
 
