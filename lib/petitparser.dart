@@ -29,7 +29,7 @@
  *
  * The method [Parser#parse] returns a parse [Result], which is either an
  * instance of [Success] or [Failure]. In both examples above we are
- * successful and can retrieve the parse result using [Success#result]:
+ * successful and can retrieve the parse result using [Success.result]:
  *
  *     print(id1.result);                  // ['y', ['e', 'a', 'h']]
  *     print(id2.result);                  // ['f', ['1', '2']]
@@ -40,18 +40,18 @@
  *
  * If we try to parse something invalid we get an instance of [Failure] as
  * an answer and we can retrieve a descriptive error message using
- * [Failure#message]:
+ * [Failure.message]:
  *
  *     Result id3 = id.parse('123');
  *     print(id3.message);                // 'letter expected'
  *     print(id3.position);               // 0
  *
- * Trying to retrieve the parse result by calling [Result#result] would throw
- * the exception [UnsupportedError]. [Result#isSuccess] and [Result#isFailure]
+ * Trying to retrieve the parse result by calling [Failure.result] would throw
+ * the exception [UnsupportedError]. [Result.isSuccess] and [Result.isFailure]
  * can be used to decide if the parse was successful.
  *
  * If you are only interested if a given string matches or not you can use the
- * helper method [Parser#accept]:
+ * helper method [Parser.accept]:
  *
  *     print(id.accept('foo'));            // true
  *     print(id.accept('123'));            // false
@@ -100,7 +100,7 @@
  *     var id = letter().seq(word().star()).flatten();
  *
  * To conveniently find all matches in a given input string you can use
- * [Parser#matchesSkipping]:
+ * [Parser.matchesSkipping]:
  *
  *     var matches = id.matchesSkipping('foo 123 bar4');
  *     print(matches);                    // ['foo', 'bar4']

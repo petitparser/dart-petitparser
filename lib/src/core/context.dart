@@ -55,7 +55,7 @@ abstract class Result extends Context {
 }
 
 /**
- * An immutable parse success.
+ * An immutable parse result in case of a successful parse.
  */
 class Success extends Result {
 
@@ -74,7 +74,7 @@ class Success extends Result {
 }
 
 /**
- * An immutable parse failure.
+ * An immutable parse result in case of a failed parse.
  */
 class Failure extends Result {
 
