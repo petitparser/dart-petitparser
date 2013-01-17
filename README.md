@@ -5,4 +5,4 @@ Grammars for programming languages are traditionally specified statically. They 
 
 PetitParser was originally implemented in [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/renggli/PetitParserJava) and [Dart](https://github.com/renggli/PetitParserDart). The implementations are very similar in their API and the supported features. If possible I tried to adopt common practices of the target language.
 
-Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/PetitParserDart/).
+Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/PetitParserDart/). An introductionary tutorial is part of the [class documentation](http://jenkins.lukas-renggli.ch/job/PetitParserDart/javadoc/petitparser.html).

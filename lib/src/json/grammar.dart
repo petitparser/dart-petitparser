@@ -7,6 +7,17 @@ part of json;
  */
 class JsonGrammar extends CompositeParser {
 
+  final _escapeTable = const {
+    '\\': '\\',
+    '/': '/',
+    '"': '"',
+    'b': '\b',
+    'f': '\f',
+    'n': '\n',
+    'r': '\r',
+    't': '\t'
+  };
+
   void initialize() {
     def('start', ref('value').end());
 
@@ -46,7 +57,7 @@ class JsonGrammar extends CompositeParser {
         .or(ref('characterOctal'))
         .or(ref('characterNormal')));
     def('characterEscape',
-      char('\\').seq(anyIn(new List.from(ESCAPE_TABLE.keys))));
+      char('\\').seq(anyIn(new List.from(_escapeTable.keys))));
     def('characterNormal',
       anyIn('"\\').neg());
     def('characterOctal',

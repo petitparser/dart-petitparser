@@ -7,14 +7,3 @@ import 'package:petitparser/petitparser.dart';
 
 part 'src/json/grammar.dart';
 part 'src/json/parser.dart';
-
-final ESCAPE_TABLE = const {
-  '\\': '\\',
-  '/': '/',
-  '"': '"',
-  'b': '\b',
-  'f': '\f',
-  'n': '\n',
-  'r': '\r',
-  't': '\t'
-};
