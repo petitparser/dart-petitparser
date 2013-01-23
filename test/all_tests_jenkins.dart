@@ -12,11 +12,12 @@ void main() {
 
 class JenkinsConfiguration extends Configuration {
 
-  void onStart() {
+  void onInit() {
     print('<?xml version="1.0" encoding="UTF-8" ?>');
   }
 
   void onSummary(int passed, int failed, int errors, List<TestCase> results, String uncaughtError) {
+
     var totalTime = 0;
     for (var testcase in results) {
       totalTime += testcase.runningTime.inMilliseconds;
@@ -38,6 +39,10 @@ class JenkinsConfiguration extends Configuration {
       print('  <system-err>${_xml(uncaughtError)}</system-err>');
     }
     print('</testsuite>');
+  }
+
+  void onDone(bool success) {
+    // nothing to be done
   }
 
   String _xml(String string) {
