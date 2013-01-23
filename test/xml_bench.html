@@ -5,18 +5,7 @@
   </head>
   <body>
     <h1>PetitParser Benchmark</h1>
-    <pre id="log"></pre>
-    <script type="text/javascript">
-    	if (console) {
-    		var log = console.log;
-    		var element = document.getElementById('log');
-    		console.log = function(text) {
-    			element.appendChild(document.createTextNode(text + '\n'));
-    			log.apply(this, arguments);
-    		}
-    	}
-    </script>
     <script type="application/dart" src="xml_bench.dart"></script>
-    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+    <script type="application/javascript" src="packages/browser/dart.js"></script>
   </body>
 </html>

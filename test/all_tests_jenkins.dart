@@ -16,7 +16,7 @@ class JenkinsConfiguration extends Configuration {
     print('<?xml version="1.0" encoding="UTF-8" ?>');
   }
 
-  void onDone(int passed, int failed, int errors, List<TestCase> results, String uncaughtError) {
+  void onSummary(int passed, int failed, int errors, List<TestCase> results, String uncaughtError) {
     var totalTime = 0;
     for (var testcase in results) {
       totalTime += testcase.runningTime.inMilliseconds;

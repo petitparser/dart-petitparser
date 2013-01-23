@@ -45,7 +45,7 @@ class Environment {
   }
 
   /** Returns the keys of the bindings. */
-  Collection<Symbol> get keys => _bindings.keys;
+  Iterable<Symbol> get keys => _bindings.keys;
 
   /** Returns the parent of the bindings. */
   Environment get owner => _owner;

@@ -9,7 +9,7 @@ class ParserIterable extends Iterable<Parser> {
 
   ParserIterable(this._root);
 
-  ParserIterator iterator() {
+  ParserIterator get iterator {
     return new ParserIterator(_root);
   }
 
@@ -20,24 +20,24 @@ class ParserIterator implements Iterator<Parser> {
 
   final List<Parser> _todo;
   final Set<Parser> _done;
+  Parser _current;
 
   ParserIterator(Parser root)
       : _todo = new List.from([root]),
         _done = new Set();
 
-  bool get hasNext {
-    return !_todo.isEmpty;
+  bool moveNext() {
+    if (_todo.isEmpty) {
+      _current = null;
+      return false;
+    }
+    _current = _todo.removeLast();
+    _done.add(_current);
+    _todo.addAll(_current.children.where((each) => !_done.contains(each)));
+    return true;
   }
 
-  Parser next() {
-    if (_todo.isEmpty) {
-      throw new StateError("No more elements");
-    }
-    var parser = _todo.removeLast();
-    _done.add(parser);
-    _todo.addAll(parser.children.filter((each) => !_done.contains(each)));
-    return parser;
-  }
+  Parser get current => _current;
 
 }
 

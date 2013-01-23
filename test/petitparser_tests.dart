@@ -84,12 +84,12 @@ main() {
       expect(token.toString(), 'Token[start: 2, stop: 5, value: 123]');
     });
     test('token() line', () {
-      var parser = any().token().star().map((List list) => list.map((token) => token.line));
+      var parser = any().token().star().map((list) => list.mappedBy((token) => token.line));
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
     test('token() column', () {
-      var parser = any().token().star().map((list) => list.map((token) => token.column));
+      var parser = any().token().star().map((list) => list.mappedBy((token) => token.column));
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
@@ -581,21 +581,21 @@ main() {
   group('reflection', () {
     test('iterator single', () {
       var parser1 = lowercase();
-      var parsers = new List.from(new ParserIterable(parser1));
+      var parsers = new ParserIterable(parser1).toList();
       expect(parsers, [parser1]);
     });
     test('iterator nested', () {
       var parser3 = lowercase();
       var parser2 = parser3.star();
       var parser1 = parser2.flatten();
-      var parsers = new List.from(new ParserIterable(parser1));
+      var parsers = new ParserIterable(parser1).toList();
       expect(parsers, [parser1, parser2, parser3]);
     });
     test('iterator branched', () {
       var parser3 = lowercase();
       var parser2 = uppercase();
       var parser1 = parser2.seq(parser3);
-      var parsers = new List.from(new ParserIterable(parser1));
+      var parsers = new ParserIterable(parser1).toList();
       expect(parsers, [parser1, parser3, parser2]);
     });
     test('iterator looping', () {
@@ -605,15 +605,19 @@ main() {
       parser1.set(parser2);
       parser2.set(parser3);
       parser3.set(parser1);
-      var parsers = new List.from(new ParserIterable(parser1));
+      var parsers = new ParserIterable(parser1).toList();
       expect(parsers, [parser1, parser2, parser3]);
     });
-    test('iterator over end', () {
+    test('iterator basic', () {
       var parser1 = lowercase();
       var iterator = new ParserIterator(parser1);
-      expect(iterator.next(), parser1);
-      expect(iterator.hasNext, isFalse);
-      expect(() => iterator.next(), throws);
+      expect(iterator.current, isNull);
+      expect(iterator.moveNext(), isTrue);
+      expect(iterator.current, parser1);
+      expect(iterator.current, parser1);
+      expect(iterator.moveNext(), isFalse);
+      expect(iterator.current, isNull);
+      expect(iterator.moveNext(), isFalse);
     });
     test('remove setables', () {
       var parser2 = lowercase();

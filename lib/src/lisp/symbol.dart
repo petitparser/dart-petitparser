@@ -5,7 +5,7 @@ part of lisp;
 /**
  * An unique symbol.
  */
-class Symbol implements Hashable {
+class Symbol {
 
   /** The interned symbols. */
   static Map<String, Symbol> _interned;

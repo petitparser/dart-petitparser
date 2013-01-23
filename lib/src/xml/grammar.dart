@@ -59,7 +59,7 @@ class XmlGrammar extends CompositeParser {
       .seq(ref('misc'))
       .seq(ref('element'))
       .seq(ref('misc'))
-      .map((list) => [list[0], list[2], list[4]].filter((each) => each != null)));
+      .map((list) => [list[0], list[2], list[4]].where((each) => each != null)));
     def('element', char('<')
       .seq(ref('qualified'))
       .seq(ref('attributes'))

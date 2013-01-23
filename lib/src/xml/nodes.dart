@@ -27,10 +27,10 @@ abstract class XmlNode extends Iterable<XmlNode> {
   /**
    * Answer an iterator over the receiver, all attributes and nested children.
    */
-  Iterator<XmlNode> iterator() {
+  Iterator<XmlNode> get iterator {
     var nodes = new List();
     _allAllNodesTo(nodes);
-    return nodes.iterator();
+    return nodes.iterator;
   }
 
   void _allAllNodesTo(List<XmlNode> nodes) {
@@ -222,8 +222,8 @@ abstract class XmlParent extends XmlNode {
 
   final List<XmlNode> _children;
 
-  XmlParent(Collection<XmlNode> children)
-      : _children = new List.from(children) {
+  XmlParent(Iterable<XmlNode> children)
+      : _children = children.toList() {
     for (var child in children) {
       child._parent = this;
     }
@@ -244,7 +244,7 @@ abstract class XmlParent extends XmlNode {
  */
 class XmlDocument extends XmlParent {
 
-  XmlDocument(Collection<XmlNode> children) : super(children);
+  XmlDocument(Iterable<XmlNode> children) : super(children);
 
   XmlDocument get document => this;
 
@@ -267,8 +267,8 @@ class XmlElement extends XmlParent {
   final XmlName _name;
   final List<XmlAttribute> _attributes;
 
-  XmlElement(XmlName name, Collection<XmlAttribute> attributes, Collection<XmlNode> children)
-      : super(children), _name = name, _attributes = new List.from(attributes) {
+  XmlElement(XmlName name, Iterable<XmlAttribute> attributes, Iterable<XmlNode> children)
+      : super(children), _name = name, _attributes = attributes.toList() {
     for (var attribute in attributes) {
       attribute._parent = this;
     }

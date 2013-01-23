@@ -271,7 +271,7 @@ abstract class Parser {
    */
   Parser permute(List<int> indexes) {
     return this.map((List list) {
-      return indexes.map((index) {
+      return indexes.mappedBy((index) {
         return list[index < 0 ? list.length + index : index];
       });
     });
