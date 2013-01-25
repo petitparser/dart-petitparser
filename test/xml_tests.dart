@@ -2,11 +2,10 @@
 
 library xml_tests;
 
-import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/xml.dart';
 import 'package:unittest/unittest.dart';
 
-void validate(Parser parser, String input) {
+void validate(XmlParser parser, String input) {
   var tree = parser.parse(input).result;
   assertTreeInvariants(tree);
   var copy = parser.parse(tree.toString()).result;

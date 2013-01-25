@@ -3,7 +3,7 @@
 library json;
 
 import 'dart:math';
-import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/core.dart';
 
 part 'src/json/grammar.dart';
 part 'src/json/parser.dart';

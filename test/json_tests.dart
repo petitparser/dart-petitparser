@@ -3,7 +3,6 @@
 library json_tests;
 
 import 'package:petitparser/json.dart';
-import 'package:petitparser/petitparser.dart';
 import 'package:unittest/unittest.dart';
 
 void main() {

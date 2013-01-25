@@ -2,7 +2,6 @@
 
 library all_tests;
 
-import 'package:petitparser/petitparser.dart';
 import 'package:unittest/unittest.dart';
 import 'json_tests.dart' as json;
 import 'lisp_tests.dart' as lisp;
