@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of core;
+part of petitparser;
 
 /**
  * A parser that delegates to another one. Normally users do not need to

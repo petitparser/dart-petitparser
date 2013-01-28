@@ -3,7 +3,7 @@
 library lispshell;
 
 import 'dart:io';
-import 'package:petitparser/core.dart';
+import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
 /** Read, evaluate, print loop. */

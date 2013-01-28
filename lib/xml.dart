@@ -2,7 +2,7 @@
 
 library xml;
 
-import 'package:petitparser/core.dart';
+import 'package:petitparser/petitparser.dart';
 
 part 'src/xml/grammar.dart';
 part 'src/xml/parser.dart';

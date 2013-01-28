@@ -7,31 +7,22 @@ part of lisp;
  */
 class Symbol {
 
+  /** The name of the symbol. */
+  final String _name;
+
   /** The interned symbols. */
   static Map<String, Symbol> _interned;
 
   /** Factory for new symbol cells. */
   factory Symbol(String name) {
     if (_interned == null) _interned = new HashMap();
-    return _interned.putIfAbsent(name, () => new Symbol._internal(name, name.hashCode));
+    return _interned.putIfAbsent(name, () => new Symbol._internal(name));
   }
 
-  /** The name of the symbol. */
-  final String _name;
-
-  /** The hash code of the symbol. */
-  final int _hash;
-
-  /** Returns the name of the symbol. */
-  String get name => _name;
-
   /** Internal constructor for symbol. */
-  Symbol._internal(this._name, this._hash);
+  Symbol._internal(this._name);
 
   /** Returns the string representation of the symbol. */
   String toString() => _name;
-
-  /** Returns the hash code of the receiver. */
-  int get hashCode => _hash;
 
 }

@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of core;
+part of petitparser;
 
 /**
  * Returns a parser that consumes nothing and succeeds.

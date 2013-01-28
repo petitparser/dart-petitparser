@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of core;
+part of petitparser;
 
 /**
  * A parser that performs a transformation with a given function on the

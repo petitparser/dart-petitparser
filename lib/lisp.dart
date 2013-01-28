@@ -3,7 +3,8 @@
 library lisp;
 
 import 'dart:math';
-import 'package:petitparser/core.dart';
+import 'dart:collection';
+import 'package:petitparser/petitparser.dart';
 
 part 'src/lisp/cons.dart';
 part 'src/lisp/environment.dart';

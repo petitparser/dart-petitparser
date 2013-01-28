@@ -43,18 +43,17 @@ void main() {
     test('Symbol', () {
       var cell = atom.parse('foo').result;
       expect(cell, new isInstanceOf<Symbol>());
-      expect(cell.name, 'foo');
       expect(cell.toString(), 'foo');
     });
     test('Symbol for operator', () {
       var cell = atom.parse('+').result;
       expect(cell, new isInstanceOf<Symbol>());
-      expect(cell.name, '+');
+      expect(cell.toString(), '+');
     });
     test('Symbol for special', () {
       var cell = atom.parse('set!').result;
       expect(cell, new isInstanceOf<Symbol>());
-      expect(cell.name, 'set!');
+      expect(cell.toString(), 'set!');
     });
     test('String', () {
       var cell = atom.parse('"foo"').result;
@@ -115,7 +114,7 @@ void main() {
       var cell = atom.parse('(+ 1 2)').result;
       expect(cell, new isInstanceOf<Cons>());
       expect(cell.head, new isInstanceOf<Symbol>());
-      expect(cell.head.name, '+');
+      expect(cell.head.toString(), '+');
       expect(cell.tail, new isInstanceOf<Cons>());
       expect(cell.tail.head, 1);
       expect(cell.tail.tail, new isInstanceOf<Cons>());

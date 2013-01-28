@@ -2,7 +2,7 @@
 
 library xml_bench;
 
-import 'package:petitparser/core.dart';
+import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/xml.dart';
 
 void main() {
