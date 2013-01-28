@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of petitparser;
+part of core;
 
 /**
  * A token represents a parsed part of the input stream. The token holds

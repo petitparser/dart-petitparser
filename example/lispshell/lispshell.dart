@@ -3,13 +3,18 @@
 library lispshell;
 
 import 'dart:io';
+import 'package:petitparser/core.dart';
 import 'package:petitparser/lisp.dart';
 
 /** Read, evaluate, print loop. */
 void evalInteractive(LispParser parser, Environment env, InputStream input, OutputStream output) {
   var stream = new StringInputStream(input);
   stream.onLine = () {
-    output.writeString('${evalString(parser, env, stream.readLine())}\n');
+    try {
+      output.writeString('${evalString(parser, env, stream.readLine())}\n');
+    } on ParserError catch(error) {
+      output.writeString(error.toString());
+    }
   };
 }
 

@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of petitparser;
+part of core;
 
 /** Iterable over all parsers reachable from a [root]. */
 class ParserIterable extends Iterable<Parser> {

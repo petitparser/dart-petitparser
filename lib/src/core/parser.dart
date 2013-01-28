@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of petitparser;
+part of core;
 
 /**
  * Abstract base class for all parsers.

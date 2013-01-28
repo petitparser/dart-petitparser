@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-part of petitparser;
+part of core;
 
 /**
  * An immutable parse context.
@@ -84,10 +84,25 @@ class Failure extends Result {
 
   bool get isFailure => true;
 
-  dynamic get result { throw new UnsupportedError(_message); }
+  dynamic get result { throw new ParserError(this); }
 
   String get message => _message;
 
   String toString() => 'Failure[$_position]: $_message';
+
+}
+
+/**
+ * An exception raised in case of a parse error.
+ */
+class ParserError implements Error {
+
+  final Failure _failure;
+
+  ParserError(this._failure);
+
+  Failure get failure => _failure;
+
+  String toString() => '${_failure.message} at ${_failure.position}';
 
 }

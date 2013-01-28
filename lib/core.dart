@@ -152,7 +152,7 @@
  * useful to support subtraction and division as well. All these features
  * can be added with a few lines of PetitParser code.
  */
-library petitparser;
+library core;
 
 part 'src/core/actions.dart';
 part 'src/core/characters.dart';
