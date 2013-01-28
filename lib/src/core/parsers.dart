@@ -8,7 +8,7 @@ part of petitparser;
  * For example, [:char('a').or(epsilon()):] is equivalent to
  * [:char('a').optional():].
  */
-Parser epsilon([dynamic result]) => new _EpsilonParser(result);
+Parser epsilon({dynamic result}) => new _EpsilonParser(result);
 
 class _EpsilonParser extends Parser {
   final dynamic _result;
@@ -41,7 +41,7 @@ class _FailureParser extends Parser {
  *     var p = undefined();
  *     p.set(char('a').seq(p).or(char('b')));
  */
-SetableParser undefined([String message = 'undefined parser']) {
+SetableParser undefined({String message: 'undefined parser'}) {
   return failure(message).setable();
 }
 

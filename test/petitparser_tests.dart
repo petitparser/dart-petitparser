@@ -633,7 +633,7 @@ main() {
       var id2 = id.parse('f12');
       expect(id1.result, ['y', ['e', 'a', 'h']]);
       expect(id2.result, ['f', ['1', '2']]);
-      Result id3 = id.parse('123');
+      var id3 = id.parse('123');
       expect(id3.message, 'letter expected');
       expect(id3.position, 0);
       expect(id.accept('foo'), isTrue);

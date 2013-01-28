@@ -225,7 +225,7 @@ abstract class Parser {
    * and fails on [:'ab':]. In contrast the parser [:letter():] alone would
    * succeed on both inputs, but not consume everything for the second input.
    */
-  Parser end([String message = 'end of input expected']) {
+  Parser end({String message: 'end of input expected'}) {
     return new _EndOfInputParser(this, message);
   }
 

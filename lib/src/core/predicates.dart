@@ -8,7 +8,7 @@ part of petitparser;
  * For example, [:any():] succeeds and consumes any given letter. It only
  * fails for an empty input.
  */
-Parser any([String message]) {
+Parser any({String message}) {
   return new _PredicateParser(1,
     (each) => true,
     message != null ? message : 'input expected');
@@ -20,7 +20,7 @@ Parser any([String message]) {
  * For example, [:anyIn('ab'):] succeeds and consumes either the letter
  * [:'a':] or the letter [:'b':]. For any other input the parser fails.
  */
-Parser anyIn(dynamic elements, [String message]) {
+Parser anyIn(dynamic elements, {String message}) {
   return new _PredicateParser(1,
     (each) => elements.indexOf(each) >= 0,
     message != null ? message : 'any of $elements expected');
@@ -32,7 +32,7 @@ Parser anyIn(dynamic elements, [String message]) {
  * For example, [:string('foo'):] succeeds and consumes the input string
  * [:'foo':]. Fails for any other input.
  */
-Parser string(String element, [String message]) {
+Parser string(String element, {String message}) {
   return new _PredicateParser(element.length,
     (String each) => element == each,
     message != null ? message : '$element expected');
@@ -44,7 +44,7 @@ Parser string(String element, [String message]) {
  * For example, [:stringIgnoreCase('foo'):] succeeds and consumes the input
  * string [:'Foo':] or [:'FOO':]. Fails for any other input.
  */
-Parser stringIgnoreCase(String element, [String message]) {
+Parser stringIgnoreCase(String element, {String message}) {
   final lowerElement = element.toLowerCase();
   return new _PredicateParser(element.length,
     (String each) => lowerElement == each.toLowerCase(),
