@@ -252,7 +252,7 @@ abstract class Parser {
    * the elements from the back of the list.
    *
    * For example, the parser [:letter().star().pick(-1):] returns the last
-   * letter parsed. For the input [:'abc':] it returns ['c'].
+   * letter parsed. For the input [:'abc':] it returns [:'c':].
    */
   Parser pick(int index) {
     return this.map((List list) {
@@ -271,7 +271,7 @@ abstract class Parser {
    */
   Parser permute(List<int> indexes) {
     return this.map((List list) {
-      return indexes.mappedBy((index) {
+      return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
       });
     });

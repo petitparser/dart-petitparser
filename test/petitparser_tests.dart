@@ -84,12 +84,12 @@ main() {
       expect(token.toString(), 'Token[start: 2, stop: 5, value: 123]');
     });
     test('token() line', () {
-      var parser = any().token().star().map((list) => list.mappedBy((token) => token.line));
+      var parser = any().token().star().map((list) => list.map((token) => token.line));
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
     test('token() column', () {
-      var parser = any().token().star().map((list) => list.mappedBy((token) => token.column));
+      var parser = any().token().star().map((list) => list.map((token) => token.column));
       expect(parser.parse('1\r12\r\n123\n1234').result,
              [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
