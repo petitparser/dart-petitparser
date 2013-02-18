@@ -95,7 +95,7 @@ main() {
     });
     test('map()', () {
       var parser = digit().map((String each) {
-        return each.charCodeAt(0) - '0'.charCodeAt(0);
+        return each.codeUnitAt(0) - '0'.codeUnitAt(0);
       });
       expectSuccess(parser, '1', 1);
       expectSuccess(parser, '4', 4);

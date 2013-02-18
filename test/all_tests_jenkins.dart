@@ -17,12 +17,11 @@ class JenkinsConfiguration extends Configuration {
   }
 
   void onSummary(int passed, int failed, int errors, List<TestCase> results, String uncaughtError) {
-
     var totalTime = 0;
     for (var testcase in results) {
       totalTime += testcase.runningTime.inMilliseconds;
     }
-    print('<testsuite name="All tests" tests="${results.length}" failures="$failed" errors="$errors" time="${totalTime / 1000.0}" timestamp="${new Date.now()}">');
+    print('<testsuite name="All tests" tests="${results.length}" failures="$failed" errors="$errors" time="${totalTime / 1000.0}" timestamp="${new DateTime.now()}">');
     for (var testcase in results) {
       print('  <testcase id="${testcase.id}" name="${_xml(testcase.description)}" time="${testcase.runningTime.inMilliseconds / 1000.0}"> ');
       if (testcase.result == 'fail') {

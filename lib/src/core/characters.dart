@@ -11,7 +11,7 @@ int _toCharCode(dynamic element) {
   if (value.length != 1) {
     throw new ArgumentError('$value is not a character');
   }
-  return value.charCodeAt(0);
+  return value.codeUnitAt(0);
 }
 
 /** Internal abstract parser class for character classes. */

@@ -30,7 +30,7 @@ void main() {
   var input = query('#input') as TextAreaElement;
   var output = query('#output') as TextAreaElement;
 
-  query('#evaluate').on.click.add((event) {
+  query('#evaluate').onClick.listen((event) {
     var result = evalString(parser, environment, input.value);
     output.value = result.toString();
     inspector(query('#inspector'), environment);
