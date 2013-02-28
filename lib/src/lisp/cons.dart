@@ -32,20 +32,20 @@ class Cons {
   /** Returns the string representation of the cons. */
   String toString() {
     var buffer = new StringBuffer();
-    buffer.add('(');
+    buffer.write('(');
     var current = this;
     while (current is Cons) {
-      buffer.add(current.head.toString());
+      buffer.write(current.head.toString());
       current = current.tail;
       if (current != null) {
-        buffer.add(' ');
+        buffer.write(' ');
       }
     }
     if (current != null) {
-      buffer.add('. ');
-      buffer.add(current);
+      buffer.write('. ');
+      buffer.write(current);
     }
-    buffer.add(')');
+    buffer.write(')');
     return buffer.toString();
   }
 

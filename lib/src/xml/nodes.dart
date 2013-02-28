@@ -132,9 +132,9 @@ class XmlAttribute extends XmlNode {
 
   void writeTo(StringBuffer buffer) {
     name.writeTo(buffer);
-    buffer.add('="');
-    buffer.add(value);
-    buffer.add('"');
+    buffer.write('="');
+    buffer.write(value);
+    buffer.write('"');
   }
 
 }
@@ -160,9 +160,9 @@ class XmlComment extends XmlData {
   XmlComment(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!--');
-    buffer.add(data);
-    buffer.add('-->');
+    buffer.write('<!--');
+    buffer.write(data);
+    buffer.write('-->');
   }
 
 }
@@ -175,9 +175,9 @@ class XmlDoctype extends XmlData {
   XmlDoctype(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<!DOCTYPE');
-    buffer.add(data);
-    buffer.add('>');
+    buffer.write('<!DOCTYPE');
+    buffer.write(data);
+    buffer.write('>');
   }
 
 }
@@ -194,10 +194,10 @@ class XmlProcessing extends XmlData {
   String get target => _target;
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<?');
-    buffer.add(target);
-    buffer.add(data);
-    buffer.add('?>');
+    buffer.write('<?');
+    buffer.write(target);
+    buffer.write(data);
+    buffer.write('?>');
   }
 
 }
@@ -210,7 +210,7 @@ class XmlText extends XmlData {
   XmlText(String data) : super(data);
 
   void writeTo(StringBuffer buffer) {
-    buffer.add(data);
+    buffer.write(data);
   }
 
 }
@@ -292,20 +292,20 @@ class XmlElement extends XmlParent {
   }
 
   void writeTo(StringBuffer buffer) {
-    buffer.add('<');
+    buffer.write('<');
     name.writeTo(buffer);
     for (var attribute in attributes) {
-      buffer.add(' ');
+      buffer.write(' ');
       attribute.writeTo(buffer);
     }
     if (children.isEmpty) {
-      buffer.add(' />');
+      buffer.write(' />');
     } else {
-      buffer.add('>');
+      buffer.write('>');
       super.writeTo(buffer);
-      buffer.add('</');
+      buffer.write('</');
       name.writeTo(buffer);
-      buffer.add('>');
+      buffer.write('>');
     }
   }
 
@@ -344,10 +344,10 @@ class XmlName {
 
   void writeTo(StringBuffer buffer) {
     if (prefix != null) {
-      buffer.add(prefix);
-      buffer.add(':');
+      buffer.write(prefix);
+      buffer.write(':');
     }
-    buffer.add(local);
+    buffer.write(local);
   }
 
   bool operator == (XmlName obj) {

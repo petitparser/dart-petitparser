@@ -140,7 +140,7 @@ class Natives {
     _natives['print'] = (Environment env, dynamic args) {
       var buffer = new StringBuffer();
       while (args != null) {
-        buffer.add(eval(env, args.head));
+        buffer.write(eval(env, args.head));
         args = args.tail;
       }
       print(buffer.toString());
