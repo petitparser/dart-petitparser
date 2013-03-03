@@ -3,19 +3,21 @@
 library lispshell;
 
 import 'dart:io';
+import 'dart:async';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
 /** Read, evaluate, print loop. */
-void evalInteractive(LispParser parser, Environment env, InputStream input, OutputStream output) {
-  var stream = new StringInputStream(input);
-  stream.onLine = () {
+void evalInteractive(LispParser parser, Environment env,
+                     Stream<String> input, IOSink output,
+                     IOSink error) {
+  input.listen((String line) {
     try {
-      output.writeString('${evalString(parser, env, stream.readLine())}\n');
-    } on ParserError catch(error) {
-      output.writeString(error.toString());
+      output.addString('${evalString(parser, env, line)}\n');
+    } on ParserError catch(exception) {
+      error.addString(exception.toString());
     }
-  };
+  });
 }
 
 /** Entry point for the command line interpreter. */
@@ -73,6 +75,9 @@ void main() {
 
   // process console input
   if (interactiveMode || files.isEmpty) {
-    evalInteractive(parser, environment, stdin, stdout);
+    var input = stdin
+        .transform(new StringDecoder())
+        .transform(new LineTransformer());
+    evalInteractive(parser, environment, input, stdout, stderr);
   }
 }
