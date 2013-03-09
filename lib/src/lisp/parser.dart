@@ -16,8 +16,8 @@ class LispParser extends LispGrammar {
     action('null', (each) => null);
 
     action('string', (each) => new String.fromCharCodes(each[1]));
-    action('character escape', (each) => each[1].charCodeAt(0));
-    action('character raw', (each) => each.charCodeAt(0));
+    action('character escape', (each) => each[1].codeUnitAt(0));
+    action('character raw', (each) => each.codeUnitAt(0));
 
     action('symbol', (each) => new Symbol(each));
     action('number', (each) {

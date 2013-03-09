@@ -22,7 +22,7 @@ abstract class _CharacterParser extends Parser {
     final buffer = context.buffer;
     final position = context.position;
     if (position < buffer.length) {
-      if (_match(buffer.charCodeAt(position))) {
+      if (_match(buffer.codeUnitAt(position))) {
         return context.success(buffer[position], position + 1);
       }
     }

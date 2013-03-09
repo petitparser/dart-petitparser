@@ -3,7 +3,7 @@
 part of petitparser;
 
 /**
- * Abstract base class for all parsers.
+ * Abstract base class of all parsers.
  */
 abstract class Parser {
 
@@ -230,10 +230,12 @@ abstract class Parser {
   }
 
   /**
-   * Returns a parser that simply delegates to the receiver.
+   * Returns a parser that points to the receiver, but can be changed to point
+   * to something else at a later point in time.
    *
-   * For example, the parser [:letter().wrapper():] behaves exactly the same
-   * as [:letter():].
+   * For example, the parser [:letter().setable():] behaves exactly the same
+   * as [:letter():], but it can be replaced with another parser using
+   * [SetableParser#set].
    */
   SetableParser setable() => new _SetableParser(this);
 
