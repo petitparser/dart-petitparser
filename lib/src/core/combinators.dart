@@ -182,7 +182,7 @@ class _ChoiceParser extends _ListParser {
 
   Parser or(Parser other) {
     var parsers = new List.from(_parsers);
-    parsers.addLast(other);
+    parsers.add(other);
     return new _ChoiceParser(parsers);
   }
 
@@ -197,7 +197,7 @@ class _SequenceParser extends _ListParser {
 
   Result _parse(Context context) {
     var current = context;
-    var elements = new List(_parsers.length);
+    var elements = new List.fixedLength(_parsers.length);
     for (var i = 0; i < _parsers.length; i++) {
       var result = _parsers[i]._parse(current);
       if (result.isFailure) {
@@ -211,7 +211,7 @@ class _SequenceParser extends _ListParser {
 
   Parser seq(Parser other) {
     var parsers = new List.from(_parsers);
-    parsers.addLast(other);
+    parsers.add(other);
     return new _SequenceParser(parsers);
   }
 
