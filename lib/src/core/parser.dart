@@ -139,6 +139,12 @@ abstract class Parser {
   Parser seq(Parser other) => new _SequenceParser([this, other]);
 
   /**
+   * Convenience operator returning a parser accepts the receiver followed
+   * by [other]. See [Parser#seq] for details.
+   */
+  Parser operator & (Parser other) => this.seq(other);
+
+  /**
    * Returns a parser that accepts the receiver or [other]. The resulting
    * parser returns the parse result of the receiver, if the receiver fails
    * it returns the parse result of [other] (exclusive ordered choice).
@@ -151,6 +157,12 @@ abstract class Parser {
    * production action to [:char('a'):].
    */
   Parser or(Parser other) => new _ChoiceParser([this, other]);
+
+  /**
+   * Convenience operator returning a parser accepts the receiver or
+   * [other]. See [Parser#or] for details.
+   */
+  Parser operator | (Parser other) => this.or(other);
 
   /**
    * Returns a parser (logical and-predicate) that succeeds whenever the
