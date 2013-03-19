@@ -103,7 +103,7 @@ main() {
       expectFailure(parser, '');
       expectFailure(parser, 'a');
     });
-    test('pick()', () {
+    test('pick(1)', () {
       var parser = digit().seq(letter()).pick(1);
       expectSuccess(parser, '1a', 'a');
       expectSuccess(parser, '2b', 'b');
@@ -111,8 +111,24 @@ main() {
       expectFailure(parser, '1', 1, 'letter expected');
       expectFailure(parser, '12', 1, 'letter expected');
     });
-    test('permute()', () {
+    test('pick(-1)', () {
+      var parser = digit().seq(letter()).pick(-1);
+      expectSuccess(parser, '1a', 'a');
+      expectSuccess(parser, '2b', 'b');
+      expectFailure(parser, '');
+      expectFailure(parser, '1', 1, 'letter expected');
+      expectFailure(parser, '12', 1, 'letter expected');
+    });
+    test('permute([1, 0])', () {
       var parser = digit().seq(letter()).permute([1, 0]);
+      expectSuccess(parser, '1a', ['a', '1']);
+      expectSuccess(parser, '2b', ['b', '2']);
+      expectFailure(parser, '');
+      expectFailure(parser, '1', 1, 'letter expected');
+      expectFailure(parser, '12', 1, 'letter expected');
+    });
+    test('permute([-1, 0])', () {
+      var parser = digit().seq(letter()).permute([-1, 0]);
       expectSuccess(parser, '1a', ['a', '1']);
       expectSuccess(parser, '2b', ['b', '2']);
       expectFailure(parser, '');

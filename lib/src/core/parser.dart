@@ -279,7 +279,7 @@ abstract class Parser {
    * the permuted elements at [indexes] of a list. Negative indexes can be
    * used to access the elements from the back of the list.
    *
-   * For example, the parser [:letter().star().perm([0, -1]):] returns the
+   * For example, the parser [:letter().star().permute([0, -1]):] returns the
    * first and last letter parsed. For the input [:'abc':] it returns
    * [:['a', 'c']:].
    */
@@ -287,7 +287,7 @@ abstract class Parser {
     return this.map((List list) {
       return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
-      });
+      }).toList();
     });
   }
 

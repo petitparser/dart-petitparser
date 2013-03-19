@@ -20,10 +20,10 @@ class XmlGrammar extends CompositeParser {
       .seq(char('='))
       .seq(ref('whitespace').optional())
       .seq(ref('attributeValue'))
-      .map((list) => [list[0], list[4]]));
+      .permute([0, 4]));
     def('attributeValue', ref('attributeValueDouble')
       .or(ref('attributeValueSingle'))
-      .map((list) => list[1]));
+      .pick(1));
     def('attributeValueDouble', char('"')
       .seq(char('"').neg().star().flatten())
       .seq(char('"')));
@@ -32,12 +32,12 @@ class XmlGrammar extends CompositeParser {
       .seq(char("'")));
     def('attributes', ref('whitespace')
       .seq(ref('attribute'))
-      .map((list) => list[1])
+      .pick(1)
       .star());
     def('comment', string('<!--')
       .seq(string('-->').neg().star().flatten())
       .seq(string('-->'))
-      .map((list) => list[1]));
+      .pick(1));
     def('content', ref('characterData')
       .or(ref('element'))
       .or(ref('processing'))
@@ -52,14 +52,15 @@ class XmlGrammar extends CompositeParser {
         .flatten())
       .seq(ref('whitespace').optional())
       .seq(char('>'))
-      .map((list) => list[2]));
+      .pick(2));
     def('document', ref('processing').optional()
       .seq(ref('misc'))
       .seq(ref('doctype').optional())
       .seq(ref('misc'))
       .seq(ref('element'))
       .seq(ref('misc'))
-      .map((list) => [list[0], list[2], list[4]].where((each) => each != null)));
+      .permute([0, 2, 4])
+      .map((list) => list.where((each) => each != null)));
     def('element', char('<')
       .seq(ref('qualified'))
       .seq(ref('attributes'))
@@ -89,7 +90,7 @@ class XmlGrammar extends CompositeParser {
         .optional()
         .flatten())
       .seq(string('?>'))
-      .map((list) => [list[1], list[2]]));
+      .permute([1, 2]));
     def('qualified', ref('nameToken'));
 
     def('characterData', char('<').neg().plus().flatten());
