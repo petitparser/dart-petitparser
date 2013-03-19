@@ -197,7 +197,7 @@ class _SequenceParser extends _ListParser {
 
   Result _parse(Context context) {
     var current = context;
-    var elements = new List.fixedLength(_parsers.length);
+    var elements = new List(_parsers.length);
     for (var i = 0; i < _parsers.length; i++) {
       var result = _parsers[i]._parse(current);
       if (result.isFailure) {

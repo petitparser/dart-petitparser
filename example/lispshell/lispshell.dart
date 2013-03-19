@@ -13,9 +13,9 @@ void evalInteractive(LispParser parser, Environment env,
                      IOSink error) {
   input.listen((String line) {
     try {
-      output.addString('${evalString(parser, env, line)}\n');
+      output.writeln('${evalString(parser, env, line)}');
     } on ParserError catch(exception) {
-      error.addString(exception.toString());
+      error.writeln(exception.toString());
     }
   });
 }
