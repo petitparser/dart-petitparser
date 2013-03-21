@@ -18,14 +18,24 @@ part of petitparser;
  */
 abstract class CompositeParser extends _SetableParser {
 
-  final Map<String, Parser> _defined;
-  final Map<String, SetableParser> _undefined;
+  bool _completed = false;
+  Map<String, Parser> _defined = new Map();
+  Map<String, SetableParser> _undefined = new Map();
 
-  CompositeParser()
-      : super(failure('Uninitalized production: start')),
-        _defined = new Map(),
-        _undefined = new Map() {
+  CompositeParser() : super(failure('Uninitalized production: start')) {
     initialize();
+    _complete();
+  }
+
+  /**
+   * Initializes the composite grammar.
+   */
+  void initialize();
+
+  /**
+   * Internal method to complete the grammar.
+   */
+  void _complete() {
     _delegate = ref('start');
     _undefined.forEach((name, parser) {
       if (!_defined.containsKey(name)) {
@@ -34,12 +44,37 @@ abstract class CompositeParser extends _SetableParser {
       parser.set(_defined[name]);
     });
     set(Transformations.removeSetables(ref('start')));
+    _undefined.clear();
+    _completed = true;
   }
 
   /**
-   * Initializes the composite grammar.
+   * Returns a reference to a production with a [name].
+   *
+   * This method works during initialization and after completion of the
+   * initialization. During the initialization it returns delegate parsers
+   * that are eventually replaced by the real parsers. Afterwards it
+   * returns the defined parser (mostly useful for testing).
    */
-  void initialize();
+  Parser ref(String name) {
+    if (_completed) {
+      if (_defined.containsKey(name)) {
+        return _defined[name];
+      } else {
+        throw new StateError('Undefined production: $name');
+      }
+    } else {
+      return _undefined.putIfAbsent(name, () {
+        return failure('Uninitalized production: $name').setable();
+      });
+    }
+  }
+
+  /**
+   * Convenience operator returning a reference to a production with
+   * a [name]. See [CompositeParser#ref] for details.
+   */
+  Parser operator [](String name) => ref(name);
 
   /**
    * Defines a production with a [name] and a [parser]. Only call this method
@@ -51,25 +86,13 @@ abstract class CompositeParser extends _SetableParser {
    *     def('list', ref('element').separatedBy(char(',')));
    */
   void def(String name, Parser parser) {
-    if (_defined.containsKey(name)) {
+    if (_completed) {
+      throw new StateError('Completed parsers cannot be changed');
+    } else if (_defined.containsKey(name)) {
       throw new StateError('Duplicate production: $name');
     } else {
       _defined[name] = parser;
     }
-  }
-
-  /**
-   * Returns a reference to a production with a [name]. Only call this method
-   * from [initialize].
-   *
-   * At the point of calling [ref] the production does not necessaryily have
-   * to be defined yet. The constructor of the class makes sure to replace
-   * and optimize references away before the grammar is run.
-   */
-  Parser ref(String name) {
-    return _undefined.putIfAbsent(name, () {
-      return failure('Uninitalized production: $name').setable();
-    });
   }
 
   /**
@@ -83,7 +106,9 @@ abstract class CompositeParser extends _SetableParser {
    *     redef('list', (parser) => parser.optional());
    */
   void redef(String name, Parser function(Parser)) {
-    if (!_defined.containsKey(name)) {
+    if (_completed) {
+      throw new StateError('Completed parsers cannot be changed');
+    } else if (!_defined.containsKey(name)) {
       throw new StateError('Undefined production: $name');
     } else {
       _defined[name] = function(_defined[name]);
@@ -104,11 +129,5 @@ abstract class CompositeParser extends _SetableParser {
   void action(String name, dynamic function(Dynamic)) {
     redef(name, (parser) => parser.map(function));
   }
-
-  /**
-   * Returns a reference to the production with the given [name]. This method
-   * should only be called for fully initialized instances.
-   */
-  Parser operator [](String name) => _defined[name];
 
 }
