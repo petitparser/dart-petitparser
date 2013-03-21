@@ -96,22 +96,24 @@ abstract class CompositeParser extends _SetableParser {
   }
 
   /**
-   * Redefinies an existing production with a [name] and a [function]
-   * producing a new parser. The code raises a [StateError] if [name]
-   * is an undefined production. Only call this method from [initialize].
+   * Redefinies an existing production with a [name] and a [replacement]
+   * parser or function producing a new parser. The code raises a [StateError]
+   * if [name] is an undefined production. Only call this method from
+   * [initialize].
    *
    * The following example redefines the previously defined list production
    * by making it optional:
    *
    *     redef('list', (parser) => parser.optional());
    */
-  void redef(String name, Parser function(Parser)) {
+  void redef(String name, dynamic replacement) {
     if (_completed) {
       throw new StateError('Completed parsers cannot be changed');
     } else if (!_defined.containsKey(name)) {
       throw new StateError('Undefined production: $name');
     } else {
-      _defined[name] = function(_defined[name]);
+      _defined[name] = replacement is Parser ? replacement
+          : replacement(_defined[name]);
     }
   }
 

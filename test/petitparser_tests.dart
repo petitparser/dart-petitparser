@@ -23,6 +23,12 @@ void expectFailure(Parser parser, dynamic input, [int position = 0, String messa
   }
 }
 
+class PluggableCompositeParser extends CompositeParser {
+  Function _function;
+  PluggableCompositeParser(this._function) : super();
+  void initialize() => _function(this);
+}
+
 main() {
 
   group('parsers', () {
@@ -640,6 +646,84 @@ main() {
       var parser1 = parser2.setable();
       var root = Transformations.removeSetables(parser1);
       expect(root, parser2);
+    });
+  });
+  group('composite', () {
+    test('start', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, '');
+    });
+    test('circular', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('loop').or(char('b')));
+        self.def('loop', char('a').seq(self.ref('start')));
+      });
+      expect(parser.accept('b'), isTrue);
+      expect(parser.accept('ab'), isTrue);
+      expect(parser.accept('aab'), isTrue);
+      expect(parser.accept('aaab'), isTrue);
+    });
+    test('redefine parser', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('b'));
+        self.redef('start', char('a'));
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, '');
+    });
+    test('redefine function', () {
+      var parser = new PluggableCompositeParser((self) {
+        Parser b = char('b');
+        self.def('start', b);
+        self.redef('start', (old) {
+          expect(b, old);
+          return char('a');
+        });
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, '');
+    });
+    test('reference completed', () {
+      var parsers = {
+          'start': char('a'),
+          'for_b': char('b'),
+          'for_c': char('c')
+      };
+      var parser = new PluggableCompositeParser((self) {
+        for (var key in parsers.keys) {
+          self.def(key, parsers[key]);
+        }
+      });
+      for (var key in parsers.keys) {
+        expect(parsers[key], parser.ref(key));
+      }
+    });
+    test('reference unknown', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      expect(() => parser.ref('star1'), throwsStateError);
+    });
+    test('duplicated start', () {
+      new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+        expect(() => self.def('start', char('b')), throwsStateError);
+      });
+    });
+    test('undefined start', () {
+      expect(() => new PluggableCompositeParser((self) { }), throwsStateError);
+    });
+    test('undefined redef', () {
+      new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+        expect(() => self.redef('star1', char('b')), throwsStateError);
+      });
     });
   });
   group('tutorial', () {
