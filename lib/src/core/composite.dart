@@ -19,8 +19,8 @@ part of petitparser;
 abstract class CompositeParser extends _SetableParser {
 
   bool _completed = false;
-  Map<String, Parser> _defined = new Map();
-  Map<String, SetableParser> _undefined = new Map();
+  final Map<String, Parser> _defined = new Map();
+  final Map<String, SetableParser> _undefined = new Map();
 
   CompositeParser() : super(failure('Uninitalized production: start')) {
     initialize();
