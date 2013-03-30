@@ -75,13 +75,9 @@ class Token {
 
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
-  static Parser _NEWLINE_PARSER;
+  static final Parser _NEWLINE_PARSER =
+      char('\n').or(char('\r').seq(char('\n').optional()));
 
-  static Parser newlineParser() {
-    if (_NEWLINE_PARSER == null) {
-      _NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
-    }
-    return _NEWLINE_PARSER;
-  }
+  static Parser newlineParser() => _NEWLINE_PARSER;
 
 }
