@@ -7,16 +7,13 @@ part of petitparser;
  */
 class Context {
 
-  final dynamic _buffer;
-  final int _position;
-
-  const Context(this._buffer, this._position);
+  const Context(this.buffer, this.position);
 
   /** The buffer we are working on. */
-  dynamic get buffer => _buffer;
+  final dynamic buffer;
 
   /** The current position in the buffer. */
-  int get position => _position;
+  final int position;
 
   /** Returns [true] if this context indicates a parse success. */
   bool get isSuccess => false;
@@ -25,17 +22,17 @@ class Context {
   bool get isFailure => false;
 
   /** Copies the current context to indicate a parse success. */
-  Success success(dynamic result, [int position]) {
-    return new Success(_buffer, position == null ? _position : position, result);
+  Success success(dynamic result, [int pos]) {
+    return new Success(buffer, pos == null ? position : pos, result);
   }
 
   /** Copies the current context to indicate a parse failure. */
-  Failure failure(String message, [int position]) {
-    return new Failure(_buffer, position == null ? _position : position, message);
+  Failure failure(String message, [int pos]) {
+    return new Failure(buffer, pos == null ? position : pos, message);
   }
 
   /** Returns a human readable string of the current context */
-  String toString() => 'Context[$_position]';
+  String toString() => 'Context[$position]';
 
 }
 
@@ -59,17 +56,15 @@ abstract class Result extends Context {
  */
 class Success extends Result {
 
-  final dynamic _result;
-
-  const Success(buffer, position, this._result) : super(buffer, position);
+  const Success(buffer, position, this.result) : super(buffer, position);
 
   bool get isSuccess => true;
 
-  dynamic get result => _result;
+  final dynamic result;
 
   String get message => null;
 
-  String toString() => 'Success[$_position]: $_result';
+  String toString() => 'Success[$position]: $result';
 
 }
 
@@ -78,17 +73,15 @@ class Success extends Result {
  */
 class Failure extends Result {
 
-  final String _message;
-
-  const Failure(buffer, position, this._message) : super(buffer, position);
+  const Failure(buffer, position, this.message) : super(buffer, position);
 
   bool get isFailure => true;
 
   dynamic get result { throw new ParserError(this); }
 
-  String get message => _message;
+  final String message;
 
-  String toString() => 'Failure[$_position]: $_message';
+  String toString() => 'Failure[$position]: $message';
 
 }
 
@@ -97,12 +90,9 @@ class Failure extends Result {
  */
 class ParserError implements Error {
 
-  final Failure _failure;
+  ParserError(this.failure);
 
-  ParserError(this._failure);
+  final Failure failure;
 
-  Failure get failure => _failure;
-
-  String toString() => '${_failure.message} at ${_failure.position}';
-
+  String toString() => '${failure.message} at ${failure.position}';
 }

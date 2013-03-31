@@ -6,4 +6,5 @@ homepage: https://github.com/renggli/PetitParserDart
 dev_dependencies:
   junitconfiguration: any
   unittest: '>=0.4.0'
+  bot: '>=0.16.1'
   browser: '>=0.4.0'
