@@ -63,7 +63,7 @@
  * are the most simple ones. We've already seen a few of those:
  *
  *   * [:char('a'):] parses the character a.
- *   * [:string('abc'):] parses the string =='abc'==.
+ *   * [:string('abc'):] parses the string *abc*.
  *   * [:any():] parses any character.
  *   * [:digit():] parses any digit from 0 to 9.
  *   * [:letter():] parses any letter from a to z and A to Z.
