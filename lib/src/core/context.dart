@@ -18,19 +18,13 @@ class Context {
   /** The current position in the buffer. */
   int get position => _position;
 
-  /** Returns [true] if this context indicates a parse success. */
-  bool get isSuccess => false;
-
-  /** Returns [true] if this context indicates a parse failure. */
-  bool get isFailure => false;
-
-  /** Copies the current context to indicate a parse success. */
-  Success success(dynamic result, [int position]) {
+  /** Returns a result indicating a parse success. */
+  Result success(dynamic result, [int position]) {
     return new Success(_buffer, position == null ? _position : position, result);
   }
 
-  /** Copies the current context to indicate a parse failure. */
-  Failure failure(String message, [int position]) {
+  /** Returns a result indicating a parse failure. */
+  Result failure(String message, [int position]) {
     return new Failure(_buffer, position == null ? _position : position, message);
   }
 
@@ -45,6 +39,12 @@ class Context {
 abstract class Result extends Context {
 
   const Result(buffer, position) : super(buffer, position);
+
+  /** Returns [true] if this result indicates a parse success. */
+  bool get isSuccess => false;
+
+  /** Returns [true] if this result indicates a parse failure. */
+  bool get isFailure => false;
 
   /** Returns the parse result of the current context. */
   dynamic get result;
