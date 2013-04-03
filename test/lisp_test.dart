@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library lisp_tests;
+library lisp_test;
 
 import 'package:petitparser/lisp.dart';
 import 'package:unittest/unittest.dart';

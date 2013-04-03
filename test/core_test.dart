@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library petitparser_tests;
+library core_test;
 
 import 'package:petitparser/petitparser.dart';
 import 'package:unittest/unittest.dart';

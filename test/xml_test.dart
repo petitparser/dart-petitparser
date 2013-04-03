@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library xml_tests;
+library xml_test;
 
 import 'package:petitparser/xml.dart';
 import 'package:unittest/unittest.dart';

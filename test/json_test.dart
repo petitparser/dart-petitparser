@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
-library json_tests;
+library json_test;
 
 import 'package:petitparser/json.dart';
 import 'package:unittest/unittest.dart';
