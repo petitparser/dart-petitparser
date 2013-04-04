@@ -131,6 +131,27 @@ abstract class CompositeParser extends _SetableParser {
     redef(name, (parser) => parser.map(function));
   }
 
+  /**
+   * Experimental support to define and access production using normal variable
+   * access. Ignores private variables.
+   */
+  dynamic noSuchMethod(InvocationMirror mirror) {
+    if (!mirror.memberName.startsWith('_')) {
+      if (mirror.isGetter) {
+        return ref(mirror.memberName);
+      } else if (mirror.isSetter) {
+        return def(mirror.memberName.substring(0, mirror.memberName.length - 1),
+            mirror.positionalArguments.first);
+      } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
+        var argument = mirror.positionalArguments.first;
+        return argument is Parser
+            ? redef(mirror.memberName, argument)
+            : action(mirror.memberName, argument);
+      }
+    }
+    return super.noSuchMethod(mirror);
+  }
+
 }
 
 /**
