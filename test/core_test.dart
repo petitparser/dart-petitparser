@@ -689,6 +689,14 @@ main() {
       expectFailure(parser, 'b', 0, 'a expected');
       expectFailure(parser, '');
     });
+    test('define completed', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      expect(() => parser.def('other', char('b')), throws);
+      expect(() => parser.redef('start', char('b')), throws);
+      expect(() => parser.action('start', (each) => each), throws);
+    });
     test('reference completed', () {
       var parsers = {
           'start': char('a'),
@@ -708,21 +716,21 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.ref('star1'), throwsStateError);
+      expect(() => parser.ref('star1'), throws);
     });
     test('duplicated start', () {
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
-        expect(() => self.def('start', char('b')), throwsStateError);
+        expect(() => self.def('start', char('b')), throws);
       });
     });
     test('undefined start', () {
-      expect(() => new PluggableCompositeParser((self) { }), throwsStateError);
+      expect(() => new PluggableCompositeParser((self) { }), throws);
     });
     test('undefined redef', () {
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
-        expect(() => self.redef('star1', char('b')), throwsStateError);
+        expect(() => self.redef('star1', char('b')), throws);
       });
     });
   });
