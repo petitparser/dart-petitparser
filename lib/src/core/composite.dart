@@ -39,7 +39,7 @@ abstract class CompositeParser extends _SetableParser {
     _delegate = ref('start');
     _undefined.forEach((name, parser) {
       if (!_defined.containsKey(name)) {
-        throw new StateError('Undefined production: $name');
+        throw new UndefinedProductionError(name);
       }
       parser.set(_defined[name]);
     });
@@ -61,7 +61,7 @@ abstract class CompositeParser extends _SetableParser {
       if (_defined.containsKey(name)) {
         return _defined[name];
       } else {
-        throw new StateError('Undefined production: $name');
+        throw new UndefinedProductionError(name);
       }
     } else {
       return _undefined.putIfAbsent(name, () {
@@ -87,9 +87,9 @@ abstract class CompositeParser extends _SetableParser {
    */
   void def(String name, Parser parser) {
     if (_completed) {
-      throw new StateError('Completed parsers cannot be changed');
+      throw new CompletedParserError();
     } else if (_defined.containsKey(name)) {
-      throw new StateError('Duplicate production: $name');
+      throw new RedefinedProductionError(name);
     } else {
       _defined[name] = parser;
     }
@@ -97,9 +97,9 @@ abstract class CompositeParser extends _SetableParser {
 
   /**
    * Redefinies an existing production with a [name] and a [replacement]
-   * parser or function producing a new parser. The code raises a [StateError]
-   * if [name] is an undefined production. Only call this method from
-   * [initialize].
+   * parser or function producing a new parser. The code raises an
+   * [UndefinedProductionError] if [name] is an undefined production. Only call
+   * this method from [initialize].
    *
    * The following example redefines the previously defined list production
    * by making it optional:
@@ -108,9 +108,9 @@ abstract class CompositeParser extends _SetableParser {
    */
   void redef(String name, dynamic replacement) {
     if (_completed) {
-      throw new StateError('Completed parsers cannot be changed');
+      throw new CompletedParserError();
     } else if (!_defined.containsKey(name)) {
-      throw new StateError('Undefined production: $name');
+      throw new UndefinedProductionError(name);
     } else {
       _defined[name] = replacement is Parser ? replacement
           : replacement(_defined[name]);
@@ -119,17 +119,43 @@ abstract class CompositeParser extends _SetableParser {
 
   /**
    * Attaches an action [function] to an existing production [name]. The code
-   * raises a [StateError] if [name] is an undefined production. Only call this
-   * method from [initialize].
+   * raises an [UndefinedProductionError] if [name] is an undefined production.
+   * Only call this method from [initialize].
    *
    * The following example attaches an action returning the size of list of
    * the previously defined list production:
    *
    *     action('list', (list) => list.length);
-   *
    */
   void action(String name, dynamic function(Dynamic)) {
     redef(name, (parser) => parser.map(function));
   }
 
+}
+
+/**
+ * Error raised when somebody tries to modify a [CompositeParser] outside
+ * the [CompositeParser#initialize] method.
+ */
+class CompletedParserError implements Error {
+  CompletedParserError();
+  String toString() => 'Completed parser error';
+}
+
+/**
+ * Error raised when an undefined production is accessed.
+ */
+class UndefinedProductionError implements Error {
+  final String name;
+  UndefinedProductionError(this.name);
+  String toString() => 'Undefined production: $name';
+}
+
+/**
+ * Error raised when a production is accidentally redefined.
+ */
+class RedefinedProductionError implements Error {
+  final String name;
+  RedefinedProductionError(this.name);
+  String toString() => 'Redefined production: $name';
 }
