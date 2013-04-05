@@ -36,7 +36,7 @@ class JsonParser extends JsonGrammar {
     });
 
     stringPrimitive((each) => each[1].join(''));
-    characterEscape((each) => ESCAPE_TABLE[each[1]]);
+    characterEscape((each) => JsonGrammar.ESCAPE_TABLE[each[1]]);
     characterOctal((each) {
       throw new UnsupportedError('Octal characters not supported yet');
     });
