@@ -22,12 +22,12 @@
  * # Parsing Some Input
  *
  * To actually parse a [String] (or [List]) we can use the method
- * [Parser#parse]:
+ * [Parser.parse]:
  *
  *     Result id1 = id.parse('yeah');
  *     Result id2 = id.parse('f12');
  *
- * The method [Parser#parse] returns a parse [Result], which is either an
+ * The method [Parser.parse] returns a parse [Result], which is either an
  * instance of [Success] or [Failure]. In both examples above we are
  * successful and can retrieve the parse result using [Success.result]:
  *
@@ -62,11 +62,11 @@
  * to consume and transform arbitrarily complex languages. The terminal parsers
  * are the most simple ones. We've already seen a few of those:
  *
- *   * [:char('a'):] parses the character a.
+ *   * [:char('a'):] parses the character *a*.
  *   * [:string('abc'):] parses the string *abc*.
  *   * [:any():] parses any character.
- *   * [:digit():] parses any digit from 0 to 9.
- *   * [:letter():] parses any letter from a to z and A to Z.
+ *   * [:digit():] parses any digit from *0* to *9*.
+ *   * [:letter():] parses any letter from *a* to *z* and *A* to *Z*.
  *   * [:word():] parses any letter or digit.
  *
  * So instead of using the letter and digit predicate, we could have written
@@ -76,23 +76,23 @@
  *
  * The next set of parsers are used to combine other parsers together:
  *
- *   * [:p1.seq(p2):] parses p1 followed by p2 (sequence).
- *   * [:p1.or(p2):] parses p1, if that doesn't work parses p2 (ordered choice).
- *   * [:p.star():] parses p zero or more times.
- *   * [:p.plus():] parses p one or more times.
- *   * [:p.optional():] parses p, if possible.
- *   * [:p.and():] parses p, but does not consume its input.
- *   * [:p.not():] parses p and succeed when p fails, but does not consume its input.
- *   * [:p.end():] parses p and succeed at the end of the input.
+ *   * [:p1.seq(p2):] and [:p1 & p2:] parse *p1* followed by *p2* (sequence).
+ *   * [:p1.or(p2):] and [:p1 | p2:] parse *p1*, if that doesn't work parses *p2* (ordered choice).
+ *   * [:p.star():] parses *p* zero or more times.
+ *   * [:p.plus():] parses *p* one or more times.
+ *   * [:p.optional():] parses *p*, if possible.
+ *   * [:p.and():] parses *p*, but does not consume its input.
+ *   * [:p.not():] parses *p* and succeed when p fails, but does not consume its input.
+ *   * [:p.end():] parses *p* and succeed at the end of the input.
  *
  * To attach an action or transformation to a parser we can use the following
  * methods:
  *
  *   * [:p.map((value) => ...):] performs the transformation given the function.
- *   * [:p.pick(n):] returns the n-th element of the list p returns.
- *   * [:p.flatten():] creates a string from the result of p.
- *   * [:p.token():] creates a token from the result of p.
- *   * [:p.trim():] trims whitespaces before and after p.
+ *   * [:p.pick(n):] returns the *n*-th element of the list *p* returns.
+ *   * [:p.flatten():] creates a string from the result of *p*.
+ *   * [:p.token():] creates a token from the result of *p*.
+ *   * [:p.trim():] trims whitespaces before and after *p*.
  *
  * To return a string of the parsed identifier, we can modify our parser like
  * this:
