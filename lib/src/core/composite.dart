@@ -156,11 +156,11 @@ abstract class CompositeParser extends _SetableParser {
  * Experimental helper to compose complex grammars from various primitive
  * parsers using variable references.
  *
- * The difference of this implementation and [CompositeParser] is that
+ * The difference of this implementation to [CompositeParser] is that
  * subclasses can define and refer to productions using variables. The
- * accessors themselves are not actually implement anywhere, but their
- * behavior is defined in [noSuchMethod] and mapped a collection using
- * the behavior defined in the superclass.
+ * varibales themselves are not actually implement anywhere, but their
+ * behavior is defined in [noSuchMethod] and mapped to a collection using
+ * the methods defined in the superclass.
  *
  * Consider the following example to parse a list of numbers:
  *
@@ -177,7 +177,7 @@ abstract class CompositeParser extends _SetableParser {
  *
  *     class NumberListParser2 extends NumberListGrammar2 {
  *       void initialize() {
- *         action('element', (value) => int.parse(value));
+ *         element((value) => int.parse(value));
  *       }
  *     }
  *
@@ -185,8 +185,9 @@ abstract class CompositeParser extends _SetableParser {
  * as all productions are undefined from the perspective of the analyzer. Pay
  * attention with production names that conflict with methods defined in the
  * superclasses. The generated JavaScript code is noticably bigger, due to the
- * use of [noSuchMethod]. The resulting parsers are identical, after parser
- * construction there is no speed difference for the actual parsing.
+ * use of [noSuchMethod]. The resulting parsers identical and parse-speed is
+ * the same, onlyt he construction of the parser itself is slightly more
+ * expensive.
  */
 class CompositeParser2 extends CompositeParser {
 
