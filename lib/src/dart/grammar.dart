@@ -5,7 +5,7 @@ part of dart;
 /**
  * Dart grammar definition.
  */
-class DartGrammar extends CompositeParser {
+class DartGrammar extends CompositeParser2 {
 
   void initialize() {
     _lexemes();

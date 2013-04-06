@@ -150,22 +150,60 @@ abstract class CompositeParser extends _SetableParser {
     redef(name, (parser) => parser.map(function));
   }
 
-  /**
-   * Experimental support to define and access production using normal variable
-   * access. Ignores private variables.
-   */
+}
+
+/**
+ * Experimental helper to compose complex grammars from various primitive
+ * parsers using variable references.
+ *
+ * The difference of this implementation and [CompositeParser] is that
+ * subclasses can define and refer to productions using variables. The
+ * accessors themselves are not actually implement anywhere, but their
+ * behavior is defined in [noSuchMethod] and mapped a collection using
+ * the behavior defined in the superclass.
+ *
+ * Consider the following example to parse a list of numbers:
+ *
+ *     class NumberListGrammar2 extends CompositeParser2 {
+ *       void initialize() {
+ *         element = digit().plus().flatten();
+ *         list = element.separatedBy(char(',')));
+ *         start = list.end();
+ *       }
+ *     }
+ *
+ * Production actions can be attached in subclasses by calling the production,
+ * as in the following example:
+ *
+ *     class NumberListParser2 extends NumberListGrammar2 {
+ *       void initialize() {
+ *         action('element', (value) => int.parse(value));
+ *       }
+ *     }
+ *
+ * Creavats: The Dart editor currently shows an abundance of spurious warnings,
+ * as all productions are undefined from the perspective of the analyzer. Pay
+ * attention with production names that conflict with methods defined in the
+ * superclasses. The generated JavaScript code is noticably bigger, due to the
+ * use of [noSuchMethod]. The resulting parsers are identical, after parser
+ * construction there is no speed difference for the actual parsing.
+ */
+class CompositeParser2 extends CompositeParser {
+
   dynamic noSuchMethod(InvocationMirror mirror) {
     if (!mirror.memberName.startsWith('_')) {
       if (mirror.isGetter) {
         return ref(mirror.memberName);
-      } else if (mirror.isSetter) {
-        return def(mirror.memberName.substring(0, mirror.memberName.length - 1),
-            mirror.positionalArguments.first);
-      } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
-        var argument = mirror.positionalArguments.first;
-        return argument is Parser
-            ? redef(mirror.memberName, argument)
-            : action(mirror.memberName, argument);
+      } else if (!_completed) {
+        if (mirror.isSetter) {
+          return def(mirror.memberName.substring(0, mirror.memberName.length - 1),
+              mirror.positionalArguments.first);
+        } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
+          var argument = mirror.positionalArguments.first;
+          return argument is Parser
+              ? redef(mirror.memberName, argument)
+              : action(mirror.memberName, argument);
+        }
       }
     }
     return super.noSuchMethod(mirror);

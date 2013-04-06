@@ -5,7 +5,7 @@ part of json;
 /**
  * JSON grammar definition.
  */
-class JsonGrammar extends CompositeParser {
+class JsonGrammar extends CompositeParser2 {
 
   static final ESCAPE_TABLE = const {
     '\\': '\\',
