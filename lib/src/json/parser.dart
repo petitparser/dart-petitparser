@@ -10,8 +10,8 @@ class JsonParser extends JsonGrammar {
   void initialize() {
     super.initialize();
 
-    array((each) => each[1] != null ? each[1] : new List());
-    object((each) {
+    action('array', (each) => each[1] != null ? each[1] : new List());
+    action('object', (each) {
       var result = new LinkedHashMap();
       if (each[1] != null) {
         for (var element in each[1]) {
@@ -21,11 +21,11 @@ class JsonParser extends JsonGrammar {
       return result;
     });
 
-    trueToken((each) => true);
-    falseToken((each) => false);
-    nullToken((each) => null);
-    stringToken(stringPrimitive.trim());
-    numberToken((each) {
+    action('trueToken', (each) => true);
+    action('falseToken', (each) => false);
+    action('nullToken', (each) => null);
+    redef('stringToken', (parser) => ref('stringPrimitive').trim());
+    action('numberToken', (each) {
       var floating = double.parse(each);
       var integral = floating.toInt();
       if (floating == integral && each.indexOf('.') == -1) {
@@ -35,9 +35,9 @@ class JsonParser extends JsonGrammar {
       }
     });
 
-    stringPrimitive((each) => each[1].join(''));
-    characterEscape((each) => JsonGrammar.ESCAPE_TABLE[each[1]]);
-    characterOctal((each) {
+    action('stringPrimitive', (each) => each[1].join(''));
+    action('characterEscape', (each) => _escapeTable[each[1]]);
+    action('characterOctal', (each) {
       throw new UnsupportedError('Octal characters not supported yet');
     });
 

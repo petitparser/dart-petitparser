@@ -193,13 +193,17 @@ class CompositeParser2 extends CompositeParser {
 
   dynamic noSuchMethod(InvocationMirror mirror) {
     if (!mirror.memberName.startsWith('_')) {
+      // only consider public members
       if (mirror.isGetter) {
+        // productions can be accessed any time
         return ref(mirror.memberName);
       } else if (!_completed) {
         if (mirror.isSetter) {
+          // production can only be defined during initialization
           return def(mirror.memberName.substring(0, mirror.memberName.length - 1),
               mirror.positionalArguments.first);
         } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
+          // productions can only be redefined during initialization
           var argument = mirror.positionalArguments.first;
           return argument is Parser
               ? redef(mirror.memberName, argument)
