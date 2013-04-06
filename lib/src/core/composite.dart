@@ -10,11 +10,30 @@ part of petitparser;
  * production a name. The start production must be named 'start'. To refer
  * to other produtions (forward and backward) use [ref].
  *
+ * Consider the following example to parse a list of numbers:
+ *
+ *     class NumberListGrammar extends CompositeParser {
+ *       void initialize() {
+ *         def('element', digit().plus().flatten());
+ *         def('list', ref('element').separatedBy(char(',')));
+ *         def('start', ref('list').end());
+ *       }
+ *     }
+ *
  * You might want to create future subclasses of your composite grammar
  * to redefine the grammar or attach custom actions. In such a subclass
  * override the method [initialize] again and call super. Then use
  * [redef] to redefine an existing production, and [action] to attach an
  * action to an existing production.
+ *
+ * Consider the following example that attaches a production action and
+ * converts the digits to actual numbers:
+ *
+ *     class NumberListParser extends NumberListGrammar {
+ *       void initialize() {
+ *         action('element', (value) => int.parse(value));
+ *       }
+ *     }
  */
 abstract class CompositeParser extends _SetableParser {
 
