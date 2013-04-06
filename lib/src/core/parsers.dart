@@ -46,7 +46,7 @@ SetableParser undefined({String message: 'undefined parser'}) {
 }
 
 /**
- * Interface of a parser that can be redefined using [SetableParser#set].
+ * Interface of a parser that can be redefined using [SetableParser.set].
  */
 abstract class SetableParser implements Parser {
 

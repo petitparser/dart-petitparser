@@ -91,7 +91,7 @@ abstract class CompositeParser extends _SetableParser {
 
   /**
    * Convenience operator returning a reference to a production with
-   * a [name]. See [CompositeParser#ref] for details.
+   * a [name]. See [CompositeParser.ref] for details.
    */
   Parser operator [](String name) => ref(name);
 
@@ -218,7 +218,7 @@ class CompositeParser2 extends CompositeParser {
 
 /**
  * Error raised when somebody tries to modify a [CompositeParser] outside
- * the [CompositeParser#initialize] method.
+ * the [CompositeParser.initialize] method.
  */
 class CompletedParserError implements Error {
   CompletedParserError();

@@ -22,11 +22,11 @@ abstract class Parser {
    * the internal parsing logic of the receiving parser.
    *
    * For example, [:letter().plus().parse('abc'):] results in an instance of
-   * [Success], where [Result#position] is [:3:] and [Success.result] is
+   * [Success], where [Result.position] is [:3:] and [Success.result] is
    * [:[a, b, c]:].
    *
    * Similarly, [:letter().plus().parse('123'):] results in an instance of
-   * [Failure], where [Result#position] is [:0:] and [Failure.message] is
+   * [Failure], where [Result.position] is [:0:] and [Failure.message] is
    * ['letter expected'].
    */
   Result parse(dynamic input) {
@@ -129,7 +129,7 @@ abstract class Parser {
   /**
    * Returns a parser that accepts the receiver followed by [other]. The
    * resulting parser returns a list of the parse result of the receiver
-   * followed by the parse result of [other]. Calling [SequenceParser#seq]
+   * followed by the parse result of [other]. Calling [SequenceParser.seq]
    * causes the sequences to be concatenated instead of nested.
    *
    * For example, the parser [:letter().seq(digit()).seq(letter()):] accepts a
@@ -140,7 +140,7 @@ abstract class Parser {
 
   /**
    * Convenience operator returning a parser accepts the receiver followed
-   * by [other]. See [Parser#seq] for details.
+   * by [other]. See [Parser.seq] for details.
    */
   Parser operator & (Parser other) => this.seq(other);
 
@@ -160,7 +160,7 @@ abstract class Parser {
 
   /**
    * Convenience operator returning a parser accepts the receiver or
-   * [other]. See [Parser#or] for details.
+   * [other]. See [Parser.or] for details.
    */
   Parser operator | (Parser other) => this.or(other);
 
@@ -247,7 +247,7 @@ abstract class Parser {
    *
    * For example, the parser [:letter().setable():] behaves exactly the same
    * as [:letter():], but it can be replaced with another parser using
-   * [SetableParser#set].
+   * [SetableParser.set].
    */
   SetableParser setable() => new _SetableParser(this);
 
@@ -343,7 +343,7 @@ abstract class Parser {
 
   /**
    * Changes the receiver by replacing [source] with [target]. Does nothing
-   * if [source] does not exist in [Parser#children].
+   * if [source] does not exist in [Parser.children].
    *
    * The following example creates a letter parser and then defines a parser
    * called [:example:] that accepts one or more letters. Eventually the parser
