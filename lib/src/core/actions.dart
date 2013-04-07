@@ -60,7 +60,8 @@ class _TrimmingParser extends _DelegateParser {
 }
 
 /**
- * A parser that answers a substring of the range its delegate parses.
+ * A parser that answers a substring or sublist of the range its delegate
+ * parses.
  */
 class _FlattenParser extends _DelegateParser {
 
@@ -69,7 +70,9 @@ class _FlattenParser extends _DelegateParser {
   Result _parse(Context context) {
     var result = super._parse(context);
     if (result.isSuccess) {
-      var output = context.buffer.substring(context.position, result.position);
+      var output = context.buffer is String
+          ? context.buffer.substring(context.position, result.position)
+          : context.buffer.sublist(context.position, result.position);
       return result.success(output);
     } else {
       return result;
