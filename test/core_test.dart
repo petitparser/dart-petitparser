@@ -678,7 +678,7 @@ main() {
     });
     test('redefine function', () {
       var parser = new PluggableCompositeParser((self) {
-        Parser b = char('b');
+        var b = char('b');
         self.def('start', b);
         self.redef('start', (old) {
           expect(b, old);
