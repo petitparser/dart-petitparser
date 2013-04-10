@@ -29,7 +29,16 @@ class Context {
   }
 
   /** Returns a human readable string of the current context */
-  String toString() => 'Context[$_position]';
+  String toString() => 'Context[${toPositionString()}]';
+
+  String toPositionString() {
+    if (_buffer is String) {
+      var lineAndColumn = Token.lineAndColumnOf(buffer, position);
+      return '${lineAndColumn[0]}:${lineAndColumn[1]}';
+    } else {
+      return '${position}';
+    }
+  }
 
 }
 
@@ -69,7 +78,7 @@ class Success extends Result {
 
   String get message => null;
 
-  String toString() => 'Success[$_position]: $_result';
+  String toString() => 'Success[${toPositionString()}]: $_result';
 
 }
 
@@ -88,7 +97,7 @@ class Failure extends Result {
 
   String get message => _message;
 
-  String toString() => 'Failure[$_position]: $_message';
+  String toString() => 'Failure[${toPositionString()}]: $_message';
 
 }
 
