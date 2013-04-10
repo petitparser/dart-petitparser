@@ -8,6 +8,7 @@ part of dart;
 class DartGrammar extends CompositeParser2 {
 
   void initialize() {
+    _whitespace();
     _lexemes();
     _keywords();
     _types();
@@ -17,9 +18,22 @@ class DartGrammar extends CompositeParser2 {
     _libraries();
   }
 
+  /** Defines the whitespace and comments. */
+  void _whitespace() {
+    def('whitespace', whitespace()
+      .or(ref('singe line comment'))
+      .or(ref('multi line comment')));
+    def('singe line comment', string('//')
+      .seq(Token.newlineParser().neg().star()));
+    def('multi line comment', string('/*')
+      .seq(string('*/').neg().star())
+      .seq(string('*/')));
+  }
+
+  /** Defines a token parser that consumes whitespace. */
   Parser _token(String name) {
     var parser = name.length == 1 ? char(name) : string(name);
-    return parser.token().trim();
+    return parser.token().trim(ref('whitespace'));
   }
 
   void _lexemes() {
