@@ -54,30 +54,12 @@ class Token {
   /**
    * Returns the line number of the token.
    */
-  int get line {
-    var line = 1;
-    for (var each in newlineParser().token().matchesSkipping(buffer)) {
-      if (start < each.stop) {
-        return line;
-      }
-      line++;
-    }
-    return line;
-  }
+  int get line => Token.lineAndColumnOf(_buffer, _start)[0];
 
   /**
    * Returns the column number of this token.
    */
-  int get column {
-    var position = 0;
-    for (var each in newlineParser().token().matchesSkipping(buffer)) {
-      if (start < each.stop) {
-        return start - position + 1;
-      }
-      position = each.stop;
-    }
-    return start - position + 1;
-  }
+  int get column => Token.lineAndColumnOf(_buffer, _start)[1];
 
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
@@ -85,5 +67,17 @@ class Token {
       char('\n').or(char('\r').seq(char('\n').optional()));
 
   static Parser newlineParser() => _NEWLINE_PARSER;
+
+  static List<int> lineAndColumnOf(String buffer, int position) {
+    var line = 1, offset = 0;
+    for (var token in newlineParser().token().matchesSkipping(buffer)) {
+      if (position < token.stop) {
+        return [line, position - offset + 1];
+      }
+      line++;
+      offset = token.stop;
+    }
+    return [line, position - offset + 1];
+  }
 
 }
