@@ -52,7 +52,7 @@ Parser stringIgnoreCase(String element, {String message}) {
 }
 
 /**
- * A parser for a single literal satisfying a predicate.
+ * A parser for a literal satisfying a predicate.
  */
 class _PredicateParser extends Parser {
 
