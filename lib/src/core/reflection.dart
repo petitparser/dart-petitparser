@@ -2,7 +2,9 @@
 
 part of petitparser;
 
-/** Iterable over all parsers reachable from a [root]. */
+/**
+ * Iterable over all parsers reachable from a [root].
+ */
 class ParserIterable extends Iterable<Parser> {
 
   final Parser _root;
@@ -15,7 +17,9 @@ class ParserIterable extends Iterable<Parser> {
 
 }
 
-/** Iterator over all parsers reachable from a [root]. */
+/**
+ * Iterator over all parsers reachable from a [root].
+ */
 class ParserIterator implements Iterator<Parser> {
 
   final List<Parser> _todo;
@@ -41,39 +45,87 @@ class ParserIterator implements Iterator<Parser> {
 
 }
 
-/** Collection of various common transformations. */
+/**
+ * Collection of various common transformations.
+ */
 class Transformations {
 
-  /** Pluggable transformation starting at [root]. */
+  /**
+   * Transforms all parsers reachable from [root] with the given [function].
+   */
   static Parser transform(Parser root, Parser function(Parser parser)) {
-    var sources = new List(), targets = new List();
+    var mapping = new Map(), transformed = new Set();
     do {
-      sources.clear(); targets.clear();
-      var parsers = new List.from(new ParserIterable(root));
+      mapping.clear();
+      var parsers = new ParserIterable(root).toList();
       parsers.forEach((source) {
-        var target = function(source);
-        if (target != null && !identical(source, target)) {
-          if (identical(source, root)) {
-            root = target;
+        if (!transformed.contains(source)) {
+          var target = function(source);
+          if (target != null && !identical(source, target)) {
+            if (identical(source, root)) {
+              root = target;
+            }
+            mapping[source] = target;
           }
-          sources.add(source);
-          targets.add(target);
+          transformed.add(source);
         }
       });
       parsers.forEach((parser) {
-        for (var i = 0; i < sources.length; i++) {
-          parser.replace(sources[i], targets[i]);
-        }
+        mapping.forEach((previous, next) {
+          parser.replace(previous, next);
+        });
       });
-    } while (!sources.isEmpty);
+    } while (!mapping.isEmpty);
     return root;
   }
 
-  /** Removes all settables starting at [root]. */
+  /**
+   * Removes all setable parsers reachable from [root].
+   */
   static Parser removeSetables(Parser root) {
-    return transform(root, (each) {
-      return each is SetableParser ? each.children[0] : each;
+    return transform(root, (parser) {
+      return parser is SetableParser ? parser.children[0] : parser;
     });
   }
+
+  /**
+   * Adds debug handlers to each parser reachable from [root].
+   */
+  static Parser debug(Parser root) {
+    var level = 0;
+    return transform(root, (parser) {
+      return parser is _PluggableParser
+          ? parser
+          : new _PluggableParser((context) {
+              print('${_indent(level)}${parser}');
+              level++;
+              var result = parser._parse(context);
+              level--;
+              print('${_indent(level)}${result}');
+              return result;
+       });
+    });
+  }
+
+  static String _indent(int level) {
+    var result = new StringBuffer();
+    for (var i = 0; i < level; i++) {
+      result.write('  ');
+    }
+    return result.toString();
+  }
+
+}
+
+/**
+ * A pluggable parser taking block as parse action (use sparingly).
+ */
+class _PluggableParser extends Parser {
+
+  final Function _function;
+
+  _PluggableParser(this._function);
+
+  Result _parse(Context context) => _function(context);
 
 }
