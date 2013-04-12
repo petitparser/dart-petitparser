@@ -52,6 +52,11 @@ class Transformations {
 
   /**
    * Transforms all parsers reachable from [root] with the given [function].
+   *
+   * The implementation first creates a copy of each parser reachable in the
+   * input grammar; then the resulting grammar is iteratively transfered and
+   * all old parsers are replaced with the transformed ones until we end up
+   * with a complete new grammar.
    */
   static Parser transform(Parser root, Parser function(Parser parser)) {
     var mapping = new Map();
@@ -64,6 +69,7 @@ class Transformations {
         parser.children.forEach((source) {
           if (mapping.containsKey(source)) {
             parser.replace(source, mapping[source]);
+            changed = true;
           }
         });
       });
