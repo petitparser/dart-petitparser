@@ -54,29 +54,23 @@ class Transformations {
    * Transforms all parsers reachable from [root] with the given [function].
    */
   static Parser transform(Parser root, Parser function(Parser parser)) {
-    var mapping = new Map(), transformed = new Set();
-    do {
-      mapping.clear();
-      var parsers = new ParserIterable(root).toList();
-      parsers.forEach((source) {
-        if (!transformed.contains(source)) {
-          var target = function(source);
-          if (target != null && !identical(source, target)) {
-            if (identical(source, root)) {
-              root = target;
-            }
-            mapping[source] = target;
+    var mapping = new Map();
+    new ParserIterable(root).forEach((parser) {
+      mapping[parser] = function(parser.copy());
+    });
+    while (true) {
+      var changed = false;
+      new ParserIterable(mapping[root]).forEach((parser) {
+        parser.children.forEach((source) {
+          if (mapping.containsKey(source)) {
+            parser.replace(source, mapping[source]);
           }
-          transformed.add(source);
-        }
-      });
-      parsers.forEach((parser) {
-        mapping.forEach((previous, next) {
-          parser.replace(previous, next);
         });
       });
-    } while (!mapping.isEmpty);
-    return root;
+      if (!changed) {
+        return mapping[root];
+      }
+    }
   }
 
   /**
@@ -94,15 +88,13 @@ class Transformations {
   static Parser debug(Parser root) {
     var level = 0;
     return transform(root, (parser) {
-      return parser is _PluggableParser
-          ? parser
-          : new _PluggableParser((context) {
-              print('${_indent(level)}${parser}');
-              level++;
-              var result = parser._parse(context);
-              level--;
-              print('${_indent(level)}${result}');
-              return result;
+      return new _ContinuationParser(parser, (context, continuation) {
+        print('${_indent(level)}${parser}');
+        level++;
+        var result = continuation(context);
+        level--;
+        print('${_indent(level)}${result}');
+        return result;
        });
     });
   }
@@ -118,14 +110,13 @@ class Transformations {
 }
 
 /**
- * A pluggable parser taking block as parse action (use sparingly).
+ * A delegate parser continuation-passing-style (CPS).
  */
-class _PluggableParser extends Parser {
-
+class _ContinuationParser extends _DelegateParser {
   final Function _function;
-
-  _PluggableParser(this._function);
-
-  Result _parse(Context context) => _function(context);
-
+  _ContinuationParser(parser, this._function) : super(parser);
+  Result _parse(Context context) {
+    return _function(context, (result) => super._parse(result));
+  }
+  Parser copy() => new _ContinuationParser(_delegate, _function);
 }

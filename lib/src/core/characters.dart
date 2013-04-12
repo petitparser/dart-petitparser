@@ -2,6 +2,30 @@
 
 part of petitparser;
 
+/**
+ * Parser class for individual character classes.
+ */
+class _CharacterParser extends Parser {
+
+  final _CharMatcher _matcher;
+
+  final String _message;
+
+  _CharacterParser(this._matcher, this._message);
+
+  Result _parse(Context context) {
+    var buffer = context.buffer;
+    var position = context.position;
+    if (position < buffer.length && _matcher.match(buffer.codeUnitAt(position))) {
+      return context.success(buffer[position], position + 1);
+    }
+    return context.failure(_message);
+  }
+
+  Parser copy() => new _CharacterParser(_matcher, _message);
+
+}
+
 /** Internal method to convert an element to a character code. */
 int _toCharCode(dynamic element) {
   if (element is int) {
@@ -14,63 +38,38 @@ int _toCharCode(dynamic element) {
   return value.codeUnitAt(0);
 }
 
-/** Internal abstract parser class for character classes. */
-abstract class _CharacterParser extends Parser {
-  String _message;
-  _CharacterParser(this._message);
-  Result _parse(Context context) {
-    final buffer = context.buffer;
-    final position = context.position;
-    if (position < buffer.length) {
-      if (_match(buffer.codeUnitAt(position))) {
-        return context.success(buffer[position], position + 1);
-      }
-    }
-    return context.failure(_message);
-  }
-  bool _match(int value);
-  Parser or(Parser other) => other is _CharacterParser ? new _AlternativeCharacterParser([this, other]) : super.or(other);
-  Parser neg([String message]) => new _NegatedCharacterParser(message != null ? message : 'no $_message', this);
+/** Internal abstract character matcher class. */
+abstract class _CharMatcher {
+  const _CharMatcher();
+  bool match(int value);
 }
 
-/** Internal parser class for negated character classes. */
-class _NegatedCharacterParser extends _CharacterParser {
-  final _CharacterParser _parser;
-  _NegatedCharacterParser(String message, this._parser) : super(message);
-  bool _match(int value) => !_parser._match(value);
-  Parser neg([String message]) => _parser;
+/** Internal character matcher that negates the result. */
+class _NotCharMatcher extends _CharMatcher {
+  final _CharMatcher _matcher;
+  const _NotCharMatcher(this._matcher);
+  bool match(int value) => !_matcher.match(value);
 }
 
-/** Internal parser class for alternative character classes. */
-class _AlternativeCharacterParser extends _CharacterParser {
-  final List<_CharacterParser> _parsers;
-  _AlternativeCharacterParser(parsers)
-      : super(parsers[0]._message),
-        _parsers = parsers;
-  bool _match(int value) {
-    for (final parser in _parsers) {
-      if (parser._match(value)) {
+/** Internal character matcher for alternatives. */
+class _AltCharMatcher extends _CharMatcher {
+  final List<_CharMatcher> _matchers;
+  const _AltCharMatcher(this._matchers);
+  bool match(int value) {
+    for (var matcher in _matchers) {
+      if (matcher.match(value)) {
         return true;
       }
     }
     return false;
   }
-  Parser or(Parser other) {
-    if (other is _CharacterParser) {
-      var list = new List.from(_parsers);
-      list.add(other);
-      return new _AlternativeCharacterParser(list);
-    } else {
-      return super.or(other);
-    }
-  }
 }
 
-/** Internal parser class that does a binary search. */
-class _BinarySearchCharacterParser extends _CharacterParser {
+/** Internal character matcher that does a binary search. */
+class _BinarySearchCharMatcher extends _CharMatcher {
   final List<int> _codes;
-  _BinarySearchCharacterParser(String message, this._codes) : super(message);
-  bool _match(int value) {
+  const _BinarySearchCharMatcher(this._codes);
+  bool match(int value) {
     var lo = 0;
     var hi = _codes.length - 1;
     while (lo <= hi) {
@@ -89,109 +88,119 @@ class _BinarySearchCharacterParser extends _CharacterParser {
 
 /** Returns a parser that accepts a specific character only. */
 Parser char(dynamic element, {String message}) {
-  return new _CharParser(message != null ? message : '$element expected', _toCharCode(element));
+  return new _CharacterParser(
+      new _SingleCharMatcher(_toCharCode(element)),
+      message != null ? message : '$element expected');
 }
 
-class _CharParser extends _CharacterParser {
-  final int _char;
-  _CharParser(String message, this._char) : super(message);
-  bool _match(int value) => identical(_char, value);
+class _SingleCharMatcher extends _CharMatcher {
+  final int _value;
+  const _SingleCharMatcher(this._value);
+  bool match(int value) => identical(_value, value);
 }
 
 /** Returns a parser that accepts any digit character. */
 Parser digit({String message}) {
-  return new _DigitParser(message != null ? message : 'digit expected');
+  return new _CharacterParser(
+      new _DigitCharMatcher(),
+      message != null ? message : 'digit expected');
 }
 
-class _DigitParser extends _CharacterParser {
-  _DigitParser(String message) : super(message);
-  bool _match(int value) => 48 <= value && value <= 57;
+class _DigitCharMatcher extends _CharMatcher {
+  bool match(int value) => 48 <= value && value <= 57;
 }
 
 /** Returns a parser that accepts any letter character. */
 Parser letter({String message}) {
-  return new _LetterParser(message != null ? message : 'letter expected');
+  return new _CharacterParser(
+      new _LetterCharMatcher(),
+      message != null ? message : 'letter expected');
 }
 
-class _LetterParser extends _CharacterParser {
-  _LetterParser(String message) : super(message);
-  bool _match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
+class _LetterCharMatcher extends _CharMatcher {
+  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 }
 
 /** Returns a parser that accepts any lowercase character. */
 Parser lowercase({String message}) {
-  return new _LowercaseParser(message != null ? message : 'lowercase letter expected');
+  return new _CharacterParser(
+      new _LowercaseCharMatcher(),
+      message != null ? message : 'lowercase letter expected');
 }
 
-class _LowercaseParser extends _CharacterParser {
-  _LowercaseParser(String message) : super(message);
-  bool _match(int value) => 97 <= value && value <= 122;
+class _LowercaseCharMatcher extends _CharMatcher {
+  bool match(int value) => 97 <= value && value <= 122;
 }
 
 /** Returns a parser that accepts the given character class pattern. */
 Parser pattern(String element, {String message}) {
   if (_pattern == null) {
-    final single = any().map((each) {
-      return char(each);
+    var single = any().map((each) {
+      return new _SingleCharMatcher(_toCharCode(each));
     });
-    final multiple = any().seq(char('-')).seq(any()).map((each) {
-      return range(each[0], each[2]);
+    var multiple = any().seq(char('-')).seq(any()).map((each) {
+      return new _RangeCharMatcher(_toCharCode(each[0]), _toCharCode(each[2]));
     });
-    final positive = multiple.or(single).plus().map((each) {
-      return each.length == 1 ? each[0] : new _AlternativeCharacterParser(each);
+    var positive = multiple.or(single).plus().map((each) {
+      return each.length == 1 ? each[0] : new _AltCharMatcher(each);
     });
     _pattern = char('^').optional().seq(positive).map((each) {
-      return each[0] == null ? each[1] : each[1].neg();
+      return each[0] == null ? each[1] : new _NotCharMatcher(each[1]);
     });
   }
-  var parser = _pattern.parse(element).result;
-  parser._message = message != null ? message : '[$element] expected';
-  return parser;
+  return new _CharacterParser(
+      _pattern.parse(element).result,
+      message != null ? message : '[$element] expected');
 }
 
 Parser _pattern;
 
 /** Returns a parser that accepts any character in the range between [start] and [stop]. */
 Parser range(dynamic start, dynamic stop, {String message}) {
-  return new _RangeParser( message != null ? message : '$start..$stop expected', _toCharCode(start), _toCharCode(stop));
+  return new _CharacterParser(
+      new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop)),
+      message != null ? message : '$start..$stop expected');
 }
 
-class _RangeParser extends _CharacterParser {
+class _RangeCharMatcher extends _CharMatcher {
   final int _start;
   final int _stop;
-  _RangeParser(String message, this._start, this._stop) : super(message);
-  bool _match(int value) => _start <= value && value <= _stop;
+  const _RangeCharMatcher(this._start, this._stop);
+  bool match(int value) => _start <= value && value <= _stop;
 }
 
 /** Returns a parser that accepts any uppercase character. */
 Parser uppercase({String message}) {
-  return new _UppercaseParser(message != null ? message : 'uppercase letter expected');
+  return new _CharacterParser(
+      new _UppercaseCharMatcher(),
+      message != null ? message : 'uppercase letter expected');
 }
 
-class _UppercaseParser extends _CharacterParser {
-  _UppercaseParser(String message) : super(message);
-  bool _match(int value) => 65 <= value && value <= 90;
+class _UppercaseCharMatcher extends _CharMatcher {
+  bool match(int value) => 65 <= value && value <= 90;
 }
 
 /** Returns a parser that accepts any whitespace character. */
 Parser whitespace({String message}) {
-  return new _WhitespaceParser(message != null ? message : 'whitespace expected');
+  return new _CharacterParser(
+      new _WhitespaceCharMatcher(),
+      message != null ? message : 'whitespace expected');
 }
 
-class _WhitespaceParser extends _CharacterParser {
-  _WhitespaceParser(String message) : super(message);
-  bool _match(int value) => (9 <= value && value <= 13) || (value == 32) || (value == 160)
+class _WhitespaceCharMatcher extends _CharMatcher {
+  bool match(int value) => (9 <= value && value <= 13) || (value == 32) || (value == 160)
       || (value == 5760) || (value == 6158) || (8192 <= value && value <= 8202) || (value == 8232)
       || (value == 8233) || (value == 8239) || (value == 8287) || (value == 12288);
 }
 
 /** Returns a parser that accepts any word character. */
 Parser word({String message}) {
-  return new _WordParser(message != null ? message : 'letter or digit expected');
+  return new _CharacterParser(
+      new _WordCharMatcher(),
+      message != null ? message : 'letter or digit expected');
 }
 
-class _WordParser extends _CharacterParser {
-  _WordParser(String message) : super(message);
-  bool _match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
+class _WordCharMatcher extends _CharMatcher {
+  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
       || (48 <= value && value <= 57) || (value == 95);
 }

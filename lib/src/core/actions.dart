@@ -21,6 +21,8 @@ class _ActionParser extends _DelegateParser {
     }
   }
 
+  Parser copy() => new _ActionParser(_delegate, _function);
+
 }
 
 /**
@@ -47,6 +49,8 @@ class _TrimmingParser extends _DelegateParser {
     } while (current.isSuccess);
     return current.success(result.result);
   }
+
+  Parser copy() => new _TrimmingParser(_delegate, _trimmer);
 
   List<Parser> get children => [_delegate, _trimmer];
 
@@ -79,6 +83,8 @@ class _FlattenParser extends _DelegateParser {
     }
   }
 
+  Parser copy() => new _FlattenParser(_delegate);
+
 }
 
 /**
@@ -98,5 +104,7 @@ class _TokenParser extends _DelegateParser {
       return result;
     }
   }
+
+  Parser copy() => new _TokenParser(_delegate);
 
 }

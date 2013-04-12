@@ -330,6 +330,11 @@ abstract class Parser {
   }
 
   /**
+   * Returns a shallow copy of the receiver.
+   */
+  Parser copy();
+
+  /**
    * Returns a list of directly referenced parsers.
    *
    * For example, [:letter().children:] returns the empty collection [:[]:],

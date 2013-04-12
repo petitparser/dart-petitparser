@@ -76,4 +76,6 @@ class _PredicateParser extends Parser {
     return context.failure(_message);
   }
 
+  Parser copy() => new _PredicateParser(_length, _predicate, _message);
+
 }

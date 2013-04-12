@@ -25,6 +25,8 @@ class _DelegateParser extends Parser {
     }
   }
 
+  Parser copy() => new _DelegateParser(_delegate);
+
 }
 
 /**
@@ -44,6 +46,8 @@ class _EndOfInputParser extends _DelegateParser {
     return result.failure(_message, result.position);
   }
 
+  Parser copy() => new _EndOfInputParser(_delegate, _message);
+
 }
 
 /**
@@ -62,6 +66,8 @@ class _AndParser extends _DelegateParser {
       return result;
     }
   }
+
+  Parser copy() => new _AndParser(_delegate);
 
 }
 
@@ -84,6 +90,8 @@ class _NotParser extends _DelegateParser {
     }
   }
 
+  Parser copy() => new _NotParser(_delegate, _message);
+
 }
 
 /**
@@ -103,6 +111,8 @@ class _OptionalParser extends _DelegateParser {
       return context.success(_otherwise);
     }
   }
+
+  Parser copy() => new _OptionalParser(_delegate, _otherwise);
 
 }
 
@@ -137,6 +147,8 @@ class _RepeatingParser extends _DelegateParser {
     }
     return current.success(elements);
   }
+
+  Parser copy() => new _RepeatingParser(_delegate, _min, _max);
 
 }
 
@@ -186,6 +198,8 @@ class _ChoiceParser extends _ListParser {
     return new _ChoiceParser(parsers);
   }
 
+  Parser copy() => new _ChoiceParser(new List.from(_parsers));
+
 }
 
 /**
@@ -193,7 +207,7 @@ class _ChoiceParser extends _ListParser {
  */
 class _SequenceParser extends _ListParser {
 
-  _SequenceParser(_parsers) : super(_parsers);
+  _SequenceParser(parsers) : super(parsers);
 
   Result _parse(Context context) {
     var current = context;
@@ -214,5 +228,7 @@ class _SequenceParser extends _ListParser {
     parsers.add(other);
     return new _SequenceParser(parsers);
   }
+
+  Parser copy() => new _SequenceParser(new List.from(_parsers));
 
 }
