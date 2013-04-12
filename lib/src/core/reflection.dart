@@ -122,7 +122,7 @@ class _ContinuationParser extends _DelegateParser {
   final Function _function;
   _ContinuationParser(parser, this._function) : super(parser);
   Result _parse(Context context) {
-    return _function(context, (result) => super._parse(result));
+    return _function(context, (result) => _delegate._parse(result));
   }
   Parser copy() => new _ContinuationParser(_delegate, _function);
 }
