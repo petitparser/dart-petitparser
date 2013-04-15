@@ -61,7 +61,7 @@ class _TrimmingParser extends _DelegateParser {
 
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (identical(_trimmer, source)) {
+    if (_trimmer == source) {
       _trimmer = target;
     }
   }
