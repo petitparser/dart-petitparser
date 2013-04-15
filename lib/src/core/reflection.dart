@@ -35,8 +35,7 @@ class ParserIterator implements Iterator<Parser> {
       _current = null;
       return false;
     }
-    _current = _todo.removeLast();
-    _done.add(_current);
+    _done.add(_current = _todo.removeLast());
     _todo.addAll(_current.children.where((each) => !_done.contains(each)));
     return true;
   }
@@ -56,7 +55,7 @@ class Transformations {
    * The implementation first creates a copy of each parser reachable in the
    * input grammar; then the resulting grammar is iteratively transfered and
    * all old parsers are replaced with the transformed ones until we end up
-   * with a complete new grammar.
+   * with a completely new grammar.
    */
   static Parser transform(Parser root, Parser function(Parser parser)) {
     var mapping = new Map();
@@ -105,6 +104,7 @@ class Transformations {
     });
   }
 
+  /** Internal method to create indention strings. */
   static String _indent(int level) {
     var result = new StringBuffer();
     for (var i = 0; i < level; i++) {
@@ -116,7 +116,7 @@ class Transformations {
 }
 
 /**
- * A delegate parser continuation-passing-style (CPS).
+ * A delegate parser for continuation-passing-style (CPS).
  */
 class _ContinuationParser extends _DelegateParser {
   final Function _function;
