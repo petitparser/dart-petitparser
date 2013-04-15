@@ -765,5 +765,24 @@ main() {
       expect(7, start.parse('1 + 2 * 3').result);
       expect(9, start.parse('(1 + 2) * 3').result);
     });
+    test('composite grammar', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('list').end());
+        self.def('list', self.ref('element').separatedBy(char(','),
+            includeSeparators: false));
+        self.def('element', digit().plus().flatten());
+      });
+      expect(['1', '23', '456'], parser.parse('1,23,456').result);
+    });
+    test('composite parser', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('list').end());
+        self.def('list', self.ref('element').separatedBy(char(','),
+            includeSeparators: false));
+        self.def('element', digit().plus().flatten());
+        self.action('element', (value) => int.parse(value));
+      });
+      expect([1, 23, 456], parser.parse('1,23,456').result);
+    });
   });
 }

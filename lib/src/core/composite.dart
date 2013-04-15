@@ -14,9 +14,10 @@ part of petitparser;
  *
  *     class NumberListGrammar extends CompositeParser {
  *       void initialize() {
- *         def('element', digit().plus().flatten());
- *         def('list', ref('element').separatedBy(char(',')));
  *         def('start', ref('list').end());
+ *         def('list', ref('element').separatedBy(char(','),
+ *           includeSeparators: false));
+ *         def('element', digit().plus().flatten());
  *       }
  *     }
  *
@@ -168,9 +169,9 @@ abstract class CompositeParser extends _SetableParser {
  *
  *     class NumberListGrammar2 extends CompositeParser2 {
  *       void initialize() {
- *         element = digit().plus().flatten();
- *         list = element.separatedBy(char(',')));
  *         start = list.end();
+ *         list = element.separatedBy(char(','), includeSeparators: false));
+ *         element = digit().plus().flatten();
  *       }
  *     }
  *
@@ -186,10 +187,8 @@ abstract class CompositeParser extends _SetableParser {
  * Creavats: The Dart editor currently shows an abundance of spurious warnings,
  * as all productions are undefined from the perspective of the analyzer. Pay
  * attention with production names that conflict with methods defined in the
- * superclasses. The generated JavaScript code is noticably bigger, due to the
- * use of [noSuchMethod]. The resulting parsers identical and parse-speed is
- * the same, onlyt he construction of the parser itself is slightly more
- * expensive.
+ * superclasses. The generated JavaScript code is slightly bigger, due to the
+ * use of [noSuchMethod]. However, the resulting parser is identical.
  */
 class CompositeParser2 extends CompositeParser {
 
