@@ -79,7 +79,7 @@ class _PredicateParser extends Parser {
   Parser copy() => new _PredicateParser(_length, _predicate, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
-    return match(other, seen)
+    return super.match(other, seen)
         && _length == other._length
         && _predicate == other._predicate
         && _message == other._message;
