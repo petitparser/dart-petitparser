@@ -25,7 +25,7 @@ class _CharacterParser extends Parser {
   Parser copy() => new _CharacterParser(_matcher, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
-    return match(other, seen)
+    return super.match(other, seen)
         && _matcher == other._matcher
         && _message == other._message;
   }

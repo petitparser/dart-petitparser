@@ -16,7 +16,7 @@ class _EpsilonParser extends Parser {
   Result _parse(Context context) => context.success(_result);
   Parser copy() => new _EpsilonParser(_result);
   bool match(dynamic other, [Set<Parser> seen]) {
-    return match(other, seen) && _result == other._result;
+    return super.match(other, seen) && _result == other._result;
   }
 
 }
@@ -36,7 +36,7 @@ class _FailureParser extends Parser {
   Result _parse(Context context) => context.failure(_message);
   Parser copy() => new _FailureParser(_message);
   bool match(dynamic other, [Set<Parser> seen]) {
-    return match(other, seen) && _message == other._message;
+    return super.match(other, seen) && _message == other._message;
   }
 }
 
