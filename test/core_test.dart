@@ -579,21 +579,68 @@ main() {
       expect(parsers, [parser1, parser2, parser3]);
     });
     test('iterator basic', () {
-      var parser1 = lowercase();
-      var iterator = new ParserIterator(parser1);
+      var lower = lowercase();
+      var iterator = new ParserIterator(lower);
       expect(iterator.current, isNull);
       expect(iterator.moveNext(), isTrue);
-      expect(iterator.current, parser1);
-      expect(iterator.current, parser1);
+      expect(iterator.current, lower);
+      expect(iterator.current, lower);
       expect(iterator.moveNext(), isFalse);
       expect(iterator.current, isNull);
       expect(iterator.moveNext(), isFalse);
     });
+    test('transform copy', () {
+      var lower = lowercase();
+      var parser = lower.setable();
+      var transformed = Transformations.transform(parser, (parser) => parser);
+      expect(transformed.match(parser), isTrue);
+    });
+    test('transform root', () {
+      var input = lowercase();
+      var source = lowercase();
+      var target = uppercase();
+      var output = Transformations.transform(input, (parser) {
+        return source.match(parser) ? target : parser;
+      });
+      expect(input.match(output), isFalse);
+      expect(output.match(target), isTrue);
+    });
+    test('transform delegate', () {
+      var input = lowercase().setable();
+      var source = lowercase();
+      var target = uppercase();
+      var output = Transformations.transform(input, (parser) {
+        return source.match(parser) ? target : parser;
+      });
+      expect(input.match(output), isFalse);
+      expect(output.match(target.setable()), isTrue);
+    });
+    test('transform double reference', () {
+      var lower = lowercase();
+      var input = lower & lower;
+      var source = lowercase();
+      var target = uppercase();
+      var output = Transformations.transform(input, (parser) {
+        return source.match(parser) ? target : parser;
+      });
+      expect(input.match(output), isFalse);
+      expect(output.match(target & target), isTrue);
+      expect(output.children.first, output.children.last);
+    });
     test('remove setables', () {
-      var parser2 = lowercase();
-      var parser1 = parser2.setable();
-      var root = Transformations.removeSetables(parser1);
-      expect(root, parser2);
+      var input = lowercase().setable();
+      var output = Transformations.removeSetables(input);
+      expect(output.match(lowercase()), isTrue);
+    });
+    test('remove nested setables', () {
+      var input = lowercase().setable().star();
+      var output = Transformations.removeSetables(input);
+      expect(output.match(lowercase().star()), isTrue);
+    });
+    test('remove double setables', () {
+      var input = lowercase().setable().setable();
+      var output = Transformations.removeSetables(input);
+      expect(output.match(lowercase()), isTrue);
     });
   });
   group('composite', () {

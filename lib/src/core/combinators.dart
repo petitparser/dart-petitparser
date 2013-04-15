@@ -49,8 +49,7 @@ class _EndOfInputParser extends _DelegateParser {
   Parser copy() => new _EndOfInputParser(_delegate, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
-        && _message == other._message;
+    return super.match(other, seen) && _message == other._message;
   }
 
 }
@@ -98,8 +97,7 @@ class _NotParser extends _DelegateParser {
   Parser copy() => new _NotParser(_delegate, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
-        && _message == other._message;
+    return super.match(other, seen) && _message == other._message;
   }
 
 }
@@ -125,8 +123,7 @@ class _OptionalParser extends _DelegateParser {
   Parser copy() => new _OptionalParser(_delegate, _otherwise);
 
   bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
-        && _otherwise == other._otherwise;
+    return super.match(other, seen) && _otherwise == other._otherwise;
   }
 
 }
