@@ -83,7 +83,10 @@ class Transformations {
    */
   static Parser removeSetables(Parser root) {
     return transform(root, (parser) {
-      return parser is SetableParser ? parser.children[0] : parser;
+      while (parser is SetableParser) {
+        parser = parser.children.first;
+      }
+      return parser;
     });
   }
 
