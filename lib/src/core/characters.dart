@@ -102,35 +102,44 @@ class _SingleCharMatcher extends _CharMatcher {
 /** Returns a parser that accepts any digit character. */
 Parser digit({String message}) {
   return new _CharacterParser(
-      new _DigitCharMatcher(),
+      _digitCharMatcher,
       message != null ? message : 'digit expected');
 }
 
 class _DigitCharMatcher extends _CharMatcher {
+  const _DigitCharMatcher();
   bool match(int value) => 48 <= value && value <= 57;
 }
+
+final _DigitCharMatcher _digitCharMatcher = const _DigitCharMatcher();
 
 /** Returns a parser that accepts any letter character. */
 Parser letter({String message}) {
   return new _CharacterParser(
-      new _LetterCharMatcher(),
+      _letterCharMatcher,
       message != null ? message : 'letter expected');
 }
 
 class _LetterCharMatcher extends _CharMatcher {
+  const _LetterCharMatcher();
   bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 }
+
+final _LetterCharMatcher _letterCharMatcher = const _LetterCharMatcher();
 
 /** Returns a parser that accepts any lowercase character. */
 Parser lowercase({String message}) {
   return new _CharacterParser(
-      new _LowercaseCharMatcher(),
+      _lowercaseCharMatcher,
       message != null ? message : 'lowercase letter expected');
 }
 
 class _LowercaseCharMatcher extends _CharMatcher {
+  const _LowercaseCharMatcher();
   bool match(int value) => 97 <= value && value <= 122;
 }
+
+_LowercaseCharMatcher _lowercaseCharMatcher = const _LowercaseCharMatcher();
 
 /** Returns a parser that accepts the given character class pattern. */
 Parser pattern(String element, {String message}) {
@@ -172,35 +181,44 @@ class _RangeCharMatcher extends _CharMatcher {
 /** Returns a parser that accepts any uppercase character. */
 Parser uppercase({String message}) {
   return new _CharacterParser(
-      new _UppercaseCharMatcher(),
+      _uppercaseCharMatcher,
       message != null ? message : 'uppercase letter expected');
 }
 
 class _UppercaseCharMatcher extends _CharMatcher {
+  const _UppercaseCharMatcher();
   bool match(int value) => 65 <= value && value <= 90;
 }
+
+final _UppercaseCharMatcher _uppercaseCharMatcher = const _UppercaseCharMatcher();
 
 /** Returns a parser that accepts any whitespace character. */
 Parser whitespace({String message}) {
   return new _CharacterParser(
-      new _WhitespaceCharMatcher(),
+      _whitespaceCharMatcher,
       message != null ? message : 'whitespace expected');
 }
 
 class _WhitespaceCharMatcher extends _CharMatcher {
+  const _WhitespaceCharMatcher();
   bool match(int value) => (9 <= value && value <= 13) || (value == 32) || (value == 160)
       || (value == 5760) || (value == 6158) || (8192 <= value && value <= 8202) || (value == 8232)
       || (value == 8233) || (value == 8239) || (value == 8287) || (value == 12288);
 }
 
+final _WhitespaceCharMatcher _whitespaceCharMatcher = const _WhitespaceCharMatcher();
+
 /** Returns a parser that accepts any word character. */
 Parser word({String message}) {
   return new _CharacterParser(
-      new _WordCharMatcher(),
+      _wordCharMatcher,
       message != null ? message : 'letter or digit expected');
 }
 
 class _WordCharMatcher extends _CharMatcher {
+  const _WordCharMatcher();
   bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
       || (48 <= value && value <= 57) || (value == 95);
 }
+
+final _WordCharMatcher _wordCharMatcher = const _WordCharMatcher();
