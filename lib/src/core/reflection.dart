@@ -88,6 +88,26 @@ class Transformations {
   }
 
   /**
+   * Removes duplicated parsers reachable from [root].
+   */
+  static Parser removeDuplicates(Parser root) {
+    var uniques = new Set();
+    new ParserIterable(root).forEach((parent) {
+      parent.children.forEach((child) {
+        var duplicate = uniques.firstWhere((each) {
+          return child != each && child.match(each);
+        }, orElse: () => null);
+        if (duplicate == null) {
+          uniques.add(child);
+        } else {
+          parent.replace(child, duplicate);
+        }
+      });
+    });
+    return root;
+  }
+
+  /**
    * Adds debug handlers to each parser reachable from [root].
    */
   static Parser debug(Parser root) {

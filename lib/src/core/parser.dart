@@ -335,6 +335,32 @@ abstract class Parser {
   Parser copy();
 
   /**
+   * Recusively tests for the equality of two parsers.
+   *
+   * The code can automatically deals with recursive parsers and parsers that
+   * refer to other parsers. This code is supposed to be overridden by parsers
+   * that add other state.
+   */
+  bool match(Parser other, [Set<Parser> seen]) {
+    if (seen == null) {
+      seen = new Set();
+    }
+    if (this == other || seen.contains(this)) {
+      return true;
+    }
+    seen.add(this);
+    if (runtimeType != other.runtimeType || children.length != other.children.length) {
+      return false;
+    }
+    for (var i = 0; i < children.length; i++) {
+      if (!children[i].match(other.children[i], seen)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Returns a list of directly referenced parsers.
    *
    * For example, [:letter().children:] returns the empty collection [:[]:],

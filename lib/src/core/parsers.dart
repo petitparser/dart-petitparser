@@ -15,6 +15,10 @@ class _EpsilonParser extends Parser {
   _EpsilonParser(this._result);
   Result _parse(Context context) => context.success(_result);
   Parser copy() => new _EpsilonParser(_result);
+  bool match(dynamic other, [Set<Parser> seen]) {
+    return match(other, seen) && _result == other._result;
+  }
+
 }
 
 /**
@@ -31,6 +35,9 @@ class _FailureParser extends Parser {
   _FailureParser(this._message);
   Result _parse(Context context) => context.failure(_message);
   Parser copy() => new _FailureParser(_message);
+  bool match(dynamic other, [Set<Parser> seen]) {
+    return match(other, seen) && _message == other._message;
+  }
 }
 
 /**
