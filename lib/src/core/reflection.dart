@@ -51,6 +51,7 @@ class Transformations {
 
   /**
    * Transforms all parsers reachable from [root] with the given [function].
+   * The identity function returns a copy of the the incoming parser.
    *
    * The implementation first creates a copy of each parser reachable in the
    * input grammar; then the resulting grammar is iteratively transfered and
@@ -79,31 +80,41 @@ class Transformations {
   }
 
   /**
-   * Removes all setable parsers reachable from [root].
+   * Removes all setable parsers reachable from [root] in-place.
    */
   static Parser removeSetables(Parser root) {
-    return transform(root, (parser) {
-      while (parser is SetableParser) {
-        parser = parser.children.first;
-      }
-      return parser;
+    new ParserIterable(root).forEach((parent) {
+      parent.children.forEach((source) {
+        var target = _removeSetable(source);
+        if (source != target) {
+          parent.replace(source, target);
+        }
+      });
     });
+    return _removeSetable(root);
+  }
+
+  static Parser _removeSetable(Parser parser) {
+    while (parser is SetableParser) {
+      parser = parser.children.first;
+    }
+    return parser;
   }
 
   /**
-   * Removes duplicated parsers reachable from [root].
+   * Removes duplicated parsers reachable from [root] in-place.
    */
   static Parser removeDuplicates(Parser root) {
     var uniques = new Set();
     new ParserIterable(root).forEach((parent) {
-      parent.children.forEach((child) {
-        var duplicate = uniques.firstWhere((each) {
-          return child != each && child.match(each);
+      parent.children.forEach((source) {
+        var target = uniques.firstWhere((each) {
+          return source != each && source.match(each);
         }, orElse: () => null);
-        if (duplicate == null) {
-          uniques.add(child);
+        if (target == null) {
+          uniques.add(source);
         } else {
-          parent.replace(child, duplicate);
+          parent.replace(source, target);
         }
       });
     });
