@@ -6,15 +6,9 @@ part of petitparser;
  * Iterable over all parsers reachable from a [root].
  */
 class ParserIterable extends IterableBase<Parser> {
-
   final Parser _root;
-
-  ParserIterable(this._root);
-
-  ParserIterator get iterator {
-    return new ParserIterator(_root);
-  }
-
+  const ParserIterable(this._root);
+  ParserIterator get iterator => new ParserIterator(_root);
 }
 
 /**
