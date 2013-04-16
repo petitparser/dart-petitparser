@@ -192,7 +192,7 @@ abstract class CompositeParser extends _SetableParser {
  */
 class CompositeParser2 extends CompositeParser {
 
-  dynamic noSuchMethod(InvocationMirror mirror) {
+  dynamic noSuchMethod(Invocation mirror) {
     if (!mirror.memberName.startsWith('_')) {
       // only consider public members
       if (mirror.isGetter) {
