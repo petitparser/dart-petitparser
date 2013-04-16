@@ -3,9 +3,30 @@
 part of xml;
 
 /**
+ * Mixin to serialize XML to a [StringBuffer].
+ */
+abstract class _XmlWritable {
+
+  /**
+   * Answer a print string of the receiver.
+   */
+  String toString() {
+    var buffer = new StringBuffer();
+    writeTo(buffer);
+    return buffer.toString();
+  }
+
+  /**
+   * Writes the XML string of the receiver to a {@code buffer}.
+   */
+  void writeTo(StringBuffer buffer);
+
+}
+
+/**
  * Abstract XML node.
  */
-abstract class XmlNode extends Iterable<XmlNode> {
+abstract class XmlNode extends Iterable<XmlNode> with _XmlWritable {
 
   XmlNode _parent;
 
@@ -100,20 +121,6 @@ abstract class XmlNode extends Iterable<XmlNode> {
     }
     return null;
   }
-
-  /**
-   * Answer a print string of the receiver.
-   */
-  String toString() {
-    var buffer = new StringBuffer();
-    writeTo(buffer);
-    return buffer.toString();
-  }
-
-  /**
-   * Writes the XML string of the receiver to a {@code buffer}.
-   */
-  void writeTo(StringBuffer buffer);
 
 }
 
@@ -314,7 +321,7 @@ class XmlElement extends XmlParent {
 /**
  * XML entity name.
  */
-class XmlName {
+class XmlName extends Object with _XmlWritable {
 
   final String _prefix;
   final String _local;
@@ -335,12 +342,6 @@ class XmlName {
   String get local => _local;
   String get prefix => _prefix;
   String get qualified => toString();
-
-  String toString() {
-    var buffer = new StringBuffer();
-    writeTo(buffer);
-    return buffer.toString();
-  }
 
   void writeTo(StringBuffer buffer) {
     if (prefix != null) {
