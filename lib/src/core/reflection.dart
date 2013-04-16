@@ -5,7 +5,7 @@ part of petitparser;
 /**
  * Iterable over all parsers reachable from a [root].
  */
-class ParserIterable extends Iterable<Parser> {
+class ParserIterable extends IterableBase<Parser> {
 
   final Parser _root;
 
