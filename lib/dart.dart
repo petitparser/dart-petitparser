@@ -5,4 +5,3 @@ library dart;
 import 'package:petitparser/petitparser.dart';
 
 part 'src/dart/grammar.dart';
-part 'src/dart/parser.dart';
