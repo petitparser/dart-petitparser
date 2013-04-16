@@ -4,6 +4,6 @@ author: Lukas Renggli <renggli@gmail.com>
 description: Dynamic parser combinator framework.
 homepage: https://github.com/renggli/PetitParserDart
 dev_dependencies:
-  junitconfiguration: '>=0.4.4'
-  unittest: '>=0.4.4'
-  browser: '>=0.4.4'
+  junitconfiguration: '>=0.4.7'
+  unittest: '>=0.4.7'
+  browser: '>=0.4.7'

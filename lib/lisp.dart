@@ -11,7 +11,6 @@ part 'src/lisp/environment.dart';
 part 'src/lisp/grammar.dart';
 part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
-part 'src/lisp/symbol.dart';
 
 /** The evaluation function. */
 dynamic eval(Environment env, dynamic expr) {
