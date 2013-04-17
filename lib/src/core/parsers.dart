@@ -11,10 +11,15 @@ part of petitparser;
 Parser epsilon([dynamic result]) => new _EpsilonParser(result);
 
 class _EpsilonParser extends Parser {
+
   final dynamic _result;
+
   _EpsilonParser(this._result);
+
   Result _parse(Context context) => context.success(_result);
+
   Parser copy() => new _EpsilonParser(_result);
+
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _result == other._result;
   }
@@ -31,13 +36,19 @@ Parser failure([String message = 'unable to parse']) {
 }
 
 class _FailureParser extends Parser {
+
   final String _message;
+
   _FailureParser(this._message);
+
   Result _parse(Context context) => context.failure(_message);
+
   Parser copy() => new _FailureParser(_message);
+
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _message == other._message;
   }
+
 }
 
 /**
@@ -65,7 +76,11 @@ abstract class SetableParser implements Parser {
 }
 
 class _SetableParser extends _DelegateParser implements SetableParser {
+
   _SetableParser(parser) : super(parser);
+
   void set(Parser parser) => replace(children[0], parser);
+
   Parser copy() => new _SetableParser(_delegate);
+
 }
