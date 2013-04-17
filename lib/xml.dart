@@ -12,6 +12,7 @@
  */
 library xml;
 
+import 'dart:collection';
 import 'package:petitparser/petitparser.dart';
 
 part 'src/xml/grammar.dart';

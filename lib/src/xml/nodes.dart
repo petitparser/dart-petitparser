@@ -26,7 +26,7 @@ abstract class _XmlWritable {
 /**
  * Abstract XML node.
  */
-abstract class XmlNode extends Iterable<XmlNode> with _XmlWritable {
+abstract class XmlNode extends IterableBase<XmlNode> with _XmlWritable {
 
   XmlNode _parent;
 
