@@ -9,7 +9,7 @@ class Environment {
   final Environment _owner;
 
   /** The internal environment bindings. */
-  final Map<Symbol, dynamic> _bindings;
+  final Map<Name, dynamic> _bindings;
 
   /** Constructor for the nested environment. */
   Environment([this._owner]) : _bindings = new Map();
@@ -18,7 +18,7 @@ class Environment {
   Environment create() => new Environment(this);
 
   /** Return the binding for [key]. */
-  dynamic operator [](Symbol key) {
+  dynamic operator [](Name key) {
     if (_bindings.containsKey(key)) {
       return _bindings[key];
     } else if (_owner != null) {
@@ -29,7 +29,7 @@ class Environment {
   }
 
   /** Updates the binding for [key] with a [value]. */
-  void operator []=(Symbol key, dynamic value) {
+  void operator []=(Name key, dynamic value) {
     if (_bindings.containsKey(key)) {
       _bindings[key] = value;
     } else if (_owner != null) {
@@ -40,18 +40,18 @@ class Environment {
   }
 
   /** Defines a new binding from [key] to [value]. */
-  dynamic define(Symbol key, dynamic value) {
+  dynamic define(Name key, dynamic value) {
     return _bindings[key] = value;
   }
 
   /** Returns the keys of the bindings. */
-  Iterable<Symbol> get keys => _bindings.keys;
+  Iterable<Name> get keys => _bindings.keys;
 
   /** Returns the parent of the bindings. */
   Environment get owner => _owner;
 
   /** Called when a missing binding is accessed. */
-  dynamic _invalidBinding(Symbol key) {
+  dynamic _invalidBinding(Name key) {
     throw new ArgumentError('Unknown binding for $key');
   }
 

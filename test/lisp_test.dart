@@ -17,10 +17,10 @@ void main() {
   }
 
   group('Cell', () {
-    test('Symbol', () {
-      var cell1 = new Symbol('foo');
-      var cell2 = new Symbol('foo');
-      var cell3 = new Symbol('bar');
+    test('Name', () {
+      var cell1 = new Name('foo');
+      var cell2 = new Name('foo');
+      var cell3 = new Name('bar');
       expect(cell1, cell2);
       expect(cell1, same(cell2));
       expect(cell1, isNot(cell3));
@@ -40,19 +40,19 @@ void main() {
   });
   group('Parser', () {
     var atom = parser['atom'];
-    test('Symbol', () {
+    test('Name', () {
       var cell = atom.parse('foo').result;
-      expect(cell, new isInstanceOf<Symbol>());
+      expect(cell, new isInstanceOf<Name>());
       expect(cell.toString(), 'foo');
     });
-    test('Symbol for operator', () {
+    test('Name for operator', () {
       var cell = atom.parse('+').result;
-      expect(cell, new isInstanceOf<Symbol>());
+      expect(cell, new isInstanceOf<Name>());
       expect(cell.toString(), '+');
     });
-    test('Symbol for special', () {
+    test('Name for special', () {
       var cell = atom.parse('set!').result;
-      expect(cell, new isInstanceOf<Symbol>());
+      expect(cell, new isInstanceOf<Name>());
       expect(cell.toString(), 'set!');
     });
     test('String', () {
@@ -113,7 +113,7 @@ void main() {
     test('List three elements', () {
       var cell = atom.parse('(+ 1 2)').result;
       expect(cell, new isInstanceOf<Cons>());
-      expect(cell.head, new isInstanceOf<Symbol>());
+      expect(cell.head, new isInstanceOf<Name>());
       expect(cell.head.toString(), '+');
       expect(cell.tail, new isInstanceOf<Cons>());
       expect(cell.tail.head, 1);
@@ -141,12 +141,12 @@ void main() {
     test('Quote', () {
       expect(exec('(quote)'), null);
       expect(exec('(quote 1)'), new Cons(1, null));
-      expect(exec('(quote + 1)'), new Cons(new Symbol('+'), new Cons(1, null)));
+      expect(exec('(quote + 1)'), new Cons(new Name('+'), new Cons(1, null)));
     });
     test('Quote (syntax)', () {
       expect(exec('\'()'), null);
       expect(exec('\'(1)'), new Cons(1, null));
-      expect(exec('\'(+ 1)'), new Cons(new Symbol('+'), new Cons(1, null)));
+      expect(exec('\'(+ 1)'), new Cons(new Name('+'), new Cons(1, null)));
     });
     test('Eval', () {
       expect(exec('(eval (quote + 1 2))'), 3);
@@ -164,14 +164,14 @@ void main() {
     });
     test('Set!', () {
       var env = standard.create();
-      env.define(new Symbol('a'), null);
+      env.define(new Name('a'), null);
       expect(exec('(set! a 1)', env), 1);
       expect(exec('(set! a (+ 1 2))', env), 3);
       expect(exec('(set! a (+ 1 2)) (+ a 1)', env), 4);
     });
     test('Set! (undefined)', () {
       expect(() => exec('(set! a 1)'), throws);
-      expect(() => standard[new Symbol('a')], throws);
+      expect(() => standard[new Name('a')], throws);
     });
     test('If', () {
       expect(exec('(if true)'), isNull);
@@ -187,9 +187,9 @@ void main() {
     });
     test('While', () {
       var env = standard.create();
-      env.define(new Symbol('a'), 0);
+      env.define(new Name('a'), 0);
       exec('(while (< a 3) (set! a (+ a 1)))', env);
-      expect(env[new Symbol('a')], 3);
+      expect(env[new Name('a')], 3);
     });
     test('True', () {
       expect(exec('true'), isTrue);
@@ -216,11 +216,11 @@ void main() {
     });
     test('And (lazyness)', () {
       var env = standard.create();
-      env.define(new Symbol('a'), null);
+      env.define(new Name('a'), null);
       exec('(and false (set! a true))', env);
-      expect(env[new Symbol('a')], isNull);
+      expect(env[new Name('a')], isNull);
       exec('(and true (set! a true))', env);
-      expect(env[new Symbol('a')], isTrue);
+      expect(env[new Name('a')], isTrue);
     });
     test('Or', () {
       expect(exec('(or)'), isFalse);
@@ -241,11 +241,11 @@ void main() {
     });
     test('Or (lazyness)', () {
       var env = standard.create();
-      env.define(new Symbol('a'), null);
+      env.define(new Name('a'), null);
       exec('(or true (set! a true))', env);
-      expect(env[new Symbol('a')], isNull);
+      expect(env[new Name('a')], isNull);
       exec('(or false (set! a true))', env);
-      expect(env[new Symbol('a')], isTrue);
+      expect(env[new Name('a')], isTrue);
     });
     test('Not', () {
       expect(exec('(not true)'), isFalse);

@@ -19,7 +19,7 @@ class LispParser extends LispGrammar {
     action('character escape', (each) => each[1].codeUnitAt(0));
     action('character raw', (each) => each.codeUnitAt(0));
 
-    action('symbol', (each) => new Symbol(each));
+    action('symbol', (each) => new Name(each));
     action('number', (each) {
       var floating = double.parse(each);
       var integral = floating.toInt();

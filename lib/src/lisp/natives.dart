@@ -17,7 +17,7 @@ class Natives {
   static Environment importNatives(Environment env) {
     _initialize();
     _natives.forEach((key, value) {
-      env.define(new Symbol(key), value);
+      env.define(new Name(key), value);
     });
     return env;
   }
@@ -94,9 +94,9 @@ class Natives {
 
   static void _basicFunctions() {
     _natives['define'] = (Environment env, dynamic args) {
-      if (args.head is Symbol) {
+      if (args.head is Name) {
         return env.define(args.head, evalList(env, args.tail));
-      } else if (args.head.head is Symbol) {
+      } else if (args.head.head is Name) {
         return env.define(args.head.head, _natives['lambda'](env,
             new Cons(args.head.tail, args.tail)));
       } else {

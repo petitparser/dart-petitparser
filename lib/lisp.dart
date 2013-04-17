@@ -9,6 +9,7 @@ import 'package:petitparser/petitparser.dart';
 part 'src/lisp/cons.dart';
 part 'src/lisp/environment.dart';
 part 'src/lisp/grammar.dart';
+part 'src/lisp/name.dart';
 part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
 
@@ -16,7 +17,7 @@ part 'src/lisp/parser.dart';
 dynamic eval(Environment env, dynamic expr) {
   if (expr is Cons) {
     return eval(env, expr.head)(env, expr.tail);
-  } else if (expr is Symbol) {
+  } else if (expr is Name) {
     return env[expr];
   } else {
     return expr;
