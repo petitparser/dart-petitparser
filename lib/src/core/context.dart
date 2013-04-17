@@ -18,6 +18,12 @@ class Context {
   /** The current position in the buffer. */
   int get position => _position;
 
+  /** Returns [true] if this result indicates a parse success. */
+  bool get isSuccess => false;
+
+  /** Returns [true] if this result indicates a parse failure. */
+  bool get isFailure => false;
+
   /** Returns a result indicating a parse success. */
   Result success(dynamic result, [int position]) {
     return new Success(_buffer, position == null ? _position : position, result);
@@ -49,17 +55,14 @@ abstract class Result extends Context {
 
   const Result(buffer, position) : super(buffer, position);
 
-  /** Returns [true] if this result indicates a parse success. */
-  bool get isSuccess => false;
-
-  /** Returns [true] if this result indicates a parse failure. */
-  bool get isFailure => false;
+  dynamic get result => value;
 
   /** Returns the parse result of the current context. */
-  dynamic get result;
+  dynamic get value;
 
   /** Returns the parse message of the current context. */
   String get message;
+
 
 }
 
@@ -68,17 +71,17 @@ abstract class Result extends Context {
  */
 class Success extends Result {
 
-  final dynamic _result;
+  final dynamic _value;
 
-  const Success(buffer, position, this._result) : super(buffer, position);
+  const Success(buffer, position, this._value) : super(buffer, position);
 
   bool get isSuccess => true;
 
-  dynamic get result => _result;
+  dynamic get value => _value;
 
   String get message => null;
 
-  String toString() => 'Success[${toPositionString()}]: $_result';
+  String toString() => 'Success[${toPositionString()}]: $_value';
 
 }
 
@@ -93,7 +96,7 @@ class Failure extends Result {
 
   bool get isFailure => true;
 
-  dynamic get result { throw new ParserError(this); }
+  dynamic get value { throw new ParserError(this); }
 
   String get message => _message;
 

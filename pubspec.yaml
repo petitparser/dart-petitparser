@@ -7,3 +7,4 @@ dev_dependencies:
   junitconfiguration: '>=0.4.7'
   unittest: '>=0.4.7'
   browser: '>=0.4.7'
+  meta: '>=0.4.7'

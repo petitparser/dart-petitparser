@@ -156,6 +156,7 @@
  */
 library petitparser;
 
+import 'package:meta/meta.dart';
 import 'dart:collection';
 
 part 'src/core/actions.dart';
