@@ -1,16 +1,17 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- * # JSON grammar
+ * This package contains a complete implementation of [JSON](http://json.org/).
  *
- * This package contains a complete implementation of a JSON parser. The default
- * implementation in [JsonParser] builds a nested structure of [Map]s, [List]s,
- * [String]s, and [Number]s from a given JSON string:
+ * [JsonParser] creates a nested Dart objects from a given JSON string. For
+ * example the following code prints `{a: 1, b: [2, 3.4], c: false}`:
  *
  *     var json = new JsonParser();
  *     var result = json.parse('{"a": 1, "b": [2, 3.4], "c": false}');
+ *     print(result.value);
  *
- * Custom subclasses of [JsonGrammar] allow one to construct other output.
+ * The grammar definition [JsonGrammar] can be subclassed to construct other
+ * objects.
  */
 library json;
 
