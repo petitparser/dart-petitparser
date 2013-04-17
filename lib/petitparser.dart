@@ -1,7 +1,9 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- * # Writing a Simple Grammar
+ * # PetitParser
+ *
+ * ## Writing a Simple Grammar
  *
  * Writing grammars with PetitParser is simple as writing Dart code. For
  * example, to write a grammar that can parse identifiers that start with
@@ -19,7 +21,7 @@
  * - - - - Predicate: This parser accepts a single letter.
  * - - - - Predicate: This parser accepts a single digit.
  *
- * # Parsing Some Input
+ * ## Parsing Some Input
  *
  * To actually parse a [String] (or [List]) we can use the method
  * [Parser.parse]:
@@ -110,7 +112,7 @@
  * documented and tested factory methods in the [Parser] class. If you want
  * browse their documentation and tests.
  *
- * # Writing a More Complicated Grammar
+ * ## Writing a More Complicated Grammar
  *
  * Now we are able to write a more complicated grammar for evaluating simple
  * arithmetic expressions. Within a file we start with the grammar for a
