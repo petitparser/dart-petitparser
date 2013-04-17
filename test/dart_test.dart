@@ -10,7 +10,7 @@ import 'package:unittest/unittest.dart';
 
 void generateTests(String title, String path) {
   group(title, () {
-    var dart = new DartParser();
+    var dart = new DartGrammar();
     new Directory(path)
       .listSync(recursive: true, followLinks: false)
       .where((file) => file is File && file.path.endsWith('.dart'))
@@ -24,7 +24,7 @@ void generateTests(String title, String path) {
 }
 
 void main() {
-  var dart = new DartParser();
+  var dart = new DartGrammar();
   test('basic files', () {
     expect(dart.accept('library test;'), isTrue);
     expect(dart.accept('library test; void main() { }'), isTrue);

@@ -6,7 +6,26 @@ part of smalltalk;
  * Smalltalk grammar definition.
  */
 class SmalltalkGrammar extends CompositeParser {
+
   void initialize() {
+    _whitespace();
+    _smalltalk();
+  }
+
+  void _whitespace() {
+    def('whitespace', whitespace()
+      .or(ref('comment')));
+    def('comment', char('"')
+      .seq(string('"').neg().star())
+      .seq(char('"')));
+  }
+
+  Parser _token(String name) {
+    var parser = name.length == 1 ? char(name) : string(name);
+    return parser.token().trim(ref('whitespace'));
+  }
+
+  void _smalltalk() {
     def('array', char('{', '\${ expected').token().trim().seq(ref('expression').separatedBy(ref('periodToken')).seq(ref('periodToken').optional()).optional()).seq(char('}', '\$} expected').token().trim()));
     def('arrayItem', ref('literal').or(ref('symbolLiteralArray')).or(ref('arrayLiteralArray')).or(ref('byteLiteralArray')));
     def('arrayLiteral', string('#(', '\'#(\' expected').token().trim().seq(ref('arrayItem').star()).seq(char(')', '\$) expected').token().trim()));
@@ -83,4 +102,5 @@ class SmalltalkGrammar extends CompositeParser {
     def('unaryToken', ref('unary').token().trim());
     def('variable', ref('identifierToken'));
   }
+
 }
