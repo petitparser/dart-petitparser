@@ -1,9 +1,10 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
 /**
- * # PetitParser
+ * This package contains the core library of PetitParser, a dynamic parser
+ * combinator framework.
  *
- * ## Writing a Simple Grammar
+ * # Writing a Simple Grammar
  *
  * Writing grammars with PetitParser is simple as writing Dart code. For
  * example, to write a grammar that can parse identifiers that start with
@@ -21,7 +22,7 @@
  * - - - - Predicate: This parser accepts a single letter.
  * - - - - Predicate: This parser accepts a single digit.
  *
- * ## Parsing Some Input
+ * # Parsing Some Input
  *
  * To actually parse a [String] (or [List]) we can use the method
  * [Parser.parse]:
@@ -33,8 +34,8 @@
  * instance of [Success] or [Failure]. In both examples above we are
  * successful and can retrieve the parse result using [Success.value]:
  *
- *     print(id1.value);                  // ['y', ['e', 'a', 'h']]
- *     print(id2.value);                  // ['f', ['1', '2']]
+ *     print(id1.value);                   // ['y', ['e', 'a', 'h']]
+ *     print(id2.value);                   // ['f', ['1', '2']]
  *
  * While it seems odd to get these nested arrays with characters as a return
  * value, this is the default decomposition of the input into a parse tree.
@@ -45,11 +46,11 @@
  * [Failure.message]:
  *
  *     Result id3 = id.parse('123');
- *     print(id3.message);                // 'letter expected'
- *     print(id3.position);               // 0
+ *     print(id3.message);                 // 'letter expected'
+ *     print(id3.position);                // 0
  *
  * Trying to retrieve the parse result by calling [Failure.value] would throw
- * the exception [UnsupportedError]. [Result.isSuccess] and [Result.isFailure]
+ * the exception [UnsupportedError]. [Context.isSuccess] and [Context.isFailure]
  * can be used to decide if the parse was successful.
  *
  * If you are only interested if a given string matches or not you can use the
@@ -105,14 +106,13 @@
  * [Parser.matchesSkipping]:
  *
  *     var matches = id.matchesSkipping('foo 123 bar4');
- *     print(matches);                    // ['foo', 'bar4']
- *
+ *     print(matches);                     // ['foo', 'bar4']
  *
  * These are the basic elements to build parsers. There are a few more well
  * documented and tested factory methods in the [Parser] class. If you want
  * browse their documentation and tests.
  *
- * ## Writing a More Complicated Grammar
+ * # Writing a More Complicated Grammar
  *
  * Now we are able to write a more complicated grammar for evaluating simple
  * arithmetic expressions. Within a file we start with the grammar for a
@@ -146,8 +146,8 @@
  *
  * That's it, now we can test our parser and evaluator:
  *
- *     print(start.parse('1 + 2 * 3').value);       // 7
- *     print(start.parse('(1 + 2) * 3').value);     // 9
+ *     print(start.parse('1 + 2 * 3').value);        // 7
+ *     print(start.parse('(1 + 2) * 3').value);      // 9
  *
  * As an exercise we could extend the parser to also accept negative numbers
  * and floating point numbers, not only integers. Furthermore it would be

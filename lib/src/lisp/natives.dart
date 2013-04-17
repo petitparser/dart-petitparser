@@ -2,7 +2,9 @@
 
 part of lisp;
 
-/** Collection of native functions. */
+/**
+ * Collection of native functions.
+ */
 class Natives {
 
   static Map<String, dynamic> _natives;

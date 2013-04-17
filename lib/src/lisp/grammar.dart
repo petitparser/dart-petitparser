@@ -3,7 +3,7 @@
 part of lisp;
 
 /**
- * Lisp grammar definition.
+ * LISP grammar definition.
  */
 class LispGrammar extends CompositeParser {
 

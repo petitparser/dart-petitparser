@@ -2,7 +2,9 @@
 
 part of lisp;
 
-/** Environment of bindings. */
+/**
+ * Environment of bindings.
+ */
 class Environment {
 
   /** The owning environemnt. */

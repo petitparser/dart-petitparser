@@ -8,7 +8,7 @@
  *
  *     var json = new JsonParser();
  *     var result = json.parse('{"a": 1, "b": [2, 3.4], "c": false}');
- *     print(result.value);
+ *     print(result.value);  // {a: 1, b: [2, 3.4], c: false}
  *
  * The grammar definition [JsonGrammar] can be subclassed to construct other
  * objects.
