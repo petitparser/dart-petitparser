@@ -6,9 +6,9 @@ import 'package:petitparser/xml.dart';
 import 'package:unittest/unittest.dart';
 
 void validate(XmlParser parser, String input) {
-  var tree = parser.parse(input).result;
+  var tree = parser.parse(input).value;
   assertTreeInvariants(tree);
-  var copy = parser.parse(tree.toString()).result;
+  var copy = parser.parse(tree.toString()).value;
   expect(tree.toString(), copy.toString());
 }
 

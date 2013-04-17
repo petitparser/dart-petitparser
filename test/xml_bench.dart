@@ -133,7 +133,7 @@ void main() {
 
    stopwatch.start();
    for (var i = 0; i < 2000; i++) {
-     parser.parse(input).result;
+     parser.parse(input).value;
    }
    stopwatch.stop();
 

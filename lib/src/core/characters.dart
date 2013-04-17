@@ -164,7 +164,7 @@ Parser pattern(String element, [String message]) {
     });
   }
   return new _CharacterParser(
-      _pattern.parse(element).result,
+      _pattern.parse(element).value,
       message != null ? message : '[$element] expected');
 }
 

@@ -10,16 +10,16 @@ void main() {
 
   group('arrays', () {
     test('empty', () {
-      expect(json.parse('[]').result, []);
+      expect(json.parse('[]').value, []);
     });
     test('small', () {
-      expect(json.parse('["a"]').result, ['a']);
+      expect(json.parse('["a"]').value, ['a']);
     });
     test('large', () {
-      expect(json.parse('["a", "b", "c"]').result, ['a', 'b', 'c']);
+      expect(json.parse('["a", "b", "c"]').value, ['a', 'b', 'c']);
     });
     test('nested', () {
-      expect(json.parse('[["a"]]').result, [['a']]);
+      expect(json.parse('[["a"]]').value, [['a']]);
     });
     test('invalid', () {
       expect(json.parse('[').isFailure, isTrue);
@@ -33,16 +33,16 @@ void main() {
 
   group('objects', () {
     test('empty', () {
-      expect(json.parse('{}').result, {});
+      expect(json.parse('{}').value, {});
     });
     test('small', () {
-      expect(json.parse('{"a": 1}').result, {'a': 1});
+      expect(json.parse('{"a": 1}').value, {'a': 1});
     });
     test('large', () {
-      expect(json.parse('{"a": 1, "b": 2, "c": 3}').result, {'a': 1, 'b': 2, 'c': 3});
+      expect(json.parse('{"a": 1, "b": 2, "c": 3}').value, {'a': 1, 'b': 2, 'c': 3});
     });
     test('nested', () {
-      expect(json.parse('{"obj": {"a": 1}}').result, {'obj': {"a": 1}});
+      expect(json.parse('{"obj": {"a": 1}}').value, {'obj': {"a": 1}});
     });
     test('invalid', () {
       expect(json.parse('{').isFailure, isTrue);
@@ -59,7 +59,7 @@ void main() {
 
   group('literals', () {
     test('valid true', () {
-      expect(json.parse('true').result, isTrue);
+      expect(json.parse('true').value, isTrue);
     });
     test('invalid true', () {
       expect(json.parse('tr').isFailure, isTrue);
@@ -67,7 +67,7 @@ void main() {
       expect(json.parse('truest').isFailure, isTrue);
     });
     test('valid false', () {
-      expect(json.parse('false').result, isFalse);
+      expect(json.parse('false').value, isFalse);
     });
     test('invalid false', () {
       expect(json.parse('fa').isFailure, isTrue);
@@ -75,7 +75,7 @@ void main() {
       expect(json.parse('fabulous').isFailure, isTrue);
     });
     test('valid null', () {
-      expect(json.parse('null').result, isNull);
+      expect(json.parse('null').value, isNull);
     });
     test('invalid null', () {
       expect(json.parse('nu').isFailure, isTrue);
@@ -83,44 +83,44 @@ void main() {
       expect(json.parse('nullified').isFailure, isTrue);
     });
     test('valid integer', () {
-      expect(json.parse('0').result, 0);
-      expect(json.parse('1').result, 1);
-      expect(json.parse('-1').result, -1);
-      expect(json.parse('12').result, 12);
-      expect(json.parse('-12').result, -12);
-      expect(json.parse('1e2').result, 100);
-      expect(json.parse('1e+2').result, 100);
+      expect(json.parse('0').value, 0);
+      expect(json.parse('1').value, 1);
+      expect(json.parse('-1').value, -1);
+      expect(json.parse('12').value, 12);
+      expect(json.parse('-12').value, -12);
+      expect(json.parse('1e2').value, 100);
+      expect(json.parse('1e+2').value, 100);
     });
     test('invalid integer', () {
       expect(json.parse('00').isFailure, isTrue);
       expect(json.parse('01').isFailure, isTrue);
     });
     test('valid float', () {
-      expect(json.parse('0.0').result, 0.0);
-      expect(json.parse('0.12').result, 0.12);
-      expect(json.parse('-0.12').result, -0.12);
-      expect(json.parse('12.34').result, 12.34);
-      expect(json.parse('-12.34').result, -12.34);
-      expect(json.parse('1.2e-1').result, 1.2e-1);
-      expect(json.parse('1.2E-1').result, 1.2e-1);
+      expect(json.parse('0.0').value, 0.0);
+      expect(json.parse('0.12').value, 0.12);
+      expect(json.parse('-0.12').value, -0.12);
+      expect(json.parse('12.34').value, 12.34);
+      expect(json.parse('-12.34').value, -12.34);
+      expect(json.parse('1.2e-1').value, 1.2e-1);
+      expect(json.parse('1.2E-1').value, 1.2e-1);
     });
     test('invalid float', () {
       expect(json.parse('.1').isFailure, isTrue);
       expect(json.parse('0.1.1').isFailure, isTrue);
     });
     test('plain string', () {
-      expect(json.parse('""').result, '');
-      expect(json.parse('"foo"').result, 'foo');
-      expect(json.parse('"foo bar"').result, 'foo bar');
+      expect(json.parse('""').value, '');
+      expect(json.parse('"foo"').value, 'foo');
+      expect(json.parse('"foo bar"').value, 'foo bar');
     });
     test('escaped string', () {
-      expect(json.parse('"\\""').result, '"');
-      expect(json.parse('"\\\\"').result, '\\');
-      expect(json.parse('"\\b"').result, '\b');
-      expect(json.parse('"\\f"').result, '\f');
-      expect(json.parse('"\\n"').result, '\n');
-      expect(json.parse('"\\r"').result, '\r');
-      expect(json.parse('"\\t"').result, '\t');
+      expect(json.parse('"\\""').value, '"');
+      expect(json.parse('"\\\\"').value, '\\');
+      expect(json.parse('"\\b"').value, '\b');
+      expect(json.parse('"\\f"').value, '\f');
+      expect(json.parse('"\\n"').value, '\n');
+      expect(json.parse('"\\r"').value, '\r');
+      expect(json.parse('"\\t"').value, '\t');
     });
     test('invalid string', () {
       expect(json.parse('"').isFailure, isTrue);

@@ -22,7 +22,7 @@ abstract class Parser {
    * the internal parsing logic of the receiving parser.
    *
    * For example, [:letter().plus().parse('abc'):] results in an instance of
-   * [Success], where [Result.position] is [:3:] and [Success.result] is
+   * [Success], where [Result.position] is [:3:] and [Success.value] is
    * [:[a, b, c]:].
    *
    * Similarly, [:letter().plus().parse('123'):] results in an instance of

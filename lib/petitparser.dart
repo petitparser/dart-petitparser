@@ -31,10 +31,10 @@
  *
  * The method [Parser.parse] returns a parse [Result], which is either an
  * instance of [Success] or [Failure]. In both examples above we are
- * successful and can retrieve the parse result using [Success.result]:
+ * successful and can retrieve the parse result using [Success.value]:
  *
- *     print(id1.result);                  // ['y', ['e', 'a', 'h']]
- *     print(id2.result);                  // ['f', ['1', '2']]
+ *     print(id1.value);                  // ['y', ['e', 'a', 'h']]
+ *     print(id2.value);                  // ['f', ['1', '2']]
  *
  * While it seems odd to get these nested arrays with characters as a return
  * value, this is the default decomposition of the input into a parse tree.
@@ -48,7 +48,7 @@
  *     print(id3.message);                // 'letter expected'
  *     print(id3.position);               // 0
  *
- * Trying to retrieve the parse result by calling [Failure.result] would throw
+ * Trying to retrieve the parse result by calling [Failure.value] would throw
  * the exception [UnsupportedError]. [Result.isSuccess] and [Result.isFailure]
  * can be used to decide if the parse was successful.
  *
@@ -146,8 +146,8 @@
  *
  * That's it, now we can test our parser and evaluator:
  *
- *     print(start.parse('1 + 2 * 3').result);       // 7
- *     print(start.parse('(1 + 2) * 3').result);     // 9
+ *     print(start.parse('1 + 2 * 3').value);       // 7
+ *     print(start.parse('(1 + 2) * 3').value);     // 9
  *
  * As an exercise we could extend the parser to also accept negative numbers
  * and floating point numbers, not only integers. Furthermore it would be

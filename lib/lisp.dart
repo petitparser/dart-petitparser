@@ -53,7 +53,7 @@ dynamic evalArguments(Environment env, dynamic args) {
 /** Reads and evaluates a script [contents]. */
 dynamic evalString(LispParser parser, Environment env, String script) {
   var result = null;
-  for (var cell in parser.parse(script).result) {
+  for (var cell in parser.parse(script).value) {
     result = eval(env, cell);
   }
   return result;

@@ -9,7 +9,7 @@ void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position
   var result = parser.parse(input);
   expect(result.isSuccess, isTrue);
   expect(result.isFailure, isFalse);
-  expect(result.result, expected);
+  expect(result.value, expected);
   expect(result.position, position != null ? position : input.length);
 }
 
@@ -81,7 +81,7 @@ main() {
       var parser = digit().plus().flatten().token().trim();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
-      var token = parser.parse('  123 ').result;
+      var token = parser.parse('  123 ').value;
       expect(token.length, 3);
       expect(token.start, 2);
       expect(token.stop, 5);
@@ -90,12 +90,12 @@ main() {
     });
     test('token() line', () {
       var parser = any().token().star().map((list) => list.map((token) => token.line));
-      expect(parser.parse('1\r12\r\n123\n1234').result,
+      expect(parser.parse('1\r12\r\n123\n1234').value,
              [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
     });
     test('token() column', () {
       var parser = any().token().star().map((list) => list.map((token) => token.column));
-      expect(parser.parse('1\r12\r\n123\n1234').result,
+      expect(parser.parse('1\r12\r\n123\n1234').value,
              [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
     });
     test('map()', () {
@@ -734,8 +734,8 @@ main() {
       var id = letter().seq(letter().or(digit()).star());
       var id1 = id.parse('yeah');
       var id2 = id.parse('f12');
-      expect(id1.result, ['y', ['e', 'a', 'h']]);
-      expect(id2.result, ['f', ['1', '2']]);
+      expect(id1.value, ['y', ['e', 'a', 'h']]);
+      expect(id2.value, ['f', ['1', '2']]);
       var id3 = id.parse('123');
       expect(id3.message, 'letter expected');
       expect(id3.position, 0);
@@ -762,8 +762,8 @@ main() {
         return values[1];
       }).or(number));
       var start = term.end();
-      expect(7, start.parse('1 + 2 * 3').result);
-      expect(9, start.parse('(1 + 2) * 3').result);
+      expect(7, start.parse('1 + 2 * 3').value);
+      expect(9, start.parse('(1 + 2) * 3').value);
     });
     test('composite grammar', () {
       var parser = new PluggableCompositeParser((self) {
@@ -772,7 +772,7 @@ main() {
             includeSeparators: false));
         self.def('element', digit().plus().flatten());
       });
-      expect(['1', '23', '456'], parser.parse('1,23,456').result);
+      expect(['1', '23', '456'], parser.parse('1,23,456').value);
     });
     test('composite parser', () {
       var parser = new PluggableCompositeParser((self) {
@@ -782,7 +782,7 @@ main() {
         self.def('element', digit().plus().flatten());
         self.action('element', (value) => int.parse(value));
       });
-      expect([1, 23, 456], parser.parse('1,23,456').result);
+      expect([1, 23, 456], parser.parse('1,23,456').value);
     });
   });
 }

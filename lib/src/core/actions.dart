@@ -15,7 +15,7 @@ class _ActionParser extends _DelegateParser {
   Result _parse(Context context) {
     var result = _delegate._parse(context);
     if (result.isSuccess) {
-      return result.success(_function(result.result));
+      return result.success(_function(result.value));
     } else {
       return result;
     }
@@ -51,7 +51,7 @@ class _TrimmingParser extends _DelegateParser {
     do {
       current = _trimmer._parse(current);
     } while (current.isSuccess);
-    return current.success(result.result);
+    return current.success(result.value);
   }
 
   Parser copy() => new _TrimmingParser(_delegate, _trimmer);
@@ -101,7 +101,7 @@ class _TokenParser extends _DelegateParser {
   Result _parse(Context context) {
     var result = _delegate._parse(context);
     if (result.isSuccess) {
-      var token = new Token(result.result, context.buffer,
+      var token = new Token(result.value, context.buffer,
           context.position, result.position);
       return result.success(token);
     } else {
