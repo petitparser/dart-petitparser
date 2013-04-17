@@ -1,5 +1,12 @@
 // Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
 
+/**
+ * # LISP grammar and evaluator
+ *
+ * This package contains a simple grammar and parser definition for LISP. The
+ * code is reasonably complete to run and evaluate reasonably complex programs
+ * from the console and from the web browser.
+ */
 library lisp;
 
 import 'dart:math';
