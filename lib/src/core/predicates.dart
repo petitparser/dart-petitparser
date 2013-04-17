@@ -8,10 +8,31 @@ part of petitparser;
  * For example, [:any():] succeeds and consumes any given letter. It only
  * fails for an empty input.
  */
-Parser any([String message]) {
-  return new _PredicateParser(1,
-    (each) => true,
-    message != null ? message : 'input expected');
+Parser any([String message = 'input expected']) {
+  return new _AnyParser(message);
+}
+
+class _AnyParser extends Parser {
+
+  final String _message;
+
+  _AnyParser(this._message);
+
+  Result _parse(Context context) {
+    var position = context.position;
+    var buffer = context.buffer;
+    return position < buffer.length
+        ? context.success(buffer[position], position + 1)
+        : context.failure(_message);
+  }
+
+  Parser copy() => new _AnyParser(_message);
+
+  bool match(dynamic other, [Set<Parser> seen]) {
+    return super.match(other, seen)
+        && _message == other._message;
+  }
+
 }
 
 /**
