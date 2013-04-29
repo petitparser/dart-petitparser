@@ -129,8 +129,9 @@ abstract class Parser {
   /**
    * Returns a parser that accepts the receiver followed by [other]. The
    * resulting parser returns a list of the parse result of the receiver
-   * followed by the parse result of [other]. Calling [SequenceParser.seq]
-   * causes the sequences to be concatenated instead of nested.
+   * followed by the parse result of [other]. Calling this method on an
+   * existing sequence code not nest this sequence into a new one, but
+   * instead augments the existing sequence with [other].
    *
    * For example, the parser [:letter().seq(digit()).seq(letter()):] accepts a
    * letter followed by a digit and another letter. The parse result of the
