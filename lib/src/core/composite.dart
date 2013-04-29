@@ -63,9 +63,7 @@ abstract class CompositeParser extends _SetableParser {
       }
       parser.set(_defined[name]);
     });
-    set(Transformations.removeDuplicates(
-        Transformations.removeSetables(
-        ref('start'))));
+    set(removeDuplicates(removeSetables(ref('start'))));
     _undefined.clear();
     _completed = true;
   }
