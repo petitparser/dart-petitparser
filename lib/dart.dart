@@ -9,5 +9,6 @@
 library dart;
 
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/beta.dart';
 
 part 'src/dart/grammar.dart';
