@@ -137,7 +137,7 @@ void main() {
    }
    stopwatch.stop();
 
-   print('${new List.from(new ParserIterable(parser)).length} parsers');
+   print('${new List.from(allParser(parser)).length} parsers');
    print('${stopwatch.elapsedMilliseconds / 1000}s');
 
 }
