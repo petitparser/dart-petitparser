@@ -16,18 +16,18 @@ class Natives {
   }
 
   /** Imports all the native functions into the [environment]. */
-  static Environment importNatives(Environment env) {
+  static Environment importNatives(Environment environment) {
     _initialize();
     _natives.forEach((key, value) {
-      env.define(new Name(key), value);
+      environment.define(new Name(key), value);
     });
-    return env;
+    return environment;
   }
 
-  /** Imports the standard library into the [envoronment]. */
-  static Environment importStandard(Environment env) {
-    evalString(new LispParser(), env, _standardLibrary);
-    return env;
+  /** Imports the standard library into the [environment]. */
+  static Environment importStandard(Environment environment) {
+    evalString(new LispParser(), environment, _standardLibrary);
+    return environment;
   }
 
   /** A simple standard library, should be moved to external file. */
