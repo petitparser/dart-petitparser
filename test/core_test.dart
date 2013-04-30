@@ -395,6 +395,7 @@ main() {
       expectSuccess(parser, 'Z', 'Z');
       expectSuccess(parser, '0', '0');
       expectSuccess(parser, '9', '9');
+      expectSuccess(parser, '_', '_');
       expectFailure(parser, '-', 0, 'letter or digit expected');
       expectFailure(parser, '');
     });
