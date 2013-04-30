@@ -16,7 +16,7 @@ import 'package:petitparser/petitparser.dart';
  *
  * The difference of this implementation to [CompositeParser] is that
  * subclasses can define and refer to productions using variables. The
- * varibales themselves are not actually implement anywhere, but their
+ * variables themselves are not actually implement anywhere, but their
  * behavior is defined in [noSuchMethod] and mapped to a collection using
  * the methods defined in the superclass.
  *
