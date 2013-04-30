@@ -221,15 +221,6 @@ void main() {
   test('testNumberLiteral12', () {
     return validate('16rAF', 'numberLiteral');
   });
-  test('testNumberLiteral13', () {
-    return validate('16rCA.FE', 'numberLiteral');
-  });
-  test('testNumberLiteral14', () {
-    return validate('3r-22.2', 'numberLiteral');
-  });
-  test('testNumberLiteral15', () {
-    return validate('0.50s2', 'numberLiteral');
-  });
   test('testNumberLiteral2', () {
     return validate('0.1', 'numberLiteral');
   });

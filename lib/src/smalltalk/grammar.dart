@@ -9,15 +9,56 @@ class SmalltalkGrammar extends CompositeParser {
 
   void initialize() {
     _whitespace();
+    _number();
     _smalltalk();
   }
 
   void _whitespace() {
+    // the original implementation uses a handwritten parser to
+    // efficiently consume whitespace and comments
     def('whitespace', whitespace()
       .or(ref('comment')));
     def('comment', char('"')
       .seq(char('"').neg().star())
       .seq(char('"')));
+  }
+
+  void _number() {
+    // the original implementation uses the hand written number
+    // parser of the system, this is the spec of the ANSI standard
+    def('number', char('-').optional()
+        .seq(ref('positiveNumber')));
+    def('positiveNumber', ref('scaledDecimal')
+        .or(ref('float'))
+        .or(ref('integer')));
+
+    def('integer', ref('radixInteger')
+        .or(ref('decimalInteger')));
+    def('decimalInteger', ref('digits'));
+    def('digits', digit().plus());
+    def('radixInteger', ref('radixSpecifier')
+        .seq(char('r'))
+        .seq(ref('radixDigits')));
+    def('radixSpecifier', ref('digits'));
+    def('radixDigits', pattern('0-9A-Z').plus());
+
+    def('float', ref('mantissa')
+        .seq(ref('exponentLetter')
+            .seq(ref('exponent'))
+            .optional()));
+    def('mantissa', ref('digits')
+        .seq(char('.'))
+        .seq(ref('digits')));
+    def('exponent', char('-')
+        .seq(ref('decimalInteger')));
+    def('exponentLetter', pattern('edq'));
+
+    def('scaledDecimal', ref('scaledMantissa')
+        .seq(char('s'))
+        .seq(ref('fractionalDigits').optional()));
+    def('scaledMantissa', ref('decimalInteger')
+        .or(ref('mantissa')));
+    def('fractionalDigits', ref('decimalInteger'));
   }
 
   Parser _token(dynamic input) {
@@ -86,7 +127,7 @@ class SmalltalkGrammar extends CompositeParser {
     def('falseLiteral', ref('falseToken'));
     def('falseToken', _token('false')
         .seq(word().not()));
-    def('identifier', letter()
+    def('identifier', pattern('a-zA-Z_')
         .seq(word().star()));
     def('identifierToken', _token(ref('identifier')));
     def('keyword', ref('identifier')
@@ -129,11 +170,6 @@ class SmalltalkGrammar extends CompositeParser {
     def('nilLiteral', ref('nilToken'));
     def('nilToken', _token('nil')
         .seq(word().not()));
-    def('number', char('-').optional()
-        .seq(digit().plus())
-        .seq(char('.')
-            .seq(digit().plus())
-            .optional()));
     def('numberLiteral', ref('numberToken'));
     def('numberToken', _token(ref('number')));
     def('parens', _token('(')
