@@ -63,7 +63,9 @@ abstract class CompositeParser extends _SetableParser {
       }
       parser.set(_defined[name]);
     });
-    set(removeDuplicates(removeSetables(ref('start'))));
+    // TODO(renggli): Figure out why 'removeDuplicates' causes
+    //                infinite recursion with the Dart grammar.
+    set(removeSetables(ref('start')));
     _undefined.clear();
     _completed = true;
   }
