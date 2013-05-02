@@ -48,5 +48,5 @@ void main() {
     expect(dart.accept('library test; /* foo */'), isTrue);
   });
   // generateTests('Dart SDK Sources', '/Applications/Dart/dart-sdk');
-  generateTests('PetitParser Sources', '.');
+  // generateTests('PetitParser Sources', '.');
 }
