@@ -36,7 +36,7 @@ part of petitparser;
  *       }
  *     }
  */
-abstract class CompositeParser extends _SetableParser {
+abstract class CompositeParser extends _DelegateParser {
 
   bool _completed = false;
   final Map<String, Parser> _defined = new Map();
@@ -63,11 +63,9 @@ abstract class CompositeParser extends _SetableParser {
       }
       parser.set(_defined[name]);
     });
-    // TODO(renggli): Figure out why 'removeDuplicates' causes
-    //                infinite recursion with the Dart grammar.
-    set(removeSetables(ref('start')));
     _undefined.clear();
     _completed = true;
+    _delegate = removeSetables(ref('start'));
   }
 
   /**

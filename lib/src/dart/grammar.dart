@@ -31,8 +31,10 @@ class DartGrammar extends CompositeParser2 {
   }
 
   /** Defines a token parser that consumes whitespace. */
-  Parser _token(String name) {
-    var parser = name.length == 1 ? char(name) : string(name);
+  Parser _token(dynamic input) {
+    var parser = input is Parser ? parser :
+        input.length == 1 ? char(input) :
+        string(input);
     return parser.token().trim(ref('whitespace'));
   }
 
