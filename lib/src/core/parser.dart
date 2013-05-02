@@ -350,11 +350,16 @@ abstract class Parser {
       return true;
     }
     seen.add(this);
-    if (runtimeType != other.runtimeType || children.length != other.children.length) {
+    return runtimeType == other.runtimeType && _matchChildren(other, seen);
+  }
+
+  bool _matchChildren(Parser other, [Set<Parser> seen]) {
+    var thisChildren = children, otherChildren = other.children;
+    if (thisChildren.length != otherChildren.length) {
       return false;
     }
-    for (var i = 0; i < children.length; i++) {
-      if (!children[i].match(other.children[i], seen)) {
+    for (var i = 0; i < thisChildren.length; i++) {
+      if (!thisChildren[i].match(otherChildren[i], seen)) {
         return false;
       }
     }
