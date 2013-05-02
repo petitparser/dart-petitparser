@@ -569,6 +569,18 @@ main() {
       var parsers = allParser(parser1).toList();
       expect(parsers, [parser1, parser3, parser2]);
     });
+    test('iterator duplicated', () {
+      var parser2 = uppercase();
+      var parser1 = parser2.seq(parser2);
+      var parsers = allParser(parser1).toList();
+      expect(parsers, [parser1, parser2]);
+    });
+    test('iterator knot', () {
+      var parser1 = undefined();
+      parser1.set(parser1);
+      var parsers = allParser(parser1).toList();
+      expect(parsers, [parser1]);
+    });
     test('iterator looping', () {
       var parser1 = undefined();
       var parser2 = undefined();

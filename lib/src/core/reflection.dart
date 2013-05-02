@@ -3,7 +3,9 @@
 part of petitparser;
 
 /**
- * Returns an iterable over all parsers reachable from a [root].
+ * Returns a lazy iterable over all parsers reachable from a [root]. Do
+ * not modify the grammar while iterating over it, otherwise you might
+ * get unexpected results.
  */
 Iterable<Parser> allParser(Parser root) {
   return new _ParserIterable(root);
@@ -23,12 +25,15 @@ class _ParserIterator implements Iterator<Parser> {
       : _todo = new List.from([root]),
         _done = new Set();
   bool moveNext() {
-    if (_todo.isEmpty) {
-      current = null;
-      return false;
-    }
-    _done.add(current = _todo.removeLast());
-    _todo.addAll(current.children.where((each) => !_done.contains(each)));
+    do {
+      if (_todo.isEmpty) {
+        current = null;
+        return false;
+      }
+      current = _todo.removeLast();
+    } while (_done.contains(current));
+    _done.add(current);
+    _todo.addAll(current.children);
     return true;
   }
 }
