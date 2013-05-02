@@ -39,26 +39,20 @@ import 'package:petitparser/petitparser.dart';
  *       }
  *     }
  *
- * Creavats: The Dart editor currently shows an abundance of spurious warnings,
- * as all productions are undefined from the perspective of the analyzer. Pay
- * attention with production names that conflict with methods defined in the
- * superclasses. The generated JavaScript code is slightly bigger, due to the
- * use of [noSuchMethod]. However, the resulting parser is identical.
+ * Creavats: Pay attention with production names that conflict with methods
+ * defined in superclasses. The generated JavaScript code is slightly bigger,
+ * due to the use of [noSuchMethod]. However, the resulting parser is identical.
  */
 class CompositeParser2 extends CompositeParser {
   dynamic noSuchMethod(Invocation mirror) {
     String name = MirrorSystem.getName(mirror.memberName);
     if (!name.startsWith('_')) {
-      // only consider public members
       if (mirror.isGetter) {
-        // productions can be accessed any time
         return ref(name);
       } else if (mirror.isSetter) {
-        // production can only be defined during initialization
         return def(name.substring(0, name.length - 1),
           mirror.positionalArguments.first);
       } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
-        // productions can only be redefined during initialization
         var argument = mirror.positionalArguments.first;
         return argument is Parser ? redef(name, argument) : action(name, argument);
       }
