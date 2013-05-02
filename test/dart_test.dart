@@ -17,7 +17,9 @@ void generateTests(String title, String path) {
       .forEach((file) {
         test(file.path, () {
           var result = dart.parse(file.readAsStringSync());
-          if (result.isFailure) fail(result.toString());
+          if (result.isFailure) {
+            fail(result.toString());
+          }
         });
       });
   });
