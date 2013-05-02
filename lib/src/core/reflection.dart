@@ -16,18 +16,20 @@ class _ParserIterable extends IterableBase<Parser> {
 }
 
 class _ParserIterator implements Iterator<Parser> {
-  final List<Parser> _todo;
+  final Set<Parser> _todo;
   final Set<Parser> _done;
   Parser current;
   _ParserIterator(Parser root)
-      : _todo = new List.from([root]),
+      : _todo = new Set.from([root]),
         _done = new Set();
   bool moveNext() {
     if (_todo.isEmpty) {
       current = null;
       return false;
     }
-    _done.add(current = _todo.removeLast());
+    current = _todo.first;
+    _todo.remove(current);
+    _done.add(current);
     _todo.addAll(current.children.where((each) => !_done.contains(each)));
     return true;
   }
