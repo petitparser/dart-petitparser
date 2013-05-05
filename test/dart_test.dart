@@ -49,6 +49,30 @@ void main() {
     expect(dart.accept('library /* foo */ test;'), isTrue);
     expect(dart.accept('library test; /* foo */'), isTrue);
   });
+  group('child parsers', () {
+    test('NUMBER', () {
+      var numParser = dart['NUMBER'].plus().end();
+      expect(numParser.accept('1234'), isTrue);
+      expect(numParser.accept('1.4'), isTrue);
+      expect(numParser.accept('12.34'), isTrue);
+      expect(numParser.accept('123.2e34'), isTrue);
+
+      expect(numParser.accept('kevin'), isFalse);
+      expect(numParser.accept('9a'), isFalse);
+      expect(numParser.accept('9 0'), isFalse);
+    });
+    test('singleLineString', () {
+      var slsParser = dart['singleLineString'].plus().end();
+      var validExamples = const ["'hi'", '"hi"'];
+      for(var example in validExamples) {
+        var result = slsParser.parse(example);
+        if(result.isFailure) {
+          fail(result.message);
+        }
+      }
+    });
+
+  });
   // generateTests('Dart SDK Sources', '/Applications/Dart/dart-sdk');
   // generateTests('PetitParser Sources', '.');
 }
