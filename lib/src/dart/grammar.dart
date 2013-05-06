@@ -506,11 +506,11 @@ class DartGrammar extends CompositeParser2 {
     stringInterpolation = dollar & IDENTIFIER_NO_DOLLAR |
         dollar & _token('{') & expression & _token('}');
     NEWLINE = _token('\\n') | _token('\r');
-    stringContentDQ = (backSlash | doubleQuote | dollar | NEWLINE).not() |
-        backSlash & NEWLINE.not() |
+    stringContentDQ = (backSlash | doubleQuote | dollar | NEWLINE).neg() |
+        backSlash & NEWLINE.neg() |
         stringInterpolation;
-    stringContentSQ = (backSlash | singleQuote | dollar | NEWLINE).not() |
-        backSlash & NEWLINE.not() |
+    stringContentSQ = (backSlash | singleQuote | dollar | NEWLINE).neg() |
+        backSlash & NEWLINE.neg() |
         stringInterpolation;
     stringContentTDQ = (backSlash | tripleDoubleQuote | dollar | NEWLINE).not() |
         backSlash & NEWLINE.not() |
@@ -529,8 +529,8 @@ class DartGrammar extends CompositeParser2 {
     singleLineString =
         doubleQuote & stringContentDQ.star() & doubleQuote
         | singleQuote & stringContentSQ.star() & singleQuote
-        | _token('r') & doubleQuote & ( doubleQuote | NEWLINE ).not().star() & doubleQuote
-        | _token('r') & singleQuote & ( singleQuote | NEWLINE ).not().star() & singleQuote
+        | _token('r') & doubleQuote & ( doubleQuote | NEWLINE ).neg().star() & doubleQuote
+        | _token('r') & singleQuote & ( singleQuote | NEWLINE ).neg().star() & singleQuote
         ;
 
 

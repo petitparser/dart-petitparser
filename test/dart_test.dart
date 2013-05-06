@@ -5,6 +5,7 @@ library dart_test;
 import 'dart:io';
 import 'dart:async';
 
+import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/dart.dart';
 import 'package:unittest/unittest.dart';
 
@@ -61,18 +62,43 @@ void main() {
       expect(numParser.accept('9a'), isFalse);
       expect(numParser.accept('9 0'), isFalse);
     });
-    test('singleLineString', () {
-      var slsParser = dart['singleLineString'].plus().end();
-      var validExamples = const ["'hi'", '"hi"'];
+    test('stringContentDQ', () {
+      var parser = dart['stringContentDQ'];
+
+      var validExamples = const ["'hi'", 'hello', ' whitespace '];
       for(var example in validExamples) {
-        var result = slsParser.parse(example);
-        if(result.isFailure) {
-          fail(result.message);
-        }
+        _testValid(parser, example);
       }
+    });
+    test('singleLineString', () {
+      var parser = dart['singleLineString'];
+      var validExamples = const ["'hi'", '"hi"', r"r'$'"];
+      for(var example in validExamples) {
+        _testValid(parser, example);
+      }
+
+      ['no quotes', '"missing quote', "'missing quote"].forEach((v) {
+        _testInvalid(parser, v);
+      });
     });
 
   });
   // generateTests('Dart SDK Sources', '/Applications/Dart/dart-sdk');
   // generateTests('PetitParser Sources', '.');
+}
+
+void _testInvalid(Parser parser, String value) {
+  parser = parser.plus().flatten().end();
+  var result = parser.parse(value);
+  expect(result.isFailure, isTrue, reason: 'Expected failure for value $value');
+}
+
+void _testValid(Parser parser, String value) {
+  parser = parser.plus().flatten().end();
+  var result = parser.parse(value);
+  if(result.isFailure) {
+    fail(result.message);
+  } else {
+    expect(result.value, value);
+  }
 }
