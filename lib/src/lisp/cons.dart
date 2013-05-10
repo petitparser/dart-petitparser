@@ -25,8 +25,8 @@ class Cons {
   set tail(dynamic tail) => _tail = tail;
 
   /** Compare the cells. */
-  bool operator ==(Cons cons) {
-    return cons is Cons && head == cons.head && tail == cons.tail;
+  bool operator ==(other) {
+    return other is Cons && head == other.head && tail == other.tail;
   }
 
   /** Returns the string representation of the cons. */

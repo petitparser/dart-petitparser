@@ -351,8 +351,8 @@ class XmlName extends Object with _XmlWritable {
     buffer.write(local);
   }
 
-  bool operator == (XmlName obj) {
-    return obj is XmlName && obj.local == local && obj.prefix == prefix;
+  bool operator == (other) {
+    return other is XmlName && other.local == local && other.prefix == prefix;
   }
 
 }
