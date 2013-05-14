@@ -16,7 +16,7 @@ class Token {
 
   const Token(this._value, this._buffer, this._start, this._stop);
 
-  bool operator == (Token other) {
+  bool operator == (other) {
     return other is Token
       && _value == other._value
       && _start == other._start
