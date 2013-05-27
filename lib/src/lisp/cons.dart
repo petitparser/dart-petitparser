@@ -25,7 +25,7 @@ class Cons {
   set tail(dynamic tail) => _tail = tail;
 
   /** Compare the cells. */
-  bool operator ==(other) {
+  bool operator == (other) {
     return other is Cons && head == other.head && tail == other.tail;
   }
 
