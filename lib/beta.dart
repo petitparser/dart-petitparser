@@ -43,7 +43,8 @@ import 'package:petitparser/petitparser.dart';
  * defined in superclasses. The generated JavaScript code is slightly bigger,
  * due to the use of [noSuchMethod]. However, the resulting parser is identical.
  */
-class CompositeParser2 extends CompositeParser {
+abstract class CompositeParser2 extends CompositeParser {
+
   dynamic noSuchMethod(Invocation mirror) {
     String name = MirrorSystem.getName(mirror.memberName);
     if (!name.startsWith('_')) {
@@ -59,4 +60,5 @@ class CompositeParser2 extends CompositeParser {
     }
     return super.noSuchMethod(mirror);
   }
+
 }
