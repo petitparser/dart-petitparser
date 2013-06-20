@@ -46,6 +46,8 @@ class _EndOfInputParser extends _DelegateParser {
     return result.failure(_message, result.position);
   }
 
+  String toString() => '${super.toString()}[$_message]';
+
   Parser copy() => new _EndOfInputParser(_delegate, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -93,6 +95,8 @@ class _NotParser extends _DelegateParser {
       return context.failure(_message);
     }
   }
+
+  String toString() => '${super.toString()}[$_message]';
 
   Parser copy() => new _NotParser(_delegate, _message);
 
@@ -159,6 +163,8 @@ class _RepeatingParser extends _DelegateParser {
     }
     return current.success(elements);
   }
+
+  String toString() => '${super.toString()}[$_min..$_max]';
 
   Parser copy() => new _RepeatingParser(_delegate, _min, _max);
 

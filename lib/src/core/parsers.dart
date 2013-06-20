@@ -43,6 +43,8 @@ class _FailureParser extends Parser {
 
   Result _parse(Context context) => context.failure(_message);
 
+  String toString() => '${super.toString()}[$_message]';
+
   Parser copy() => new _FailureParser(_message);
 
   bool match(dynamic other, [Set<Parser> seen]) {

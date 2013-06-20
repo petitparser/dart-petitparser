@@ -22,6 +22,8 @@ class _CharacterParser extends Parser {
     return context.failure(_message);
   }
 
+  String toString() => '${super.toString()}[$_message]';
+
   Parser copy() => new _CharacterParser(_matcher, _message);
 
   bool match(dynamic other, [Set<Parser> seen]) {

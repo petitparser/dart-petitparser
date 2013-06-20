@@ -26,6 +26,8 @@ class _AnyParser extends Parser {
         : context.failure(_message);
   }
 
+  String toString() => '${super.toString()}[$_message]';
+
   Parser copy() => new _AnyParser(_message);
 
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -96,6 +98,8 @@ class _PredicateParser extends Parser {
     }
     return context.failure(_message);
   }
+
+  String toString() => '${super.toString()}[$_message]';
 
   Parser copy() => new _PredicateParser(_length, _predicate, _message);
 
