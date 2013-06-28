@@ -37,6 +37,7 @@ class Context {
   /** Returns a human readable string of the current context */
   String toString() => 'Context[${toPositionString()}]';
 
+  /** Returns the line:column if the input is a string, otherwise the position. */
   String toPositionString() {
     if (_buffer is String) {
       var lineAndColumn = Token.lineAndColumnOf(buffer, position);
@@ -67,51 +68,32 @@ abstract class Result extends Context {
  * An immutable parse result in case of a successful parse.
  */
 class Success extends Result {
-
   final dynamic _value;
-
   const Success(buffer, position, this._value) : super(buffer, position);
-
   bool get isSuccess => true;
-
   dynamic get value => _value;
-
   String get message => null;
-
   String toString() => 'Success[${toPositionString()}]: $_value';
-
 }
 
 /**
  * An immutable parse result in case of a failed parse.
  */
 class Failure extends Result {
-
   final String _message;
-
   const Failure(buffer, position, this._message) : super(buffer, position);
-
   bool get isFailure => true;
-
-  dynamic get value { throw new ParserError(this); }
-
+  dynamic get value => throw new ParserError(this);
   String get message => _message;
-
   String toString() => 'Failure[${toPositionString()}]: $_message';
-
 }
 
 /**
  * An exception raised in case of a parse error.
  */
 class ParserError implements Error {
-
   final Failure _failure;
-
   ParserError(this._failure);
-
   Failure get failure => _failure;
-
   String toString() => '${_failure.message} at ${_failure.position}';
-
 }
