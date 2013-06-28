@@ -55,14 +55,11 @@ abstract class Result extends Context {
 
   const Result(buffer, position) : super(buffer, position);
 
-  dynamic get result => value;
-
   /** Returns the parse result of the current context. */
   dynamic get value;
 
   /** Returns the parse message of the current context. */
   String get message;
-
 
 }
 
