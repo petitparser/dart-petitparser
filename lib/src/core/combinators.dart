@@ -6,11 +6,11 @@ part of petitparser;
  * A parser that delegates to another one. Normally users do not need to
  * directly use a delegate parser.
  */
-class _DelegateParser extends Parser {
+class DelegateParser extends Parser {
 
   Parser _delegate;
 
-  _DelegateParser(this._delegate);
+  DelegateParser(this._delegate);
 
   Result _parse(Context context) {
     return _delegate._parse(context);
@@ -25,14 +25,14 @@ class _DelegateParser extends Parser {
     }
   }
 
-  Parser copy() => new _DelegateParser(_delegate);
+  Parser copy() => new DelegateParser(_delegate);
 
 }
 
 /**
  * A parser that succeeds only at the end of the input.
  */
-class _EndOfInputParser extends _DelegateParser {
+class _EndOfInputParser extends DelegateParser {
 
   final String _message;
 
@@ -60,7 +60,7 @@ class _EndOfInputParser extends _DelegateParser {
  * The and-predicate, a parser that succeeds whenever its delegate does, but
  * does not consume the input stream [Parr 1994, 1995].
  */
-class _AndParser extends _DelegateParser {
+class _AndParser extends DelegateParser {
 
   _AndParser(parser) : super(parser);
 
@@ -81,7 +81,7 @@ class _AndParser extends _DelegateParser {
  * The not-predicate, a parser that succeeds whenever its delegate does not,
  * but consumes no input [Parr 1994, 1995].
  */
-class _NotParser extends _DelegateParser {
+class _NotParser extends DelegateParser {
 
   final String _message;
 
@@ -109,7 +109,7 @@ class _NotParser extends _DelegateParser {
 /**
  * A parser that optionally parsers its delegate, or answers nil.
  */
-class _OptionalParser extends _DelegateParser {
+class _OptionalParser extends DelegateParser {
 
   final dynamic _otherwise;
 
@@ -135,7 +135,7 @@ class _OptionalParser extends _DelegateParser {
 /**
  * A parser that repeatedly parses a sequence of parsers.
  */
-class _RepeatingParser extends _DelegateParser {
+class _RepeatingParser extends DelegateParser {
 
   final int _min;
   final int _max;

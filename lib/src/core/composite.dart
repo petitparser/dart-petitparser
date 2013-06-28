@@ -36,7 +36,7 @@ part of petitparser;
  *       }
  *     }
  */
-abstract class CompositeParser extends _DelegateParser {
+abstract class CompositeParser extends DelegateParser {
 
   bool _completed = false;
   final Map<String, Parser> _defined = new Map();

@@ -6,7 +6,7 @@ part of petitparser;
  * A parser that performs a transformation with a given function on the
  * successful parse result of the delegate.
  */
-class _ActionParser extends _DelegateParser {
+class _ActionParser extends DelegateParser {
 
   final Function _function;
 
@@ -32,7 +32,7 @@ class _ActionParser extends _DelegateParser {
 /**
  * A parser that silently consumes input of a parser around its delegate.
  */
-class _TrimmingParser extends _DelegateParser {
+class _TrimmingParser extends DelegateParser {
 
   Parser _trimmer;
 
@@ -71,7 +71,7 @@ class _TrimmingParser extends _DelegateParser {
  * A parser that answers a substring or sublist of the range its delegate
  * parses.
  */
-class _FlattenParser extends _DelegateParser {
+class _FlattenParser extends DelegateParser {
 
   _FlattenParser(parser) : super(parser);
 
@@ -94,7 +94,7 @@ class _FlattenParser extends _DelegateParser {
 /**
  * A parser that answers a token of the result its delegate parses.
  */
-class _TokenParser extends _DelegateParser {
+class _TokenParser extends DelegateParser {
 
   _TokenParser(parser) : super(parser);
 

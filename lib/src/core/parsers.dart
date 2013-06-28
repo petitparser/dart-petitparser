@@ -77,7 +77,7 @@ abstract class SetableParser implements Parser {
 
 }
 
-class _SetableParser extends _DelegateParser implements SetableParser {
+class _SetableParser extends DelegateParser implements SetableParser {
 
   _SetableParser(parser) : super(parser);
 

@@ -135,7 +135,7 @@ String _debugIndent(int level) {
   return result.toString();
 }
 
-class _ContinuationParser extends _DelegateParser {
+class _ContinuationParser extends DelegateParser {
   final Function _function;
   _ContinuationParser(parser, this._function) : super(parser);
   Result _parse(Context context) {
