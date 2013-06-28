@@ -66,8 +66,14 @@ class Token {
   static final Parser _NEWLINE_PARSER =
       char('\n').or(char('\r').seq(char('\n').optional()));
 
+  /**
+   * Returns a parser for that detects newlines platform independently.
+   */
   static Parser newlineParser() => _NEWLINE_PARSER;
 
+  /**
+   * Converts a [position] index in a [buffer] to a line and column tuple.
+   */
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
     for (var token in newlineParser().token().matchesSkipping(buffer)) {
