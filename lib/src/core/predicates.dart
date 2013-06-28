@@ -44,9 +44,9 @@ class _AnyParser extends Parser {
  * [:'a':] or the letter [:'b':]. For any other input the parser fails.
  */
 Parser anyIn(dynamic elements, [String message]) {
-  return new _PredicateParser(1,
-    (each) => elements.indexOf(each) >= 0,
-    message != null ? message : 'any of $elements expected');
+  return predicate(1,
+      (each) => elements.indexOf(each) >= 0,
+      message != null ? message : 'any of $elements expected');
 }
 
 /**
@@ -56,9 +56,9 @@ Parser anyIn(dynamic elements, [String message]) {
  * [:'foo':]. Fails for any other input.
  */
 Parser string(String element, [String message]) {
-  return new _PredicateParser(element.length,
-    (String each) => element == each,
-    message != null ? message : '$element expected');
+  return predicate(element.length,
+      (String each) => element == each,
+      message != null ? message : '$element expected');
 }
 
 /**
@@ -69,9 +69,17 @@ Parser string(String element, [String message]) {
  */
 Parser stringIgnoreCase(String element, [String message]) {
   final lowerElement = element.toLowerCase();
-  return new _PredicateParser(element.length,
-    (String each) => lowerElement == each.toLowerCase(),
-    message != null ? message : '$element expected');
+  return predicate(element.length,
+      (String each) => lowerElement == each.toLowerCase(),
+      message != null ? message : '$element expected');
+}
+
+/**
+ * Returns a parser that reads input of the specified [length], accepts
+ * it if the [predicate] matches, or fails with the given [message].
+ */
+Parser predicate(int length, Function predicate, String message) {
+  return new _PredicateParser(length, predicate, message);
 }
 
 /**
