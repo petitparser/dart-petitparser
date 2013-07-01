@@ -8,19 +8,22 @@ part of petitparser;
  * For example, [:char('a').or(epsilon()):] is equivalent to
  * [:char('a').optional():].
  */
-Parser epsilon([dynamic result]) => new _EpsilonParser(result);
+ParserBuilder epsilon([dynamic result]) => new _EpsilonParser(result);
 
-class _EpsilonParser extends Parser {
+class _EpsilonParser extends ParserBase {
 
   final dynamic _result;
 
   _EpsilonParser(this._result);
 
-  Result _parse(Context context) => context.success(_result);
+  @override
+  Result parseOn(Context context) => context.success(_result);
 
-  Parser copy() => new _EpsilonParser(_result);
+  @override
+  ParserBuilder copy() => new _EpsilonParser(_result);
 
-  bool match(dynamic other, [Set<Parser> seen]) {
+  @override
+  bool match(dynamic other, [Set<ParserBuilder> seen]) {
     return super.match(other, seen) && _result == other._result;
   }
 
@@ -31,23 +34,27 @@ class _EpsilonParser extends Parser {
  *
  * For example, [:failure():] always fails, no matter what input it is given.
  */
-Parser failure([String message = 'unable to parse']) {
+ParserBuilder failure([String message = 'unable to parse']) {
   return new _FailureParser(message);
 }
 
-class _FailureParser extends Parser {
+class _FailureParser extends ParserBase {
 
   final String _message;
 
   _FailureParser(this._message);
 
-  Result _parse(Context context) => context.failure(_message);
+  @override
+  Result parseOn(Context context) => context.failure(_message);
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
-  Parser copy() => new _FailureParser(_message);
+  @override
+  ParserBuilder copy() => new _FailureParser(_message);
 
-  bool match(dynamic other, [Set<Parser> seen]) {
+  @override
+  bool match(dynamic other, [Set<ParserBuilder> seen]) {
     return super.match(other, seen) && _message == other._message;
   }
 
@@ -70,19 +77,14 @@ SetableParser undefined([String message = 'undefined parser']) {
 /**
  * Interface of a parser that can be redefined using [SetableParser.set].
  */
-abstract class SetableParser implements Parser {
+class SetableParser extends DelegateParser {
+
+  SetableParser(parser) : super(parser);
 
   /** Sets the receiver to delegate to [parser]. */
-  void set(Parser parser);
+  void set(ParserBuilder parser) => replace(children[0], parser);
 
-}
-
-class _SetableParser extends DelegateParser implements SetableParser {
-
-  _SetableParser(parser) : super(parser);
-
-  void set(Parser parser) => replace(children[0], parser);
-
-  Parser copy() => new _SetableParser(_delegate);
+  @override
+  ParserBuilder copy() => new SetableParser(_delegate);
 
 }

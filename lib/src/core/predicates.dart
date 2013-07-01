@@ -8,17 +8,18 @@ part of petitparser;
  * For example, [:any():] succeeds and consumes any given letter. It only
  * fails for an empty input.
  */
-Parser any([String message = 'input expected']) {
+ParserBuilder any([String message = 'input expected']) {
   return new _AnyParser(message);
 }
 
-class _AnyParser extends Parser {
+class _AnyParser extends ParserBase {
 
   final String _message;
 
   _AnyParser(this._message);
 
-  Result _parse(Context context) {
+  @override
+  Result parseOn(Context context) {
     var position = context.position;
     var buffer = context.buffer;
     return position < buffer.length
@@ -26,11 +27,14 @@ class _AnyParser extends Parser {
         : context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
-  Parser copy() => new _AnyParser(_message);
+  @override
+  ParserBuilder copy() => new _AnyParser(_message);
 
-  bool match(dynamic other, [Set<Parser> seen]) {
+  @override
+  bool match(dynamic other, [Set<ParserBuilder> seen]) {
     return super.match(other, seen)
         && _message == other._message;
   }
@@ -43,7 +47,7 @@ class _AnyParser extends Parser {
  * For example, [:anyIn('ab'):] succeeds and consumes either the letter
  * [:'a':] or the letter [:'b':]. For any other input the parser fails.
  */
-Parser anyIn(dynamic elements, [String message]) {
+ParserBuilder anyIn(dynamic elements, [String message]) {
   return predicate(1,
       (each) => elements.indexOf(each) >= 0,
       message != null ? message : 'any of $elements expected');
@@ -55,7 +59,7 @@ Parser anyIn(dynamic elements, [String message]) {
  * For example, [:string('foo'):] succeeds and consumes the input string
  * [:'foo':]. Fails for any other input.
  */
-Parser string(String element, [String message]) {
+ParserBuilder string(String element, [String message]) {
   return predicate(element.length,
       (String each) => element == each,
       message != null ? message : '$element expected');
@@ -67,7 +71,7 @@ Parser string(String element, [String message]) {
  * For example, [:stringIgnoreCase('foo'):] succeeds and consumes the input
  * string [:'Foo':] or [:'FOO':]. Fails for any other input.
  */
-Parser stringIgnoreCase(String element, [String message]) {
+ParserBuilder stringIgnoreCase(String element, [String message]) {
   final lowerElement = element.toLowerCase();
   return predicate(element.length,
       (String each) => lowerElement == each.toLowerCase(),
@@ -78,14 +82,14 @@ Parser stringIgnoreCase(String element, [String message]) {
  * Returns a parser that reads input of the specified [length], accepts
  * it if the [predicate] matches, or fails with the given [message].
  */
-Parser predicate(int length, Function predicate, String message) {
+ParserBuilder predicate(int length, Function predicate, String message) {
   return new _PredicateParser(length, predicate, message);
 }
 
 /**
  * A parser for a literal satisfying a predicate.
  */
-class _PredicateParser extends Parser {
+class _PredicateParser extends ParserBase {
 
   final int _length;
   final Function _predicate;
@@ -93,7 +97,8 @@ class _PredicateParser extends Parser {
 
   _PredicateParser(this._length, this._predicate, this._message);
 
-  Result _parse(Context context) {
+  @override
+  Result parseOn(Context context) {
     final start = context.position;
     final stop = start + _length;
     if (stop <= context.buffer.length) {
@@ -107,11 +112,14 @@ class _PredicateParser extends Parser {
     return context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
-  Parser copy() => new _PredicateParser(_length, _predicate, _message);
+  @override
+  ParserBuilder copy() => new _PredicateParser(_length, _predicate, _message);
 
-  bool match(dynamic other, [Set<Parser> seen]) {
+  @override
+  bool match(dynamic other, [Set<ParserBuilder> seen]) {
     return super.match(other, seen)
         && _length == other._length
         && _predicate == other._predicate

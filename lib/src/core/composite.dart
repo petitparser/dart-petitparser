@@ -39,8 +39,8 @@ part of petitparser;
 abstract class CompositeParser extends DelegateParser {
 
   bool _completed = false;
-  final Map<String, Parser> _defined = new Map();
-  final Map<String, SetableParser> _undefined = new Map();
+  final Map<String, ParserBuilder> _defined = new Map();
+  final Map<String, ParserBuilder> _undefined = new Map();
 
   CompositeParser() : super(failure('Uninitalized production: start')) {
     initialize();
@@ -76,7 +76,7 @@ abstract class CompositeParser extends DelegateParser {
    * that are eventually replaced by the real parsers. Afterwards it
    * returns the defined parser (mostly useful for testing).
    */
-  Parser ref(String name) {
+  ParserBuilder ref(String name) {
     if (_completed) {
       if (_defined.containsKey(name)) {
         return _defined[name];
@@ -94,7 +94,7 @@ abstract class CompositeParser extends DelegateParser {
    * Convenience operator returning a reference to a production with
    * a [name]. See [CompositeParser.ref] for details.
    */
-  Parser operator [](String name) => ref(name);
+  ParserBuilder operator [](String name) => ref(name);
 
   /**
    * Defines a production with a [name] and a [parser]. Only call this method
@@ -105,7 +105,7 @@ abstract class CompositeParser extends DelegateParser {
    *
    *     def('list', ref('element').separatedBy(char(',')));
    */
-  void def(String name, Parser parser) {
+  void def(String name, ParserBuilder parser) {
     if (_completed) {
       throw new CompletedParserError();
     } else if (_defined.containsKey(name)) {
@@ -132,7 +132,7 @@ abstract class CompositeParser extends DelegateParser {
     } else if (!_defined.containsKey(name)) {
       throw new UndefinedProductionError(name);
     } else {
-      _defined[name] = replacement is Parser ? replacement
+      _defined[name] = replacement is ParserBuilder ? replacement
           : replacement(_defined[name]);
     }
   }

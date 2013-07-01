@@ -3,7 +3,7 @@
 part of petitparser;
 
 /**
- * Abstract base class of all parsers.
+ * Abstract mixin providing the basic parsing functionality.
  */
 abstract class Parser {
 
@@ -11,9 +11,10 @@ abstract class Parser {
    * Private abstract method doing the actual parsing.
    *
    * The methods takes a parse [context] and returns the resulting context,
-   * which is either a [Success] or [Failure] context.
+   * which is either a [Success] or [Failure] context. Do not call this method
+   * directly.
    */
-  Result _parse(Context context);
+  Result parseOn(Context context);
 
   /**
    * Returns the parse result of the [input].
@@ -30,7 +31,7 @@ abstract class Parser {
    * ['letter expected'].
    */
   Result parse(dynamic input) {
-    return _parse(new Context(input, 0));
+    return parseOn(new Context(input, 0));
   }
 
   /**
@@ -52,7 +53,10 @@ abstract class Parser {
    */
   Iterable matches(dynamic input) {
     var list = new List();
-    and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
+    toBuilder().and()
+        .map((each) => list.add(each))
+        .seq(any()).or(any()).star()
+        .build().parse(input);
     return list;
   }
 
@@ -65,9 +69,24 @@ abstract class Parser {
    */
   Iterable matchesSkipping(dynamic input) {
     var list = new List();
-    map((each) => list.add(each)).or(any()).star().parse(input);
+    toBuilder()
+        .map((each) => list.add(each))
+        .or(any()).star()
+        .build().parse(input);
     return list;
   }
+
+  /**
+   * Returns a builder of this parser.
+   */
+  ParserBuilder toBuilder();
+
+}
+
+/**
+ * Abstract class for all parser builders.
+ */
+abstract class ParserBuilder {
 
   /**
    * Returns new parser that accepts the receiver, if possible. The resulting
@@ -78,7 +97,7 @@ abstract class Parser {
    * and returns that letter. When given something else the parser succeeds as
    * well, does not consume anything and returns [:null:].
    */
-  Parser optional([dynamic otherwise]) => new _OptionalParser(this, otherwise);
+  ParserBuilder optional([dynamic otherwise]) => new _OptionalParser(this, otherwise);
 
   /**
    * Returns a parser that accepts the receiver zero or more times. The
@@ -91,7 +110,7 @@ abstract class Parser {
    * any sequence of letters and returns a possibly empty list of the parsed
    * letters.
    */
-  Parser star() => repeat(0, 65536);
+  ParserBuilder star() => repeat(0, 65536);
 
   /**
    * Returns a parser that accepts the receiver one or more times. The
@@ -103,7 +122,7 @@ abstract class Parser {
    * For example, the parser [:letter().plus():] accepts any sequence of
    * letters and returns a list of the parsed letters.
    */
-  Parser plus() => repeat(1, 65536);
+  ParserBuilder plus() => repeat(1, 65536);
 
   /**
    * Returns a parser that accepts the receiver exactly [count] times. The
@@ -112,7 +131,7 @@ abstract class Parser {
    * For example, the parser [:letter().times(2):] accepts two letters and
    * returns a list of the two parsed letters.
    */
-  Parser times(int count) => repeat(count, count);
+  ParserBuilder times(int count) => repeat(count, count);
 
   /**
    * Returns a parser that accepts the receiver between [min] and [max] times.
@@ -124,7 +143,7 @@ abstract class Parser {
    * For example, the parser [:letter().repeat(2, 4):] accepts a sequence of
    * two, three, or four letters and returns the accepted letters as a list.
    */
-  Parser repeat(int min, int max) => new _RepeatingParser(this, min, max);
+  ParserBuilder repeat(int min, int max) => new _RepeatingParser(this, min, max);
 
   /**
    * Returns a parser that accepts the receiver followed by [other]. The
@@ -137,13 +156,13 @@ abstract class Parser {
    * letter followed by a digit and another letter. The parse result of the
    * input string [:'a1b':] is the list [:['a', '1', 'b']:].
    */
-  Parser seq(Parser other) => new _SequenceParser([this, other]);
+  ParserBuilder seq(ParserBuilder other) => new _SequenceParser([this, other]);
 
   /**
    * Convenience operator returning a parser accepts the receiver followed
    * by [other]. See [Parser.seq] for details.
    */
-  Parser operator & (Parser other) => this.seq(other);
+  ParserBuilder operator & (ParserBuilder other) => this.seq(other);
 
   /**
    * Returns a parser that accepts the receiver or [other]. The resulting
@@ -157,13 +176,13 @@ abstract class Parser {
    * [:letter():]. This can be problematic if the author intended to attach a
    * production action to [:char('a'):].
    */
-  Parser or(Parser other) => new _ChoiceParser([this, other]);
+  ParserBuilder or(ParserBuilder other) => new _ChoiceParser([this, other]);
 
   /**
    * Convenience operator returning a parser accepts the receiver or
    * [other]. See [Parser.or] for details.
    */
-  Parser operator | (Parser other) => this.or(other);
+  ParserBuilder operator | (ParserBuilder other) => this.or(other);
 
   /**
    * Returns a parser (logical and-predicate) that succeeds whenever the
@@ -174,7 +193,7 @@ abstract class Parser {
    * does not consume accepted input, the parser [:identifier:] is given the
    * ability to process the complete identifier.
    */
-  Parser and() => new _AndParser(this);
+  ParserBuilder and() => new _AndParser(this);
 
   /**
    * Returns a parser (logical not-predicate) that succeeds whenever the
@@ -186,7 +205,7 @@ abstract class Parser {
    * complete parser fails. Otherwise the parser [:identifier:] is given the
    * ability to process the complete identifier.
    */
-  Parser not([String message]) => new _NotParser(this, message);
+  ParserBuilder not([String message]) => new _NotParser(this, message);
 
   /**
    * Returns a parser that consumes any input token (character), but the
@@ -196,7 +215,7 @@ abstract class Parser {
    * The parser fails for inputs like [:'a':] or [:'Z':], but succeeds for
    * input like [:'1':], [:'_':] or [:'$':].
    */
-  Parser neg([String message]) => not(message).seq(any()).pick(1);
+  ParserBuilder neg([String message]) => not(message).seq(any()).pick(1);
 
   /**
    * Returns a parser that discards the result of the receiver, and returns
@@ -206,7 +225,7 @@ abstract class Parser {
    * for the input [:'abc':]. In contrast, the parser [:letter().plus():] would
    * return [:['a', 'b', 'c']:] for the same input instead.
    */
-  Parser flatten() => new _FlattenParser(this);
+  ParserBuilder flatten() => new _FlattenParser(this);
 
   /**
    * Returns a parser that discards the result of the receiver and returns
@@ -216,7 +235,7 @@ abstract class Parser {
    * For example, the parser [:letter().plus().token():] returns the token
    * [:Token[start: 0, stop: 3, value: abc]:] for the input [:'abc':].
    */
-  Parser token() => new _TokenParser(this);
+  ParserBuilder token() => new _TokenParser(this);
 
   /**
    * Returns a parser that consumes input before and after the receiver. The
@@ -226,7 +245,7 @@ abstract class Parser {
    * For example, the parser [:letter().plus().trim():] returns [:['a', 'b']:]
    * for the input [:' ab\n':] and consumes the complete input string.
    */
-  Parser trim([Parser trimmer]) {
+  ParserBuilder trim([ParserBuilder trimmer]) {
     return new _TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
   }
 
@@ -238,7 +257,7 @@ abstract class Parser {
    * and fails on [:'ab':]. In contrast the parser [:letter():] alone would
    * succeed on both inputs, but not consume everything for the second input.
    */
-  Parser end([String message = 'end of input expected']) {
+  ParserBuilder end([String message = 'end of input expected']) {
     return new _EndOfInputParser(this, message);
   }
 
@@ -250,7 +269,7 @@ abstract class Parser {
    * as [:letter():], but it can be replaced with another parser using
    * [SetableParser.set].
    */
-  SetableParser setable() => new _SetableParser(this);
+  SetableParser setable() => new SetableParser(this);
 
   /**
    * Returns a parser that evaluates [function] as action handler on success
@@ -259,7 +278,7 @@ abstract class Parser {
    * For example, the parser [:digit().map((char) => int.parse(char)):] returns
    * the number [:1:] for the input string [:'1':].
    */
-  Parser map(Function function) => new _ActionParser(this, function);
+  ParserBuilder map(Function function) => new _ActionParser(this, function);
 
   /**
    * Returns a parser that transform a successful parse result by returning
@@ -269,7 +288,7 @@ abstract class Parser {
    * For example, the parser [:letter().star().pick(-1):] returns the last
    * letter parsed. For the input [:'abc':] it returns [:'c':].
    */
-  Parser pick(int index) {
+  ParserBuilder pick(int index) {
     return this.map((List list) {
       return list[index < 0 ? list.length + index : index];
     });
@@ -284,7 +303,7 @@ abstract class Parser {
    * first and last letter parsed. For the input [:'abc':] it returns
    * [:['a', 'c']:].
    */
-  Parser permute(List<int> indexes) {
+  ParserBuilder permute(List<int> indexes) {
     return this.map((List list) {
       return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
@@ -307,7 +326,7 @@ abstract class Parser {
    * that consumes input like [:'1-2-3':] and returns a list of the elements and
    * separators: [:['1', '-', '2', '-', '3']:].
    */
-  Parser separatedBy(Parser separator, {bool includeSeparators: true,
+  ParserBuilder separatedBy(ParserBuilder separator, {bool includeSeparators: true,
       bool optionalSeparatorAtEnd: false}) {
     var repeater = new _SequenceParser([separator, this]).star();
     var parser = new _SequenceParser(optionalSeparatorAtEnd
@@ -333,7 +352,7 @@ abstract class Parser {
   /**
    * Returns a shallow copy of the receiver.
    */
-  Parser copy();
+  ParserBuilder copy();
 
   /**
    * Recusively tests for the equality of two parsers.
@@ -342,7 +361,7 @@ abstract class Parser {
    * refer to other parsers. This code is supposed to be overridden by parsers
    * that add other state.
    */
-  bool match(Parser other, [Set<Parser> seen]) {
+  bool match(ParserBuilder other, [Set<ParserBuilder> seen]) {
     if (seen == null) {
       seen = new Set();
     }
@@ -353,7 +372,7 @@ abstract class Parser {
     return runtimeType == other.runtimeType && _matchChildren(other, seen);
   }
 
-  bool _matchChildren(Parser other, [Set<Parser> seen]) {
+  bool _matchChildren(ParserBuilder other, [Set<ParserBuilder> seen]) {
     var thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
@@ -376,7 +395,7 @@ abstract class Parser {
    * In contrast, [:letter().or(digit()).children:] returns a collection
    * containing both the [:letter():] and [:digit():] parser.
    */
-  List<Parser> get children => [];
+  List<ParserBuilder> get children => [];
 
   /**
    * Changes the receiver by replacing [source] with [target]. Does nothing
@@ -392,8 +411,26 @@ abstract class Parser {
    *     var example = letter.plus();
    *     example.replace(letter, digit());
    */
-  void replace(Parser source, Parser target) {
+  void replace(ParserBuilder source, ParserBuilder target) {
     // no children, nothing to do
   }
+
+  /**
+   * Returns the parser represented by this builder.
+   */
+  Parser build({copy: false, optimize: false});
+
+}
+
+/**
+ * Abstract base class of all parsers.
+ */
+abstract class ParserBase extends Object with Parser, ParserBuilder {
+
+  @override
+  ParserBuilder toBuilder() => this as ParserBuilder;
+
+  @override
+  Parser build({copy: false, optimize: false}) => this as Parser;
 
 }

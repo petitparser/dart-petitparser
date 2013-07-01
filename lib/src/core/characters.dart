@@ -5,7 +5,7 @@ part of petitparser;
 /**
  * Parser class for individual character classes.
  */
-class _CharacterParser extends Parser {
+class _CharacterParser extends ParserBase {
 
   final _CharMatcher _matcher;
 
@@ -13,7 +13,8 @@ class _CharacterParser extends Parser {
 
   _CharacterParser(this._matcher, this._message);
 
-  Result _parse(Context context) {
+  @override
+  Result parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
     if (position < buffer.length && _matcher.match(buffer.codeUnitAt(position))) {
@@ -22,11 +23,14 @@ class _CharacterParser extends Parser {
     return context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
-  Parser copy() => new _CharacterParser(_matcher, _message);
+  @override
+  ParserBuilder copy() => new _CharacterParser(_matcher, _message);
 
-  bool match(dynamic other, [Set<Parser> seen]) {
+  @override
+  bool match(dynamic other, [Set<ParserBuilder> seen]) {
     return super.match(other, seen)
         && _matcher == other._matcher
         && _message == other._message;
@@ -95,7 +99,7 @@ class _BinarySearchCharMatcher extends _CharMatcher {
 }
 
 /** Returns a parser that accepts a specific character only. */
-Parser char(dynamic element, [String message]) {
+ParserBuilder char(dynamic element, [String message]) {
   return new _CharacterParser(
       new _SingleCharMatcher(_toCharCode(element)),
       message != null ? message : '$element expected');
@@ -108,7 +112,7 @@ class _SingleCharMatcher extends _CharMatcher {
 }
 
 /** Returns a parser that accepts any digit character. */
-Parser digit([String message]) {
+ParserBuilder digit([String message]) {
   return new _CharacterParser(
       _digitCharMatcher,
       message != null ? message : 'digit expected');
@@ -122,7 +126,7 @@ class _DigitCharMatcher extends _CharMatcher {
 final _DigitCharMatcher _digitCharMatcher = const _DigitCharMatcher();
 
 /** Returns a parser that accepts any letter character. */
-Parser letter([String message]) {
+ParserBuilder letter([String message]) {
   return new _CharacterParser(
       _letterCharMatcher,
       message != null ? message : 'letter expected');
@@ -136,7 +140,7 @@ class _LetterCharMatcher extends _CharMatcher {
 final _LetterCharMatcher _letterCharMatcher = const _LetterCharMatcher();
 
 /** Returns a parser that accepts any lowercase character. */
-Parser lowercase([String message]) {
+ParserBuilder lowercase([String message]) {
   return new _CharacterParser(
       _lowercaseCharMatcher,
       message != null ? message : 'lowercase letter expected');
@@ -150,7 +154,7 @@ class _LowercaseCharMatcher extends _CharMatcher {
 _LowercaseCharMatcher _lowercaseCharMatcher = const _LowercaseCharMatcher();
 
 /** Returns a parser that accepts the given character class pattern. */
-Parser pattern(String element, [String message]) {
+ParserBuilder pattern(String element, [String message]) {
   if (_pattern == null) {
     var single = any().map((each) {
       return new _SingleCharMatcher(_toCharCode(each));
@@ -163,7 +167,7 @@ Parser pattern(String element, [String message]) {
     });
     _pattern = char('^').optional().seq(positive).map((each) {
       return each[0] == null ? each[1] : new _NotCharMatcher(each[1]);
-    });
+    }).build();
   }
   return new _CharacterParser(
       _pattern.parse(element).value,
@@ -173,7 +177,7 @@ Parser pattern(String element, [String message]) {
 Parser _pattern;
 
 /** Returns a parser that accepts any character in the range between [start] and [stop]. */
-Parser range(dynamic start, dynamic stop, [String message]) {
+ParserBuilder range(dynamic start, dynamic stop, [String message]) {
   return new _CharacterParser(
       new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop)),
       message != null ? message : '$start..$stop expected');
@@ -187,7 +191,7 @@ class _RangeCharMatcher extends _CharMatcher {
 }
 
 /** Returns a parser that accepts any uppercase character. */
-Parser uppercase([String message]) {
+ParserBuilder uppercase([String message]) {
   return new _CharacterParser(
       _uppercaseCharMatcher,
       message != null ? message : 'uppercase letter expected');
@@ -201,7 +205,7 @@ class _UppercaseCharMatcher extends _CharMatcher {
 final _UppercaseCharMatcher _uppercaseCharMatcher = const _UppercaseCharMatcher();
 
 /** Returns a parser that accepts any whitespace character. */
-Parser whitespace([String message]) {
+ParserBuilder whitespace([String message]) {
   return new _CharacterParser(
       _whitespaceCharMatcher,
       message != null ? message : 'whitespace expected');
@@ -217,7 +221,7 @@ class _WhitespaceCharMatcher extends _CharMatcher {
 final _WhitespaceCharMatcher _whitespaceCharMatcher = const _WhitespaceCharMatcher();
 
 /** Returns a parser that accepts any word character. */
-Parser word([String message]) {
+ParserBuilder word([String message]) {
   return new _CharacterParser(
       _wordCharMatcher,
       message != null ? message : 'letter or digit expected');

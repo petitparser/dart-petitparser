@@ -64,7 +64,11 @@ class Token {
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
   static final Parser _NEWLINE_PARSER =
-      char('\n').or(char('\r').seq(char('\n').optional()));
+      char('\n').or(char('\r')
+          .seq(char('\n').optional()))
+          .build();
+  static final Parser _NEWLINE_TOKEN_PARSER =
+      _NEWLINE_PARSER.toBuilder().token().build();
 
   /**
    * Returns a parser for that detects newlines platform independently.
@@ -76,7 +80,7 @@ class Token {
    */
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
-    for (var token in newlineParser().token().matchesSkipping(buffer)) {
+    for (var token in _NEWLINE_TOKEN_PARSER.matchesSkipping(buffer)) {
       if (position < token.stop) {
         return [line, position - offset + 1];
       }

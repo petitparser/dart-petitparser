@@ -7,23 +7,32 @@ part of petitparser;
  * not modify the grammar while iterating over it, otherwise you might
  * get unexpected results.
  */
-Iterable<Parser> allParser(Parser root) {
+Iterable<ParserBuilder> allParser(ParserBuilder root) {
   return new _ParserIterable(root);
 }
 
-class _ParserIterable extends IterableBase<Parser> {
-  final Parser _root;
+class _ParserIterable extends IterableBase<ParserBuilder> {
+
+  final ParserBuilder _root;
+
   const _ParserIterable(this._root);
-  Iterator<Parser> get iterator => new _ParserIterator(_root);
+
+  @override
+  Iterator<ParserBuilder> get iterator => new _ParserIterator(_root);
+
 }
 
-class _ParserIterator implements Iterator<Parser> {
-  final List<Parser> _todo;
-  final Set<Parser> _done;
-  Parser current;
-  _ParserIterator(Parser root)
+class _ParserIterator implements Iterator<ParserBuilder> {
+
+  final List<ParserBuilder> _todo;
+  final Set<ParserBuilder> _done;
+  ParserBuilder current;
+
+  _ParserIterator(ParserBuilder root)
       : _todo = new List.from([root]),
         _done = new Set();
+
+  @override
   bool moveNext() {
     do {
       if (_todo.isEmpty) {
@@ -36,6 +45,7 @@ class _ParserIterator implements Iterator<Parser> {
     _todo.addAll(current.children);
     return true;
   }
+
 }
 
 /**
@@ -47,7 +57,7 @@ class _ParserIterator implements Iterator<Parser> {
  * all old parsers are replaced with the transformed ones until we end up
  * with a completely new grammar.
  */
-Parser transformParser(Parser root, Parser function(Parser parser)) {
+ParserBuilder transformParser(ParserBuilder root, ParserBuilder function(ParserBuilder parser)) {
   var mapping = new Map();
   allParser(root).forEach((parser) {
     mapping[parser] = function(parser.copy());
@@ -71,7 +81,7 @@ Parser transformParser(Parser root, Parser function(Parser parser)) {
 /**
  * Removes all setable parsers reachable from [root] in-place.
  */
-Parser removeSetables(Parser root) {
+ParserBuilder removeSetables(ParserBuilder root) {
   allParser(root).forEach((parent) {
     parent.children.forEach((source) {
       var target = _removeSetable(source);
@@ -83,7 +93,7 @@ Parser removeSetables(Parser root) {
   return _removeSetable(root);
 }
 
-Parser _removeSetable(Parser parser) {
+ParserBuilder _removeSetable(ParserBuilder parser) {
   while (parser is SetableParser) {
     parser = parser.children.first;
   }
@@ -93,7 +103,7 @@ Parser _removeSetable(Parser parser) {
 /**
  * Removes duplicated parsers reachable from [root] in-place.
  */
-Parser removeDuplicates(Parser root) {
+ParserBuilder removeDuplicates(ParserBuilder root) {
   var uniques = new Set();
   allParser(root).forEach((parent) {
     parent.children.forEach((source) {
@@ -113,7 +123,7 @@ Parser removeDuplicates(Parser root) {
 /**
  * Adds debug handlers to each parser reachable from [root].
  */
-Parser debug(Parser root) {
+ParserBuilder debug(ParserBuilder root) {
   var level = 0;
   return transformParser(root, (parser) {
     return new _ContinuationParser(parser, (context, continuation) {
@@ -136,10 +146,17 @@ String _debugIndent(int level) {
 }
 
 class _ContinuationParser extends DelegateParser {
+
   final Function _function;
+
   _ContinuationParser(parser, this._function) : super(parser);
-  Result _parse(Context context) {
-    return _function(context, (result) => _delegate._parse(result));
+
+  @override
+  Result parseOn(Context context) {
+    return _function(context, (result) => super.parseOn(result));
   }
-  Parser copy() => new _ContinuationParser(_delegate, _function);
+
+  @override
+  ParserBuilder copy() => new _ContinuationParser(_delegate, _function);
+
 }
