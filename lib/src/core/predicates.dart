@@ -18,6 +18,7 @@ class _AnyParser extends Parser {
 
   _AnyParser(this._message);
 
+  @override
   Result parseOn(Context context) {
     var position = context.position;
     var buffer = context.buffer;
@@ -26,10 +27,13 @@ class _AnyParser extends Parser {
         : context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _AnyParser(_message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen)
         && _message == other._message;
@@ -93,6 +97,7 @@ class _PredicateParser extends Parser {
 
   _PredicateParser(this._length, this._predicate, this._message);
 
+  @override
   Result parseOn(Context context) {
     final start = context.position;
     final stop = start + _length;
@@ -107,10 +112,13 @@ class _PredicateParser extends Parser {
     return context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _PredicateParser(_length, _predicate, _message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen)
         && _length == other._length

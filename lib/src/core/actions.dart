@@ -12,6 +12,7 @@ class _ActionParser extends DelegateParser {
 
   _ActionParser(parser, this._function) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
@@ -21,8 +22,10 @@ class _ActionParser extends DelegateParser {
     }
   }
 
+  @override
   Parser copy() => new _ActionParser(_delegate, _function);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _function == other._function;
   }
@@ -38,6 +41,7 @@ class _TrimmingParser extends DelegateParser {
 
   _TrimmingParser(parser, this._trimmer) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var current = context;
     do {
@@ -54,10 +58,13 @@ class _TrimmingParser extends DelegateParser {
     return current.success(result.value);
   }
 
+  @override
   Parser copy() => new _TrimmingParser(_delegate, _trimmer);
 
+  @override
   List<Parser> get children => [_delegate, _trimmer];
 
+  @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
     if (_trimmer == source) {
@@ -75,6 +82,7 @@ class _FlattenParser extends DelegateParser {
 
   _FlattenParser(parser) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
@@ -87,6 +95,7 @@ class _FlattenParser extends DelegateParser {
     }
   }
 
+  @override
   Parser copy() => new _FlattenParser(_delegate);
 
 }
@@ -98,6 +107,7 @@ class _TokenParser extends DelegateParser {
 
   _TokenParser(parser) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
@@ -109,6 +119,7 @@ class _TokenParser extends DelegateParser {
     }
   }
 
+  @override
   Parser copy() => new _TokenParser(_delegate);
 
 }

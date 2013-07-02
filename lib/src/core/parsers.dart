@@ -16,10 +16,13 @@ class _EpsilonParser extends Parser {
 
   _EpsilonParser(this._result);
 
+  @override
   Result parseOn(Context context) => context.success(_result);
 
+  @override
   Parser copy() => new _EpsilonParser(_result);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _result == other._result;
   }
@@ -41,12 +44,16 @@ class _FailureParser extends Parser {
 
   _FailureParser(this._message);
 
+  @override
   Result parseOn(Context context) => context.failure(_message);
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _FailureParser(_message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _message == other._message;
   }

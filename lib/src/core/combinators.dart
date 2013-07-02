@@ -12,12 +12,15 @@ class DelegateParser extends Parser {
 
   DelegateParser(this._delegate);
 
+  @override
   Result parseOn(Context context) {
     return _delegate.parseOn(context);
   }
 
+  @override
   List<Parser> get children => [_delegate];
 
+  @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
     if (_delegate == source) {
@@ -25,6 +28,7 @@ class DelegateParser extends Parser {
     }
   }
 
+  @override
   Parser copy() => new DelegateParser(_delegate);
 
 }
@@ -38,6 +42,7 @@ class _EndOfInputParser extends DelegateParser {
 
   _EndOfInputParser(parser, this._message) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isFailure || result.position == result.buffer.length) {
@@ -46,10 +51,13 @@ class _EndOfInputParser extends DelegateParser {
     return result.failure(_message, result.position);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _EndOfInputParser(_delegate, _message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _message == other._message;
   }
@@ -64,6 +72,7 @@ class _AndParser extends DelegateParser {
 
   _AndParser(parser) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
@@ -73,6 +82,7 @@ class _AndParser extends DelegateParser {
     }
   }
 
+  @override
   Parser copy() => new _AndParser(_delegate);
 
 }
@@ -87,6 +97,7 @@ class _NotParser extends DelegateParser {
 
   _NotParser(parser, this._message) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isFailure) {
@@ -96,10 +107,13 @@ class _NotParser extends DelegateParser {
     }
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _NotParser(_delegate, _message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _message == other._message;
   }
@@ -115,6 +129,7 @@ class _OptionalParser extends DelegateParser {
 
   _OptionalParser(parser, this._otherwise) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
@@ -124,8 +139,10 @@ class _OptionalParser extends DelegateParser {
     }
   }
 
+  @override
   Parser copy() => new _OptionalParser(_delegate, _otherwise);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen) && _otherwise == other._otherwise;
   }
@@ -142,6 +159,7 @@ class _RepeatingParser extends DelegateParser {
 
   _RepeatingParser(parser, this._min, this._max) : super(parser);
 
+  @override
   Result parseOn(Context context) {
     var current = context;
     var elements = new List();
@@ -164,10 +182,13 @@ class _RepeatingParser extends DelegateParser {
     return current.success(elements);
   }
 
+  @override
   String toString() => '${super.toString()}[$_min..$_max]';
 
+  @override
   Parser copy() => new _RepeatingParser(_delegate, _min, _max);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen)
         && _min == other._min
@@ -185,8 +206,10 @@ abstract class _ListParser extends Parser {
 
   _ListParser(this._parsers);
 
+  @override
   List<Parser> get children => _parsers;
 
+  @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
     for (var i = 0; i < _parsers.length; i++) {
@@ -205,6 +228,7 @@ class _ChoiceParser extends _ListParser {
 
   _ChoiceParser(parsers) : super(parsers);
 
+  @override
   Result parseOn(Context context) {
     var result;
     for (var parser in _parsers) {
@@ -216,12 +240,14 @@ class _ChoiceParser extends _ListParser {
     return result;
   }
 
+  @override
   Parser or(Parser other) {
     var parsers = new List.from(_parsers);
     parsers.add(other);
     return new _ChoiceParser(parsers);
   }
 
+  @override
   Parser copy() => new _ChoiceParser(new List.from(_parsers));
 
 }
@@ -233,6 +259,7 @@ class _SequenceParser extends _ListParser {
 
   _SequenceParser(parsers) : super(parsers);
 
+  @override
   Result parseOn(Context context) {
     var current = context;
     var elements = new List(_parsers.length);
@@ -247,12 +274,14 @@ class _SequenceParser extends _ListParser {
     return current.success(elements);
   }
 
+  @override
   Parser seq(Parser other) {
     var parsers = new List.from(_parsers);
     parsers.add(other);
     return new _SequenceParser(parsers);
   }
 
+  @override
   Parser copy() => new _SequenceParser(new List.from(_parsers));
 
 }

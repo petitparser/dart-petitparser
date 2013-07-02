@@ -13,6 +13,7 @@ class _CharacterParser extends Parser {
 
   _CharacterParser(this._matcher, this._message);
 
+  @override
   Result parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
@@ -22,10 +23,13 @@ class _CharacterParser extends Parser {
     return context.failure(_message);
   }
 
+  @override
   String toString() => '${super.toString()}[$_message]';
 
+  @override
   Parser copy() => new _CharacterParser(_matcher, _message);
 
+  @override
   bool match(dynamic other, [Set<Parser> seen]) {
     return super.match(other, seen)
         && _matcher == other._matcher
