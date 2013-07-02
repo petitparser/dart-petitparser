@@ -138,8 +138,8 @@ String _debugIndent(int level) {
 class _ContinuationParser extends DelegateParser {
   final Function _function;
   _ContinuationParser(parser, this._function) : super(parser);
-  Result _parse(Context context) {
-    return _function(context, (result) => _delegate._parse(result));
+  Result parseOn(Context context) {
+    return _function(context, (result) => _delegate.parseOn(result));
   }
   Parser copy() => new _ContinuationParser(_delegate, _function);
 }

@@ -16,7 +16,7 @@ class _EpsilonParser extends Parser {
 
   _EpsilonParser(this._result);
 
-  Result _parse(Context context) => context.success(_result);
+  Result parseOn(Context context) => context.success(_result);
 
   Parser copy() => new _EpsilonParser(_result);
 
@@ -41,7 +41,7 @@ class _FailureParser extends Parser {
 
   _FailureParser(this._message);
 
-  Result _parse(Context context) => context.failure(_message);
+  Result parseOn(Context context) => context.failure(_message);
 
   String toString() => '${super.toString()}[$_message]';
 

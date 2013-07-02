@@ -8,12 +8,14 @@ part of petitparser;
 abstract class Parser {
 
   /**
-   * Private abstract method doing the actual parsing.
+   * Primitive method doing the actual parsing.
    *
-   * The methods takes a parse [context] and returns the resulting context,
-   * which is either a [Success] or [Failure] context.
+   * The method is overridden in concrete subclasses to implement the
+   * parser specific logic. The methods takes a parse [context] and
+   * returns the resulting context, which is either a [Success] or
+   * [Failure] context.
    */
-  Result _parse(Context context);
+  Result parseOn(Context context);
 
   /**
    * Returns the parse result of the [input].
@@ -30,7 +32,7 @@ abstract class Parser {
    * ['letter expected'].
    */
   Result parse(dynamic input) {
-    return _parse(new Context(input, 0));
+    return parseOn(new Context(input, 0));
   }
 
   /**

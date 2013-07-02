@@ -12,8 +12,8 @@ class _ActionParser extends DelegateParser {
 
   _ActionParser(parser, this._function) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isSuccess) {
       return result.success(_function(result.value));
     } else {
@@ -38,18 +38,18 @@ class _TrimmingParser extends DelegateParser {
 
   _TrimmingParser(parser, this._trimmer) : super(parser);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var current = context;
     do {
-      current = _trimmer._parse(current);
+      current = _trimmer.parseOn(current);
     } while (current.isSuccess);
-    var result = _delegate._parse(current);
+    var result = _delegate.parseOn(current);
     if (result.isFailure) {
       return result;
     }
     current = result;
     do {
-      current = _trimmer._parse(current);
+      current = _trimmer.parseOn(current);
     } while (current.isSuccess);
     return current.success(result.value);
   }
@@ -75,8 +75,8 @@ class _FlattenParser extends DelegateParser {
 
   _FlattenParser(parser) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isSuccess) {
       var output = context.buffer is String
           ? context.buffer.substring(context.position, result.position)
@@ -98,8 +98,8 @@ class _TokenParser extends DelegateParser {
 
   _TokenParser(parser) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isSuccess) {
       var token = new Token(result.value, context.buffer,
           context.position, result.position);

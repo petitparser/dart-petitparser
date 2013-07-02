@@ -13,7 +13,7 @@ class _CharacterParser extends Parser {
 
   _CharacterParser(this._matcher, this._message);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
     if (position < buffer.length && _matcher.match(buffer.codeUnitAt(position))) {

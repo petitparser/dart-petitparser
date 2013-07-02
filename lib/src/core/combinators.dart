@@ -12,8 +12,8 @@ class DelegateParser extends Parser {
 
   DelegateParser(this._delegate);
 
-  Result _parse(Context context) {
-    return _delegate._parse(context);
+  Result parseOn(Context context) {
+    return _delegate.parseOn(context);
   }
 
   List<Parser> get children => [_delegate];
@@ -38,8 +38,8 @@ class _EndOfInputParser extends DelegateParser {
 
   _EndOfInputParser(parser, this._message) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isFailure || result.position == result.buffer.length) {
       return result;
     }
@@ -64,8 +64,8 @@ class _AndParser extends DelegateParser {
 
   _AndParser(parser) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isSuccess) {
       return context.success(result.value);
     } else {
@@ -87,8 +87,8 @@ class _NotParser extends DelegateParser {
 
   _NotParser(parser, this._message) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isFailure) {
       return context.success(null);
     } else {
@@ -115,8 +115,8 @@ class _OptionalParser extends DelegateParser {
 
   _OptionalParser(parser, this._otherwise) : super(parser);
 
-  Result _parse(Context context) {
-    var result = _delegate._parse(context);
+  Result parseOn(Context context) {
+    var result = _delegate.parseOn(context);
     if (result.isSuccess) {
       return result;
     } else {
@@ -142,11 +142,11 @@ class _RepeatingParser extends DelegateParser {
 
   _RepeatingParser(parser, this._min, this._max) : super(parser);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var current = context;
     var elements = new List();
     while (elements.length < _min) {
-      var result = _delegate._parse(current);
+      var result = _delegate.parseOn(current);
       if (result.isFailure) {
         return result;
       }
@@ -154,7 +154,7 @@ class _RepeatingParser extends DelegateParser {
       current = result;
     }
     while (elements.length < _max) {
-      var result = _delegate._parse(current);
+      var result = _delegate.parseOn(current);
       if (result.isFailure) {
         return current.success(elements);
       }
@@ -205,10 +205,10 @@ class _ChoiceParser extends _ListParser {
 
   _ChoiceParser(parsers) : super(parsers);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var result;
     for (var parser in _parsers) {
-      result = parser._parse(context);
+      result = parser.parseOn(context);
       if (result.isSuccess) {
         return result;
       }
@@ -233,11 +233,11 @@ class _SequenceParser extends _ListParser {
 
   _SequenceParser(parsers) : super(parsers);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var current = context;
     var elements = new List(_parsers.length);
     for (var i = 0; i < _parsers.length; i++) {
-      var result = _parsers[i]._parse(current);
+      var result = _parsers[i].parseOn(current);
       if (result.isFailure) {
         return result;
       }

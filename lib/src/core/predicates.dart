@@ -18,7 +18,7 @@ class _AnyParser extends Parser {
 
   _AnyParser(this._message);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     var position = context.position;
     var buffer = context.buffer;
     return position < buffer.length
@@ -93,7 +93,7 @@ class _PredicateParser extends Parser {
 
   _PredicateParser(this._length, this._predicate, this._message);
 
-  Result _parse(Context context) {
+  Result parseOn(Context context) {
     final start = context.position;
     final stop = start + _length;
     if (stop <= context.buffer.length) {
