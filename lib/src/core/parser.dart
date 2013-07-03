@@ -398,4 +398,16 @@ abstract class Parser {
     // no children, nothing to do
   }
 
+  noSuchMethod(Invocation msg) {
+      if (parserExtension != null) {
+          InstanceMirror im = reflect(parserExtension);
+          var params = [this];
+          params.addAll(msg.positionalArguments);
+          return im.invoke(msg.memberName, params).reflectee;
+      }
+      super.noSuchMethod(msg);
+  }
+
 }
+
+var parserExtension = null;
