@@ -96,6 +96,20 @@ abstract class Parser {
   Parser star() => repeat(0, 65536);
 
   /**
+   * Returns a parser that parses the receiver zero or more times until it
+   * reaches a [limit]. This is a greedy non-blind implementation of the
+   * [Parser.star] operator. The [limit] is not consumed.
+   */
+  Parser starGreedy(Parser limit) => repeatGreedy(limit, 0, 65536);
+
+  /**
+   * Returns a parser that parses the receiver zero or more times until it
+   * reaches a [limit]. This is a lazy non-blind implementation of the
+   * [Parser.star] operator. The [limit] is not consumed.
+   */
+  Parser starLazy(Parser limit) => repeatLazy(limit, 0, 65536);
+
+  /**
    * Returns a parser that accepts the receiver one or more times. The
    * resulting parser returns a list of the parse results of the receiver.
    *
@@ -108,13 +122,18 @@ abstract class Parser {
   Parser plus() => repeat(1, 65536);
 
   /**
-   * Returns a parser that accepts the receiver exactly [count] times. The
-   * resulting parser returns a list of the parse results of the receiver.
-   *
-   * For example, the parser [:letter().times(2):] accepts two letters and
-   * returns a list of the two parsed letters.
+   * Returns a parser that parses the receiver one or more times until it
+   * reaches [limit]. This is a greedy non-blind implementation of the
+   * [Parser.plus] operator. The [limit] is not consumed.
    */
-  Parser times(int count) => repeat(count, count);
+  Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1, 65536);
+
+  /**
+   * Returns a parser that parses the receiver zero or more times until it
+   * reaches a [limit]. This is a lazy non-blind implementation of the
+   * [Parser.plus] operator. The [limit] is not consumed.
+   */
+  Parser plusLazy(Parser limit) => repeatLazy(limit, 1, 65536);
 
   /**
    * Returns a parser that accepts the receiver between [min] and [max] times.
@@ -126,7 +145,34 @@ abstract class Parser {
    * For example, the parser [:letter().repeat(2, 4):] accepts a sequence of
    * two, three, or four letters and returns the accepted letters as a list.
    */
-  Parser repeat(int min, int max) => new _RepeatingParser(this, min, max);
+  Parser repeat(int min, int max) => new _PossessiveRepeatingParser(this, min, max);
+
+  /**
+   * Returns a parser that parses the receiver at least [min] and at most [max]
+   * times until it reaches a [limit]. This is a greedy non-blind implementation of
+   * the [Parser.repeat] operator. The [limit] is not consumed.
+   */
+  Parser repeatGreedy(Parser limit, int min, int max) {
+    return new _GreedyRepeatingParser(this, limit, min, max);
+  }
+
+  /**
+   * Returns a parser that parses the receiver at least [min] and at most [max]
+   * times until it reaches a [limit]. This is a lazy non-blind implementation of
+   * the [Parser.repeat] operator. The [limit] is not consumed.
+   */
+  Parser repeatLazy(Parser limit, int min, int max) {
+    return new _LazyRepeatingParser(this, limit, min, max);
+  }
+
+  /**
+   * Returns a parser that accepts the receiver exactly [count] times. The
+   * resulting parser returns a list of the parse results of the receiver.
+   *
+   * For example, the parser [:letter().times(2):] accepts two letters and
+   * returns a list of the two parsed letters.
+   */
+  Parser times(int count) => repeat(count, count);
 
   /**
    * Returns a parser that accepts the receiver followed by [other]. The

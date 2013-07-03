@@ -168,4 +168,5 @@ part 'src/core/parser.dart';
 part 'src/core/parsers.dart';
 part 'src/core/predicates.dart';
 part 'src/core/reflection.dart';
+part 'src/core/repeaters.dart';
 part 'src/core/token.dart';

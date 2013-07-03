@@ -150,54 +150,6 @@ class _OptionalParser extends DelegateParser {
 }
 
 /**
- * A parser that repeatedly parses a sequence of parsers.
- */
-class _RepeatingParser extends DelegateParser {
-
-  final int _min;
-  final int _max;
-
-  _RepeatingParser(parser, this._min, this._max) : super(parser);
-
-  @override
-  Result parseOn(Context context) {
-    var current = context;
-    var elements = new List();
-    while (elements.length < _min) {
-      var result = _delegate.parseOn(current);
-      if (result.isFailure) {
-        return result;
-      }
-      elements.add(result.value);
-      current = result;
-    }
-    while (elements.length < _max) {
-      var result = _delegate.parseOn(current);
-      if (result.isFailure) {
-        return current.success(elements);
-      }
-      elements.add(result.value);
-      current = result;
-    }
-    return current.success(elements);
-  }
-
-  @override
-  String toString() => '${super.toString()}[$_min..$_max]';
-
-  @override
-  Parser copy() => new _RepeatingParser(_delegate, _min, _max);
-
-  @override
-  bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
-        && _min == other._min
-        && _max == other._max;
-  }
-
-}
-
-/**
  * Abstract parser that parses a list of things in some way.
  */
 abstract class ListParser extends Parser {
