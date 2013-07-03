@@ -226,13 +226,17 @@ abstract class ListParser extends Parser {
  */
 class _ChoiceParser extends ListParser {
 
-  _ChoiceParser(parsers) : super(parsers);
+  factory _ChoiceParser(Iterable<Parser> parsers) {
+    return new _ChoiceParser._(new List.from(parsers, growable: false));
+  }
+
+  _ChoiceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
     var result;
-    for (var parser in _parsers) {
-      result = parser.parseOn(context);
+    for (var i = 0; i < _parsers.length; i++) {
+      result = _parsers[i].parseOn(context);
       if (result.isSuccess) {
         return result;
       }
@@ -242,13 +246,11 @@ class _ChoiceParser extends ListParser {
 
   @override
   Parser or(Parser other) {
-    var parsers = new List.from(_parsers);
-    parsers.add(other);
-    return new _ChoiceParser(parsers);
+    return new _ChoiceParser(new List()..addAll(_parsers)..add(other));
   }
 
   @override
-  Parser copy() => new _ChoiceParser(new List.from(_parsers));
+  Parser copy() => new _ChoiceParser(_parsers);
 
 }
 
@@ -257,7 +259,11 @@ class _ChoiceParser extends ListParser {
  */
 class _SequenceParser extends ListParser {
 
-  _SequenceParser(parsers) : super(parsers);
+  factory _SequenceParser(Iterable<Parser> parsers) {
+    return new _SequenceParser._(new List.from(parsers, growable: false));
+  }
+
+  _SequenceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -276,12 +282,10 @@ class _SequenceParser extends ListParser {
 
   @override
   Parser seq(Parser other) {
-    var parsers = new List.from(_parsers);
-    parsers.add(other);
-    return new _SequenceParser(parsers);
+    return new _SequenceParser(new List()..addAll(_parsers)..add(other));
   }
 
   @override
-  Parser copy() => new _SequenceParser(new List.from(_parsers));
+  Parser copy() => new _SequenceParser(_parsers);
 
 }
