@@ -350,9 +350,21 @@ abstract class ParserBuilder {
   }
 
   /**
+   * Returns the parser represented by this builder.
+   */
+  Parser build({copy: false, optimize: false});
+
+}
+
+/**
+ * Abstract class for all parser mirrors.
+ */
+abstract class ParserMirror {
+
+  /**
    * Returns a shallow copy of the receiver.
    */
-  ParserBuilder copy();
+  ParserMirror copy();
 
   /**
    * Recusively tests for the equality of two parsers.
@@ -361,7 +373,7 @@ abstract class ParserBuilder {
    * refer to other parsers. This code is supposed to be overridden by parsers
    * that add other state.
    */
-  bool match(ParserBuilder other, [Set<ParserBuilder> seen]) {
+  bool match(ParserMirror other, [Set<ParserMirror> seen]) {
     if (seen == null) {
       seen = new Set();
     }
@@ -372,7 +384,7 @@ abstract class ParserBuilder {
     return runtimeType == other.runtimeType && _matchChildren(other, seen);
   }
 
-  bool _matchChildren(ParserBuilder other, [Set<ParserBuilder> seen]) {
+  bool _matchChildren(ParserMirror other, [Set<ParserMirror> seen]) {
     var thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
@@ -395,7 +407,7 @@ abstract class ParserBuilder {
    * In contrast, [:letter().or(digit()).children:] returns a collection
    * containing both the [:letter():] and [:digit():] parser.
    */
-  List<ParserBuilder> get children => [];
+  List<ParserMirror> get children => [];
 
   /**
    * Changes the receiver by replacing [source] with [target]. Does nothing
@@ -411,24 +423,22 @@ abstract class ParserBuilder {
    *     var example = letter.plus();
    *     example.replace(letter, digit());
    */
-  void replace(ParserBuilder source, ParserBuilder target) {
+  void replace(ParserMirror source, ParserMirror target) {
     // no children, nothing to do
   }
-
-  /**
-   * Returns the parser represented by this builder.
-   */
-  Parser build({copy: false, optimize: false});
 
 }
 
 /**
  * Abstract base class of all parsers.
  */
-abstract class ParserBase extends Object with Parser, ParserBuilder {
+abstract class ParserBase extends Object with Parser, ParserBuilder, ParserMirror {
 
   @override
   ParserBuilder toBuilder() => this as ParserBuilder;
+
+  @override
+  ParserMirror toMirror() => this as ParserMirror;
 
   @override
   Parser build({copy: false, optimize: false}) => this as Parser;
