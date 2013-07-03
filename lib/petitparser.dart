@@ -158,6 +158,7 @@ library petitparser;
 
 import 'package:meta/meta.dart';
 import 'dart:collection';
+import 'dart:mirrors';
 
 part 'src/core/actions.dart';
 part 'src/core/characters.dart';
