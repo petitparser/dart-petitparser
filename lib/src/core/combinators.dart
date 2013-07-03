@@ -200,11 +200,11 @@ class _RepeatingParser extends DelegateParser {
 /**
  * Abstract parser that parses a list of things in some way.
  */
-abstract class _ListParser extends Parser {
+abstract class ListParser extends Parser {
 
   final List<Parser> _parsers;
 
-  _ListParser(this._parsers);
+  ListParser(this._parsers);
 
   @override
   List<Parser> get children => _parsers;
@@ -224,7 +224,7 @@ abstract class _ListParser extends Parser {
 /**
  * A parser that uses the first parser that succeeds.
  */
-class _ChoiceParser extends _ListParser {
+class _ChoiceParser extends ListParser {
 
   _ChoiceParser(parsers) : super(parsers);
 
@@ -255,7 +255,7 @@ class _ChoiceParser extends _ListParser {
 /**
  * A parser that parses a sequence of parsers.
  */
-class _SequenceParser extends _ListParser {
+class _SequenceParser extends ListParser {
 
   _SequenceParser(parsers) : super(parsers);
 
