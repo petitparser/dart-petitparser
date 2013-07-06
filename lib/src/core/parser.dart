@@ -248,7 +248,7 @@ abstract class Parser {
 
   /**
    * Returns a parser that discards the result of the receiver, and returns
-   * a sub-string of the consumed elements in the string/list being parsed.
+   * a sub-string of the consumed range in the string/list being parsed.
    *
    * For example, the parser [:letter().plus().flatten():] returns [:'abc':]
    * for the input [:'abc':]. In contrast, the parser [:letter().plus():] would
@@ -257,9 +257,9 @@ abstract class Parser {
   Parser flatten() => new _FlattenParser(this);
 
   /**
-   * Returns a parser that discards the result of the receiver and returns
-   * a [Token]. The token carries information about where the token started and
-   * stopped in the input stream.
+   * Returns a parser that returns a [Token]. The token carries the parsed
+   * values of the receiver [Token.value], as well as the consumed range from
+   * [Token.start] to [Token.stop] of the string/list being parsed.
    *
    * For example, the parser [:letter().plus().token():] returns the token
    * [:Token[start: 0, stop: 3, value: abc]:] for the input [:'abc':].
