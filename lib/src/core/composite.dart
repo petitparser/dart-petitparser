@@ -157,7 +157,7 @@ abstract class CompositeParser extends DelegateParser {
  * Error raised when somebody tries to modify a [CompositeParser] outside
  * the [CompositeParser.initialize] method.
  */
-class CompletedParserError implements Error {
+class CompletedParserError extends Error {
   CompletedParserError();
   String toString() => 'Completed parser error';
 }
@@ -165,7 +165,7 @@ class CompletedParserError implements Error {
 /**
  * Error raised when an undefined production is accessed.
  */
-class UndefinedProductionError implements Error {
+class UndefinedProductionError extends Error {
   final String name;
   UndefinedProductionError(this.name);
   String toString() => 'Undefined production: $name';
@@ -174,7 +174,7 @@ class UndefinedProductionError implements Error {
 /**
  * Error raised when a production is accidentally redefined.
  */
-class RedefinedProductionError implements Error {
+class RedefinedProductionError extends Error {
   final String name;
   RedefinedProductionError(this.name);
   String toString() => 'Redefined production: $name';

@@ -91,7 +91,7 @@ class Failure extends Result {
 /**
  * An exception raised in case of a parse error.
  */
-class ParserError implements Error {
+class ParserError extends Error {
   final Failure _failure;
   ParserError(this._failure);
   Failure get failure => _failure;
