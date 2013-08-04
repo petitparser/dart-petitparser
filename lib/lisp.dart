@@ -10,6 +10,8 @@ library lisp;
 
 import 'dart:math';
 import 'dart:collection';
+
+import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 
 part 'src/lisp/cons.dart';
@@ -18,6 +20,7 @@ part 'src/lisp/grammar.dart';
 part 'src/lisp/name.dart';
 part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
+part 'src/lisp/standard.dart';
 
 /** The evaluation function. */
 dynamic eval(Environment env, dynamic expr) {

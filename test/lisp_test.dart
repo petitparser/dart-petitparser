@@ -9,8 +9,8 @@ void main() {
   var parser = new LispParser();
 
   var root = new Environment();
-  var native = Natives.importNatives(root);
-  var standard = Natives.importStandard(native.create());
+  var native = Natives.import(root);
+  var standard = Standard.import(native.create());
 
   dynamic exec(String value, [Environment env]) {
     return evalString(parser, env != null ? env : standard.create(), value);

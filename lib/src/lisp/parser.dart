@@ -30,7 +30,7 @@ class LispParser extends LispGrammar {
       }
     });
 
-    action('quote', (each) => new Cons(Natives.find('quote'), each[1]));
+    action('quote', (each) => new Cons(Natives._quote, each[1]));
   }
 
 }

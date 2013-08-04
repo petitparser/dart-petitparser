@@ -8,28 +8,23 @@ part of lisp;
 class Cons {
 
   /** The head of the cons. */
-  dynamic _head;
+  dynamic head;
 
   /** The tail of the cons. */
-  dynamic _tail;
+  dynamic tail;
 
   /** Constructs a cons. */
-  Cons(this._head, this._tail);
+  Cons(this.head, this.tail);
 
-  /** Accessors for the head of this cons. */
-  dynamic get head => _head;
-  set head(dynamic head) => _head = head;
-
-  /** Accessors for the tail of this cons. */
-  dynamic get tail => _tail;
-  set tail(dynamic tail) => _tail = tail;
-
-  /** Compare the cells. */
+  @override
   bool operator == (other) {
     return other is Cons && head == other.head && tail == other.tail;
   }
 
-  /** Returns the string representation of the cons. */
+  @override
+  int get hashCode => 31 * head.hashCode + tail.hashCode;
+
+  @override
   String toString() {
     var buffer = new StringBuffer();
     buffer.write('(');

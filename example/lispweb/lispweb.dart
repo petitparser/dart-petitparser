@@ -25,8 +25,8 @@ void main() {
   var parser = new LispParser();
 
   var root = new Environment();
-  var native = Natives.importNatives(root);
-  var standard = Natives.importStandard(native.create());
+  var native = Natives.import(root);
+  var standard = Standard.import(native.create());
   var environment = standard.create();
 
   var input = query('#input') as TextAreaElement;

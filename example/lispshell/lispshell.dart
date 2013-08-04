@@ -11,9 +11,11 @@ import 'package:petitparser/lisp.dart';
 void evalInteractive(LispParser parser, Environment env,
                      Stream<String> input, IOSink output,
                      IOSink error) {
+  output.write('>> ');
   input.listen((String line) {
     try {
-      output.writeln('${evalString(parser, env, line)}');
+      output.writeln('=> ${evalString(parser, env, line)}');
+      output.write('>> ');
     } on ParserError catch(exception) {
       error.writeln(exception.toString());
     }
@@ -58,11 +60,11 @@ void main() {
 
   // evaluation context
   var parser = new LispParser();
-  var environment = Natives.importNatives(new Environment());
+  var environment = Natives.import(new Environment());
 
   // process standard library
   if (standardLibrary) {
-    environment = Natives.importStandard(environment.create());
+    environment = Standard.import(environment.create());
   }
 
   // create empty context
@@ -80,4 +82,5 @@ void main() {
         .transform(new LineTransformer());
     evalInteractive(parser, environment, input, stdout, stderr);
   }
+
 }
