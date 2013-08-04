@@ -675,6 +675,20 @@ main() {
       expectSuccess(JAVADOC, '/** * * */', '/** * * */');
     });
   });
+  group('regressions', () {
+    test('flatten().trim()', () {
+      var parser = word().plus().flatten().trim();
+      expectSuccess(parser, 'ab1', 'ab1');
+      expectSuccess(parser, ' ab1 ', 'ab1');
+      expectSuccess(parser, '  ab1  ', 'ab1');
+    });
+    test('trim().flatten()', () {
+      var parser = word().plus().trim().flatten();
+      expectSuccess(parser, 'ab1', 'ab1');
+      expectSuccess(parser, ' ab1 ', ' ab1 ');
+      expectSuccess(parser, '  ab1  ', '  ab1  ');
+    });
+  });
   group('reflection', () {
     test('iterator single', () {
       var parser1 = lowercase();

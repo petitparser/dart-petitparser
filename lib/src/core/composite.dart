@@ -159,7 +159,7 @@ abstract class CompositeParser extends DelegateParser {
  */
 class CompletedParserError extends Error {
   CompletedParserError();
-  String toString() => 'Completed parser error';
+  String toString() => 'Completed parser';
 }
 
 /**
