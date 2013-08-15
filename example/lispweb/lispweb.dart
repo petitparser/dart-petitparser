@@ -5,8 +5,6 @@ library lispweb;
 import 'dart:html';
 import 'package:petitparser/lisp.dart';
 
-import 'dart:mirrors';
-
 void inspector(Element element, Environment environment) {
   var result = '';
   while (environment != null) {

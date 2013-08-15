@@ -15,7 +15,6 @@
  */
 library json;
 
-import 'dart:math';
 import 'dart:collection';
 import 'package:petitparser/petitparser.dart';
 

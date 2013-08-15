@@ -3,7 +3,6 @@
 library dart_test;
 
 import 'dart:io';
-import 'dart:async';
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/dart.dart';
