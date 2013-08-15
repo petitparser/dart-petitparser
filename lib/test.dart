@@ -26,7 +26,7 @@ Matcher accept(Parser parser) {
   return new _Accept(parser);
 }
 
-class _Accept extends BaseMatcher {
+class _Accept extends Matcher {
   final Parser _parser;
   _Accept(this._parser);
   bool matches(item, Map matchState) {
@@ -44,7 +44,7 @@ Matcher parse(Parser parser, dynamic matcher, [int position = -1]) {
   return new _Parse(parser, wrapMatcher(matcher), position);
 }
 
-class _Parse extends BaseMatcher {
+class _Parse extends Matcher {
   final Parser _parser;
   final Matcher _matcher;
   final int _position;
