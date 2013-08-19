@@ -230,5 +230,13 @@ void main() {
       '\n'
       '</xsd:schema>');
   });
-
+  test('atom', () {
+    validate(parser, '<?xml version="1.0" encoding="UTF-8"?>'
+      '<app:service>'
+        '<app:workspace>'
+          '<cmisra:repositoryInfo xmlns:ns3="http://docs.oasis-open.org/ns/cmis/messaging/200908/">'
+          '</cmisra:repositoryInfo>'
+        '</app:workspace>'
+      '</app:service>');
+  });
 }
