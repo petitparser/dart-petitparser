@@ -94,5 +94,5 @@ class Failure extends Result {
 class ParserError extends Error {
   final Failure failure;
   ParserError(this.failure);
-  String toString() => '${failure.message} at ${failure.position}';
+  String toString() => '${failure.message} at ${failure.toPositionString()}';
 }
