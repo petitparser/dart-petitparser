@@ -4,6 +4,8 @@ library lispshell;
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
@@ -78,8 +80,8 @@ void main() {
   // process console input
   if (interactiveMode || files.isEmpty) {
     var input = stdin
-        .transform(new StringDecoder())
-        .transform(new LineTransformer());
+        .transform(SYSTEM_ENCODING.decoder)
+        .transform(new LineSplitter());
     evalInteractive(parser, environment, input, stdout, stderr);
   }
 
