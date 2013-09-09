@@ -5,8 +5,10 @@ part of dart;
 /**
  * Dart grammar definition.
  */
+@proxy
 class DartGrammar extends CompositeParser2 {
 
+  @override
   void initialize() {
     _whitespace();
     _lexemes();

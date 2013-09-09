@@ -8,6 +8,7 @@
 library beta;
 
 import 'dart:mirrors';
+import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 
 /**
@@ -18,10 +19,12 @@ import 'package:petitparser/petitparser.dart';
  * subclasses can define and refer to productions using variables. The
  * variables themselves are not actually implement anywhere, but their
  * behavior is defined in [noSuchMethod] and mapped to a collection using
- * the methods defined in the superclass.
+ * the methods defined in the superclass. To avoid excessive warnings in
+ * the editor, consider adding the [proxy] annotation to subclasses.
  *
  * Consider the following example to parse a list of numbers:
  *
+ *     @proxy
  *     class NumberListGrammar2 extends CompositeParser2 {
  *       void initialize() {
  *         start = list.end();
@@ -33,6 +36,7 @@ import 'package:petitparser/petitparser.dart';
  * Production actions can be attached in subclasses by calling the production,
  * as in the following example:
  *
+ *     @proxy
  *     class NumberListParser2 extends NumberListGrammar2 {
  *       void initialize() {
  *         element((value) => int.parse(value));
@@ -45,6 +49,7 @@ import 'package:petitparser/petitparser.dart';
  */
 abstract class CompositeParser2 extends CompositeParser {
 
+  @override
   dynamic noSuchMethod(Invocation mirror) {
     String name = MirrorSystem.getName(mirror.memberName);
     if (!name.startsWith('_')) {

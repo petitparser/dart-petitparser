@@ -10,6 +10,7 @@ abstract class _XmlWritable {
   /**
    * Answer a print string of the receiver.
    */
+  @override
   String toString() {
     var buffer = new StringBuffer();
     writeTo(buffer);
@@ -137,6 +138,7 @@ class XmlAttribute extends XmlNode {
   XmlName get name => _name;
   String get value => _value;
 
+  @override
   void writeTo(StringBuffer buffer) {
     name.writeTo(buffer);
     buffer.write('="');
@@ -166,6 +168,7 @@ class XmlComment extends XmlData {
 
   XmlComment(String data) : super(data);
 
+  @override
   void writeTo(StringBuffer buffer) {
     buffer.write('<!--');
     buffer.write(data);
@@ -181,6 +184,7 @@ class XmlDoctype extends XmlData {
 
   XmlDoctype(String data) : super(data);
 
+  @override
   void writeTo(StringBuffer buffer) {
     buffer.write('<!DOCTYPE');
     buffer.write(data);
@@ -200,6 +204,7 @@ class XmlProcessing extends XmlData {
 
   String get target => _target;
 
+  @override
   void writeTo(StringBuffer buffer) {
     buffer.write('<?');
     buffer.write(target);
@@ -216,6 +221,7 @@ class XmlText extends XmlData {
 
   XmlText(String data) : super(data);
 
+  @override
   void writeTo(StringBuffer buffer) {
     buffer.write(data);
   }
@@ -236,8 +242,10 @@ abstract class XmlParent extends XmlNode {
     }
   }
 
+  @override
   List<XmlNode> get children => _children;
 
+  @override
   void writeTo(StringBuffer buffer) {
     for (var node in children) {
       node.writeTo(buffer);
@@ -253,8 +261,10 @@ class XmlDocument extends XmlParent {
 
   XmlDocument(Iterable<XmlNode> children) : super(children);
 
+  @override
   XmlDocument get document => this;
 
+  @override
   XmlElement get rootElement {
     for (var node in children) {
       if (node is XmlElement) {
@@ -298,6 +308,7 @@ class XmlElement extends XmlParent {
     return null;
   }
 
+  @override
   void writeTo(StringBuffer buffer) {
     buffer.write('<');
     name.writeTo(buffer);
@@ -343,6 +354,7 @@ class XmlName extends Object with _XmlWritable {
   String get prefix => _prefix;
   String get qualified => toString();
 
+  @override
   void writeTo(StringBuffer buffer) {
     if (prefix != null) {
       buffer.write(prefix);
@@ -351,6 +363,10 @@ class XmlName extends Object with _XmlWritable {
     buffer.write(local);
   }
 
+  @override
+  get hashCode => 17 + 37 * _prefix.hashCode + 37 * _local.hashCode;
+
+  @override
   bool operator == (other) {
     return other is XmlName && other.local == local && other.prefix == prefix;
   }

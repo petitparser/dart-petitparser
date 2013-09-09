@@ -7,6 +7,7 @@ part of lisp;
  */
 class LispGrammar extends CompositeParser {
 
+  @override
   void initialize() {
     def('start', ref('atom').star().end());
 

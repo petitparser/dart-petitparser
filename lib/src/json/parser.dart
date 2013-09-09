@@ -7,6 +7,7 @@ part of json;
  */
 class JsonParser extends JsonGrammar {
 
+  @override
   void initialize() {
     super.initialize();
 

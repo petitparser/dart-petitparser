@@ -7,6 +7,7 @@ part of smalltalk;
  */
 class SmalltalkGrammar extends CompositeParser {
 
+  @override
   void initialize() {
     _whitespace();
     _number();

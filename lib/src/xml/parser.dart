@@ -7,6 +7,7 @@ part of xml;
  */
 class XmlParser extends XmlGrammar {
 
+  @override
   void initialize() {
     super.initialize();
 

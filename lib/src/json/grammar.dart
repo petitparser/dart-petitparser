@@ -18,6 +18,7 @@ class JsonGrammar extends CompositeParser {
     't': '\t'
   };
 
+  @override
   void initialize() {
     def('start', ref('value').end());
 

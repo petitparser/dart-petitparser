@@ -12,6 +12,7 @@ class XmlGrammar extends CompositeParser {
       '\uF900-\uFDCF\uFDF0-\uFFFD';
   static final String NAME_CHARS = '-.0-9\u00B7\u0300-\u036F\u203F-\u2040$NAME_START_CHARS';
 
+  @override
   void initialize() {
     def('start', ref('document').end());
 

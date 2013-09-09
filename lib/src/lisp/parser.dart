@@ -7,6 +7,7 @@ part of lisp;
  */
 class LispParser extends LispGrammar {
 
+  @override
   void initialize() {
     super.initialize();
 
