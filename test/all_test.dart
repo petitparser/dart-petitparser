@@ -13,9 +13,9 @@ import 'xml_test.dart' as xml_test;
 
 void main() {
   group('PetitParser', core_test.main);
-  group('DART', dart_test.main);
+  group('Dart', dart_test.main);
   group('JSON', json_test.main);
-  group('LISP', lisp_test.main);
+  group('Lisp', lisp_test.main);
   group('Smalltalk', smalltalk_test.main);
   group('Test', test_test.main);
   group('XML', xml_test.main);
