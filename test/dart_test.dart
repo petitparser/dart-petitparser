@@ -2,28 +2,9 @@
 
 library dart_test;
 
-import 'dart:io';
-
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/dart.dart';
 import 'package:unittest/unittest.dart';
-
-void generateTests(String title, String path) {
-  group(title, () {
-    var dart = new DartGrammar();
-    new Directory(path)
-      .listSync(recursive: true, followLinks: false)
-      .where((file) => file is File && file.path.endsWith('.dart'))
-      .forEach((file) {
-        test(file.path, () {
-          var result = dart.parse(file.readAsStringSync());
-          if (result.isFailure) {
-            fail(result.toString());
-          }
-        });
-      });
-  });
-}
 
 void main() {
   var dart = new DartGrammar();
@@ -63,7 +44,6 @@ void main() {
     });
     test('stringContentDQ', () {
       var parser = dart['stringContentDQ'];
-
       var validExamples = const ["'hi'", 'hello', ' whitespace '];
       for(var example in validExamples) {
         _testValid(parser, example);
@@ -75,15 +55,11 @@ void main() {
       for(var example in validExamples) {
         _testValid(parser, example);
       }
-
       ['no quotes', '"missing quote', "'missing quote"].forEach((v) {
         _testInvalid(parser, v);
       });
     });
-
   });
-  // generateTests('Dart SDK Sources', '/Applications/Dart/dart-sdk');
-  // generateTests('PetitParser Sources', '.');
 }
 
 void _testInvalid(Parser parser, String value) {
