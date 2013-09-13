@@ -881,6 +881,72 @@ main() {
         expect(() => self.redef('star1', char('b')), throws);
       });
     });
+    test('example (lambda)', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('expression').end());
+        self.def('variable', letter().seq(word().star()).flatten().trim());
+        self.def('expression', self.ref('variable')
+            .or(self.ref('abstraction'))
+            .or(self.ref('application')));
+        self.def('abstraction', char('\\').trim()
+            .seq(self.ref('variable'))
+            .seq(char('.').trim())
+            .seq(self.ref('expression')));
+        self.def('application', char('(').trim()
+            .seq(self.ref('expression'))
+            .seq(self.ref('expression'))
+            .seq(char(')').trim()));
+      });
+      expect(parser.accept('x'), isTrue);
+      expect(parser.accept('xy'), isTrue);
+      expect(parser.accept('x12'), isTrue);
+      expect(parser.accept('\\x.y'), isTrue);
+      expect(parser.accept('\\x.\\y.z'), isTrue);
+      expect(parser.accept('(x x)'), isTrue);
+      expect(parser.accept('(x y)'), isTrue);
+      expect(parser.accept('(x (y z))'), isTrue);
+      expect(parser.accept('((x y) z)'), isTrue);
+    });
+    test('example (expression)', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('terms').end());
+        self.def('terms', self.ref('addition')
+            .or(self.ref('factors')));
+        self.def('addition', self.ref('factors')
+            .separatedBy(char('+').or(char('-')).trim()));
+        self.def('factors', self.ref('multiplication')
+            .or(self.ref('power')));
+        self.def('multiplication', self.ref('power')
+            .separatedBy(char('*').or(char('/')).trim()));
+        self.def('power', self.ref('primary')
+            .separatedBy(char('^').trim()));
+        self.def('primary', self.ref('number')
+            .or(self.ref('parentheses')));
+        self.def('number', char('-').optional()
+            .seq(digit().plus())
+            .seq(char('.').seq(digit().plus()).optional())
+            .flatten().trim());
+        self.def('parentheses', char('(').trim()
+            .seq(self.ref('terms'))
+            .seq(char(')').trim()));
+      });
+      expect(parser.accept('1'), isTrue);
+      expect(parser.accept('12'), isTrue);
+      expect(parser.accept('1.23'), isTrue);
+      expect(parser.accept('-12.3'), isTrue);
+      expect(parser.accept('1 + 2'), isTrue);
+      expect(parser.accept('1 + 2 + 3'), isTrue);
+      expect(parser.accept('1 - 2'), isTrue);
+      expect(parser.accept('1 - 2 - 3'), isTrue);
+      expect(parser.accept('1 * 2'), isTrue);
+      expect(parser.accept('1 * 2 * 3'), isTrue);
+      expect(parser.accept('1 / 2'), isTrue);
+      expect(parser.accept('1 / 2 / 3'), isTrue);
+      expect(parser.accept('1 ^ 2'), isTrue);
+      expect(parser.accept('1 ^ 2 ^ 3'), isTrue);
+      expect(parser.accept('1 + (2 * 3)'), isTrue);
+      expect(parser.accept('(1 + 2) * 3'), isTrue);
+    });
   });
   group('tutorial', () {
     test('simple grammar', () {
