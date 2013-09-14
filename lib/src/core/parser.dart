@@ -188,7 +188,7 @@ abstract class Parser {
   Parser seq(Parser other) => new _SequenceParser([this, other]);
 
   /**
-   * Convenience operator returning a parser accepts the receiver followed
+   * Convenience operator returning a parser that accepts the receiver followed
    * by [other]. See [Parser.seq] for details.
    */
   Parser operator & (Parser other) => this.seq(other);
@@ -208,7 +208,7 @@ abstract class Parser {
   Parser or(Parser other) => new _ChoiceParser([this, other]);
 
   /**
-   * Convenience operator returning a parser accepts the receiver or
+   * Convenience operator returning a parser that accepts the receiver or
    * [other]. See [Parser.or] for details.
    */
   Parser operator | (Parser other) => this.or(other);
