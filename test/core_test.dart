@@ -795,6 +795,45 @@ main() {
       var output = removeSetables(input);
       expect(output.match(lowercase()), isTrue);
     });
+    group('copying and matching', () {
+      void verify(Parser parser) {
+        var copy = parser.copy();
+        expect(copy.runtimeType, parser.runtimeType);
+        expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
+        expect(copy.match(copy), isTrue);
+        expect(parser.match(parser), isTrue);
+        expect(copy, isNot(same(parser)));
+        expect(copy.match(parser), isTrue);
+        expect(parser.match(copy), isTrue);
+      }
+      test('and()', () => verify(digit().and()));
+      test('char()', () => verify(char('a')));
+      test('digit()', () => verify(digit()));
+      test('end()', () => verify(digit().end()));
+      test('epsilon()', () => verify(epsilon()));
+      test('failure()', () => verify(failure()));
+      test('flatten()', () => verify(digit().flatten()));
+      test('map()', () => verify(digit().map((a) => a)));
+      test('not()', () => verify(digit().not()));
+      test('optional()', () => verify(digit().optional()));
+      test('or()', () => verify(digit().or(word())));
+      test('plus()', () => verify(digit().plus()));
+      test('plusGreedy()', () => verify(digit().plusGreedy(word())));
+      test('plusLazy()', () => verify(digit().plusLazy(word())));
+      test('repeat()', () => verify(digit().repeat(2, 3)));
+      test('repeatGreedy()', () => verify(digit().repeatGreedy(word(), 2, 3)));
+      test('repeatLazy()', () => verify(digit().repeatLazy(word(), 2, 3)));
+      test('seq()', () => verify(digit().seq(word())));
+      test('setable()', () => verify(digit().setable()));
+      test('star()', () => verify(digit().star()));
+      test('starGreedy()', () => verify(digit().starGreedy(word())));
+      test('starLazy()', () => verify(digit().starLazy(word())));
+      test('string()', () => verify(string('ab')));
+      test('times()', () => verify(digit().times(2)));
+      test('token()', () => verify(digit().token()));
+      test('trim()', () => verify(digit().trim()));
+      test('undefined()', () => verify(undefined()));
+    });
   });
   group('composite', () {
     test('start', () {
