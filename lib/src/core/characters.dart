@@ -40,8 +40,8 @@ class _CharacterParser extends Parser {
 
 /** Internal method to convert an element to a character code. */
 int _toCharCode(dynamic element) {
-  if (element is int) {
-    return element;
+  if (element is num) {
+    return element.round();
   }
   var value = element.toString();
   if (value.length != 1) {
