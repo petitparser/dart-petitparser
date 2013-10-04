@@ -1048,6 +1048,52 @@ main() {
       expect(parser.accept('(1 + 2) * 3'), isTrue);
     });
   });
+  group('', () {
+    var builder = new ExpressionBuilder();
+    builder.group((group) {
+      group.primitive(char('(').trim()
+          .seq(group.parent)
+          .seq(char(')').trim()));
+      group.primitive(digit().plus()
+          .seq(char('.').seq(digit().plus()).optional())
+          .flatten().trim().map((a) => double.parse(a)));
+    });
+    builder.group((group) {
+      group.prefix(char('-').trim(), (op, a) => -a);
+    });
+    builder.group((group) {
+      group.postfix(string('++').trim(), (a, op) => a++);
+      group.postfix(string('--').trim(), (a, op) => a--);
+    });
+    builder.group((group) {
+      group.right(char('^').trim(), (a, op, b) => a % b);
+    });
+    builder.group((group) {
+      group.left(char('*').trim(), (a, op, b) => a * b);
+      group.left(char('/').trim(), (a, op, b) => a / b);
+    });
+    builder.group((group) {
+      group.left(char('+').trim(), (a, op, b) => a + b);
+      group.left(char('-').trim(), (a, op, b) => a - b);
+    });
+    var parser = builder.build().end();
+    var epsilon = 1e-5;
+    test('number', () {
+      expect(parser.parse('0').value, closeTo(0, epsilon));
+      expect(parser.parse('0.0').value, closeTo(0, epsilon));
+      expect(parser.parse('1').value, closeTo(1, epsilon));
+      expect(parser.parse('1.2').value, closeTo(1.2, epsilon));
+      expect(parser.parse('34').value, closeTo(34, epsilon));
+      expect(parser.parse('34.7').value, closeTo(34.7, epsilon));
+      expect(parser.parse('56.78').value, closeTo(56.78, epsilon));
+    });
+    test('negative number', () {
+      expect(parser.parse('-1').value, closeTo(-1, epsilon));
+      expect(parser.parse('-1.2').value, closeTo(-1.2, epsilon));
+    });
+
+
+  });
   group('tutorial', () {
     test('simple grammar', () {
       var id = letter().seq(letter().or(digit()).star());

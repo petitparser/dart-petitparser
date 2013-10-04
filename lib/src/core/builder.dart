@@ -57,44 +57,61 @@ Instance Variables:
  */
 class ExpressionBuilder {
 
-  final List<_ExpressionGroup> _groups = new List();
+  final List<ExpressionGroup> _groups = new List();
 
   /**
    * Defines a priority group during the evaluation of the [scope]."
    */
-  void group(void scope(_ExpressionGroup group)) {
-    var group = new _ExpressionGroup();
+  void group(void scope(ExpressionGroup group)) {
+    var group = new ExpressionGroup(this);
     _groups.add(group);
     scope(group);
   }
 
+  /**
+   * Returns the outermost parser of the grammar.
+   */
+  Parser get root => _groups.first.root;
+
 }
 
-class _ExpressionGroup {
+class ExpressionGroup {
 
-  final List<Function> _prefix = new List();
-  final List<Function> _postfix = new List();
-  final List<Function> _right = new List();
-  final List<Function> _left = new List();
+  /**
+   * Returns the builder that this group is part of.
+   */
+  final ExpressionBuilder builder;
+
+  /**
+   * Returns the outermost parser of the group.
+   */
+  final SetableParser root = undefined();
+
+  /**
+   * Defined operators in the group.
+   */
+  final List<_ExpressionOperator> _primitive = new List();
+  final List<_ExpressionOperator> _prefix = new List();
+  final List<_ExpressionOperator> _postfix = new List();
+  final List<_ExpressionOperator> _right = new List();
+  final List<_ExpressionOperator> _left = new List();
+
+  ExpressionGroup(this.builder);
+
+  /**
+   * Adds a custom parser to this group, for example to parse numbers
+   * or to recurse into another group.
+   */
+  void primitive(Parser parser, [void action(value)]) {
+    _primitive.add(new _PrimitiveOperator(parser, action));
+  }
 
   /**
    * Defines a prefix [operator]. Evaluates the [action] with the
    * parsed `operator` and `value`.
    */
   void prefix(Parser operator, [void action(operator, value)]) {
-    _prefix.add((parser) {
-      var result = new _SequenceParser([operator.star(), parser]);
-      if (action != null) {
-        result = result.map((input) {
-          var value = input.last;
-          for (var i = input.first.length - 1; i >= 0; i--) {
-            value = action(input.first[i], value);
-          }
-          return value;
-        });
-      }
-      return result;
-    });
+    _prefix.add(new _PrefixOperator(operator, action));
   }
 
   /**
@@ -102,19 +119,7 @@ class _ExpressionGroup {
    * parsed `value` and `operator`.
    */
   void postfix(Parser operator, [void action(value, operator)]) {
-    _postfix.add((parser) {
-      var result = new _SequenceParser([parser, operator.star()]);
-      if (action != null) {
-        result = result.map((input) {
-          var value = input.first;
-          for (var i = 0; i < input.second.length; i++) {
-            value = action(value, input.second[i]);
-          }
-          return value;
-        });
-      }
-      return result;
-    });
+    _postfix.add(new _PostfixOperator(operator, action));
   }
 
   /**
@@ -123,19 +128,7 @@ class _ExpressionGroup {
    * term.
    */
   void right(Parser operator, [void action(left, operator, right)]) {
-    _right.add((parser) {
-      var result = parser.separatedBy(operator);
-      if (action != null) {
-        result = result.map((input) {
-          var value = input.last;
-          for (var i = input.length - 3; i >= 0; i -= 2) {
-            value = action(input[i], input[i + 1], value);
-          }
-          return value;
-        });
-      }
-      return result;
-    });
+    _right.add(new _RightOperator(operator, action));
   }
 
   /**
@@ -144,23 +137,11 @@ class _ExpressionGroup {
    * term.
    */
   void left(Parser operator, [void action(left, operator, right)]) {
-    _left.add((parser) {
-      var result = parser.separatedBy(operator);
-      if (action != null) {
-        result = result.map((input) {
-          var value = input.first;
-          for (var i = 1; i < input.length; i += 2) {
-            value = action(value, input[i], input[i + 1]);
-          }
-          return value;
-        });
-      }
-      return result;
-    });
+    _left.add(new _LeftOperator(operator, action));
   }
 
   Parser _build(Parser parser) {
-    return [_prefix, _postfix, _right, _left].fold(parser, (parser, list) {
+    return [_primitive, _prefix, _postfix, _right, _left].fold(parser, (parser, list) {
       if (list.isEmpty) {
         return parser;
       } else if (list.size == 1) {
@@ -173,4 +154,14 @@ class _ExpressionGroup {
     });
   }
 
+}
+
+class _ExpressionOperator {
+  final Parser operator;
+  final Function action;
+  _ExpressionOperator(this.operator, this.action);
+}
+
+class _PrimitiveOperator implements _ExpressionOperator {
+  _PrimitiveOperator(operator, action) : super(operator, action);
 }
