@@ -696,7 +696,6 @@ class DartGrammar extends CompositeParser2 {
     scriptDefinition = scriptTag.optional() & libraryDefinition;
 
     start = scriptDefinition.end();
-
   }
 
 }
