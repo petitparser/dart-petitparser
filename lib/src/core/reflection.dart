@@ -178,18 +178,20 @@ Parser profile(Parser root) {
   });
 }
 
+typedef Result _ContinuationHandler(Context context, Function continuation);
+
 class _ContinuationParser extends DelegateParser {
 
-  final Function _function;
+  final _ContinuationHandler _handler;
 
-  _ContinuationParser(parser, this._function) : super(parser);
+  _ContinuationParser(parser, this._handler) : super(parser);
 
   @override
   Result parseOn(Context context) {
-    return _function(context, (result) => _delegate.parseOn(result));
+    return _handler(context, (result) => _delegate.parseOn(result));
   }
 
   @override
-  Parser copy() => new _ContinuationParser(_delegate, _function);
+  Parser copy() => new _ContinuationParser(_delegate, _handler);
 
 }
