@@ -8,6 +8,7 @@
 library dart_file_test;
 
 import 'dart:io';
+import 'dart:async';
 import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
 import 'package:unittest/unittest.dart';
@@ -17,9 +18,17 @@ void generateTests(DartGrammar dart, String title, String path) {
     new Directory(path)
       .listSync(recursive: true, followLinks: false)
       .where((file) => file is File && file.path.endsWith('.dart'))
-      .forEach((file) {
+      .forEach((File file) {
         test(file.path, () {
-          expect(file.readAsStringSync(), accept(dart));
+          var source = new StringBuffer();
+          file.openRead()
+              .transform(SYSTEM_ENCODING.decoder)
+              .listen(
+                  (part) => source.write(part), 
+                  onDone: expectAsync0(() {
+                    expect(source.toString(), accept(dart));
+                  }),
+                  onError: fail);
         });
       });
   });
@@ -27,6 +36,6 @@ void generateTests(DartGrammar dart, String title, String path) {
 
 void main() {
   var dart = new DartGrammar();
-  generateTests(dart, 'Dart SDK', '/Applications/Dart/dart-sdk');
+  //generateTests(dart, 'Dart SDK', '/Applications/Dart/dart-sdk');
   generateTests(dart, 'PetitParser', Directory.current.path);
 }

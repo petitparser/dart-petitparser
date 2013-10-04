@@ -26,7 +26,7 @@ void expectFailure(Parser parser, dynamic input, [int position = 0, String messa
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
   PluggableCompositeParser(this._function) : super();
-  void initialize() => _function(this);
+  void initialize() { _function(this); }
 }
 
 main() {

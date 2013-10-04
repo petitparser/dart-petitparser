@@ -79,10 +79,16 @@ Parser stringIgnoreCase(String element, [String message]) {
 }
 
 /**
+ * A generic predicate function returning [true] or [false] for a given
+ * [input] argument.
+ */
+typedef bool Predicate(input);
+
+/**
  * Returns a parser that reads input of the specified [length], accepts
  * it if the [predicate] matches, or fails with the given [message].
  */
-Parser predicate(int length, Function predicate, String message) {
+Parser predicate(int length, Predicate predicate, String message) {
   return new _PredicateParser(length, predicate, message);
 }
 
@@ -92,7 +98,7 @@ Parser predicate(int length, Function predicate, String message) {
 class _PredicateParser extends Parser {
 
   final int _length;
-  final Function _predicate;
+  final Predicate _predicate;
   final String _message;
 
   _PredicateParser(this._length, this._predicate, this._message);
