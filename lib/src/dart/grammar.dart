@@ -490,7 +490,6 @@ class DartGrammar extends CompositeParser2 {
     ;
     functionExpression = formalParameterList & functionExpressionBody;
 
-    rethrowExpression = RETHROW;
     throwExpression = THROW & expression;
     throwExpressionWithoutCascade = THROW & expressionWithoutCascade;
 
@@ -566,7 +565,6 @@ class DartGrammar extends CompositeParser2 {
       assignableExpression & assignmentOperator & expression
       | conditionalExpression & cascadeSection.star()
       | throwExpression
-      | rethrowExpression
     ;
 
 
@@ -575,7 +573,6 @@ class DartGrammar extends CompositeParser2 {
       assignableExpression & assignmentOperator & expressionWithoutCascade
       | conditionalExpression
       | throwExpressionWithoutCascade
-      | rethrowExpression
     ;
 
     expressionList =  expression.separatedBy(comma);
@@ -631,6 +628,7 @@ class DartGrammar extends CompositeParser2 {
 
     forStatement = FOR & lparen & forLoopParts & rparen & statement;
     ifStatement = IF & lparen & expression & rparen & statement & (ELSE & statement).optional();
+    rethrowStatement = RETHROW;
     localFunctionDeclaration = functionSignature & functionBody;
     localVariableDeclaration = initializedVariableDeclaration & semicolon;
     expressionStatement = expression.optional() & semicolon;
@@ -643,6 +641,7 @@ class DartGrammar extends CompositeParser2 {
           | doStatement
           | switchStatement
           | ifStatement
+          | rethrowStatement
           | tryStatement
           | breakStatement
           | continueStatement
