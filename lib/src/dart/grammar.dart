@@ -33,65 +33,43 @@ class DartGrammar extends CompositeParser2 {
   }
 
   /** Defines a token parser that consumes whitespace. */
-  Parser _token(String input) {
-    assert(input != null && input.length > 0);
-    var parser = input.length == 1 ? char(input) :
-        string(input);
+  Parser _token(input) {
+    var parser = input is Parser ? input :
+      input.length == 1 ? char(input) :
+      string(input);
     return parser.token().trim(ref('whitespace'));
   }
 
   void _lexemes() {
-    backSlash = _token('\\');
-    colon = _token(':');
-    comma = _token(',');
-    dollar = _token('\$');
-    dot = _token('.');
-    doubleQuote = _token('"');
-    equalSign = _token('=');
-    lparen = _token('(');
-    minus = _token('-');
-    pluz = _token('+');
-    rparen = _token(')');
-    semicolon = _token(';');
-    singleQuote = _token("'");
-    tripleDoubleQuote = _token('"""');
-    tripleSingleQuote = _token("'''");
-
-    DIGIT = range('0', '9');
+    DIGIT = digit();
     LETTER = letter();
-    HEX_DIGIT =
-        range('a','f')
-        | range('A','F')
-        | DIGIT
-        ;
+    HEX_DIGIT = range('a', 'f')
+              | range('A', 'F')
+              | DIGIT
+              ;
 
-    HEX_NUMBER =
-        _token('0x') & HEX_DIGIT.plus()
-    | _token('0X') & HEX_DIGIT.plus()
-    ;
+    HEX_NUMBER = string('0x') & HEX_DIGIT.plus()
+               | string('0X') & HEX_DIGIT.plus()
+               ;
 
-    EXPONENT =
-      (_token('e') | _token('E')) & (pluz | minus).optional() & DIGIT.plus()
-    ;
+    EXPONENT = (char('e') | char('E')) & (char('+') | char('-')).optional() & DIGIT.plus();
 
-    NUMBER =
-      DIGIT.plus() & (dot & DIGIT.plus()).optional() & EXPONENT.optional()
-    |  dot & DIGIT.plus() & EXPONENT.optional()
-    ;
+    NUMBER = DIGIT.plus() & (char('.') & DIGIT.plus()).optional() & EXPONENT.optional()
+           | char('.') & DIGIT.plus() & EXPONENT.optional()
+           ;
 
-    HEX_DIGIT_SEQUENCE =
-      HEX_DIGIT & HEX_DIGIT.optional() & HEX_DIGIT.optional() & HEX_DIGIT.optional() & HEX_DIGIT.optional() & HEX_DIGIT.optional();
+    HEX_DIGIT_SEQUENCE = HEX_DIGIT.repeat(1, 6);
 
     ESCAPE_SEQUENCE =
-        _token('\n')
-      | _token('\r')
-      | _token('\f')
-      | _token('\b')
-      | _token('\t')
-      | _token('\v')
-      | _token('\\x') & HEX_DIGIT & HEX_DIGIT
-      | _token('\\u') & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT
-      | _token('\\u{') & HEX_DIGIT_SEQUENCE & _token('}')
+        string('\\n')
+      | string('\\r')
+      | string('\\f')
+      | string('\\b')
+      | string('\\t')
+      | string('\\v')
+      | string('\\x') & HEX_DIGIT & HEX_DIGIT
+      | string('\\u') & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT
+      | string('\\u{') & HEX_DIGIT_SEQUENCE & char('}')
       ;
 
   }
@@ -161,19 +139,19 @@ class DartGrammar extends CompositeParser2 {
     typeArguments = _token('<') & typeList & _token('>');
     typeName = qualified;
     type = typeName & typeArguments.optional();
-    typeList = type.separatedBy(comma).optional();
+    typeList = type.separatedBy(_token(',')).optional();
     functionPrefix = returnType.optional() & identifier;
-    functionTypeAlias = functionPrefix & typeParameters.optional() & formalParameterList & semicolon;
-    typeAliasBody = identifier & typeParameters.optional() & equalSign & ABSTRACT.optional() & mixinApplication | functionTypeAlias;
+    functionTypeAlias = functionPrefix & typeParameters.optional() & formalParameterList & _token(';');
+    typeAliasBody = identifier & typeParameters.optional() & _token('=') & ABSTRACT.optional() & mixinApplication | functionTypeAlias;
     typeAlias = metadata & TYPEDEF & typeAliasBody;
 
   }
 
   void _declarations() {
-    metadata = (_token('@') & qualified & (dot & identifier).optional() & arguments.optional()).star();
+    metadata = (_token('@') & qualified & (_token('.') & identifier).optional() & arguments.optional()).star();
 
     typeParameter = metadata & identifier & (EXTENDS & type).optional();
-    typeParameters = _token('<') & typeParameter.separatedBy(comma) & _token('>');
+    typeParameters = _token('<') & typeParameter.separatedBy(_token(',')) & _token('>');
 
     returnType =
       VOID
@@ -192,13 +170,13 @@ class DartGrammar extends CompositeParser2 {
     ;
 
     declaredIdentifier = metadata & finalConstVarOrType & identifier;
-    variableDeclaration = declaredIdentifier.separatedBy(comma);
-    initializedIdentifier = identifier & (equalSign & expression).optional();
-    initializedVariableDeclaration = declaredIdentifier & (equalSign & expression).optional() & (comma & initializedIdentifier).star();
-    initializedIdentifierList = initializedIdentifier.separatedBy(comma);
+    variableDeclaration = declaredIdentifier.separatedBy(_token(','));
+    initializedIdentifier = identifier & (_token('=') & expression).optional();
+    initializedVariableDeclaration = declaredIdentifier & (_token('=') & expression).optional() & (_token(',') & initializedIdentifier).star();
+    initializedIdentifierList = initializedIdentifier.separatedBy(_token(','));
 
 
-    fieldFormalParameter = metadata & finalConstVarOrType.optional() & THIS & dot & identifier;
+    fieldFormalParameter = metadata & finalConstVarOrType.optional() & THIS & _token('.') & identifier;
 
     simpleFormalParameter =
       declaredIdentifier
@@ -211,10 +189,10 @@ class DartGrammar extends CompositeParser2 {
     | simpleFormalParameter
     ;
 
-    normalFormalParameters = normalFormalParameter.separatedBy(comma);
-    defaultFormalParameter = normalFormalParameter & (equalSign & expression).optional();
-    defaultNamedParameter = normalFormalParameter & (colon & expression).optional();
-    optionalPositionalFormalParameters = _token('[') & defaultFormalParameter.separatedBy(comma) & _token(']');
+    normalFormalParameters = normalFormalParameter.separatedBy(_token(','));
+    defaultFormalParameter = normalFormalParameter & (_token('=') & expression).optional();
+    defaultNamedParameter = normalFormalParameter & (_token(':') & expression).optional();
+    optionalPositionalFormalParameters = _token('[') & defaultFormalParameter.separatedBy(_token(',')) & _token(']');
 
     optionalFormalParameters =
       optionalPositionalFormalParameters |
@@ -222,18 +200,18 @@ class DartGrammar extends CompositeParser2 {
     ;
 
     formalParameterList =
-      lparen & rparen
-      | lparen & normalFormalParameters & (comma & optionalFormalParameters).optional() & rparen
-      | lparen & optionalFormalParameters & rparen
+      _token('(') & _token(')')
+      | _token('(') & normalFormalParameters & (_token(',') & optionalFormalParameters).optional() & _token(')')
+      | _token('(') & optionalFormalParameters & _token(')')
     ;
 
-    namedFormalParameters = _token('{') & defaultNamedParameter.separatedBy(comma) & _token('}');
+    namedFormalParameters = _token('{') & defaultNamedParameter.separatedBy(_token(',')) & _token('}');
 
     functionSignature = metadata & returnType.optional() & identifier & formalParameterList;
     block = _token('{') & statements & _token('}');
 
     functionBody =
-      _token('=>') & expression & semicolon
+      _token('=>') & expression & _token(';')
       | block
     ;
 
@@ -244,23 +222,23 @@ class DartGrammar extends CompositeParser2 {
 
     constantConstructorSignature = CONST & qualified & formalParameterList;
     redirectingFactoryConstructorSignature =
-      CONST.optional() & FACTORY & identifier & (dot & identifier).optional() &  formalParameterList & equalSign & type & (dot & identifier).optional()
+      CONST.optional() & FACTORY & identifier & (_token('.') & identifier).optional() &  formalParameterList & _token('=') & type & (_token('.') & identifier).optional()
     ;
     factoryConstructorSignature =
-        FACTORY & identifier & (dot & identifier).optional() & formalParameterList
+        FACTORY & identifier & (_token('.') & identifier).optional() & formalParameterList
     ;
 
 
-    fieldInitializer = (THIS & dot).optional() & identifier & equalSign & conditionalExpression & cascadeSection.star();
+    fieldInitializer = (THIS & _token('.')).optional() & identifier & _token('=') & conditionalExpression & cascadeSection.star();
     superCallOrFieldInitializer =
       SUPER & arguments
-      | SUPER & dot & identifier & arguments
+      | SUPER & _token('.') & identifier & arguments
       | fieldInitializer
     ;
 
-    initializers = colon & superCallOrFieldInitializer.separatedBy(comma);
-    redirection = colon & THIS & (dot & identifier).optional() & arguments;
-    constructorSignature = identifier & (dot & identifier).optional() & formalParameterList;
+    initializers = _token(':') & superCallOrFieldInitializer.separatedBy(_token(','));
+    redirection = _token(':') & THIS & (_token('.') & identifier).optional() & arguments;
+    constructorSignature = identifier & (_token('.') & identifier).optional() & formalParameterList;
     setterSignature = returnType.optional() & SET & identifier & formalParameterList;
     getterSignature = type.optional() & GET & identifier;
 
@@ -277,7 +255,7 @@ class DartGrammar extends CompositeParser2 {
       _token('~')
     | binaryOperator
     | _token('[') & _token(']')
-    | _token('[') & _token(']') & equalSign
+    | _token('[') & _token(']') & _token('=')
     ;
 
     operatorSignature = returnType.optional() & OPERATOR & operator & formalParameterList;
@@ -293,8 +271,8 @@ class DartGrammar extends CompositeParser2 {
     | operatorSignature
     ;
 
-    staticFinalDeclaration = identifier & equalSign & expression;
-    staticFinalDeclarationList = staticFinalDeclaration.separatedBy(comma);
+    staticFinalDeclaration = identifier & _token('=') & expression;
+    staticFinalDeclarationList = staticFinalDeclaration.separatedBy(_token(','));
 
     declaration =
       constantConstructorSignature & (redirection | initializers).optional()
@@ -319,7 +297,7 @@ class DartGrammar extends CompositeParser2 {
 
 
     classMemberDefinition =
-      declaration & semicolon
+      declaration & _token(';')
       | methodSignature & functionBody
     ;
 
@@ -336,12 +314,12 @@ class DartGrammar extends CompositeParser2 {
 
     IDENTIFIER_START_NO_DOLLAR =
       LETTER
-    | _token('_')
+    | char('_')
     ;
 
     IDENTIFIER_START =
       IDENTIFIER_START_NO_DOLLAR
-    | dollar
+    | char('\$')
     ;
 
     IDENTIFIER_PART_NO_DOLLAR =
@@ -360,11 +338,11 @@ class DartGrammar extends CompositeParser2 {
     IDENTIFIER = IDENTIFIER_START & IDENTIFIER_PART.star();
 
     identifier = IDENTIFIER.flatten().token().trim();
-    qualified = identifier.separatedBy(dot);
+    qualified = identifier.separatedBy(_token('.'));
 
     assignableSelector =
       _token('[') & expression & _token(']')
-    | dot & identifier
+    | _token('.') & identifier
     ;
 
     assignableExpression =
@@ -383,7 +361,7 @@ class DartGrammar extends CompositeParser2 {
     ;
 
     unaryOperator = _token('!') | _token('~');
-    prefixOperator = minus | unaryOperator;
+    prefixOperator = _token('-') | unaryOperator;
     unaryExpression =
       prefixOperator & unaryExpression
     | postfixExpression
@@ -397,7 +375,7 @@ class DartGrammar extends CompositeParser2 {
     | SUPER & (multiplicativeOperator & unaryExpression).plus()
     ;
 
-    additiveOperator = pluz | minus;
+    additiveOperator = _token('+') | _token('-');
 
     additiveExpression =
       multiplicativeExpression & (additiveOperator & multiplicativeExpression).star()
@@ -439,7 +417,7 @@ class DartGrammar extends CompositeParser2 {
     logicalAndExpression = bitwiseOrExpression & (_token('&&') & bitwiseOrExpression).star();
     logicalOrExpression = logicalAndExpression & (_token('||') & logicalAndExpression).star();
 
-    conditionalExpression = logicalOrExpression & (_token('?') & expressionWithoutCascade & colon & expressionWithoutCascade).optional();
+    conditionalExpression = logicalOrExpression & (_token('?') & expressionWithoutCascade & _token(':') & expressionWithoutCascade).optional();
 
     compoundAssignmentOperator =
       _token('*=')
@@ -454,7 +432,7 @@ class DartGrammar extends CompositeParser2 {
     | _token('^=')
     | _token('|=')
     ;
-    assignmentOperator = equalSign | compoundAssignmentOperator;
+    assignmentOperator = _token('=') | compoundAssignmentOperator;
 
     cascadeSelector =
       _token('[') & expression & _token(']')
@@ -469,18 +447,18 @@ class DartGrammar extends CompositeParser2 {
 
     namedArgument = label & expression;
     argumentList =
-      namedArgument.separatedBy(comma)
-    | expressionList.separatedBy(comma)
+      namedArgument.separatedBy(_token(','))
+    | expressionList.separatedBy(_token(','))
     ;
-    arguments = lparen & argumentList.optional() & rparen;
+    arguments = _token('(') & argumentList.optional() & _token(')');
 
     isOperator = IS & _token('!').optional();
     typeTest = isOperator & type;
     typeCast = AS & type;
     argumentDefinitionTest = _token('?') & identifier;
 
-    constObjectExpression = CONST & type & (dot & identifier).optional() & arguments;
-    newExpression = NEW & type & (dot & identifier).optional() & arguments;
+    constObjectExpression = CONST & type & (_token('.') & identifier).optional() & arguments;
+    newExpression = NEW & type & (_token('.') & identifier).optional() & arguments;
 
     thisExpression = THIS;
 
@@ -493,45 +471,45 @@ class DartGrammar extends CompositeParser2 {
     throwExpression = THROW & expression;
     throwExpressionWithoutCascade = THROW & expressionWithoutCascade;
 
-    mapLiteralEntry = stringLiteral & colon & expression;
+    mapLiteralEntry = stringLiteral & _token(':') & expression;
     mapLiteral =
       CONST.optional() &
       typeArguments.optional() &
       _token('{') &
-      (mapLiteralEntry & (dot & mapLiteralEntry).star() & comma.optional()).optional() &
+      (mapLiteralEntry & (_token('.') & mapLiteralEntry).star() & _token(',').optional()).optional() &
       _token('}');
 
     listLiteral =
-        CONST.optional() & typeArguments.optional() & _token('[') & (expressionList & comma.optional()).optional() & _token(']');
+        CONST.optional() & typeArguments.optional() & _token('[') & (expressionList & _token(',').optional()).optional() & _token(']');
 
-    stringInterpolation = dollar & IDENTIFIER_NO_DOLLAR |
-        dollar & _token('{') & expression & _token('}');
-    NEWLINE = _token('\\n') | _token('\r');
-    stringContentDQ = (backSlash | doubleQuote | dollar | NEWLINE).neg() |
-        backSlash & NEWLINE.neg() |
+    stringInterpolation = char('\$') & IDENTIFIER_NO_DOLLAR |
+        char('\$') & char('{') & expression & char('}');
+    NEWLINE = Token.newlineParser();
+    stringContentDQ = (char('\\') | char('"') | char('\$') | NEWLINE).neg() |
+        char('\\') & NEWLINE.neg() |
         stringInterpolation;
-    stringContentSQ = (backSlash | singleQuote | dollar | NEWLINE).neg() |
-        backSlash & NEWLINE.neg() |
+    stringContentSQ = (char('\\') | char("'") | char('\$') | NEWLINE).neg() |
+        char('\\') & NEWLINE.neg() |
         stringInterpolation;
-    stringContentTDQ = (backSlash | tripleDoubleQuote | dollar | NEWLINE).not() |
-        backSlash & NEWLINE.not() |
+    stringContentTDQ = (char('\\') | string('"""') | char('\$') | NEWLINE).not() |
+        char('\\') & NEWLINE.not() |
         stringInterpolation;
-    stringContentTSQ = (backSlash | tripleSingleQuote | dollar | NEWLINE).not() |
-        backSlash & NEWLINE.not() |
+    stringContentTSQ = (char('\\') | string("'''") | char('\$') | NEWLINE).not() |
+        char('\\') & NEWLINE.not() |
         stringInterpolation;
 
     multilineString =
-      tripleDoubleQuote & stringContentTDQ.star() & tripleDoubleQuote
-      | tripleSingleQuote & stringContentTSQ.star() & tripleSingleQuote
-      | _token('r') & tripleDoubleQuote & doubleQuote.not().star() & tripleDoubleQuote
-      | _token('r') & tripleSingleQuote & singleQuote.not().star() & tripleSingleQuote
+        string('"""') & stringContentTDQ.star() & string('"""')
+      | string("'''") & stringContentTSQ.star() & string("'''")
+      | char('r') & string('"""') & string('"""').not().star() & string('"""')
+      | char('r') & string("'''") & string("'''").not().star() & string("'''")
     ;
 
     singleLineString =
-        doubleQuote & stringContentDQ.star() & doubleQuote
-        | singleQuote & stringContentSQ.star() & singleQuote
-        | _token('r') & doubleQuote & ( doubleQuote | NEWLINE ).neg().star() & doubleQuote
-        | _token('r') & singleQuote & ( singleQuote | NEWLINE ).neg().star() & singleQuote
+          char('"') & stringContentDQ.star() & char('"')
+        | char("'") & stringContentSQ.star() & char("'")
+        | char('r') & char('"') & (char('"') | NEWLINE).neg().star() & char('"')
+        | char('r') & char("'") & (char("'") | NEWLINE).neg().star() & char("'")
         ;
 
 
@@ -540,10 +518,7 @@ class DartGrammar extends CompositeParser2 {
     | singleLineString.plus()
     ;
 
-    numericLiteral =
-      NUMBER
-      | HEX_NUMBER
-    ;
+    numericLiteral = _token(NUMBER | HEX_NUMBER);
 
     booleanLiteral =
       TRUE
@@ -575,7 +550,7 @@ class DartGrammar extends CompositeParser2 {
       | throwExpressionWithoutCascade
     ;
 
-    expressionList =  expression.separatedBy(comma);
+    expressionList =  expression.separatedBy(_token(','));
 
 
     primary =
@@ -586,22 +561,21 @@ class DartGrammar extends CompositeParser2 {
       | identifier
       | newExpression
       | constObjectExpression
-      | lparen & expression & rparen
+      | _token('(') & expression & _token(')')
       | argumentDefinitionTest
     ;
 
   }
 
   void _statements() {
-
-    assertStatement = ASSERT & lparen & conditionalExpression & rparen & semicolon;
-    continueStatement = CONTINUE & identifier.optional() & semicolon;
-    breakStatement = BREAK & identifier.optional() & semicolon;
-    label = identifier & colon;
-    returnStatement = RETURN & expression.optional() & semicolon;
+    assertStatement = ASSERT & _token('(') & conditionalExpression & _token(')') & _token(';');
+    continueStatement = CONTINUE & identifier.optional() & _token(';');
+    breakStatement = BREAK & identifier.optional() & _token(';');
+    label = identifier & _token(':');
+    returnStatement = RETURN & expression.optional() & _token(';');
 
     finallyPart = FINALLY & block;
-    catchPart = CATCH & lparen & identifier & (comma & identifier).optional() & rparen;
+    catchPart = CATCH & _token('(') & identifier & (_token(',') & identifier).optional() & _token(')');
     onPart =
         catchPart &  block
         | ON & type & catchPart.optional() & block
@@ -609,33 +583,33 @@ class DartGrammar extends CompositeParser2 {
 
     tryStatement = TRY & block & (onPart.plus() & finallyPart.optional() | finallyPart);
 
-    defaultCase = label.star() & DEFAULT & colon & statements;
-    switchCase = label.star() & (CASE & expression & colon) & statements;
-    switchStatement = SWITCH & lparen & expression & rparen & _token('{') & switchCase.star() & defaultCase.optional() & _token('}');
-    doStatement = DO & statement & WHILE & lparen & expression & rparen & semicolon;
-    whileStatement = WHILE & lparen & expression & rparen & statement;
+    defaultCase = label.star() & DEFAULT & _token(':') & statements;
+    switchCase = label.star() & (CASE & expression & _token(':')) & statements;
+    switchStatement = SWITCH & _token('(') & expression & _token(')') & _token('{') & switchCase.star() & defaultCase.optional() & _token('}');
+    doStatement = DO & statement & WHILE & _token('(') & expression & _token(')') & _token(';');
+    whileStatement = WHILE & _token('(') & expression & _token(')') & statement;
 
     forInitializerStatement =
-      localVariableDeclaration & semicolon
-    | expression.optional() & semicolon
+      localVariableDeclaration & _token(';')
+    | expression.optional() & _token(';')
     ;
 
     forLoopParts =
-      forInitializerStatement & expression.optional() & semicolon & expressionList.optional()
+      forInitializerStatement & expression.optional() & _token(';') & expressionList.optional()
     | declaredIdentifier & IN & expression
     | identifier & IN & expression
     ;
 
-    forStatement = FOR & lparen & forLoopParts & rparen & statement;
-    ifStatement = IF & lparen & expression & rparen & statement & (ELSE & statement).optional();
+    forStatement = FOR & _token('(') & forLoopParts & _token(')') & statement;
+    ifStatement = IF & _token('(') & expression & _token(')') & statement & (ELSE & statement).optional();
     rethrowStatement = RETHROW;
     localFunctionDeclaration = functionSignature & functionBody;
-    localVariableDeclaration = initializedVariableDeclaration & semicolon;
-    expressionStatement = expression.optional() & semicolon;
+    localVariableDeclaration = initializedVariableDeclaration & _token(';');
+    expressionStatement = expression.optional() & _token(';');
 
     nonLabelledStatement =
           block
-          | localVariableDeclaration & semicolon
+          | localVariableDeclaration & _token(';')
           | forStatement
           | whileStatement
           | doStatement
@@ -670,24 +644,24 @@ class DartGrammar extends CompositeParser2 {
         | EXTERNAL & setterSignature
         | functionSignature & functionBody
         | returnType.optional() & getOrSet & identifier & formalParameterList & functionBody
-        | (FINAL | CONST) & type.optional() & staticFinalDeclarationList & semicolon
-        | variableDeclaration & semicolon
+        | (FINAL | CONST) & type.optional() & staticFinalDeclarationList & _token(';')
+        | variableDeclaration & _token(';')
         ;
 
-    identifierList = identifier.separatedBy(comma).optional();
+    identifierList = identifier.separatedBy(_token(',')).optional();
     combinator =
         SHOW & identifierList
         | HIDE & identifierList;
 
 
-    libraryImport = metadata & IMPORT & (AS & identifier).optional() & combinator.star() & semicolon;
-    libraryExport = metadata & EXPORT & uri & combinator.star() & semicolon;
+    libraryImport = metadata & IMPORT & (AS & identifier).optional() & combinator.star() & _token(';');
+    libraryExport = metadata & EXPORT & uri & combinator.star() & _token(';');
     importOrExport = libraryImport | libraryExport;
 
-    libraryName = metadata & LIBRARY & identifier.separatedBy(dot) & semicolon;
+    libraryName = metadata & LIBRARY & identifier.separatedBy(_token('.')) & _token(';');
 
-    partDirective = metadata & PART & stringLiteral & semicolon;
-    partHeader = metadata & PART & OF & identifier.separatedBy(dot) & semicolon;
+    partDirective = metadata & PART & stringLiteral & _token(';');
+    partHeader = metadata & PART & OF & identifier.separatedBy(_token('.')) & _token(';');
     partDeclaration = partHeader & topLevelDefinition.star();
 
     libraryDefinition = libraryName.optional() & importOrExport.star() & partDirective.star() & topLevelDefinition.star();
