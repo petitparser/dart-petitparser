@@ -77,6 +77,12 @@ class ExpressionBuilder {
 
 class ExpressionGroup {
 
+  static final int _PRIMITIVE = 0;
+  static final int _PREFIX = 1;
+  static final int _POSTFIX = 2;
+  static final int _RIGHT = 3;
+  static final int _LEFT = 4;
+
   /**
    * Returns the builder that this group is part of.
    */
@@ -90,11 +96,7 @@ class ExpressionGroup {
   /**
    * Defined operators in the group.
    */
-  final List<_ExpressionOperator> _primitive = new List();
-  final List<_ExpressionOperator> _prefix = new List();
-  final List<_ExpressionOperator> _postfix = new List();
-  final List<_ExpressionOperator> _right = new List();
-  final List<_ExpressionOperator> _left = new List();
+  final Map<int, List<_ExpressionOperator>> _operators = new Map();
 
   ExpressionGroup(this.builder);
 
@@ -103,7 +105,11 @@ class ExpressionGroup {
    * or to recurse into another group.
    */
   void primitive(Parser parser, [void action(value)]) {
-    _primitive.add(new _PrimitiveOperator(parser, action));
+    // TODO(renggli): kill all the unnecessary indirection
+    _operators.putIfAbsent(_PRIMITIVE, () => new List())
+        .add(new _ExpressionOperator(parser, action, (parsers, next) {
+          return parsers.map((result) => result.action(result.value));
+        }));
   }
 
   /**
@@ -111,7 +117,12 @@ class ExpressionGroup {
    * parsed `operator` and `value`.
    */
   void prefix(Parser operator, [void action(operator, value)]) {
-    _prefix.add(new _PrefixOperator(operator, action));
+    _operators.putIfAbsent(_PREFIX, () => new List())
+        .add(new _ExpressionOperator(operator, action, (operators, next) {
+          return new _SequenceParser([operators, next]).map((results) {
+            return results.first.action(results.first.value, results.last);
+          });
+        }));
   }
 
   /**
@@ -119,7 +130,12 @@ class ExpressionGroup {
    * parsed `value` and `operator`.
    */
   void postfix(Parser operator, [void action(value, operator)]) {
-    _postfix.add(new _PostfixOperator(operator, action));
+    _operators.putIfAbsent(_POSTFIX, () => new List())
+        .add(new _ExpressionOperator(operator, action, (operators, next) {
+          return new _SequenceParser([next, operators]).map((results) {
+            return results.last.action(results.first, results.last.value);
+          });
+        }));
   }
 
   /**
@@ -128,7 +144,10 @@ class ExpressionGroup {
    * term.
    */
   void right(Parser operator, [void action(left, operator, right)]) {
-    _right.add(new _RightOperator(operator, action));
+    _operators.putIfAbsent(_RIGHT, () => new List())
+        .add(new _ExpressionOperator(operator, action, (operators, next) {
+          return next.separatedBy(operators);
+        }));
   }
 
   /**
@@ -137,19 +156,26 @@ class ExpressionGroup {
    * term.
    */
   void left(Parser operator, [void action(left, operator, right)]) {
-    _left.add(new _LeftOperator(operator, action));
+    _operators.putIfAbsent(_LEFT, () => new List())
+        .add(new _ExpressionOperator(operator, action, (operators, next) {
+          return next.separatedBy(operators);
+        }));
   }
 
   Parser _build(Parser parser) {
-    return [_primitive, _prefix, _postfix, _right, _left].fold(parser, (parser, list) {
-      if (list.isEmpty) {
+    var priorities = new List.from(_operators.keys)
+        ..sort()
+        ..map((priority) => _operators[priority]);
+    return priorities.fold(parser, (parser, operators) {
+      if (operators.isEmpty) {
         return parser;
-      } else if (list.size == 1) {
-        return list.first(parser);
       } else {
-        return list.fold(new _ChoiceParser([]), (choice, function) {
-          return choice.or(function(parser));
-        });
+        var choice = operators
+            .map((operator) => operator.parser.map((result) {
+              return new _ExpressionOperatorResult(result, operator.action);
+            }))
+            .reduce((a, b) => a.or(b));
+        return operators.combinator(choice, parser);
       }
     });
   }
@@ -157,11 +183,14 @@ class ExpressionGroup {
 }
 
 class _ExpressionOperator {
-  final Parser operator;
+  final Parser parser;
   final Function action;
-  _ExpressionOperator(this.operator, this.action);
+  final Function combinator;
+  _ExpressionOperator(this.parser, this.action, this.combinator);
 }
 
-class _PrimitiveOperator implements _ExpressionOperator {
-  _PrimitiveOperator(operator, action) : super(operator, action);
+class _ExpressionOperatorResult {
+  final dynamic value;
+  final Function action;
+  _ExpressionOperatorResult(this.value, this.action);
 }
