@@ -9,8 +9,6 @@
 library lisp;
 
 import 'dart:collection';
-
-import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 
 part 'src/lisp/cons.dart';

@@ -27,13 +27,13 @@ void main() {
   var standard = Standard.import(native.create());
   var environment = standard.create();
 
-  var input = query('#input') as TextAreaElement;
-  var output = query('#output') as TextAreaElement;
+  var input = querySelector('#input') as TextAreaElement;
+  var output = querySelector('#output') as TextAreaElement;
 
-  query('#evaluate').onClick.listen((event) {
+  querySelector('#evaluate').onClick.listen((event) {
     var result = evalString(parser, environment, input.value);
     output.value = result.toString();
-    inspector(query('#inspector'), environment);
+    inspector(querySelector('#inspector'), environment);
   });
-  inspector(query('#inspector'), environment);
+  inspector(querySelector('#inspector'), environment);
 }

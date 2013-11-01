@@ -5,6 +5,7 @@ library lispshell;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:platform' as Platform;
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
@@ -25,7 +26,7 @@ void evalInteractive(LispParser parser, Environment env,
 }
 
 /** Entry point for the command line interpreter. */
-void main() {
+void main(List<String> arguments) {
 
   // default options
   var standardLibrary = true;
@@ -33,15 +34,14 @@ void main() {
   var files = new List();
 
   // parse arguments
-  var options = new Options();
-  for (var option in options.arguments) {
+  for (var option in arguments) {
     if (option.startsWith('-') && files.isEmpty) {
       if (option == '-n') {
         standardLibrary = false;
       } else if (option == '-i') {
         interactiveMode = true;
       } else if (option == '-?') {
-        print('${options.executable} lisp.dart -n -i [files]');
+        print('${Platform.executable} lisp.dart -n -i [files]');
         print(' -i enforces the interactive mode');
         print(' -n does not load the standard library');
         exit(0);

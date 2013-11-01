@@ -7,7 +7,6 @@
  */
 library smalltalk;
 
-import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 
 part 'src/smalltalk/grammar.dart';
