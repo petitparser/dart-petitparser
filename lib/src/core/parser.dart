@@ -301,11 +301,12 @@ abstract class Parser {
   SetableParser setable() => new _SetableParser(this);
 
   /**
-   * Returns a parser that evaluates [function] as action handler on success
-   * of the receiver.
+   * Returns a parser that evaluates a [function] as the production action
+   * on success of the receiver.
    *
    * For example, the parser [:digit().map((char) => int.parse(char)):] returns
-   * the number [:1:] for the input string [:'1':].
+   * the number [:1:] for the input string [:'1':]. If the delegate fail, the
+   * production action is not executed and the failure is passed on.
    */
   Parser map(Function function) => new _ActionParser(this, function);
 
