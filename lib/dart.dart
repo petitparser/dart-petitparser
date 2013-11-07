@@ -8,7 +8,6 @@
  */
 library dart;
 
-import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/beta.dart';
 

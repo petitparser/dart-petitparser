@@ -5,7 +5,6 @@ library lispshell;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:platform' as Platform;
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
