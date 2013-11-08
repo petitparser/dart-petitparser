@@ -12,18 +12,28 @@ Iterable<Parser> allParser(Parser root) {
 }
 
 class _ParserIterable extends IterableBase<Parser> {
+
   final Parser _root;
+
   const _ParserIterable(this._root);
+
+  @override
   Iterator<Parser> get iterator => new _ParserIterator(_root);
+
 }
 
 class _ParserIterator implements Iterator<Parser> {
+
   final List<Parser> _todo;
   final Set<Parser> _done;
+
   Parser current;
+
   _ParserIterator(Parser root)
       : _todo = new List.from([root]),
         _done = new Set();
+
+  @override
   bool moveNext() {
     do {
       if (_todo.isEmpty) {
@@ -36,6 +46,7 @@ class _ParserIterator implements Iterator<Parser> {
     _todo.addAll(current.children);
     return true;
   }
+
 }
 
 /**

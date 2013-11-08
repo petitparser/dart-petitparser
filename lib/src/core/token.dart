@@ -16,6 +16,7 @@ class Token {
 
   const Token(this._value, this._buffer, this._start, this._stop);
 
+  @override
   bool operator == (other) {
     return other is Token
       && _value == other._value
@@ -23,13 +24,13 @@ class Token {
       && _stop == other._stop;
   }
 
+  @override
   int get hashCode => _value.hashCode + _start.hashCode + _stop.hashCode;
 
   /**
    * Returns the parsed value.
    */
   dynamic get value => _value;
-
 
   /**
    * Returns the input buffer.
@@ -61,6 +62,7 @@ class Token {
    */
   int get column => Token.lineAndColumnOf(_buffer, _start)[1];
 
+  @override
   String toString() => 'Token[start: $start, stop: $stop, value: $value]';
 
   static final Parser _NEWLINE_PARSER =

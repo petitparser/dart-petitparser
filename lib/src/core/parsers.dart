@@ -5,8 +5,8 @@ part of petitparser;
 /**
  * Returns a parser that consumes nothing and succeeds.
  *
- * For example, [:char('a').or(epsilon()):] is equivalent to
- * [:char('a').optional():].
+ * For example, `char('a').or(epsilon())` is equivalent to
+ * `char('a').optional()`.
  */
 Parser epsilon([dynamic result]) => new _EpsilonParser(result);
 
@@ -32,7 +32,7 @@ class _EpsilonParser extends Parser {
 /**
  * Returns a parser that consumes nothing and fails.
  *
- * For example, [:failure():] always fails, no matter what input it is given.
+ * For example, `failure()` always fails, no matter what input it is given.
  */
 Parser failure([String message = 'unable to parse']) {
   return new _FailureParser(message);
@@ -90,6 +90,7 @@ class _SetableParser extends DelegateParser implements SetableParser {
 
   void set(Parser parser) => replace(children[0], parser);
 
+  @override
   Parser copy() => new _SetableParser(_delegate);
 
 }

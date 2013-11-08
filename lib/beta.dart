@@ -19,7 +19,7 @@ import 'package:petitparser/petitparser.dart';
  * variables themselves are not actually implement anywhere, but their
  * behavior is defined in [noSuchMethod] and mapped to a collection using
  * the methods defined in the superclass. To avoid excessive warnings in
- * the editor, consider adding the `@proxy` annotation to subclasses.
+ * the editor, consider adding the [proxy] annotation to subclasses.
  *
  * Consider the following example to parse a list of numbers:
  *
