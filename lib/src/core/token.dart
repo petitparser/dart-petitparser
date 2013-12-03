@@ -3,9 +3,11 @@
 part of petitparser;
 
 /**
- * A token represents a parsed part of the input stream. The token holds
- * the parsed input, the input buffer, and the start and stop position
- * in the input buffer.
+ * A token represents a parsed part of the input stream.
+ *
+ * The token holds the resulting value of the input, the input buffer,
+ * and the start and stop position in the input buffer. It provides many
+ * convenience methods to access the state of the token.
  */
 class Token {
 
