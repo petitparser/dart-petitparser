@@ -258,8 +258,9 @@ abstract class Parser {
 
   /**
    * Returns a parser that returns a [Token]. The token carries the parsed
-   * values of the receiver [Token.value], as well as the consumed range from
-   * [Token.start] to [Token.stop] of the string/list being parsed.
+   * value of the receiver [Token.value], as well as the consumed input
+   * [Token.input] from [Token.start] to [Token.stop] of the input being
+   * parsed.
    *
    * For example, the parser `letter().plus().token()` returns the token
    * `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.

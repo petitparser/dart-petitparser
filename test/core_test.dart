@@ -78,25 +78,19 @@ main() {
       expectSuccess(parser, '1234', '1234');
     });
     test('token()', () {
-      var parser = digit().plus().flatten().token().trim();
+      var parser = digit().plus().token();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
-      var token = parser.parse('  123 ').value;
+      var token = parser.parse('123').value;
+      expect(token.value, ['1', '2', '3']);
+      expect(token.buffer, '123');
+      expect(token.start, 0);
+      expect(token.stop, 3);
+      expect(token.input, '123');
       expect(token.length, 3);
-      expect(token.start, 2);
-      expect(token.stop, 5);
-      expect(token.value, '123');
-      expect(token.toString(), 'Token[start: 2, stop: 5, value: 123]');
-    });
-    test('token() line', () {
-      var parser = any().token().star().map((list) => list.map((token) => token.line));
-      expect(parser.parse('1\r12\r\n123\n1234').value,
-             [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
-    });
-    test('token() column', () {
-      var parser = any().token().star().map((list) => list.map((token) => token.column));
-      expect(parser.parse('1\r12\r\n123\n1234').value,
-             [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
+      expect(token.line, 1);
+      expect(token.column, 1);
+      expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
     });
     test('map()', () {
       var parser = digit().map((String each) {
@@ -556,6 +550,56 @@ main() {
       expectFailure(parser, '');
       expectFailure(parser, 'f');
       expectFailure(parser, 'Fo');
+    });
+  });
+  group('token', () {
+    var parser = any()
+        .map((value) => value.codeUnitAt(0))
+        .token().star();
+    var buffer = '1\r12\r\n123\n1234';
+    var result = parser.parse(buffer).value;
+    test('value', () {
+      expect(
+          result.map((token) => token.value),
+          [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52]);
+    });
+    test('buffer', () {
+      expect(
+          result.map((token) => token.buffer),
+          new List.filled(buffer.length, buffer));
+    });
+    test('start', () {
+      expect(
+          result.map((token) => token.start),
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    });
+    test('stop', () {
+      expect(
+          result.map((token) => token.stop),
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+    });
+    test('length', () {
+      expect(
+          result.map((token) => token.length),
+          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+    });
+    test('line', () {
+      expect(
+          result.map((token) => token.line),
+          [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
+    });
+    test('column', () {
+      expect(
+          result.map((token) => token.column),
+          [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
+    });
+    test('input', () {
+      expect(
+          result.map((token) => token.input),
+          ['1', '\r', '1', '2', '\r', '\n', '1', '2', '3', '\n', '1', '2', '3', '4']);
+    });
+    test('unique', () {
+      expect(new Set.from(result).length, result.length);
     });
   });
   group('parsing', () {

@@ -9,61 +9,67 @@ part of petitparser;
  */
 class Token {
 
-  final dynamic _value;
-  final dynamic _buffer;
-  final int _start;
-  final int _stop;
+  /**
+   * The parsed value of the token.
+   */
+  final dynamic value;
 
-  const Token(this._value, this._buffer, this._start, this._stop);
+  /**
+   * The parsed buffer of the token.
+   */
+  final dynamic buffer;
+
+  /**
+   * The start position of the token in the buffer.
+   */
+  final int start;
+
+  /**
+   * The stop position of the token in the buffer.
+   */
+  final int stop;
+
+  /**
+   * Constructs a token from the parsed value, the input buffer, and the
+   * start and stop position in the input buffer.
+   */
+  const Token(this.value, this.buffer, this.start, this.stop);
+
+  /**
+   * The consumed input of the token.
+   */
+  dynamic get input => buffer is String
+      ? buffer.substring(start, stop)
+      : buffer.sublist(start, stop);
+
+  /**
+   * The length of the token.
+   */
+  int get length => stop - start;
+
+  /**
+   * The line number of the token (only works for [String] buffers).
+   */
+  int get line => Token.lineAndColumnOf(buffer, start)[0];
+
+  /**
+   * The column number of this token (only works for [String] buffers).
+   */
+  int get column => Token.lineAndColumnOf(buffer, start)[1];
+
+  @override
+  String toString() => 'Token[${positionString(buffer, start)}]: $value';
 
   @override
   bool operator == (other) {
     return other is Token
-      && _value == other._value
-      && _start == other._start
-      && _stop == other._stop;
+      && value == other.value
+      && start == other.start
+      && stop == other.stop;
   }
 
   @override
-  int get hashCode => _value.hashCode + _start.hashCode + _stop.hashCode;
-
-  /**
-   * Returns the parsed value.
-   */
-  dynamic get value => _value;
-
-  /**
-   * Returns the input buffer.
-   */
-  dynamic get buffer => _buffer;
-
-  /**
-   * Returns the start position in the input buffer.
-   */
-  int get start => _start;
-
-  /**
-   * Returns the stop position in the input buffer.
-   */
-  int get stop => _stop;
-
-  /**
-   * Returns the length of the token.
-   */
-  int get length => _stop - _start;
-
-  /**
-   * Returns the line number of the token.
-   */
-  int get line => Token.lineAndColumnOf(_buffer, _start)[0];
-
-  /**
-   * Returns the column number of this token.
-   */
-  int get column => Token.lineAndColumnOf(_buffer, _start)[1];
-
-  @override
-  String toString() => 'Token[start: $start, stop: $stop, value: $value]';
+  int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
   static final Parser _NEWLINE_PARSER =
       char('\n').or(char('\r').seq(char('\n').optional()));
@@ -74,7 +80,7 @@ class Token {
   static Parser newlineParser() => _NEWLINE_PARSER;
 
   /**
-   * Converts a [position] index in a [buffer] to a line and column tuple.
+   * Converts the [position] index in a [buffer] to a line and column tuple.
    */
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
@@ -86,6 +92,18 @@ class Token {
       offset = token.stop;
     }
     return [line, position - offset + 1];
+  }
+
+  /**
+   * Returns a human readable string representing the [position] index in a [buffer].
+   */
+  static String positionString(dynamic buffer, int position) {
+    if (buffer is String) {
+      var lineAndColumn = Token.lineAndColumnOf(buffer, position);
+      return '${lineAndColumn[0]}:${lineAndColumn[1]}';
+    } else {
+      return '${position}';
+    }
   }
 
 }

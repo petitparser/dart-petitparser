@@ -54,14 +54,7 @@ class Context {
   /**
    * Returns the line:column if the input is a string, otherwise the position.
    */
-  String toPositionString() {
-    if (_buffer is String) {
-      var lineAndColumn = Token.lineAndColumnOf(buffer, position);
-      return '${lineAndColumn[0]}:${lineAndColumn[1]}';
-    } else {
-      return '${position}';
-    }
-  }
+  String toPositionString() => Token.positionString(_buffer, _position);
 
 }
 
