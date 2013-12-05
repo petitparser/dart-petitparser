@@ -10,5 +10,3 @@ library smalltalk;
 import 'package:petitparser/petitparser.dart';
 
 part 'src/smalltalk/grammar.dart';
-part 'src/smalltalk/parser.dart';
-part 'src/smalltalk/nodes.dart';
