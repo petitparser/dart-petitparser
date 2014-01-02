@@ -13,6 +13,7 @@ class XmlParser extends XmlGrammar {
 
     action('attribute', (each) => new XmlAttribute(each[0], each[1]));
     action('comment', (each) => new XmlComment(each));
+    action('cdata', (each) => new XmlCDATA(each));
     action('doctype', (each) => new XmlDoctype(each));
     action('document', (each) => new XmlDocument(each));
     action('element', (each) => new XmlElement(each[0], each[1], each[2]));

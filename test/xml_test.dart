@@ -148,6 +148,11 @@ void main() {
     validate(parser, '<?xml version="1.0" encoding="UTF-8"?>\n'
       '  <schema></schema>\n');
   });
+  test('cdata', () {
+    var cdataInput = '<?xml version="1.0" encoding="UTF-8"?>'
+        '<data><![CDATA[Methinks <word> it <word> is like a weasel!]]></data>';
+    validate(parser, cdataInput);
+  });
   test('bookstore', () {
     validate(parser, '<?xml version="1.0" encoding="ISO-8859-1"?>\n'
       '<bookstore>\n'

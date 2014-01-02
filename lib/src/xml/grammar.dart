@@ -39,10 +39,15 @@ class XmlGrammar extends CompositeParser {
       .seq(string('-->').neg().star().flatten())
       .seq(string('-->'))
       .pick(1));
+    def('cdata', string('<![CDATA[')
+        .seq(string(']]>').neg().star().flatten())
+        .seq(string(']]>'))
+        .pick(1));
     def('content', ref('characterData')
       .or(ref('element'))
       .or(ref('processing'))
       .or(ref('comment'))
+      .or(ref('cdata'))
       .star());
     def('doctype', string('<!DOCTYPE')
       .seq(ref('whitespace').optional())
