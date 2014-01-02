@@ -178,6 +178,21 @@ class XmlComment extends XmlData {
 }
 
 /**
+ * XML CDATA node.
+ */
+class XmlCDATA extends XmlData {
+
+  XmlCDATA(String data) : super(data);
+
+  @override
+  void writeTo(StringBuffer buffer) {
+    buffer.write('<![CDATA[');
+    buffer.write(data);
+    buffer.write(']]>');
+  }
+}
+
+/**
  * XML doctype node.
  */
 class XmlDoctype extends XmlData {
