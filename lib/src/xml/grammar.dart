@@ -40,9 +40,9 @@ class XmlGrammar extends CompositeParser {
       .seq(string('-->'))
       .pick(1));
     def('cdata', string('<![CDATA[')
-        .seq(string(']]>').neg().star().flatten())
-        .seq(string(']]>'))
-        .pick(1));
+      .seq(string(']]>').neg().star().flatten())
+      .seq(string(']]>'))
+      .pick(1));
     def('content', ref('characterData')
       .or(ref('element'))
       .or(ref('processing'))
