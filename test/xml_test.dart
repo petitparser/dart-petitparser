@@ -150,7 +150,7 @@ void main() {
   });
   test('cdata', () {
     var cdataInput = '<?xml version="1.0" encoding="UTF-8"?>'
-        '<data><![CDATA[Methinks <word> it <word> is like a weasel!]]></data>';
+      '<data><![CDATA[Methinks <word> it <word> is like a weasel!]]></data>';
     validate(parser, cdataInput);
   });
   test('bookstore', () {
