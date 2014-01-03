@@ -20,9 +20,7 @@ class DartGrammar extends CompositeParser2 {
     _libraries();
   }
 
-  /**
-   * Defines whitespace, documentation and comments.
-   */
+  /** Defines whitespace, documentation and comments. */
   void _whitespace() {
     def('whitespace', whitespace()
       .or(ref('singe-line comment'))
@@ -39,7 +37,7 @@ class DartGrammar extends CompositeParser2 {
       .seq(string('*/')));
   }
 
-  /** Defines a token parser that consumes whitespace. */
+  /** Helper to define a token parser that consumes whitespace. */
   Parser _token(input) {
     var parser = input is Parser ? input :
       input.length == 1 ? char(input) :
@@ -82,6 +80,9 @@ class DartGrammar extends CompositeParser2 {
   }
 
   void _keywords() {
+
+    // A reserved word may not be used as an identifier; it is a compile-time error if a
+    // reserved word is used where an identifier is expected.
     ASSERT = _token('assert');
     BREAK = _token('break');
     CASE = _token('case');
@@ -92,6 +93,7 @@ class DartGrammar extends CompositeParser2 {
     DEFAULT = _token('default');
     DO = _token('do');
     ELSE = _token('else');
+    ENUM = _token('enum');
     EXTENDS = _token('extends');
     FALSE = _token('false');
     FINAL = _token('final');
@@ -116,7 +118,6 @@ class DartGrammar extends CompositeParser2 {
     WITH = _token('with');
 
     // built-in identifiers
-
     ABSTRACT = _token('abstract');
     AS = _token('as');
     DYNAMIC = _token('dynamic');
