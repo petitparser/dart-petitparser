@@ -93,21 +93,21 @@ abstract class Parser {
    * any sequence of letters and returns a possibly empty list of the parsed
    * letters.
    */
-  Parser star() => repeat(0, null);
+  Parser star() => repeat(0, unbounded);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a greedy non-blind implementation of the
    * [Parser.star] operator. The [limit] is not consumed.
    */
-  Parser starGreedy(Parser limit) => repeatGreedy(limit, 0, null);
+  Parser starGreedy(Parser limit) => repeatGreedy(limit, 0, unbounded);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a lazy non-blind implementation of the
    * [Parser.star] operator. The [limit] is not consumed.
    */
-  Parser starLazy(Parser limit) => repeatLazy(limit, 0, null);
+  Parser starLazy(Parser limit) => repeatLazy(limit, 0, unbounded);
 
   /**
    * Returns a parser that accepts the receiver one or more times. The
@@ -119,21 +119,21 @@ abstract class Parser {
    * For example, the parser `letter().plus()` accepts any sequence of
    * letters and returns a list of the parsed letters.
    */
-  Parser plus() => repeat(1, null);
+  Parser plus() => repeat(1, unbounded);
 
   /**
    * Returns a parser that parses the receiver one or more times until it
    * reaches [limit]. This is a greedy non-blind implementation of the
    * [Parser.plus] operator. The [limit] is not consumed.
    */
-  Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1, null);
+  Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1, unbounded);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a lazy non-blind implementation of the
    * [Parser.plus] operator. The [limit] is not consumed.
    */
-  Parser plusLazy(Parser limit) => repeatLazy(limit, 1, null);
+  Parser plusLazy(Parser limit) => repeatLazy(limit, 1, unbounded);
 
   /**
    * Returns a parser that accepts the receiver between [min] and [max] times.

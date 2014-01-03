@@ -3,6 +3,11 @@
 part of petitparser;
 
 /**
+ * An [int] used to mark an unbounded maximum repetition.
+ */
+const int unbounded = -1;
+
+/**
  * A parser that repeatedly parses a sequence of parsers.
  */
 abstract class _RepeatingParser extends DelegateParser {
@@ -11,11 +16,15 @@ abstract class _RepeatingParser extends DelegateParser {
   final int _max;
 
   _RepeatingParser(Parser parser, this._min, this._max)
-      : super(parser);
+      : super(parser) {
+    assert(0 <= _min);
+    assert(_max == unbounded || _min <= _max);
+  }
 
   @override
   String toString() {
-    return '${super.toString()}[$_min..${_max == null ? '*' : _max}]';
+    var max = _max == unbounded ? '*' : _max;
+    return '${super.toString()}[$_min..$max]';
   }
 
   @override
@@ -44,7 +53,7 @@ class _PossessiveRepeatingParser extends _RepeatingParser {
       elements.add(result.value);
       current = result;
     }
-    while (_max == null || elements.length < _max) {
+    while (_max == unbounded || elements.length < _max) {
       var result = _delegate.parseOn(current);
       if (result.isFailure) {
         return current.success(elements);
@@ -114,7 +123,7 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
       current = result;
     }
     var contexts = new List.from([current]);
-    while (_max == null || elements.length < _max) {
+    while (_max == unbounded || elements.length < _max) {
       var result = _delegate.parseOn(current);
       if (result.isFailure) {
         break;
@@ -169,7 +178,7 @@ class _LazyRepeatingParser extends _LimitedRepeatingParser {
       if (limit.isSuccess) {
         return current.success(elements);
       } else {
-        if (_max != null && elements.length >= _max) {
+        if (_max != unbounded && elements.length >= _max) {
           return limit;
         }
         var result = _delegate.parseOn(current);
