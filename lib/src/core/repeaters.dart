@@ -27,7 +27,7 @@ abstract class _RepeatingParser extends DelegateParser {
 
 class _PossessiveRepeatingParser extends _RepeatingParser {
 
-  _PossessiveRepeatingParser(Parser parser, int min, int max)
+  _PossessiveRepeatingParser(Parser parser, int min, [int max])
       : super(parser, min, max);
 
   @override
@@ -42,7 +42,7 @@ class _PossessiveRepeatingParser extends _RepeatingParser {
       elements.add(result.value);
       current = result;
     }
-    while (elements.length < _max) {
+    while (_max == null || elements.length < _max) {
       var result = _delegate.parseOn(current);
       if (result.isFailure) {
         return current.success(elements);
@@ -96,7 +96,7 @@ abstract class _LimitedRepeatingParser extends _RepeatingParser {
  */
 class _GreedyRepeatingParser extends _LimitedRepeatingParser {
 
-  _GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
+  _GreedyRepeatingParser(Parser parser, Parser limit, int min, [int max])
       : super(parser, limit, min, max);
 
   @override
@@ -112,7 +112,7 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
       current = result;
     }
     var contexts = new List.from([current]);
-    while (elements.length < _max) {
+    while (_max == null || elements.length < _max) {
       var result = _delegate.parseOn(current);
       if (result.isFailure) {
         break;
@@ -147,7 +147,7 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
  */
 class _LazyRepeatingParser extends _LimitedRepeatingParser {
 
-  _LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
+  _LazyRepeatingParser(Parser parser, Parser limit, int min, [int max])
       : super(parser, limit, min, max);
 
   @override
@@ -167,7 +167,7 @@ class _LazyRepeatingParser extends _LimitedRepeatingParser {
       if (limit.isSuccess) {
         return current.success(elements);
       } else {
-        if (elements.length >= _max) {
+        if (_max != null && elements.length >= _max) {
           return limit;
         }
         var result = _delegate.parseOn(current);

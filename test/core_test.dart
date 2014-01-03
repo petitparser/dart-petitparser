@@ -31,6 +31,12 @@ class PluggableCompositeParser extends CompositeParser {
 
 main() {
   group('parsers', () {
+    var longInputA;
+    var longInput1;
+    setUp(() {
+      longInputA = new List.filled(100000, 'a');
+      longInput1 = new List.filled(100000, '1');
+    });
     test('and()', () {
       var parser = char('a').and();
       expectSuccess(parser, 'a', 'a', 0);
@@ -212,6 +218,10 @@ main() {
       expectSuccess(parser, 'aaa', ['a', 'a', 'a']);
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
     });
+    test('repeat without max', () {
+      var parser = char('a').repeat(2);
+      expectSuccess(parser, longInputA.join(''), longInputA);
+    });
     test('repeatGreedy()', () {
       var parser = word().repeatGreedy(digit(), 2, 4);
       expectFailure(parser, '', 0, 'letter or digit expected');
@@ -239,6 +249,13 @@ main() {
       expectSuccess(parser, 'abcd123', ['a', 'b', 'c', 'd'], 4);
       expectFailure(parser, 'abcde123', 2, 'digit expected');
     });
+    test('repeatGreedy without max', () {
+      var parser = word().repeatGreedy(digit(), 2);
+      expectSuccess(parser, longInputA.join('') + '1', longInputA,
+                    longInputA.length);
+      expectSuccess(parser, longInput1.join('') + '1', longInput1,
+                    longInput1.length);
+    });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
       expectFailure(parser, '', 0, 'letter or digit expected');
@@ -265,6 +282,11 @@ main() {
       expectSuccess(parser, 'abc123', ['a', 'b', 'c'], 3);
       expectSuccess(parser, 'abcd123', ['a', 'b', 'c', 'd'], 4);
       expectFailure(parser, 'abcde123', 4, 'digit expected');
+    });
+    test('repeatLazy without max', () {
+      var parser = word().repeatLazy(digit(), 2);
+      expectSuccess(parser, longInputA.join('') + '1111', longInputA,
+                    longInputA.length);
     });
     test('separatedBy()', () {
       var parser = char('a').separatedBy(char('b'));
