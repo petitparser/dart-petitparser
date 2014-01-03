@@ -31,12 +31,6 @@ class PluggableCompositeParser extends CompositeParser {
 
 main() {
   group('parsers', () {
-    var longInputA;
-    var longInput1;
-    setUp(() {
-      longInputA = new List.filled(100000, 'a');
-      longInput1 = new List.filled(100000, '1');
-    });
     test('and()', () {
       var parser = char('a').and();
       expectSuccess(parser, 'a', 'a', 0);
@@ -219,8 +213,9 @@ main() {
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
     });
     test('repeat() unbounded', () {
+      var input = new List.filled(100000, 'a');
       var parser = char('a').repeat(2, unbounded);
-      expectSuccess(parser, longInputA.join(''), longInputA);
+      expectSuccess(parser, input.join(), input);
     });
     test('repeatGreedy()', () {
       var parser = word().repeatGreedy(digit(), 2, 4);
@@ -250,11 +245,11 @@ main() {
       expectFailure(parser, 'abcde123', 2, 'digit expected');
     });
     test('repeatGreedy() unbounded', () {
+      var inputLetter = new List.filled(100000, 'a');
+      var inputDigit = new List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
-      expectSuccess(parser, longInputA.join('') + '1', longInputA,
-                    longInputA.length);
-      expectSuccess(parser, longInput1.join('') + '1', longInput1,
-                    longInput1.length);
+      expectSuccess(parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
+      expectSuccess(parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
     });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
@@ -284,9 +279,9 @@ main() {
       expectFailure(parser, 'abcde123', 4, 'digit expected');
     });
     test('repeatLazy() unbounded', () {
+      var input = new List.filled(100000, 'a');
       var parser = word().repeatLazy(digit(), 2, unbounded);
-      expectSuccess(parser, longInputA.join('') + '1111', longInputA,
-                    longInputA.length);
+      expectSuccess(parser, input.join() + '1111', input, input.length);
     });
     test('separatedBy()', () {
       var parser = char('a').separatedBy(char('b'));
