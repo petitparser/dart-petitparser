@@ -20,15 +20,22 @@ class DartGrammar extends CompositeParser2 {
     _libraries();
   }
 
-  /** Defines the whitespace and comments. */
+  /**
+   * Defines whitespace, documentation and comments.
+   */
   void _whitespace() {
     def('whitespace', whitespace()
-      .or(ref('singe line comment'))
-      .or(ref('multi line comment')));
-    def('singe line comment', string('//')
-      .seq(Token.newlineParser().neg().star()));
-    def('multi line comment', string('/*')
-      .seq(string('*/').neg().star())
+      .or(ref('singe-line comment'))
+      .or(ref('multi-line comment')));
+    def('newline', Token.newlineParser());
+
+    def('singe-line comment', string('//')
+      .seq(ref('newline').neg().star())
+      .seq(ref('newline').optional()));
+    def('multi-line comment', string('/*')
+      .seq(ref('multi-line comment')
+          .or(string('*/').neg())
+          .star())
       .seq(string('*/')));
   }
 

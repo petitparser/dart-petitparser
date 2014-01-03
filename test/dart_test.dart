@@ -14,22 +14,54 @@ void main() {
       expect('library test; void main() { }', accept(dart));
       expect('library test; void main() { print(2 + 3); }', accept(dart));
     });
+  });
+  group('whitespace', () {
+    var whitespaces = dart['whitespace'].star().end();
     test('whitespace', () {
-      expect('library test;', accept(dart));
-      expect('  library test;', accept(dart));
-      expect('library test;  ', accept(dart));
-      expect('library  test ;', accept(dart));
+      expect(' ', accept(whitespaces));
+      expect('\t', accept(whitespaces));
+      expect('\n', accept(whitespaces));
+      expect('\r', accept(whitespaces));
+      expect('a', isNot(accept(whitespaces)));
     });
-    test('single line comment', () {
-      expect('library test;', accept(dart));
-      expect('library// foo\ntest;', accept(dart));
-      expect('library test // foo \n;', accept(dart));
-      expect('library test; // foo', accept(dart));
+    test('single-line comment', () {
+      expect('//', accept(whitespaces));
+      expect('// foo', accept(whitespaces));
+      expect('//\n', accept(whitespaces));
+      expect('// foo\n', accept(whitespaces));
     });
-    test('multi line comment', () {
-      expect('/* foo */ library test;', accept(dart));
-      expect('library /* foo */ test;', accept(dart));
-      expect('library test; /* foo */', accept(dart));
+    test('single-line documentation', () {
+      expect('///', accept(whitespaces));
+      expect('/// foo', accept(whitespaces));
+      expect('/// \n', accept(whitespaces));
+      expect('/// foo\n', accept(whitespaces));
+    });
+    test('multi-line comment', () {
+      expect('/**/', accept(whitespaces));
+      expect('/* foo */', accept(whitespaces));
+      expect('/* foo \n bar */', accept(whitespaces));
+      expect('/* foo ** bar */', accept(whitespaces));
+      expect('/* foo * / bar */', accept(whitespaces));
+    });
+    test('multi-line documentation', () {
+      expect('/***/', accept(whitespaces));
+      expect('/*******/', accept(whitespaces));
+      expect('/** foo */', accept(whitespaces));
+      expect('/**\n *\n *\n */', accept(whitespaces));
+    });
+    test('multi-line nested', () {
+      expect('/* outer /* nested */ */', accept(whitespaces));
+      expect('/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
+      expect('/* outer /* not closed */', isNot(accept(whitespaces)));
+    });
+    test('combined', () {
+      expect('/**/', accept(whitespaces));
+      expect(' /**/', accept(whitespaces));
+      expect('/**/ ', accept(whitespaces));
+      expect(' /**/ ', accept(whitespaces));
+      expect('/**///', accept(whitespaces));
+      expect('/**/ //', accept(whitespaces));
+      expect(' /**/ //', accept(whitespaces));
     });
   });
   group('child parsers', () {
