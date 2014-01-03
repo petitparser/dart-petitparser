@@ -219,7 +219,7 @@ main() {
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
     });
     test('repeat without max', () {
-      var parser = char('a').repeat(2);
+      var parser = char('a').repeat(2, null);
       expectSuccess(parser, longInputA.join(''), longInputA);
     });
     test('repeatGreedy()', () {
@@ -250,7 +250,7 @@ main() {
       expectFailure(parser, 'abcde123', 2, 'digit expected');
     });
     test('repeatGreedy without max', () {
-      var parser = word().repeatGreedy(digit(), 2);
+      var parser = word().repeatGreedy(digit(), 2, null);
       expectSuccess(parser, longInputA.join('') + '1', longInputA,
                     longInputA.length);
       expectSuccess(parser, longInput1.join('') + '1', longInput1,
@@ -284,7 +284,7 @@ main() {
       expectFailure(parser, 'abcde123', 4, 'digit expected');
     });
     test('repeatLazy without max', () {
-      var parser = word().repeatLazy(digit(), 2);
+      var parser = word().repeatLazy(digit(), 2, null);
       expectSuccess(parser, longInputA.join('') + '1111', longInputA,
                     longInputA.length);
     });

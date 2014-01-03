@@ -93,21 +93,21 @@ abstract class Parser {
    * any sequence of letters and returns a possibly empty list of the parsed
    * letters.
    */
-  Parser star() => repeat(0);
+  Parser star() => repeat(0, null);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a greedy non-blind implementation of the
    * [Parser.star] operator. The [limit] is not consumed.
    */
-  Parser starGreedy(Parser limit) => repeatGreedy(limit, 0);
+  Parser starGreedy(Parser limit) => repeatGreedy(limit, 0, null);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a lazy non-blind implementation of the
    * [Parser.star] operator. The [limit] is not consumed.
    */
-  Parser starLazy(Parser limit) => repeatLazy(limit, 0);
+  Parser starLazy(Parser limit) => repeatLazy(limit, 0, null);
 
   /**
    * Returns a parser that accepts the receiver one or more times. The
@@ -119,21 +119,21 @@ abstract class Parser {
    * For example, the parser `letter().plus()` accepts any sequence of
    * letters and returns a list of the parsed letters.
    */
-  Parser plus() => repeat(1);
+  Parser plus() => repeat(1, null);
 
   /**
    * Returns a parser that parses the receiver one or more times until it
    * reaches [limit]. This is a greedy non-blind implementation of the
    * [Parser.plus] operator. The [limit] is not consumed.
    */
-  Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1);
+  Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1, null);
 
   /**
    * Returns a parser that parses the receiver zero or more times until it
    * reaches a [limit]. This is a lazy non-blind implementation of the
    * [Parser.plus] operator. The [limit] is not consumed.
    */
-  Parser plusLazy(Parser limit) => repeatLazy(limit, 1);
+  Parser plusLazy(Parser limit) => repeatLazy(limit, 1, null);
 
   /**
    * Returns a parser that accepts the receiver between [min] and [max] times.
@@ -145,14 +145,16 @@ abstract class Parser {
    * For example, the parser `letter().repeat(2, 4)` accepts a sequence of
    * two, three, or four letters and returns the accepted letters as a list.
    */
-  Parser repeat(int min, [int max]) => new _PossessiveRepeatingParser(this, min, max);
+  Parser repeat(int min, int max) {
+    return new _PossessiveRepeatingParser(this, min, max);
+  }
 
   /**
    * Returns a parser that parses the receiver at least [min] and at most [max]
    * times until it reaches a [limit]. This is a greedy non-blind implementation of
    * the [Parser.repeat] operator. The [limit] is not consumed.
    */
-  Parser repeatGreedy(Parser limit, int min, [int max]) {
+  Parser repeatGreedy(Parser limit, int min, int max) {
     return new _GreedyRepeatingParser(this, limit, min, max);
   }
 
@@ -161,7 +163,7 @@ abstract class Parser {
    * times until it reaches a [limit]. This is a lazy non-blind implementation of
    * the [Parser.repeat] operator. The [limit] is not consumed.
    */
-  Parser repeatLazy(Parser limit, int min, [int max]) {
+  Parser repeatLazy(Parser limit, int min, int max) {
     return new _LazyRepeatingParser(this, limit, min, max);
   }
 

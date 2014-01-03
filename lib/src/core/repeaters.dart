@@ -14,7 +14,9 @@ abstract class _RepeatingParser extends DelegateParser {
       : super(parser);
 
   @override
-  String toString() => '${super.toString()}[$_min..$_max]';
+  String toString() {
+    return '${super.toString()}[$_min..${_max == null ? '*' : _max}]';
+  }
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -27,7 +29,7 @@ abstract class _RepeatingParser extends DelegateParser {
 
 class _PossessiveRepeatingParser extends _RepeatingParser {
 
-  _PossessiveRepeatingParser(Parser parser, int min, [int max])
+  _PossessiveRepeatingParser(Parser parser, int min, int max)
       : super(parser, min, max);
 
   @override
@@ -96,7 +98,7 @@ abstract class _LimitedRepeatingParser extends _RepeatingParser {
  */
 class _GreedyRepeatingParser extends _LimitedRepeatingParser {
 
-  _GreedyRepeatingParser(Parser parser, Parser limit, int min, [int max])
+  _GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
@@ -147,7 +149,7 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
  */
 class _LazyRepeatingParser extends _LimitedRepeatingParser {
 
-  _LazyRepeatingParser(Parser parser, Parser limit, int min, [int max])
+  _LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
