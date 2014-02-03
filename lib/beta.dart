@@ -59,7 +59,11 @@ abstract class CompositeParser2 extends CompositeParser {
           mirror.positionalArguments.first);
       } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
         var argument = mirror.positionalArguments.first;
-        return argument is Parser ? redef(name, argument) : action(name, argument);
+        if (argument is Parser) {
+          redef(name, argument);
+        } else {
+          action(name, argument);
+        }
       }
     }
     return super.noSuchMethod(mirror);
