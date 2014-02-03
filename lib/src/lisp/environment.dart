@@ -31,7 +31,7 @@ class Environment {
   }
 
   /** Updates the binding for [key] with a [value]. */
-  void operator []=(Name key, dynamic value) {
+  void operator []= (Name key, dynamic value) {
     if (_bindings.containsKey(key)) {
       _bindings[key] = value;
     } else if (_owner != null) {
