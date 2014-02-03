@@ -1049,7 +1049,7 @@ main() {
       expect(parser.accept('(1 + 2) * 3'), isTrue);
     });
   });
-  group('', () {
+  group('expression', () {
     var root = failure().setable();
     var builder = new ExpressionBuilder();
     builder.group()
