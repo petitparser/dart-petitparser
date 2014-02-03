@@ -67,7 +67,9 @@ class ExpressionBuilder {
   /**
    * Builds the expression parser.
    */
-  Parser build() => _groups.fold(epsilon(), (a, b) => b._build(a));
+  Parser build() => _groups.fold(
+      failure("Highest priority group should define a primitive parser"),
+      (a, b) => b._build(a));
 
 }
 
@@ -182,7 +184,7 @@ class ExpressionGroup {
 
   final List<Parser> _left = new List();
 
-  // helper to build an optimized choice parser
+  // helper to build an optimal choice parser
   Parser _build_choice(List<Parser> parsers, [Parser otherwise]) {
     if (parsers.isEmpty) {
       return otherwise;
