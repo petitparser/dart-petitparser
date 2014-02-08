@@ -80,7 +80,7 @@ abstract class Parser {
    * and returns that letter. When given something else the parser succeeds as
    * well, does not consume anything and returns `null`.
    */
-  Parser optional([dynamic otherwise]) => new _OptionalParser(this, otherwise);
+  Parser optional([dynamic otherwise]) => new OptionalParser(this, otherwise);
 
   /**
    * Returns a parser that accepts the receiver zero or more times. The
@@ -146,7 +146,7 @@ abstract class Parser {
    * two, three, or four letters and returns the accepted letters as a list.
    */
   Parser repeat(int min, int max) {
-    return new _PossessiveRepeatingParser(this, min, max);
+    return new PossessiveRepeatingParser(this, min, max);
   }
 
   /**
@@ -155,7 +155,7 @@ abstract class Parser {
    * the [Parser.repeat] operator. The [limit] is not consumed.
    */
   Parser repeatGreedy(Parser limit, int min, int max) {
-    return new _GreedyRepeatingParser(this, limit, min, max);
+    return new GreedyRepeatingParser(this, limit, min, max);
   }
 
   /**
@@ -164,7 +164,7 @@ abstract class Parser {
    * the [Parser.repeat] operator. The [limit] is not consumed.
    */
   Parser repeatLazy(Parser limit, int min, int max) {
-    return new _LazyRepeatingParser(this, limit, min, max);
+    return new LazyRepeatingParser(this, limit, min, max);
   }
 
   /**
@@ -187,7 +187,7 @@ abstract class Parser {
    * letter followed by a digit and another letter. The parse result of the
    * input string `'a1b'` is the list `['a', '1', 'b']`.
    */
-  Parser seq(Parser other) => new _SequenceParser([this, other]);
+  Parser seq(Parser other) => new SequenceParser([this, other]);
 
   /**
    * Convenience operator returning a parser that accepts the receiver followed
@@ -207,7 +207,7 @@ abstract class Parser {
    * `letter()`. This can be problematic if the author intended to attach a
    * production action to `char('a')`.
    */
-  Parser or(Parser other) => new _ChoiceParser([this, other]);
+  Parser or(Parser other) => new ChoiceParser([this, other]);
 
   /**
    * Convenience operator returning a parser that accepts the receiver or
@@ -224,7 +224,7 @@ abstract class Parser {
    * does not consume accepted input, the parser `identifier` is given the
    * ability to process the complete identifier.
    */
-  Parser and() => new _AndParser(this);
+  Parser and() => new AndParser(this);
 
   /**
    * Returns a parser (logical not-predicate) that succeeds whenever the
@@ -236,7 +236,7 @@ abstract class Parser {
    * complete parser fails. Otherwise the parser `identifier` is given the
    * ability to process the complete identifier.
    */
-  Parser not([String message]) => new _NotParser(this, message);
+  Parser not([String message]) => new NotParser(this, message);
 
   /**
    * Returns a parser that consumes any input token (character), but the
@@ -256,7 +256,7 @@ abstract class Parser {
    * for the input `'abc'`. In contrast, the parser `letter().plus()` would
    * return `['a', 'b', 'c']` for the same input instead.
    */
-  Parser flatten() => new _FlattenParser(this);
+  Parser flatten() => new FlattenParser(this);
 
   /**
    * Returns a parser that returns a [Token]. The token carries the parsed
@@ -267,7 +267,7 @@ abstract class Parser {
    * For example, the parser `letter().plus().token()` returns the token
    * `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.
    */
-  Parser token() => new _TokenParser(this);
+  Parser token() => new TokenParser(this);
 
   /**
    * Returns a parser that consumes input before and after the receiver. The
@@ -278,7 +278,7 @@ abstract class Parser {
    * for the input `' ab\n'` and consumes the complete input string.
    */
   Parser trim([Parser trimmer]) {
-    return new _TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
+    return new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
   }
 
   /**
@@ -290,7 +290,7 @@ abstract class Parser {
    * succeed on both inputs, but not consume everything for the second input.
    */
   Parser end([String message = 'end of input expected']) {
-    return new _EndOfInputParser(this, message);
+    return new EndOfInputParser(this, message);
   }
 
   /**
@@ -301,7 +301,7 @@ abstract class Parser {
    * as `letter()`, but it can be replaced with another parser using
    * [SetableParser.set].
    */
-  SetableParser setable() => new _SetableParser(this);
+  SetableParser setable() => new SetableParser(this);
 
   /**
    * Returns a parser that evaluates a [function] as the production action
@@ -311,7 +311,7 @@ abstract class Parser {
    * the number `1` for the input string `'1'`. If the delegate fail, the
    * production action is not executed and the failure is passed on.
    */
-  Parser map(Function function) => new _ActionParser(this, function);
+  Parser map(Function function) => new ActionParser(this, function);
 
   /**
    * Returns a parser that transform a successful parse result by returning
@@ -361,8 +361,8 @@ abstract class Parser {
    */
   Parser separatedBy(Parser separator, {bool includeSeparators: true,
       bool optionalSeparatorAtEnd: false}) {
-    var repeater = new _SequenceParser([separator, this]).star();
-    var parser = new _SequenceParser(optionalSeparatorAtEnd
+    var repeater = new SequenceParser([separator, this]).star();
+    var parser = new SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional(separator)]
         : [this, repeater]);
     return parser.map((List list) {

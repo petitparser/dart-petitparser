@@ -6,11 +6,11 @@ part of petitparser;
  * A parser that performs a transformation with a given function on the
  * successful parse result of the delegate.
  */
-class _ActionParser extends DelegateParser {
+class ActionParser extends DelegateParser {
 
   final Function _function;
 
-  _ActionParser(parser, this._function) : super(parser);
+  ActionParser(parser, this._function) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -23,7 +23,7 @@ class _ActionParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _ActionParser(_delegate, _function);
+  Parser copy() => new ActionParser(_delegate, _function);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -35,11 +35,11 @@ class _ActionParser extends DelegateParser {
 /**
  * A parser that silently consumes input of a parser around its delegate.
  */
-class _TrimmingParser extends DelegateParser {
+class TrimmingParser extends DelegateParser {
 
   Parser _trimmer;
 
-  _TrimmingParser(parser, this._trimmer) : super(parser);
+  TrimmingParser(parser, this._trimmer) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -59,7 +59,7 @@ class _TrimmingParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _TrimmingParser(_delegate, _trimmer);
+  Parser copy() => new TrimmingParser(_delegate, _trimmer);
 
   @override
   List<Parser> get children => [_delegate, _trimmer];
@@ -78,9 +78,9 @@ class _TrimmingParser extends DelegateParser {
  * A parser that answers a substring or sublist of the range its delegate
  * parses.
  */
-class _FlattenParser extends DelegateParser {
+class FlattenParser extends DelegateParser {
 
-  _FlattenParser(parser) : super(parser);
+  FlattenParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -96,16 +96,16 @@ class _FlattenParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _FlattenParser(_delegate);
+  Parser copy() => new FlattenParser(_delegate);
 
 }
 
 /**
  * A parser that answers a token of the result its delegate parses.
  */
-class _TokenParser extends DelegateParser {
+class TokenParser extends DelegateParser {
 
-  _TokenParser(parser) : super(parser);
+  TokenParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -120,6 +120,6 @@ class _TokenParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _TokenParser(_delegate);
+  Parser copy() => new TokenParser(_delegate);
 
 }

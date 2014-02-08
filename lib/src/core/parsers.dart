@@ -8,19 +8,19 @@ part of petitparser;
  * For example, `char('a').or(epsilon())` is equivalent to
  * `char('a').optional()`.
  */
-Parser epsilon([dynamic result]) => new _EpsilonParser(result);
+Parser epsilon([dynamic result]) => new EpsilonParser(result);
 
-class _EpsilonParser extends Parser {
+class EpsilonParser extends Parser {
 
   final dynamic _result;
 
-  _EpsilonParser(this._result);
+  EpsilonParser(this._result);
 
   @override
   Result parseOn(Context context) => context.success(_result);
 
   @override
-  Parser copy() => new _EpsilonParser(_result);
+  Parser copy() => new EpsilonParser(_result);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -35,14 +35,14 @@ class _EpsilonParser extends Parser {
  * For example, `failure()` always fails, no matter what input it is given.
  */
 Parser failure([String message = 'unable to parse']) {
-  return new _FailureParser(message);
+  return new FailureParser(message);
 }
 
-class _FailureParser extends Parser {
+class FailureParser extends Parser {
 
   final String _message;
 
-  _FailureParser(this._message);
+  FailureParser(this._message);
 
   @override
   Result parseOn(Context context) => context.failure(_message);
@@ -51,7 +51,7 @@ class _FailureParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new _FailureParser(_message);
+  Parser copy() => new FailureParser(_message);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -74,23 +74,14 @@ SetableParser undefined([String message = 'undefined parser']) {
   return failure(message).setable();
 }
 
-/**
- * Interface of a parser that can be redefined using [SetableParser.set].
- */
-abstract class SetableParser implements Parser {
+class SetableParser extends DelegateParser {
+
+  SetableParser(parser) : super(parser);
 
   /** Sets the receiver to delegate to [parser]. */
-  void set(Parser parser);
-
-}
-
-class _SetableParser extends DelegateParser implements SetableParser {
-
-  _SetableParser(parser) : super(parser);
-
   void set(Parser parser) => replace(children[0], parser);
 
   @override
-  Parser copy() => new _SetableParser(_delegate);
+  Parser copy() => new SetableParser(_delegate);
 
 }

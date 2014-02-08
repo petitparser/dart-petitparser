@@ -101,7 +101,7 @@ class ExpressionGroup {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return new _SequenceParser([_build_choice(_prefix).star(), inner]).map((tuple) {
+      return new SequenceParser([_build_choice(_prefix).star(), inner]).map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           return result.action(result.operator, value);
         });
@@ -124,7 +124,7 @@ class ExpressionGroup {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return new _SequenceParser([inner, _build_choice(_postfix).star()]).map((tuple) {
+      return new SequenceParser([inner, _build_choice(_postfix).star()]).map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           return result.action(value, result.operator);
         });
@@ -191,7 +191,7 @@ class ExpressionGroup {
     } else if (parsers.length == 1) {
       return parsers.first;
     } else {
-      return new _ChoiceParser(parsers);
+      return new ChoiceParser(parsers);
     }
   }
 

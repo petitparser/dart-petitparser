@@ -9,14 +9,14 @@ part of petitparser;
  * fails for an empty input.
  */
 Parser any([String message = 'input expected']) {
-  return new _AnyParser(message);
+  return new AnyParser(message);
 }
 
-class _AnyParser extends Parser {
+class AnyParser extends Parser {
 
   final String _message;
 
-  _AnyParser(this._message);
+  AnyParser(this._message);
 
   @override
   Result parseOn(Context context) {
@@ -28,10 +28,7 @@ class _AnyParser extends Parser {
   }
 
   @override
-  String toString() => '${super.toString()}[$_message]';
-
-  @override
-  Parser copy() => new _AnyParser(_message);
+  Parser copy() => new AnyParser(_message);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -89,19 +86,19 @@ typedef bool Predicate(input);
  * it if the [predicate] matches, or fails with the given [message].
  */
 Parser predicate(int length, Predicate predicate, String message) {
-  return new _PredicateParser(length, predicate, message);
+  return new PredicateParser(length, predicate, message);
 }
 
 /**
  * A parser for a literal satisfying a predicate.
  */
-class _PredicateParser extends Parser {
+class PredicateParser extends Parser {
 
   final int _length;
   final Predicate _predicate;
   final String _message;
 
-  _PredicateParser(this._length, this._predicate, this._message);
+  PredicateParser(this._length, this._predicate, this._message);
 
   @override
   Result parseOn(Context context) {
@@ -122,7 +119,7 @@ class _PredicateParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new _PredicateParser(_length, _predicate, _message);
+  Parser copy() => new PredicateParser(_length, _predicate, _message);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {

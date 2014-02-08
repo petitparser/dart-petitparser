@@ -36,11 +36,11 @@ class DelegateParser extends Parser {
 /**
  * A parser that succeeds only at the end of the input.
  */
-class _EndOfInputParser extends DelegateParser {
+class EndOfInputParser extends DelegateParser {
 
   final String _message;
 
-  _EndOfInputParser(parser, this._message) : super(parser);
+  EndOfInputParser(parser, this._message) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -55,7 +55,7 @@ class _EndOfInputParser extends DelegateParser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new _EndOfInputParser(_delegate, _message);
+  Parser copy() => new EndOfInputParser(_delegate, _message);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -68,9 +68,9 @@ class _EndOfInputParser extends DelegateParser {
  * The and-predicate, a parser that succeeds whenever its delegate does, but
  * does not consume the input stream [Parr 1994, 1995].
  */
-class _AndParser extends DelegateParser {
+class AndParser extends DelegateParser {
 
-  _AndParser(parser) : super(parser);
+  AndParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -83,7 +83,7 @@ class _AndParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _AndParser(_delegate);
+  Parser copy() => new AndParser(_delegate);
 
 }
 
@@ -91,11 +91,11 @@ class _AndParser extends DelegateParser {
  * The not-predicate, a parser that succeeds whenever its delegate does not,
  * but consumes no input [Parr 1994, 1995].
  */
-class _NotParser extends DelegateParser {
+class NotParser extends DelegateParser {
 
   final String _message;
 
-  _NotParser(parser, this._message) : super(parser);
+  NotParser(parser, this._message) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -111,7 +111,7 @@ class _NotParser extends DelegateParser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new _NotParser(_delegate, _message);
+  Parser copy() => new NotParser(_delegate, _message);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -123,11 +123,11 @@ class _NotParser extends DelegateParser {
 /**
  * A parser that optionally parsers its delegate, or answers nil.
  */
-class _OptionalParser extends DelegateParser {
+class OptionalParser extends DelegateParser {
 
   final dynamic _otherwise;
 
-  _OptionalParser(parser, this._otherwise) : super(parser);
+  OptionalParser(parser, this._otherwise) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -140,7 +140,7 @@ class _OptionalParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new _OptionalParser(_delegate, _otherwise);
+  Parser copy() => new OptionalParser(_delegate, _otherwise);
 
   @override
   bool match(dynamic other, [Set<Parser> seen]) {
@@ -176,13 +176,13 @@ abstract class ListParser extends Parser {
 /**
  * A parser that uses the first parser that succeeds.
  */
-class _ChoiceParser extends ListParser {
+class ChoiceParser extends ListParser {
 
-  factory _ChoiceParser(Iterable<Parser> parsers) {
-    return new _ChoiceParser._(new List.from(parsers, growable: false));
+  factory ChoiceParser(Iterable<Parser> parsers) {
+    return new ChoiceParser._(new List.from(parsers, growable: false));
   }
 
-  _ChoiceParser._(parsers) : super(parsers);
+  ChoiceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -198,24 +198,24 @@ class _ChoiceParser extends ListParser {
 
   @override
   Parser or(Parser other) {
-    return new _ChoiceParser(new List()..addAll(_parsers)..add(other));
+    return new ChoiceParser(new List()..addAll(_parsers)..add(other));
   }
 
   @override
-  Parser copy() => new _ChoiceParser(_parsers);
+  Parser copy() => new ChoiceParser(_parsers);
 
 }
 
 /**
  * A parser that parses a sequence of parsers.
  */
-class _SequenceParser extends ListParser {
+class SequenceParser extends ListParser {
 
-  factory _SequenceParser(Iterable<Parser> parsers) {
-    return new _SequenceParser._(new List.from(parsers, growable: false));
+  factory SequenceParser(Iterable<Parser> parsers) {
+    return new SequenceParser._(new List.from(parsers, growable: false));
   }
 
-  _SequenceParser._(parsers) : super(parsers);
+  SequenceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -234,10 +234,10 @@ class _SequenceParser extends ListParser {
 
   @override
   Parser seq(Parser other) {
-    return new _SequenceParser(new List()..addAll(_parsers)..add(other));
+    return new SequenceParser(new List()..addAll(_parsers)..add(other));
   }
 
   @override
-  Parser copy() => new _SequenceParser(_parsers);
+  Parser copy() => new SequenceParser(_parsers);
 
 }

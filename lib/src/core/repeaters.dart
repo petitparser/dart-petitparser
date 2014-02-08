@@ -10,12 +10,12 @@ const int unbounded = -1;
 /**
  * A parser that repeatedly parses a sequence of parsers.
  */
-abstract class _RepeatingParser extends DelegateParser {
+abstract class RepeatingParser extends DelegateParser {
 
   final int _min;
   final int _max;
 
-  _RepeatingParser(Parser parser, this._min, this._max)
+  RepeatingParser(Parser parser, this._min, this._max)
       : super(parser) {
     assert(0 <= _min);
     assert(_max == unbounded || _min <= _max);
@@ -36,9 +36,9 @@ abstract class _RepeatingParser extends DelegateParser {
 
 }
 
-class _PossessiveRepeatingParser extends _RepeatingParser {
+class PossessiveRepeatingParser extends RepeatingParser {
 
-  _PossessiveRepeatingParser(Parser parser, int min, int max)
+  PossessiveRepeatingParser(Parser parser, int min, int max)
       : super(parser, min, max);
 
   @override
@@ -65,7 +65,7 @@ class _PossessiveRepeatingParser extends _RepeatingParser {
   }
 
   @override
-  Parser copy() => new _PossessiveRepeatingParser(_delegate, _min, _max);
+  Parser copy() => new PossessiveRepeatingParser(_delegate, _min, _max);
 
 }
 
@@ -75,11 +75,11 @@ class _PossessiveRepeatingParser extends _RepeatingParser {
  * 'limit'. Subclasses provide repeating behavior as typically seen in regular
  * expression implementations (non-blind).
  */
-abstract class _LimitedRepeatingParser extends _RepeatingParser {
+abstract class LimitedRepeatingParser extends RepeatingParser {
 
   Parser _limit;
 
-  _LimitedRepeatingParser(Parser parser, this._limit, int min, int max)
+  LimitedRepeatingParser(Parser parser, this._limit, int min, int max)
       : super(parser, min, max);
 
   @override
@@ -105,9 +105,9 @@ abstract class _LimitedRepeatingParser extends _RepeatingParser {
  * aggressively consumes as much input as possible and then backtracks to meet the
  * 'limit' condition.
  */
-class _GreedyRepeatingParser extends _LimitedRepeatingParser {
+class GreedyRepeatingParser extends LimitedRepeatingParser {
 
-  _GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
+  GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
@@ -148,7 +148,7 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
   }
 
   @override
-  Parser copy() => new _GreedyRepeatingParser(_delegate, _limit, _min, _max);
+  Parser copy() => new GreedyRepeatingParser(_delegate, _limit, _min, _max);
 
 }
 
@@ -156,9 +156,9 @@ class _GreedyRepeatingParser extends _LimitedRepeatingParser {
  * A lazy repeating parser, commonly seen in regular expression implementations. It
  * limits its consumption to meet the 'limit' condition as early as possible.
  */
-class _LazyRepeatingParser extends _LimitedRepeatingParser {
+class LazyRepeatingParser extends LimitedRepeatingParser {
 
-  _LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
+  LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
@@ -192,6 +192,6 @@ class _LazyRepeatingParser extends _LimitedRepeatingParser {
   }
 
   @override
-  Parser copy() => new _LazyRepeatingParser(_delegate, _limit, _min, _max);
+  Parser copy() => new LazyRepeatingParser(_delegate, _limit, _min, _max);
 
 }
