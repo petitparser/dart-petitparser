@@ -28,8 +28,8 @@ abstract class RepeatingParser extends DelegateParser {
   }
 
   @override
-  bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
+  bool _matchProperties(RepeatingParser other, Set<Parser> seen) {
+    return super._matchProperties(other, seen)
         && _min == other._min
         && _max == other._max;
   }
@@ -91,11 +91,6 @@ abstract class LimitedRepeatingParser extends RepeatingParser {
     if (_limit == source) {
       _limit = target;
     }
-  }
-
-  @override
-  bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen) && _limit.match(other._limit);
   }
 
 }

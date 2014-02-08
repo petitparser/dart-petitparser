@@ -30,8 +30,8 @@ class CharacterParser extends Parser {
   Parser copy() => new CharacterParser(_matcher, _message);
 
   @override
-  bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen)
+  bool _matchProperties(CharacterParser other, Set<Parser> seen) {
+    return super._matchProperties(other, seen)
         && _matcher == other._matcher
         && _message == other._message;
   }

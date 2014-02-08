@@ -402,10 +402,14 @@ abstract class Parser {
       return true;
     }
     seen.add(this);
-    return runtimeType == other.runtimeType && _matchChildren(other, seen);
+    return runtimeType == other.runtimeType
+        && _matchProperties(other, seen)
+        && _matchChildren(other, seen);
   }
 
-  bool _matchChildren(Parser other, [Set<Parser> seen]) {
+  bool _matchProperties(Parser other, Set<Parser> seen) => true;
+
+  bool _matchChildren(Parser other, Set<Parser> seen) {
     var thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;

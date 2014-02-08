@@ -26,8 +26,9 @@ class ActionParser extends DelegateParser {
   Parser copy() => new ActionParser(_delegate, _function);
 
   @override
-  bool match(dynamic other, [Set<Parser> seen]) {
-    return super.match(other, seen) && _function == other._function;
+  bool _matchProperties(ActionParser other, Set<Parser> seen) {
+    return super._matchProperties(other, seen)
+        && _function == other._function;
   }
 
 }
