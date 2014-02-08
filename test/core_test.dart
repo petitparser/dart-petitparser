@@ -808,27 +808,27 @@ main() {
       var lower = lowercase();
       var parser = lower.setable();
       var transformed = transformParser(parser, (parser) => parser);
-      expect(transformed.match(parser), isTrue);
+      expect(transformed.equals(parser), isTrue);
     });
     test('transform root', () {
       var input = lowercase();
       var source = lowercase();
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.match(parser) ? target : parser;
+        return source.equals(parser) ? target : parser;
       });
-      expect(input.match(output), isFalse);
-      expect(output.match(target), isTrue);
+      expect(input.equals(output), isFalse);
+      expect(output.equals(target), isTrue);
     });
     test('transform delegate', () {
       var input = lowercase().setable();
       var source = lowercase();
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.match(parser) ? target : parser;
+        return source.equals(parser) ? target : parser;
       });
-      expect(input.match(output), isFalse);
-      expect(output.match(target.setable()), isTrue);
+      expect(input.equals(output), isFalse);
+      expect(output.equals(target.setable()), isTrue);
     });
     test('transform double reference', () {
       var lower = lowercase();
@@ -836,37 +836,37 @@ main() {
       var source = lowercase();
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.match(parser) ? target : parser;
+        return source.equals(parser) ? target : parser;
       });
-      expect(input.match(output), isFalse);
-      expect(output.match(target & target), isTrue);
+      expect(input.equals(output), isFalse);
+      expect(output.equals(target & target), isTrue);
       expect(output.children.first, output.children.last);
     });
     test('remove setables', () {
       var input = lowercase().setable();
       var output = removeSetables(input);
-      expect(output.match(lowercase()), isTrue);
+      expect(output.equals(lowercase()), isTrue);
     });
     test('remove nested setables', () {
       var input = lowercase().setable().star();
       var output = removeSetables(input);
-      expect(output.match(lowercase().star()), isTrue);
+      expect(output.equals(lowercase().star()), isTrue);
     });
     test('remove double setables', () {
       var input = lowercase().setable().setable();
       var output = removeSetables(input);
-      expect(output.match(lowercase()), isTrue);
+      expect(output.equals(lowercase()), isTrue);
     });
     group('copying and matching', () {
       void verify(Parser parser) {
         var copy = parser.copy();
         expect(copy.runtimeType, parser.runtimeType);
         expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
-        expect(copy.match(copy), isTrue);
-        expect(parser.match(parser), isTrue);
+        expect(copy.equals(copy), isTrue);
+        expect(parser.equals(parser), isTrue);
         expect(copy, isNot(same(parser)));
-        expect(copy.match(parser), isTrue);
-        expect(parser.match(copy), isTrue);
+        expect(copy.equals(parser), isTrue);
+        expect(parser.equals(copy), isTrue);
       }
       test('and()', () => verify(digit().and()));
       test('char()', () => verify(char('a')));

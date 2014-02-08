@@ -109,7 +109,7 @@ Parser removeDuplicates(Parser root) {
   allParser(root).forEach((parent) {
     parent.children.forEach((source) {
       var target = uniques.firstWhere((each) {
-        return source != each && source.match(each);
+        return source != each && source.equals(each);
       }, orElse: () => null);
       if (target == null) {
         uniques.add(source);

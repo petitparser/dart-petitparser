@@ -23,8 +23,8 @@ class EpsilonParser extends Parser {
   Parser copy() => new EpsilonParser(_result);
 
   @override
-  bool _matchProperties(EpsilonParser other, Set<Parser> seen) {
-    return super._matchProperties(other, seen)
+  bool equalProperties(EpsilonParser other) {
+    return super.equalProperties(other)
         && _result == other._result;
   }
 
@@ -55,8 +55,8 @@ class FailureParser extends Parser {
   Parser copy() => new FailureParser(_message);
 
   @override
-  bool _matchProperties(FailureParser other, Set<Parser> seen) {
-    return super._matchProperties(other, seen)
+  bool equalProperties(FailureParser other) {
+    return super.equalProperties(other)
         && _message == other._message;
   }
 

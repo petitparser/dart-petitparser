@@ -384,6 +384,8 @@ abstract class Parser {
 
   /**
    * Returns a shallow copy of the receiver.
+   *
+   * Override this method in all subclasses.
    */
   Parser copy();
 
@@ -394,7 +396,7 @@ abstract class Parser {
    * refer to other parsers. This code is supposed to be overridden by parsers
    * that add other state.
    */
-  bool match(Parser other, [Set<Parser> seen]) {
+  bool equals(Parser other, [Set<Parser> seen]) {
     if (seen == null) {
       seen = new Set();
     }
@@ -403,19 +405,32 @@ abstract class Parser {
     }
     seen.add(this);
     return runtimeType == other.runtimeType
-        && _matchProperties(other, seen)
-        && _matchChildren(other, seen);
+        && equalProperties(other)
+        && equalChildren(other, seen);
   }
 
-  bool _matchProperties(Parser other, Set<Parser> seen) => true;
+  /**
+   * Compare the properties of two parsers. Normally this method should not be
+   * called directly, instead use [Parser#equals].
+   *
+   * Override this method in all subclasses that add new state.
+   */
+  bool equalProperties(Parser other) => true;
 
-  bool _matchChildren(Parser other, Set<Parser> seen) {
+  /**
+   * Compare the children of two parsers. Normally this method should not be
+   * called directly, instead use [Parser#equals].
+   *
+   * Normally this method does not need to be overridden, as this method works
+   * generically on the returned [Parser#children].
+   */
+  bool equalChildren(Parser other, Set<Parser> seen) {
     var thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
     }
     for (var i = 0; i < thisChildren.length; i++) {
-      if (!thisChildren[i].match(otherChildren[i], seen)) {
+      if (!thisChildren[i].equals(otherChildren[i], seen)) {
         return false;
       }
     }
