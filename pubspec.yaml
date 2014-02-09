@@ -1,11 +1,11 @@
 name: petitparser
-version: 1.0.1
+version: 1.0.2-dev
 author: Lukas Renggli <renggli@gmail.com>
 description: Dynamic parser combinator framework.
 homepage: https://github.com/renggli/PetitParserDart
 environment:
-  sdk: '>=0.8.10+6 <2.0.0'
+  sdk: '>=1.0.0 <2.0.0'
 dev_dependencies:
   browser: '>=0.9.0 <0.10.0'
   junitconfiguration: '>=1.0.0 <2.0.0'
-  unittest: '>=0.9.0 <0.10.0'
+  unittest: '>=0.9.0 <0.11.0'
