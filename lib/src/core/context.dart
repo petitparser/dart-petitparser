@@ -7,20 +7,17 @@ part of petitparser;
  */
 class Context {
 
-  final dynamic _buffer;
-  final int _position;
-
-  const Context(this._buffer, this._position);
+  const Context(this.buffer, this.position);
 
   /**
    * The buffer we are working on.
    */
-  dynamic get buffer => _buffer;
+  final dynamic buffer;
 
   /**
    * The current position in the buffer.
    */
-  int get position => _position;
+  final int position;
 
   /**
    * Returns [true] if this result indicates a parse success.
@@ -36,14 +33,14 @@ class Context {
    * Returns a result indicating a parse success.
    */
   Result success(dynamic result, [int position]) {
-    return new Success(_buffer, position == null ? _position : position, result);
+    return new Success(buffer, position == null ? this.position : position, result);
   }
 
   /**
    * Returns a result indicating a parse failure.
    */
   Result failure(String message, [int position]) {
-    return new Failure(_buffer, position == null ? _position : position, message);
+    return new Failure(buffer, position == null ? this.position : position, message);
   }
 
   /**
@@ -54,7 +51,7 @@ class Context {
   /**
    * Returns the line:column if the input is a string, otherwise the position.
    */
-  String toPositionString() => Token.positionString(_buffer, _position);
+  String toPositionString() => Token.positionString(buffer, position);
 
 }
 
@@ -82,21 +79,19 @@ abstract class Result extends Context {
  */
 class Success extends Result {
 
-  final dynamic _value;
-
-  const Success(buffer, position, this._value) : super(buffer, position);
+  const Success(buffer, position, this.value) : super(buffer, position);
 
   @override
   bool get isSuccess => true;
 
   @override
-  dynamic get value => _value;
+  final dynamic value;
 
   @override
   String get message => null;
 
   @override
-  String toString() => 'Success[${toPositionString()}]: $_value';
+  String toString() => 'Success[${toPositionString()}]: $value';
 
 }
 
@@ -105,9 +100,7 @@ class Success extends Result {
  */
 class Failure extends Result {
 
-  final String _message;
-
-  const Failure(buffer, position, this._message) : super(buffer, position);
+  const Failure(buffer, position, this.message) : super(buffer, position);
 
   @override
   bool get isFailure => true;
@@ -116,10 +109,10 @@ class Failure extends Result {
   dynamic get value => throw new ParserError(this);
 
   @override
-  String get message => _message;
+  final String message;
 
   @override
-  String toString() => 'Failure[${toPositionString()}]: $_message';
+  String toString() => 'Failure[${toPositionString()}]: $message';
 
 }
 
