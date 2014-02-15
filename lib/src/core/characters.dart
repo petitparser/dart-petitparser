@@ -38,7 +38,6 @@ class CharacterParser extends Parser {
 
 }
 
-/** Internal method to convert an element to a character code. */
 int _toCharCode(dynamic element) {
   if (element is num) {
     return element.round();
@@ -50,22 +49,37 @@ int _toCharCode(dynamic element) {
   return value.codeUnitAt(0);
 }
 
-/** Internal abstract character matcher class. */
+/**
+ * Internal abstract character matcher class.
+ */
 abstract class _CharMatcher {
   bool call(int value);
 }
 
-/** Internal character matcher that negates the result. */
+/**
+ * Internal character matcher that negates the result.
+ */
 class _NotCharMatcher implements _CharMatcher {
+
   final _CharMatcher _matcher;
+
   const _NotCharMatcher(this._matcher);
+
+  @override
   bool call(int value) => !_matcher(value);
+
 }
 
-/** Internal character matcher for alternatives. */
+/**
+ * Internal character matcher for alternatives.
+ */
 class _AltCharMatcher implements _CharMatcher {
+
   final List<_CharMatcher> _matchers;
+
   const _AltCharMatcher(this._matchers);
+
+  @override
   bool call(int value) {
     for (var matcher in _matchers) {
       if (matcher(value)) {
@@ -74,9 +88,12 @@ class _AltCharMatcher implements _CharMatcher {
     }
     return false;
   }
+
 }
 
-/** Returns a parser that accepts a specific character only. */
+/**
+ * Returns a parser that accepts a specific character only.
+ */
 Parser char(dynamic element, [String message]) {
   return new CharacterParser(
       new _SingleCharMatcher(_toCharCode(element)),
@@ -84,12 +101,19 @@ Parser char(dynamic element, [String message]) {
 }
 
 class _SingleCharMatcher implements _CharMatcher {
+
   final int _value;
+
   const _SingleCharMatcher(this._value);
+
+  @override
   bool call(int value) => identical(_value, value);
+
 }
 
-/** Returns a parser that accepts any digit character. */
+/**
+ * Returns a parser that accepts any digit character.
+ */
 Parser digit([String message]) {
   return new CharacterParser(
       _digitCharMatcher,
@@ -97,13 +121,19 @@ Parser digit([String message]) {
 }
 
 class _DigitCharMatcher implements _CharMatcher {
+
   const _DigitCharMatcher();
+
+  @override
   bool call(int value) => 48 <= value && value <= 57;
+
 }
 
 const _digitCharMatcher = const _DigitCharMatcher();
 
-/** Returns a parser that accepts any letter character. */
+/**
+ * Returns a parser that accepts any letter character.
+ */
 Parser letter([String message]) {
   return new CharacterParser(
       _letterCharMatcher,
@@ -111,13 +141,19 @@ Parser letter([String message]) {
 }
 
 class _LetterCharMatcher implements _CharMatcher {
+
   const _LetterCharMatcher();
+
+  @override
   bool call(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
+
 }
 
 const _letterCharMatcher = const _LetterCharMatcher();
 
-/** Returns a parser that accepts any lowercase character. */
+/**
+ * Returns a parser that accepts any lowercase character.
+ */
 Parser lowercase([String message]) {
   return new CharacterParser(
       _lowercaseCharMatcher,
@@ -125,13 +161,19 @@ Parser lowercase([String message]) {
 }
 
 class _LowercaseCharMatcher implements _CharMatcher {
+
   const _LowercaseCharMatcher();
+
+  @override
   bool call(int value) => 97 <= value && value <= 122;
+
 }
 
 const _lowercaseCharMatcher = const _LowercaseCharMatcher();
 
-/** Returns a parser that accepts the given character class pattern. */
+/**
+ * Returns a parser that accepts the given character class pattern.
+ */
 Parser pattern(String element, [String message]) {
   return new CharacterParser(
       _patternParser.parse(element).value,
@@ -155,7 +197,10 @@ Parser _createPatternParser() {
 
 final _patternParser = _createPatternParser();
 
-/** Returns a parser that accepts any character in the range between [start] and [stop]. */
+/**
+ * Returns a parser that accepts any character in the range
+ * between [start] and [stop].
+ */
 Parser range(dynamic start, dynamic stop, [String message]) {
   return new CharacterParser(
       new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop)),
@@ -163,13 +208,21 @@ Parser range(dynamic start, dynamic stop, [String message]) {
 }
 
 class _RangeCharMatcher implements _CharMatcher {
+
   final int _start;
+
   final int _stop;
+
   const _RangeCharMatcher(this._start, this._stop);
+
+  @override
   bool call(int value) => _start <= value && value <= _stop;
+
 }
 
-/** Returns a parser that accepts any uppercase character. */
+/**
+ * Returns a parser that accepts any uppercase character.
+ */
 Parser uppercase([String message]) {
   return new CharacterParser(
       _uppercaseCharMatcher,
@@ -177,13 +230,19 @@ Parser uppercase([String message]) {
 }
 
 class _UppercaseCharMatcher implements _CharMatcher {
+
   const _UppercaseCharMatcher();
+
+  @override
   bool call(int value) => 65 <= value && value <= 90;
+
 }
 
 const _uppercaseCharMatcher = const _UppercaseCharMatcher();
 
-/** Returns a parser that accepts any whitespace character. */
+/**
+ * Returns a parser that accepts any whitespace character.
+ */
 Parser whitespace([String message]) {
   return new CharacterParser(
       _whitespaceCharMatcher,
@@ -191,7 +250,10 @@ Parser whitespace([String message]) {
 }
 
 class _WhitespaceCharMatcher implements _CharMatcher {
+
   const _WhitespaceCharMatcher();
+
+  @override
   bool call(int value) {
     if (value < 256) {
       return value == 0x09 || value == 0x0A || value == 0x0B || value == 0x0C
@@ -204,11 +266,14 @@ class _WhitespaceCharMatcher implements _CharMatcher {
           || value == 0x205F || value == 0x3000 || value == 0xFEFF;
     }
   }
+
 }
 
 const _whitespaceCharMatcher = const _WhitespaceCharMatcher();
 
-/** Returns a parser that accepts any word character. */
+/**
+ * Returns a parser that accepts any word character.
+ */
 Parser word([String message]) {
   return new CharacterParser(
       _wordCharMatcher,
@@ -216,9 +281,13 @@ Parser word([String message]) {
 }
 
 class _WordCharMatcher implements _CharMatcher {
+
   const _WordCharMatcher();
+
+  @override
   bool call(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
       || (48 <= value && value <= 57) || (value == 95);
+
 }
 
 const _wordCharMatcher = const _WordCharMatcher();

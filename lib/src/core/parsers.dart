@@ -80,7 +80,9 @@ class SetableParser extends DelegateParser {
 
   SetableParser(parser) : super(parser);
 
-  /** Sets the receiver to delegate to [parser]. */
+  /**
+   * Sets the receiver to delegate to [parser].
+   */
   void set(Parser parser) => replace(children[0], parser);
 
   @override

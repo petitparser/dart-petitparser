@@ -34,7 +34,8 @@ class ActionParser extends DelegateParser {
 }
 
 /**
- * A parser that silently consumes input of a parser around its delegate.
+ * A parser that silently consumes input of another parser around
+ * its delegate.
  */
 class TrimmingParser extends DelegateParser {
 
