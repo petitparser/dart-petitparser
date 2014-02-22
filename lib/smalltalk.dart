@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * This package contains the complete grammar of Smalltalk.
  *

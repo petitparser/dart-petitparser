@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 library xml_test;
 
 import 'package:petitparser/xml.dart';

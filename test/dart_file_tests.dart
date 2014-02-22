@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * This test-case automatically generates various tests from Dart source
  * code. Unfortunately the parser is currently unable to parse most of
@@ -8,7 +6,6 @@
 library dart_file_test;
 
 import 'dart:io';
-import 'dart:async';
 import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
 import 'package:unittest/unittest.dart';
@@ -24,8 +21,8 @@ void generateTests(DartGrammar dart, String title, String path) {
           file.openRead()
               .transform(SYSTEM_ENCODING.decoder)
               .listen(
-                  (part) => source.write(part), 
-                  onDone: expectAsync0(() {
+                  (part) => source.write(part),
+                  onDone: expectAsync(() {
                     expect(source.toString(), accept(dart));
                   }),
                   onError: fail);

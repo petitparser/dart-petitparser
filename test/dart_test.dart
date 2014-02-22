@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 library dart_test;
 
 import 'package:petitparser/test.dart';

@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * This package contains a reasonably complete implementation of an XML
  * parser and its associated AST.

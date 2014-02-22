@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 /**
  * This package contains a experimental features of PetitParser. The code here
  * might be removed or changed in incompatible ways without keeping backward

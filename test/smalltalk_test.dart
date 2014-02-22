@@ -1,5 +1,3 @@
-// Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 library smalltalk_test;
 
 import 'package:petitparser/smalltalk.dart';
