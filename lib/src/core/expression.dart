@@ -56,7 +56,7 @@ class ExpressionBuilder {
   final List<ExpressionGroup> _groups = new List();
 
   /**
-   * Creates a new group of operators that share the same prority.
+   * Creates a new group of operators that share the same priority.
    */
   ExpressionGroup group() {
     var group = new ExpressionGroup();
@@ -73,6 +73,9 @@ class ExpressionBuilder {
 
 }
 
+/**
+ * Models a group of operators of the same precedence.
+ */
 class ExpressionGroup {
 
   /**
