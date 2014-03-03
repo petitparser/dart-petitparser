@@ -8,7 +8,7 @@ class ActionParser extends DelegateParser {
 
   final Function _function;
 
-  ActionParser(parser, this._function) : super(parser);
+  ActionParser(parser, this._function): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -25,8 +25,7 @@ class ActionParser extends DelegateParser {
 
   @override
   bool equalProperties(ActionParser other) {
-    return super.equalProperties(other)
-        && _function == other._function;
+    return super.equalProperties(other) && _function == other._function;
   }
 
 }
@@ -39,7 +38,7 @@ class TrimmingParser extends DelegateParser {
 
   Parser _trimmer;
 
-  TrimmingParser(parser, this._trimmer) : super(parser);
+  TrimmingParser(parser, this._trimmer): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -80,7 +79,7 @@ class TrimmingParser extends DelegateParser {
  */
 class FlattenParser extends DelegateParser {
 
-  FlattenParser(parser) : super(parser);
+  FlattenParser(parser): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -105,14 +104,13 @@ class FlattenParser extends DelegateParser {
  */
 class TokenParser extends DelegateParser {
 
-  TokenParser(parser) : super(parser);
+  TokenParser(parser): super(parser);
 
   @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
-      var token = new Token(result.value, context.buffer,
-          context.position, result.position);
+      var token = new Token(result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
       return result;

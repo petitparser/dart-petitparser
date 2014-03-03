@@ -54,8 +54,7 @@ class Natives {
     if (args.head is Name) {
       return env.define(args.head, evalList(env, args.tail));
     } else if (args.head.head is Name) {
-      return env.define(args.head.head, _lambda(env,
-          new Cons(args.head.tail, args.tail)));
+      return env.define(args.head.head, _lambda(env, new Cons(args.head.tail, args.tail)));
     } else {
       throw new ArgumentError('Invalid define: $args');
     }
@@ -144,14 +143,14 @@ class Natives {
   }
 
   static dynamic _or(Environment env, dynamic args) {
-      while (args != null) {
-        if (eval(env, args.head)) {
-          return true;
-        }
-        args = args.tail;
+    while (args != null) {
+      if (eval(env, args.head)) {
+        return true;
       }
-      return false;
+      args = args.tail;
     }
+    return false;
+  }
 
   static dynamic _not(Environment env, dynamic args) {
     return !eval(env, args.head);

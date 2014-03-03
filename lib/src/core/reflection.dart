@@ -132,7 +132,7 @@ Parser debug(Parser root) {
       level--;
       print('${_repeat(level, '  ')}${result}');
       return result;
-     });
+    });
   });
 }
 
@@ -171,7 +171,7 @@ Parser profile(Parser root) {
       var result = continuation(context);
       watch[parser].stop();
       return result;
-     });
+    });
   }), (context, continuation) {
     parsers.forEach((parser) {
       count[parser] = 0;
@@ -193,7 +193,7 @@ class _ContinuationParser extends DelegateParser {
 
   final _ContinuationHandler _handler;
 
-  _ContinuationParser(parser, this._handler) : super(parser);
+  _ContinuationParser(parser, this._handler): super(parser);
 
   @override
   Result parseOn(Context context) {

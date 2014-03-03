@@ -58,7 +58,7 @@ class Context {
  */
 abstract class Result extends Context {
 
-  const Result(buffer, position) : super(buffer, position);
+  const Result(buffer, position): super(buffer, position);
 
   /**
    * Returns the parse result of the current context.
@@ -77,7 +77,7 @@ abstract class Result extends Context {
  */
 class Success extends Result {
 
-  const Success(buffer, position, this.value) : super(buffer, position);
+  const Success(buffer, position, this.value): super(buffer, position);
 
   @override
   bool get isSuccess => true;
@@ -98,7 +98,7 @@ class Success extends Result {
  */
 class Failure extends Result {
 
-  const Failure(buffer, position, this.message) : super(buffer, position);
+  const Failure(buffer, position, this.message): super(buffer, position);
 
   @override
   bool get isFailure => true;

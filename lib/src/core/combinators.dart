@@ -38,7 +38,7 @@ class EndOfInputParser extends DelegateParser {
 
   final String _message;
 
-  EndOfInputParser(parser, this._message) : super(parser);
+  EndOfInputParser(parser, this._message): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -57,8 +57,7 @@ class EndOfInputParser extends DelegateParser {
 
   @override
   bool equalProperties(EndOfInputParser other) {
-    return super.equalProperties(other)
-        && _message == other._message;
+    return super.equalProperties(other) && _message == other._message;
   }
 
 }
@@ -69,7 +68,7 @@ class EndOfInputParser extends DelegateParser {
  */
 class AndParser extends DelegateParser {
 
-  AndParser(parser) : super(parser);
+  AndParser(parser): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -94,7 +93,7 @@ class NotParser extends DelegateParser {
 
   final String _message;
 
-  NotParser(parser, this._message) : super(parser);
+  NotParser(parser, this._message): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -114,8 +113,7 @@ class NotParser extends DelegateParser {
 
   @override
   bool equalProperties(NotParser other) {
-    return super.equalProperties(other)
-        && _message == other._message;
+    return super.equalProperties(other) && _message == other._message;
   }
 
 }
@@ -127,7 +125,7 @@ class OptionalParser extends DelegateParser {
 
   final dynamic _otherwise;
 
-  OptionalParser(parser, this._otherwise) : super(parser);
+  OptionalParser(parser, this._otherwise): super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -144,8 +142,7 @@ class OptionalParser extends DelegateParser {
 
   @override
   bool equalProperties(OptionalParser other) {
-    return super.equalProperties(other)
-        && _otherwise == other._otherwise;
+    return super.equalProperties(other) && _otherwise == other._otherwise;
   }
 
 }
@@ -183,7 +180,7 @@ class ChoiceParser extends ListParser {
     return new ChoiceParser._(new List.from(parsers, growable: false));
   }
 
-  ChoiceParser._(parsers) : super(parsers);
+  ChoiceParser._(parsers): super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -216,7 +213,7 @@ class SequenceParser extends ListParser {
     return new SequenceParser._(new List.from(parsers, growable: false));
   }
 
-  SequenceParser._(parsers) : super(parsers);
+  SequenceParser._(parsers): super(parsers);
 
   @override
   Result parseOn(Context context) {

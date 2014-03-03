@@ -15,7 +15,7 @@ class Cons {
   Cons(this.head, this.tail);
 
   @override
-  bool operator == (other) {
+  bool operator ==(other) {
     return other is Cons && head == other.head && tail == other.tail;
   }
 

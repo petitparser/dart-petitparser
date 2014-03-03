@@ -40,7 +40,7 @@ abstract class CompositeParser extends DelegateParser {
   final Map<String, Parser> _defined = new Map();
   final Map<String, SetableParser> _undefined = new Map();
 
-  CompositeParser() : super(failure('Uninitalized production: start')) {
+  CompositeParser(): super(failure('Uninitalized production: start')) {
     initialize();
     _complete();
   }
@@ -130,8 +130,7 @@ abstract class CompositeParser extends DelegateParser {
     } else if (!_defined.containsKey(name)) {
       throw new UndefinedProductionError(name);
     } else {
-      _defined[name] = replacement is Parser ? replacement
-          : replacement(_defined[name]);
+      _defined[name] = replacement is Parser ? replacement : replacement(_defined[name]);
     }
   }
 

@@ -22,8 +22,7 @@ class EpsilonParser extends Parser {
 
   @override
   bool equalProperties(EpsilonParser other) {
-    return super.equalProperties(other)
-        && _result == other._result;
+    return super.equalProperties(other) && _result == other._result;
   }
 
 }
@@ -54,8 +53,7 @@ class FailureParser extends Parser {
 
   @override
   bool equalProperties(FailureParser other) {
-    return super.equalProperties(other)
-        && _message == other._message;
+    return super.equalProperties(other) && _message == other._message;
   }
 
 }
@@ -76,7 +74,7 @@ SetableParser undefined([String message = 'undefined parser']) {
 
 class SetableParser extends DelegateParser {
 
-  SetableParser(parser) : super(parser);
+  SetableParser(parser): super(parser);
 
   /**
    * Sets the receiver to delegate to [parser].

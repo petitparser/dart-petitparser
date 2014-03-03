@@ -61,18 +61,14 @@ class Token {
   String toString() => 'Token[${positionString(buffer, start)}]: $value';
 
   @override
-  bool operator == (other) {
-    return other is Token
-      && value == other.value
-      && start == other.start
-      && stop == other.stop;
+  bool operator ==(other) {
+    return other is Token && value == other.value && start == other.start && stop == other.stop;
   }
 
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
-  static final Parser _NEWLINE_PARSER =
-      char('\n').or(char('\r').seq(char('\n').optional()));
+  static final Parser _NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
 
   /**
    * Returns a parser for that detects newlines platform independently.

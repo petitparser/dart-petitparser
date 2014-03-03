@@ -164,7 +164,7 @@ abstract class XmlData extends XmlNode {
  */
 class XmlComment extends XmlData {
 
-  XmlComment(String data) : super(data);
+  XmlComment(String data): super(data);
 
   @override
   void writeTo(StringBuffer buffer) {
@@ -180,7 +180,7 @@ class XmlComment extends XmlData {
  */
 class XmlCDATA extends XmlData {
 
-  XmlCDATA(String data) : super(data);
+  XmlCDATA(String data): super(data);
 
   @override
   void writeTo(StringBuffer buffer) {
@@ -195,7 +195,7 @@ class XmlCDATA extends XmlData {
  */
 class XmlDoctype extends XmlData {
 
-  XmlDoctype(String data) : super(data);
+  XmlDoctype(String data): super(data);
 
   @override
   void writeTo(StringBuffer buffer) {
@@ -213,7 +213,7 @@ class XmlProcessing extends XmlData {
 
   final String _target;
 
-  XmlProcessing(this._target, String data) : super(data);
+  XmlProcessing(this._target, String data): super(data);
 
   String get target => _target;
 
@@ -232,7 +232,7 @@ class XmlProcessing extends XmlData {
  */
 class XmlText extends XmlData {
 
-  XmlText(String data) : super(data);
+  XmlText(String data): super(data);
 
   @override
   void writeTo(StringBuffer buffer) {
@@ -272,7 +272,7 @@ abstract class XmlParent extends XmlNode {
  */
 class XmlDocument extends XmlParent {
 
-  XmlDocument(Iterable<XmlNode> children) : super(children);
+  XmlDocument(Iterable<XmlNode> children): super(children);
 
   @override
   XmlDocument get document => this;
@@ -298,7 +298,9 @@ class XmlElement extends XmlParent {
   final List<XmlAttribute> _attributes;
 
   XmlElement(XmlName name, Iterable<XmlAttribute> attributes, Iterable<XmlNode> children)
-      : super(children), _name = name, _attributes = attributes.toList() {
+      : super(children),
+        _name = name,
+        _attributes = attributes.toList() {
     for (var attribute in attributes) {
       attribute._parent = this;
     }
@@ -357,9 +359,8 @@ class XmlName extends Object with _XmlWritable {
     if (index < 0) {
       return new XmlName._internal(null, name);
     } else {
-      return new XmlName._internal(
-        name.substring(0, index),
-        name.substring(index + 1, name.length));
+      return new XmlName._internal(name.substring(0, index), name.substring(index + 1, name.length)
+          );
     }
   }
 
@@ -380,7 +381,7 @@ class XmlName extends Object with _XmlWritable {
   get hashCode => 17 + 37 * _prefix.hashCode + 37 * _local.hashCode;
 
   @override
-  bool operator == (other) {
+  bool operator ==(other) {
     return other is XmlName && other.local == local && other.prefix == prefix;
   }
 

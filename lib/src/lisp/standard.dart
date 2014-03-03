@@ -13,8 +13,6 @@ class Standard {
 
   /** A simple standard library, should be moved to external file. */
   static String _standardLibrary = """
-; Copyright (c) 2013, Lukas Renggli <renggli@gmail.com>
-
 ; null functions
 (define null '())
 (define (null? x) (= '() x))
