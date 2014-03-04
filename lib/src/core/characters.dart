@@ -5,7 +5,7 @@ part of petitparser;
  */
 class CharacterParser extends Parser {
 
-  final Function _matcher;
+  final _CharMatcher _matcher;
 
   final String _message;
 
@@ -15,7 +15,7 @@ class CharacterParser extends Parser {
   Result parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
-    if (position < buffer.length && _matcher(buffer.codeUnitAt(position))) {
+    if (position < buffer.length && _matcher.match(buffer.codeUnitAt(position))) {
       return context.success(buffer[position], position + 1);
     }
     return context.failure(_message);
@@ -51,7 +51,7 @@ int _toCharCode(dynamic element) {
  * Internal abstract character matcher class.
  */
 abstract class _CharMatcher {
-  bool call(int value);
+  bool match(int value);
 }
 
 /**
@@ -64,7 +64,7 @@ class _NotCharMatcher implements _CharMatcher {
   const _NotCharMatcher(this._matcher);
 
   @override
-  bool call(int value) => !_matcher(value);
+  bool match(int value) => !_matcher.match(value);
 
 }
 
@@ -78,9 +78,9 @@ class _AltCharMatcher implements _CharMatcher {
   const _AltCharMatcher(this._matchers);
 
   @override
-  bool call(int value) {
+  bool match(int value) {
     for (var matcher in _matchers) {
-      if (matcher(value)) {
+      if (matcher.match(value)) {
         return true;
       }
     }
@@ -105,7 +105,7 @@ class _SingleCharMatcher implements _CharMatcher {
   const _SingleCharMatcher(this._value);
 
   @override
-  bool call(int value) => identical(_value, value);
+  bool match(int value) => identical(_value, value);
 
 }
 
@@ -123,7 +123,7 @@ class _DigitCharMatcher implements _CharMatcher {
   const _DigitCharMatcher();
 
   @override
-  bool call(int value) => 48 <= value && value <= 57;
+  bool match(int value) => 48 <= value && value <= 57;
 
 }
 
@@ -143,7 +143,7 @@ class _LetterCharMatcher implements _CharMatcher {
   const _LetterCharMatcher();
 
   @override
-  bool call(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
+  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 
 }
 
@@ -163,7 +163,7 @@ class _LowercaseCharMatcher implements _CharMatcher {
   const _LowercaseCharMatcher();
 
   @override
-  bool call(int value) => 97 <= value && value <= 122;
+  bool match(int value) => 97 <= value && value <= 122;
 
 }
 
@@ -214,7 +214,7 @@ class _RangeCharMatcher implements _CharMatcher {
   const _RangeCharMatcher(this._start, this._stop);
 
   @override
-  bool call(int value) => _start <= value && value <= _stop;
+  bool match(int value) => _start <= value && value <= _stop;
 
 }
 
@@ -232,7 +232,7 @@ class _UppercaseCharMatcher implements _CharMatcher {
   const _UppercaseCharMatcher();
 
   @override
-  bool call(int value) => 65 <= value && value <= 90;
+  bool match(int value) => 65 <= value && value <= 90;
 
 }
 
@@ -252,7 +252,7 @@ class _WhitespaceCharMatcher implements _CharMatcher {
   const _WhitespaceCharMatcher();
 
   @override
-  bool call(int value) {
+  bool match(int value) {
     if (value < 256) {
       return value == 0x09 || value == 0x0A || value == 0x0B || value == 0x0C
           || value == 0x0D || value == 0x20 || value == 0x85 || value == 0xA0;
@@ -283,7 +283,7 @@ class _WordCharMatcher implements _CharMatcher {
   const _WordCharMatcher();
 
   @override
-  bool call(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
+  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
       || (48 <= value && value <= 57) || (value == 95);
 
 }
