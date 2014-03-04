@@ -23,6 +23,34 @@ abstract class _XmlWritable {
 }
 
 /**
+ * Iterator over XML sub-trees of nodes and attributes.
+ */
+class _XmlNodeIterator extends Iterator<XmlNode> {
+
+  final List<XmlNode> _todo = new List();
+  XmlNode _current;
+
+  _XmlNodeIterator(XmlNode root) {
+    _todo.add(root);
+  }
+
+  XmlNode get current => _current;
+
+  @override
+  bool moveNext() {
+    if (_todo.isEmpty) {
+      return false;
+    } else {
+      _current = _todo.removeLast();
+      _todo.addAll(_current.children.reversed);
+      _todo.addAll(_current.attributes.reversed);
+      return true;
+    }
+  }
+
+}
+
+/**
  * Abstract XML node.
  */
 abstract class XmlNode extends IterableBase<XmlNode> with _XmlWritable {
@@ -47,19 +75,8 @@ abstract class XmlNode extends IterableBase<XmlNode> with _XmlWritable {
   /**
    * Answer an iterator over the receiver, all attributes and nested children.
    */
-  Iterator<XmlNode> get iterator {
-    var nodes = new List();
-    _allAllNodesTo(nodes);
-    return nodes.iterator;
-  }
-
-  void _allAllNodesTo(List<XmlNode> nodes) {
-    nodes.add(this);
-    nodes.addAll(attributes);
-    for (var node in children) {
-      node._allAllNodesTo(nodes);
-    }
-  }
+  @override
+  Iterator<XmlNode> get iterator => new _XmlNodeIterator(this);
 
   /**
    * Answer the root of the subtree in which this node is found, whether that's
