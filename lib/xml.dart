@@ -1,18 +1,9 @@
 /**
- * This package contains a reasonably complete implementation of an XML
- * parser and its associated AST.
- *
- * Example:
- *
- *     var xml = new XmlParser();
- *     var result = xml.parse('<xml attr="foo"><zork /></xml>');
- *     print(result.value);    // <xml attr="foo"><zork /></xml>
+ * This package contained a reasonably complete implementation of an XML
+ * parser and its associated AST. Please instead depend on the separate
+ * [xml](http://pub.dartlang.org/packages/xml) package instead.
  */
+@deprecated('If you depended on this example, please switch to the improved '
+    'version of this very library that is now maintained as a separate package '
+    'at: http://pub.dartlang.org/packages/xml.')
 library xml;
-
-import 'dart:collection';
-import 'package:petitparser/petitparser.dart';
-
-part 'src/xml/grammar.dart';
-part 'src/xml/parser.dart';
-part 'src/xml/nodes.dart';

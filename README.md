@@ -3,9 +3,30 @@ PetitParser for Dart
 
 Grammars for programming languages are traditionally specified statically. They are hard to compose and reuse due to ambiguities that inevitably arise. PetitParser combines ideas from scannerless parsing, parser combinators, parsing expression grammars and packrat parsers to model grammars and parsers as objects that can be reconfigured dynamically.
 
-The library is open source, stable and well tested. No breaking API changes are expected in the main library. Development happens on [GitHub](https://github.com/renggli/PetitParserDart). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/petitparser).
+This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/renggli/PetitParserDart). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/petitparser).
 
 Continuous build results are available from [Jenkins](http://jenkins.lukas-renggli.ch/job/PetitParserDart/). An introductionary tutorial is part of the [class documentation](http://jenkins.lukas-renggli.ch/job/PetitParserDart/javadoc/petitparser.html).
+
+
+Basic Usage
+-----------
+
+### Installation
+
+Add the dependency to your package's pubspec.yaml file:
+
+    dependencies:
+      petitparser: ">=1.0.0 <2.0.0"
+
+Then on the command line run:
+
+    $ pub get
+
+To PetitParser in your Dart code write:
+
+    import 'package:petitparser/petitparser.dart';
+
+### Examples
 
 The package comes with a large collections of grammars and language experiments ready to explore:
 
@@ -15,6 +36,23 @@ The package comes with a large collections of grammars and language experiments 
 - `example/lisphell` contains a command line lisp interpreter.
   - `example/lispweb` contains a web based lisp interpreter.
   - `lib/smalltalk.dart` contains a complete Smalltalk grammar.
-- `lib/xml.dart` contains a complete XML parser and AST.
+  
+Furthermore, there are various open source projects using PetitParser: 
+  
+- [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
+- [haml.dart](https://github.com/kevmoo/haml.dart) is an implementation of Haml in Dart.
+- [RythmDart](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
+- [SharkDart](https://github.com/freewind/SharkDart) is a small template engine.
+
+
+Misc
+----
+
+### History
 
 PetitParser was originally implemented in [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/renggli/PetitParserJava) and [Dart](https://github.com/renggli/PetitParserDart). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
+
+
+### License
+
+The MIT License, see [LICENSE](LICENSE).
