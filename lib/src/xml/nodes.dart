@@ -294,7 +294,6 @@ class XmlDocument extends XmlParent {
   @override
   XmlDocument get document => this;
 
-  @override
   XmlElement get rootElement {
     for (var node in children) {
       if (node is XmlElement) {

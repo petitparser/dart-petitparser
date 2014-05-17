@@ -14,7 +14,7 @@
 
 library test_util;
 
-import 'package:unittest/matcher.dart';
+import 'package:matcher/matcher.dart';
 import 'package:petitparser/petitparser.dart';
 
 /**
@@ -71,7 +71,7 @@ class _Parse extends Matcher {
       _matcher.describeMismatch(matchState['result'].value, subDescription,
           matchState['state'], verbose);
       if (subDescription.length > 0) {
-        mismatchDescription.add(subDescription);
+        mismatchDescription.add(subDescription.toString());
       } else {
         mismatchDescription.add('doesn\'t match');
         _matcher.describe(mismatchDescription);
