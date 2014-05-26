@@ -5,9 +5,7 @@ part of petitparser;
  * not modify the grammar while iterating over it, otherwise you might
  * get unexpected results.
  */
-Iterable<Parser> allParser(Parser root) {
-  return new _ParserIterable(root);
-}
+Iterable<Parser> allParser(Parser root) => new _ParserIterable(root);
 
 class _ParserIterable extends IterableBase<Parser> {
 
