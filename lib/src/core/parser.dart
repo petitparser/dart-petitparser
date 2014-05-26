@@ -445,7 +445,7 @@ abstract class Parser {
    * In contrast, `letter().or(digit()).children` returns a collection
    * containing both the `letter()` and `digit()` parser.
    */
-  List<Parser> get children => [];
+  List<Parser> get children => const [];
 
   /**
    * Changes the receiver by replacing [source] with [target]. Does nothing
