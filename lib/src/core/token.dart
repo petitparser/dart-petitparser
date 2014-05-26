@@ -12,12 +12,12 @@ class Token {
   /**
    * The parsed value of the token.
    */
-  final dynamic value;
+  final value;
 
   /**
    * The parsed buffer of the token.
    */
-  final dynamic buffer;
+  final buffer;
 
   /**
    * The start position of the token in the buffer.
@@ -38,7 +38,7 @@ class Token {
   /**
    * The consumed input of the token.
    */
-  dynamic get input => buffer is String
+  get input => buffer is String
       ? buffer.substring(start, stop)
       : buffer.sublist(start, stop);
 
