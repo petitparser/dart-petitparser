@@ -6,7 +6,8 @@ part of petitparser;
 const int unbounded = -1;
 
 /**
- * A parser that repeatedly parses a sequence of parsers.
+ * An abstract parser that repeatedly parses between 'min' and 'max' instances of
+ * its delegate.
  */
 abstract class RepeatingParser extends DelegateParser {
 
@@ -32,6 +33,10 @@ abstract class RepeatingParser extends DelegateParser {
 
 }
 
+/**
+ * A greedy parser that repeatedly parses between 'min' and 'max' instances of
+ * its delegate.
+ */
 class PossessiveRepeatingParser extends RepeatingParser {
 
   PossessiveRepeatingParser(Parser parser, int min, int max)
@@ -67,7 +72,7 @@ class PossessiveRepeatingParser extends RepeatingParser {
 
 /**
  * An abstract parser that repeatedly parses between 'min' and 'max' instances of
- * my delegate and that requires the input to be completed with a specified parser
+ * its delegate and that requires the input to be completed with a specified parser
  * 'limit'. Subclasses provide repeating behavior as typically seen in regular
  * expression implementations (non-blind).
  */
