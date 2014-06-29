@@ -63,7 +63,7 @@ abstract class CompositeParser extends DelegateParser {
     });
     _undefined.clear();
     _completed = true;
-    _delegate = removeSetables(ref('start'));
+    _delegate = ref('start');
   }
 
   /**

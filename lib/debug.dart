@@ -4,6 +4,7 @@
 library debug;
 
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 
 part 'src/debug/continuation.dart';
 part 'src/debug/profile.dart';

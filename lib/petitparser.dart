@@ -154,8 +154,6 @@
  */
 library petitparser;
 
-import 'dart:collection';
-
 part 'src/core/actions.dart';
 part 'src/core/characters.dart';
 part 'src/core/combinators.dart';
@@ -165,6 +163,5 @@ part 'src/core/expression.dart';
 part 'src/core/parser.dart';
 part 'src/core/parsers.dart';
 part 'src/core/predicates.dart';
-part 'src/core/reflection.dart';
 part 'src/core/repeaters.dart';
 part 'src/core/token.dart';
