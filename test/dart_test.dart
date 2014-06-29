@@ -1,8 +1,9 @@
 library dart_test;
 
+import 'package:unittest/unittest.dart';
+
 import 'package:petitparser/test.dart';
 import 'package:petitparser/dart.dart';
-import 'package:unittest/unittest.dart';
 
 void main() {
   var dart = new DartGrammar();

@@ -1,7 +1,8 @@
 library json_test;
 
-import 'package:petitparser/json.dart';
 import 'package:unittest/unittest.dart';
+
+import 'package:petitparser/json.dart';
 
 void main() {
   var json = new JsonParser();

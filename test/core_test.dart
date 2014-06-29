@@ -1,8 +1,10 @@
 library core_test;
 
 import 'dart:math' as math;
-import 'package:petitparser/petitparser.dart';
+
 import 'package:unittest/unittest.dart';
+
+import 'package:petitparser/petitparser.dart';
 
 void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position]) {
   var result = parser.parse(input);
