@@ -26,21 +26,21 @@ main() {
       expect(parser.parse('a').isSuccess, isTrue);
     });
     test('resume', () {
-      var storage = new List();
+      var capture = new List();
       var parser = new ContinuationParser(digit(), (continuation, Context context) {
-        storage.add([continuation, context]);
+        capture.add([continuation, context]);
         // we have to return something for now
         return context.failure('Abort');
       });
       // execute the parser twice to collect the continuations
       expect(parser.parse('1').isSuccess, isFalse);
       expect(parser.parse('a').isSuccess, isFalse);
-      // later we can execute the continuations
-      expect(storage[0][0](storage[0][1]).isSuccess, isTrue);
-      expect(storage[1][0](storage[1][1]).isSuccess, isFalse);
+      // later we can execute the captured continuations
+      expect(capture[0][0](capture[0][1]).isSuccess, isTrue);
+      expect(capture[1][0](capture[1][1]).isSuccess, isFalse);
       // of course the continuations can be resumed multiple times
-      expect(storage[0][0](storage[0][1]).isSuccess, isTrue);
-      expect(storage[1][0](storage[1][1]).isSuccess, isFalse);
+      expect(capture[0][0](capture[0][1]).isSuccess, isTrue);
+      expect(capture[1][0](capture[1][1]).isSuccess, isFalse);
     });
     test('success', () {
       var parser = new ContinuationParser(digit(), (continuation, Context context) {
@@ -56,7 +56,6 @@ main() {
       expect(parser.parse('1').isSuccess, isFalse);
       expect(parser.parse('a').isSuccess, isFalse);
     });
-
   });
 
   group('trace', () {
@@ -136,6 +135,4 @@ main() {
         '* Instance of \'CharacterParser\'[letter expected]']);
     });
   });
-
-
 }
