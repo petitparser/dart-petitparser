@@ -3,6 +3,7 @@ library all_test;
 import 'package:unittest/unittest.dart';
 import 'core_test.dart' as core_test;
 import 'dart_test.dart' as dart_test;
+import 'debug_test.dart' as debug_test;
 import 'json_test.dart' as json_test;
 import 'lisp_test.dart' as lisp_test;
 import 'smalltalk_test.dart' as smalltalk_test;
