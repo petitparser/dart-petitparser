@@ -93,8 +93,9 @@ main() {
       lines = lines
           .map((row) => row.split('\t'))
           .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
+      print(lines);
       expect(lines, hasLength(4));
-      expect(lines.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
+      expect(lines.every((row) => row[1] >= 0), isTrue);
       expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
       expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
       expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
@@ -107,8 +108,9 @@ main() {
       lines = lines
           .map((row) => row.split('\t'))
           .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
+      print(lines);
       expect(lines, hasLength(4));
-      expect(lines.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
+      expect(lines.every((row) => row[1] >= 0), isTrue);
       expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
       expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
       expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
