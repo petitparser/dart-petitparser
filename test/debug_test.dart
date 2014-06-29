@@ -10,6 +10,55 @@ import 'package:petitparser/debug.dart';
 get identifier => letter() & word().star();
 
 main() {
+  group('continuation', () {
+    test('delegation', () {
+      var parser = new ContinuationParser(digit(), (continuation, context) {
+        return continuation(context);
+      });
+      expect(parser.parse('1').isSuccess, isTrue);
+      expect(parser.parse('a').isSuccess, isFalse);
+    });
+    test('divertion', () {
+      var parser = new ContinuationParser(digit(), (continuation, context) {
+        return letter().parseOn(context);
+      });
+      expect(parser.parse('1').isSuccess, isFalse);
+      expect(parser.parse('a').isSuccess, isTrue);
+    });
+    test('resume', () {
+      var storage = new List();
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
+        storage.add([continuation, context]);
+        // we have to return something for now
+        return context.failure('Abort');
+      });
+      // execute the parser twice to collect the continuations
+      expect(parser.parse('1').isSuccess, isFalse);
+      expect(parser.parse('a').isSuccess, isFalse);
+      // later we can execute the continuations
+      expect(storage[0][0](storage[0][1]).isSuccess, isTrue);
+      expect(storage[1][0](storage[1][1]).isSuccess, isFalse);
+      // of course the continuations can be resumed multiple times
+      expect(storage[0][0](storage[0][1]).isSuccess, isTrue);
+      expect(storage[1][0](storage[1][1]).isSuccess, isFalse);
+    });
+    test('success', () {
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
+        return context.success('Always succeed');
+      });
+      expect(parser.parse('1').isSuccess, isTrue);
+      expect(parser.parse('a').isSuccess, isTrue);
+    });
+    test('failure', () {
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
+        return context.failure('Always fail');
+      });
+      expect(parser.parse('1').isSuccess, isFalse);
+      expect(parser.parse('a').isSuccess, isFalse);
+    });
+
+  });
+
   group('trace', () {
     extract(buffer) => buffer.toString().trim().split('\n');
     test('success', () {

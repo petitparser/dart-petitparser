@@ -10,14 +10,14 @@ Parser profile(Parser root, [StringSink output]) {
   if (output == null) output = stdout;
   return new ContinuationParser(transformParser(root, (parser) {
     parsers.add(parser);
-    return new ContinuationParser(parser, (context, continuation) {
+    return new ContinuationParser(parser, (continuation, context) {
       count[parser]++;
       watch[parser].start();
       var result = continuation(context);
       watch[parser].stop();
       return result;
     });
-  }), (context, continuation) {
+  }), (continuation, context) {
     parsers.forEach((parser) {
       count[parser] = 0;
       watch[parser] = new Stopwatch();
