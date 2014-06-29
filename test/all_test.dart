@@ -13,6 +13,7 @@ import 'xml_test.dart' as xml_test;
 void main() {
   group('PetitParser', core_test.main);
   group('Dart', dart_test.main);
+  group('Debug', debug_test.main);
   group('JSON', json_test.main);
   group('Lisp', lisp_test.main);
   group('Smalltalk', smalltalk_test.main);
