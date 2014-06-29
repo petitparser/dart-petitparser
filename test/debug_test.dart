@@ -59,11 +59,11 @@ main() {
   });
 
   group('trace', () {
-    extract(buffer) => buffer.toString().trim().split('\n');
     test('success', () {
-      var buffer = new StringBuffer();
-      expect(trace(identifier, buffer).parse('a').isSuccess, isTrue);
-      expect(extract(buffer), [
+      var lines = new List();
+      expect(trace(identifier, (line) => lines.add(line))
+          .parse('a').isSuccess, isTrue);
+      expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Success[1:2]: a',
@@ -74,9 +74,10 @@ main() {
         'Success[1:2]: [a, []]']);
     });
     test('failure', () {
-      var buffer = new StringBuffer();
-      expect(trace(identifier, buffer).parse('1').isFailure, isTrue);
-      expect(extract(buffer), [
+      var lines = new List();
+      expect(trace(identifier, (line) => lines.add(line))
+          .parse('1').isFailure, isTrue);
+      expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Failure[1:1]: letter expected',
@@ -85,39 +86,42 @@ main() {
   });
 
   group('profile', () {
-    extract(buffer) => buffer.toString().trim().split('\n')
-        .map((line) => line.split('\t'))
-        .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
     test('success', () {
-      var buffer = new StringBuffer();
-      profile(identifier, buffer).parse('ab123');
-      var extracted = extract(buffer);
-      expect(extracted, hasLength(4));
-      expect(extracted.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
-      expect(extracted.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
-      expect(extracted.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
-      expect(extracted.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
-      expect(extracted.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 5);
+      var lines = new List();
+      expect(profile(identifier, (line) => lines.add(line))
+          .parse('ab123').isSuccess, isTrue);
+      lines = lines
+          .map((row) => row.split('\t'))
+          .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
+      expect(lines, hasLength(4));
+      expect(lines.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
+      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 5);
     });
     test('failure', () {
-      var buffer = new StringBuffer();
-      profile(identifier, buffer).parse('1');
-      var extracted = extract(buffer);
-      expect(extracted, hasLength(4));
-      expect(extracted.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
-      expect(extracted.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
-      expect(extracted.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
-      expect(extracted.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
-      expect(extracted.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
+      var lines = new List();
+      expect(profile(identifier, (line) => lines.add(line))
+          .parse('1').isFailure, isTrue);
+      lines = lines
+          .map((row) => row.split('\t'))
+          .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
+      expect(lines, hasLength(4));
+      expect(lines.every((row) => row[0] == 0 ? row[1] == 0 : row[1] > 0), isTrue);
+      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
     });
   });
 
   group('progress', () {
-    extract(buffer) => buffer.toString().trim().split('\n');
     test('success', () {
-      var buffer = new StringBuffer();
-      expect(progress(identifier, buffer).parse('ab123').isSuccess, isTrue);
-      expect(extract(buffer), [
+      var lines = new List();
+      expect(progress(identifier, (line) => lines.add(line))
+          .parse('ab123').isSuccess, isTrue);
+      expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]',
         '** Instance of \'PossessiveRepeatingParser\'[0..*]',
@@ -128,9 +132,10 @@ main() {
         '****** Instance of \'CharacterParser\'[letter or digit expected]']);
     });
     test('failure', () {
-      var buffer = new StringBuffer();
-      expect(progress(identifier, buffer).parse('1').isFailure, isTrue);
-      expect(extract(buffer), [
+      var lines = new List();
+      expect(progress(identifier, (line) => lines.add(line))
+          .parse('1').isFailure, isTrue);
+      expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]']);
     });

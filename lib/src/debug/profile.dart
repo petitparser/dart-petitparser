@@ -3,11 +3,10 @@ part of debug;
 /**
  * Adds profiling handlers to each parser reachable from [root].
  */
-Parser profile(Parser root, [StringSink output]) {
+Parser profile(Parser root, [OutputHandler output = print]) {
   var count = new Map();
   var watch = new Map();
   var parsers = new List();
-  if (output == null) output = stdout;
   return new ContinuationParser(transformParser(root, (parser) {
     parsers.add(parser);
     return new ContinuationParser(parser, (continuation, context) {
@@ -24,7 +23,7 @@ Parser profile(Parser root, [StringSink output]) {
     });
     var result = continuation(context);
     parsers.forEach((parser) {
-      output.writeln('${count[parser]}\t'
+      output('${count[parser]}\t'
         '${watch[parser].elapsedMicroseconds}\t'
         '${parser}');
     });

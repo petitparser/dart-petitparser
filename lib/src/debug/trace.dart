@@ -3,16 +3,15 @@ part of debug;
 /**
  * Adds trace handlers to each parser reachable from [root].
  */
-Parser trace(Parser root, [StringSink output]) {
+Parser trace(Parser root, [OutputHandler output = print]) {
   var level = 0;
-  if (output == null) output = stdout;
   return transformParser(root, (parser) {
     return new ContinuationParser(parser, (continuation, context) {
-      output.writeln('${_repeat(level, '  ')}${parser}');
+      output('${_repeat(level, '  ')}${parser}');
       level++;
       var result = continuation(context);
       level--;
-      output.writeln('${_repeat(level, '  ')}${result}');
+      output('${_repeat(level, '  ')}${result}');
       return result;
     });
   });
