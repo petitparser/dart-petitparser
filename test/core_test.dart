@@ -38,6 +38,13 @@ main() {
       expectFailure(parser, 'b', 0, 'a expected');
       expectFailure(parser, '');
     });
+    test('or() operator', () {
+      var parser = char('a') | char('b');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectFailure(parser, 'c');
+      expectFailure(parser, '');
+    });
     test('or() of two', () {
       var parser = char('a').or(char('b'));
       expectSuccess(parser, 'a', 'a');
@@ -324,6 +331,14 @@ main() {
       expectSuccess(parser, 'ababa', ['a', 'a', 'a']);
       expectSuccess(parser, 'ababab', ['a', 'a', 'a']);
     });
+    test('seq() operator', () {
+      var parser = char('a') & char('b');
+      expectSuccess(parser, 'ab', ['a', 'b']);
+      expectFailure(parser, '');
+      expectFailure(parser, 'x');
+      expectFailure(parser, 'a', 1);
+      expectFailure(parser, 'ax', 1);
+    });
     test('seq() of two', () {
       var parser = char('a').seq(char('b'));
       expectSuccess(parser, 'ab', ['a', 'b']);
@@ -427,13 +442,21 @@ main() {
       expectFailure(parser, '');
     });
   });
-
   group('characters', () {
     test('char()', () {
       var parser = char('a');
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'b', 0, 'a expected');
       expectFailure(parser, '');
+    });
+    test('char() with number', () {
+      var parser = char(97, 'lowercase a');
+      expectSuccess(parser, 'a', 'a');
+      expectFailure(parser, 'b', 0, 'lowercase a');
+      expectFailure(parser, '');
+    });
+    test('char() invalid', () {
+      expect(() => char('ab'), throwsArgumentError);
     });
     test('digit()', () {
       var parser = digit();
@@ -491,7 +514,6 @@ main() {
       expectFailure(parser, 'a', 0, '[^a] expected');
       expectFailure(parser, '');
     });
-
     test('pattern() with negated range', () {
       var parser = pattern('^a-c');
       expectSuccess(parser, 'd', 'd');
@@ -525,6 +547,13 @@ main() {
       expectSuccess(parser, '\f', '\f');
       expectFailure(parser, 'z', 0, 'whitespace expected');
       expectFailure(parser, '');
+    });
+    test('whitespace() unicode', () {
+      var string = new String.fromCharCodes([0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0x85, 0xA0,
+        0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+        0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF]);
+      var parser = whitespace().star().flatten().end();
+      expectSuccess(parser, string, string);
     });
     test('word()', () {
       var parser = word();
@@ -743,6 +772,59 @@ main() {
     });
   });
 
+  group('copying and matching', () {
+    void verify(Parser parser) {
+      var copy = parser.copy();
+      // check copying
+      expect(copy.toString(), parser.toString());
+      expect(copy.runtimeType, parser.runtimeType);
+      expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
+      // check equality
+      expect(copy.equals(copy), isTrue);
+      expect(parser.equals(parser), isTrue);
+      expect(copy, isNot(same(parser)));
+      expect(copy.equals(parser), isTrue);
+      expect(parser.equals(copy), isTrue);
+      // check replacing
+      var replaced = new List();
+      for (var i = 0; i < copy.children.length; i++) {
+        var source = copy.children[i], target = any();
+        copy.replace(source, target);
+        expect(copy.children[i], same(target));
+        replaced.add(target);
+      }
+      expect(copy.children, pairwiseCompare(replaced, identical, 'replaced children'));
+    }
+    test('any()', () => verify(any()));
+    test('and()', () => verify(digit().and()));
+    test('char()', () => verify(char('a')));
+    test('digit()', () => verify(digit()));
+    test('delegate()', () => verify(new DelegateParser(any())));
+    test('end()', () => verify(digit().end()));
+    test('epsilon()', () => verify(epsilon()));
+    test('failure()', () => verify(failure()));
+    test('flatten()', () => verify(digit().flatten()));
+    test('map()', () => verify(digit().map((a) => a)));
+    test('not()', () => verify(digit().not()));
+    test('optional()', () => verify(digit().optional()));
+    test('or()', () => verify(digit().or(word())));
+    test('plus()', () => verify(digit().plus()));
+    test('plusGreedy()', () => verify(digit().plusGreedy(word())));
+    test('plusLazy()', () => verify(digit().plusLazy(word())));
+    test('repeat()', () => verify(digit().repeat(2, 3)));
+    test('repeatGreedy()', () => verify(digit().repeatGreedy(word(), 2, 3)));
+    test('repeatLazy()', () => verify(digit().repeatLazy(word(), 2, 3)));
+    test('seq()', () => verify(digit().seq(word())));
+    test('setable()', () => verify(digit().setable()));
+    test('star()', () => verify(digit().star()));
+    test('starGreedy()', () => verify(digit().starGreedy(word())));
+    test('starLazy()', () => verify(digit().starLazy(word())));
+    test('string()', () => verify(string('ab')));
+    test('times()', () => verify(digit().times(2)));
+    test('token()', () => verify(digit().token()));
+    test('trim()', () => verify(digit().trim()));
+    test('undefined()', () => verify(undefined()));
+  });
   group('regressions', () {
     test('flatten().trim()', () {
       var parser = word().plus().flatten().trim();
@@ -757,7 +839,6 @@ main() {
       expectSuccess(parser, '  ab1  ', '  ab1  ');
     });
   });
-
   group('composite', () {
     test('start', () {
       var parser = new PluggableCompositeParser((self) {
@@ -819,6 +900,7 @@ main() {
         }
       });
       for (var key in parsers.keys) {
+        expect(parsers[key], parser[key]);
         expect(parsers[key], parser.ref(key));
       }
     });
@@ -826,12 +908,22 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.ref('star1'), throws);
+      try {
+        parser.ref('star1');
+        fail('Expected UndefinedProductionError to be thrown');
+      } on UndefinedProductionError catch (error, stack) {
+        expect(error.toString(), 'Undefined production: star1');
+      }
     });
     test('duplicated start', () {
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
-        expect(() => self.def('start', char('b')), throws);
+        try {
+          self.def('start', char('b'));
+          fail('Expected UndefinedProductionError to be thrown');
+        } on RedefinedProductionError catch (error, stack) {
+          expect(error.toString(), 'Redefined production: start');
+        }
       });
     });
     test('undefined start', () {
@@ -910,7 +1002,6 @@ main() {
       expect(parser.accept('(1 + 2) * 3'), isTrue);
     });
   });
-
   group('expression', () {
     var root = failure().setable();
     var builder = new ExpressionBuilder();
@@ -1049,7 +1140,6 @@ main() {
       expect(parser.parse('---1').value, closeTo(-1, epsilon));
     });
   });
-
   group('tutorial', () {
     test('simple grammar', () {
       var id = letter().seq(letter().or(digit()).star());
