@@ -60,7 +60,6 @@ main() {
       expect(iterator.moveNext(), isFalse);
     });
   });
-
   group('transform', () {
     test('identity', () {
       var lower = lowercase();
@@ -101,7 +100,6 @@ main() {
       expect(output.children.first, output.children.last);
     });
   });
-
   group('optimize', () {
     test('remove setables', () {
       var input = lowercase().setable();

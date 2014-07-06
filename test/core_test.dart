@@ -673,7 +673,6 @@ main() {
       expect(parser.matchesSkipping('a123b45'), ['12', '45']);
     });
   });
-
   group('examples', () {
     final IDENTIFIER = letter().seq(word().star()).flatten();
     final NUMBER = char('-').optional().seq(digit().plus())
