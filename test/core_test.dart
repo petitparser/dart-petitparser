@@ -830,17 +830,17 @@ main() {
       expectSuccess(JAVADOC, '/** * * */', '/** * * */');
     });
   });
-  group('copying and matching', () {
+  group('copying, matching, replacing', () {
     void verify(Parser parser) {
       var copy = parser.copy();
       // check copying
+      expect(copy, isNot(same(parser)));
       expect(copy.toString(), parser.toString());
       expect(copy.runtimeType, parser.runtimeType);
       expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
       // check equality
       expect(copy.equals(copy), isTrue);
       expect(parser.equals(parser), isTrue);
-      expect(copy, isNot(same(parser)));
       expect(copy.equals(parser), isTrue);
       expect(parser.equals(copy), isTrue);
       // check replacing
