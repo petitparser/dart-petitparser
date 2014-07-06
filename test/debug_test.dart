@@ -57,7 +57,6 @@ main() {
       expect(parser.parse('a').isSuccess, isFalse);
     });
   });
-
   group('trace', () {
     test('success', () {
       var lines = new List();
@@ -84,7 +83,6 @@ main() {
         'Failure[1:1]: letter expected']);
     });
   });
-
   group('profile', () {
     test('success', () {
       var lines = new List();
@@ -115,7 +113,6 @@ main() {
       expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
     });
   });
-
   group('progress', () {
     test('success', () {
       var lines = new List();
