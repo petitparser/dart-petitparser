@@ -61,14 +61,14 @@ main() {
     });
   });
   group('transform', () {
-    test('identity', () {
+    test('identity copy', () {
       var input = lowercase().setable();
       var output = transformParser(input, (parser) => parser);
       expect(input, isNot(output));
       expect(input.equals(output), isTrue);
       expect(input.children.single, isNot(output.children.single));
     });
-    test('root', () {
+    test('single parser', () {
       var source = lowercase();
       var input = source;
       var target = uppercase();
@@ -80,7 +80,7 @@ main() {
       expect(input, source);
       expect(output, target);
     });
-    test('delegate', () {
+    test('single reference', () {
       var source = lowercase();
       var input = source.setable();
       var target = uppercase();
@@ -92,7 +92,7 @@ main() {
       expect(input.children.single, source);
       expect(output.children.single, target);
     });
-    test('double reference', () {
+    test('duplicated reference', () {
       var source = lowercase();
       var input = source & source;
       var target = uppercase();
@@ -105,6 +105,19 @@ main() {
       expect(input.children.first, input.children.last);
       expect(output.equals(target & target), isTrue);
       expect(output.children.first, output.children.last);
+    });
+    test('loop reference', () {
+      var input = failure().setable().setable().setable();
+      input.children.single.children.single.set(input);
+      var output = transformParser(input, (parser) {
+        return parser;
+      });
+      expect(input, isNot(output));
+      expect(input.equals(output), isTrue);
+      var inputs = allParser(input).toSet();
+      var outputs = allParser(output).toSet();
+      inputs.forEach((each) => expect(outputs.contains(each), isFalse));
+      outputs.forEach((each) => expect(inputs.contains(each), isFalse));
     });
   });
   group('optimize', () {
