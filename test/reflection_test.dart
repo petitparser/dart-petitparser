@@ -62,40 +62,47 @@ main() {
   });
   group('transform', () {
     test('identity', () {
-      var lower = lowercase();
-      var parser = lower.setable();
-      var transformed = transformParser(parser, (parser) => parser);
-      expect(transformed.equals(parser), isTrue);
+      var input = lowercase().setable();
+      var output = transformParser(input, (parser) => parser);
+      expect(input, isNot(output));
+      expect(input.equals(output), isTrue);
+      expect(input.children.single, isNot(output.children.single));
     });
     test('root', () {
-      var input = lowercase();
       var source = lowercase();
+      var input = source;
       var target = uppercase();
       var output = transformParser(input, (parser) {
         return source.equals(parser) ? target : parser;
       });
+      expect(input, isNot(output));
       expect(input.equals(output), isFalse);
-      expect(output.equals(target), isTrue);
+      expect(input, source);
+      expect(output, target);
     });
     test('delegate', () {
-      var input = lowercase().setable();
       var source = lowercase();
+      var input = source.setable();
       var target = uppercase();
       var output = transformParser(input, (parser) {
         return source.equals(parser) ? target : parser;
       });
+      expect(input, isNot(output));
       expect(input.equals(output), isFalse);
-      expect(output.equals(target.setable()), isTrue);
+      expect(input.children.single, source);
+      expect(output.children.single, target);
     });
     test('double reference', () {
-      var lower = lowercase();
-      var input = lower & lower;
       var source = lowercase();
+      var input = source & source;
       var target = uppercase();
       var output = transformParser(input, (parser) {
         return source.equals(parser) ? target : parser;
       });
+      expect(input, isNot(output));
       expect(input.equals(output), isFalse);
+      expect(input.equals(source & source), isTrue);
+      expect(input.children.first, input.children.last);
       expect(output.equals(target & target), isTrue);
       expect(output.children.first, output.children.last);
     });

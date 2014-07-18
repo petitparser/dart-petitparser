@@ -6,31 +6,30 @@ part of reflection;
 typedef Parser TransformationHandler(Parser parser);
 
 /**
- * Transforms all parsers reachable from [root] with the given [function].
+ * Transforms all parsers reachable from [parser] with the given [handler].
  * The identity function returns a copy of the the incoming parser.
  *
  * The implementation first creates a copy of each parser reachable in the
- * input grammar; then the resulting grammar is iteratively transfered and
- * all old parsers are replaced with the transformed ones until we end up
- * with a completely new grammar.
+ * input grammar; then the resulting grammar is traversed until all references
+ * to old parsers are replaced with the transformed ones.
  */
-Parser transformParser(Parser root, TransformationHandler handler) {
-  var mapping = new Map();
-  allParser(root).forEach((parser) {
+Parser transformParser(Parser parser, TransformationHandler handler) {
+  var mapping = new Map.identity();
+  allParser(parser).forEach((parser) {
     mapping[parser] = handler(parser.copy());
   });
-  while (true) {
-    var changed = false;
-    allParser(mapping[root]).forEach((parser) {
-      parser.children.forEach((source) {
-        if (mapping.containsKey(source)) {
-          parser.replace(source, mapping[source]);
-          changed = true;
-        }
-      });
+  var seen = new Set.from(mapping.values);
+  var todo = new List.from(mapping.values);
+  while (todo.isNotEmpty) {
+    var parent = todo.removeLast();
+    parent.children.forEach((source) {
+      if (mapping.containsKey(source)) {
+        parent.replace(source, mapping[source]);
+      } else if (!seen.contains(source)) {
+        seen.add(source);
+        todo.add(source);
+      }
     });
-    if (!changed) {
-      return mapping[root];
-    }
   }
+  return mapping[parser];
 }
