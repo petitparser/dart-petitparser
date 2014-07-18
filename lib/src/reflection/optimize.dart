@@ -1,43 +1,31 @@
  part of reflection;
 
  /**
-  * Removes all setable parsers reachable from [root] in-place.
+  * Returns a copy of [parser] with all setable parsers removed.
   */
- Parser removeSetables(Parser root) {
-   allParser(root).forEach((parent) {
-     parent.children.forEach((source) {
-       var target = _removeSetable(source);
-       if (source != target) {
-         parent.replace(source, target);
-       }
-     });
+ Parser removeSetables(Parser parser) {
+   return transformParser(parser, (each) {
+     while (each is SetableParser) {
+       each = each.children.first;
+     }
+     return each;
    });
-   return _removeSetable(root);
- }
-
- Parser _removeSetable(Parser parser) {
-   while (parser is SetableParser) {
-     parser = parser.children.first;
-   }
-   return parser;
  }
 
  /**
-  * Removes duplicated parsers reachable from [root] in-place.
+  * Returns a copy of [parser] with all duplicates parsers removed.
   */
- Parser removeDuplicates(Parser root) {
+ Parser removeDuplicates(Parser parser) {
    var uniques = new Set();
-   allParser(root).forEach((parent) {
-     parent.children.forEach((source) {
-       var target = uniques.firstWhere((each) {
-         return source != each && source.equals(each);
-       }, orElse: () => null);
-       if (target == null) {
-         uniques.add(source);
-       } else {
-         parent.replace(source, target);
-       }
-     });
+   return transformParser(parser, (source) {
+     var target = uniques.firstWhere((each) {
+       return source != each && source.equals(each);
+     }, orElse: () => null);
+     if (target == null) {
+       uniques.add(source);
+       return source;
+     } else {
+       return target;
+     }
    });
-   return root;
  }
