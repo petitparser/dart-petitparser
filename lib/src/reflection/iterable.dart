@@ -12,42 +12,45 @@ part of reflection;
  *   });
  *
  */
-Iterable<Parser> allParser(Parser root) => new ParserIterable(root);
+Iterable<Parser> allParser(Parser root) => new _ParserIterable(root);
 
-class ParserIterable extends IterableBase<Parser> {
+class _ParserIterable extends IterableBase<Parser> {
 
   final Parser root;
 
-  ParserIterable(this.root);
+  _ParserIterable(this.root);
 
   @override
-  Iterator<Parser> get iterator => new ParserIterator(root);
+  Iterator<Parser> get iterator => new _ParserIterator([root]);
 
 }
 
-class ParserIterator implements Iterator<Parser> {
+class _ParserIterator implements Iterator<Parser> {
 
   final List<Parser> todo;
-  final Set<Parser> done;
+  final Set<Parser> seen;
 
   Parser current;
 
-  ParserIterator(Parser root)
-      : todo = new List.from([root]),
-        done = new Set();
+  _ParserIterator(Iterable<Parser> roots)
+      : todo = new List.from(roots),
+        seen = new Set.from(roots);
 
   @override
   bool moveNext() {
-    do {
-      if (todo.isEmpty) {
-        current = null;
-        return false;
-      }
+    if (todo.isEmpty) {
+      current = null;
+      return false;
+    } else {
       current = todo.removeLast();
-    } while (done.contains(current));
-    done.add(current);
-    todo.addAll(current.children);
-    return true;
+      current.children.forEach((each) {
+        if (!seen.contains(each)) {
+          todo.add(each);
+          seen.add(each);
+        }
+      });
+      return true;
+    }
   }
 
 }
