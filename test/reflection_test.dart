@@ -106,7 +106,7 @@ main() {
       expect(output.equals(target & target), isTrue);
       expect(output.children.first, output.children.last);
     });
-    test('loop', () {
+    test('loop (existing)', () {
       var input = failure().setable().setable().setable();
       input.children.single.children.single.set(input);
       var output = transformParser(input, (parser) {
@@ -118,6 +118,18 @@ main() {
       var outputs = allParser(output).toSet();
       inputs.forEach((each) => expect(outputs.contains(each), isFalse));
       outputs.forEach((each) => expect(inputs.contains(each), isFalse));
+    });
+    test('loop (new)', () {
+      var source = lowercase();
+      var input = source;
+      var target = failure().setable().setable().setable();
+      target.children.single.children.single.set(target);
+      var output = transformParser(input, (parser) {
+        return source.equals(parser) ? target : parser;
+      });
+      expect(input, isNot(output));
+      expect(input.equals(output), isFalse);
+      expect(output.equals(target), isTrue);
     });
   });
   group('optimize', () {
