@@ -13,7 +13,7 @@
  }
 
  /**
-  * Returns a copy of [parser] with all duplicates parsers removed.
+  * Returns a copy of [parser] with all duplicates parsers collapsed.
   */
  Parser removeDuplicates(Parser parser) {
    var uniques = new Set();
