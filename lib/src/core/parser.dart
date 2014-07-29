@@ -29,7 +29,7 @@ abstract class Parser {
    * [Failure], where [Result.position] is `0` and [Failure.message] is
    * ['letter expected'].
    */
-  Result parse(dynamic input) {
+  Result parse(input) {
     return parseOn(new Context(input, 0));
   }
 
@@ -39,7 +39,7 @@ abstract class Parser {
    * For example, `letter().plus().accept('abc')` returns `true`, and
    * `letter().plus().accept('123')` returns `false`.
    */
-  bool accept(dynamic input) {
+  bool accept(input) {
     return parse(input).isSuccess;
   }
 
@@ -50,7 +50,7 @@ abstract class Parser {
    * `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
    * [Parser.matchesSkipping] to retrieve non-overlapping parse results.
    */
-  Iterable matches(dynamic input) {
+  Iterable matches(input) {
     var list = new List();
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;

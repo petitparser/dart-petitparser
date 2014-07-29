@@ -6,11 +6,11 @@ part of petitparser;
  * For example, `char('a').or(epsilon())` is equivalent to
  * `char('a').optional()`.
  */
-Parser epsilon([dynamic result]) => new EpsilonParser(result);
+Parser epsilon([result]) => new EpsilonParser(result);
 
 class EpsilonParser extends Parser {
 
-  final dynamic _result;
+  final _result;
 
   EpsilonParser(this._result);
 

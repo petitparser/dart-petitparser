@@ -36,7 +36,7 @@ class CharacterParser extends Parser {
 
 }
 
-int _toCharCode(dynamic element) {
+int _toCharCode(element) {
   if (element is num) {
     return element.round();
   }
@@ -92,7 +92,7 @@ class _AltCharMatcher implements _CharMatcher {
 /**
  * Returns a parser that accepts a specific character only.
  */
-Parser char(dynamic element, [String message]) {
+Parser char(element, [String message]) {
   return new CharacterParser(
       new _SingleCharMatcher(_toCharCode(element)),
       message != null ? message : '$element expected');
@@ -199,7 +199,7 @@ final _patternParser = _createPatternParser();
  * Returns a parser that accepts any character in the range
  * between [start] and [stop].
  */
-Parser range(dynamic start, dynamic stop, [String message]) {
+Parser range(start, stop, [String message]) {
   return new CharacterParser(
       new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop)),
       message != null ? message : '$start..$stop expected');

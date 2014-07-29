@@ -124,7 +124,7 @@ abstract class CompositeParser extends DelegateParser {
    *
    *     redef('list', (parser) => parser.optional());
    */
-  void redef(String name, dynamic replacement) {
+  void redef(String name, replacement) {
     if (_completed) {
       throw new CompletedParserError();
     } else if (!_defined.containsKey(name)) {
@@ -144,7 +144,7 @@ abstract class CompositeParser extends DelegateParser {
    *
    *     action('list', (list) => list.length);
    */
-  void action(String name, dynamic function(Dynamic)) {
+  void action(String name, Function function) {
     redef(name, (parser) => parser.map(function));
   }
 

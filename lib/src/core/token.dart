@@ -93,7 +93,7 @@ class Token {
   /**
    * Returns a human readable string representing the [position] index in a [buffer].
    */
-  static String positionString(dynamic buffer, int position) {
+  static String positionString(buffer, int position) {
     if (buffer is String) {
       var lineAndColumn = Token.lineAndColumnOf(buffer, position);
       return '${lineAndColumn[0]}:${lineAndColumn[1]}';

@@ -123,7 +123,7 @@ class NotParser extends DelegateParser {
  */
 class OptionalParser extends DelegateParser {
 
-  final dynamic _otherwise;
+  final _otherwise;
 
   OptionalParser(parser, this._otherwise): super(parser);
 

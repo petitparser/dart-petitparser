@@ -18,7 +18,7 @@ part 'src/lisp/parser.dart';
 part 'src/lisp/standard.dart';
 
 /** The evaluation function. */
-dynamic eval(Environment env, dynamic expr) {
+dynamic eval(Environment env, expr) {
   if (expr is Cons) {
     return eval(env, expr.head)(env, expr.tail);
   } else if (expr is Name) {
@@ -29,7 +29,7 @@ dynamic eval(Environment env, dynamic expr) {
 }
 
 /** Evaluate a cons of instructions. */
-dynamic evalList(Environment env, dynamic expr) {
+dynamic evalList(Environment env, expr) {
   var result = null;
   while (expr is Cons) {
     result = eval(env, expr.head);
@@ -39,7 +39,7 @@ dynamic evalList(Environment env, dynamic expr) {
 }
 
 /** The arguments evaluatation function. */
-dynamic evalArguments(Environment env, dynamic args) {
+dynamic evalArguments(Environment env, args) {
   if (args is Cons) {
     return new Cons(eval(env, args.head), evalArguments(env, args.tail));
   } else {
