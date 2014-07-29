@@ -63,7 +63,7 @@ abstract class Parser {
    * list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
    * overlapping parse results.
    */
-  Iterable matchesSkipping(dynamic input) {
+  Iterable matchesSkipping(input) {
     var list = new List();
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;
@@ -78,7 +78,7 @@ abstract class Parser {
    * and returns that letter. When given something else the parser succeeds as
    * well, does not consume anything and returns `null`.
    */
-  Parser optional([dynamic otherwise]) => new OptionalParser(this, otherwise);
+  Parser optional([otherwise]) => new OptionalParser(this, otherwise);
 
   /**
    * Returns a parser that accepts the receiver zero or more times. The

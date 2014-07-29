@@ -18,7 +18,7 @@ class Environment {
   Environment create() => new Environment(this);
 
   /** Return the binding for [key]. */
-  dynamic operator [](Name key) {
+  operator [](Name key) {
     if (_bindings.containsKey(key)) {
       return _bindings[key];
     } else if (_owner != null) {
@@ -29,7 +29,7 @@ class Environment {
   }
 
   /** Updates the binding for [key] with a [value]. */
-  void operator []=(Name key, dynamic value) {
+  void operator []=(Name key, value) {
     if (_bindings.containsKey(key)) {
       _bindings[key] = value;
     } else if (_owner != null) {
@@ -40,7 +40,7 @@ class Environment {
   }
 
   /** Defines a new binding from [key] to [value]. */
-  dynamic define(Name key, dynamic value) {
+  define(Name key, value) {
     return _bindings[key] = value;
   }
 
@@ -51,7 +51,7 @@ class Environment {
   Environment get owner => _owner;
 
   /** Called when a missing binding is accessed. */
-  dynamic _invalidBinding(Name key) {
+  _invalidBinding(Name key) {
     throw new ArgumentError('Unknown binding for $key');
   }
 

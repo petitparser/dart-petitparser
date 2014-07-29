@@ -50,7 +50,7 @@ class Natives {
     return environment;
   }
 
-  static dynamic _define(Environment env, dynamic args) {
+  static _define(Environment env, args) {
     if (args.head is Name) {
       return env.define(args.head, evalList(env, args.tail));
     } else if (args.head.head is Name) {
@@ -60,8 +60,8 @@ class Natives {
     }
   }
 
-  static dynamic _lambda(Environment lambda_env, dynamic lambda_args) {
-    return (Environment env, dynamic args) {
+  static _lambda(Environment lambda_env, lambda_args) {
+    return (Environment env, args) {
       var inner = lambda_env.create();
       var names = lambda_args.head;
       var values = evalArguments(env, args);
@@ -74,19 +74,19 @@ class Natives {
     };
   }
 
-  static dynamic _quote(Environment env, dynamic args) {
+  static _quote(Environment env, args) {
     return args;
   }
 
-  static dynamic _eval(Environment env, dynamic args) {
+  static _eval(Environment env, args) {
     return eval(env.create(), eval(env, args.head));
   }
 
-  static dynamic _apply(Environment env, dynamic args) {
+  static _apply(Environment env, args) {
     return eval(env, args.head)(env.create(), args.tail);
   }
 
-  static dynamic _let(Environment env, dynamic args) {
+  static _let(Environment env, args) {
     var inner = env.create();
     var binding = args.head;
     while (binding != null) {
@@ -96,11 +96,11 @@ class Natives {
     return evalList(inner, args.tail);
   }
 
-  static dynamic _set(Environment env, dynamic args) {
+  static _set(Environment env, args) {
     return env[args.head] = eval(env, args.tail.head);
   }
 
-  static dynamic _print(Environment env, dynamic args) {
+  static _print(Environment env, args) {
     var buffer = new StringBuffer();
     while (args != null) {
       buffer.write(eval(env, args.head));
@@ -110,7 +110,7 @@ class Natives {
     return null;
   }
 
-  static dynamic _if(Environment env, dynamic args) {
+  static _if(Environment env, args) {
     var condition = eval(env, args.head);
     if (condition) {
       if (args.tail != null) {
@@ -124,7 +124,7 @@ class Natives {
     return null;
   }
 
-  static dynamic _while(Environment env, dynamic args) {
+  static _while(Environment env, args) {
     var result = null;
     while (eval(env, args.head)) {
       result = evalList(env, args.tail);
@@ -132,7 +132,7 @@ class Natives {
     return result;
   }
 
-  static dynamic _and(Environment env, dynamic args) {
+  static _and(Environment env, args) {
     while (args != null) {
       if (!eval(env, args.head)) {
         return false;
@@ -142,7 +142,7 @@ class Natives {
     return true;
   }
 
-  static dynamic _or(Environment env, dynamic args) {
+  static _or(Environment env, args) {
     while (args != null) {
       if (eval(env, args.head)) {
         return true;
@@ -152,11 +152,11 @@ class Natives {
     return false;
   }
 
-  static dynamic _not(Environment env, dynamic args) {
+  static _not(Environment env, args) {
     return !eval(env, args.head);
   }
 
-  static dynamic _plus(Environment env, dynamic args) {
+  static _plus(Environment env, args) {
     var value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value += eval(env, args.head);
@@ -164,7 +164,7 @@ class Natives {
     return value;
   }
 
-  static dynamic _minus(Environment env, dynamic args) {
+  static _minus(Environment env, args) {
     var value = eval(env, args.head);
     if (args.tail == null) {
       return -value;
@@ -175,7 +175,7 @@ class Natives {
     return value;
   }
 
-  static dynamic _multiply(Environment env, dynamic args) {
+  static _multiply(Environment env, args) {
     var value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value *= eval(env, args.head);
@@ -183,7 +183,7 @@ class Natives {
     return value;
   }
 
-  static dynamic _divide(Environment env, dynamic args) {
+  static _divide(Environment env, args) {
     var value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value /= eval(env, args.head);
@@ -191,7 +191,7 @@ class Natives {
     return value;
   }
 
-  static dynamic _modulo(Environment env, dynamic args) {
+  static _modulo(Environment env, args) {
     var value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value %= eval(env, args.head);
@@ -199,41 +199,41 @@ class Natives {
     return value;
   }
 
-  static dynamic _smaller(Environment env, dynamic args) {
+  static _smaller(Environment env, args) {
     return eval(env, args.head) < eval(env, args.tail.head);
   }
 
-  static dynamic _smallerOrEqual(Environment env, dynamic args) {
+  static _smallerOrEqual(Environment env, args) {
     return eval(env, args.head) <= eval(env, args.tail.head);
   }
 
-  static dynamic _equal(Environment env, dynamic args) {
+  static _equal(Environment env, args) {
     return eval(env, args.head) == eval(env, args.tail.head);
   }
 
-  static dynamic _notEqual(Environment env, dynamic args) {
+  static _notEqual(Environment env, args) {
     return eval(env, args.head) != eval(env, args.tail.head);
   }
 
-  static dynamic _larger(Environment env, dynamic args) {
+  static _larger(Environment env, args) {
     return eval(env, args.head) > eval(env, args.tail.head);
   }
 
-  static dynamic _largerOrEqual(Environment env, dynamic args) {
+  static _largerOrEqual(Environment env, args) {
     return eval(env, args.head) >= eval(env, args.tail.head);
   }
 
 
-  static dynamic _cons(Environment env, dynamic args) {
+  static _cons(Environment env, args) {
     return new Cons(eval(env, args.head), eval(env, args.tail.head));
   }
 
-  static dynamic _car(Environment env, dynamic args) {
+  static _car(Environment env, args) {
     var cons = eval(env, args.head);
     return cons is Cons ? cons.head : null;
   }
 
-  static dynamic _carSet(Environment env, dynamic args) {
+  static _carSet(Environment env, args) {
     var cons = eval(env, args.head);
     if (cons is Cons) {
       cons.head = eval(env, args.tail.head);
@@ -241,12 +241,12 @@ class Natives {
     return cons;
   }
 
-  static dynamic _cdr(Environment env, dynamic args) {
+  static _cdr(Environment env, args) {
     var cons = eval(env, args.head);
     return cons is Cons ? cons.tail : null;
   }
 
-  static dynamic _cdrSet(Environment env, dynamic args) {
+  static _cdrSet(Environment env, args) {
     var cons = eval(env, args.head);
     if (cons is Cons) {
       cons.tail = eval(env, args.tail.head);
