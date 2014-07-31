@@ -8,6 +8,7 @@ environment:
 documentation: http://jenkins.lukas-renggli.ch/job/PetitParserDart/javadoc
 dev_dependencies:
   browser: '>=0.9.0 <0.11.0'
+  hop: '>=0.24.4'
   junitconfiguration: '>=1.0.0 <2.0.0'
   matcher: '>=0.9.0 <0.11.0'
   unittest: '>=0.9.0 <0.12.0'

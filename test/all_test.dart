@@ -12,6 +12,13 @@ import 'smalltalk_test.dart' as smalltalk_test;
 import 'test_test.dart' as test_test;
 
 void main() {
+  testCore(new Configuration());
+}
+
+void testCore(Configuration config) {
+  unittestConfiguration = config;
+  groupSep = ' - ';
+
   group('PetitParser', core_test.main);
   group('Dart', dart_test.main);
   group('Debug', debug_test.main);
