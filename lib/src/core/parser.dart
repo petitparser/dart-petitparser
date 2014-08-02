@@ -29,7 +29,7 @@ abstract class Parser {
    * [Failure], where [Result.position] is `0` and [Failure.message] is
    * ['letter expected'].
    */
-  Result parse(dynamic input) {
+  Result parse(input) {
     return parseOn(new Context(input, 0));
   }
 
@@ -39,7 +39,7 @@ abstract class Parser {
    * For example, `letter().plus().accept('abc')` returns `true`, and
    * `letter().plus().accept('123')` returns `false`.
    */
-  bool accept(dynamic input) {
+  bool accept(input) {
     return parse(input).isSuccess;
   }
 
@@ -50,7 +50,7 @@ abstract class Parser {
    * `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
    * [Parser.matchesSkipping] to retrieve non-overlapping parse results.
    */
-  Iterable matches(dynamic input) {
+  Iterable matches(input) {
     var list = new List();
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
@@ -63,7 +63,7 @@ abstract class Parser {
    * list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
    * overlapping parse results.
    */
-  Iterable matchesSkipping(dynamic input) {
+  Iterable matchesSkipping(input) {
     var list = new List();
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;
@@ -78,7 +78,7 @@ abstract class Parser {
    * and returns that letter. When given something else the parser succeeds as
    * well, does not consume anything and returns `null`.
    */
-  Parser optional([dynamic otherwise]) => new OptionalParser(this, otherwise);
+  Parser optional([otherwise]) => new OptionalParser(this, otherwise);
 
   /**
    * Returns a parser that accepts the receiver zero or more times. The

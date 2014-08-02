@@ -42,7 +42,7 @@ class AnyParser extends Parser {
  * For example, `anyIn('ab')` succeeds and consumes either the letter
  * `'a'` or the letter `'b'`. For any other input the parser fails.
  */
-Parser anyIn(dynamic elements, [String message]) {
+Parser anyIn(elements, [String message]) {
   return predicate(1,
       (each) => elements.indexOf(each) >= 0,
       message != null ? message : 'any of $elements expected');

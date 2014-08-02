@@ -60,7 +60,7 @@ class SmalltalkGrammar extends CompositeParser {
     def('fractionalDigits', ref('decimalInteger'));
   }
 
-  Parser _token(dynamic input) {
+  Parser _token(input) {
     var parser = input;
     if (parser is String) {
       parser = parser.length == 1 ? char(parser) : string(parser);

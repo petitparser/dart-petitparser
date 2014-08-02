@@ -207,7 +207,7 @@ class ExpressionGroup {
 
 // helper class to associate operators and actions
 class _ExpressionResult {
-  final dynamic operator;
+  final operator;
   final Function action;
   _ExpressionResult(this.operator, this.action);
 }

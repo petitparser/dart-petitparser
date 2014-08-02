@@ -10,7 +10,7 @@ class Context {
   /**
    * The buffer we are working on.
    */
-  final dynamic buffer;
+  final buffer;
 
   /**
    * The current position in the buffer.
@@ -30,7 +30,7 @@ class Context {
   /**
    * Returns a result indicating a parse success.
    */
-  Result success(dynamic result, [int position]) {
+  Result success(result, [int position]) {
     return new Success(buffer, position == null ? this.position : position, result);
   }
 
@@ -63,7 +63,7 @@ abstract class Result extends Context {
   /**
    * Returns the parse result of the current context.
    */
-  dynamic get value;
+  get value;
 
   /**
    * Returns the parse message of the current context.
@@ -83,7 +83,7 @@ class Success extends Result {
   bool get isSuccess => true;
 
   @override
-  final dynamic value;
+  final value;
 
   @override
   String get message => null;
@@ -104,7 +104,7 @@ class Failure extends Result {
   bool get isFailure => true;
 
   @override
-  dynamic get value => throw new ParserError(this);
+  get value => throw new ParserError(this);
 
   @override
   final String message;
