@@ -40,7 +40,7 @@ The package comes with a large collections of grammars and language experiments 
 Furthermore, there are various open source projects using PetitParser: 
   
 - [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
-- [haml.dart](https://github.com/kevmoo/haml.dart) is an implementation of Haml in Dart.
+- [Haml.dart](https://github.com/kevmoo/haml.dart) is an implementation of Haml in Dart.
 - [RythmDart](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
 - [SharkDart](https://github.com/freewind/SharkDart) is a small template engine.
 
