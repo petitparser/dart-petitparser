@@ -71,7 +71,7 @@ void main(List<String> arguments) {
 
   // process files given as argument
   files.forEach((file) {
-    evalString(parser, environment, file.readAsTextSync());
+    evalString(parser, environment, file.readAsStringSync());
   });
 
   // process console input
