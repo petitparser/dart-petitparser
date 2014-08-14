@@ -15,21 +15,21 @@ typedef Parser TransformationHandler(Parser parser);
  */
 Parser transformParser(Parser parser, TransformationHandler handler) {
   var mapping = new Map.identity();
-  allParser(parser).forEach((parser) {
+  for (var parser in allParser(parser)) {
     mapping[parser] = handler(parser.copy());
-  });
+  }
   var seen = new Set.from(mapping.values);
   var todo = new List.from(mapping.values);
   while (todo.isNotEmpty) {
     var parent = todo.removeLast();
-    parent.children.forEach((source) {
+    for (var source in parent.children) {
       if (mapping.containsKey(source)) {
         parent.replace(source, mapping[source]);
       } else if (!seen.contains(source)) {
         seen.add(source);
         todo.add(source);
       }
-    });
+    }
   }
   return mapping[parser];
 }

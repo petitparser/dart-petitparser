@@ -30,27 +30,27 @@ class _ParserIterator implements Iterator<Parser> {
   final List<Parser> todo;
   final Set<Parser> seen;
 
-  Parser current;
-
   _ParserIterator(Iterable<Parser> roots)
       : todo = new List.from(roots),
         seen = new Set.from(roots);
+
+  @override
+  Parser current;
 
   @override
   bool moveNext() {
     if (todo.isEmpty) {
       current = null;
       return false;
-    } else {
-      current = todo.removeLast();
-      current.children.forEach((each) {
-        if (!seen.contains(each)) {
-          todo.add(each);
-          seen.add(each);
-        }
-      });
-      return true;
     }
+    current = todo.removeLast();
+    for (var parser in current.children) {
+      if (!seen.contains(parser)) {
+        todo.add(parser);
+        seen.add(parser);
+      }
+    }
+    return true;
   }
 
 }
