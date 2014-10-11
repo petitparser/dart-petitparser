@@ -49,7 +49,7 @@ part of petitparser;
  *     }
  *
  */
-abstract class ParserDefinition {
+abstract class GrammarDefinition {
 
   /**
    * The starting production of this definition.

@@ -3,7 +3,7 @@ part of lisp;
 /**
  * LISP grammar definition.
  */
-class LispGrammarDefinition extends ParserDefinition {
+class LispGrammarDefinition extends GrammarDefinition {
 
   start() => ref(atom).star().end();
 
