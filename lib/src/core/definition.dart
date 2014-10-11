@@ -1,7 +1,34 @@
-part of core;
+part of petitparser;
 
 /**
- * Builder to conveniently build complex grammars from productions.
+ * Helper to conveniently define and build complex grammars from productions.
+ *
+ * To create a new grammar definition subclass [ParserDefinition]. For every
+ * production create a method returning the parser defining it. The method
+ * called [start] is supposed to return the start production of the grammar.
+ *
+ * Consider the following example to parse a list of numbers:
+ *
+ *     class NumberListGrammar extends ParserBuilder {
+ *       start() => ref(list).end();
+ *       list() => ref(element).separatedBy(char(','), includeSeparators: false);
+ *       element() => digit().plus().flatten();
+ *     }
+ *
+ * You might want to create future subclasses of your composite grammar
+ * to redefine the grammar or attach custom actions. In such a subclass
+ * override the method [initialize] again and call super. Then use
+ * [redef] to redefine an existing production, and [action] to attach an
+ * action to an existing production.
+ *
+ * Consider the following example that attaches a production action and
+ * converts the digits to actual numbers:
+ *
+ *     class NumberListParser extends NumberListGrammar {
+ *       void initialize() {
+ *         action('element', (value) => int.parse(value));
+ *       }
+ *     }
  *
  * Consider the following example to parse a list of numbers:
  *
@@ -22,32 +49,38 @@ part of core;
  *     }
  *
  */
-abstract class ParserBuilder {
+abstract class ParserDefinition {
 
   /**
-   * The starting production of this parser.
+   * The starting production of this definition.
    */
   Parser start();
 
   /**
-   * Wraps a method referene into a parser that can be passed around and that
-   * will be resolved at a later point.
+   * Returns a parser reference to a production defined by a [function].
+   *
+   * The optional arguments parametrize the called production.
    */
-  Parser ref(Function reference, [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]) {
-    var arguments = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
+  Parser ref(Function function, [arg1, arg2, arg3, arg4, arg5, arg6]) {
+    var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
-    return new _Reference(reference, arguments);
+    return new _Reference(function, arguments);
   }
-
 
   /**
-   * Internal helper to expand the complete parser graph.
+   * Builds a composite parser from this definition.
+   *
+   * The optional [start] reference specifies a different starting production into
+   * the grammar. The optional [arguments] list parametrizes the called production.
    */
-  Parser build([arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]) {
-    return _resolve(ref(start, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8));
+  Parser build({Function start: null, List arguments: const []}) {
+    return _resolve(new _Reference(start != null ? start : this.start, arguments));
   }
 
+  /**
+   * Internal helper to resolve a production reference of this grammar definiton.
+   */
   Parser _resolve(_Reference reference) {
     var mapping = new Map.fromIterables([reference], [reference.resolve()]);
     var seen = new Set.from(mapping.values);
@@ -80,11 +113,7 @@ class _Reference extends Parser implements Object {
 
   _Reference(this.function, this.arguments);
 
-  /**
-   * Resolves the reference to an actual parser.
-   */
   Parser resolve() => Function.apply(function, arguments);
-
 
   @override
   bool operator ==(other) => other is _Reference
