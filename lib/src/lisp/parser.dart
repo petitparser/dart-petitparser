@@ -3,33 +3,28 @@ part of lisp;
 /**
  * LISP parser definition.
  */
-class LispParser extends LispGrammar {
+class LispParserBuilder extends LispGrammarBuilder {
 
-  @override
-  void initialize() {
-    super.initialize();
+  list() => super.list().map((each) => each[1]);
 
-    action('list', (each) => each[1]);
+  cell() => super.cell().map((each) => new Cons(each[0], each[1]));
+  empty() => super.empty().map((each) => null);
 
-    action('cell', (each) => new Cons(each[0], each[1]));
-    action('null', (each) => null);
+  string() => super.string().map((each) => new String.fromCharCodes(each[1]));
+  characterEscape() => super.characterEscape().map((each) => each[1].codeUnitAt(0));
+  characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
 
-    action('string', (each) => new String.fromCharCodes(each[1]));
-    action('character escape', (each) => each[1].codeUnitAt(0));
-    action('character raw', (each) => each.codeUnitAt(0));
+  symbol() => super.symbol().map((each) => new Name(each));
+  number() => super.number().map((each) {
+    var floating = double.parse(each);
+    var integral = floating.toInt();
+    if (floating == integral && each.indexOf('.') == -1) {
+      return integral;
+    } else {
+      return floating;
+    }
+  });
 
-    action('symbol', (each) => new Name(each));
-    action('number', (each) {
-      var floating = double.parse(each);
-      var integral = floating.toInt();
-      if (floating == integral && each.indexOf('.') == -1) {
-        return integral;
-      } else {
-        return floating;
-      }
-    });
-
-    action('quote', (each) => new Cons(Natives._quote, each[1]));
-  }
+  quote() => super.quote().map((each) => new Cons(Natives._quote, each[1]));
 
 }

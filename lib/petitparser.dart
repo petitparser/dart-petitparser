@@ -155,6 +155,7 @@
 library petitparser;
 
 part 'src/core/actions.dart';
+part 'src/core/builder.dart';
 part 'src/core/characters.dart';
 part 'src/core/combinators.dart';
 part 'src/core/composite.dart';

@@ -17,6 +17,8 @@ part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
 part 'src/lisp/standard.dart';
 
+final parser = new LispParserBuilder().build();
+
 /** The evaluation function. */
 eval(Environment env, expr) {
   if (expr is Cons) {
@@ -48,7 +50,7 @@ evalArguments(Environment env, args) {
 }
 
 /** Reads and evaluates a [script]. */
-evalString(LispParser parser, Environment env, String script) {
+evalString(Environment env, String script) {
   var result = null;
   for (var cell in parser.parse(script).value) {
     result = eval(env, cell);

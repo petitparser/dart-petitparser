@@ -3,76 +3,50 @@ part of lisp;
 /**
  * LISP grammar definition.
  */
-class LispGrammar extends CompositeParser {
+class LispGrammarBuilder extends ParserBuilder {
 
-  @override
-  void initialize() {
-    def('start', ref('atom').star().end());
+  start() => ref(atom).star().end();
 
-    def('atom',
-      ref('list')
-        .or(ref('number'))
-        .or(ref('string'))
-        .or(ref('symbol'))
-        .or(ref('quote'))
-        .or(ref('quasiquote'))
-        .or(ref('unquote'))
-        .or(ref('splice'))
-        .trim(ref('whitespace')));
+  atom() => ref(atom_).trim(ref(space));
+  atom_() => ref(list)
+      | ref(number)
+      | ref(string)
+      | ref(symbol)
+      | ref(quote)
+      | ref(quasiquote)
+      | ref(unquote)
+      | ref(splice);
 
-    def('list',
-      bracket('()', 'atoms')
-        .or(bracket('[]', 'atoms'))
-        .or(bracket('{}', 'atoms')));
-    def('atoms',
-      ref('cell')
-        .or(ref('null')));
-    def('cell',
-      ref('atom')
-        .seq(ref('atoms')));
-    def('null',
-      ref('whitespace').star());
+  list() => ref(bracket, '()', ref(cells))
+      | ref(bracket, '[]', ref(cells))
+      | ref(bracket, '{}', ref(cells));
+  cells() => ref(cell)
+      | ref(empty);
+  cell() => ref(atom) & ref(cells);
+  empty() => ref(space).star();
 
-    def('string',
-      char('"')
-        .seq(ref('character').star())
-        .seq(char('"')));
-    def('character',
-      ref('character escape')
-        .or(ref('character raw')));
-    def('character escape',
-      char('\\').seq(any()));
-    def('character raw',
-      pattern('^"'));
+  number() => ref(number_).flatten();
+  number_() => anyIn('-+').optional()
+      & char('0').or(digit().plus())
+      & char('.').seq(digit().plus()).optional()
+      & anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional();
 
-    def('symbol',
-      pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-')
-        .seq(pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star())
-        .flatten());
+  string() => ref(bracket, '""', ref(character).star());
+  character() => ref(characterEscape) | ref(characterRaw);
+  characterEscape() => char('\\') & any();
+  characterRaw() => pattern('^"');
 
-    def('number',
-      anyIn('-+').optional()
-        .seq(char('0').or(digit().plus()))
-        .seq(char('.').seq(digit().plus()).optional())
-        .seq(anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional())
-        .flatten());
+  symbol() => ref(symbol_).flatten();
+  symbol_() => pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-')
+      & pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star();
 
-    def('quote', char('\'').seq(ref('list')));
-    def('quasiquote', char('`').seq(ref('list')));
-    def('unquote', char(',').seq(ref('list')));
-    def('splice', char('@').seq(ref('list')));
+  quote() => char('\'') & ref(list);
+  quasiquote() => char('`') & ref(list);
+  unquote() => char(',') & ref(list);
+  splice() => char('@') & ref(list);
 
-    def('whitespace', whitespace()
-      .or(ref('comment')));
-    def('comment', string(';')
-      .seq(Token.newlineParser().neg().star()));
-  }
-
-  /** Defines a bracketed reference. */
-  Parser bracket(String brackets, String reference) {
-    return char(brackets[0])
-        .seq(ref(reference))
-        .seq(char(brackets[1]));
-  }
+  space() => whitespace() | ref(comment);
+  comment() => char(';') & Token.newlineParser().neg().star();
+  bracket(String brackets, Parser parser) => char(brackets[0]) & parser & char(brackets[1]);
 
 }

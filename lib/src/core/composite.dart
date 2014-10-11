@@ -34,6 +34,7 @@ part of petitparser;
  *       }
  *     }
  */
+@deprecated
 abstract class CompositeParser extends DelegateParser {
 
   bool _completed = false;

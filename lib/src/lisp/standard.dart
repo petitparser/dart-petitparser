@@ -7,7 +7,7 @@ class Standard {
 
   /** Imports the standard library into the [environment]. */
   static Environment import(Environment environment) {
-    evalString(new LispParser(), environment, _standardLibrary);
+    evalString(environment, _standardLibrary);
     return environment;
   }
 
