@@ -8,7 +8,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
 /** Read, evaluate, print loop. */
-void evalInteractive(LispParser parser, Environment env,
+void evalInteractive(Parser parser, Environment env,
                      Stream<String> input, IOSink output,
                      IOSink error) {
   output.write('>> ');
@@ -58,7 +58,6 @@ void main(List<String> arguments) {
   }
 
   // evaluation context
-  var parser = new LispParser();
   var environment = Natives.import(new Environment());
 
   // process standard library
@@ -71,7 +70,7 @@ void main(List<String> arguments) {
 
   // process files given as argument
   files.forEach((file) {
-    evalString(parser, environment, file.readAsStringSync());
+    evalString(lispParser, environment, file.readAsStringSync());
   });
 
   // process console input
@@ -79,7 +78,7 @@ void main(List<String> arguments) {
     var input = stdin
         .transform(SYSTEM_ENCODING.decoder)
         .transform(new LineSplitter());
-    evalInteractive(parser, environment, input, stdout, stderr);
+    evalInteractive(lispParser, environment, input, stdout, stderr);
   }
 
 }

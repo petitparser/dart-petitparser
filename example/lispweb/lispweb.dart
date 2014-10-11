@@ -18,8 +18,6 @@ void inspector(Element element, Environment environment) {
 }
 
 void main() {
-  var parser = new LispParser();
-
   var root = new Environment();
   var native = Natives.import(root);
   var standard = Standard.import(native.create());
@@ -29,7 +27,7 @@ void main() {
   var output = querySelector('#output') as TextAreaElement;
 
   querySelector('#evaluate').onClick.listen((event) {
-    var result = evalString(parser, environment, input.value);
+    var result = evalString(lispParser, environment, input.value);
     output.value = result.toString();
     inspector(querySelector('#inspector'), environment);
   });
