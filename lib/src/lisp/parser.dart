@@ -3,7 +3,7 @@ part of lisp;
 /**
  * LISP parser definition.
  */
-class LispParserBuilder extends LispGrammarBuilder {
+class LispParserDefinition extends LispGrammarDefinition {
 
   list() => super.list().map((each) => each[1]);
 

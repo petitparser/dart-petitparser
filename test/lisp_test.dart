@@ -10,7 +10,7 @@ void main() {
   var standard = Standard.import(native.create());
 
   dynamic exec(String value, [Environment env]) {
-    return evalString(env != null ? env : standard.create(), value);
+    return evalString(lispParser, env != null ? env : standard.create(), value);
   }
 
   group('Cell', () {
@@ -36,7 +36,7 @@ void main() {
     });
   });
   group('Parser', () {
-    var atom = parser['atom'];
+    var atom = lispDefinition.build(start: lispDefinition.atom);
     test('Name', () {
       var cell = atom.parse('foo').value;
       expect(cell, new isInstanceOf<Name>());

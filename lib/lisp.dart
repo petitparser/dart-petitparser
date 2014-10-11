@@ -17,7 +17,9 @@ part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
 part 'src/lisp/standard.dart';
 
-final parser = new LispParserBuilder().build();
+/** The standard lisp parser definition. */
+final lispDefinition = new LispParserDefinition();
+final lispParser = lispDefinition.build();
 
 /** The evaluation function. */
 eval(Environment env, expr) {
@@ -50,7 +52,7 @@ evalArguments(Environment env, args) {
 }
 
 /** Reads and evaluates a [script]. */
-evalString(Environment env, String script) {
+evalString(Parser parser, Environment env, String script) {
   var result = null;
   for (var cell in parser.parse(script).value) {
     result = eval(env, cell);
