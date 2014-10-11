@@ -24,6 +24,17 @@ void expectFailure(Parser parser, dynamic input, [int position = 0, String messa
   }
 }
 
+class ListGrammarDefinition extends GrammarDefinition {
+  start()   => ref(list).end();
+  list()    => ref(element) & char(',') & ref(list)
+             | ref(element);
+  element() => digit().plus().flatten();
+}
+
+class ListParserDefinition extends ListGrammarDefinition {
+  element() => super.element().map((value) => int.parse(value));
+}
+
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
   PluggableCompositeParser(this._function) : super();
@@ -895,6 +906,20 @@ main() {
       expectSuccess(parser, 'ab1', 'ab1');
       expectSuccess(parser, ' ab1 ', ' ab1 ');
       expectSuccess(parser, '  ab1  ', '  ab1  ');
+    });
+  });
+  group('definition', () {
+    test('grammar', () {
+      var definition = new ListGrammarDefinition();
+      var parser = definition.build();
+      expectSuccess(parser, '1,2', ['1', ',', '2']);
+      expectSuccess(parser, '1,2,3', ['1', ',', ['2', ',', '3']]);
+    });
+    test('parser', () {
+      var definition = new ListParserDefinition();
+      var parser = definition.build();
+      expectSuccess(parser, '1,2', [1, ',', 2]);
+      expectSuccess(parser, '1,2,3', [1, ',', [2, ',', 3]]);
     });
   });
   group('composite', () {
