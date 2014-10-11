@@ -909,15 +909,39 @@ main() {
     });
   });
   group('definition', () {
+    var grammarDefinition = new ListGrammarDefinition();
+    var parserDefinition = new ListParserDefinition();
+    test('reference without parameters', () {
+      var firstReference = grammarDefinition.ref(grammarDefinition.start);
+      var secondReference = grammarDefinition.ref(grammarDefinition.start);
+      expect(firstReference, isNot(same(secondReference)));
+      expect(firstReference == secondReference, isTrue);
+    });
+    test('reference with different production', () {
+      var firstReference = grammarDefinition.ref(grammarDefinition.start);
+      var secondReference = grammarDefinition.ref(grammarDefinition.element);
+      expect(firstReference, isNot(same(secondReference)));
+      expect(firstReference == secondReference, isFalse);
+    });
+    test('reference with same parameters', () {
+      var firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+      var secondReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+      expect(firstReference, isNot(same(secondReference)));
+      expect(firstReference == secondReference, isTrue);
+    });
+    test('reference with different parameters', () {
+      var firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+      var secondReference = grammarDefinition.ref(grammarDefinition.start, 'b');
+      expect(firstReference, isNot(same(secondReference)));
+      expect(firstReference == secondReference, isFalse);
+    });
     test('grammar', () {
-      var definition = new ListGrammarDefinition();
-      var parser = definition.build();
+      var parser = grammarDefinition.build();
       expectSuccess(parser, '1,2', ['1', ',', '2']);
       expectSuccess(parser, '1,2,3', ['1', ',', ['2', ',', '3']]);
     });
     test('parser', () {
-      var definition = new ListParserDefinition();
-      var parser = definition.build();
+      var parser = parserDefinition.build();
       expectSuccess(parser, '1,2', [1, ',', 2]);
       expectSuccess(parser, '1,2,3', [1, ',', [2, ',', 3]]);
     });

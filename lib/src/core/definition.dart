@@ -116,12 +116,22 @@ class _Reference extends Parser implements Object {
   Parser resolve() => Function.apply(function, arguments);
 
   @override
-  bool operator ==(other) => other is _Reference
-      && other.function == function
-      && other.arguments == arguments;
+  bool operator ==(other) {
+    if (other is! _Reference ||
+        other.function != function ||
+        other.arguments.length != arguments.length) {
+      return false;
+    }
+    for (var i = 0; i < other.arguments.length; i++) {
+      if (other.arguments[i] != arguments[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   @override
-  int get hashCode => function.hashCode ^ arguments.hashCode;
+  int get hashCode => function.hashCode;
 
   @override
   Parser copy() => throw new UnsupportedError('References cannot be copied.');
