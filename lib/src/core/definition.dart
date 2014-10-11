@@ -1,53 +1,39 @@
 part of petitparser;
 
 /**
- * Helper to conveniently define and build complex grammars from productions.
+ * Helper to conveniently define and build complex, recursive grammars using
+ * plain Dart code.
  *
- * To create a new grammar definition subclass [ParserDefinition]. For every
- * production create a method returning the parser defining it. The method
- * called [start] is supposed to return the start production of the grammar.
- *
- * Consider the following example to parse a list of numbers:
- *
- *     class NumberListGrammar extends ParserBuilder {
- *       start() => ref(list).end();
- *       list() => ref(element).separatedBy(char(','), includeSeparators: false);
- *       element() => digit().plus().flatten();
- *     }
- *
- * You might want to create future subclasses of your composite grammar
- * to redefine the grammar or attach custom actions. In such a subclass
- * override the method [initialize] again and call super. Then use
- * [redef] to redefine an existing production, and [action] to attach an
- * action to an existing production.
- *
- * Consider the following example that attaches a production action and
- * converts the digits to actual numbers:
- *
- *     class NumberListParser extends NumberListGrammar {
- *       void initialize() {
- *         action('element', (value) => int.parse(value));
- *       }
- *     }
+ * To create a new grammar definition subclass [GrammarDefinition]. For every
+ * production create a new method returning the primitive parser defining it.
+ * The method called [start] is supposed to return the start production of the
+ * grammar. To refer to a proudction defined in the same definition use [ref]
+ * with the function reference as the first argument.
  *
  * Consider the following example to parse a list of numbers:
  *
- *     class NumberListGrammar extends ParserBuilder {
- *       start() => ref(list).end();
- *       list() => ref(element).separatedBy(char(','), includeSeparators: false);
+ *     class ListGrammarDefinition extends GrammarDefinition {
+ *       start()   => ref(list).end();
+ *       list()    => ref(element) & char(',') & ref(list)
+ *                  | ref(element);
  *       element() => digit().plus().flatten();
  *     }
  *
- * Note that every production is a method. Productions refer each other thorugh
- * method references passed to the [ref] helper.
+ * Since this is plain Dart code, common refactorings such as renaming a production
+ * updates all references correctly. Also code navigation and code completion
+ * works as expected.
  *
- * Production actions can be attached in subclasses by simply overriding the
- * method of the superclass:
+ * To attach custom production actions you might want to further subclass your
+ * grammar definition and override overriding the necessary productions defined
+ * in the superclass:
  *
- *     class NumberListParser extends NumberListGrammar {
+ *     class ListParserDefinition extends ListGrammarDefinition {
  *       element() => super.element().map((value) => int.parse(value));
  *     }
  *
+ * Note that productions can be parametrized. Define such productions with
+ * positional arguments and reference to multiple instances by passing the arguments
+ * to [ref].
  */
 abstract class GrammarDefinition {
 
