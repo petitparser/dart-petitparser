@@ -127,7 +127,7 @@ abstract class Parser {
   Parser plusGreedy(Parser limit) => repeatGreedy(limit, 1, unbounded);
 
   /**
-   * Returns a parser that parses the receiver zero or more times until it
+   * Returns a parser that parses the receiver one or more times until it
    * reaches a [limit]. This is a lazy non-blind implementation of the
    * [Parser.plus] operator. The [limit] is not consumed.
    */
