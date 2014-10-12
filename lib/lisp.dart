@@ -18,8 +18,7 @@ part 'src/lisp/parser.dart';
 part 'src/lisp/standard.dart';
 
 /** The standard lisp parser definition. */
-final lispDefinition = new LispParserDefinition();
-final lispParser = lispDefinition.build();
+final lispParser = new LispParser();
 
 /** The evaluation function. */
 eval(Environment env, expr) {

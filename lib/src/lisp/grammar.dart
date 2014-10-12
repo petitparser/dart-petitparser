@@ -1,6 +1,13 @@
 part of lisp;
 
 /**
+ * LISP grammar.
+ */
+class LispGrammar extends GrammarParser {
+  LispGrammar() : super(new LispGrammarDefinition());
+}
+
+/**
  * LISP grammar definition.
  */
 class LispGrammarDefinition extends GrammarDefinition {
