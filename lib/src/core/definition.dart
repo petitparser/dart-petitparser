@@ -31,10 +31,19 @@ part of petitparser;
  *       element() => super.element().map((value) => int.parse(value));
  *     }
  *
- * Note that productions can be parametrized. Define such productions with
- * positional arguments and reference to multiple instances by passing the arguments
- * to [ref].
- */
+ * Note that productions can be parametrized. Define such productions with positional
+ * arguments and reference to multiple instances by passing the arguments to [ref].
+ *
+ * Consider extending the above grammar with a parametrized token production:
+ *
+ *     class TokenizedListGrammarDefinition extends GrammarDefinition {
+ *       start()   => ref(list).end();
+ *       list()    => ref(element) & ref(token, char(',')) & ref(list)
+ *                  | ref(element);
+ *       element() => ref(token, digit().plus());
+ *       token(p)  => p.token().trim();
+ *     }
+  */
 abstract class GrammarDefinition {
 
   /**
