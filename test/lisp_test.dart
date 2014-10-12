@@ -36,6 +36,7 @@ void main() {
     });
   });
   group('Parser', () {
+    var lispDefinition = new LispParserDefinition();
     var atom = lispDefinition.build(start: lispDefinition.atom);
     test('Name', () {
       var cell = atom.parse('foo').value;
