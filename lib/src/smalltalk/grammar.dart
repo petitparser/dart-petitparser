@@ -1,233 +1,229 @@
 part of smalltalk;
 
 /**
+ * Smalltalk grammar.
+ */
+class SmalltalkGrammar extends GrammarParser {
+  SmalltalkGrammar() : super(new SmalltalkGrammarDefinition());
+}
+
+/**
  * Smalltalk grammar definition.
  */
-class SmalltalkGrammar extends CompositeParser {
+class SmalltalkGrammarDefinition extends GrammarDefinition {
 
-  @override
-  void initialize() {
-    _whitespace();
-    _number();
-    _smalltalk();
-  }
-
-  void _whitespace() {
-    // the original implementation uses a handwritten parser to
-    // efficiently consume whitespace and comments
-    def('whitespace', whitespace()
-      .or(ref('comment')));
-    def('comment', char('"')
-      .seq(char('"').neg().star())
-      .seq(char('"')));
-  }
-
-  void _number() {
-    // the original implementation uses the hand written number
-    // parser of the system, this is the spec of the ANSI standard
-    def('number', char('-').optional()
-        .seq(ref('positiveNumber')));
-    def('positiveNumber', ref('scaledDecimal')
-        .or(ref('float'))
-        .or(ref('integer')));
-
-    def('integer', ref('radixInteger')
-        .or(ref('decimalInteger')));
-    def('decimalInteger', ref('digits'));
-    def('digits', digit().plus());
-    def('radixInteger', ref('radixSpecifier')
-        .seq(char('r'))
-        .seq(ref('radixDigits')));
-    def('radixSpecifier', ref('digits'));
-    def('radixDigits', pattern('0-9A-Z').plus());
-
-    def('float', ref('mantissa')
-        .seq(ref('exponentLetter')
-            .seq(ref('exponent'))
-            .optional()));
-    def('mantissa', ref('digits')
-        .seq(char('.'))
-        .seq(ref('digits')));
-    def('exponent', char('-')
-        .seq(ref('decimalInteger')));
-    def('exponentLetter', pattern('edq'));
-
-    def('scaledDecimal', ref('scaledMantissa')
-        .seq(char('s'))
-        .seq(ref('fractionalDigits').optional()));
-    def('scaledMantissa', ref('decimalInteger')
-        .or(ref('mantissa')));
-    def('fractionalDigits', ref('decimalInteger'));
-  }
-
-  Parser _token(input) {
-    var parser = input;
-    if (parser is String) {
-      parser = parser.length == 1 ? char(parser) : string(parser);
+  // the original implementation used a handwritten parser to
+  // build special token objects
+  token(input) {
+    if (input is String) {
+      input = input.length == 1 ? char(input) : string(input);
     }
-    return parser.token().trim(ref('whitespace'));
+    return input.token().trim(ref(whitespace));
   }
 
-  void _smalltalk() {
-    def('array', _token('{')
-        .seq(ref('expression').separatedBy(ref('periodToken'))
-          .seq(ref('periodToken').optional()).optional())
-        .seq(_token('}')));
-    def('arrayItem', ref('literal')
-        .or(ref('symbolLiteralArray'))
-        .or(ref('arrayLiteralArray'))
-        .or(ref('byteLiteralArray')));
-    def('arrayLiteral', _token('#(')
-        .seq(ref('arrayItem').star())
-        .seq(_token(')')));
-    def('arrayLiteralArray', _token('(')
-        .seq(ref('arrayItem').star())
-        .seq(_token(')')));
-    def('assignment', ref('variable')
-        .seq(ref('assignmentToken')));
-    def('assignmentToken', _token(':='));
-    def('binary', pattern('!%&*+,-/<=>?@\\|~').plus());
-    def('binaryExpression', ref('unaryExpression')
-        .seq(ref('binaryMessage').star()));
-    def('binaryMessage', ref('binaryToken')
-        .seq(ref('unaryExpression')));
-    def('binaryMethod', ref('binaryToken')
-        .seq(ref('variable')));
-    def('binaryPragma', ref('binaryToken')
-        .seq(ref('arrayItem')));
-    def('binaryToken', _token(ref('binary')));
-    def('block', _token('[')
-        .seq(ref('blockBody'))
-        .seq(_token(']')));
-    def('blockArgument', _token(':')
-        .seq(ref('variable')));
-    def('blockArguments', ref('blockArgumentsWith')
-        .or(ref('blockArgumentsWithout')));
-    def('blockArgumentsWith', ref('blockArgument').plus()
-        .seq(_token('|').or(_token(']').and())));
-    def('blockArgumentsWithout', epsilon());
-    def('blockBody', ref('blockArguments')
-        .seq(ref('sequence')));
-    def('byteLiteral', _token('#[')
-        .seq(ref('numberLiteral').star())
-        .seq(_token(']')));
-    def('byteLiteralArray', _token('[')
-        .seq(ref('numberLiteral').star())
-        .seq(_token(']')));
-    def('cascadeExpression', ref('keywordExpression')
-        .seq(ref('cascadeMessage').star()));
-    def('cascadeMessage', _token(';')
-        .seq(ref('message')));
-    def('char', char('\$').seq(any()));
-    def('charLiteral', ref('charToken'));
-    def('charToken', _token(ref('char')));
-    def('expression', ref('assignment').star()
-        .seq(ref('cascadeExpression')));
-    def('falseLiteral', ref('falseToken'));
-    def('falseToken', _token('false')
-        .seq(word().not()));
-    def('identifier', pattern('a-zA-Z_')
-        .seq(word().star()));
-    def('identifierToken', _token(ref('identifier')));
-    def('keyword', ref('identifier')
-        .seq(char(':')));
-    def('keywordExpression', ref('binaryExpression')
-        .seq(ref('keywordMessage').optional()));
-    def('keywordMessage', ref('keywordToken')
-        .seq(ref('binaryExpression')).plus());
-    def('keywordMethod', ref('keywordToken')
-        .seq(ref('variable')).plus());
-    def('keywordPragma', ref('keywordToken')
-        .seq(ref('arrayItem')).plus());
-    def('keywordToken', _token(ref('keyword')));
-    def('literal', ref('numberLiteral')
-        .or(ref('stringLiteral'))
-        .or(ref('charLiteral'))
-        .or(ref('arrayLiteral'))
-        .or(ref('byteLiteral'))
-        .or(ref('symbolLiteral'))
-        .or(ref('nilLiteral'))
-        .or(ref('trueLiteral'))
-        .or(ref('falseLiteral')));
-    def('message', ref('keywordMessage')
-        .or(ref('binaryMessage'))
-        .or(ref('unaryMessage')));
-    def('method', ref('methodDeclaration')
-        .seq(ref('methodSequence')));
-    def('methodDeclaration', ref('keywordMethod')
-        .or(ref('unaryMethod'))
-        .or(ref('binaryMethod')));
-    def('methodSequence', ref('periodToken').star()
-        .seq(ref('pragmas'))
-        .seq(ref('periodToken').star())
-        .seq(ref('temporaries'))
-        .seq(ref('periodToken').star())
-        .seq(ref('pragmas'))
-        .seq(ref('periodToken').star())
-        .seq(ref('statements')));
-    def('multiword', ref('keyword').plus());
-    def('nilLiteral', ref('nilToken'));
-    def('nilToken', _token('nil')
-        .seq(word().not()));
-    def('numberLiteral', ref('numberToken'));
-    def('numberToken', _token(ref('number')));
-    def('parens', _token('(')
-        .seq(ref('expression'))
-        .seq(_token(')')));
-    def('period', char('.'));
-    def('periodToken', _token(ref('period')));
-    def('pragma', _token('<')
-        .seq(ref('pragmaMessage'))
-        .seq(_token('>')));
-    def('pragmaMessage', ref('keywordPragma')
-        .or(ref('unaryPragma'))
-        .or(ref('binaryPragma')));
-    def('pragmas', ref('pragma').star());
-    def('primary', ref('literal')
-        .or(ref('variable'))
-        .or(ref('block'))
-        .or(ref('parens'))
-        .or(ref('array')));
-    def('return', _token('^')
-        .seq(ref('expression')));
-    def('sequence', ref('temporaries')
-        .seq(ref('periodToken').star())
-        .seq(ref('statements')));
-    def('start', ref('startMethod'));
-    def('startMethod', ref('method').end());
-    def('statements', ref('expression')
-        .seq(ref('periodToken').plus().seq(ref('statements'))
-            .or(ref('periodToken').star()))
-            .or(ref('return').seq(ref('periodToken').star()))
-            .or(ref('periodToken').star()));
-    def('string', char('\'')
-        .seq(string('\'\'').or(pattern('^\'')).star())
-        .seq(char('\'')));
-    def('stringLiteral', ref('stringToken'));
-    def('stringToken', _token(ref('string')));
-    def('symbol', ref('unary')
-        .or(ref('binary'))
-        .or(ref('multiword'))
-        .or(ref('string')));
-    def('symbolLiteral', _token('#').plus()
-        .seq(_token(ref('symbol'))));
-    def('symbolLiteralArray', _token(ref('symbol')));
-    def('temporaries', _token('|')
-        .seq(ref('variable').star())
-        .seq(_token('|'))
-            .optional());
-    def('trueLiteral', ref('trueToken'));
-    def('trueToken', _token('true')
-        .seq(word().not()));
-    def('unary', ref('identifier')
-        .seq(char(':').not()));
-    def('unaryExpression', ref('primary')
-        .seq(ref('unaryMessage').star()));
-    def('unaryMessage', ref('unaryToken'));
-    def('unaryMethod', ref('identifierToken'));
-    def('unaryPragma', ref('identifierToken'));
-    def('unaryToken', _token(ref('unary')));
-    def('variable', ref('identifierToken'));
-  }
+  // the original implementation uses a handwritten parser to
+  // efficiently consume whitespace and comments
+  whitespace() => whitespace()
+    .or(ref(comment));
+  comment() => char('"')
+    .seq(char('"').neg().star())
+    .seq(char('"'));
+
+  // the original implementation uses the hand written number
+  // parser of the system, this is the spec of the ANSI standard
+  number() => char('-').optional()
+      .seq(ref(positiveNumber));
+  positiveNumber() => ref(scaledDecimal)
+      .or(ref(float))
+      .or(ref(integer));
+
+  integer() => ref(radixInteger)
+      .or(ref(decimalInteger));
+  decimalInteger() => ref(digits);
+  digits() => digit().plus();
+  radixInteger() => ref(radixSpecifier)
+      .seq(char('r'))
+      .seq(ref(radixDigits));
+  radixSpecifier() => ref(digits);
+  radixDigits() => pattern('0-9A-Z').plus();
+
+  float() => ref(mantissa)
+      .seq(ref(exponentLetter)
+          .seq(ref(exponent))
+          .optional());
+  mantissa() => ref(digits)
+      .seq(char('.'))
+      .seq(ref(digits));
+  exponent() => char('-')
+      .seq(ref(decimalInteger));
+  exponentLetter() => pattern('edq');
+
+  scaledDecimal() => ref(scaledMantissa)
+      .seq(char('s'))
+      .seq(ref(fractionalDigits).optional());
+  scaledMantissa() => ref(decimalInteger)
+      .or(ref(mantissa));
+  fractionalDigits() => ref(decimalInteger);
+
+  // the original smalltalk grammar
+  array() => ref(token, '{')
+      .seq(ref(expression).separatedBy(ref(periodToken))
+        .seq(ref(periodToken).optional()).optional())
+      .seq(ref(token, '}'));
+  arrayItem() => ref(literal)
+      .or(ref(symbolLiteralArray))
+      .or(ref(arrayLiteralArray))
+      .or(ref(byteLiteralArray));
+  arrayLiteral() => ref(token, '#(')
+      .seq(ref(arrayItem).star())
+      .seq(ref(token, ')'));
+  arrayLiteralArray() => ref(token, '(')
+      .seq(ref(arrayItem).star())
+      .seq(ref(token, ')'));
+  assignment() => ref(variable)
+      .seq(ref(assignmentToken));
+  assignmentToken() => ref(token, ':=');
+  binary() => pattern('!%&*+,-/<=>?@\\|~').plus();
+  binaryExpression() => ref(unaryExpression)
+      .seq(ref(binaryMessage).star());
+  binaryMessage() => ref(binaryToken)
+      .seq(ref(unaryExpression));
+  binaryMethod() => ref(binaryToken)
+      .seq(ref(variable));
+  binaryPragma() => ref(binaryToken)
+      .seq(ref(arrayItem));
+  binaryToken() => ref(token, ref(binary));
+  block() => ref(token, '[')
+      .seq(ref(blockBody))
+      .seq(ref(token, ']'));
+  blockArgument() => ref(token, ':')
+      .seq(ref(variable));
+  blockArguments() => ref(blockArgumentsWith)
+      .or(ref(blockArgumentsWithout));
+  blockArgumentsWith() => ref(blockArgument).plus()
+      .seq(ref(token, '|').or(ref(token, ']').and()));
+  blockArgumentsWithout() => epsilon();
+  blockBody() => ref(blockArguments)
+      .seq(ref(sequence));
+  byteLiteral() => ref(token, '#[')
+      .seq(ref(numberLiteral).star())
+      .seq(ref(token, ']'));
+  byteLiteralArray() => ref(token, '[')
+      .seq(ref(numberLiteral).star())
+      .seq(ref(token, ']'));
+  cascadeExpression() => ref(keywordExpression)
+      .seq(ref(cascadeMessage).star());
+  cascadeMessage() => ref(token, ';')
+      .seq(ref(message));
+  character() => char('\$').seq(any());
+  characterLiteral() => ref(characterToken);
+  characterToken() => ref(token, ref(character));
+  expression() => ref(assignment).star()
+      .seq(ref(cascadeExpression));
+  falseLiteral() => ref(falseToken);
+  falseToken() => ref(token, 'false')
+      .seq(word().not());
+  identifier() => pattern('a-zA-Z_')
+      .seq(word().star());
+  identifierToken() => ref(token, ref(identifier));
+  keyword() => ref(identifier)
+      .seq(char(':'));
+  keywordExpression() => ref(binaryExpression)
+      .seq(ref(keywordMessage).optional());
+  keywordMessage() => ref(keywordToken)
+      .seq(ref(binaryExpression)).plus();
+  keywordMethod() => ref(keywordToken)
+      .seq(ref(variable)).plus();
+  keywordPragma() => ref(keywordToken)
+      .seq(ref(arrayItem)).plus();
+  keywordToken() => ref(token, ref(keyword));
+  literal() => ref(numberLiteral)
+      .or(ref(stringLiteral))
+      .or(ref(characterLiteral))
+      .or(ref(arrayLiteral))
+      .or(ref(byteLiteral))
+      .or(ref(symbolLiteral))
+      .or(ref(nilLiteral))
+      .or(ref(trueLiteral))
+      .or(ref(falseLiteral));
+  message() => ref(keywordMessage)
+      .or(ref(binaryMessage))
+      .or(ref(unaryMessage));
+  method() => ref(methodDeclaration)
+      .seq(ref(methodSequence));
+  methodDeclaration() => ref(keywordMethod)
+      .or(ref(unaryMethod))
+      .or(ref(binaryMethod));
+  methodSequence() => ref(periodToken).star()
+      .seq(ref(pragmas))
+      .seq(ref(periodToken).star())
+      .seq(ref(temporaries))
+      .seq(ref(periodToken).star())
+      .seq(ref(pragmas))
+      .seq(ref(periodToken).star())
+      .seq(ref(statements));
+  multiword() => ref(keyword).plus();
+  nilLiteral() => ref(nilToken);
+  nilToken() => ref(token, 'nil')
+      .seq(word().not());
+  numberLiteral() => ref(numberToken);
+  numberToken() => ref(token, ref(number));
+  parens() => ref(token, '(')
+      .seq(ref(expression))
+      .seq(ref(token, ')'));
+  period() => char('.');
+  periodToken() => ref(token, ref(period));
+  pragma() => ref(token, '<')
+      .seq(ref(pragmaMessage))
+      .seq(ref(token, '>'));
+  pragmaMessage() => ref(keywordPragma)
+      .or(ref(unaryPragma))
+      .or(ref(binaryPragma));
+  pragmas() => ref(pragma).star();
+  primary() => ref(literal)
+      .or(ref(variable))
+      .or(ref(block))
+      .or(ref(parens))
+      .or(ref(array));
+  answer() => ref(token, '^')
+      .seq(ref(expression));
+  sequence() => ref(temporaries)
+      .seq(ref(periodToken).star())
+      .seq(ref(statements));
+  start() => ref(startMethod);
+  startMethod() => ref(method).end();
+  statements() => ref(expression)
+      .seq(ref(periodToken).plus().seq(ref(statements))
+          .or(ref(periodToken).star()))
+          .or(ref(answer).seq(ref(periodToken).star()))
+          .or(ref(periodToken).star());
+  string_() => char('\'')
+      .seq(string('\'\'').or(pattern('^\'')).star())
+      .seq(char('\''));
+  stringLiteral() => ref(stringToken);
+  stringToken() => ref(token, ref(string_));
+  symbol() => ref(unary)
+      .or(ref(binary))
+      .or(ref(multiword))
+      .or(ref(string_));
+  symbolLiteral() => ref(token, '#').plus()
+      .seq(ref(token, ref(symbol)));
+  symbolLiteralArray() => ref(token, ref(symbol));
+  temporaries() => ref(token, '|')
+      .seq(ref(variable).star())
+      .seq(ref(token, '|'))
+          .optional();
+  trueLiteral() => ref(trueToken);
+  trueToken() => ref(token, 'true')
+      .seq(word().not());
+  unary() => ref(identifier)
+      .seq(char(':').not());
+  unaryExpression() => ref(primary)
+      .seq(ref(unaryMessage).star());
+  unaryMessage() => ref(unaryToken);
+  unaryMethod() => ref(identifierToken);
+  unaryPragma() => ref(identifierToken);
+  unaryToken() => ref(token, ref(unary));
+  variable() => ref(identifierToken);
 
 }

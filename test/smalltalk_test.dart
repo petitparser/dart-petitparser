@@ -4,418 +4,418 @@ import 'package:unittest/unittest.dart';
 
 import 'package:petitparser/smalltalk.dart';
 
-var smalltalk = new SmalltalkGrammar();
+var definition = new SmalltalkGrammarDefinition();
 
-dynamic validate(String source, String production) {
-  var parser = smalltalk[production].end();
+dynamic validate(String source, Function production) {
+  var parser = definition.build(start: production).end();
   var result = parser.parse(source);
   return result.value;
 }
 
 void main() {
   test('testArray1', () {
-    return validate('{}', 'array');
+    return validate('{}', definition.array);
   });
   test('testArray2', () {
-    return validate('{self foo}', 'array');
+    return validate('{self foo}', definition.array);
   });
   test('testArray3', () {
-    return validate('{self foo. self bar}', 'array');
+    return validate('{self foo. self bar}', definition.array);
   });
   test('testArray4', () {
-    return validate('{self foo. self bar.}', 'array');
+    return validate('{self foo. self bar.}', definition.array);
   });
   test('testAssignment1', () {
-    return validate('1', 'expression');
+    return validate('1', definition.expression);
   });
   test('testAssignment2', () {
-    return validate('a := 1', 'expression');
+    return validate('a := 1', definition.expression);
   });
   test('testAssignment3', () {
-    return validate('a := b := 1', 'expression');
+    return validate('a := b := 1', definition.expression);
   });
   test('testAssignment6', () {
-    return validate('a := (b := c)', 'expression');
+    return validate('a := (b := c)', definition.expression);
   });
   test('testComment1', () {
-    return validate('1"one"+2', 'expression');
+    return validate('1"one"+2', definition.expression);
   });
   test('testComment2', () {
-    return validate('1 "one" +2', 'expression');
+    return validate('1 "one" +2', definition.expression);
   });
   test('testComment3', () {
-    return validate('1"one"+"two"2', 'expression');
+    return validate('1"one"+"two"2', definition.expression);
   });
   test('testComment4', () {
-    return validate('1"one""two"+2', 'expression');
+    return validate('1"one""two"+2', definition.expression);
   });
   test('testComment5', () {
-    return validate('1"one" "two"+2', 'expression');
+    return validate('1"one" "two"+2', definition.expression);
   });
   test('testMethod1', () {
-    return validate('negated ^ 0 - self', 'method');
+    return validate('negated ^ 0 - self', definition.method);
   });
   test('testMethod2', () {
-    return validate('   negated ^ 0 - self', 'method');
+    return validate('   negated ^ 0 - self', definition.method);
   });
   test('testMethod3', () {
-    return validate(' negated ^ 0 - self  ', 'method');
+    return validate(' negated ^ 0 - self  ', definition.method);
   });
   test('testSequence1', () {
-    return validate('| a | 1 . 2', 'sequence');
+    return validate('| a | 1 . 2', definition.sequence);
   });
   test('testStatements1', () {
-    return validate('1', 'sequence');
+    return validate('1', definition.sequence);
   });
   test('testStatements2', () {
-    return validate('1 . 2', 'sequence');
+    return validate('1 . 2', definition.sequence);
   });
   test('testStatements3', () {
-    return validate('1 . 2 . 3', 'sequence');
+    return validate('1 . 2 . 3', definition.sequence);
   });
   test('testStatements4', () {
-    return validate('1 . 2 . 3 .', 'sequence');
+    return validate('1 . 2 . 3 .', definition.sequence);
   });
   test('testStatements5', () {
-    return validate('1 . . 2', 'sequence');
+    return validate('1 . . 2', definition.sequence);
   });
   test('testStatements6', () {
-    return validate('1. 2', 'sequence');
+    return validate('1. 2', definition.sequence);
   });
   test('testStatements7', () {
-    return validate('. 1', 'sequence');
+    return validate('. 1', definition.sequence);
   });
   test('testStatements8', () {
-    return validate('.1', 'sequence');
+    return validate('.1', definition.sequence);
   });
   test('testTemporaries1', () {
-    return validate('| a |', 'sequence');
+    return validate('| a |', definition.sequence);
   });
   test('testTemporaries2', () {
-    return validate('| a b |', 'sequence');
+    return validate('| a b |', definition.sequence);
   });
   test('testTemporaries3', () {
-    return validate('| a b c |', 'sequence');
+    return validate('| a b c |', definition.sequence);
   });
   test('testVariable1', () {
-    return validate('trueBinding', 'primary');
+    return validate('trueBinding', definition.primary);
   });
   test('testVariable2', () {
-    return validate('falseBinding', 'primary');
+    return validate('falseBinding', definition.primary);
   });
   test('testVariable3', () {
-    return validate('nilly', 'primary');
+    return validate('nilly', definition.primary);
   });
   test('testVariable4', () {
-    return validate('selfish', 'primary');
+    return validate('selfish', definition.primary);
   });
   test('testVariable5', () {
-    return validate('supernanny', 'primary');
+    return validate('supernanny', definition.primary);
   });
   test('testVariable6', () {
-    return validate('super_nanny', 'primary');
+    return validate('super_nanny', definition.primary);
   });
   test('testVariable7', () {
-    return validate('__gen_var_123__', 'primary');
+    return validate('__gen_var_123__', definition.primary);
   });
   test('testArgumentsBlock1', () {
-    return validate('[ :a | ]', 'block');
+    return validate('[ :a | ]', definition.block);
   });
   test('testArgumentsBlock2', () {
-    return validate('[ :a :b | ]', 'block');
+    return validate('[ :a :b | ]', definition.block);
   });
   test('testArgumentsBlock3', () {
-    return validate('[ :a :b :c | ]', 'block');
+    return validate('[ :a :b :c | ]', definition.block);
   });
   test('testComplexBlock1', () {
-    return validate('[ :a | | b | c ]', 'block');
+    return validate('[ :a | | b | c ]', definition.block);
   });
   test('testComplexBlock2', () {
-    return validate('[:a||b|c]', 'block');
+    return validate('[:a||b|c]', definition.block);
   });
   test('testSimpleBlock1', () {
-    return validate('[ ]', 'block');
+    return validate('[ ]', definition.block);
   });
   test('testSimpleBlock2', () {
-    return validate('[ nil ]', 'block');
+    return validate('[ nil ]', definition.block);
   });
   test('testSimpleBlock3', () {
-    return validate('[ :a ]', 'block');
+    return validate('[ :a ]', definition.block);
   });
   test('testStatementBlock1', () {
-    return validate('[ nil ]', 'block');
+    return validate('[ nil ]', definition.block);
   });
   test('testStatementBlock2', () {
-    return validate('[ | a | nil ]', 'block');
+    return validate('[ | a | nil ]', definition.block);
   });
   test('testStatementBlock3', () {
-    return validate('[ | a b | nil ]', 'block');
+    return validate('[ | a b | nil ]', definition.block);
   });
   test('testArrayLiteral1', () {
-    return validate('#()', 'arrayLiteral');
+    return validate('#()', definition.arrayLiteral);
   });
   test('testArrayLiteral10', () {
-    return validate('#((1 2) #(1 2 3))', 'arrayLiteral');
+    return validate('#((1 2) #(1 2 3))', definition.arrayLiteral);
   });
   test('testArrayLiteral11', () {
-    return validate('#([1 2] #[1 2 3])', 'arrayLiteral');
+    return validate('#([1 2] #[1 2 3])', definition.arrayLiteral);
   });
   test('testArrayLiteral2', () {
-    return validate('#(1)', 'arrayLiteral');
+    return validate('#(1)', definition.arrayLiteral);
   });
   test('testArrayLiteral3', () {
-    return validate('#(1 2)', 'arrayLiteral');
+    return validate('#(1 2)', definition.arrayLiteral);
   });
   test('testArrayLiteral4', () {
-    return validate('#(true false nil)', 'arrayLiteral');
+    return validate('#(true false nil)', definition.arrayLiteral);
   });
   test('testArrayLiteral5', () {
-    return validate('#(\$a)', 'arrayLiteral');
+    return validate('#(\$a)', definition.arrayLiteral);
   });
   test('testArrayLiteral6', () {
-    return validate('#(1.2)', 'arrayLiteral');
+    return validate('#(1.2)', definition.arrayLiteral);
   });
   test('testArrayLiteral7', () {
-    return validate('#(size #at: at:put: #''=='')', 'arrayLiteral');
+    return validate('#(size #at: at:put: #''=='')', definition.arrayLiteral);
   });
   test('testArrayLiteral8', () {
-    return validate('#(''baz'')', 'arrayLiteral');
+    return validate('#(''baz'')', definition.arrayLiteral);
   });
   test('testArrayLiteral9', () {
-    return validate('#((1) 2)', 'arrayLiteral');
+    return validate('#((1) 2)', definition.arrayLiteral);
   });
   test('testByteLiteral1', () {
-    return validate('#[]', 'byteLiteral');
+    return validate('#[]', definition.byteLiteral);
   });
   test('testByteLiteral2', () {
-    return validate('#[0]', 'byteLiteral');
+    return validate('#[0]', definition.byteLiteral);
   });
   test('testByteLiteral3', () {
-    return validate('#[255]', 'byteLiteral');
+    return validate('#[255]', definition.byteLiteral);
   });
   test('testByteLiteral4', () {
-    return validate('#[ 1 2 ]', 'byteLiteral');
+    return validate('#[ 1 2 ]', definition.byteLiteral);
   });
   test('testByteLiteral5', () {
-    return validate('#[ 2r1010 8r77 16rFF ]', 'byteLiteral');
+    return validate('#[ 2r1010 8r77 16rFF ]', definition.byteLiteral);
   });
   test('testCharLiteral1', () {
-    return validate('\$a', 'charLiteral');
+    return validate('\$a', definition.charLiteral);
   });
   test('testCharLiteral2', () {
-    return validate('\$ ', 'charLiteral');
+    return validate('\$ ', definition.charLiteral);
   });
   test('testCharLiteral3', () {
-    return validate('\$\$', 'charLiteral');
+    return validate('\$\$', definition.charLiteral);
   });
   test('testNumberLiteral1', () {
-    return validate('0', 'numberLiteral');
+    return validate('0', definition.numberLiteral);
   });
   test('testNumberLiteral10', () {
-    return validate('10r10', 'numberLiteral');
+    return validate('10r10', definition.numberLiteral);
   });
   test('testNumberLiteral11', () {
-    return validate('8r777', 'numberLiteral');
+    return validate('8r777', definition.numberLiteral);
   });
   test('testNumberLiteral12', () {
-    return validate('16rAF', 'numberLiteral');
+    return validate('16rAF', definition.numberLiteral);
   });
   test('testNumberLiteral2', () {
-    return validate('0.1', 'numberLiteral');
+    return validate('0.1', definition.numberLiteral);
   });
   test('testNumberLiteral3', () {
-    return validate('123', 'numberLiteral');
+    return validate('123', definition.numberLiteral);
   });
   test('testNumberLiteral4', () {
-    return validate('123.456', 'numberLiteral');
+    return validate('123.456', definition.numberLiteral);
   });
   test('testNumberLiteral5', () {
-    return validate('-0', 'numberLiteral');
+    return validate('-0', definition.numberLiteral);
   });
   test('testNumberLiteral6', () {
-    return validate('-0.1', 'numberLiteral');
+    return validate('-0.1', definition.numberLiteral);
   });
   test('testNumberLiteral7', () {
-    return validate('-123', 'numberLiteral');
+    return validate('-123', definition.numberLiteral);
   });
   test('testNumberLiteral8', () {
-    return validate('-123', 'numberLiteral');
+    return validate('-123', definition.numberLiteral);
   });
   test('testNumberLiteral9', () {
-    return validate('-123.456', 'numberLiteral');
+    return validate('-123.456', definition.numberLiteral);
   });
   test('testSpecialLiteral1', () {
-    return validate('true', 'trueLiteral');
+    return validate('true', definition.trueLiteral);
   });
   test('testSpecialLiteral2', () {
-    return validate('false', 'falseLiteral');
+    return validate('false', definition.falseLiteral);
   });
   test('testSpecialLiteral3', () {
-    return validate('nil', 'nilLiteral');
+    return validate('nil', definition.nilLiteral);
   });
   test('testStringLiteral1', () {
-    return validate('\'\'', 'stringLiteral');
+    return validate('\'\'', definition.stringLiteral);
   });
   test('testStringLiteral2', () {
-    return validate('\'ab\'', 'stringLiteral');
+    return validate('\'ab\'', definition.stringLiteral);
   });
   test('testStringLiteral3', () {
-    return validate('\'ab\'\'cd\'', 'stringLiteral');
+    return validate('\'ab\'\'cd\'', definition.stringLiteral);
   });
   test('testSymbolLiteral1', () {
-    return validate('#foo', 'symbolLiteral');
+    return validate('#foo', definition.symbolLiteral);
   });
   test('testSymbolLiteral2', () {
-    return validate('#+', 'symbolLiteral');
+    return validate('#+', definition.symbolLiteral);
   });
   test('testSymbolLiteral3', () {
-    return validate('#key:', 'symbolLiteral');
+    return validate('#key:', definition.symbolLiteral);
   });
   test('testSymbolLiteral4', () {
-    return validate('#key:value:', 'symbolLiteral');
+    return validate('#key:value:', definition.symbolLiteral);
   });
   test('testSymbolLiteral5', () {
-    return validate('#\'testing-result\'', 'symbolLiteral');
+    return validate('#\'testing-result\'', definition.symbolLiteral);
   });
   test('testSymbolLiteral6', () {
-    return validate('#__gen__binding', 'symbolLiteral');
+    return validate('#__gen__binding', definition.symbolLiteral);
   });
   test('testSymbolLiteral7', () {
-    return validate('# fucker', 'symbolLiteral');
+    return validate('# fucker', definition.symbolLiteral);
   });
   test('testSymbolLiteral8', () {
-    return validate('##fucker', 'symbolLiteral');
+    return validate('##fucker', definition.symbolLiteral);
   });
   test('testSymbolLiteral9', () {
-    return validate('## fucker', 'symbolLiteral');
+    return validate('## fucker', definition.symbolLiteral);
   });
   test('testBinaryExpression1', () {
-    return validate('1 + 2', 'expression');
+    return validate('1 + 2', definition.expression);
   });
   test('testBinaryExpression2', () {
-    return validate('1 + 2 + 3', 'expression');
+    return validate('1 + 2 + 3', definition.expression);
   });
   test('testBinaryExpression3', () {
-    return validate('1 // 2', 'expression');
+    return validate('1 // 2', definition.expression);
   });
   test('testBinaryExpression4', () {
-    return validate('1 -- 2', 'expression');
+    return validate('1 -- 2', definition.expression);
   });
   test('testBinaryExpression5', () {
-    return validate('1 ==> 2', 'expression');
+    return validate('1 ==> 2', definition.expression);
   });
   test('testBinaryMethod1', () {
-    return validate('+ a', 'method');
+    return validate('+ a', definition.method);
   });
   test('testBinaryMethod2', () {
-    return validate('+ a | b |', 'method');
+    return validate('+ a | b |', definition.method);
   });
   test('testBinaryMethod3', () {
-    return validate('+ a b', 'method');
+    return validate('+ a b', definition.method);
   });
   test('testBinaryMethod4', () {
-    return validate('+ a | b | c', 'method');
+    return validate('+ a | b | c', definition.method);
   });
   test('testBinaryMethod5', () {
-    return validate('-- a', 'method');
+    return validate('-- a', definition.method);
   });
   test('testCascadeExpression1', () {
-    return validate('1 abs; negated', 'expression');
+    return validate('1 abs; negated', definition.expression);
   });
   test('testCascadeExpression2', () {
-    return validate('1 abs negated; raisedTo: 12; negated', 'expression');
+    return validate('1 abs negated; raisedTo: 12; negated', definition.expression);
   });
   test('testCascadeExpression3', () {
-    return validate('1 + 2; - 3', 'expression');
+    return validate('1 + 2; - 3', definition.expression);
   });
   test('testKeywordExpression1', () {
-    return validate('1 to: 2', 'expression');
+    return validate('1 to: 2', definition.expression);
   });
   test('testKeywordExpression2', () {
-    return validate('1 to: 2 by: 3', 'expression');
+    return validate('1 to: 2 by: 3', definition.expression);
   });
   test('testKeywordExpression3', () {
-    return validate('1 to: 2 by: 3 do: 4', 'expression');
+    return validate('1 to: 2 by: 3 do: 4', definition.expression);
   });
   test('testKeywordMethod1', () {
-    return validate('to: a', 'method');
+    return validate('to: a', definition.method);
   });
   test('testKeywordMethod2', () {
-    return validate('to: a do: b | c |', 'method');
+    return validate('to: a do: b | c |', definition.method);
   });
   test('testKeywordMethod3', () {
-    return validate('to: a do: b by: c d', 'method');
+    return validate('to: a do: b by: c d', definition.method);
   });
   test('testKeywordMethod4', () {
-    return validate('to: a do: b by: c | d | e', 'method');
+    return validate('to: a do: b by: c | d | e', definition.method);
   });
   test('testUnaryExpression1', () {
-    return validate('1 abs', 'expression');
+    return validate('1 abs', definition.expression);
   });
   test('testUnaryExpression2', () {
-    return validate('1 abs negated', 'expression');
+    return validate('1 abs negated', definition.expression);
   });
   test('testUnaryMethod1', () {
-    return validate('abs', 'method');
+    return validate('abs', definition.method);
   });
   test('testUnaryMethod2', () {
-    return validate('abs | a |', 'method');
+    return validate('abs | a |', definition.method);
   });
   test('testUnaryMethod3', () {
-    return validate('abs a', 'method');
+    return validate('abs a', definition.method);
   });
   test('testUnaryMethod4', () {
-    return validate('abs | a | b', 'method');
+    return validate('abs | a | b', definition.method);
   });
   test('testUnaryMethod5', () {
-    return validate('abs | a |', 'method');
+    return validate('abs | a |', definition.method);
   });
   test('testPragma1', () {
-    return validate('method <foo>', 'method');
+    return validate('method <foo>', definition.method);
   });
   test('testPragma10', () {
-    return validate('method <foo: bar>', 'method');
+    return validate('method <foo: bar>', definition.method);
   });
   test('testPragma11', () {
-    return validate('method <foo: true>', 'method');
+    return validate('method <foo: true>', definition.method);
   });
   test('testPragma12', () {
-    return validate('method <foo: false>', 'method');
+    return validate('method <foo: false>', definition.method);
   });
   test('testPragma13', () {
-    return validate('method <foo: nil>', 'method');
+    return validate('method <foo: nil>', definition.method);
   });
   test('testPragma14', () {
-    return validate('method <foo: ()>', 'method');
+    return validate('method <foo: ()>', definition.method);
   });
   test('testPragma15', () {
-    return validate('method <foo: #()>', 'method');
+    return validate('method <foo: #()>', definition.method);
   });
   test('testPragma16', () {
-    return validate('method < + 1 >', 'method');
+    return validate('method < + 1 >', definition.method);
   });
   test('testPragma2', () {
-    return validate('method <foo> <bar>', 'method');
+    return validate('method <foo> <bar>', definition.method);
   });
   test('testPragma3', () {
-    return validate('method | a | <foo>', 'method');
+    return validate('method | a | <foo>', definition.method);
   });
   test('testPragma4', () {
-    return validate('method <foo> | a |', 'method');
+    return validate('method <foo> | a |', definition.method);
   });
   test('testPragma5', () {
-    return validate('method <foo> | a | <bar>', 'method');
+    return validate('method <foo> | a | <bar>', definition.method);
   });
   test('testPragma6', () {
-    return validate('method <foo: 1>', 'method');
+    return validate('method <foo: 1>', definition.method);
   });
   test('testPragma7', () {
-    return validate('method <foo: 1.2>', 'method');
+    return validate('method <foo: 1.2>', definition.method);
   });
   test('testPragma8', () {
-    return validate('method <foo: ''bar''>', 'method');
+    return validate('method <foo: ''bar''>', definition.method);
   });
   test('testPragma9', () {
-    return validate('method <foo: #''bar''>', 'method');
+    return validate('method <foo: #''bar''>', definition.method);
   });
 }
