@@ -60,7 +60,7 @@ abstract class GrammarDefinition {
     var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
-    return new _ReferenceParser(function, arguments);
+    return new _Reference(function, arguments);
   }
 
   /**
@@ -70,48 +70,60 @@ abstract class GrammarDefinition {
    * the grammar. The optional [arguments] list parametrizes the called production.
    */
   Parser build({Function start: null, List arguments: const []}) {
-    return _resolve(new _ReferenceParser(start != null ? start : this.start, arguments));
+    return _resolve(new _Reference(start != null ? start : this.start, arguments));
   }
 
   /**
-   * Internal helper to resolve all production references reachable from the
-   * provided [reference].
+   * Internal helper to de-reference a [_ReferenceParser] to its actual parser
+   * instance. Automatically detects sequences of references and collapses them
+   * when necessary. Throws an exception if a recurisive definition is detected.
    */
-  Parser _resolve(_ReferenceParser reference) {
-    Map<_ReferenceParser, Parser> mapping = new Map();
-    Parser _dereference(_ReferenceParser reference) {
-      var resolved = mapping[reference];
-      if (resolved == null) {
-        resolved = reference.resolve();
-        if (resolved is _ReferenceParser) {
-          if (resolved == reference) {
-            throw new StateError('Production is referring to itself: ${reference.function}');
-          } else {
-            resolved = _resolve(resolved);
+
+
+  /**
+   * Internal helper to resolve a complete parser graph.
+   */
+  Parser _resolve(_Reference reference) {
+    var mapping = new Map();
+
+    Parser _dereference(_Reference reference) {
+      var parser = mapping[reference];
+      if (parser == null) {
+        var references = [reference];
+        parser = reference.resolve();
+        while (parser is _Reference) {
+          if (references.contains(parser)) {
+            throw new StateError('Recursive references detected: $references');
           }
+          references.add(parser);
+          parser = parser.resolve();
         }
-        mapping[reference] = resolved;
+        for (var each in references) {
+          mapping[each] = parser;
+        }
       }
-      return resolved;
+      return parser;
     }
-    Parser result = _dereference(reference);
-    List<Parser> todo = new List.from([result]);
-    Set<Parser> seen = new Set.from(todo);
+
+    var todo = [_dereference(reference)];
+    var seen = new Set.from(todo);
+
     while (todo.isNotEmpty) {
       var parent = todo.removeLast();
       for (var child in parent.children) {
-        if (child is _ReferenceParser) {
-          var resolved = _dereference(child);
-          parent.replace(child, resolved);
-          child = resolved;
+        if (child is _Reference) {
+          var referenced = _dereference(child);
+          parent.replace(child, referenced);
+          child = referenced;
         }
         if (!seen.contains(child)) {
-          todo.add(child);
           seen.add(child);
+          todo.add(child);
         }
       }
     }
-    return result;
+
+    return mapping[reference];
   }
 
 }
@@ -120,18 +132,18 @@ class GrammarParser extends DelegateParser {
   GrammarParser(GrammarDefinition definition) : super(definition.build());
 }
 
-class _ReferenceParser extends Parser {
+class _Reference extends Parser {
 
   final Function function;
   final List arguments;
 
-  _ReferenceParser(this.function, this.arguments);
+  _Reference(this.function, this.arguments);
 
   Parser resolve() => Function.apply(function, arguments);
 
   @override
   bool operator ==(other) {
-    if (other is! _ReferenceParser ||
+    if (other is! _Reference ||
         other.function != function ||
         other.arguments.length != arguments.length) {
       return false;

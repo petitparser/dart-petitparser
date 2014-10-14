@@ -43,6 +43,20 @@ class TokenizedListGrammarDefinition extends GrammarDefinition {
   token(p)  => p.flatten().trim();
 }
 
+class BuggedGrammerDefintion extends GrammarDefinition {
+  start() => epsilon();
+
+  directRecursion1() => ref(directRecursion1);
+
+  indirectRecursion1() => ref(indirectRecursion2);
+  indirectRecursion2() => ref(indirectRecursion3);
+  indirectRecursion3() => ref(indirectRecursion1);
+
+  delegation1() => ref(delegation2);
+  delegation2() => ref(delegation3);
+  delegation3() => epsilon();
+}
+
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
   PluggableCompositeParser(this._function) : super();
@@ -920,6 +934,7 @@ main() {
     var grammarDefinition = new ListGrammarDefinition();
     var parserDefinition = new ListParserDefinition();
     var tokenDefinition = new TokenizedListGrammarDefinition();
+    var buggedDefinition = new BuggedGrammerDefintion();
     test('reference without parameters', () {
       var firstReference = grammarDefinition.ref(grammarDefinition.start);
       var secondReference = grammarDefinition.ref(grammarDefinition.start);
@@ -958,6 +973,33 @@ main() {
       var parser = tokenDefinition.build();
       expectSuccess(parser, '1, 2', ['1', ',', '2']);
       expectSuccess(parser, '1, 2, 3', ['1', ',', ['2', ',', '3']]);
+    });
+    test('direct recursion', () {
+      expect(
+          () => buggedDefinition.build(start: buggedDefinition.directRecursion1),
+          throwsStateError);
+    });
+    test('indirect recursion', () {
+      expect(
+          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion1),
+          throwsStateError);
+      expect(
+          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion2),
+          throwsStateError);
+      expect(
+          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion3),
+          throwsStateError);
+    });
+    test('delegation', () {
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation1) is EpsilonParser,
+          isTrue);
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation2) is EpsilonParser,
+          isTrue);
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation3) is EpsilonParser,
+          isTrue);
     });
   });
   group('composite', () {
