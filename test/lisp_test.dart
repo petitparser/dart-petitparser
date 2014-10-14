@@ -36,8 +36,8 @@ void main() {
     });
   });
   group('Parser', () {
-    var lispDefinition = new LispParserDefinition();
-    var atom = lispDefinition.build(start: lispDefinition.atom);
+    var definition = new LispParserDefinition();
+    var atom = definition.build(start: definition.atom);
     test('Name', () {
       var cell = atom.parse('foo').value;
       expect(cell, new isInstanceOf<Name>());
