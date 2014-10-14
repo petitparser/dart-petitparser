@@ -200,13 +200,13 @@ void main() {
     return validate('#[ 2r1010 8r77 16rFF ]', definition.byteLiteral);
   });
   test('testCharLiteral1', () {
-    return validate('\$a', definition.charLiteral);
+    return validate('\$a', definition.characterLiteral);
   });
   test('testCharLiteral2', () {
-    return validate('\$ ', definition.charLiteral);
+    return validate('\$ ', definition.characterLiteral);
   });
   test('testCharLiteral3', () {
-    return validate('\$\$', definition.charLiteral);
+    return validate('\$\$', definition.characterLiteral);
   });
   test('testNumberLiteral1', () {
     return validate('0', definition.numberLiteral);

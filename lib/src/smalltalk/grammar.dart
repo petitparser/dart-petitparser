@@ -18,16 +18,16 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
     if (input is String) {
       input = input.length == 1 ? char(input) : string(input);
     }
-    return input.token().trim(ref(whitespace));
+    return input.token().trim(ref(spacer));
   }
 
   // the original implementation uses a handwritten parser to
   // efficiently consume whitespace and comments
-  whitespace() => whitespace()
-    .or(ref(comment));
+  spacer() => whitespace()
+      .or(ref(comment));
   comment() => char('"')
-    .seq(char('"').neg().star())
-    .seq(char('"'));
+      .seq(char('"').neg().star())
+      .seq(char('"'));
 
   // the original implementation uses the hand written number
   // parser of the system, this is the spec of the ANSI standard
