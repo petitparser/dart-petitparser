@@ -1,681 +1,820 @@
 part of dart;
 
 /**
- * Dart grammar definition.
+ * Dart grammar.
  */
-@proxy
-class DartGrammar extends CompositeParser2 {
+class DartGrammar extends GrammarParser {
+  DartGrammar() : super(new DartGrammarDefinition());
+}
 
-  @override
-  void initialize() {
-    _whitespace();
-    _lexemes();
-    _keywords();
-    _types();
-    _declarations();
-    _expressions();
-    _statements();
-    _libraries();
-  }
+/**
+ * Dart grammar definition.
+ *
+ * Adapted from [https://code.google.com/p/dart/source/browse/branches/bleeding_edge/dart/language/grammar/Dart.g].
+ */
+class DartGrammarDefinition extends GrammarDefinition {
 
-  /** Defines whitespace, documentation and comments. */
-  void _whitespace() {
-    def('whitespace', whitespace()
-      .or(ref('singe-line comment'))
-      .or(ref('multi-line comment')));
-    def('newline', Token.newlineParser());
+  // Copyright (c) 2011, the Dart project authors. Please see the AUTHORS file
+  // for details. All rights reserved. Use of this source code is governed by a
+  // BSD-style license that can be found in the LICENSE file.
 
-    def('singe-line comment', string('//')
-      .seq(ref('newline').neg().star())
-      .seq(ref('newline').optional()));
-    def('multi-line comment', string('/*')
-      .seq(ref('multi-line comment')
-          .or(string('*/').neg())
-          .star())
-      .seq(string('*/')));
-  }
+  // -----------------------------------------------------------------
+  // Keyword definitions.
+  // -----------------------------------------------------------------
+  BREAK()      => ref(token, 'break');
+  CASE()       => ref(token, 'case');
+  CATCH()      => ref(token, 'catch');
+  CONST()      => ref(token, 'const');
+  CONTINUE()   => ref(token, 'continue');
+  DEFAULT()    => ref(token, 'default');
+  DO()         => ref(token, 'do');
+  ELSE()       => ref(token, 'else');
+  FALSE()      => ref(token, 'false');
+  FINAL()      => ref(token, 'final');
+  FINALLY()    => ref(token, 'finally');
+  FOR()        => ref(token, 'for');
+  IF()         => ref(token, 'if');
+  IN()         => ref(token, 'in');
+  NEW()        => ref(token, 'new');
+  NULL()       => ref(token, 'null');
+  RETURN()     => ref(token, 'return');
+  SUPER()      => ref(token, 'super');
+  SWITCH()     => ref(token, 'switch');
+  THIS()       => ref(token, 'this');
+  THROW()      => ref(token, 'throw');
+  TRUE()       => ref(token, 'true');
+  TRY()        => ref(token, 'try');
+  VAR()        => ref(token, 'var');
+  VOID()       => ref(token, 'void');
+  WHILE()      => ref(token, 'while');
 
-  /** Helper to define a token parser that consumes whitespace. */
-  Parser _token(input) {
-    var parser = input is Parser ? input :
-      input.length == 1 ? char(input) :
-      string(input);
-    return parser.token().trim(ref('whitespace'));
-  }
+  // Pseudo-keywords that should also be valid identifiers.
+  ABSTRACT()   => ref(token, 'abstract');
+  ASSERT()     => ref(token, 'assert');
+  CLASS()      => ref(token, 'class');
+  EXTENDS()    => ref(token, 'extends');
+  FACTORY()    => ref(token, 'factory');
+  GET()        => ref(token, 'get');
+  IMPLEMENTS() => ref(token, 'implements');
+  IMPORT()     => ref(token, 'import');
+  INTERFACE()  => ref(token, 'interface');
+  IS()         => ref(token, 'is');
+  LIBRARY()    => ref(token, 'library');
+  NATIVE()     => ref(token, 'native');
+  NEGATE()     => ref(token, 'negate');
+  OPERATOR()   => ref(token, 'operator');
+  SET()        => ref(token, 'set');
+  SOURCE()     => ref(token, 'source');
+  STATIC()     => ref(token, 'static');
+  TYPEDEF()    => ref(token, 'typedef');
 
-  void _lexemes() {
-    DIGIT = digit();
-    LETTER = letter();
-    HEX_DIGIT = range('a', 'f')
-              | range('A', 'F')
-              | DIGIT
-              ;
+  // -----------------------------------------------------------------
+  // Grammar productions.
+  // -----------------------------------------------------------------
+  start() => ref(compilationUnit).end();
 
-    HEX_NUMBER = string('0x') & HEX_DIGIT.plus()
-               | string('0X') & HEX_DIGIT.plus()
-               ;
+  compilationUnit() =>
+        ref(HASHBANG).optional()
+      & ref(directive).star()
+      & ref(topLevelDefinition).star();
 
-    EXPONENT = (char('e') | char('E')) & (char('+') | char('-')).optional() & DIGIT.plus();
+  directive() =>
+        ref(token, '#')
+      & ref(identifier)
+      & ref(arguments)
+      & ref(token, ';');
 
-    NUMBER = DIGIT.plus() & (char('.') & DIGIT.plus()).optional() & EXPONENT.optional()
-           | char('.') & DIGIT.plus() & EXPONENT.optional()
-           ;
+  topLevelDefinition() =>
+        ref(classDefinition)
+      | ref(interfaceDefinition)
+      | ref(functionTypeAlias)
+      | ref(functionDeclaration) & ref(functionBodyOrNative)
+      | ref(returnType).optional() & ref(getOrSet) & ref(identifier) & ref(formalParameterList) & ref(functionBodyOrNative)
+      | ref(FINAL) & ref(type).optional() & ref(staticFinalDeclarationList) & ref(token, ';')
+      | ref(constInitializedVariableDeclaration) & ref(token, ';');
 
-    HEX_DIGIT_SEQUENCE = HEX_DIGIT.repeat(1, 6);
+  classDefinition() =>
+        ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(superclass).optional() & ref(interfaces).optional() &
+        ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}')
+      | ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(interfaces).optional() & ref(NATIVE) & ref(STRING) &
+        ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}');
 
-    ESCAPE_SEQUENCE =
-        string('\\n')
-      | string('\\r')
-      | string('\\f')
-      | string('\\b')
-      | string('\\t')
-      | string('\\v')
-      | string('\\x') & HEX_DIGIT & HEX_DIGIT
-      | string('\\u') & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT & HEX_DIGIT
-      | string('\\u{') & HEX_DIGIT_SEQUENCE & char('}')
+  typeParameter() => ref(identifier) & (ref(EXTENDS) & ref(type)).optional();
+
+  typeParameters() => ref(token, '<') & ref(typeParameter) & (ref(token, ',') & ref(typeParameter)).star() & ref(token, '>');
+
+  superclass() => ref(EXTENDS) & ref(type);
+
+  interfaces() => ref(IMPLEMENTS) & ref(typeList);
+
+  superinterfaces() => ref(EXTENDS) & ref(typeList);
+
+  // This rule is organized in a way that may not be most readable, but
+  // gives the best error messages.
+  classMemberDefinition() =>
+        ref(declaration) & ref(token, ';')
+      | ref(constructorDeclaration) & ref(token, ';')
+      | ref(methodDeclaration) & ref(functionBodyOrNative)
+      | ref(CONST) & ref(factoryConstructorDeclaration) & ref(functionNative);
+
+  functionBodyOrNative() =>
+        ref(NATIVE) & ref(functionBody)
+      | ref(functionNative)
+      | ref(functionBody);
+
+  functionNative() => ref(NATIVE) & ref(STRING).optional() & ref(token, ';');
+
+  // A method, operator, or constructor (which all should be followed by
+  // a block of code).
+  methodDeclaration() =>
+        ref(factoryConstructorDeclaration)
+      | ref(STATIC) & ref(functionDeclaration)
+      | ref(specialSignatureDefinition)
+      | ref(functionDeclaration) & ref(initializers).optional()
+      | ref(namedConstructorDeclaration) & ref(initializers).optional();
+
+// An abstract method/operator, a field, or const constructor (which
+// all should be followed by a semicolon).
+  declaration() =>
+        ref(constantConstructorDeclaration) & (ref(redirection) | ref(initializers)).optional()
+      | ref(functionDeclaration) & ref(redirection)
+      | ref(namedConstructorDeclaration) & ref(redirection)
+      | ref(ABSTRACT) & ref(specialSignatureDefinition)
+      | ref(ABSTRACT) & ref(functionDeclaration)
+      | ref(STATIC) & ref(FINAL) & ref(type).optional() & ref(staticFinalDeclarationList)
+      | ref(STATIC).optional() & ref(constInitializedVariableDeclaration);
+
+  initializers() => ref(token, ':') & ref(superCallOrFieldInitializer) & (ref(token, ',') & ref(superCallOrFieldInitializer)).star();
+
+  redirection() => ref(token, ':') & ref(THIS) & (ref(token, '.') & ref(identifier)).optional() & ref(arguments);
+
+  fieldInitializer() => (ref(THIS) & ref(token, '.')).optional() & ref(identifier) & ref(token, '=') & ref(conditionalExpression);
+
+  superCallOrFieldInitializer() =>
+        ref(SUPER) & ref(arguments)
+      | ref(SUPER) & ref(token, '.') & ref(identifier) & ref(arguments)
+      | ref(fieldInitializer);
+
+  staticFinalDeclarationList() => ref(staticFinalDeclaration) & (ref(token, ',') & ref(staticFinalDeclaration)).star();
+
+  staticFinalDeclaration() => ref(identifier) & ref(token, '=') & ref(constantExpression);
+
+  interfaceDefinition() => ref(INTERFACE) & ref(identifier) & ref(typeParameters).optional() &
+      ref(superinterfaces).optional() & ref(factorySpecification).optional() & ref(token, '{') &
+      ref(interfaceMemberDefinition).star() & ref(token, '}');
+
+  factorySpecification() => ref(FACTORY) & ref(type);
+
+  functionTypeAlias() => ref(TYPEDEF) & ref(functionPrefix) & ref(typeParameters).optional() &
+      ref(formalParameterList) & ref(token, ';');
+
+  interfaceMemberDefinition() =>
+        ref(STATIC) & ref(FINAL) & ref(type).optional() & ref(initializedIdentifierList) & ref(token, ';')
+      | ref(functionDeclaration) & ref(token, ';')
+      | ref(constantConstructorDeclaration) & ref(token, ';')
+      | ref(namedConstructorDeclaration) & ref(token, ';')
+      | ref(specialSignatureDefinition) & ref(token, ';')
+      | ref(variableDeclaration) & ref(token, ';');
+
+  factoryConstructorDeclaration() => ref(FACTORY) & ref(qualified) & ref(typeParameters).optional() &
+      (ref(token, '.') & ref(identifier)).optional() & ref(formalParameterList);
+
+  namedConstructorDeclaration() => ref(identifier) & ref(token, '.') & ref(identifier) &
+      ref(formalParameterList);
+
+  constructorDeclaration() =>
+        ref(identifier) & ref(formalParameterList) & (ref(redirection) | ref(initializers)).optional()
+      | ref(namedConstructorDeclaration) & (ref(redirection) | ref(initializers)).optional();
+
+  constantConstructorDeclaration() => ref(CONST) & ref(qualified) & ref(formalParameterList);
+
+  specialSignatureDefinition() =>
+        ref(STATIC).optional() & ref(returnType).optional() & ref(getOrSet) & ref(identifier) & ref(formalParameterList)
+      | ref(returnType).optional() & ref(OPERATOR) & ref(userDefinableOperator) & ref(formalParameterList);
+
+  getOrSet() => ref(GET) | ref(SET);
+
+  userDefinableOperator() =>
+        ref(multiplicativeOperator)
+      | ref(additiveOperator)
+      | ref(shiftOperator)
+      | ref(relationalOperator)
+      | ref(bitwiseOperator)
+      | ref(token, '==')  // Disallow negative and === equality checks.
+      | ref(token, '~')   // Disallow ! operator.
+      | ref(NEGATE)
+      | ref(token, '[') & ref(token, ']')
+      | ref(token, '[') & ref(token, ']') & ref(token, '=');
+
+  prefixOperator() =>
+        ref(additiveOperator)
+      | ref(negateOperator);
+
+  postfixOperator() =>
+      ref(incrementOperator);
+
+  negateOperator() =>
+        ref(token, '!')
+      | ref(token, '~');
+
+  multiplicativeOperator() =>
+        ref(token, '*')
+      | ref(token, '/')
+      | ref(token, '%')
+      | ref(token, '~/');
+
+  assignmentOperator() =>
+        ref(token, '=')
+      | ref(token, '*=')
+      | ref(token, '/=')
+      | ref(token, '~/=')
+      | ref(token, '%=')
+      | ref(token, '+=')
+      | ref(token, '-=')
+      | ref(token, '<<=')
+      | ref(token, '>') & ref(token, '>') & ref(token, '>') & ref(token, '=')
+      | ref(token, '>') & ref(token, '>') & ref(token, '=')
+      | ref(token, '&=')
+      | ref(token, '^=')
+      | ref(token, '|=');
+
+  additiveOperator() =>
+        ref(token, '+')
+      | ref(token, '-');
+
+  incrementOperator() =>
+        ref(token, '++')
+      | ref(token, '--');
+
+  shiftOperator() =>
+        ref(token, '<<')
+      | ref(token, '>') & ref(token, '>') & ref(token, '>')
+      | ref(token, '>') & ref(token, '>');
+
+  relationalOperator() =>
+        ref(token, '>') & ref(token, '=')
+      | ref(token, '>')
+      | ref(token, '<=')
+      | ref(token, '<');
+
+  equalityOperator() =>
+        ref(token, '==')
+      | ref(token, '!=')
+      | ref(token, '===')
+      | ref(token, '!==');
+
+  bitwiseOperator() =>
+        ref(token, '&')
+      | ref(token, '^')
+      | ref(token, '|');
+
+  formalParameterList() =>
+        ref(token, '(') ref(namedFormalParameters).optional() ref(token, ')')
+      | ref(token, '(') normalFormalParameter ref(normalFormalParameterTail).optional() ref(token, ')')
       ;
 
-  }
-
-  void _keywords() {
-
-    // A reserved word may not be used as an identifier; it is a compile-time error if a
-    // reserved word is used where an identifier is expected.
-    ASSERT = _token('assert');
-    BREAK = _token('break');
-    CASE = _token('case');
-    CATCH = _token('catch');
-    CLASS = _token('class');
-    CONST = _token('const');
-    CONTINUE = _token('continue');
-    DEFAULT = _token('default');
-    DO = _token('do');
-    ELSE = _token('else');
-    ENUM = _token('enum');
-    EXTENDS = _token('extends');
-    FALSE = _token('false');
-    FINAL = _token('final');
-    FINALLY = _token('finally');
-    FOR = _token('for');
-    IF = _token('if');
-    IN = _token('in');
-    IS = _token('is');
-    NEW = _token('new');
-    NULL = _token('null');
-    RETHROW = _token('rethrow');
-    RETURN = _token('return');
-    SUPER = _token('super');
-    SWITCH = _token('switch');
-    THIS = _token('this');
-    THROW = _token('throw');
-    TRUE = _token('true');
-    TRY = _token('try');
-    VAR = _token('var');
-    VOID = _token('void');
-    WHILE = _token('while');
-    WITH = _token('with');
-
-    // built-in identifiers
-    ABSTRACT = _token('abstract');
-    AS = _token('as');
-    DYNAMIC = _token('dynamic');
-    EXPORT = _token('export');
-    EXTERNAL = _token('external');
-    FACTORY = _token('factory');
-    GET = _token('get');
-    IMPLEMENTS = _token('implements');
-    IMPORT = _token('import');
-    LIBRARY = _token('library');
-    OPERATOR = _token('operator');
-    PART = _token('part');
-    SET = _token('set');
-    STATIC = _token('static');
-    TYPEDEF = _token('typedef');
-
-    // special cases
-    HIDE = _token('hide');
-    SHOW = _token('show');
-    OF = _token('of');
-    ON = _token('on');
-
-  }
-
-  void _types() {
-
-    typeArguments = _token('<') & typeList & _token('>');
-    typeName = qualified;
-    type = typeName & typeArguments.optional();
-    typeList = type.separatedBy(_token(',')).optional();
-    functionPrefix = returnType.optional() & identifier;
-    functionTypeAlias = functionPrefix & typeParameters.optional() & formalParameterList & _token(';');
-    typeAliasBody = identifier & typeParameters.optional() & _token('=') & ABSTRACT.optional() & mixinApplication | functionTypeAlias;
-    typeAlias = metadata & TYPEDEF & typeAliasBody;
-
-  }
-
-  void _declarations() {
-    metadata = (_token('@') & qualified & (_token('.') & identifier).optional() & arguments.optional()).star();
-
-    typeParameter = metadata & identifier & (EXTENDS & type).optional();
-    typeParameters = _token('<') & typeParameter.separatedBy(_token(',')) & _token('>');
-
-    returnType =
-      VOID
-      | type
-    ;
-
-    varOrType =
-        VAR
-        | type
-        ;
-
-    finalConstVarOrType =
-      FINAL & type.optional()
-      | CONST & type.optional()
-      | varOrType
-    ;
-
-    declaredIdentifier = metadata & finalConstVarOrType & identifier;
-    variableDeclaration = declaredIdentifier.separatedBy(_token(','));
-    initializedIdentifier = identifier & (_token('=') & expression).optional();
-    initializedVariableDeclaration = declaredIdentifier & (_token('=') & expression).optional() & (_token(',') & initializedIdentifier).star();
-    initializedIdentifierList = initializedIdentifier.separatedBy(_token(','));
-
-
-    fieldFormalParameter = metadata & finalConstVarOrType.optional() & THIS & _token('.') & identifier;
-
-    simpleFormalParameter =
-      declaredIdentifier
-    | metadata & identifier
-    ;
-
-    normalFormalParameter =
-      functionSignature
-    | fieldFormalParameter
-    | simpleFormalParameter
-    ;
-
-    normalFormalParameters = normalFormalParameter.separatedBy(_token(','));
-    defaultFormalParameter = normalFormalParameter & (_token('=') & expression).optional();
-    defaultNamedParameter = normalFormalParameter & (_token(':') & expression).optional();
-    optionalPositionalFormalParameters = _token('[') & defaultFormalParameter.separatedBy(_token(',')) & _token(']');
-
-    optionalFormalParameters =
-      optionalPositionalFormalParameters |
-      namedFormalParameters
-    ;
-
-    formalParameterList =
-      _token('(') & _token(')')
-      | _token('(') & normalFormalParameters & (_token(',') & optionalFormalParameters).optional() & _token(')')
-      | _token('(') & optionalFormalParameters & _token(')')
-    ;
-
-    namedFormalParameters = _token('{') & defaultNamedParameter.separatedBy(_token(',')) & _token('}');
-
-    functionSignature = metadata & returnType.optional() & identifier & formalParameterList;
-    block = _token('{') & statements & _token('}');
-
-    functionBody =
-      _token('=>') & expression & _token(';')
-      | block
-    ;
-
-
-    interfaces = IMPLEMENTS & typeList;
-    superclass = EXTENDS & type;
-    ;
-
-    constantConstructorSignature = CONST & qualified & formalParameterList;
-    redirectingFactoryConstructorSignature =
-      CONST.optional() & FACTORY & identifier & (_token('.') & identifier).optional() &  formalParameterList & _token('=') & type & (_token('.') & identifier).optional()
-    ;
-    factoryConstructorSignature =
-        FACTORY & identifier & (_token('.') & identifier).optional() & formalParameterList
-    ;
-
-
-    fieldInitializer = (THIS & _token('.')).optional() & identifier & _token('=') & conditionalExpression & cascadeSection.star();
-    superCallOrFieldInitializer =
-      SUPER & arguments
-      | SUPER & _token('.') & identifier & arguments
-      | fieldInitializer
-    ;
-
-    initializers = _token(':') & superCallOrFieldInitializer.separatedBy(_token(','));
-    redirection = _token(':') & THIS & (_token('.') & identifier).optional() & arguments;
-    constructorSignature = identifier & (_token('.') & identifier).optional() & formalParameterList;
-    setterSignature = returnType.optional() & SET & identifier & formalParameterList;
-    getterSignature = type.optional() & GET & identifier;
-
-    binaryOperator =
-      multiplicativeOperator
-    | additiveOperator
-    | shiftOperator
-    | relationalOperator
-    | _token('==')
-    | bitwiseOperator
-    ;
-
-    operator =
-      _token('~')
-    | binaryOperator
-    | _token('[') & _token(']')
-    | _token('[') & _token(']') & _token('=')
-    ;
-
-    operatorSignature = returnType.optional() & OPERATOR & operator & formalParameterList;
-
-    mixins = WITH & typeList;
-
-    methodSignature =
-      constructorSignature & initializers.optional()
-    | factoryConstructorSignature
-    | STATIC.optional() & functionSignature
-    | STATIC.optional() & getterSignature
-    | STATIC.optional() & setterSignature
-    | operatorSignature
-    ;
-
-    staticFinalDeclaration = identifier & _token('=') & expression;
-    staticFinalDeclarationList = staticFinalDeclaration.separatedBy(_token(','));
-
-    declaration =
-      constantConstructorSignature & (redirection | initializers).optional()
-    | constructorSignature & (redirection | initializers).optional()
-    | EXTERNAL & constantConstructorSignature
-    | EXTERNAL & constructorSignature
-    | EXTERNAL & factoryConstructorSignature
-    | (EXTERNAL & STATIC.optional()).optional() & getterSignature
-    | (EXTERNAL & STATIC.optional()).optional() & setterSignature
-    | EXTERNAL.optional() & operatorSignature
-    | (EXTERNAL & STATIC.optional()).optional() & functionSignature
-    | getterSignature
-    | setterSignature
-    | operatorSignature
-    | functionSignature
-    | STATIC & (FINAL | CONST) & type.optional() & staticFinalDeclarationList
-    | CONST & type.optional() & staticFinalDeclarationList
-    | FINAL & type.optional() & initializedIdentifierList
-    | STATIC.optional() & (VAR | type) & initializedIdentifierList
-    ;
-
-
-
-    classMemberDefinition =
-      declaration & _token(';')
-      | methodSignature & functionBody
-    ;
-
-    classDefinition =
-        metadata & ABSTRACT.optional() & CLASS & identifier & typeParameters.optional() & (superclass & mixins.optional()).optional() & interfaces.optional()
-        & _token('{') & (metadata & classMemberDefinition).star() & _token('}')
-        ;
-
-    mixinApplication = type & mixins & interfaces.optional();
-
-  }
-
-  void _expressions() {
-
-    IDENTIFIER_START_NO_DOLLAR =
-      LETTER
-    | char('_')
-    ;
-
-    IDENTIFIER_START =
-      IDENTIFIER_START_NO_DOLLAR
-    | char('\$')
-    ;
-
-    IDENTIFIER_PART_NO_DOLLAR =
-      IDENTIFIER_START_NO_DOLLAR
-    | DIGIT
-    ;
-
-
-    IDENTIFIER_PART =
-      IDENTIFIER_START
-    | DIGIT
-    ;
-
-    IDENTIFIER_NO_DOLLAR = IDENTIFIER_START_NO_DOLLAR & IDENTIFIER_PART_NO_DOLLAR.star();
-
-    IDENTIFIER = IDENTIFIER_START & IDENTIFIER_PART.star();
-
-    identifier = IDENTIFIER.flatten().token().trim();
-    qualified = identifier.separatedBy(_token('.'));
-
-    assignableSelector =
-      _token('[') & expression & _token(']')
-    | _token('.') & identifier
-    ;
-
-    assignableExpression =
-      primary & (arguments.star() & assignableSelector).plus()
-    | SUPER & assignableSelector
-    | identifier
-    ;
-
-    incrementOperator = _token('++') | _token('--');
-    selector = assignableSelector | arguments;
-    postfixOperator = incrementOperator;
-
-    postfixExpression =
-      assignableExpression & postfixOperator
-    | primary & selector.star()
-    ;
-
-    unaryOperator = _token('!') | _token('~');
-    prefixOperator = _token('-') | unaryOperator;
-    unaryExpression =
-      prefixOperator & unaryExpression
-    | postfixExpression
-    | prefixOperator & SUPER
-    | incrementOperator & assignableExpression
-    ;
-
-    multiplicativeOperator = _token('*') | _token('/') | _token('%') | _token('~/');
-    multiplicativeExpression =
-      unaryExpression & (multiplicativeOperator & unaryExpression).star()
-    | SUPER & (multiplicativeOperator & unaryExpression).plus()
-    ;
-
-    additiveOperator = _token('+') | _token('-');
-
-    additiveExpression =
-      multiplicativeExpression & (additiveOperator & multiplicativeExpression).star()
-    | SUPER & (additiveOperator & multiplicativeExpression).plus()
-    ;
-
-    shiftOperator = _token('<<') | _token('>>');
-    shiftExpression =
-      additiveExpression & (shiftOperator & additiveExpression).star()
-    | SUPER & (shiftOperator & additiveExpression).plus()
-    ;
-
-    relationalOperator = _token('<') | _token('>') | _token('<=') | _token('>=');
-    relationalExpression =
-      shiftExpression & (typeTest | typeCast | relationalOperator & shiftExpression).optional()
-    | SUPER & relationalOperator & shiftExpression
-    ;
-
-    equalityOperator = _token('==') | _token('!=');
-    equalityExpression =
-      relationalExpression & (equalityOperator & relationalExpression).optional()
-    | SUPER & equalityOperator & relationalExpression
-    ;
-
-    bitwiseOperator = _token('|') | _token('&') | _token('^');
-    bitwiseAndExpression =
-      equalityExpression & (_token('&') & equalityExpression).star()
-    | SUPER & (_token('&') & equalityExpression).plus()
-    ;
-    bitwiseXorExpression =
-      bitwiseAndExpression & (_token('^') & bitwiseAndExpression).star()
-    | SUPER & (_token('^') & bitwiseAndExpression).plus()
-    ;
-    bitwiseOrExpression =
-        bitwiseXorExpression & (_token('|') & bitwiseXorExpression).star()
-        | SUPER & (_token('|') & bitwiseXorExpression).plus()
-        ;
-
-    logicalAndExpression = bitwiseOrExpression & (_token('&&') & bitwiseOrExpression).star();
-    logicalOrExpression = logicalAndExpression & (_token('||') & logicalAndExpression).star();
-
-    conditionalExpression = logicalOrExpression & (_token('?') & expressionWithoutCascade & _token(':') & expressionWithoutCascade).optional();
-
-    compoundAssignmentOperator =
-      _token('*=')
-    | _token('/=')
-    | _token('~/=')
-    | _token('%=')
-    | _token('+=')
-    | _token('-=')
-    | _token('<<=')
-    | _token('>>=')
-    | _token('&=')
-    | _token('^=')
-    | _token('|=')
-    ;
-    assignmentOperator = _token('=') | compoundAssignmentOperator;
-
-    cascadeSelector =
-      _token('[') & expression & _token(']')
+  normalFormalParameterTail() =>
+       ref(token, ',') namedFormalParameters
+      | ref(token, ',') normalFormalParameter ref(normalFormalParameterTail).optional()
+      ;
+
+  normalFormalParameter() =>
+       functionDeclaration
+      | fieldFormalParameter
+      | simpleFormalParameter
+      ;
+
+  simpleFormalParameter() =>
+       declaredIdentifier
       | identifier
       ;
-    cascadeSection =
-      _token('..')  &
-      (cascadeSelector & arguments.star()) &
-      (assignableSelector & arguments.star()).star() &
-      (assignmentOperator & expressionWithoutCascade).optional()
-    ;
 
-    namedArgument = label & expression;
-    argumentList =
-      namedArgument.separatedBy(_token(','))
-    | expressionList.separatedBy(_token(','))
-    ;
-    arguments = _token('(') & argumentList.optional() & _token(')');
+  fieldFormalParameter() =>
+       ref(finalVarOrType).optional() THIS ref(token, '.') identifier
+     ;
 
-    isOperator = IS & _token('!').optional();
-    typeTest = isOperator & type;
-    typeCast = AS & type;
-    argumentDefinitionTest = _token('?') & identifier;
+  namedFormalParameters() =>
+       ref(token, '[') defaultFormalParameter (ref(token, ',') defaultFormalParameter).star() ref(token, ']')
+      ;
 
-    constObjectExpression = CONST & type & (_token('.') & identifier).optional() & arguments;
-    newExpression = NEW & type & (_token('.') & identifier).optional() & arguments;
+  defaultFormalParameter() =>
+       normalFormalParameter (ref(token, '=') constantExpression).optional()
+      ;
 
-    thisExpression = THIS;
+  returnType() =>
+       VOID
+      | type
+      ;
 
-    functionExpressionBody =
-      _token('=>') & expression
-    | block
-    ;
-    functionExpression = formalParameterList & functionExpressionBody;
+  finalVarOrType() =>
+       FINAL ref(type).optional()
+      | VAR
+      | type
+      ;
 
-    throwExpression = THROW & expression;
-    throwExpressionWithoutCascade = THROW & expressionWithoutCascade;
+  // We have to introduce a separate rule for 'declared' identifiers to
+  // allow ANTLR to decide if the first identifier we encounter after
+  // final is a type or an identifier. Before this change, we used the
+  // production 'finalVarOrType identifier' in numerous places.
+  declaredIdentifier() =>
+       FINAL ref(type).optional() identifier
+      | VAR identifier
+      | type identifier
+      ;
 
-    mapLiteralEntry = stringLiteral & _token(':') & expression;
-    mapLiteral =
-      CONST.optional() &
-      typeArguments.optional() &
-      _token('{') &
-      (mapLiteralEntry & (_token('.') & mapLiteralEntry).star() & _token(',').optional()).optional() &
-      _token('}');
+  identifier() =>
+       IDENTIFIER_NO_DOLLAR
+      | IDENTIFIER
+      | ABSTRACT
+      | ASSERT
+      | CLASS
+      | EXTENDS
+      | FACTORY
+      | GET
+      | IMPLEMENTS
+      | IMPORT
+      | INTERFACE
+      | IS
+      | LIBRARY
+      | NATIVE
+      | NEGATE
+      | OPERATOR
+      | SET
+      | SOURCE
+      | STATIC
+      | TYPEDEF
+      ;
 
-    listLiteral =
-        CONST.optional() & typeArguments.optional() & _token('[') & (expressionList & _token(',').optional()).optional() & _token(']');
+  qualified() =>
+       identifier (ref(token, '.') identifier).optional()
+      ;
 
-    stringInterpolation = char('\$') & IDENTIFIER_NO_DOLLAR |
-        char('\$') & char('{') & expression & char('}');
-    NEWLINE = Token.newlineParser();
-    stringContentDQ = (char('\\') | char('"') | char('\$') | NEWLINE).neg() |
-        char('\\') & NEWLINE.neg() |
-        stringInterpolation;
-    stringContentSQ = (char('\\') | char("'") | char('\$') | NEWLINE).neg() |
-        char('\\') & NEWLINE.neg() |
-        stringInterpolation;
-    stringContentTDQ = (char('\\') | string('"""') | char('\$') | NEWLINE).not() |
-        char('\\') & NEWLINE.not() |
-        stringInterpolation;
-    stringContentTSQ = (char('\\') | string("'''") | char('\$') | NEWLINE).not() |
-        char('\\') & NEWLINE.not() |
-        stringInterpolation;
+  type() =>
+       qualified ref(typeArguments).optional()
+      ;
 
-    multilineString =
-        string('"""') & stringContentTDQ.star() & string('"""')
-      | string("'''") & stringContentTSQ.star() & string("'''")
-      | char('r') & string('"""') & string('"""').not().star() & string('"""')
-      | char('r') & string("'''") & string("'''").not().star() & string("'''")
-    ;
+  typeArguments() =>
+       ref(token, '<') typeList ref(token, '>')
+      ;
 
-    singleLineString =
-          char('"') & stringContentDQ.star() & char('"')
-        | char("'") & stringContentSQ.star() & char("'")
-        | char('r') & char('"') & (char('"') | NEWLINE).neg().star() & char('"')
-        | char('r') & char("'") & (char("'") | NEWLINE).neg().star() & char("'")
-        ;
+  typeList() =>
+       type (ref(token, ',') type).star()
+      ;
 
+  block() =>
+       ref(token, '{') statements ref(token, '}')
+      ;
 
-    stringLiteral =
-      multilineString.plus()
-    | singleLineString.plus()
-    ;
+  statements() =>
+       ref(statement).star()
+      ;
 
-    numericLiteral = _token(NUMBER | HEX_NUMBER);
+  statement() =>
+       ref(label).star() nonLabelledStatement
+      ;
 
-    booleanLiteral =
-      TRUE
-    | FALSE
-    ;
+  nonLabelledStatement() =>
+       (ref(token, '{'))=> block // Guard to break tie with map literal.
+      | initializedVariableDeclaration ref(token, ';')
+      | iterationStatement
+      | selectionStatement
+      | tryStatement
+      | BREAK ref(identifier).optional() ref(token, ';')
+      | CONTINUE ref(identifier).optional() ref(token, ';')
+      | RETURN ref(expression).optional() ref(token, ';')
+      | THROW ref(expression).optional() ref(token, ';')
+      | ref(expression).optional() ref(token, ';')
+      | ASSERT ref(token, '(') conditionalExpression ref(token, ')') ref(token, ';')
+      | functionDeclaration functionBody
+      ;
 
-    nullLiteral = NULL;
+  label() =>
+       identifier ref(token, ':')
+      ;
 
-    literal =
-      nullLiteral
-    | booleanLiteral
-    | numericLiteral
-    | stringLiteral
-    | mapLiteral
-    | listLiteral
-    ;
+  iterationStatement() =>
+       WHILE ref(token, '(') expression ref(token, ')') statement
+      | DO statement WHILE ref(token, '(') expression ref(token, ')') ref(token, ';')
+      | FOR ref(token, '(') forLoopParts ref(token, ')') statement
+      ;
 
-    expression =
-      assignableExpression & assignmentOperator & expression
-      | conditionalExpression & cascadeSection.star()
-      | throwExpression
-    ;
+  forLoopParts() =>
+       forInitializerStatement ref(expression).optional() ref(token, ';') ref(expressionList).optional()
+      | declaredIdentifier IN expression
+      | identifier IN expression
+      ;
 
+  forInitializerStatement() =>
+       initializedVariableDeclaration ref(token, ';')
+      | ref(expression).optional() ref(token, ';')
+      ;
 
+  selectionStatement() =>
+       IF ref(token, '(') expression ref(token, ')') statement ((ELSE)=> ELSE statement).optional()
+      | SWITCH ref(token, '(') expression ref(token, ')') ref(token, '{') ref(switchCase).star() ref(defaultCase).optional() ref(token, '}')
+      ;
 
-    expressionWithoutCascade =
-      assignableExpression & assignmentOperator & expressionWithoutCascade
+  switchCase() =>
+       ref(label).optional() (CASE expression ref(token, ':')).plus() statements
+      ;
+
+  defaultCase() =>
+       ref(label).optional() (CASE expression ref(token, ':')).star() DEFAULT ref(token, ':') statements
+      ;
+
+  tryStatement() =>
+       TRY block (ref(catchPart).plus() ref(finallyPart).optional() | finallyPart)
+      ;
+
+  catchPart() =>
+       CATCH ref(token, '(') declaredIdentifier (ref(token, ',') declaredIdentifier).optional() ref(token, ')') block
+      ;
+
+  finallyPart() =>
+       FINALLY block
+      ;
+
+  variableDeclaration() =>
+       declaredIdentifier (ref(token, ',') identifier).star()
+      ;
+
+  initializedVariableDeclaration() =>
+       declaredIdentifier (ref(token, '=') expression).optional() (ref(token, ',') initializedIdentifier).star()
+      ;
+
+  initializedIdentifierList() =>
+       initializedIdentifier (ref(token, ',') initializedIdentifier).star()
+      ;
+
+  initializedIdentifier() =>
+       identifier (ref(token, '=') expression).optional()
+      ;
+
+  constInitializedVariableDeclaration() =>
+       declaredIdentifier (ref(token, '=') constantExpression).optional()
+        (ref(token, ',') constInitializedIdentifier).star()
+      ;
+
+  constInitializedIdentifier() =>
+       identifier (ref(token, '=') constantExpression).optional()
+      ;
+
+  // The constant expression production is used to mark certain expressions
+  // as only being allowed to hold a compile-time constant. The grammar cannot
+  // express these restrictions (yet), so this will have to be enforced by a
+  // separate analysis phase.
+  constantExpression() =>
+       expression
+      ;
+
+  expression() =>
+       assignableExpression assignmentOperator expression
       | conditionalExpression
-      | throwExpressionWithoutCascade
-    ;
+      ;
 
-    expressionList =  expression.separatedBy(_token(','));
+  expressionList() =>
+       expression (ref(token, ',') expression).star()
+      ;
 
+  arguments
+      : ref(token, '(') ref(argumentList).optional() ref(token, ')')
+      ;
 
-    primary =
-      thisExpression
-      | SUPER & assignableSelector
-      | functionExpression
+  argumentList() =>
+       namedArgument (ref(token, ',') namedArgument).star()
+      | expressionList (ref(token, ',') namedArgument).star()
+      ;
+
+  namedArgument() =>
+       label expression
+      ;
+
+  assignableExpression() =>
+       primary (ref(arguments).star() assignableSelector).plus()
+      | SUPER assignableSelector
+      | identifier
+      ;
+
+  conditionalExpression() =>
+       logicalOrExpression (ref(token, '?') expression ref(token, ':') expression).optional()
+      ;
+
+  logicalOrExpression() =>
+       logicalAndExpression (ref(token, '||') logicalAndExpression).star()
+      ;
+
+  logicalAndExpression() =>
+       bitwiseOrExpression (ref(token, '&&') bitwiseOrExpression).star()
+      ;
+
+  bitwiseOrExpression() =>
+       bitwiseXorExpression (ref(token, '|') bitwiseXorExpression).star()
+      | SUPER (ref(token, '|') bitwiseXorExpression).plus()
+      ;
+
+  bitwiseXorExpression() =>
+       bitwiseAndExpression (ref(token, '^') bitwiseAndExpression).star()
+      | SUPER (ref(token, '^') bitwiseAndExpression).plus()
+      ;
+
+  bitwiseAndExpression() =>
+       equalityExpression (ref(token, '&') equalityExpression).star()
+      | SUPER (ref(token, '&') equalityExpression).plus()
+      ;
+
+  equalityExpression() =>
+       relationalExpression (equalityOperator relationalExpression).optional()
+      | SUPER equalityOperator relationalExpression
+      ;
+
+  relationalExpression() =>
+       shiftExpression (isOperator type | relationalOperator shiftExpression).optional()
+      | SUPER relationalOperator shiftExpression
+      ;
+
+  isOperator() =>
+       IS ref(token, '!').optional()
+      ;
+
+  shiftExpression() =>
+       additiveExpression (shiftOperator additiveExpression).star()
+      | SUPER (shiftOperator additiveExpression).plus()
+      ;
+
+  additiveExpression() =>
+       multiplicativeExpression (additiveOperator multiplicativeExpression).star()
+      | SUPER (additiveOperator multiplicativeExpression).plus()
+      ;
+
+  multiplicativeExpression() =>
+       unaryExpression (multiplicativeOperator unaryExpression).star()
+      | SUPER (multiplicativeOperator unaryExpression).plus()
+      ;
+
+  unaryExpression() =>
+       postfixExpression
+      | prefixOperator unaryExpression
+      | negateOperator SUPER
+      | ref(token, '-') SUPER  // Invokes the NEGATE operator.
+      | incrementOperator assignableExpression
+      ;
+
+  postfixExpression() =>
+       assignableExpression postfixOperator
+      | primary ref(selector).star()
+      ;
+
+  selector() =>
+       assignableSelector
+      | arguments
+      ;
+
+  assignableSelector
+      : ref(token, '[') expression ref(token, ']')
+      | ref(token, '.') identifier
+      ;
+
+  primary() =>
+       {!parseFunctionExpressions}?=> primaryNoFE
+      | primaryFE
+      ;
+
+  primaryFE() =>
+       functionExpression
+      | primaryNoFE
+      ;
+
+  primaryNoFE() =>
+       THIS
+      | SUPER assignableSelector
       | literal
       | identifier
-      | newExpression
-      | constObjectExpression
-      | _token('(') & expression & _token(')')
-      | argumentDefinitionTest
+      | ref(CONST).optional() ref(typeArguments).optional() compoundLiteral
+      | (NEW | CONST) type (ref(token, '.') identifier).optional() arguments
+      | expressionInParentheses
+      ;
+
+  expressionInParentheses
+      :ref(token, '(') expression ref(token, ')')
+      ;
+
+  literal() =>
+       NULL
+      | TRUE
+      | FALSE
+      | HEX_NUMBER
+      | NUMBER
+      | STRING
+      ;
+
+  compoundLiteral
+      : listLiteral
+      | mapLiteral
+      ;
+
+// The list literal syntax doesn't allow elided elements, unlike
+// in ECMAScript. We do allow a trailing comma.
+  listLiteral() =>
+       '[' (expressionList ','?).optional() ']'
+      ;
+
+  mapLiteral() =>
+       '{' (mapLiteralEntry (',' mapLiteralEntry).star() ','?).optional() '}'
+      ;
+
+  mapLiteralEntry() =>
+       STRING ':' expression
+      ;
+
+  functionExpression() =>
+       (ref(returnType).optional() identifier).optional() formalParameterList functionExpressionBody
+      ;
+
+  functionDeclaration() =>
+       ref(returnType).optional() identifier formalParameterList
+      ;
+
+  functionPrefix() =>
+       ref(returnType).optional() identifier
+      ;
+
+  functionBody() =>
+       '=>' expression ';'
+      | block
+      ;
+
+  functionExpressionBody() =>
+       '=>' expression
+      | block
+      ;
+
+  // -----------------------------------------------------------------
+  // Library files.
+  // -----------------------------------------------------------------
+  libraryUnit() =>
+       libraryDefinition EOF
+      ;
+
+  libraryDefinition() =>
+       LIBRARY '{' libraryBody '}'
+      ;
+
+  libraryBody() =>
+       ref(libraryImport).optional() ref(librarySource).optional()
+      ;
+
+  libraryImport() =>
+       IMPORT '=' '[' ref(importReferences).optional() ']'
+      ;
+
+  importReferences() =>
+       importReference (',' importReference).star() ','?
+      ;
+
+  importReference() =>
+       (IDENTIFIER ':').optional() STRING
+      ;
+
+  librarySource() =>
+       SOURCE '=' '[' ref(sourceUrls).optional() ']'
+      ;
+
+  sourceUrls() =>
+       STRING (',' STRING).star() ','?
+      ;
+
+
+  // -----------------------------------------------------------------
+  // Lexical tokens.
+  // -----------------------------------------------------------------
+  IDENTIFIER_NO_DOLLAR() =>
+       IDENTIFIER_START_NO_DOLLAR ref(IDENTIFIER_PART_NO_DOLLAR).star()
+      ;
+
+  IDENTIFIER() =>
+       IDENTIFIER_START ref(IDENTIFIER_PART).star()
+      ;
+
+  HEX_NUMBER() =>
+       '0x' ref(HEX_DIGIT).plus()
+      | '0X' ref(HEX_DIGIT).plus()
+      ;
+
+  NUMBER() =>
+       ref(DIGIT).plus() NUMBER_OPT_FRACTIONAL_PART ref(EXPONENT).optional() NUMBER_OPT_ILLEGAL_END
+      | '.' ref(DIGIT).plus() ref(EXPONENT).optional() NUMBER_OPT_ILLEGAL_END
+      ;
+
+  fragment NUMBER_OPT_FRACTIONAL_PART
+      : ('.' DIGIT)=> ('.' ref(DIGIT).plus())
+      | // Empty fractional part.
+      ;
+
+  fragment NUMBER_OPT_ILLEGAL_END
+      : (IDENTIFIER_START)=> { error("numbers cannot contain identifiers"); }
+      | // Empty illegal end (good!).
+      ;
+
+  fragment HEX_DIGIT
+      : 'a'..'f'
+      | 'A'..'F'
+      | DIGIT
+      ;
+
+  fragment IDENTIFIER_START
+      : IDENTIFIER_START_NO_DOLLAR
+      | '$'
+      ;
+
+  fragment IDENTIFIER_START_NO_DOLLAR
+      : LETTER
+      | '_'
+      ;
+
+  fragment IDENTIFIER_PART_NO_DOLLAR
+      : IDENTIFIER_START_NO_DOLLAR
+      | DIGIT
+      ;
+
+  fragment IDENTIFIER_PART
+      : IDENTIFIER_START
+      | DIGIT
+      ;
+
+// Bug 5408613: Should be Unicode characters.
+  fragment LETTER
+      : 'a'..'z'
+      | 'A'..'Z'
+      ;
+
+  fragment DIGIT
+      : '0'..'9'
+      ;
+
+  fragment EXPONENT
+      : ('e' | 'E') ('+' | '-').optional() ref(DIGIT).plus()
+      ;
+
+  STRING() =>
+       '@'? MULTI_LINE_STRING
+      | SINGLE_LINE_STRING
+      ;
+
+  fragment MULTI_LINE_STRING
+  options { greedy=false; }
+      : '"""' .* '"""'
+    | '\'\'\'' .* '\'\'\''
     ;
 
-  }
+  fragment SINGLE_LINE_STRING
+      : '"' ref(STRING_CONTENT_DQ).star() '"'
+      | '\'' ref(STRING_CONTENT_SQ).star() '\''
+      | '@' '\'' (~( '\'' | NEWLINE )).star() '\''
+      | '@' '"' (~( '"' | NEWLINE )).star() '"'
+      ;
 
-  void _statements() {
-    assertStatement = ASSERT & _token('(') & conditionalExpression & _token(')') & _token(';');
-    continueStatement = CONTINUE & identifier.optional() & _token(';');
-    breakStatement = BREAK & identifier.optional() & _token(';');
-    label = identifier & _token(':');
-    returnStatement = RETURN & expression.optional() & _token(';');
+  fragment STRING_CONTENT_DQ
+      : ~( '\\' | '"' | NEWLINE )
+      | '\\' ~( NEWLINE )
+      ;
 
-    finallyPart = FINALLY & block;
-    catchPart = CATCH & _token('(') & identifier & (_token(',') & identifier).optional() & _token(')');
-    onPart =
-        catchPart &  block
-        | ON & type & catchPart.optional() & block
-    ;
+  fragment STRING_CONTENT_SQ
+      : ~( '\\' | '\'' | NEWLINE )
+      | '\\' ~( NEWLINE )
+      ;
 
-    tryStatement = TRY & block & (onPart.plus() & finallyPart.optional() | finallyPart);
+  fragment NEWLINE
+      : '\n'
+      | '\r'
+      ;
 
-    defaultCase = label.star() & DEFAULT & _token(':') & statements;
-    switchCase = label.star() & (CASE & expression & _token(':')) & statements;
-    switchStatement = SWITCH & _token('(') & expression & _token(')') & _token('{') & switchCase.star() & defaultCase.optional() & _token('}');
-    doStatement = DO & statement & WHILE & _token('(') & expression & _token(')') & _token(';');
-    whileStatement = WHILE & _token('(') & expression & _token(')') & statement;
+  BAD_STRING() =>
+       UNTERMINATED_STRING NEWLINE { error("unterminated string"); }
+      ;
 
-    forInitializerStatement =
-      localVariableDeclaration & _token(';')
-    | expression.optional() & _token(';')
-    ;
+  fragment UNTERMINATED_STRING
+      : '@'? '\'' (~( '\'' | NEWLINE )).star()
+      | '@'? '"' (~( '"' | NEWLINE )).star()
+      ;
 
-    forLoopParts =
-      forInitializerStatement & expression.optional() & _token(';') & expressionList.optional()
-    | declaredIdentifier & IN & expression
-    | identifier & IN & expression
-    ;
-
-    forStatement = FOR & _token('(') & forLoopParts & _token(')') & statement;
-    ifStatement = IF & _token('(') & expression & _token(')') & statement & (ELSE & statement).optional();
-    rethrowStatement = RETHROW;
-    localFunctionDeclaration = functionSignature & functionBody;
-    localVariableDeclaration = initializedVariableDeclaration & _token(';');
-    expressionStatement = expression.optional() & _token(';');
-
-    nonLabelledStatement =
-          block
-          | localVariableDeclaration & _token(';')
-          | forStatement
-          | whileStatement
-          | doStatement
-          | switchStatement
-          | ifStatement
-          | rethrowStatement
-          | tryStatement
-          | breakStatement
-          | continueStatement
-          | returnStatement
-          | expressionStatement
-          | assertStatement
-          | localFunctionDeclaration;
+  HASHBANG() =>
+       '#!' ~(NEWLINE).star() (NEWLINE).optional()
+      ;
 
 
-    statement = label.star() & nonLabelledStatement;
-    statements = statement.star();
+  // -----------------------------------------------------------------
+  // Whitespace and comments.
+  // -----------------------------------------------------------------
+  WHITESPACE() =>
+       ('\t' | ' ' | NEWLINE).plus() { $channel=HIDDEN; }
+      ;
 
-  }
+  SINGLE_LINE_COMMENT() =>
+       '//' ~(NEWLINE).star() (NEWLINE).optional() { $channel=HIDDEN; }
+      ;
 
-  void _libraries() {
-
-    uri = stringLiteral;
-    getOrSet = GET | SET;
-
-    topLevelDefinition =
-        classDefinition
-        | mixinApplication
-        | typeAlias
-        | EXTERNAL & functionSignature
-        | EXTERNAL & getterSignature
-        | EXTERNAL & setterSignature
-        | functionSignature & functionBody
-        | returnType.optional() & getOrSet & identifier & formalParameterList & functionBody
-        | (FINAL | CONST) & type.optional() & staticFinalDeclarationList & _token(';')
-        | variableDeclaration & _token(';')
-        ;
-
-    identifierList = identifier.separatedBy(_token(',')).optional();
-    combinator =
-        SHOW & identifierList
-        | HIDE & identifierList;
-
-
-    libraryImport = metadata & IMPORT & (AS & identifier).optional() & combinator.star() & _token(';');
-    libraryExport = metadata & EXPORT & uri & combinator.star() & _token(';');
-    importOrExport = libraryImport | libraryExport;
-
-    libraryName = metadata & LIBRARY & identifier.separatedBy(_token('.')) & _token(';');
-
-    partDirective = metadata & PART & stringLiteral & _token(';');
-    partHeader = metadata & PART & OF & identifier.separatedBy(_token('.')) & _token(';');
-    partDeclaration = partHeader & topLevelDefinition.star();
-
-    libraryDefinition = libraryName.optional() & importOrExport.star() & partDirective.star() & topLevelDefinition.star();
-
-    scriptTag = _token('#!') & NEWLINE.not().star() & NEWLINE;
-    scriptDefinition = scriptTag.optional() & libraryDefinition;
-
-    start = scriptDefinition.end();
-  }
+  MULTI_LINE_COMMENT() =>
+       '/*' (options { greedy=false; } : .).star() '*/' { $channel=HIDDEN; }
+      ;
 
 }
