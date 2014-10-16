@@ -269,47 +269,39 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(token, '|');
 
   formalParameterList() =>
-        ref(token, '(') ref(namedFormalParameters).optional() ref(token, ')')
-      | ref(token, '(') normalFormalParameter ref(normalFormalParameterTail).optional() ref(token, ')')
-      ;
+        ref(token, '(') & ref(namedFormalParameters).optional() & ref(token, ')')
+      | ref(token, '(') & ref(normalFormalParameter) & ref(normalFormalParameterTail).optional() & ref(token, ')');
 
   normalFormalParameterTail() =>
-       ref(token, ',') namedFormalParameters
-      | ref(token, ',') normalFormalParameter ref(normalFormalParameterTail).optional()
-      ;
+        ref(token, ',') & ref(namedFormalParameters)
+      | ref(token, ',') & ref(normalFormalParameter) & ref(normalFormalParameterTail).optional();
 
   normalFormalParameter() =>
-       functionDeclaration
-      | fieldFormalParameter
-      | simpleFormalParameter
-      ;
+        ref(functionDeclaration)
+      | ref(fieldFormalParameter)
+      | ref(simpleFormalParameter);
 
   simpleFormalParameter() =>
-       declaredIdentifier
-      | identifier
-      ;
+        ref(declaredIdentifier)
+      | ref(identifier);
 
   fieldFormalParameter() =>
-       ref(finalVarOrType).optional() THIS ref(token, '.') identifier
-     ;
+        ref(finalVarOrType).optional() & ref(THIS) & ref(token, '.') & ref(identifier);
 
   namedFormalParameters() =>
-       ref(token, '[') defaultFormalParameter (ref(token, ',') defaultFormalParameter).star() ref(token, ']')
-      ;
+        ref(token, '[') & ref(defaultFormalParameter) & (ref(token, ',') & ref(defaultFormalParameter)).star() & ref(token, ']');
 
   defaultFormalParameter() =>
-       normalFormalParameter (ref(token, '=') constantExpression).optional()
-      ;
+        ref(normalFormalParameter) & (ref(token, '=') & ref(constantExpression)).optional();
 
   returnType() =>
-       VOID
-      | type
-      ;
+        ref(VOID)
+      | ref(type);
 
   finalVarOrType() =>
-       FINAL ref(type).optional()
-      | VAR
-      | type
+        ref(FINAL) & ref(type).optional()
+      | ref(VAR)
+      | ref(type)
       ;
 
   // We have to introduce a separate rule for 'declared' identifiers to
@@ -317,146 +309,146 @@ class DartGrammarDefinition extends GrammarDefinition {
   // final is a type or an identifier. Before this change, we used the
   // production 'finalVarOrType identifier' in numerous places.
   declaredIdentifier() =>
-       FINAL ref(type).optional() identifier
-      | VAR identifier
-      | type identifier
+        ref(FINAL) & ref(type).optional() & ref(identifier)
+      | ref(VAR) & ref(identifier)
+      | ref(type) & ref(identifier)
       ;
 
   identifier() =>
-       IDENTIFIER_NO_DOLLAR
-      | IDENTIFIER
-      | ABSTRACT
-      | ASSERT
-      | CLASS
-      | EXTENDS
-      | FACTORY
-      | GET
-      | IMPLEMENTS
-      | IMPORT
-      | INTERFACE
-      | IS
-      | LIBRARY
-      | NATIVE
-      | NEGATE
-      | OPERATOR
-      | SET
-      | SOURCE
-      | STATIC
-      | TYPEDEF
+        ref(IDENTIFIER_NO_DOLLAR)
+      | ref(IDENTIFIER)
+      | ref(ABSTRACT)
+      | ref(ASSERT)
+      | ref(CLASS)
+      | ref(EXTENDS)
+      | ref(FACTORY)
+      | ref(GET)
+      | ref(IMPLEMENTS)
+      | ref(IMPORT)
+      | ref(INTERFACE)
+      | ref(IS)
+      | ref(LIBRARY)
+      | ref(NATIVE)
+      | ref(NEGATE)
+      | ref(OPERATOR)
+      | ref(SET)
+      | ref(SOURCE)
+      | ref(STATIC)
+      | ref(TYPEDEF)
       ;
 
   qualified() =>
-       identifier (ref(token, '.') identifier).optional()
+        ref(identifier) & (ref(token, '.') & ref(identifier)).optional()
       ;
 
   type() =>
-       qualified ref(typeArguments).optional()
+        ref(qualified) & ref(typeArguments).optional()
       ;
 
   typeArguments() =>
-       ref(token, '<') typeList ref(token, '>')
+        ref(token, '<') & ref(typeList) & ref(token, '>')
       ;
 
   typeList() =>
-       type (ref(token, ',') type).star()
+        ref(type) & (ref(token, ',') & ref(type)).star()
       ;
 
   block() =>
-       ref(token, '{') statements ref(token, '}')
+        ref(token, '{') & ref(statements) & ref(token, '}')
       ;
 
   statements() =>
-       ref(statement).star()
+        ref(statement).star()
       ;
 
   statement() =>
-       ref(label).star() nonLabelledStatement
+        ref(label).star() & ref(nonLabelledStatement)
       ;
 
   nonLabelledStatement() =>
-       (ref(token, '{'))=> block // Guard to break tie with map literal.
-      | initializedVariableDeclaration ref(token, ';')
-      | iterationStatement
-      | selectionStatement
-      | tryStatement
-      | BREAK ref(identifier).optional() ref(token, ';')
-      | CONTINUE ref(identifier).optional() ref(token, ';')
-      | RETURN ref(expression).optional() ref(token, ';')
-      | THROW ref(expression).optional() ref(token, ';')
-      | ref(expression).optional() ref(token, ';')
-      | ASSERT ref(token, '(') conditionalExpression ref(token, ')') ref(token, ';')
-      | functionDeclaration functionBody
+        ref(block)
+      | ref(initializedVariableDeclaration) & ref(token, ';')
+      | ref(iterationStatement)
+      | ref(selectionStatement)
+      | ref(tryStatement)
+      | ref(BREAK) & ref(identifier).optional() & ref(token, ';')
+      | ref(CONTINUE) & ref(identifier).optional() & ref(token, ';')
+      | ref(RETURN) & ref(expression).optional() & ref(token, ';')
+      | ref(THROW) & ref(expression).optional() & ref(token, ';')
+      | ref(expression).optional() & ref(token, ';')
+      | ref(ASSERT) & ref(token, '(') & ref(conditionalExpression) & ref(token, ')') & ref(token, ';')
+      | ref(functionDeclaration) & ref(functionBody)
       ;
 
   label() =>
-       identifier ref(token, ':')
+        ref(identifier) & ref(token, ':')
       ;
 
   iterationStatement() =>
-       WHILE ref(token, '(') expression ref(token, ')') statement
-      | DO statement WHILE ref(token, '(') expression ref(token, ')') ref(token, ';')
-      | FOR ref(token, '(') forLoopParts ref(token, ')') statement
+        ref(WHILE) & ref(token, '(') & ref(expression) & ref(token, ')') & ref(statement)
+      | ref(DO) & ref(statement) & ref(WHILE) & ref(token, '(') & ref(expression) & ref(token, ')') & ref(token, ';')
+      | ref(FOR) & ref(token, '(') & ref(forLoopParts) & ref(token, ')') & ref(statement)
       ;
 
   forLoopParts() =>
-       forInitializerStatement ref(expression).optional() ref(token, ';') ref(expressionList).optional()
-      | declaredIdentifier IN expression
-      | identifier IN expression
+        ref(forInitializerStatement) & ref(expression).optional() & ref(token, ';') & ref(expressionList).optional()
+      | ref(declaredIdentifier) & ref(IN) & ref(expression)
+      | ref(identifier) & ref(IN) & ref(expression)
       ;
 
   forInitializerStatement() =>
-       initializedVariableDeclaration ref(token, ';')
-      | ref(expression).optional() ref(token, ';')
+        ref(initializedVariableDeclaration) & ref(token, ';')
+      | ref(expression).optional() & ref(token, ';')
       ;
 
   selectionStatement() =>
-       IF ref(token, '(') expression ref(token, ')') statement ((ELSE)=> ELSE statement).optional()
-      | SWITCH ref(token, '(') expression ref(token, ')') ref(token, '{') ref(switchCase).star() ref(defaultCase).optional() ref(token, '}')
+        ref(IF) & ref(token, '(') & ref(expression) & ref(token, ')') & ref(statement) & (ref(ELSE) & ref(statement)).optional()
+      | ref(SWITCH) & ref(token, '(') & ref(expression) & ref(token, ')') & ref(token, '{') & ref(switchCase).star() & ref(defaultCase).optional() & ref(token, '}')
       ;
 
   switchCase() =>
-       ref(label).optional() (CASE expression ref(token, ':')).plus() statements
+        ref(label).optional() & (ref(CASE) & ref(expression) & ref(token, ':')).plus() & ref(statements)
       ;
 
   defaultCase() =>
-       ref(label).optional() (CASE expression ref(token, ':')).star() DEFAULT ref(token, ':') statements
+        ref(label).optional() & (ref(CASE) & ref(expression) & ref(token, ':')).star() & ref(DEFAULT) & ref(token, ':') & ref(statements)
       ;
 
   tryStatement() =>
-       TRY block (ref(catchPart).plus() ref(finallyPart).optional() | finallyPart)
+        ref(TRY) & ref(block) & (ref(catchPart).plus() & ref(finallyPart).optional() | finallyPart)
       ;
 
   catchPart() =>
-       CATCH ref(token, '(') declaredIdentifier (ref(token, ',') declaredIdentifier).optional() ref(token, ')') block
+        ref(CATCH) & ref(token, '(') & ref(declaredIdentifier) & (ref(token, ',') & ref(declaredIdentifier)).optional() & ref(token, ')') & ref(block)
       ;
 
   finallyPart() =>
-       FINALLY block
+        ref(FINALLY) & ref(block)
       ;
 
   variableDeclaration() =>
-       declaredIdentifier (ref(token, ',') identifier).star()
+        ref(declaredIdentifier) & (ref(token, ',') & ref(identifier)).star()
       ;
 
   initializedVariableDeclaration() =>
-       declaredIdentifier (ref(token, '=') expression).optional() (ref(token, ',') initializedIdentifier).star()
+        ref(declaredIdentifier) & (ref(token, '=') & ref(expression)).optional() & (ref(token, ',') & ref(initializedIdentifier)).star()
       ;
 
   initializedIdentifierList() =>
-       initializedIdentifier (ref(token, ',') initializedIdentifier).star()
+        ref(initializedIdentifier) & (ref(token, ',') & ref(initializedIdentifier)).star()
       ;
 
   initializedIdentifier() =>
-       identifier (ref(token, '=') expression).optional()
+        ref(identifier) & (ref(token, '=') & ref(expression)).optional()
       ;
 
   constInitializedVariableDeclaration() =>
-       declaredIdentifier (ref(token, '=') constantExpression).optional()
-        (ref(token, ',') constInitializedIdentifier).star()
+        ref(declaredIdentifier) & (ref(token, '=') & ref(constantExpression)).optional()
+        (ref(token, ',') & ref(constInitializedIdentifier)).star()
       ;
 
   constInitializedIdentifier() =>
-       identifier (ref(token, '=') constantExpression).optional()
+        ref(identifier) & (ref(token, '=') & ref(constantExpression)).optional()
       ;
 
   // The constant expression production is used to mark certain expressions
@@ -464,39 +456,39 @@ class DartGrammarDefinition extends GrammarDefinition {
   // express these restrictions (yet), so this will have to be enforced by a
   // separate analysis phase.
   constantExpression() =>
-       expression
+        ref(expression)
       ;
 
   expression() =>
-       assignableExpression assignmentOperator expression
-      | conditionalExpression
+        ref(assignableExpression) & ref(assignmentOperator) & ref(expression)
+      | ref(conditionalExpression)
       ;
 
   expressionList() =>
-       expression (ref(token, ',') expression).star()
+        ref(expression) & (ref(token, ',') & ref(expression)).star()
       ;
 
-  arguments
-      : ref(token, '(') ref(argumentList).optional() ref(token, ')')
+  arguments() =>
+        ref(token, '(') & ref(argumentList).optional() & ref(token, ')')
       ;
 
   argumentList() =>
-       namedArgument (ref(token, ',') namedArgument).star()
-      | expressionList (ref(token, ',') namedArgument).star()
+        ref(namedArgument) & (ref(token, ',') & namedArgument).star()
+      | ref(expressionList) & (ref(token, ',') & namedArgument).star()
       ;
 
   namedArgument() =>
-       label expression
+        ref(label) & ref(expression)
       ;
 
   assignableExpression() =>
-       primary (ref(arguments).star() assignableSelector).plus()
-      | SUPER assignableSelector
-      | identifier
+        ref(primary) & (ref(arguments).star() & ref(assignableSelector)).plus()
+      | ref(SUPER) & ref(assignableSelector)
+      | ref(identifier)
       ;
 
   conditionalExpression() =>
-       logicalOrExpression (ref(token, '?') expression ref(token, ':') expression).optional()
+        ref(logicalOrExpression) & (ref(token, '?') & ref(expression) & ref(token, ':') & ref(expression)).optional()
       ;
 
   logicalOrExpression() =>
