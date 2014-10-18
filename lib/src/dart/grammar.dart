@@ -14,6 +14,20 @@ class DartGrammar extends GrammarParser {
  */
 class DartGrammarDefinition extends GrammarDefinition {
 
+  Parser token(input) {
+    if (input is String) {
+      if (input.isEmpty) {
+        throw new StateError('Empty token parser');
+      }
+      input = input.length == 1 ? char(input) : string(input);
+    }
+    if (input is! Parser) {
+      throw new StateError('Invalid token parser');
+    }
+    return input.token().trim(ref(HIDDEN));
+  }
+
+
   // Copyright (c) 2011, the Dart project authors. Please see the AUTHORS file
   // for details. All rights reserved. Use of this source code is governed by a
   // BSD-style license that can be found in the LICENSE file.
@@ -415,7 +429,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   tryStatement() =>
-        ref(TRY) & ref(block) & (ref(catchPart).plus() & ref(finallyPart).optional() | finallyPart)
+        ref(TRY) & ref(block) & (ref(catchPart).plus() & ref(finallyPart).optional() | ref(finallyPart))
       ;
 
   catchPart() =>
@@ -443,7 +457,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   constInitializedVariableDeclaration() =>
-        ref(declaredIdentifier) & (ref(token, '=') & ref(constantExpression)).optional()
+        ref(declaredIdentifier) & (ref(token, '=') & ref(constantExpression)).optional() &
         (ref(token, ',') & ref(constInitializedIdentifier)).star()
       ;
 
@@ -473,8 +487,8 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   argumentList() =>
-        ref(namedArgument) & (ref(token, ',') & namedArgument).star()
-      | ref(expressionList) & (ref(token, ',') & namedArgument).star()
+        ref(namedArgument) & (ref(token, ',') & ref(namedArgument)).star()
+      | ref(expressionList) & (ref(token, ',') & ref(namedArgument)).star()
       ;
 
   namedArgument() =>
@@ -492,187 +506,185 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   logicalOrExpression() =>
-       logicalAndExpression (ref(token, '||') logicalAndExpression).star()
+        ref(logicalAndExpression) & (ref(token, '||') & ref(logicalAndExpression)).star()
       ;
 
   logicalAndExpression() =>
-       bitwiseOrExpression (ref(token, '&&') bitwiseOrExpression).star()
+        ref(bitwiseOrExpression) & (ref(token, '&&') & ref(bitwiseOrExpression)).star()
       ;
 
   bitwiseOrExpression() =>
-       bitwiseXorExpression (ref(token, '|') bitwiseXorExpression).star()
-      | SUPER (ref(token, '|') bitwiseXorExpression).plus()
+        ref(bitwiseXorExpression) & (ref(token, '|') & ref(bitwiseXorExpression)).star()
+      | ref(SUPER) & (ref(token, '|') & ref(bitwiseXorExpression)).plus()
       ;
 
   bitwiseXorExpression() =>
-       bitwiseAndExpression (ref(token, '^') bitwiseAndExpression).star()
-      | SUPER (ref(token, '^') bitwiseAndExpression).plus()
+        ref(bitwiseAndExpression) & (ref(token, '^') & ref(bitwiseAndExpression)).star()
+      | ref(SUPER) & (ref(token, '^') & ref(bitwiseAndExpression)).plus()
       ;
 
   bitwiseAndExpression() =>
-       equalityExpression (ref(token, '&') equalityExpression).star()
-      | SUPER (ref(token, '&') equalityExpression).plus()
+        ref(equalityExpression) & (ref(token, '&') & ref(equalityExpression)).star()
+      | ref(SUPER) & (ref(token, '&') & ref(equalityExpression)).plus()
       ;
 
   equalityExpression() =>
-       relationalExpression (equalityOperator relationalExpression).optional()
-      | SUPER equalityOperator relationalExpression
+        ref(relationalExpression) & (ref(equalityOperator) & ref(relationalExpression)).optional()
+      | ref(SUPER) & ref(equalityOperator) & ref(relationalExpression)
       ;
 
   relationalExpression() =>
-       shiftExpression (isOperator type | relationalOperator shiftExpression).optional()
-      | SUPER relationalOperator shiftExpression
+        ref(shiftExpression) & (ref(isOperator) & ref(type) | ref(relationalOperator) & ref(shiftExpression)).optional()
+      | ref(SUPER) & ref(relationalOperator) & ref(shiftExpression)
       ;
 
   isOperator() =>
-       IS ref(token, '!').optional()
+        ref(IS) & ref(token, '!').optional()
       ;
 
   shiftExpression() =>
-       additiveExpression (shiftOperator additiveExpression).star()
-      | SUPER (shiftOperator additiveExpression).plus()
+        ref(additiveExpression) & (ref(shiftOperator) & ref(additiveExpression)).star()
+      | ref(SUPER) & (ref(shiftOperator) & ref(additiveExpression)).plus()
       ;
 
   additiveExpression() =>
-       multiplicativeExpression (additiveOperator multiplicativeExpression).star()
-      | SUPER (additiveOperator multiplicativeExpression).plus()
+        ref(multiplicativeExpression) & (ref(additiveOperator) & ref(multiplicativeExpression)).star()
+      | ref(SUPER) & (ref(additiveOperator) & ref(multiplicativeExpression)).plus()
       ;
 
   multiplicativeExpression() =>
-       unaryExpression (multiplicativeOperator unaryExpression).star()
-      | SUPER (multiplicativeOperator unaryExpression).plus()
+        ref(unaryExpression) & (ref(multiplicativeOperator) & ref(unaryExpression)).star()
+      | ref(SUPER) & (ref(multiplicativeOperator) & ref(unaryExpression)).plus()
       ;
 
   unaryExpression() =>
-       postfixExpression
-      | prefixOperator unaryExpression
-      | negateOperator SUPER
-      | ref(token, '-') SUPER  // Invokes the NEGATE operator.
-      | incrementOperator assignableExpression
+        ref(postfixExpression)
+      | ref(prefixOperator) & ref(unaryExpression)
+      | ref(negateOperator) & ref(SUPER)
+      | ref(token, '-') & ref(SUPER)
+      | ref(incrementOperator) & ref(assignableExpression)
       ;
 
   postfixExpression() =>
-       assignableExpression postfixOperator
-      | primary ref(selector).star()
+        ref(assignableExpression) & ref(postfixOperator)
+      | ref(primary) & ref(selector).star()
       ;
 
   selector() =>
-       assignableSelector
-      | arguments
+        ref(assignableSelector)
+      | ref(arguments)
       ;
 
-  assignableSelector
-      : ref(token, '[') expression ref(token, ']')
-      | ref(token, '.') identifier
+  assignableSelector() =>
+        ref(token, '[') & ref(expression) & ref(token, ']')
+      | ref(token, '.') & ref(identifier)
       ;
 
   primary() =>
-       {!parseFunctionExpressions}?=> primaryNoFE
-      | primaryFE
+        ref(primaryNoFE)
+      | ref(primaryFE)
       ;
 
   primaryFE() =>
-       functionExpression
-      | primaryNoFE
+        ref(functionExpression)
+      | ref(primaryNoFE)
       ;
 
   primaryNoFE() =>
-       THIS
-      | SUPER assignableSelector
-      | literal
-      | identifier
-      | ref(CONST).optional() ref(typeArguments).optional() compoundLiteral
-      | (NEW | CONST) type (ref(token, '.') identifier).optional() arguments
-      | expressionInParentheses
+        ref(THIS)
+      | ref(SUPER) & ref(assignableSelector)
+      | ref(literal)
+      | ref(identifier)
+      | ref(CONST).optional() & ref(typeArguments).optional() & ref(compoundLiteral)
+      | (ref(NEW) | ref(CONST)) & ref(type) & (ref(token, '.') & ref(identifier)).optional() & ref(arguments)
+      | ref(expressionInParentheses)
       ;
 
-  expressionInParentheses
-      :ref(token, '(') expression ref(token, ')')
+  expressionInParentheses() =>
+        ref(token, '(') & ref(expression) & ref(token, ')')
       ;
 
   literal() =>
-       NULL
-      | TRUE
-      | FALSE
-      | HEX_NUMBER
-      | NUMBER
-      | STRING
+        ref(NULL)
+      | ref(TRUE)
+      | ref(FALSE)
+      | ref(HEX_NUMBER)
+      | ref(NUMBER)
+      | ref(STRING)
       ;
 
-  compoundLiteral
-      : listLiteral
-      | mapLiteral
+  compoundLiteral() =>
+        ref(listLiteral)
+      | ref(mapLiteral)
       ;
 
-// The list literal syntax doesn't allow elided elements, unlike
-// in ECMAScript. We do allow a trailing comma.
   listLiteral() =>
-       '[' (expressionList ','?).optional() ']'
+        ref(token, '[') & (ref(expressionList) & ref(token, ',').optional()).optional() & ref(token, ']')
       ;
 
   mapLiteral() =>
-       '{' (mapLiteralEntry (',' mapLiteralEntry).star() ','?).optional() '}'
+        ref(token, '{') & (ref(mapLiteralEntry) & (ref(token, ',') & ref(mapLiteralEntry)).star() & ref(token, ',').optional()).optional() & ref(token, '}')
       ;
 
   mapLiteralEntry() =>
-       STRING ':' expression
+        ref(STRING) & ref(token, ':') & ref(expression)
       ;
 
   functionExpression() =>
-       (ref(returnType).optional() identifier).optional() formalParameterList functionExpressionBody
+        (ref(returnType).optional() & ref(identifier)).optional() & ref(formalParameterList) & ref(functionExpressionBody)
       ;
 
   functionDeclaration() =>
-       ref(returnType).optional() identifier formalParameterList
+        ref(returnType).optional() & ref(identifier) & ref(formalParameterList)
       ;
 
   functionPrefix() =>
-       ref(returnType).optional() identifier
+        ref(returnType).optional() & ref(identifier)
       ;
 
   functionBody() =>
-       '=>' expression ';'
-      | block
+        ref(token, '=>') & ref(expression) & ref(token, ';')
+      | ref(block)
       ;
 
   functionExpressionBody() =>
-       '=>' expression
-      | block
+        ref(token, '=>') & ref(expression)
+      | ref(block)
       ;
 
   // -----------------------------------------------------------------
   // Library files.
   // -----------------------------------------------------------------
   libraryUnit() =>
-       libraryDefinition EOF
+        ref(libraryDefinition).end()
       ;
 
   libraryDefinition() =>
-       LIBRARY '{' libraryBody '}'
+        ref(LIBRARY) & ref(token, '{') & ref(libraryBody) & ref(token, '}')
       ;
 
   libraryBody() =>
-       ref(libraryImport).optional() ref(librarySource).optional()
+        ref(libraryImport).optional() & ref(librarySource).optional()
       ;
 
   libraryImport() =>
-       IMPORT '=' '[' ref(importReferences).optional() ']'
+        ref(IMPORT) & ref(token, '=') & ref(token, '[') & ref(importReferences).optional() & ref(token, ']')
       ;
 
   importReferences() =>
-       importReference (',' importReference).star() ','?
+        ref(importReference) & (ref(token, ',') & ref(importReference)).star() & ref(token, ',').optional()
       ;
 
   importReference() =>
-       (IDENTIFIER ':').optional() STRING
+        (ref(IDENTIFIER) & ref(token, ':')).optional() & ref(STRING)
       ;
 
   librarySource() =>
-       SOURCE '=' '[' ref(sourceUrls).optional() ']'
+        ref(SOURCE) & ref(token, '=') & ref(token, '[') & ref(sourceUrls).optional() & ref(token, ']')
       ;
 
   sourceUrls() =>
-       STRING (',' STRING).star() ','?
+        ref(STRING) & (ref(token, ',') & ref(STRING)).star() & ref(token, ',').optional()
       ;
 
 
@@ -680,133 +692,90 @@ class DartGrammarDefinition extends GrammarDefinition {
   // Lexical tokens.
   // -----------------------------------------------------------------
   IDENTIFIER_NO_DOLLAR() =>
-       IDENTIFIER_START_NO_DOLLAR ref(IDENTIFIER_PART_NO_DOLLAR).star()
+        ref(IDENTIFIER_START_NO_DOLLAR) & ref(IDENTIFIER_PART_NO_DOLLAR).star()
       ;
 
   IDENTIFIER() =>
-       IDENTIFIER_START ref(IDENTIFIER_PART).star()
+        ref(IDENTIFIER_START) & ref(IDENTIFIER_PART).star()
       ;
 
   HEX_NUMBER() =>
-       '0x' ref(HEX_DIGIT).plus()
-      | '0X' ref(HEX_DIGIT).plus()
+        string('0x') & ref(HEX_DIGIT).plus()
+      | string('0X') & ref(HEX_DIGIT).plus()
       ;
 
   NUMBER() =>
-       ref(DIGIT).plus() NUMBER_OPT_FRACTIONAL_PART ref(EXPONENT).optional() NUMBER_OPT_ILLEGAL_END
-      | '.' ref(DIGIT).plus() ref(EXPONENT).optional() NUMBER_OPT_ILLEGAL_END
+        ref(DIGIT).plus() & ref(NUMBER_OPT_FRACTIONAL_PART) & ref(EXPONENT).optional() & ref(NUMBER_OPT_ILLEGAL_END)
+      | char('.') & ref(DIGIT).plus() & ref(EXPONENT).optional() & ref(NUMBER_OPT_ILLEGAL_END)
       ;
 
-  fragment NUMBER_OPT_FRACTIONAL_PART
-      : ('.' DIGIT)=> ('.' ref(DIGIT).plus())
-      | // Empty fractional part.
+  NUMBER_OPT_FRACTIONAL_PART() =>
+        char('.') & ref(DIGIT).plus()
+      | epsilon()
       ;
 
-  fragment NUMBER_OPT_ILLEGAL_END
-      : (IDENTIFIER_START)=> { error("numbers cannot contain identifiers"); }
-      | // Empty illegal end (good!).
-      ;
+  NUMBER_OPT_ILLEGAL_END() => epsilon();
+//        ref(IDENTIFIER_START).end()
+//      | epsilon()
+//      ;
 
-  fragment HEX_DIGIT
-      : 'a'..'f'
-      | 'A'..'F'
-      | DIGIT
-      ;
+  HEX_DIGIT() => pattern('0-9a-fA-F');
 
-  fragment IDENTIFIER_START
-      : IDENTIFIER_START_NO_DOLLAR
-      | '$'
-      ;
+  IDENTIFIER_START() => ref(IDENTIFIER_START_NO_DOLLAR) | char('\$');
 
-  fragment IDENTIFIER_START_NO_DOLLAR
-      : LETTER
-      | '_'
-      ;
+  IDENTIFIER_START_NO_DOLLAR() => ref(LETTER) | char('_');
 
-  fragment IDENTIFIER_PART_NO_DOLLAR
-      : IDENTIFIER_START_NO_DOLLAR
-      | DIGIT
-      ;
+  IDENTIFIER_PART_NO_DOLLAR() => ref(IDENTIFIER_START_NO_DOLLAR) | ref(DIGIT);
 
-  fragment IDENTIFIER_PART
-      : IDENTIFIER_START
-      | DIGIT
-      ;
+  IDENTIFIER_PART() => ref(IDENTIFIER_START) | ref(DIGIT);
 
-// Bug 5408613: Should be Unicode characters.
-  fragment LETTER
-      : 'a'..'z'
-      | 'A'..'Z'
-      ;
+  LETTER() => letter;
 
-  fragment DIGIT
-      : '0'..'9'
-      ;
+  DIGIT() => digit();
 
-  fragment EXPONENT
-      : ('e' | 'E') ('+' | '-').optional() ref(DIGIT).plus()
-      ;
+  EXPONENT() => pattern('eE') & pattern('+-').optional() & ref(DIGIT).plus();
 
   STRING() =>
-       '@'? MULTI_LINE_STRING
-      | SINGLE_LINE_STRING
+        char('@').optional() & ref(MULTI_LINE_STRING)
+      | ref(SINGLE_LINE_STRING)
       ;
 
-  fragment MULTI_LINE_STRING
-  options { greedy=false; }
-      : '"""' .* '"""'
-    | '\'\'\'' .* '\'\'\''
-    ;
-
-  fragment SINGLE_LINE_STRING
-      : '"' ref(STRING_CONTENT_DQ).star() '"'
-      | '\'' ref(STRING_CONTENT_SQ).star() '\''
-      | '@' '\'' (~( '\'' | NEWLINE )).star() '\''
-      | '@' '"' (~( '"' | NEWLINE )).star() '"'
+  MULTI_LINE_STRING() =>
+        string('"""') & any().starLazy(string('"""')) & string('"""')
+      | string("'''") & any().starLazy(string("'''")) & string("'''")
       ;
 
-  fragment STRING_CONTENT_DQ
-      : ~( '\\' | '"' | NEWLINE )
-      | '\\' ~( NEWLINE )
+  SINGLE_LINE_STRING() =>
+        char('"') & ref(STRING_CONTENT_DQ).star() & char('"')
+      | char("'") & ref(STRING_CONTENT_SQ).star() & char("'")
+      | string('@"') & pattern('^"\n\r').star() & char('"')
+      | string("@'") & pattern("^'\n\r").star() & char("'")
       ;
 
-  fragment STRING_CONTENT_SQ
-      : ~( '\\' | '\'' | NEWLINE )
-      | '\\' ~( NEWLINE )
+  STRING_CONTENT_DQ() =>
+        pattern('^\\"\n\r')
+      | char('\\') & pattern('\n\r')
       ;
 
-  fragment NEWLINE
-      : '\n'
-      | '\r'
+  STRING_CONTENT_SQ() =>
+        pattern("^\\'\n\r")
+      | char('\\') & pattern('\n\r')
       ;
 
-  BAD_STRING() =>
-       UNTERMINATED_STRING NEWLINE { error("unterminated string"); }
-      ;
+  NEWLINE() => pattern('\n\r');
 
-  fragment UNTERMINATED_STRING
-      : '@'? '\'' (~( '\'' | NEWLINE )).star()
-      | '@'? '"' (~( '"' | NEWLINE )).star()
-      ;
-
-  HASHBANG() =>
-       '#!' ~(NEWLINE).star() (NEWLINE).optional()
-      ;
+  HASHBANG() => string('#!') & pattern('^\n\r').star() & ref(NEWLINE).optional();
 
 
   // -----------------------------------------------------------------
   // Whitespace and comments.
   // -----------------------------------------------------------------
-  WHITESPACE() =>
-       ('\t' | ' ' | NEWLINE).plus() { $channel=HIDDEN; }
-      ;
+  HIDDEN() => ref(WHITESPACE) | ref(SINGLE_LINE_COMMENT) | ref(MULTI_LINE_COMMENT);
 
-  SINGLE_LINE_COMMENT() =>
-       '//' ~(NEWLINE).star() (NEWLINE).optional() { $channel=HIDDEN; }
-      ;
+  WHITESPACE() => pattern(' \t\n\r').plus();
 
-  MULTI_LINE_COMMENT() =>
-       '/*' (options { greedy=false; } : .).star() '*/' { $channel=HIDDEN; }
-      ;
+  SINGLE_LINE_COMMENT() => string('//') & any().starLazy(ref(NEWLINE)) & ref(NEWLINE);
+
+  MULTI_LINE_COMMENT() => string('/*') & any().starLazy(string('*/')) & string('*/');
 
 }
