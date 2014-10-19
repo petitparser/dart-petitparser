@@ -150,7 +150,8 @@ class _Reference extends Parser {
     }
     for (var i = 0; i < arguments.length; i++) {
       var a = arguments[i], b = other.arguments[i];
-      if (a is Parser && a is! _Reference) {
+      if (a is Parser && a is! _Reference &&
+          b is Parser && b is! _Reference) {
         // for parsers do a deep equality check
         if (!a.equals(b)) {
           return false;
