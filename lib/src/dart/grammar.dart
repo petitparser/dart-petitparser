@@ -21,8 +21,8 @@ class DartGrammarDefinition extends GrammarDefinition {
       }
       input = input.length == 1 ? char(input) : string(input);
     }
-    if (input is! Parser) {
-      throw new StateError('Invalid token parser');
+    if (input is! Parser && input is TrimmingParser) {
+      throw new StateError('Invalid token parser: $input');
     }
     return input.token().trim(ref(HIDDEN));
   }
@@ -110,7 +110,7 @@ class DartGrammarDefinition extends GrammarDefinition {
   classDefinition() =>
         ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(superclass).optional() & ref(interfaces).optional() &
         ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}')
-      | ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(interfaces).optional() & ref(NATIVE) & ref(STRING) &
+      | ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(interfaces).optional() & ref(NATIVE) & ref(token, STRING) &
         ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}');
 
   typeParameter() => ref(identifier) & (ref(EXTENDS) & ref(type)).optional();
@@ -136,7 +136,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(functionNative)
       | ref(functionBody);
 
-  functionNative() => ref(NATIVE) & ref(STRING).optional() & ref(token, ';');
+  functionNative() => ref(NATIVE) & ref(token, STRING).optional() & ref(token, ';');
 
   // A method, operator, or constructor (which all should be followed by
   // a block of code).
@@ -328,7 +328,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(type) & ref(identifier)
       ;
 
-  identifier() =>
+  identifier() => ref(token,
         ref(IDENTIFIER_NO_DOLLAR)
       | ref(IDENTIFIER)
       | ref(ABSTRACT)
@@ -349,7 +349,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(SOURCE)
       | ref(STATIC)
       | ref(TYPEDEF)
-      ;
+      );
 
   qualified() =>
         ref(identifier) & (ref(token, '.') & ref(identifier)).optional()
@@ -604,13 +604,13 @@ class DartGrammarDefinition extends GrammarDefinition {
         ref(token, '(') & ref(expression) & ref(token, ')')
       ;
 
-  literal() =>
+  literal() => ref(token,
         ref(NULL)
       | ref(TRUE)
       | ref(FALSE)
       | ref(HEX_NUMBER)
       | ref(NUMBER)
-      | ref(STRING)
+      | ref(STRING))
       ;
 
   compoundLiteral() =>
@@ -627,7 +627,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   mapLiteralEntry() =>
-        ref(STRING) & ref(token, ':') & ref(expression)
+        ref(token, STRING) & ref(token, ':') & ref(expression)
       ;
 
   functionExpression() =>
@@ -676,7 +676,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   importReference() =>
-        (ref(IDENTIFIER) & ref(token, ':')).optional() & ref(STRING)
+        (ref(token, IDENTIFIER) & ref(token, ':')).optional() & ref(token, STRING)
       ;
 
   librarySource() =>
@@ -684,7 +684,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   sourceUrls() =>
-        ref(STRING) & (ref(token, ',') & ref(STRING)).star() & ref(token, ',').optional()
+        ref(token, STRING) & (ref(token, ',') & ref(token, STRING)).star() & ref(token, ',').optional()
       ;
 
 
@@ -729,7 +729,7 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   IDENTIFIER_PART() => ref(IDENTIFIER_START) | ref(DIGIT);
 
-  LETTER() => letter;
+  LETTER() => letter();
 
   DIGIT() => digit();
 
@@ -770,12 +770,20 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Whitespace and comments.
   // -----------------------------------------------------------------
-  HIDDEN() => ref(WHITESPACE) | ref(SINGLE_LINE_COMMENT) | ref(MULTI_LINE_COMMENT);
+  HIDDEN() => ref(WHITESPACE)
+      | ref(SINGLE_LINE_COMMENT)
+      | ref(MULTI_LINE_COMMENT)
+      ;
 
-  WHITESPACE() => pattern(' \t\n\r').plus();
+  WHITESPACE() => whitespace().plus();
 
-  SINGLE_LINE_COMMENT() => string('//') & any().starLazy(ref(NEWLINE)) & ref(NEWLINE);
+  SINGLE_LINE_COMMENT() => string('//')
+      & ref(NEWLINE).neg().star()
+      & ref(NEWLINE).optional()
+      ;
 
-  MULTI_LINE_COMMENT() => string('/*') & any().starLazy(string('*/')) & string('*/');
+  MULTI_LINE_COMMENT() => string('/*')
+      & (ref(MULTI_LINE_COMMENT) | string('*/').neg()).star() & string('*/')
+      ;
 
 }

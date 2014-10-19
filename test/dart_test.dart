@@ -6,6 +6,7 @@ import 'package:petitparser/test.dart';
 import 'package:petitparser/dart.dart';
 
 void main() {
+  var definition = new DartGrammarDefinition();
   var dart = new DartGrammar();
   group('basic', () {
     test('structure', () {
@@ -15,7 +16,7 @@ void main() {
     });
   });
   group('whitespace', () {
-    var whitespaces = dart['whitespace'].star().end();
+    var whitespaces = definition.build(start: definition.HIDDEN).end();
     test('whitespace', () {
       expect(' ', accept(whitespaces));
       expect('\t', accept(whitespaces));
@@ -65,13 +66,13 @@ void main() {
   });
   group('child parsers', () {
     test('stringContentDQ', () {
-      var parser = dart['stringContentDQ'];
+      var parser = definition.build(start: definition.STRING_CONTENT_DQ).end();
       expect("'hi'", accept(parser));
       expect('hello', accept(parser));
       expect(' whitespace ', accept(parser));
     });
     test('singleLineString', () {
-      var parser = dart['singleLineString'];
+      var parser = definition.build(start: definition.STRING).end();
       expect("'hi'", accept(parser));
       expect('"hi"', accept(parser));
       expect(r"r'$'", accept(parser));
@@ -82,7 +83,7 @@ void main() {
   });
   group('offical', () {
     test('identifier', () {
-      var parser = dart['identifier'].end();
+      var parser = definition.build(start: definition.identifier).end();
       expect('foo', accept(parser));
       expect('bar9', accept(parser));
       expect('dollar\$', accept(parser));
@@ -96,7 +97,7 @@ void main() {
       expect('', isNot(accept(parser)));
     });
     test('numeric literal', () {
-      var parser = dart['numericLiteral'].end();
+      var parser = definition.build(start: definition.literal).end();
       expect('0', accept(parser));
       expect('1984', accept(parser));
       expect(' 1984', accept(parser));
@@ -121,7 +122,7 @@ void main() {
       expect('', isNot(accept(parser)));
     });
     test('boolean literal', () {
-      var parser = dart['booleanLiteral'].end();
+      var parser = definition.build(start: definition.literal).end();
       expect('true', accept(parser));
       expect('false', accept(parser));
       expect(' true', accept(parser));
