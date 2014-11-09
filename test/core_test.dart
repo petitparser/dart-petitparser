@@ -565,6 +565,15 @@ main() {
       expectFailure(parser, 'd', 0, '[a-c] expected');
       expectFailure(parser, '');
     });
+    test('pattern() with overlapping range', () {
+      var parser = pattern('a-cb-d');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectFailure(parser, 'e', 0, '[a-cb-d] expected');
+      expectFailure(parser, '');
+    });
     test('pattern() with composed', () {
       var parser = pattern('ac-df-');
       expectSuccess(parser, 'a', 'a');

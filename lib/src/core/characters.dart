@@ -218,14 +218,17 @@ Parser pattern(String element, [String message]) {
 }
 
 Parser _createPatternParser() {
-  var single = any().map((each) {
-    return new _SingleCharMatcher(_toCharCode(each));
-  });
+  var single = any();
   var multiple = any().seq(char('-')).seq(any()).map((each) {
-    return new _RangeCharMatcher(_toCharCode(each[0]), _toCharCode(each[2]));
+    var buffer = new StringBuffer();
+    var start = _toCharCode(each[0]), stop = _toCharCode(each[2]);
+    for (var value = start; value <= stop; value++) {
+      buffer.writeCharCode(value);
+    }
+    return buffer.toString();
   });
   var positive = multiple.or(single).plus().map((each) {
-    return each.length == 1 ? each[0] : new _AltCharMatcher(each);
+    return _optimized(each.join());
   });
   return char('^').optional().seq(positive).map((each) {
     return each[0] == null ? each[1] : new _NotCharMatcher(each[1]);
