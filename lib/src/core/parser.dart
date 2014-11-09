@@ -269,14 +269,17 @@ abstract class Parser {
 
   /**
    * Returns a parser that consumes input before and after the receiver. The
-   * optional argument [trimmer] is a parser that consumes the excess input. By
-   * default `whitespace()` is used.
+   * optional argument is a parser that consumes the excess input. By default
+   * `whitespace()` is used. To arguments can be provided to have different
+   * parsers on the [left] and [right] side.
    *
    * For example, the parser `letter().plus().trim()` returns `['a', 'b']`
    * for the input `' ab\n'` and consumes the complete input string.
    */
-  Parser trim([Parser trimmer]) {
-    return new TrimmingParser(this, trimmer == null ? whitespace() : trimmer);
+  Parser trim([Parser left, Parser right]) {
+    if (left == null) left = whitespace();
+    if (right == null) right = left;
+    return new TrimmingParser(this, left, right);
   }
 
   /**

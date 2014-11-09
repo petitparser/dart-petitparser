@@ -447,7 +447,7 @@ main() {
       expectFailure(parser, ' b', 1, 'a expected');
       expectFailure(parser, '  b', 2, 'a expected');
     });
-    test('trim() custom', () {
+    test('trim() both', () {
       var parser = char('a').trim(char('*'));
       expectSuccess(parser, 'a', 'a');
       expectSuccess(parser, '*a', 'a');
@@ -460,6 +460,22 @@ main() {
       expectFailure(parser, 'b', 0, 'a expected');
       expectFailure(parser, '*b', 1, 'a expected');
       expectFailure(parser, '**b', 2, 'a expected');
+    });
+    test('trim() left/right', () {
+      var parser = char('a').trim(char('*'), char('#'));
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, '*a', 'a');
+      expectSuccess(parser, 'a#', 'a');
+      expectSuccess(parser, '*a#', 'a');
+      expectSuccess(parser, '**a', 'a');
+      expectSuccess(parser, 'a##', 'a');
+      expectSuccess(parser, '**a##', 'a');
+      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, '*b', 1, 'a expected');
+      expectFailure(parser, '**b', 2, 'a expected');
+      expectFailure(parser, '#a', 0, 'a expected');
+      expectSuccess(parser, 'a*', 'a', 1);
     });
     test('undefined()', () {
       var parser = undefined();
@@ -911,7 +927,7 @@ main() {
     test('string()', () => verify(string('ab')));
     test('times()', () => verify(digit().times(2)));
     test('token()', () => verify(digit().token()));
-    test('trim()', () => verify(digit().trim()));
+    test('trim()', () => verify(digit().trim(char('a'), char('b'))));
     test('undefined()', () => verify(undefined()));
   });
   group('regressions', () {

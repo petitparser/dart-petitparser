@@ -36,15 +36,16 @@ class ActionParser extends DelegateParser {
  */
 class TrimmingParser extends DelegateParser {
 
-  Parser _trimmer;
+  Parser _left;
+  Parser _right;
 
-  TrimmingParser(parser, this._trimmer): super(parser);
+  TrimmingParser(parser, this._left, this._right): super(parser);
 
   @override
   Result parseOn(Context context) {
     var current = context;
     do {
-      current = _trimmer.parseOn(current);
+      current = _left.parseOn(current);
     } while (current.isSuccess);
     var result = _delegate.parseOn(current);
     if (result.isFailure) {
@@ -52,22 +53,25 @@ class TrimmingParser extends DelegateParser {
     }
     current = result;
     do {
-      current = _trimmer.parseOn(current);
+      current = _right.parseOn(current);
     } while (current.isSuccess);
     return current.success(result.value);
   }
 
   @override
-  Parser copy() => new TrimmingParser(_delegate, _trimmer);
+  Parser copy() => new TrimmingParser(_delegate, _left, _right);
 
   @override
-  List<Parser> get children => [_delegate, _trimmer];
+  List<Parser> get children => [_delegate, _left, _right];
 
   @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (_trimmer == source) {
-      _trimmer = target;
+    if (_left == source) {
+      _left = target;
+    }
+    if (_right == source) {
+      _right = target;
     }
   }
 
