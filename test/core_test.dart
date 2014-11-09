@@ -689,8 +689,6 @@ main() {
     test('context', () {
       expect(context.buffer, buffer);
       expect(context.position, 0);
-      expect(context.isSuccess, isFalse);
-      expect(context.isFailure, isFalse);
       expect(context.toString(), 'Context[1:1]');
     });
     test('success', () {

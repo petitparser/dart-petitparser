@@ -18,16 +18,6 @@ class Context {
   final int position;
 
   /**
-   * Returns [true] if this result indicates a parse success.
-   */
-  bool get isSuccess => false;
-
-  /**
-   * Returns [true] if this result indicates a parse failure.
-   */
-  bool get isFailure => false;
-
-  /**
    * Returns a result indicating a parse success.
    */
   Result success(result, [int position]) {
@@ -59,6 +49,16 @@ class Context {
 abstract class Result extends Context {
 
   const Result(buffer, position): super(buffer, position);
+
+  /**
+   * Returns [true] if this result indicates a parse success.
+   */
+  bool get isSuccess => false;
+
+  /**
+   * Returns [true] if this result indicates a parse failure.
+   */
+  bool get isFailure => false;
 
   /**
    * Returns the parse result of the current context.
