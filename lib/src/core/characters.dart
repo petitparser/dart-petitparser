@@ -90,12 +90,51 @@ class _AltCharMatcher implements _CharMatcher {
 }
 
 /**
+ * Returns a parser that accepts any of the specified characters.
+ */
+Parser anyOf(String string, [String message]) {
+  return new CharacterParser(
+      _optimized(string),
+      message != null ? message : 'any of "$string" expected');
+}
+
+_CharMatcher _optimized(String characters) {
+  var codeUnits = characters.codeUnits.toSet().toList()..sort();
+  var groupedRanges = new Map();
+  for (var i = 0; i < codeUnits.length; i++) {
+    var key = i - codeUnits[i];
+    var ranges = groupedRanges.putIfAbsent(key, () => new List());
+    ranges.add(codeUnits[i]);
+  }
+  var matchers = new List();
+  for (var range in groupedRanges.values) {
+    if (range.length > 2) {
+      matchers.add(new _RangeCharMatcher(range.first, range.last));
+    } else {
+      for (var value in range) {
+        matchers.add(new _SingleCharMatcher(value));
+      }
+    }
+  }
+  return matchers.length == 1 ? matchers.single : new _AltCharMatcher(matchers);
+}
+
+/**
+ * Returns a parser that accepts none of the specified characters.
+ */
+Parser noneOf(String string, [String message]) {
+  return new CharacterParser(
+      new _NotCharMatcher(_optimized(string)),
+      message != null ? message : 'none of "$string" expected');
+}
+
+/**
  * Returns a parser that accepts a specific character only.
  */
 Parser char(element, [String message]) {
   return new CharacterParser(
       new _SingleCharMatcher(_toCharCode(element)),
-      message != null ? message : '$element expected');
+      message != null ? message : '"$element" expected');
 }
 
 class _SingleCharMatcher implements _CharMatcher {

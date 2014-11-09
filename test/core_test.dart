@@ -2,7 +2,7 @@ library core_test;
 
 import 'dart:math' as math;
 
-import 'package:unittest/unittest.dart';
+import 'package:unittest/unittest.dart' hide anyOf;
 
 import 'package:petitparser/petitparser.dart';
 
@@ -68,7 +68,7 @@ main() {
     test('and()', () {
       var parser = char('a').and();
       expectSuccess(parser, 'a', 'a', 0);
-      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
     test('or() operator', () {
@@ -95,7 +95,7 @@ main() {
     });
     test('end()', () {
       var parser = char('a').end();
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'aa', 1, 'end of input expected');
     });
@@ -176,8 +176,8 @@ main() {
       expectFailure(parser, '12', 1, 'letter expected');
     });
     test('not()', () {
-      var parser = char('a').not('not a expected');
-      expectFailure(parser, 'a', 0, 'not a expected');
+      var parser = char('a').not('not "a" expected');
+      expectFailure(parser, 'a', 0, 'not "a" expected');
       expectSuccess(parser, 'b', null, 0);
       expectSuccess(parser, '', null);
     });
@@ -197,7 +197,7 @@ main() {
     });
     test('plus()', () {
       var parser = char('a').plus();
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'aa', ['a', 'a']);
       expectSuccess(parser, 'aaa', ['a', 'a', 'a']);
@@ -240,15 +240,15 @@ main() {
     });
     test('times()', () {
       var parser = char('a').times(2);
-      expectFailure(parser, '', 0, 'a expected');
-      expectFailure(parser, 'a', 1, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'a', 1, '"a" expected');
       expectSuccess(parser, 'aa', ['a', 'a']);
       expectSuccess(parser, 'aaa', ['a', 'a'], 2);
     });
     test('repeat()', () {
       var parser = char('a').repeat(2, 3);
-      expectFailure(parser, '', 0, 'a expected');
-      expectFailure(parser, 'a', 1, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'a', 1, '"a" expected');
       expectSuccess(parser, 'aa', ['a', 'a']);
       expectSuccess(parser, 'aaa', ['a', 'a', 'a']);
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
@@ -326,7 +326,7 @@ main() {
     });
     test('separatedBy()', () {
       var parser = char('a').separatedBy(char('b'));
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a'], 1);
       expectSuccess(parser, 'aba', ['a', 'b', 'a']);
@@ -336,7 +336,7 @@ main() {
     });
     test('separatedBy() without separators', () {
       var parser = char('a').separatedBy(char('b'), includeSeparators: false);
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a'], 1);
       expectSuccess(parser, 'aba', ['a', 'a']);
@@ -346,7 +346,7 @@ main() {
     });
     test('separatedBy() separator at end', () {
       var parser = char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a', 'b']);
       expectSuccess(parser, 'aba', ['a', 'b', 'a']);
@@ -356,7 +356,7 @@ main() {
     });
     test('separatedBy() without separators & separator at end', () {
       var parser = char('a').separatedBy(char('b'), includeSeparators: false, optionalSeparatorAtEnd: true);
-      expectFailure(parser, '', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a']);
       expectSuccess(parser, 'aba', ['a', 'a']);
@@ -442,10 +442,10 @@ main() {
       expectSuccess(parser, '  a', 'a');
       expectSuccess(parser, 'a  ', 'a');
       expectSuccess(parser, '  a  ', 'a');
-      expectFailure(parser, '', 0, 'a expected');
-      expectFailure(parser, 'b', 0, 'a expected');
-      expectFailure(parser, ' b', 1, 'a expected');
-      expectFailure(parser, '  b', 2, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, ' b', 1, '"a" expected');
+      expectFailure(parser, '  b', 2, '"a" expected');
     });
     test('trim() both', () {
       var parser = char('a').trim(char('*'));
@@ -456,10 +456,10 @@ main() {
       expectSuccess(parser, '**a', 'a');
       expectSuccess(parser, 'a**', 'a');
       expectSuccess(parser, '**a**', 'a');
-      expectFailure(parser, '', 0, 'a expected');
-      expectFailure(parser, 'b', 0, 'a expected');
-      expectFailure(parser, '*b', 1, 'a expected');
-      expectFailure(parser, '**b', 2, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, '*b', 1, '"a" expected');
+      expectFailure(parser, '**b', 2, '"a" expected');
     });
     test('trim() left/right', () {
       var parser = char('a').trim(char('*'), char('#'));
@@ -470,11 +470,11 @@ main() {
       expectSuccess(parser, '**a', 'a');
       expectSuccess(parser, 'a##', 'a');
       expectSuccess(parser, '**a##', 'a');
-      expectFailure(parser, '', 0, 'a expected');
-      expectFailure(parser, 'b', 0, 'a expected');
-      expectFailure(parser, '*b', 1, 'a expected');
-      expectFailure(parser, '**b', 2, 'a expected');
-      expectFailure(parser, '#a', 0, 'a expected');
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, '*b', 1, '"a" expected');
+      expectFailure(parser, '**b', 2, '"a" expected');
+      expectFailure(parser, '#a', 0, '"a" expected');
       expectSuccess(parser, 'a*', 'a', 1);
     });
     test('undefined()', () {
@@ -487,16 +487,36 @@ main() {
     test('setable()', () {
       var parser = char('a').setable();
       expectSuccess(parser, 'a', 'a');
-      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
   });
   group('characters', () {
-    test('char()', () {
-      var parser = char('a');
-      expectSuccess(parser, 'a', 'a');
-      expectFailure(parser, 'b', 0, 'a expected');
-      expectFailure(parser, '');
+    test('anyOf()', () {
+      var parser = anyOf('uncopyrightable');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'g', 'g');
+      expectSuccess(parser, 'h', 'h');
+      expectSuccess(parser, 'i', 'i');
+      expectSuccess(parser, 'o', 'o');
+      expectSuccess(parser, 'p', 'p');
+      expectSuccess(parser, 'r', 'r');
+      expectSuccess(parser, 't', 't');
+      expectSuccess(parser, 'y', 'y');
+      expectFailure(parser, 'x', 0, 'any of "uncopyrightable" expected');
+    });
+    test('noneOf()', () {
+      var parser = noneOf('uncopyrightable');
+      expectSuccess(parser, 'x', 'x');
+      expectFailure(parser, 'c', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'g', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'h', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'i', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'o', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'p', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'r', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 't', 0, 'none of "uncopyrightable" expected');
+      expectFailure(parser, 'y', 0, 'none of "uncopyrightable" expected');
     });
     test('char() with number', () {
       var parser = char(97, 'lowercase a');
@@ -849,11 +869,11 @@ main() {
       expectSuccess(STRING, '"abc"x', '"abc"', 5);
     });
     test('invalid string', () {
-      expectFailure(STRING, '"', 1, '" expected');
-      expectFailure(STRING, '"a', 2, '" expected');
-      expectFailure(STRING, '"ab', 3, '" expected');
-      expectFailure(STRING, 'a"', 0, '" expected');
-      expectFailure(STRING, 'ab"', 0, '" expected');
+      expectFailure(STRING, '"', 1, '""" expected');
+      expectFailure(STRING, '"a', 2, '""" expected');
+      expectFailure(STRING, '"ab', 3, '""" expected');
+      expectFailure(STRING, 'a"', 0, '""" expected');
+      expectFailure(STRING, 'ab"', 0, '""" expected');
     });
     test('return statement', () {
       expectSuccess(KEYWORD, 'return f', 'f');
@@ -870,7 +890,7 @@ main() {
     test('invalid statement', () {
       expectFailure(KEYWORD, 'retur f', 0, 'return expected');
       expectFailure(KEYWORD, 'return1', 6, 'whitespace expected');
-      expectFailure(KEYWORD, 'return  _', 8, '" expected');
+      expectFailure(KEYWORD, 'return  _', 8, '""" expected');
     });
     test('javadoc', () {
       expectSuccess(JAVADOC, '/** foo */', '/** foo */');
@@ -1022,7 +1042,7 @@ main() {
         self.def('start', char('a'));
       });
       expectSuccess(parser, 'a', 'a', 1);
-      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
     test('circular', () {
@@ -1041,7 +1061,7 @@ main() {
         self.redef('start', char('a'));
       });
       expectSuccess(parser, 'a', 'a', 1);
-      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
     test('redefine function', () {
@@ -1054,7 +1074,7 @@ main() {
         });
       });
       expectSuccess(parser, 'a', 'a', 1);
-      expectFailure(parser, 'b', 0, 'a expected');
+      expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
     test('define completed', () {
