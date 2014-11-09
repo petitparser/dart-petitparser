@@ -16,10 +16,9 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   Parser token(input) {
     if (input is String) {
-      if (input.isEmpty) {
-        throw new StateError('Empty token parser');
-      }
       input = input.length == 1 ? char(input) : string(input);
+    } else if (input is Function) {
+      input = ref(input);
     }
     if (input is! Parser && input is TrimmingParser) {
       throw new StateError('Invalid token parser: $input');
@@ -328,9 +327,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(type) & ref(identifier)
       ;
 
-  identifier() => ref(token,
-        ref(IDENTIFIER_NO_DOLLAR)
-      | ref(IDENTIFIER)
+  identifier() => ref(token, ref(IDENTIFIER)
       | ref(ABSTRACT)
       | ref(ASSERT)
       | ref(CLASS)
@@ -770,12 +767,14 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Whitespace and comments.
   // -----------------------------------------------------------------
-  HIDDEN() => ref(WHITESPACE)
+  HIDDEN() => ref(HIDDEN_STUFF).plus();
+
+  HIDDEN_STUFF() => ref(WHITESPACE)
       | ref(SINGLE_LINE_COMMENT)
       | ref(MULTI_LINE_COMMENT)
       ;
 
-  WHITESPACE() => whitespace().plus();
+  WHITESPACE() => whitespace();
 
   SINGLE_LINE_COMMENT() => string('//')
       & ref(NEWLINE).neg().star()

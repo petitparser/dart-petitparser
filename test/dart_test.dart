@@ -65,17 +65,10 @@ void main() {
     });
   });
   group('child parsers', () {
-    test('stringContentDQ', () {
-      var parser = definition.build(start: definition.STRING_CONTENT_DQ).end();
-      expect("'hi'", accept(parser));
-      expect('hello', accept(parser));
-      expect(' whitespace ', accept(parser));
-    });
+    var parser = definition.build(start: definition.STRING).end();
     test('singleLineString', () {
-      var parser = definition.build(start: definition.STRING).end();
       expect("'hi'", accept(parser));
       expect('"hi"', accept(parser));
-      expect(r"r'$'", accept(parser));
       expect('no quotes', isNot(accept(parser)));
       expect('"missing quote', isNot(accept(parser)));
       expect("'missing quote", isNot(accept(parser)));
@@ -101,12 +94,12 @@ void main() {
       expect('0', accept(parser));
       expect('1984', accept(parser));
       expect(' 1984', accept(parser));
-//      expect('0xCAFE', accept(parser));
-//      expect('0XCAFE', accept(parser));
-//      expect('0xcafe', accept(parser));
-//      expect('0Xcafe', accept(parser));
-//      expect('0xCaFe', accept(parser));
-//      expect('0XCaFe', accept(parser));
+      expect('0xCAFE', accept(parser));
+      expect('0XCAFE', accept(parser));
+      expect('0xcafe', accept(parser));
+      expect('0Xcafe', accept(parser));
+      expect('0xCaFe', accept(parser));
+      expect('0XCaFe', accept(parser));
       expect('3e4', accept(parser));
       expect('3e-4', accept(parser));
       expect('3E4', accept(parser));
@@ -127,13 +120,6 @@ void main() {
       expect('false', accept(parser));
       expect(' true', accept(parser));
       expect(' false', accept(parser));
-      expect('9', isNot(accept(parser)));
-      expect('"foo"', isNot(accept(parser)));
-      expect("'foo'", isNot(accept(parser)));
-      expect('TRUE', isNot(accept(parser)));
-      expect('FALSE', isNot(accept(parser)));
-      expect('null', isNot(accept(parser)));
-      expect('0xCAFE', isNot(accept(parser)));
     });
   });
 }
