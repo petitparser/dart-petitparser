@@ -27,8 +27,8 @@ abstract class RepeatingParser extends DelegateParser {
   }
 
   @override
-  bool equalProperties(RepeatingParser other) {
-    return super.equalProperties(other) && _min == other._min && _max == other._max;
+  bool hasEqualProperties(RepeatingParser other) {
+    return super.hasEqualProperties(other) && _min == other._min && _max == other._max;
   }
 
 }

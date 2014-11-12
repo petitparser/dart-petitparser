@@ -19,7 +19,7 @@ Parser removeDuplicates(Parser parser) {
   var uniques = new Set();
   return transformParser(parser, (source) {
     var target = uniques.firstWhere((each) {
-      return source != each && source.equals(each);
+      return source != each && source.isEqualTo(each);
     }, orElse: () => null);
     if (target == null) {
       uniques.add(source);

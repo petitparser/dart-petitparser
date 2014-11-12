@@ -65,7 +65,7 @@ main() {
       var input = lowercase().setable();
       var output = transformParser(input, (parser) => parser);
       expect(input, isNot(output));
-      expect(input.equals(output), isTrue);
+      expect(input.isEqualTo(output), isTrue);
       expect(input.children.single, isNot(output.children.single));
     });
     test('root', () {
@@ -73,10 +73,10 @@ main() {
       var input = source;
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.equals(parser) ? target : parser;
+        return source.isEqualTo(parser) ? target : parser;
       });
       expect(input, isNot(output));
-      expect(input.equals(output), isFalse);
+      expect(input.isEqualTo(output), isFalse);
       expect(input, source);
       expect(output, target);
     });
@@ -85,10 +85,10 @@ main() {
       var input = source.setable();
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.equals(parser) ? target : parser;
+        return source.isEqualTo(parser) ? target : parser;
       });
       expect(input, isNot(output));
-      expect(input.equals(output), isFalse);
+      expect(input.isEqualTo(output), isFalse);
       expect(input.children.single, source);
       expect(output.children.single, target);
     });
@@ -97,13 +97,13 @@ main() {
       var input = source & source;
       var target = uppercase();
       var output = transformParser(input, (parser) {
-        return source.equals(parser) ? target : parser;
+        return source.isEqualTo(parser) ? target : parser;
       });
       expect(input, isNot(output));
-      expect(input.equals(output), isFalse);
-      expect(input.equals(source & source), isTrue);
+      expect(input.isEqualTo(output), isFalse);
+      expect(input.isEqualTo(source & source), isTrue);
       expect(input.children.first, input.children.last);
-      expect(output.equals(target & target), isTrue);
+      expect(output.isEqualTo(target & target), isTrue);
       expect(output.children.first, output.children.last);
     });
     test('loop (existing)', () {
@@ -113,7 +113,7 @@ main() {
         return parser;
       });
       expect(input, isNot(output));
-      expect(input.equals(output), isTrue);
+      expect(input.isEqualTo(output), isTrue);
       var inputs = allParser(input).toSet();
       var outputs = allParser(output).toSet();
       inputs.forEach((each) => expect(outputs.contains(each), isFalse));
@@ -125,33 +125,33 @@ main() {
       var target = failure().setable().setable().setable();
       target.children.single.children.single.set(target);
       var output = transformParser(input, (parser) {
-        return source.equals(parser) ? target : parser;
+        return source.isEqualTo(parser) ? target : parser;
       });
       expect(input, isNot(output));
-      expect(input.equals(output), isFalse);
-      expect(output.equals(target), isTrue);
+      expect(input.isEqualTo(output), isFalse);
+      expect(output.isEqualTo(target), isTrue);
     });
   });
   group('optimize', () {
     test('remove setables', () {
       var input = lowercase().setable();
       var output = removeSetables(input);
-      expect(output.equals(lowercase()), isTrue);
+      expect(output.isEqualTo(lowercase()), isTrue);
     });
     test('remove nested setables', () {
       var input = lowercase().setable().star();
       var output = removeSetables(input);
-      expect(output.equals(lowercase().star()), isTrue);
+      expect(output.isEqualTo(lowercase().star()), isTrue);
     });
     test('remove double setables', () {
       var input = lowercase().setable().setable();
       var output = removeSetables(input);
-      expect(output.equals(lowercase()), isTrue);
+      expect(output.isEqualTo(lowercase()), isTrue);
     });
     test('remove duplicate', () {
       var input = lowercase() & lowercase();
       var output = removeDuplicates(input);
-      expect(input.equals(output), isTrue);
+      expect(input.isEqualTo(output), isTrue);
       expect(input.children.first, isNot(input.children.last));
       expect(output.children.first, output.children.last);
     });

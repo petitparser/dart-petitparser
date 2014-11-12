@@ -153,7 +153,7 @@ class _Reference extends Parser {
       if (a is Parser && a is! _Reference &&
           b is Parser && b is! _Reference) {
         // for parsers do a deep equality check
-        if (!a.equals(b)) {
+        if (!a.isEqualTo(b)) {
           return false;
         }
       } else {

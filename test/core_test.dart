@@ -915,10 +915,10 @@ main() {
       expect(copy.runtimeType, parser.runtimeType);
       expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
       // check equality
-      expect(copy.equals(copy), isTrue);
-      expect(parser.equals(parser), isTrue);
-      expect(copy.equals(parser), isTrue);
-      expect(parser.equals(copy), isTrue);
+      expect(copy.isEqualTo(copy), isTrue);
+      expect(parser.isEqualTo(parser), isTrue);
+      expect(copy.isEqualTo(parser), isTrue);
+      expect(parser.isEqualTo(copy), isTrue);
       // check replacing
       var replaced = new List();
       for (var i = 0; i < copy.children.length; i++) {

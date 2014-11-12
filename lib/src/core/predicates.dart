@@ -29,8 +29,8 @@ class AnyParser extends Parser {
   Parser copy() => new AnyParser(_message);
 
   @override
-  bool equalProperties(AnyParser other) {
-    return super.equalProperties(other)
+  bool hasEqualProperties(AnyParser other) {
+    return super.hasEqualProperties(other)
         && _message == other._message;
   }
 
@@ -120,8 +120,8 @@ class PredicateParser extends Parser {
   Parser copy() => new PredicateParser(_length, _predicate, _message);
 
   @override
-  bool equalProperties(PredicateParser other) {
-    return super.equalProperties(other)
+  bool hasEqualProperties(PredicateParser other) {
+    return super.hasEqualProperties(other)
         && _length == other._length
         && _predicate == other._predicate
         && _message == other._message;

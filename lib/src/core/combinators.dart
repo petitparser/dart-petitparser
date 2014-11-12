@@ -56,8 +56,8 @@ class EndOfInputParser extends DelegateParser {
   Parser copy() => new EndOfInputParser(_delegate, _message);
 
   @override
-  bool equalProperties(EndOfInputParser other) {
-    return super.equalProperties(other) && _message == other._message;
+  bool hasEqualProperties(EndOfInputParser other) {
+    return super.hasEqualProperties(other) && _message == other._message;
   }
 
 }
@@ -112,8 +112,8 @@ class NotParser extends DelegateParser {
   Parser copy() => new NotParser(_delegate, _message);
 
   @override
-  bool equalProperties(NotParser other) {
-    return super.equalProperties(other) && _message == other._message;
+  bool hasEqualProperties(NotParser other) {
+    return super.hasEqualProperties(other) && _message == other._message;
   }
 
 }
@@ -141,8 +141,8 @@ class OptionalParser extends DelegateParser {
   Parser copy() => new OptionalParser(_delegate, _otherwise);
 
   @override
-  bool equalProperties(OptionalParser other) {
-    return super.equalProperties(other) && _otherwise == other._otherwise;
+  bool hasEqualProperties(OptionalParser other) {
+    return super.hasEqualProperties(other) && _otherwise == other._otherwise;
   }
 
 }

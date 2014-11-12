@@ -24,8 +24,8 @@ class ActionParser extends DelegateParser {
   Parser copy() => new ActionParser(_delegate, _function);
 
   @override
-  bool equalProperties(ActionParser other) {
-    return super.equalProperties(other) && _function == other._function;
+  bool hasEqualProperties(ActionParser other) {
+    return super.hasEqualProperties(other) && _function == other._function;
   }
 
 }
