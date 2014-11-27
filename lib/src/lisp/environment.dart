@@ -5,7 +5,7 @@ part of lisp;
  */
 class Environment {
 
-  /** The owning environemnt. */
+  /** The owning environment. */
   final Environment _owner;
 
   /** The internal environment bindings. */

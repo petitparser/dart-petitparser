@@ -22,7 +22,7 @@ part of debug;
  *     Success[1:3]: [1]
  *   Success[1:3]: [f, [1]]
  *
- * Indentation signifies the activation of a parser object. Outdentation
+ * Indentation signifies the activation of a parser object. Reverse indentation
  * signifies the returning of a parse result either with a success or failure
  * context.
  */

@@ -1,11 +1,11 @@
 part of reflection;
 
 /**
- * Returns a copy of [parser] with all setable parsers removed.
+ * Returns a copy of [parser] with all settable parsers removed.
  */
-Parser removeSetables(Parser parser) {
+Parser removeSettables(Parser parser) {
   return transformParser(parser, (each) {
-    while (each is SetableParser) {
+    while (each is SettableParser) {
       each = each.children.first;
     }
     return each;

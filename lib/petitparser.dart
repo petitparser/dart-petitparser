@@ -11,7 +11,7 @@
  *     Parser id = letter().seq(letter().or(digit()).star());
  *
  * If you look at the object `id` in the debugger, you'll notice that the
- * code above buils a tree of parser objects:
+ * code above builds a tree of parser objects:
  *
  * - Sequence: This parser accepts a sequence of parsers.
  * - - Predicate: This parser accepts a single letter.

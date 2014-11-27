@@ -68,13 +68,13 @@ class FailureParser extends Parser {
  *     var p = undefined();
  *     p.set(char('a').seq(p).or(char('b')));
  */
-SetableParser undefined([String message = 'undefined parser']) {
-  return failure(message).setable();
+SettableParser undefined([String message = 'undefined parser']) {
+  return failure(message).settable();
 }
 
-class SetableParser extends DelegateParser {
+class SettableParser extends DelegateParser {
 
-  SetableParser(parser): super(parser);
+  SettableParser(parser): super(parser);
 
   /**
    * Sets the receiver to delegate to [parser].
@@ -82,6 +82,6 @@ class SetableParser extends DelegateParser {
   void set(Parser parser) => replace(children[0], parser);
 
   @override
-  Parser copy() => new SetableParser(_delegate);
+  Parser copy() => new SettableParser(_delegate);
 
 }

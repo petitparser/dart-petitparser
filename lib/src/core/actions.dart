@@ -78,7 +78,7 @@ class TrimmingParser extends DelegateParser {
 }
 
 /**
- * A parser that answers a substring or sublist of the range its delegate
+ * A parser that answers a substring or sub-list of the range its delegate
  * parses.
  */
 class FlattenParser extends DelegateParser {

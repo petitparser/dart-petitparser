@@ -62,7 +62,7 @@ main() {
   });
   group('transform', () {
     test('copy', () {
-      var input = lowercase().setable();
+      var input = lowercase().settable();
       var output = transformParser(input, (parser) => parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isTrue);
@@ -82,7 +82,7 @@ main() {
     });
     test('single', () {
       var source = lowercase();
-      var input = source.setable();
+      var input = source.settable();
       var target = uppercase();
       var output = transformParser(input, (parser) {
         return source.isEqualTo(parser) ? target : parser;
@@ -107,7 +107,7 @@ main() {
       expect(output.children.first, output.children.last);
     });
     test('loop (existing)', () {
-      var input = failure().setable().setable().setable();
+      var input = failure().settable().settable().settable();
       input.children.single.children.single.set(input);
       var output = transformParser(input, (parser) {
         return parser;
@@ -122,7 +122,7 @@ main() {
     test('loop (new)', () {
       var source = lowercase();
       var input = source;
-      var target = failure().setable().setable().setable();
+      var target = failure().settable().settable().settable();
       target.children.single.children.single.set(target);
       var output = transformParser(input, (parser) {
         return source.isEqualTo(parser) ? target : parser;
@@ -134,18 +134,18 @@ main() {
   });
   group('optimize', () {
     test('remove setables', () {
-      var input = lowercase().setable();
-      var output = removeSetables(input);
+      var input = lowercase().settable();
+      var output = removeSettables(input);
       expect(output.isEqualTo(lowercase()), isTrue);
     });
     test('remove nested setables', () {
-      var input = lowercase().setable().star();
-      var output = removeSetables(input);
+      var input = lowercase().settable().star();
+      var output = removeSettables(input);
       expect(output.isEqualTo(lowercase().star()), isTrue);
     });
     test('remove double setables', () {
-      var input = lowercase().setable().setable();
-      var output = removeSetables(input);
+      var input = lowercase().settable().settable();
+      var output = removeSettables(input);
       expect(output.isEqualTo(lowercase()), isTrue);
     });
     test('remove duplicate', () {

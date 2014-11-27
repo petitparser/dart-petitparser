@@ -1,7 +1,7 @@
 /**
  * This package contains a experimental features of PetitParser. The code here
  * might be removed or changed in incompatible ways without keeping backward
- * compatiblity.
+ * compatibility.
  */
 library beta;
 
@@ -40,7 +40,7 @@ import 'package:petitparser/petitparser.dart';
  *       }
  *     }
  *
- * Creavats: Pay attention with production names that conflict with methods
+ * Cravats: Pay attention with production names that conflict with methods
  * defined in superclasses. The generated JavaScript code is slightly bigger,
  * due to the use of [noSuchMethod]. However, the resulting parser is identical.
  */

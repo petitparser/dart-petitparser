@@ -485,7 +485,7 @@ main() {
       expectSuccess(parser, 'a', 'a');
     });
     test('setable()', () {
-      var parser = char('a').setable();
+      var parser = char('a').settable();
       expectSuccess(parser, 'a', 'a');
       expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
@@ -949,7 +949,7 @@ main() {
     test('repeatGreedy()', () => verify(digit().repeatGreedy(word(), 2, 3)));
     test('repeatLazy()', () => verify(digit().repeatLazy(word(), 2, 3)));
     test('seq()', () => verify(digit().seq(word())));
-    test('setable()', () => verify(digit().setable()));
+    test('setable()', () => verify(digit().settable()));
     test('star()', () => verify(digit().star()));
     test('starGreedy()', () => verify(digit().starGreedy(word())));
     test('starLazy()', () => verify(digit().starLazy(word())));
@@ -1209,7 +1209,7 @@ main() {
     });
   });
   group('expression', () {
-    var root = failure().setable();
+    var root = failure().settable();
     var builder = new ExpressionBuilder();
     builder.group()
       ..primitive(char('(').trim()

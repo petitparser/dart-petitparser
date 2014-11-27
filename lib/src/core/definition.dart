@@ -7,7 +7,7 @@ part of petitparser;
  * To create a new grammar definition subclass [GrammarDefinition]. For every
  * production create a new method returning the primitive parser defining it.
  * The method called [start] is supposed to return the start production of the
- * grammar. To refer to a proudction defined in the same definition use [ref]
+ * grammar. To refer to a production defined in the same definition use [ref]
  * with the function reference as the first argument.
  *
  * Consider the following example to parse a list of numbers:
@@ -72,13 +72,6 @@ abstract class GrammarDefinition {
   Parser build({Function start: null, List arguments: const []}) {
     return _resolve(new _Reference(start != null ? start : this.start, arguments));
   }
-
-  /**
-   * Internal helper to de-reference a [_ReferenceParser] to its actual parser
-   * instance. Automatically detects sequences of references and collapses them
-   * when necessary. Throws an exception if a recurisive definition is detected.
-   */
-
 
   /**
    * Internal helper to resolve a complete parser graph.

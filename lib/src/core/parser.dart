@@ -298,11 +298,11 @@ abstract class Parser {
    * Returns a parser that points to the receiver, but can be changed to point
    * to something else at a later point in time.
    *
-   * For example, the parser `letter().setable()` behaves exactly the same
+   * For example, the parser `letter().settable()` behaves exactly the same
    * as `letter()`, but it can be replaced with another parser using
-   * [SetableParser.set].
+   * [SettableParser.set].
    */
-  SetableParser setable() => new SetableParser(this);
+  SettableParser settable() => new SettableParser(this);
 
   /**
    * Returns a parser that evaluates a [function] as the production action
@@ -391,7 +391,7 @@ abstract class Parser {
   Parser copy();
 
   /**
-   * Recusively tests for structural equality of two parsers.
+   * Recursively tests for structural equality of two parsers.
    *
    * The code can automatically deals with recursive parsers and parsers that
    * refer to other parsers. This code is supposed to be overridden by parsers

@@ -41,7 +41,7 @@ evalList(Environment env, expr) {
   return result;
 }
 
-/** The arguments evaluatation function. */
+/** The arguments evaluation function. */
 evalArguments(Environment env, args) {
   if (args is Cons) {
     return new Cons(eval(env, args.head), evalArguments(env, args.tail));
