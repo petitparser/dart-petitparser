@@ -1,4 +1,4 @@
-library xml_benchmark;
+library all_benchmark;
 
 import 'package:petitparser/petitparser.dart';
 
