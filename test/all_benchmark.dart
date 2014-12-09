@@ -18,7 +18,7 @@ double benchmark(Function function, [int warmup = 100, int milliseconds = 2500])
   return elapsed / count;
 }
 
-Function tester(List<String> inputs, Parser parser) {
+Function charTest(List<String> inputs, Parser parser) {
   return () {
     for (var i = 0; i < inputs.length; i++) {
       parser.parse(inputs[i]);
@@ -28,25 +28,47 @@ Function tester(List<String> inputs, Parser parser) {
 
 final characters = new List.generate(256, (value) => new String.fromCharCode(value));
 
+Function stringTest(String input, Parser parser) {
+  return () {
+    parser.parse(input);
+  };
+}
+
+final string = characters.join();
+
 final benchmarks = {
-  "anyOf('uncopyrightable')": tester(characters, anyOf('uncopyrightable')),
-  "char('a')": tester(characters, char('a')),
-  "digit()": tester(characters, digit()),
-  "letter()": tester(characters, letter()),
-  "lowercase()": tester(characters, lowercase()),
-  "noneOf('uncopyrightable')": tester(characters, noneOf('uncopyrightable')),
-  "pattern('^a')": tester(characters, pattern('^a')),
-  "pattern('^a-cx-zA-CX-Z1-37-9')": tester(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
-  "pattern('^a-z')": tester(characters, pattern('^a-z')),
-  "pattern('^acegik')": tester(characters, pattern('^acegik')),
-  "pattern('a')": tester(characters, pattern('a')),
-  "pattern('a-cx-zA-CX-Z1-37-9')": tester(characters, pattern('a-cx-zA-CX-Z1-37-9')),
-  "pattern('a-z')": tester(characters, pattern('a-z')),
-  "pattern('acegik')": tester(characters, pattern('acegik')),
-  "range('a', 'z')": tester(characters, range('a', 'z')),
-  "uppercase()": tester(characters, uppercase()),
-  "whitespace()": tester(characters, whitespace()),
-  "word()": tester(characters, word()),
+
+  // char tests
+  "any()": charTest(characters, any()),
+  "anyOf('uncopyrightable')": charTest(characters, anyOf('uncopyrightable')),
+  "char('a')": charTest(characters, char('a')),
+  "digit()": charTest(characters, digit()),
+  "letter()": charTest(characters, letter()),
+  "lowercase()": charTest(characters, lowercase()),
+  "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
+  "pattern('^a')": charTest(characters, pattern('^a')),
+  "pattern('^a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
+  "pattern('^a-z')": charTest(characters, pattern('^a-z')),
+  "pattern('^acegik')": charTest(characters, pattern('^acegik')),
+  "pattern('a')": charTest(characters, pattern('a')),
+  "pattern('a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
+  "pattern('a-z')": charTest(characters, pattern('a-z')),
+  "pattern('acegik')": charTest(characters, pattern('acegik')),
+  "range('a', 'z')": charTest(characters, range('a', 'z')),
+  "uppercase()": charTest(characters, uppercase()),
+  "whitespace()": charTest(characters, whitespace()),
+  "word()": charTest(characters, word()),
+
+  // combinator tests
+  "star()": stringTest(string, any().star()),
+  "starLazy()": stringTest(string, any().starLazy(failure())),
+  "starGreedy()": stringTest(string, any().starGreedy(failure())),
+  "plus()": stringTest(string, any().plus()),
+  "plusLazy()": stringTest(string, any().plusLazy(failure())),
+  "plusGreedy()": stringTest(string, any().plusGreedy(failure())),
+  "or()": stringTest(string, failure().or(any()).star()),
+  "seq()": stringTest(string, new SequenceParser(new List.filled(string.length, any()))),
+
 };
 
 void main() {
