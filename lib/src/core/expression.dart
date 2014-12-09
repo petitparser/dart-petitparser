@@ -210,4 +210,5 @@ class _ExpressionResult {
   final operator;
   final Function action;
   _ExpressionResult(this.operator, this.action);
+  String toString() => operator.toString();
 }
