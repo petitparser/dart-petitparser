@@ -103,15 +103,19 @@ _CharacterPredicate _optimized(String characters) {
   var groupedRanges = new Map();
   for (var i = 0; i < codeUnits.length; i++) {
     var key = i - codeUnits[i];
-    var ranges = groupedRanges.putIfAbsent(key, () => new List());
-    ranges.add(codeUnits[i]);
+    var range = groupedRanges.putIfAbsent(key, () => new List());
+    while (range.length > 1) {
+      range.removeLast();
+    }
+    range.add(codeUnits[i]);
   }
   var predicates = new List();
   for (var range in groupedRanges.values) {
-    if (range.length > 3) {
-      predicates.add(new _RangeCharMatcher(range.first, range.last));
+    var start = range.first, stop = range.last;
+    if (stop - start > 2) {
+      predicates.add(new _RangeCharMatcher(start, stop));
     } else {
-      for (var value in range) {
+      for (var value = start; value <= stop; value++) {
         predicates.add(new _SingleCharMatcher(value));
       }
     }
