@@ -108,7 +108,7 @@ _CharacterPredicate _optimized(String characters) {
   }
   var predicates = new List();
   for (var range in groupedRanges.values) {
-    if (range.length > 2) {
+    if (range.length > 3) {
       predicates.add(new _RangeCharMatcher(range.first, range.last));
     } else {
       for (var value in range) {
