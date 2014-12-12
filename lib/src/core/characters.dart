@@ -5,17 +5,17 @@ part of petitparser;
  */
 class CharacterParser extends Parser {
 
-  final _CharMatcher _matcher;
+  final _CharacterPredicate _predicate;
 
   final String _message;
 
-  CharacterParser(this._matcher, this._message);
+  CharacterParser(this._predicate, this._message);
 
   @override
   Result parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
-    if (position < buffer.length && _matcher.match(buffer.codeUnitAt(position))) {
+    if (position < buffer.length && _predicate.test(buffer.codeUnitAt(position))) {
       return context.success(buffer[position], position + 1);
     }
     return context.failure(_message);
@@ -25,12 +25,12 @@ class CharacterParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new CharacterParser(_matcher, _message);
+  Parser copy() => new CharacterParser(_predicate, _message);
 
   @override
   bool hasEqualProperties(CharacterParser other) {
     return super.hasEqualProperties(other)
-        && _matcher == other._matcher
+        && _predicate == other._predicate
         && _message == other._message;
   }
 
@@ -48,39 +48,39 @@ int _toCharCode(element) {
 }
 
 /**
- * Internal abstract character matcher class.
+ * Internal abstract character predicate class.
  */
-abstract class _CharMatcher {
-  bool match(int value);
+abstract class _CharacterPredicate {
+  bool test(int value);
 }
 
 /**
- * Internal character matcher that negates the result.
+ * Internal character predicate that negates the result.
  */
-class _NotCharMatcher implements _CharMatcher {
+class _NotCharacterPredicate implements _CharacterPredicate {
 
-  final _CharMatcher _matcher;
+  final _CharacterPredicate _predicate;
 
-  const _NotCharMatcher(this._matcher);
+  const _NotCharacterPredicate(this._predicate);
 
   @override
-  bool match(int value) => !_matcher.match(value);
+  bool test(int value) => !_predicate.test(value);
 
 }
 
 /**
- * Internal character matcher for alternatives.
+ * Internal character predicate for alternatives.
  */
-class _AltCharMatcher implements _CharMatcher {
+class _AltCharacterPredicate implements _CharacterPredicate {
 
-  final List<_CharMatcher> _matchers;
+  final List<_CharacterPredicate> _predicates;
 
-  const _AltCharMatcher(this._matchers);
+  const _AltCharacterPredicate(this._predicates);
 
   @override
-  bool match(int value) {
-    for (var matcher in _matchers) {
-      if (matcher.match(value)) {
+  bool test(int value) {
+    for (var predicate in _predicates) {
+      if (predicate.test(value)) {
         return true;
       }
     }
@@ -98,7 +98,7 @@ Parser anyOf(String string, [String message]) {
       message != null ? message : 'any of "$string" expected');
 }
 
-_CharMatcher _optimized(String characters) {
+_CharacterPredicate _optimized(String characters) {
   var codeUnits = characters.codeUnits.toSet().toList()..sort();
   var groupedRanges = new Map();
   for (var i = 0; i < codeUnits.length; i++) {
@@ -106,17 +106,17 @@ _CharMatcher _optimized(String characters) {
     var ranges = groupedRanges.putIfAbsent(key, () => new List());
     ranges.add(codeUnits[i]);
   }
-  var matchers = new List();
+  var predicates = new List();
   for (var range in groupedRanges.values) {
     if (range.length > 2) {
-      matchers.add(new _RangeCharMatcher(range.first, range.last));
+      predicates.add(new _RangeCharMatcher(range.first, range.last));
     } else {
       for (var value in range) {
-        matchers.add(new _SingleCharMatcher(value));
+        predicates.add(new _SingleCharMatcher(value));
       }
     }
   }
-  return matchers.length == 1 ? matchers.single : new _AltCharMatcher(matchers);
+  return predicates.length == 1 ? predicates.single : new _AltCharacterPredicate(predicates);
 }
 
 /**
@@ -124,7 +124,7 @@ _CharMatcher _optimized(String characters) {
  */
 Parser noneOf(String string, [String message]) {
   return new CharacterParser(
-      new _NotCharMatcher(_optimized(string)),
+      new _NotCharacterPredicate(_optimized(string)),
       message != null ? message : 'none of "$string" expected');
 }
 
@@ -137,14 +137,14 @@ Parser char(element, [String message]) {
       message != null ? message : '"$element" expected');
 }
 
-class _SingleCharMatcher implements _CharMatcher {
+class _SingleCharMatcher implements _CharacterPredicate {
 
   final int _value;
 
   const _SingleCharMatcher(this._value);
 
   @override
-  bool match(int value) => identical(_value, value);
+  bool test(int value) => identical(_value, value);
 
 }
 
@@ -157,12 +157,12 @@ Parser digit([String message]) {
       message != null ? message : 'digit expected');
 }
 
-class _DigitCharMatcher implements _CharMatcher {
+class _DigitCharMatcher implements _CharacterPredicate {
 
   const _DigitCharMatcher();
 
   @override
-  bool match(int value) => 48 <= value && value <= 57;
+  bool test(int value) => 48 <= value && value <= 57;
 
 }
 
@@ -177,12 +177,12 @@ Parser letter([String message]) {
       message != null ? message : 'letter expected');
 }
 
-class _LetterCharMatcher implements _CharMatcher {
+class _LetterCharMatcher implements _CharacterPredicate {
 
   const _LetterCharMatcher();
 
   @override
-  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
+  bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 
 }
 
@@ -197,12 +197,12 @@ Parser lowercase([String message]) {
       message != null ? message : 'lowercase letter expected');
 }
 
-class _LowercaseCharMatcher implements _CharMatcher {
+class _LowercaseCharMatcher implements _CharacterPredicate {
 
   const _LowercaseCharMatcher();
 
   @override
-  bool match(int value) => 97 <= value && value <= 122;
+  bool test(int value) => 97 <= value && value <= 122;
 
 }
 
@@ -231,7 +231,7 @@ Parser _createPatternParser() {
     return _optimized(each.join());
   });
   return char('^').optional().seq(positive).map((each) {
-    return each[0] == null ? each[1] : new _NotCharMatcher(each[1]);
+    return each[0] == null ? each[1] : new _NotCharacterPredicate(each[1]);
   });
 }
 
@@ -247,7 +247,7 @@ Parser range(start, stop, [String message]) {
       message != null ? message : '$start..$stop expected');
 }
 
-class _RangeCharMatcher implements _CharMatcher {
+class _RangeCharMatcher implements _CharacterPredicate {
 
   final int _start;
 
@@ -256,7 +256,7 @@ class _RangeCharMatcher implements _CharMatcher {
   const _RangeCharMatcher(this._start, this._stop);
 
   @override
-  bool match(int value) => _start <= value && value <= _stop;
+  bool test(int value) => _start <= value && value <= _stop;
 
 }
 
@@ -269,12 +269,12 @@ Parser uppercase([String message]) {
       message != null ? message : 'uppercase letter expected');
 }
 
-class _UppercaseCharMatcher implements _CharMatcher {
+class _UppercaseCharMatcher implements _CharacterPredicate {
 
   const _UppercaseCharMatcher();
 
   @override
-  bool match(int value) => 65 <= value && value <= 90;
+  bool test(int value) => 65 <= value && value <= 90;
 
 }
 
@@ -289,12 +289,12 @@ Parser whitespace([String message]) {
       message != null ? message : 'whitespace expected');
 }
 
-class _WhitespaceCharMatcher implements _CharMatcher {
+class _WhitespaceCharMatcher implements _CharacterPredicate {
 
   const _WhitespaceCharMatcher();
 
   @override
-  bool match(int value) {
+  bool test(int value) {
     if (value < 256) {
       return value == 0x09 || value == 0x0A || value == 0x0B || value == 0x0C
           || value == 0x0D || value == 0x20 || value == 0x85 || value == 0xA0;
@@ -320,12 +320,12 @@ Parser word([String message]) {
       message != null ? message : 'letter or digit expected');
 }
 
-class _WordCharMatcher implements _CharMatcher {
+class _WordCharMatcher implements _CharacterPredicate {
 
   const _WordCharMatcher();
 
   @override
-  bool match(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
+  bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
       || (48 <= value && value <= 57) || (value == 95);
 
 }
