@@ -566,15 +566,55 @@ main() {
       expectFailure(parser, '');
     });
     test('pattern() with overlapping range', () {
-      var parser = pattern('a-cb-d');
+      var parser = pattern('b-da-c');
       expectSuccess(parser, 'a', 'a');
       expectSuccess(parser, 'b', 'b');
       expectSuccess(parser, 'c', 'c');
       expectSuccess(parser, 'd', 'd');
-      expectFailure(parser, 'e', 0, '[a-cb-d] expected');
-      expectFailure(parser, '');
+      expectFailure(parser, 'e', 0, '[b-da-c] expected');
+      expectFailure(parser, '', 0, '[b-da-c] expected');
     });
-    test('pattern() with composed', () {
+    test('pattern() with adjacent range', () {
+      var parser = pattern('c-ea-c');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'e', 'e');
+      expectFailure(parser, 'f', 0, '[c-ea-c] expected');
+      expectFailure(parser, '', 0, '[c-ea-c] expected');
+    });
+    test('pattern() with prefix range', () {
+      var parser = pattern('a-ea-c');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'e', 'e');
+      expectFailure(parser, 'f', 0, '[a-ea-c] expected');
+      expectFailure(parser, '', 0, '[a-ea-c] expected');
+    });
+    test('pattern() with postfix range', () {
+      var parser = pattern('a-ec-e');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'e', 'e');
+      expectFailure(parser, 'f', 0, '[a-ec-e] expected');
+      expectFailure(parser, '', 0, '[a-ec-e] expected');
+    });
+    test('pattern() with repeated range', () {
+      var parser = pattern('a-ea-e');
+      expectSuccess(parser, 'a', 'a');
+      expectSuccess(parser, 'b', 'b');
+      expectSuccess(parser, 'c', 'c');
+      expectSuccess(parser, 'd', 'd');
+      expectSuccess(parser, 'e', 'e');
+      expectFailure(parser, 'f', 0, '[a-ea-e] expected');
+      expectFailure(parser, '', 0, '[a-ea-e] expected');
+    });
+    test('pattern() with composed range', () {
       var parser = pattern('ac-df-');
       expectSuccess(parser, 'a', 'a');
       expectSuccess(parser, 'c', 'c');
