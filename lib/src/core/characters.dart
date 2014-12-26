@@ -120,19 +120,20 @@ class _CharacterRange {
     return new _CharacterRange._(_toCharCode(start), _toCharCode(stop));
   }
 
+  @override
+  String toString() {
+    return start == stop
+        ? new String.fromCharCode(start)
+        : new String.fromCharCode(start) + "-" + new String.fromCharCode(stop);
+  }
+
 }
 
 CharacterPredicate _optimize(Iterable<_CharacterRange> ranges) {
 
   // 1. sort the ranges
   var sortedRanges = new List.from(ranges);
-  sortedRanges.sort((first, second) {
-    return first.start < second.start ? -1
-      : first.start > second.start ? 1
-      : first.stop < second.stop ? -1
-      : first.stop > second.stop ? 1
-      : 0;
-  });
+  sortedRanges.sort((first, second) => first.start - second.start);
 
   // 2. merge adjacent or overlapping ranges
   var mergedRanges = new List();
