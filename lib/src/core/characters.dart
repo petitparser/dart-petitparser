@@ -59,53 +59,25 @@ class _NotCharacterPredicate implements CharacterPredicate {
 
 }
 
-class _AltCharacterPredicate implements CharacterPredicate {
-
-  final List<CharacterPredicate> predicates;
-
-  const _AltCharacterPredicate(this.predicates);
-
-  @override
-  bool test(int value) {
-    for (var predicate in predicates) {
-      if (predicate.test(value)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
+/**
+ * Returns a parser that accepts any of the specified characters.
+ */
+Parser anyOf(String string, [String message]) {
+  return new CharacterParser(
+      _optimizedString(string),
+      message != null ? message : 'any of "$string" expected');
 }
 
-int _toCharCode(element) {
-  if (element is num) {
-    return element.round();
-  }
-  var value = element.toString();
-  if (value.length != 1) {
-    throw new ArgumentError('$value is not a character');
-  }
-  return value.codeUnitAt(0);
+CharacterPredicate _optimizedString(String string) {
+  var ranges = string.codeUnits
+      .map((value) => new _RangeCharPredicate(value, value));
+  return _optimizedRanges(ranges);
 }
 
-class _CharacterRange {
-
-  final int start;
-  final int stop;
-
-  _CharacterRange._(this.start, this.stop);
-
-  factory _CharacterRange(start, [stop]) {
-    if (stop == null) stop = start;
-    return new _CharacterRange._(_toCharCode(start), _toCharCode(stop));
-  }
-
-}
-
-CharacterPredicate _optimize(Iterable<_CharacterRange> ranges) {
+CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
 
   // 1. sort the ranges
-  var sortedRanges = new List.from(ranges);
+  var sortedRanges = new List.from(ranges, growable: false);
   sortedRanges.sort((first, second) => first.start - second.start);
 
   // 2. merge adjacent or overlapping ranges
@@ -116,7 +88,7 @@ CharacterPredicate _optimize(Iterable<_CharacterRange> ranges) {
     } else {
       var lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= currentRange.start) {
-        mergedRanges[mergedRanges.length - 1] = new _CharacterRange(
+        mergedRanges[mergedRanges.length - 1] = new _RangeCharPredicate(
             lastRange.start < currentRange.start ? lastRange.start : currentRange.start,
             lastRange.stop > currentRange.stop ? lastRange.stop : currentRange.stop);
       } else {
@@ -125,39 +97,25 @@ CharacterPredicate _optimize(Iterable<_CharacterRange> ranges) {
     }
   }
 
-  // 3. build the corresponding predicates
-  var predicates = new List();
-  for (var range in mergedRanges) {
-    if (range.stop - range.start > 1) {
-      predicates.add(new _RangeCharPredicate(range.start, range.stop));
-    } else {
-      for (var value = range.start; value <= range.stop; value++) {
-        predicates.add(new _SingleCharPredicate(value));
-      }
-    }
+  // 3. build the best resulting predicates
+  if (mergedRanges.length == 1) {
+    return mergedRanges[0].start == mergedRanges[0].stop
+        ? new _SingleCharPredicate(mergedRanges[0].start)
+        : mergedRanges[0];
+  } else {
+    return new _RangesCharPredicate(
+        mergedRanges.length,
+        mergedRanges.map((range) => range.start).toList(growable: false),
+        mergedRanges.map((range) => range.stop).toList(growable: false));
   }
-
-  // 4. when necessary build a composite predicate
-  return predicates.length == 1 ? predicates.first : new _AltCharacterPredicate(predicates);
-
-}
-
-/**
- * Returns a parser that accepts any of the specified characters.
- */
-Parser anyOf(String string, [String message]) {
-  return new CharacterParser(
-      _optimize(string.codeUnits.map((value) => new _CharacterRange(value))),
-      message != null ? message : 'any of "$string" expected');
 }
 
 /**
  * Returns a parser that accepts none of the specified characters.
  */
 Parser noneOf(String string, [String message]) {
-  var ranges = string.codeUnits.map((value) => new _CharacterRange(value));
   return new CharacterParser(
-      new _NotCharacterPredicate(_optimize(ranges)),
+      new _NotCharacterPredicate(_optimizedString(string)),
       message != null ? message : 'none of "$string" expected');
 }
 
@@ -172,12 +130,12 @@ Parser char(element, [String message]) {
 
 class _SingleCharPredicate implements CharacterPredicate {
 
-  final int _value;
+  final int value;
 
-  const _SingleCharPredicate(this._value);
+  const _SingleCharPredicate(this.value);
 
   @override
-  bool test(int value) => identical(_value, value);
+  bool test(int value) => identical(this.value, value);
 
 }
 
@@ -252,18 +210,46 @@ Parser pattern(String element, [String message]) {
 
 Parser _createPatternParser() {
   var single = any()
-      .map((each) => new _CharacterRange(each));
+      .map((each) => new _RangeCharPredicate(_toCharCode(each), _toCharCode(each)));
   var multiple = any()
       .seq(char('-'))
       .seq(any())
-      .map((each) => new _CharacterRange(each[0], each[2]));
+      .map((each) => new _RangeCharPredicate(_toCharCode(each[0]), _toCharCode(each[2])));
   var positive = multiple.or(single).plus()
-      .map((each) => _optimize(each));
+      .map((each) => _optimizedRanges(each));
   return char('^').optional().seq(positive)
       .map((each) => each[0] == null ? each[1] : new _NotCharacterPredicate(each[1]));
 }
 
 final _patternParser = _createPatternParser();
+
+class _RangesCharPredicate implements CharacterPredicate {
+
+  final int length;
+  final List<int> starts;
+  final List<int> stops;
+
+  _RangesCharPredicate(this.length, this.starts, this.stops);
+
+  @override
+  bool test(int value) {
+    var min = 0;
+    var max = length;
+    while (min < max) {
+      var mid = min + ((max - min) >> 1);
+      var comp = starts[mid] - value;
+      if (comp == 0) {
+        return true;
+      } else if (comp < 0) {
+        min = mid + 1;
+      } else {
+        max = mid;
+      }
+    }
+    return 0 < min && value <= stops[min - 1];
+  }
+
+}
 
 /**
  * Returns a parser that accepts any character in the range
@@ -280,7 +266,7 @@ class _RangeCharPredicate implements CharacterPredicate {
   final int start;
   final int stop;
 
-  const _RangeCharPredicate(this.start, this.stop);
+  _RangeCharPredicate(this.start, this.stop);
 
   @override
   bool test(int value) => start <= value && value <= stop;
@@ -358,3 +344,15 @@ class _WordCharPredicate implements CharacterPredicate {
 }
 
 const _wordCharPredicate = const _WordCharPredicate();
+
+// internal converter for character codes
+int _toCharCode(element) {
+  if (element is num) {
+    return element.round();
+  }
+  var value = element.toString();
+  if (value.length != 1) {
+    throw new ArgumentError('$value is not a character');
+  }
+  return value.codeUnitAt(0);
+}
