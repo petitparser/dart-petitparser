@@ -1,5 +1,5 @@
 name: petitparser
-version: 1.3.2
+version: 1.3.3
 author: Lukas Renggli <renggli@gmail.com>
 description: Dynamic parser combinator framework.
 homepage: https://github.com/renggli/dart-petitparser
