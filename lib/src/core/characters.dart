@@ -41,58 +41,38 @@ class CharacterParser extends Parser {
  */
 abstract class CharacterPredicate {
 
-  const CharacterPredicate();
-
   /**
    * Tests if the character predicate is satisfied.
    */
   bool test(int value);
 
-  /**
-   * Negates this character predicate.
-   */
-  CharacterPredicate not() => new _NotCharacterPredicate(this);
+}
 
-  /**
-   * Matches this character predicate or other.
-   */
-  CharacterPredicate or(CharacterPredicate other) => new _AltCharacterPredicate([this, other]);
+class _NotCharacterPredicate implements CharacterPredicate {
+
+  final CharacterPredicate predicate;
+
+  _NotCharacterPredicate(this.predicate);
+
+  @override
+  bool test(int value) => !predicate.test(value);
 
 }
 
-class _NotCharacterPredicate extends CharacterPredicate {
+class _AltCharacterPredicate implements CharacterPredicate {
 
-  final CharacterPredicate _predicate;
+  final List<CharacterPredicate> predicates;
 
-  const _NotCharacterPredicate(this._predicate);
-
-  @override
-  bool test(int value) => !_predicate.test(value);
-
-  @override
-  CharacterPredicate not() => _predicate;
-
-}
-
-class _AltCharacterPredicate extends CharacterPredicate {
-
-  final List<CharacterPredicate> _predicates;
-
-  const _AltCharacterPredicate(this._predicates);
+  const _AltCharacterPredicate(this.predicates);
 
   @override
   bool test(int value) {
-    for (var predicate in _predicates) {
+    for (var predicate in predicates) {
       if (predicate.test(value)) {
         return true;
       }
     }
     return false;
-  }
-
-  @override
-  CharacterPredicate or(CharacterPredicate other) {
-    return new _AltCharacterPredicate(new List()..addAll(_predicates)..add(other));
   }
 
 }
@@ -118,13 +98,6 @@ class _CharacterRange {
   factory _CharacterRange(start, [stop]) {
     if (stop == null) stop = start;
     return new _CharacterRange._(_toCharCode(start), _toCharCode(stop));
-  }
-
-  @override
-  String toString() {
-    return start == stop
-        ? new String.fromCharCode(start)
-        : new String.fromCharCode(start) + "-" + new String.fromCharCode(stop);
   }
 
 }
@@ -182,8 +155,9 @@ Parser anyOf(String string, [String message]) {
  * Returns a parser that accepts none of the specified characters.
  */
 Parser noneOf(String string, [String message]) {
+  var ranges = string.codeUnits.map((value) => new _CharacterRange(value));
   return new CharacterParser(
-      _optimize(string.codeUnits.map((value) => new _CharacterRange(value))).not(),
+      new _NotCharacterPredicate(_optimize(ranges)),
       message != null ? message : 'none of "$string" expected');
 }
 
@@ -196,7 +170,7 @@ Parser char(element, [String message]) {
       message != null ? message : '"$element" expected');
 }
 
-class _SingleCharPredicate extends CharacterPredicate {
+class _SingleCharPredicate implements CharacterPredicate {
 
   final int _value;
 
@@ -216,7 +190,7 @@ Parser digit([String message]) {
       message != null ? message : 'digit expected');
 }
 
-class _DigitCharPredicate extends CharacterPredicate {
+class _DigitCharPredicate implements CharacterPredicate {
 
   const _DigitCharPredicate();
 
@@ -236,7 +210,7 @@ Parser letter([String message]) {
       message != null ? message : 'letter expected');
 }
 
-class _LetterCharPredicate extends CharacterPredicate {
+class _LetterCharPredicate implements CharacterPredicate {
 
   const _LetterCharPredicate();
 
@@ -256,7 +230,7 @@ Parser lowercase([String message]) {
       message != null ? message : 'lowercase letter expected');
 }
 
-class _LowercaseCharPredicate extends CharacterPredicate {
+class _LowercaseCharPredicate implements CharacterPredicate {
 
   const _LowercaseCharPredicate();
 
@@ -286,7 +260,7 @@ Parser _createPatternParser() {
   var positive = multiple.or(single).plus()
       .map((each) => _optimize(each));
   return char('^').optional().seq(positive)
-      .map((each) => each[0] == null ? each[1] : each[1].not());
+      .map((each) => each[0] == null ? each[1] : new _NotCharacterPredicate(each[1]));
 }
 
 final _patternParser = _createPatternParser();
@@ -301,16 +275,15 @@ Parser range(start, stop, [String message]) {
       message != null ? message : '$start..$stop expected');
 }
 
-class _RangeCharPredicate extends CharacterPredicate {
+class _RangeCharPredicate implements CharacterPredicate {
 
-  final int _start;
+  final int start;
+  final int stop;
 
-  final int _stop;
-
-  const _RangeCharPredicate(this._start, this._stop);
+  const _RangeCharPredicate(this.start, this.stop);
 
   @override
-  bool test(int value) => _start <= value && value <= _stop;
+  bool test(int value) => start <= value && value <= stop;
 
 }
 
@@ -323,7 +296,7 @@ Parser uppercase([String message]) {
       message != null ? message : 'uppercase letter expected');
 }
 
-class _UppercaseCharPredicate extends CharacterPredicate {
+class _UppercaseCharPredicate implements CharacterPredicate {
 
   const _UppercaseCharPredicate();
 
@@ -343,7 +316,7 @@ Parser whitespace([String message]) {
       message != null ? message : 'whitespace expected');
 }
 
-class _WhitespaceCharPredicate extends CharacterPredicate {
+class _WhitespaceCharPredicate implements CharacterPredicate {
 
   const _WhitespaceCharPredicate();
 
@@ -374,7 +347,7 @@ Parser word([String message]) {
       message != null ? message : 'letter or digit expected');
 }
 
-class _WordCharPredicate extends CharacterPredicate {
+class _WordCharPredicate implements CharacterPredicate {
 
   const _WordCharPredicate();
 
