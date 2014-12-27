@@ -156,10 +156,10 @@ CharacterPredicate _optimize(Iterable<_CharacterRange> ranges) {
   var predicates = new List();
   for (var range in mergedRanges) {
     if (range.stop - range.start > 1) {
-      predicates.add(new _RangeCharMatcher(range.start, range.stop));
+      predicates.add(new _RangeCharPredicate(range.start, range.stop));
     } else {
       for (var value = range.start; value <= range.stop; value++) {
-        predicates.add(new _SingleCharMatcher(value));
+        predicates.add(new _SingleCharPredicate(value));
       }
     }
   }
@@ -192,15 +192,15 @@ Parser noneOf(String string, [String message]) {
  */
 Parser char(element, [String message]) {
   return new CharacterParser(
-      new _SingleCharMatcher(_toCharCode(element)),
+      new _SingleCharPredicate(_toCharCode(element)),
       message != null ? message : '"$element" expected');
 }
 
-class _SingleCharMatcher extends CharacterPredicate {
+class _SingleCharPredicate extends CharacterPredicate {
 
   final int _value;
 
-  const _SingleCharMatcher(this._value);
+  const _SingleCharPredicate(this._value);
 
   @override
   bool test(int value) => identical(_value, value);
@@ -212,60 +212,60 @@ class _SingleCharMatcher extends CharacterPredicate {
  */
 Parser digit([String message]) {
   return new CharacterParser(
-      _digitCharMatcher,
+      _digitCharPredicate,
       message != null ? message : 'digit expected');
 }
 
-class _DigitCharMatcher extends CharacterPredicate {
+class _DigitCharPredicate extends CharacterPredicate {
 
-  const _DigitCharMatcher();
+  const _DigitCharPredicate();
 
   @override
   bool test(int value) => 48 <= value && value <= 57;
 
 }
 
-const _digitCharMatcher = const _DigitCharMatcher();
+const _digitCharPredicate = const _DigitCharPredicate();
 
 /**
  * Returns a parser that accepts any letter character.
  */
 Parser letter([String message]) {
   return new CharacterParser(
-      _letterCharMatcher,
+      _letterCharPredicate,
       message != null ? message : 'letter expected');
 }
 
-class _LetterCharMatcher extends CharacterPredicate {
+class _LetterCharPredicate extends CharacterPredicate {
 
-  const _LetterCharMatcher();
+  const _LetterCharPredicate();
 
   @override
   bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 
 }
 
-const _letterCharMatcher = const _LetterCharMatcher();
+const _letterCharPredicate = const _LetterCharPredicate();
 
 /**
  * Returns a parser that accepts any lowercase character.
  */
 Parser lowercase([String message]) {
   return new CharacterParser(
-      _lowercaseCharMatcher,
+      _lowercaseCharPredicate,
       message != null ? message : 'lowercase letter expected');
 }
 
-class _LowercaseCharMatcher extends CharacterPredicate {
+class _LowercaseCharPredicate extends CharacterPredicate {
 
-  const _LowercaseCharMatcher();
+  const _LowercaseCharPredicate();
 
   @override
   bool test(int value) => 97 <= value && value <= 122;
 
 }
 
-const _lowercaseCharMatcher = const _LowercaseCharMatcher();
+const _lowercaseCharPredicate = const _LowercaseCharPredicate();
 
 /**
  * Returns a parser that accepts the given character class pattern.
@@ -297,17 +297,17 @@ final _patternParser = _createPatternParser();
  */
 Parser range(start, stop, [String message]) {
   return new CharacterParser(
-      new _RangeCharMatcher(_toCharCode(start), _toCharCode(stop)),
+      new _RangeCharPredicate(_toCharCode(start), _toCharCode(stop)),
       message != null ? message : '$start..$stop expected');
 }
 
-class _RangeCharMatcher extends CharacterPredicate {
+class _RangeCharPredicate extends CharacterPredicate {
 
   final int _start;
 
   final int _stop;
 
-  const _RangeCharMatcher(this._start, this._stop);
+  const _RangeCharPredicate(this._start, this._stop);
 
   @override
   bool test(int value) => _start <= value && value <= _stop;
@@ -319,33 +319,33 @@ class _RangeCharMatcher extends CharacterPredicate {
  */
 Parser uppercase([String message]) {
   return new CharacterParser(
-      _uppercaseCharMatcher,
+      _uppercaseCharPredicate,
       message != null ? message : 'uppercase letter expected');
 }
 
-class _UppercaseCharMatcher extends CharacterPredicate {
+class _UppercaseCharPredicate extends CharacterPredicate {
 
-  const _UppercaseCharMatcher();
+  const _UppercaseCharPredicate();
 
   @override
   bool test(int value) => 65 <= value && value <= 90;
 
 }
 
-const _uppercaseCharMatcher = const _UppercaseCharMatcher();
+const _uppercaseCharPredicate = const _UppercaseCharPredicate();
 
 /**
  * Returns a parser that accepts any whitespace character.
  */
 Parser whitespace([String message]) {
   return new CharacterParser(
-      _whitespaceCharMatcher,
+      _whitespaceCharPredicate,
       message != null ? message : 'whitespace expected');
 }
 
-class _WhitespaceCharMatcher extends CharacterPredicate {
+class _WhitespaceCharPredicate extends CharacterPredicate {
 
-  const _WhitespaceCharMatcher();
+  const _WhitespaceCharPredicate();
 
   @override
   bool test(int value) {
@@ -363,20 +363,20 @@ class _WhitespaceCharMatcher extends CharacterPredicate {
 
 }
 
-const _whitespaceCharMatcher = const _WhitespaceCharMatcher();
+const _whitespaceCharPredicate = const _WhitespaceCharPredicate();
 
 /**
  * Returns a parser that accepts any word character.
  */
 Parser word([String message]) {
   return new CharacterParser(
-      _wordCharMatcher,
+      _wordCharPredicate,
       message != null ? message : 'letter or digit expected');
 }
 
-class _WordCharMatcher extends CharacterPredicate {
+class _WordCharPredicate extends CharacterPredicate {
 
-  const _WordCharMatcher();
+  const _WordCharPredicate();
 
   @override
   bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122)
@@ -384,4 +384,4 @@ class _WordCharMatcher extends CharacterPredicate {
 
 }
 
-const _wordCharMatcher = const _WordCharMatcher();
+const _wordCharPredicate = const _WordCharPredicate();
