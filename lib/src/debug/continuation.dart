@@ -16,13 +16,13 @@ typedef Result ContinuationHandler(Result continuation(Context context), Context
  * The following example shows a simple wrapper. Messages are printed before and
  * after the `digit()` parser is activated:
  *
- *    var wrapped = digit();
- *    var parser = new ContinuationParser(wrapped, (continuation, context) {
- *      print('Parser will be activated, the context is $context.');
- *      var result = continuation(context);
- *      print('Parser was activated, the result is $result.');
- *      return result;
- *    });
+ *     var wrapped = digit();
+ *     var parser = new ContinuationParser(wrapped, (continuation, context) {
+ *       print('Parser will be activated, the context is $context.');
+ *       var result = continuation(context);
+ *       print('Parser was activated, the result is $result.');
+ *       return result;
+ *     });
  *
  * See [profile], [progress], and [trace] for more elaborate examples.
  */

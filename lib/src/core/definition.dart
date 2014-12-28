@@ -121,6 +121,9 @@ abstract class GrammarDefinition {
 
 }
 
+/**
+ * A helper to build a parser from a {@link GrammarDefinition}.
+ */
 class GrammarParser extends DelegateParser {
   GrammarParser(GrammarDefinition definition) : super(definition.build());
 }

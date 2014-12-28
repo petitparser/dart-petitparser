@@ -6,21 +6,21 @@ part of debug;
  *
  * For example, the snippet
  *
- *   var parser = letter() & word().star();
- *   trace(parser).parse('f1');
+ *     var parser = letter() & word().star();
+ *     trace(parser).parse('f1');
  *
  * produces the following output:
  *
- *   Instance of 'SequenceParser'
- *     Instance of 'CharacterParser'[letter expected]
- *     Success[1:2]: f
- *     Instance of 'PossessiveRepeatingParser'[0..*]
- *       Instance of 'CharacterParser'[letter or digit expected]
- *       Success[1:3]: 1
- *       Instance of 'CharacterParser'[letter or digit expected]
- *       Failure[1:3]: letter or digit expected
- *     Success[1:3]: [1]
- *   Success[1:3]: [f, [1]]
+ *     Instance of 'SequenceParser'
+ *       Instance of 'CharacterParser'[letter expected]
+ *       Success[1:2]: f
+ *       Instance of 'PossessiveRepeatingParser'[0..*]
+ *         Instance of 'CharacterParser'[letter or digit expected]
+ *         Success[1:3]: 1
+ *         Instance of 'CharacterParser'[letter or digit expected]
+ *         Failure[1:3]: letter or digit expected
+ *       Success[1:3]: [1]
+ *     Success[1:3]: [f, [1]]
  *
  * Indentation signifies the activation of a parser object. Reverse indentation
  * signifies the returning of a parse result either with a success or failure

@@ -10,6 +10,9 @@ Parser any([String message = 'input expected']) {
   return new AnyParser(message);
 }
 
+/**
+ * A parser that accepts any input element.
+ */
 class AnyParser extends Parser {
 
   final String _message;

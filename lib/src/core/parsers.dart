@@ -8,6 +8,9 @@ part of petitparser;
  */
 Parser epsilon([result]) => new EpsilonParser(result);
 
+/**
+ * A parser that consumes nothing and succeeds.
+ */
 class EpsilonParser extends Parser {
 
   final _result;
@@ -36,6 +39,9 @@ Parser failure([String message = 'unable to parse']) {
   return new FailureParser(message);
 }
 
+/**
+ * A parser that consumes nothing and fails.
+ */
 class FailureParser extends Parser {
 
   final String _message;
@@ -72,6 +78,10 @@ SettableParser undefined([String message = 'undefined parser']) {
   return failure(message).settable();
 }
 
+/**
+ * A parser that is not defined, but that can be set at a later
+ * point in time.
+ */
 class SettableParser extends DelegateParser {
 
   SettableParser(parser): super(parser);

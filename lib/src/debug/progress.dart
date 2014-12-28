@@ -6,18 +6,18 @@ part of debug;
  *
  * For example, the snippet
  *
- *   var parser = letter() & word().star();
- *   progress(parser).parse('f123');
+ *     var parser = letter() & word().star();
+ *     progress(parser).parse('f123');
  *
  * produces the following output:
  *
- *   * Instance of 'SequenceParser'
- *   * Instance of 'CharacterParser'[letter expected]
- *   ** Instance of 'PossessiveRepeatingParser'[0..*]
- *   ** Instance of 'CharacterParser'[letter or digit expected]
- *   *** Instance of 'CharacterParser'[letter or digit expected]
- *   **** Instance of 'CharacterParser'[letter or digit expected]
- *   ***** Instance of 'CharacterParser'[letter or digit expected]
+ *     * Instance of 'SequenceParser'
+ *     * Instance of 'CharacterParser'[letter expected]
+ *     ** Instance of 'PossessiveRepeatingParser'[0..*]
+ *     ** Instance of 'CharacterParser'[letter or digit expected]
+ *     *** Instance of 'CharacterParser'[letter or digit expected]
+ *     **** Instance of 'CharacterParser'[letter or digit expected]
+ *     ***** Instance of 'CharacterParser'[letter or digit expected]
  *
  * Jumps backwards mean that the parser is back-tracking. Often choices can
  * be reordered to such expensive parses.

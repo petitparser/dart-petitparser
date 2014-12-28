@@ -1,3 +1,6 @@
+/**
+ * This package contains tools to reflect on and transform parsers.
+ */
 library reflection;
 
 import 'dart:collection';
