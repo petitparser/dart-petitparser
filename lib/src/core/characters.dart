@@ -78,21 +78,24 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
 
   // 1. sort the ranges
   var sortedRanges = new List.from(ranges, growable: false);
-  sortedRanges.sort((first, second) => first.start - second.start);
+  sortedRanges.sort((first, second) {
+    return first.start != second.start
+        ? first.start - second.start
+        : first.stop - second.stop;
+  });
 
   // 2. merge adjacent or overlapping ranges
   var mergedRanges = new List();
-  for (var currentRange in sortedRanges) {
+  for (var thisRange in sortedRanges) {
     if (mergedRanges.isEmpty) {
-      mergedRanges.add(currentRange);
+      mergedRanges.add(thisRange);
     } else {
       var lastRange = mergedRanges.last;
-      if (lastRange.stop + 1 >= currentRange.start) {
-        mergedRanges[mergedRanges.length - 1] = new _RangeCharPredicate(
-            lastRange.start < currentRange.start ? lastRange.start : currentRange.start,
-            lastRange.stop > currentRange.stop ? lastRange.stop : currentRange.stop);
+      if (lastRange.stop + 1 >= thisRange.start) {
+        var characterRange = new _RangeCharPredicate(lastRange.start, thisRange.stop);
+        mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
-        mergedRanges.add(currentRange);
+        mergedRanges.add(thisRange);
       }
     }
   }
