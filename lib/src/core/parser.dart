@@ -52,7 +52,12 @@ abstract class Parser {
    */
   Iterable matches(input) {
     var list = new List();
-    and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
+    and()
+        .map((each) => list.add(each))
+        .seq(any())
+        .or(any())
+        .star()
+        .parse(input);
     return list;
   }
 
@@ -191,7 +196,7 @@ abstract class Parser {
    * Convenience operator returning a parser that accepts the receiver followed
    * by [other]. See [Parser.seq] for details.
    */
-  Parser operator & (Parser other) => this.seq(other);
+  Parser operator &(Parser other) => this.seq(other);
 
   /**
    * Returns a parser that accepts the receiver or [other]. The resulting
@@ -211,7 +216,7 @@ abstract class Parser {
    * Convenience operator returning a parser that accepts the receiver or
    * [other]. See [Parser.or] for details.
    */
-  Parser operator | (Parser other) => this.or(other);
+  Parser operator |(Parser other) => this.or(other);
 
   /**
    * Returns a parser (logical and-predicate) that succeeds whenever the
@@ -360,8 +365,8 @@ abstract class Parser {
    * that consumes input like `'1-2-3'` and returns a list of the elements and
    * separators: `['1', '-', '2', '-', '3']`.
    */
-  Parser separatedBy(Parser separator, {bool includeSeparators: true,
-      bool optionalSeparatorAtEnd: false}) {
+  Parser separatedBy(Parser separator,
+      {bool includeSeparators: true, bool optionalSeparatorAtEnd: false}) {
     var repeater = new SequenceParser([separator, this]).star();
     var parser = new SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional(separator)]
@@ -375,8 +380,9 @@ abstract class Parser {
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators && optionalSeparatorAtEnd
-          && !identical(list[2], separator)) {
+      if (includeSeparators &&
+          optionalSeparatorAtEnd &&
+          !identical(list[2], separator)) {
         result.add(list[2]);
       }
       return result;
@@ -405,9 +411,9 @@ abstract class Parser {
       return true;
     }
     seen.add(this);
-    return runtimeType == other.runtimeType
-        && hasEqualProperties(other)
-        && hasEqualChildren(other, seen);
+    return runtimeType == other.runtimeType &&
+        hasEqualProperties(other) &&
+        hasEqualChildren(other, seen);
   }
 
   /**
@@ -426,7 +432,8 @@ abstract class Parser {
    * generically on the returned [Parser#children].
    */
   bool hasEqualChildren(Parser other, Set<Parser> seen) {
-    var thisChildren = children, otherChildren = other.children;
+    var thisChildren = children,
+        otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
     }
@@ -467,5 +474,4 @@ abstract class Parser {
   void replace(Parser source, Parser target) {
     // no children, nothing to do
   }
-
 }

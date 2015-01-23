@@ -45,7 +45,6 @@ import 'package:petitparser/petitparser.dart';
  * due to the use of [noSuchMethod]. However, the resulting parser is identical.
  */
 abstract class CompositeParser2 extends CompositeParser {
-
   @override
   dynamic noSuchMethod(Invocation mirror) {
     String name = MirrorSystem.getName(mirror.memberName);
@@ -53,7 +52,8 @@ abstract class CompositeParser2 extends CompositeParser {
       if (mirror.isGetter) {
         return ref(name);
       } else if (mirror.isSetter) {
-        return def(name.substring(0, name.length - 1), mirror.positionalArguments.first);
+        return def(name.substring(0, name.length - 1),
+            mirror.positionalArguments.first);
       } else if (mirror.isMethod && mirror.positionalArguments.length == 1) {
         var argument = mirror.positionalArguments.first;
         if (argument is Parser) {
@@ -65,5 +65,4 @@ abstract class CompositeParser2 extends CompositeParser {
     }
     return super.noSuchMethod(mirror);
   }
-
 }

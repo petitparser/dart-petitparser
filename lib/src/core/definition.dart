@@ -57,9 +57,14 @@ abstract class GrammarDefinition {
    * The optional arguments parametrize the called production.
    */
   Parser ref(Function function, [arg1, arg2, arg3, arg4, arg5, arg6]) {
-    var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
-        .takeWhile((each) => each != null)
-        .toList(growable: false);
+    var arguments = [
+      arg1,
+      arg2,
+      arg3,
+      arg4,
+      arg5,
+      arg6
+    ].takeWhile((each) => each != null).toList(growable: false);
     return new _Reference(function, arguments);
   }
 
@@ -70,7 +75,8 @@ abstract class GrammarDefinition {
    * the grammar. The optional [arguments] list parametrizes the called production.
    */
   Parser build({Function start: null, List arguments: const []}) {
-    return _resolve(new _Reference(start != null ? start : this.start, arguments));
+    return _resolve(
+        new _Reference(start != null ? start : this.start, arguments));
   }
 
   /**
@@ -118,7 +124,6 @@ abstract class GrammarDefinition {
 
     return mapping[reference];
   }
-
 }
 
 /**
@@ -129,7 +134,6 @@ class GrammarParser extends DelegateParser {
 }
 
 class _Reference extends Parser {
-
   final Function function;
   final List arguments;
 
@@ -145,9 +149,9 @@ class _Reference extends Parser {
       return false;
     }
     for (var i = 0; i < arguments.length; i++) {
-      var a = arguments[i], b = other.arguments[i];
-      if (a is Parser && a is! _Reference &&
-          b is Parser && b is! _Reference) {
+      var a = arguments[i],
+          b = other.arguments[i];
+      if (a is Parser && a is! _Reference && b is Parser && b is! _Reference) {
         // for parsers do a deep equality check
         if (!a.isEqualTo(b)) {
           return false;
@@ -169,7 +173,6 @@ class _Reference extends Parser {
   Parser copy() => throw new UnsupportedError('References cannot be copied.');
 
   @override
-  Result parseOn(Context context) => throw new UnsupportedError('References cannot be parsed.');
-
+  Result parseOn(Context context) =>
+      throw new UnsupportedError('References cannot be parsed.');
 }
-

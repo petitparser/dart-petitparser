@@ -14,7 +14,6 @@ Parser any([String message = 'input expected']) {
  * A parser that accepts any input element.
  */
 class AnyParser extends Parser {
-
   final String _message;
 
   AnyParser(this._message);
@@ -33,10 +32,8 @@ class AnyParser extends Parser {
 
   @override
   bool hasEqualProperties(AnyParser other) {
-    return super.hasEqualProperties(other)
-        && _message == other._message;
+    return super.hasEqualProperties(other) && _message == other._message;
   }
-
 }
 
 /**
@@ -46,8 +43,7 @@ class AnyParser extends Parser {
  * `'a'` or the letter `'b'`. For any other input the parser fails.
  */
 Parser anyIn(elements, [String message]) {
-  return predicate(1,
-      (each) => elements.indexOf(each) >= 0,
+  return predicate(1, (each) => elements.indexOf(each) >= 0,
       message != null ? message : 'any of $elements expected');
 }
 
@@ -58,8 +54,7 @@ Parser anyIn(elements, [String message]) {
  * `'foo'`. Fails for any other input.
  */
 Parser string(String element, [String message]) {
-  return predicate(element.length,
-      (String each) => element == each,
+  return predicate(element.length, (String each) => element == each,
       message != null ? message : '$element expected');
 }
 
@@ -94,7 +89,6 @@ Parser predicate(int length, Predicate predicate, String message) {
  * A parser for a literal satisfying a predicate.
  */
 class PredicateParser extends Parser {
-
   final int _length;
   final Predicate _predicate;
   final String _message;
@@ -124,10 +118,9 @@ class PredicateParser extends Parser {
 
   @override
   bool hasEqualProperties(PredicateParser other) {
-    return super.hasEqualProperties(other)
-        && _length == other._length
-        && _predicate == other._predicate
-        && _message == other._message;
+    return super.hasEqualProperties(other) &&
+        _length == other._length &&
+        _predicate == other._predicate &&
+        _message == other._message;
   }
-
 }

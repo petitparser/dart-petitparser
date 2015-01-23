@@ -36,12 +36,11 @@ part of petitparser;
  */
 @deprecated
 abstract class CompositeParser extends DelegateParser {
-
   bool _completed = false;
   final Map<String, Parser> _defined = new Map();
   final Map<String, SettableParser> _undefined = new Map();
 
-  CompositeParser(): super(failure('Uninitalized production: start')) {
+  CompositeParser() : super(failure('Uninitalized production: start')) {
     initialize();
     _complete();
   }
@@ -131,7 +130,8 @@ abstract class CompositeParser extends DelegateParser {
     } else if (!_defined.containsKey(name)) {
       throw new UndefinedProductionError(name);
     } else {
-      _defined[name] = replacement is Parser ? replacement : replacement(_defined[name]);
+      _defined[name] =
+          replacement is Parser ? replacement : replacement(_defined[name]);
     }
   }
 
@@ -148,7 +148,6 @@ abstract class CompositeParser extends DelegateParser {
   void action(String name, Function function) {
     redef(name, (parser) => parser.map(function));
   }
-
 }
 
 /**
@@ -156,38 +155,32 @@ abstract class CompositeParser extends DelegateParser {
  * the [CompositeParser.initialize] method.
  */
 class CompletedParserError extends Error {
-
   CompletedParserError();
 
   @override
   String toString() => 'Completed parser';
-
 }
 
 /**
  * Error raised when an undefined production is accessed.
  */
 class UndefinedProductionError extends Error {
-
   final String name;
 
   UndefinedProductionError(this.name);
 
   @override
   String toString() => 'Undefined production: $name';
-
 }
 
 /**
  * Error raised when a production is accidentally redefined.
  */
 class RedefinedProductionError extends Error {
-
   final String name;
 
   RedefinedProductionError(this.name);
 
   @override
   String toString() => 'Redefined production: $name';
-
 }

@@ -176,10 +176,10 @@ void main() {
     return validate('#(1.2)', definition.arrayLiteral);
   });
   test('testArrayLiteral7', () {
-    return validate('#(size #at: at:put: #''=='')', definition.arrayLiteral);
+    return validate('#(size #at: at:put: #' '==' ')', definition.arrayLiteral);
   });
   test('testArrayLiteral8', () {
-    return validate('#(''baz'')', definition.arrayLiteral);
+    return validate('#(' 'baz' ')', definition.arrayLiteral);
   });
   test('testArrayLiteral9', () {
     return validate('#((1) 2)', definition.arrayLiteral);
@@ -323,7 +323,8 @@ void main() {
     return validate('1 abs; negated', definition.expression);
   });
   test('testCascadeExpression2', () {
-    return validate('1 abs negated; raisedTo: 12; negated', definition.expression);
+    return validate(
+        '1 abs negated; raisedTo: 12; negated', definition.expression);
   });
   test('testCascadeExpression3', () {
     return validate('1 + 2; - 3', definition.expression);
@@ -413,9 +414,9 @@ void main() {
     return validate('method <foo: 1.2>', definition.method);
   });
   test('testPragma8', () {
-    return validate('method <foo: ''bar''>', definition.method);
+    return validate('method <foo: ' 'bar' '>', definition.method);
   });
   test('testPragma9', () {
-    return validate('method <foo: #''bar''>', definition.method);
+    return validate('method <foo: #' 'bar' '>', definition.method);
   });
 }

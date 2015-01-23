@@ -25,7 +25,6 @@ Matcher accept(Parser parser) {
 }
 
 class _Accept extends Matcher {
-
   final Parser parser;
 
   _Accept(this.parser);
@@ -35,7 +34,6 @@ class _Accept extends Matcher {
   Description describe(Description description) {
     return description.add('$parser to accept input');
   }
-
 }
 
 /**
@@ -46,7 +44,6 @@ Matcher parse(Parser parser, matcher, [int position = -1]) {
 }
 
 class _Parse extends Matcher {
-
   final Parser parser;
   final Matcher matcher;
   final int position;
@@ -59,7 +56,8 @@ class _Parse extends Matcher {
       addStateInfo(matchState, {'property': 'value', 'result': result});
       return false;
     }
-    if (position >= 0 && !equals(position).matches(result.position, matchState)) {
+    if (position >= 0 &&
+        !equals(position).matches(result.position, matchState)) {
       addStateInfo(matchState, {'property': 'position', 'result': result});
       return false;
     }
@@ -70,9 +68,11 @@ class _Parse extends Matcher {
     return description.add('$parser to accept ').addDescriptionOf(matcher);
   }
 
-  Description describeMismatch(item, Description mismatchDescription,
-                               Map matchState, bool verbose) {
-    mismatchDescription.add('has parse result ').add('"${matchState['result']}"');
+  Description describeMismatch(
+      item, Description mismatchDescription, Map matchState, bool verbose) {
+    mismatchDescription
+        .add('has parse result ')
+        .add('"${matchState['result']}"');
     if (matchState['property'] == 'value') {
       mismatchDescription.add(' which parse result ');
       var subDescription = new StringDescription();
@@ -95,5 +95,4 @@ class _Parse extends Matcher {
     }
     throw new Exception('Internal matcher error');
   }
-
 }

@@ -65,5 +65,4 @@ class Standard {
       (proc value (car list))
       proc)))
 """;
-
 }

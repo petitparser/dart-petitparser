@@ -12,7 +12,6 @@ Parser epsilon([result]) => new EpsilonParser(result);
  * A parser that consumes nothing and succeeds.
  */
 class EpsilonParser extends Parser {
-
   final _result;
 
   EpsilonParser(this._result);
@@ -27,7 +26,6 @@ class EpsilonParser extends Parser {
   bool hasEqualProperties(EpsilonParser other) {
     return super.hasEqualProperties(other) && _result == other._result;
   }
-
 }
 
 /**
@@ -43,7 +41,6 @@ Parser failure([String message = 'unable to parse']) {
  * A parser that consumes nothing and fails.
  */
 class FailureParser extends Parser {
-
   final String _message;
 
   FailureParser(this._message);
@@ -61,7 +58,6 @@ class FailureParser extends Parser {
   bool hasEqualProperties(FailureParser other) {
     return super.hasEqualProperties(other) && _message == other._message;
   }
-
 }
 
 /**
@@ -83,8 +79,7 @@ SettableParser undefined([String message = 'undefined parser']) {
  * point in time.
  */
 class SettableParser extends DelegateParser {
-
-  SettableParser(parser): super(parser);
+  SettableParser(parser) : super(parser);
 
   /**
    * Sets the receiver to delegate to [parser].
@@ -93,5 +88,4 @@ class SettableParser extends DelegateParser {
 
   @override
   Parser copy() => new SettableParser(_delegate);
-
 }

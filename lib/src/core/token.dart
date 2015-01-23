@@ -62,13 +62,17 @@ class Token {
 
   @override
   bool operator ==(other) {
-    return other is Token && value == other.value && start == other.start && stop == other.stop;
+    return other is Token &&
+        value == other.value &&
+        start == other.start &&
+        stop == other.stop;
   }
 
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
-  static final Parser _NEWLINE_PARSER = char('\n').or(char('\r').seq(char('\n').optional()));
+  static final Parser _NEWLINE_PARSER =
+      char('\n').or(char('\r').seq(char('\n').optional()));
 
   /**
    * Returns a parser for that detects newlines platform independently.
@@ -79,7 +83,8 @@ class Token {
    * Converts the [position] index in a [buffer] to a line and column tuple.
    */
   static List<int> lineAndColumnOf(String buffer, int position) {
-    var line = 1, offset = 0;
+    var line = 1,
+        offset = 0;
     for (var token in newlineParser().token().matchesSkipping(buffer)) {
       if (position < token.stop) {
         return [line, position - offset + 1];
@@ -101,5 +106,4 @@ class Token {
       return '${position}';
     }
   }
-
 }

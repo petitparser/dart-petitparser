@@ -41,5 +41,4 @@ class Cons {
     buffer.write(')');
     return buffer.toString();
   }
-
 }

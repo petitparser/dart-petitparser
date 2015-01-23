@@ -41,8 +41,8 @@ Parser profile(Parser root, [OutputHandler output = print]) {
     var result = continuation(context);
     parsers.forEach((parser) {
       output('${count[parser]}\t'
-        '${watch[parser].elapsedMicroseconds}\t'
-        '${parser}');
+          '${watch[parser].elapsedMicroseconds}\t'
+          '${parser}');
     });
     return result;
   });

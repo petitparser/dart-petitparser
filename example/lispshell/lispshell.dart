@@ -8,15 +8,14 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
 /** Read, evaluate, print loop. */
-void evalInteractive(Parser parser, Environment env,
-                     Stream<String> input, IOSink output,
-                     IOSink error) {
+void evalInteractive(Parser parser, Environment env, Stream<String> input,
+    IOSink output, IOSink error) {
   output.write('>> ');
   input.listen((String line) {
     try {
       output.writeln('=> ${evalString(parser, env, line)}');
       output.write('>> ');
-    } on ParserError catch(exception) {
+    } on ParserError catch (exception) {
       error.writeln(exception.toString());
     }
   });
@@ -75,10 +74,8 @@ void main(List<String> arguments) {
 
   // process console input
   if (interactiveMode || files.isEmpty) {
-    var input = stdin
-        .transform(SYSTEM_ENCODING.decoder)
-        .transform(new LineSplitter());
+    var input =
+        stdin.transform(SYSTEM_ENCODING.decoder).transform(new LineSplitter());
     evalInteractive(lispParser, environment, input, stdout, stderr);
   }
-
 }

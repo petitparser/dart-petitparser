@@ -6,7 +6,8 @@ import 'package:unittest/unittest.dart' hide anyOf;
 
 import 'package:petitparser/petitparser.dart';
 
-void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position]) {
+void expectSuccess(Parser parser, dynamic input, dynamic expected,
+    [int position]) {
   var result = parser.parse(input);
   expect(result.isSuccess, isTrue);
   expect(result.isFailure, isFalse);
@@ -14,7 +15,8 @@ void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position
   expect(result.position, position != null ? position : input.length);
 }
 
-void expectFailure(Parser parser, dynamic input, [int position = 0, String message]) {
+void expectFailure(Parser parser, dynamic input,
+    [int position = 0, String message]) {
   var result = parser.parse(input);
   expect(result.isFailure, isTrue);
   expect(result.isSuccess, isFalse);
@@ -25,9 +27,8 @@ void expectFailure(Parser parser, dynamic input, [int position = 0, String messa
 }
 
 class ListGrammarDefinition extends GrammarDefinition {
-  start()   => ref(list).end();
-  list()    => ref(element) & char(',') & ref(list)
-             | ref(element);
+  start() => ref(list).end();
+  list() => ref(element) & char(',') & ref(list) | ref(element);
   element() => digit().plus().flatten();
 }
 
@@ -36,11 +37,10 @@ class ListParserDefinition extends ListGrammarDefinition {
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
-  start()   => ref(list).end();
-  list()    => ref(element) & ref(token, char(',')) & ref(list)
-             | ref(element);
+  start() => ref(list).end();
+  list() => ref(element) & ref(token, char(',')) & ref(list) | ref(element);
   element() => ref(token, digit().plus());
-  token(p)  => p.flatten().trim();
+  token(p) => p.flatten().trim();
 }
 
 class BuggedGrammerDefintion extends GrammarDefinition {
@@ -60,7 +60,9 @@ class BuggedGrammerDefintion extends GrammarDefinition {
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
   PluggableCompositeParser(this._function) : super();
-  void initialize() { _function(this); }
+  void initialize() {
+    _function(this);
+  }
 }
 
 main() {
@@ -289,8 +291,10 @@ main() {
       var inputLetter = new List.filled(100000, 'a');
       var inputDigit = new List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
-      expectSuccess(parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
-      expectSuccess(parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
+      expectSuccess(
+          parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
+      expectSuccess(
+          parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
     });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
@@ -345,7 +349,8 @@ main() {
       expectSuccess(parser, 'ababab', ['a', 'a', 'a'], 5);
     });
     test('separatedBy() separator at end', () {
-      var parser = char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
+      var parser =
+          char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
       expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a', 'b']);
@@ -355,7 +360,8 @@ main() {
       expectSuccess(parser, 'ababab', ['a', 'b', 'a', 'b', 'a', 'b']);
     });
     test('separatedBy() without separators & separator at end', () {
-      var parser = char('a').separatedBy(char('b'), includeSeparators: false, optionalSeparatorAtEnd: true);
+      var parser = char('a').separatedBy(char('b'),
+          includeSeparators: false, optionalSeparatorAtEnd: true);
       expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a']);
@@ -667,9 +673,35 @@ main() {
       expectFailure(parser, '');
     });
     test('whitespace() unicode', () {
-      var string = new String.fromCharCodes([0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0x85, 0xA0,
-        0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-        0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF]);
+      var string = new String.fromCharCodes([
+        0x09,
+        0x0A,
+        0x0B,
+        0x0C,
+        0x0D,
+        0x20,
+        0x85,
+        0xA0,
+        0x1680,
+        0x180E,
+        0x2000,
+        0x2001,
+        0x2002,
+        0x2003,
+        0x2004,
+        0x2005,
+        0x2006,
+        0x2007,
+        0x2008,
+        0x2009,
+        0x200A,
+        0x2028,
+        0x2029,
+        0x202F,
+        0x205F,
+        0x3000,
+        0xFEFF
+      ]);
       var parser = whitespace().star().flatten().end();
       expectSuccess(parser, string, string);
     });
@@ -719,50 +751,138 @@ main() {
     });
   });
   group('token', () {
-    var parser = any()
-        .map((value) => value.codeUnitAt(0))
-        .token().star();
+    var parser = any().map((value) => value.codeUnitAt(0)).token().star();
     var buffer = '1\r12\r\n123\n1234';
     var result = parser.parse(buffer).value;
     test('value', () {
-      expect(
-          result.map((token) => token.value),
-          [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52]);
+      expect(result.map((token) => token.value), [
+        49,
+        13,
+        49,
+        50,
+        13,
+        10,
+        49,
+        50,
+        51,
+        10,
+        49,
+        50,
+        51,
+        52
+      ]);
     });
     test('buffer', () {
-      expect(
-          result.map((token) => token.buffer),
+      expect(result.map((token) => token.buffer),
           new List.filled(buffer.length, buffer));
     });
     test('start', () {
-      expect(
-          result.map((token) => token.start),
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+      expect(result.map((token) => token.start), [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]);
     });
     test('stop', () {
-      expect(
-          result.map((token) => token.stop),
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+      expect(result.map((token) => token.stop), [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]);
     });
     test('length', () {
-      expect(
-          result.map((token) => token.length),
-          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+      expect(result.map((token) => token.length), [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]);
     });
     test('line', () {
-      expect(
-          result.map((token) => token.line),
-          [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4]);
+      expect(result.map((token) => token.line), [
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4
+      ]);
     });
     test('column', () {
-      expect(
-          result.map((token) => token.column),
-          [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
+      expect(result.map((token) => token.column), [
+        1,
+        2,
+        1,
+        2,
+        3,
+        4,
+        1,
+        2,
+        3,
+        4,
+        1,
+        2,
+        3,
+        4
+      ]);
     });
     test('input', () {
-      expect(
-          result.map((token) => token.input),
-          ['1', '\r', '1', '2', '\r', '\n', '1', '2', '3', '\n', '1', '2', '3', '4']);
+      expect(result.map((token) => token.input), [
+        '1',
+        '\r',
+        '1',
+        '2',
+        '\r',
+        '\n',
+        '1',
+        '2',
+        '3',
+        '\n',
+        '1',
+        '2',
+        '3',
+        '4'
+      ]);
     });
     test('unique', () {
       expect(new Set.from(result).length, result.length);
@@ -851,12 +971,16 @@ main() {
   });
   group('examples', () {
     final IDENTIFIER = letter().seq(word().star()).flatten();
-    final NUMBER = char('-').optional().seq(digit().plus())
-        .seq(char('.').seq(digit().plus()).optional()).flatten();
-    final STRING = char('"')
-        .seq(char('"').neg().star()).seq(char('"')).flatten();
+    final NUMBER = char('-')
+        .optional()
+        .seq(digit().plus())
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten();
+    final STRING =
+        char('"').seq(char('"').neg().star()).seq(char('"')).flatten();
     final KEYWORD = string('return')
-        .seq(whitespace().plus().flatten()).seq(IDENTIFIER.or(NUMBER).or(STRING))
+        .seq(whitespace().plus().flatten())
+        .seq(IDENTIFIER.or(NUMBER).or(STRING))
         .map((list) => list.last);
     final JAVADOC = string('/**')
         .seq(string('*/').neg().star())
@@ -953,7 +1077,8 @@ main() {
       expect(copy, isNot(same(parser)));
       expect(copy.toString(), parser.toString());
       expect(copy.runtimeType, parser.runtimeType);
-      expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
+      expect(copy.children,
+          pairwiseCompare(parser.children, identical, 'same children'));
       // check equality
       expect(copy.isEqualTo(copy), isTrue);
       expect(parser.isEqualTo(parser), isTrue);
@@ -962,12 +1087,14 @@ main() {
       // check replacing
       var replaced = new List();
       for (var i = 0; i < copy.children.length; i++) {
-        var source = copy.children[i], target = any();
+        var source = copy.children[i],
+            target = any();
         copy.replace(source, target);
         expect(copy.children[i], same(target));
         replaced.add(target);
       }
-      expect(copy.children, pairwiseCompare(replaced, identical, 'replaced children'));
+      expect(copy.children,
+          pairwiseCompare(replaced, identical, 'replaced children'));
     }
     test('any()', () => verify(any()));
     test('and()', () => verify(digit().and()));
@@ -1058,31 +1185,25 @@ main() {
       expectSuccess(parser, '1, 2, 3', ['1', ',', ['2', ',', '3']]);
     });
     test('direct recursion', () {
-      expect(
-          () => buggedDefinition.build(start: buggedDefinition.directRecursion1),
+      expect(() =>
+              buggedDefinition.build(start: buggedDefinition.directRecursion1),
           throwsStateError);
     });
     test('indirect recursion', () {
-      expect(
-          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion1),
-          throwsStateError);
-      expect(
-          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion2),
-          throwsStateError);
-      expect(
-          () => buggedDefinition.build(start: buggedDefinition.indirectRecursion3),
-          throwsStateError);
+      expect(() => buggedDefinition.build(
+          start: buggedDefinition.indirectRecursion1), throwsStateError);
+      expect(() => buggedDefinition.build(
+          start: buggedDefinition.indirectRecursion2), throwsStateError);
+      expect(() => buggedDefinition.build(
+          start: buggedDefinition.indirectRecursion3), throwsStateError);
     });
     test('delegation', () {
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation1) is EpsilonParser,
-          isTrue);
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation2) is EpsilonParser,
-          isTrue);
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation3) is EpsilonParser,
-          isTrue);
+      expect(buggedDefinition.build(
+          start: buggedDefinition.delegation1) is EpsilonParser, isTrue);
+      expect(buggedDefinition.build(
+          start: buggedDefinition.delegation2) is EpsilonParser, isTrue);
+      expect(buggedDefinition.build(
+          start: buggedDefinition.delegation3) is EpsilonParser, isTrue);
     });
   });
   group('composite', () {
@@ -1136,9 +1257,9 @@ main() {
     });
     test('reference completed', () {
       var parsers = {
-          'start': char('a'),
-          'for_b': char('b'),
-          'for_c': char('c')
+        'start': char('a'),
+        'for_b': char('b'),
+        'for_c': char('c')
       };
       var parser = new PluggableCompositeParser((self) {
         for (var key in parsers.keys) {
@@ -1173,7 +1294,7 @@ main() {
       });
     });
     test('undefined start', () {
-      expect(() => new PluggableCompositeParser((self) { }), throws);
+      expect(() => new PluggableCompositeParser((self) {}), throws);
     });
     test('undefined redef', () {
       new PluggableCompositeParser((self) {
@@ -1185,14 +1306,17 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('expression').end());
         self.def('variable', letter().seq(word().star()).flatten().trim());
-        self.def('expression', self.ref('variable')
+        self.def('expression', self
+            .ref('variable')
             .or(self.ref('abstraction'))
             .or(self.ref('application')));
-        self.def('abstraction', char('\\').trim()
+        self.def('abstraction', char('\\')
+            .trim()
             .seq(self.ref('variable'))
             .seq(char('.').trim())
             .seq(self.ref('expression')));
-        self.def('application', char('(').trim()
+        self.def('application', char('(')
+            .trim()
             .seq(self.ref('expression'))
             .seq(self.ref('expression'))
             .seq(char(')').trim()));
@@ -1210,25 +1334,22 @@ main() {
     test('example (expression)', () {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('terms').end());
-        self.def('terms', self.ref('addition')
-            .or(self.ref('factors')));
-        self.def('addition', self.ref('factors')
-            .separatedBy(char('+').or(char('-')).trim()));
-        self.def('factors', self.ref('multiplication')
-            .or(self.ref('power')));
-        self.def('multiplication', self.ref('power')
-            .separatedBy(char('*').or(char('/')).trim()));
-        self.def('power', self.ref('primary')
-            .separatedBy(char('^').trim()));
-        self.def('primary', self.ref('number')
-            .or(self.ref('parentheses')));
-        self.def('number', char('-').optional()
+        self.def('terms', self.ref('addition').or(self.ref('factors')));
+        self.def('addition',
+            self.ref('factors').separatedBy(char('+').or(char('-')).trim()));
+        self.def('factors', self.ref('multiplication').or(self.ref('power')));
+        self.def('multiplication',
+            self.ref('power').separatedBy(char('*').or(char('/')).trim()));
+        self.def('power', self.ref('primary').separatedBy(char('^').trim()));
+        self.def('primary', self.ref('number').or(self.ref('parentheses')));
+        self.def('number', char('-')
+            .optional()
             .seq(digit().plus())
             .seq(char('.').seq(digit().plus()).optional())
-            .flatten().trim());
-        self.def('parentheses', char('(').trim()
-            .seq(self.ref('terms'))
-            .seq(char(')').trim()));
+            .flatten()
+            .trim());
+        self.def('parentheses',
+            char('(').trim().seq(self.ref('terms')).seq(char(')').trim()));
       });
       expect(parser.accept('1'), isTrue);
       expect(parser.accept('12'), isTrue);
@@ -1252,20 +1373,18 @@ main() {
     var root = failure().settable();
     var builder = new ExpressionBuilder();
     builder.group()
-      ..primitive(char('(').trim()
-          .seq(root)
-          .seq(char(')').trim())
-          .pick(1))
-      ..primitive(digit().plus()
+      ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+      ..primitive(digit()
+          .plus()
           .seq(char('.').seq(digit().plus()).optional())
-          .flatten().trim().map((a) => double.parse(a)));
-    builder.group()
-      ..prefix(char('-').trim(), (op, a) => -a);
+          .flatten()
+          .trim()
+          .map((a) => double.parse(a)));
+    builder.group()..prefix(char('-').trim(), (op, a) => -a);
     builder.group()
       ..postfix(string('++').trim(), (a, op) => ++a)
       ..postfix(string('--').trim(), (a, op) => --a);
-    builder.group()
-      ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
+    builder.group()..right(char('^').trim(), (a, op, b) => math.pow(a, b));
     builder.group()
       ..left(char('*').trim(), (a, op, b) => a * b)
       ..left(char('/').trim(), (a, op, b) => a / b);
@@ -1425,8 +1544,9 @@ main() {
     test('composite grammar', () {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('list').end());
-        self.def('list', self.ref('element').separatedBy(char(','),
-            includeSeparators: false));
+        self.def('list', self
+            .ref('element')
+            .separatedBy(char(','), includeSeparators: false));
         self.def('element', digit().plus().flatten());
       });
       expect(['1', '23', '456'], parser.parse('1,23,456').value);
@@ -1434,8 +1554,9 @@ main() {
     test('composite parser', () {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('list').end());
-        self.def('list', self.ref('element').separatedBy(char(','),
-            includeSeparators: false));
+        self.def('list', self
+            .ref('element')
+            .separatedBy(char(','), includeSeparators: false));
         self.def('element', digit().plus().flatten());
         self.action('element', (value) => int.parse(value));
       });

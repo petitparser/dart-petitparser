@@ -10,12 +10,10 @@ const int unbounded = -1;
  * its delegate.
  */
 abstract class RepeatingParser extends DelegateParser {
-
   final int _min;
   final int _max;
 
-  RepeatingParser(Parser parser, this._min, this._max)
-      : super(parser) {
+  RepeatingParser(Parser parser, this._min, this._max) : super(parser) {
     assert(0 <= _min);
     assert(_max == unbounded || _min <= _max);
   }
@@ -28,9 +26,10 @@ abstract class RepeatingParser extends DelegateParser {
 
   @override
   bool hasEqualProperties(RepeatingParser other) {
-    return super.hasEqualProperties(other) && _min == other._min && _max == other._max;
+    return super.hasEqualProperties(other) &&
+        _min == other._min &&
+        _max == other._max;
   }
-
 }
 
 /**
@@ -38,7 +37,6 @@ abstract class RepeatingParser extends DelegateParser {
  * its delegate.
  */
 class PossessiveRepeatingParser extends RepeatingParser {
-
   PossessiveRepeatingParser(Parser parser, int min, int max)
       : super(parser, min, max);
 
@@ -67,7 +65,6 @@ class PossessiveRepeatingParser extends RepeatingParser {
 
   @override
   Parser copy() => new PossessiveRepeatingParser(_delegate, _min, _max);
-
 }
 
 /**
@@ -77,7 +74,6 @@ class PossessiveRepeatingParser extends RepeatingParser {
  * expression implementations (non-blind).
  */
 abstract class LimitedRepeatingParser extends RepeatingParser {
-
   Parser _limit;
 
   LimitedRepeatingParser(Parser parser, this._limit, int min, int max)
@@ -93,7 +89,6 @@ abstract class LimitedRepeatingParser extends RepeatingParser {
       _limit = target;
     }
   }
-
 }
 
 /**
@@ -102,7 +97,6 @@ abstract class LimitedRepeatingParser extends RepeatingParser {
  * 'limit' condition.
  */
 class GreedyRepeatingParser extends LimitedRepeatingParser {
-
   GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
@@ -145,7 +139,6 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
 
   @override
   Parser copy() => new GreedyRepeatingParser(_delegate, _limit, _min, _max);
-
 }
 
 /**
@@ -153,7 +146,6 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
  * limits its consumption to meet the 'limit' condition as early as possible.
  */
 class LazyRepeatingParser extends LimitedRepeatingParser {
-
   LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
@@ -189,5 +181,4 @@ class LazyRepeatingParser extends LimitedRepeatingParser {
 
   @override
   Parser copy() => new LazyRepeatingParser(_delegate, _limit, _min, _max);
-
 }

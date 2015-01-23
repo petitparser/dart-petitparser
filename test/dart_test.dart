@@ -51,7 +51,8 @@ void main() {
     });
     test('multi-line nested', () {
       expect('/* outer /* nested */ */', accept(whitespaces));
-      expect('/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
+      expect(
+          '/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
       expect('/* outer /* not closed */', isNot(accept(whitespaces)));
     });
     test('combined', () {

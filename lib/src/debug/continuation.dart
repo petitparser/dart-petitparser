@@ -3,7 +3,8 @@ part of debug;
 /**
  * Handler function for the [ContinuationParser].
  */
-typedef Result ContinuationHandler(Result continuation(Context context), Context context);
+typedef Result ContinuationHandler(
+    Result continuation(Context context), Context context);
 
 /**
  * Continuation parser that when activated captures a continuation function
@@ -27,10 +28,9 @@ typedef Result ContinuationHandler(Result continuation(Context context), Context
  * See [profile], [progress], and [trace] for more elaborate examples.
  */
 class ContinuationParser extends DelegateParser {
-
   final ContinuationHandler handler;
 
-  ContinuationParser(parser, this.handler): super(parser);
+  ContinuationParser(parser, this.handler) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -39,5 +39,4 @@ class ContinuationParser extends DelegateParser {
 
   @override
   Parser copy() => new ContinuationParser(children[0], handler);
-
 }

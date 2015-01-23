@@ -12,7 +12,7 @@ class Environment {
   final Map<Name, dynamic> _bindings;
 
   /** Constructor for the nested environment. */
-  Environment([this._owner]): _bindings = new Map();
+  Environment([this._owner]) : _bindings = new Map();
 
   /** Constructor for a nested environment. */
   Environment create() => new Environment(this);
@@ -54,5 +54,4 @@ class Environment {
   _invalidBinding(Name key) {
     throw new ArgumentError('Unknown binding for $key');
   }
-
 }

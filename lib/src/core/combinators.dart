@@ -5,7 +5,6 @@ part of petitparser;
  * directly use a delegate parser.
  */
 class DelegateParser extends Parser {
-
   Parser _delegate;
 
   DelegateParser(this._delegate);
@@ -28,17 +27,15 @@ class DelegateParser extends Parser {
 
   @override
   Parser copy() => new DelegateParser(_delegate);
-
 }
 
 /**
  * A parser that succeeds only at the end of the input.
  */
 class EndOfInputParser extends DelegateParser {
-
   final String _message;
 
-  EndOfInputParser(parser, this._message): super(parser);
+  EndOfInputParser(parser, this._message) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -59,7 +56,6 @@ class EndOfInputParser extends DelegateParser {
   bool hasEqualProperties(EndOfInputParser other) {
     return super.hasEqualProperties(other) && _message == other._message;
   }
-
 }
 
 /**
@@ -67,8 +63,7 @@ class EndOfInputParser extends DelegateParser {
  * does not consume the input stream [Parr 1994, 1995].
  */
 class AndParser extends DelegateParser {
-
-  AndParser(parser): super(parser);
+  AndParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -82,7 +77,6 @@ class AndParser extends DelegateParser {
 
   @override
   Parser copy() => new AndParser(_delegate);
-
 }
 
 /**
@@ -90,10 +84,9 @@ class AndParser extends DelegateParser {
  * but consumes no input [Parr 1994, 1995].
  */
 class NotParser extends DelegateParser {
-
   final String _message;
 
-  NotParser(parser, this._message): super(parser);
+  NotParser(parser, this._message) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -115,17 +108,15 @@ class NotParser extends DelegateParser {
   bool hasEqualProperties(NotParser other) {
     return super.hasEqualProperties(other) && _message == other._message;
   }
-
 }
 
 /**
  * A parser that optionally parsers its delegate, or answers nil.
  */
 class OptionalParser extends DelegateParser {
-
   final _otherwise;
 
-  OptionalParser(parser, this._otherwise): super(parser);
+  OptionalParser(parser, this._otherwise) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -144,14 +135,12 @@ class OptionalParser extends DelegateParser {
   bool hasEqualProperties(OptionalParser other) {
     return super.hasEqualProperties(other) && _otherwise == other._otherwise;
   }
-
 }
 
 /**
  * Abstract parser that parses a list of things in some way.
  */
 abstract class ListParser extends Parser {
-
   final List<Parser> _parsers;
 
   ListParser(this._parsers);
@@ -168,19 +157,17 @@ abstract class ListParser extends Parser {
       }
     }
   }
-
 }
 
 /**
  * A parser that uses the first parser that succeeds.
  */
 class ChoiceParser extends ListParser {
-
   factory ChoiceParser(Iterable<Parser> parsers) {
     return new ChoiceParser._(new List.from(parsers, growable: false));
   }
 
-  ChoiceParser._(parsers): super(parsers);
+  ChoiceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -196,24 +183,24 @@ class ChoiceParser extends ListParser {
 
   @override
   Parser or(Parser other) {
-    return new ChoiceParser(new List()..addAll(_parsers)..add(other));
+    return new ChoiceParser(new List()
+      ..addAll(_parsers)
+      ..add(other));
   }
 
   @override
   Parser copy() => new ChoiceParser(_parsers);
-
 }
 
 /**
  * A parser that parses a sequence of parsers.
  */
 class SequenceParser extends ListParser {
-
   factory SequenceParser(Iterable<Parser> parsers) {
     return new SequenceParser._(new List.from(parsers, growable: false));
   }
 
-  SequenceParser._(parsers): super(parsers);
+  SequenceParser._(parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -232,10 +219,11 @@ class SequenceParser extends ListParser {
 
   @override
   Parser seq(Parser other) {
-    return new SequenceParser(new List()..addAll(_parsers)..add(other));
+    return new SequenceParser(new List()
+      ..addAll(_parsers)
+      ..add(other));
   }
 
   @override
   Parser copy() => new SequenceParser(_parsers);
-
 }

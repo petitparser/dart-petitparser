@@ -50,7 +50,6 @@ part of petitparser;
  *     parser.parse('2^2^3');   // 256
  */
 class ExpressionBuilder {
-
   final List<ExpressionGroup> _groups = new List();
 
   /**
@@ -68,7 +67,6 @@ class ExpressionBuilder {
   Parser build() => _groups.fold(
       failure('Highest priority group should define a primitive parser.'),
       (a, b) => b._build(a));
-
 }
 
 /**
@@ -95,14 +93,16 @@ class ExpressionGroup {
    */
   void prefix(Parser parser, [action(operator, value)]) {
     if (action == null) action = (operator, value) => [operator, value];
-    _prefix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _prefix
+        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_prefix(Parser inner) {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([_build_choice(_prefix).star(), inner]).map((tuple) {
+      return new SequenceParser([_build_choice(_prefix).star(), inner]).map(
+          (tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           return result.action(result.operator, value);
         });
@@ -118,14 +118,16 @@ class ExpressionGroup {
    */
   void postfix(Parser parser, [action(value, operator)]) {
     if (action == null) action = (value, operator) => [value, operator];
-    _postfix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _postfix
+        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_postfix(Parser inner) {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([inner, _build_choice(_postfix).star()]).map((tuple) {
+      return new SequenceParser([inner, _build_choice(_postfix).star()]).map(
+          (tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           return result.action(value, result.operator);
         });
@@ -140,8 +142,10 @@ class ExpressionGroup {
    * the parsed `left` term, `operator`, and `right` term.
    */
   void right(Parser parser, [action(left, operator, right)]) {
-    if (action == null) action = (left, operator, right) => [left, operator, right];
-    _right.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) action =
+        (left, operator, right) => [left, operator, right];
+    _right
+        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_right(Parser inner) {
@@ -151,7 +155,8 @@ class ExpressionGroup {
       return inner.separatedBy(_build_choice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
-          result = sequence[i].action(sequence[i - 1], sequence[i].operator, result);
+          result =
+              sequence[i].action(sequence[i - 1], sequence[i].operator, result);
         }
         return result;
       });
@@ -165,8 +170,10 @@ class ExpressionGroup {
    * the parsed `left` term, `operator`, and `right` term.
    */
   void left(Parser parser, [action(left, operator, right)]) {
-    if (action == null) action = (left, operator, right) => [left, operator, right];
-    _left.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) action =
+        (left, operator, right) => [left, operator, right];
+    _left
+        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_left(Parser inner) {
@@ -176,7 +183,8 @@ class ExpressionGroup {
       return inner.separatedBy(_build_choice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
-          result = sequence[i].action(result, sequence[i].operator, sequence[i + 1]);
+          result =
+              sequence[i].action(result, sequence[i].operator, sequence[i + 1]);
         }
         return result;
       });
@@ -198,11 +206,9 @@ class ExpressionGroup {
 
   // helper to build the group of parsers
   Parser _build(Parser inner) {
-    return _build_left(_build_right(
-      _build_postfix(_build_prefix(
-      _build_primitive(inner)))));
+    return _build_left(
+        _build_right(_build_postfix(_build_prefix(_build_primitive(inner)))));
   }
-
 }
 
 // helper class to associate operators and actions

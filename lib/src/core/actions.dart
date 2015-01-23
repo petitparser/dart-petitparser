@@ -5,10 +5,9 @@ part of petitparser;
  * successful parse result of the delegate.
  */
 class ActionParser extends DelegateParser {
-
   final Function _function;
 
-  ActionParser(parser, this._function): super(parser);
+  ActionParser(parser, this._function) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -27,7 +26,6 @@ class ActionParser extends DelegateParser {
   bool hasEqualProperties(ActionParser other) {
     return super.hasEqualProperties(other) && _function == other._function;
   }
-
 }
 
 /**
@@ -35,11 +33,10 @@ class ActionParser extends DelegateParser {
  * its delegate.
  */
 class TrimmingParser extends DelegateParser {
-
   Parser _left;
   Parser _right;
 
-  TrimmingParser(parser, this._left, this._right): super(parser);
+  TrimmingParser(parser, this._left, this._right) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -74,7 +71,6 @@ class TrimmingParser extends DelegateParser {
       _right = target;
     }
   }
-
 }
 
 /**
@@ -82,8 +78,7 @@ class TrimmingParser extends DelegateParser {
  * parses.
  */
 class FlattenParser extends DelegateParser {
-
-  FlattenParser(parser): super(parser);
+  FlattenParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
@@ -100,21 +95,20 @@ class FlattenParser extends DelegateParser {
 
   @override
   Parser copy() => new FlattenParser(_delegate);
-
 }
 
 /**
  * A parser that answers a token of the result its delegate parses.
  */
 class TokenParser extends DelegateParser {
-
-  TokenParser(parser): super(parser);
+  TokenParser(parser) : super(parser);
 
   @override
   Result parseOn(Context context) {
     var result = _delegate.parseOn(context);
     if (result.isSuccess) {
-      var token = new Token(result.value, context.buffer, context.position, result.position);
+      var token = new Token(
+          result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
       return result;
@@ -123,5 +117,4 @@ class TokenParser extends DelegateParser {
 
   @override
   Parser copy() => new TokenParser(_delegate);
-
 }

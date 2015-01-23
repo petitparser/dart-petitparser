@@ -4,7 +4,6 @@ part of petitparser;
  * An immutable parse context.
  */
 class Context {
-
   const Context(this.buffer, this.position);
 
   /**
@@ -21,14 +20,16 @@ class Context {
    * Returns a result indicating a parse success.
    */
   Result success(result, [int position]) {
-    return new Success(buffer, position == null ? this.position : position, result);
+    return new Success(
+        buffer, position == null ? this.position : position, result);
   }
 
   /**
    * Returns a result indicating a parse failure.
    */
   Result failure(String message, [int position]) {
-    return new Failure(buffer, position == null ? this.position : position, message);
+    return new Failure(
+        buffer, position == null ? this.position : position, message);
   }
 
   /**
@@ -40,15 +41,13 @@ class Context {
    * Returns the line:column if the input is a string, otherwise the position.
    */
   String toPositionString() => Token.positionString(buffer, position);
-
 }
 
 /**
  * An immutable parse result.
  */
 abstract class Result extends Context {
-
-  const Result(buffer, position): super(buffer, position);
+  const Result(buffer, position) : super(buffer, position);
 
   /**
    * Returns [true] if this result indicates a parse success.
@@ -69,15 +68,13 @@ abstract class Result extends Context {
    * Returns the parse message of the current context.
    */
   String get message;
-
 }
 
 /**
  * An immutable parse result in case of a successful parse.
  */
 class Success extends Result {
-
-  const Success(buffer, position, this.value): super(buffer, position);
+  const Success(buffer, position, this.value) : super(buffer, position);
 
   @override
   bool get isSuccess => true;
@@ -90,15 +87,13 @@ class Success extends Result {
 
   @override
   String toString() => 'Success[${toPositionString()}]: $value';
-
 }
 
 /**
  * An immutable parse result in case of a failed parse.
  */
 class Failure extends Result {
-
-  const Failure(buffer, position, this.message): super(buffer, position);
+  const Failure(buffer, position, this.message) : super(buffer, position);
 
   @override
   bool get isFailure => true;
@@ -111,19 +106,16 @@ class Failure extends Result {
 
   @override
   String toString() => 'Failure[${toPositionString()}]: $message';
-
 }
 
 /**
  * An exception raised in case of a parse error.
  */
 class ParserError extends Error {
-
   final Failure failure;
 
   ParserError(this.failure);
 
   @override
   String toString() => '${failure.message} at ${failure.toPositionString()}';
-
 }

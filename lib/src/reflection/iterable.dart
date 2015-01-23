@@ -15,18 +15,15 @@ part of reflection;
 Iterable<Parser> allParser(Parser root) => new _ParserIterable(root);
 
 class _ParserIterable extends IterableBase<Parser> {
-
   final Parser root;
 
   _ParserIterable(this.root);
 
   @override
   Iterator<Parser> get iterator => new _ParserIterator([root]);
-
 }
 
 class _ParserIterator implements Iterator<Parser> {
-
   final List<Parser> todo;
   final Set<Parser> seen;
 
@@ -52,5 +49,4 @@ class _ParserIterator implements Iterator<Parser> {
     }
     return true;
   }
-
 }
