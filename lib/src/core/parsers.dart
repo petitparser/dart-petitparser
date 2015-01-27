@@ -23,8 +23,9 @@ class EpsilonParser extends Parser {
   Parser copy() => new EpsilonParser(_result);
 
   @override
-  bool hasEqualProperties(EpsilonParser other) {
-    return super.hasEqualProperties(other) && _result == other._result;
+  bool hasEqualProperties(Parser other) {
+    return other is EpsilonParser && super.hasEqualProperties(other)
+        && _result == other._result;
   }
 }
 
@@ -55,8 +56,10 @@ class FailureParser extends Parser {
   Parser copy() => new FailureParser(_message);
 
   @override
-  bool hasEqualProperties(FailureParser other) {
-    return super.hasEqualProperties(other) && _message == other._message;
+  bool hasEqualProperties(Parser other) {
+    return other is FailureParser
+        && super.hasEqualProperties(other)
+        && _message == other._message;
   }
 }
 
