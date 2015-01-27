@@ -28,8 +28,9 @@ class CharacterParser extends Parser {
   Parser copy() => new CharacterParser(_predicate, _message);
 
   @override
-  bool hasEqualProperties(CharacterParser other) {
-    return super.hasEqualProperties(other) &&
+  bool hasEqualProperties(Parser other) {
+    return other is CharacterParser &&
+        super.hasEqualProperties(other) &&
         _predicate == other._predicate &&
         _message == other._message;
   }
