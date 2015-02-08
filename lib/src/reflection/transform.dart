@@ -15,8 +15,8 @@ typedef Parser TransformationHandler(Parser parser);
  */
 Parser transformParser(Parser parser, TransformationHandler handler) {
   var mapping = new Map.identity();
-  for (var parser in allParser(parser)) {
-    mapping[parser] = handler(parser.copy());
+  for (var each in allParser(parser)) {
+    mapping[each] = handler(each.copy());
   }
   var seen = new Set.from(mapping.values);
   var todo = new List.from(mapping.values);
