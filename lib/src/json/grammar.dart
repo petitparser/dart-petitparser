@@ -51,17 +51,17 @@ class JsonGrammarDefinition extends GrammarDefinition {
   stringToken() => ref(token, ref(stringPrimitive));
   numberToken() => ref(token, ref(numberPrimitive));
 
-  characterPrimitive() => ref(characterEscape)
-      | ref(characterOctal)
-      | ref(characterNormal);
+  characterPrimitive() => ref(characterNormal)
+      | ref(characterEscape)
+      | ref(characterOctal);
+  characterNormal() => pattern('^"\\');
   characterEscape() => char('\\')
-      & anyIn(new List.from(_escapeTable.keys));
-  characterNormal() => anyIn('"\\').neg();
+      & pattern(new List.from(_escapeTable.keys).join());
   characterOctal() => string('\\u').seq(pattern("0-9A-Fa-f").times(4).flatten());
   numberPrimitive() => char('-').optional()
       & char('0').or(digit().plus())
       & char('.').seq(digit().plus()).optional()
-      & anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional();
+      & pattern('eE').seq(pattern('-+').optional()).seq(digit().plus()).optional();
   stringPrimitive() => char('"')
       & ref(characterPrimitive).star()
       & char('"');
