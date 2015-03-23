@@ -88,8 +88,7 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
     } else {
       var lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        var characterRange =
-            new _RangeCharPredicate(lastRange.start, thisRange.stop);
+        var characterRange = new _RangeCharPredicate(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
         mergedRanges.add(thisRange);
