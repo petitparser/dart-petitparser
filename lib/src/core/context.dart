@@ -20,16 +20,14 @@ class Context {
    * Returns a result indicating a parse success.
    */
   Result success(result, [int position]) {
-    return new Success(
-        buffer, position == null ? this.position : position, result);
+    return new Success(buffer, position == null ? this.position : position, result);
   }
 
   /**
    * Returns a result indicating a parse failure.
    */
   Result failure(String message, [int position]) {
-    return new Failure(
-        buffer, position == null ? this.position : position, message);
+    return new Failure(buffer, position == null ? this.position : position, message);
   }
 
   /**

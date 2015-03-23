@@ -107,7 +107,8 @@ class NotParser extends DelegateParser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is NotParser && super.hasEqualProperties(other)
+    return other is NotParser
+        && super.hasEqualProperties(other)
         && _message == other._message;
   }
 }
@@ -135,7 +136,8 @@ class OptionalParser extends DelegateParser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is OptionalParser && super.hasEqualProperties(other)
+    return other is OptionalParser
+        && super.hasEqualProperties(other)
         && _otherwise == other._otherwise;
   }
 }

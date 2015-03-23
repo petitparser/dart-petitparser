@@ -24,7 +24,8 @@ class EpsilonParser extends Parser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is EpsilonParser && super.hasEqualProperties(other)
+    return other is EpsilonParser
+        && super.hasEqualProperties(other)
         && _result == other._result;
   }
 }

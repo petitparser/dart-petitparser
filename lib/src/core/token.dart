@@ -62,10 +62,10 @@ class Token {
 
   @override
   bool operator ==(other) {
-    return other is Token &&
-        value == other.value &&
-        start == other.start &&
-        stop == other.stop;
+    return other is Token
+        && value == other.value
+        && start == other.start
+        && stop == other.stop;
   }
 
   @override
@@ -83,8 +83,7 @@ class Token {
    * Converts the [position] index in a [buffer] to a line and column tuple.
    */
   static List<int> lineAndColumnOf(String buffer, int position) {
-    var line = 1,
-        offset = 0;
+    var line = 1, offset = 0;
     for (var token in newlineParser().token().matchesSkipping(buffer)) {
       if (position < token.stop) {
         return [line, position - offset + 1];
