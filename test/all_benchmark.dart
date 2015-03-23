@@ -27,8 +27,7 @@ Function charTest(List<String> inputs, Parser parser) {
   };
 }
 
-final characters =
-    new List.generate(256, (value) => new String.fromCharCode(value));
+final characters = new List.generate(256, (value) => new String.fromCharCode(value));
 
 Function stringTest(String input, Parser parser) {
   return () {
@@ -49,13 +48,11 @@ final benchmarks = {
   "lowercase()": charTest(characters, lowercase()),
   "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
   "pattern('^a')": charTest(characters, pattern('^a')),
-  "pattern('^a-cx-zA-CX-Z1-37-9')":
-      charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
+  "pattern('^a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
   "pattern('^a-z')": charTest(characters, pattern('^a-z')),
   "pattern('^acegik')": charTest(characters, pattern('^acegik')),
   "pattern('a')": charTest(characters, pattern('a')),
-  "pattern('a-cx-zA-CX-Z1-37-9')":
-      charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
+  "pattern('a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
   "pattern('a-z')": charTest(characters, pattern('a-z')),
   "pattern('acegik')": charTest(characters, pattern('acegik')),
   "range('a', 'z')": charTest(characters, range('a', 'z')),
@@ -71,16 +68,14 @@ final benchmarks = {
   "plusLazy()": stringTest(string, any().plusLazy(failure())),
   "plusGreedy()": stringTest(string, any().plusGreedy(failure())),
   "or()": stringTest(string, failure().or(any()).star()),
-  "seq()": stringTest(
-      string, new SequenceParser(new List.filled(string.length, any()))),
+  "seq()": stringTest(string, new SequenceParser(new List.filled(string.length, any()))),
 };
 
 void main() {
   print('<?xml version="1.0"?>');
   print('<benchmarks>');
   for (var name in benchmarks.keys) {
-    print(
-        '  <benchmark name="$name">${benchmark(benchmarks[name])}</benchmark>');
+    print('  <benchmark name="$name">${benchmark(benchmarks[name])}</benchmark>');
   }
   print('</benchmarks>');
 }
