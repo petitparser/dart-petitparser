@@ -38,7 +38,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   });
 
   stringPrimitive() => super.stringPrimitive().map((each) => each[1].join());
-  characterEscape() => super.characterEscape().map((each) => _escapeTable[each[1]]);
+  characterEscape() => super.characterEscape().map((each) => JSON_ESCAPE_CHARS[each[1]]);
   characterOctal() => super.characterOctal().map((each) {
     throw new UnsupportedError('Octal characters not supported yet');
   });

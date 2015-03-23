@@ -12,17 +12,6 @@ class JsonGrammar extends GrammarParser {
  */
 class JsonGrammarDefinition extends GrammarDefinition {
 
-  final _escapeTable = const {
-    '\\': '\\',
-    '/': '/',
-    '"': '"',
-    'b': '\b',
-    'f': '\f',
-    'n': '\n',
-    'r': '\r',
-    't': '\t'
-  };
-
   start() => ref(value).end();
   token(p) => p.flatten().trim();
 
@@ -56,7 +45,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
       | ref(characterOctal);
   characterNormal() => pattern('^"\\');
   characterEscape() => char('\\')
-      & pattern(new List.from(_escapeTable.keys).join());
+      & pattern(new List.from(JSON_ESCAPE_CHARS.keys).join());
   characterOctal() => string('\\u').seq(pattern("0-9A-Fa-f").times(4).flatten());
   numberPrimitive() => char('-').optional()
       & char('0').or(digit().plus())
@@ -67,3 +56,14 @@ class JsonGrammarDefinition extends GrammarDefinition {
       & char('"');
 
 }
+
+const JSON_ESCAPE_CHARS = const {
+  '\\': '\\',
+  '/': '/',
+  '"': '"',
+  'b': '\b',
+  'f': '\f',
+  'n': '\n',
+  'r': '\r',
+  't': '\t'
+};
