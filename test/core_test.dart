@@ -923,7 +923,7 @@ main() {
       try {
         failure.value;
         fail('Expected ParserError to be thrown');
-      } on ParserError catch (error, stack) {
+      } on ParserError catch (error) {
         expect(error.failure, same(failure));
         expect(error.toString(), 'error at 1:1');
       }
@@ -939,7 +939,7 @@ main() {
       try {
         failure.value;
         fail('Expected ParserError to be thrown');
-      } on ParserError catch (error, stack) {
+      } on ParserError catch (error) {
         expect(error.failure, same(failure));
         expect(error.toString(), 'error at 2:1');
       }
@@ -1278,7 +1278,7 @@ main() {
       try {
         parser.ref('star1');
         fail('Expected UndefinedProductionError to be thrown');
-      } on UndefinedProductionError catch (error, stack) {
+      } on UndefinedProductionError catch (error) {
         expect(error.toString(), 'Undefined production: star1');
       }
     });
@@ -1288,7 +1288,7 @@ main() {
         try {
           self.def('start', char('b'));
           fail('Expected UndefinedProductionError to be thrown');
-        } on RedefinedProductionError catch (error, stack) {
+        } on RedefinedProductionError catch (error) {
           expect(error.toString(), 'Redefined production: start');
         }
       });
