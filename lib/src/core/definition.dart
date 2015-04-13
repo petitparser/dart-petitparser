@@ -45,6 +45,7 @@ part of petitparser;
  *     }
   */
 abstract class GrammarDefinition {
+  const GrammarDefinition();
 
   /**
    * The starting production of this definition.

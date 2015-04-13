@@ -4,13 +4,14 @@ part of json;
  * JSON parser.
  */
 class JsonParser extends GrammarParser {
-  JsonParser() : super(new JsonParserDefinition());
+  JsonParser() : super(const JsonParserDefinition());
 }
 
 /**
  * JSON parser definition.
  */
 class JsonParserDefinition extends JsonGrammarDefinition {
+  const JsonParserDefinition();
 
   array() => super.array().map((each) => each[1] != null ? each[1] : new List());
   object() => super.object().map((each) {
