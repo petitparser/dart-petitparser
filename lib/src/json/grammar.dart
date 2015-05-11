@@ -4,13 +4,14 @@ part of json;
  * JSON grammar.
  */
 class JsonGrammar extends GrammarParser {
-  JsonGrammar() : super(new JsonGrammarDefinition());
+  JsonGrammar() : super(const JsonGrammarDefinition());
 }
 
 /**
  * JSON grammar definition.
  */
 class JsonGrammarDefinition extends GrammarDefinition {
+  const JsonGrammarDefinition();
 
   start() => ref(value).end();
   token(p) => p.flatten().trim();
