@@ -3,7 +3,7 @@ PetitParser for Dart
 
 [![Pub Package](https://img.shields.io/pub/v/petitparser.svg)](https://pub.dartlang.org/packages/petitparser)
 [![Build Status](https://travis-ci.org/petitparser/dart-petitparser.svg)](https://travis-ci.org/petitparser/dart-petitparser)
-[![Coverage Status](https://coveralls.io/repos/petitparser/dart-petitparser/badge.svg?branch=master)](https://coveralls.io/r/petitparser/dart-petitparser?branch=master)
+[![Coverage Status](https://coveralls.io/repos/petitparser/dart-petitparser/badge.svg)](https://coveralls.io/r/petitparser/dart-petitparser)
 
 Grammars for programming languages are traditionally specified statically. They are hard to compose and reuse due to ambiguities that inevitably arise. PetitParser combines ideas from scannnerless parsing, parser combinators, parsing expression grammars and packrat parsers to model grammars and parsers as objects that can be reconfigured dynamically.
 
