@@ -179,6 +179,7 @@ The package comes with a large collections of grammars and language experiments 
 Furthermore, there are various open source projects using PetitParser:
 
 - [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
+- [intl](https://github.com/dart-lang/intl) provides internationalization and localization support to Dart.
 - [RythmDart](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
 - [SharkDart](https://github.com/freewind/SharkDart) is a small template engine.
 
@@ -191,6 +192,7 @@ PetitParser was originally implemented in [Smalltalk](http://scg.unibe.ch/resear
 - [Java](https://github.com/petitparser/java-petitparser)
 - [PHP](https://github.com/mindplay-dk/petitparserphp)
 - [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser)
+- [TypeScript](https://github.com/mindplay-dk/petitparser-ts)
 
 ### License
 
