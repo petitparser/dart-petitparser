@@ -321,10 +321,8 @@ main() {
       var inputLetter = new List.filled(100000, 'a');
       var inputDigit = new List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
-      expectSuccess(
-          parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
-      expectSuccess(
-          parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
+      expectSuccess(parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
+      expectSuccess(parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
     });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
@@ -785,137 +783,48 @@ main() {
     var buffer = '1\r12\r\n123\n1234';
     var result = parser.parse(buffer).value;
     test('value', () {
-      expect(result.map((token) => token.value), [
-        49,
-        13,
-        49,
-        50,
-        13,
-        10,
-        49,
-        50,
-        51,
-        10,
-        49,
-        50,
-        51,
-        52
-      ]);
+      var expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
+      expect(result.map((token) => token.value), expected);
     });
     test('buffer', () {
-      expect(result.map((token) => token.buffer),
-          new List.filled(buffer.length, buffer));
+      var expected = new List.filled(buffer.length, buffer);
+      expect(result.map((token) => token.buffer), expected);
     });
     test('start', () {
-      expect(result.map((token) => token.start), [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13
-      ]);
+      var expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+      expect(result.map((token) => token.start), expected);
     });
     test('stop', () {
-      expect(result.map((token) => token.stop), [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ]);
+      var expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+      expect(result.map((token) => token.stop), expected);
     });
     test('length', () {
-      expect(result.map((token) => token.length), [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-      ]);
+      var expected = new List.filled(buffer.length, 1);
+      expect(result.map((token) => token.length), expected);
     });
     test('line', () {
-      expect(result.map((token) => token.line), [
-        1,
-        1,
-        2,
-        2,
-        2,
-        2,
-        3,
-        3,
-        3,
-        3,
-        4,
-        4,
-        4,
-        4
-      ]);
+      var expected = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4];
+      expect(result.map((token) => token.line), expected);
     });
     test('column', () {
-      expect(result.map((token) => token.column), [
-        1,
-        2,
-        1,
-        2,
-        3,
-        4,
-        1,
-        2,
-        3,
-        4,
-        1,
-        2,
-        3,
-        4
-      ]);
+      var expected = [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+      expect(result.map((token) => token.column), expected);
     });
     test('input', () {
-      expect(result.map((token) => token.input), [
-        '1',
-        '\r',
-        '1',
-        '2',
-        '\r',
-        '\n',
-        '1',
-        '2',
-        '3',
-        '\n',
-        '1',
-        '2',
-        '3',
-        '4'
-      ]);
+      var expected = ['1', '\r', '1', '2', '\r', '\n', '1', '2', '3', '\n', '1', '2', '3', '4'];
+      expect(result.map((token) => token.input), expected);
     });
     test('unique', () {
       expect(new Set.from(result).length, result.length);
+    });
+    test('equals', () {
+      for (var i = 0; i < result.length; i++) {
+        for (var j = 0; j < result.length; j++) {
+          var condition = i == j ? isTrue : isFalse;
+          expect(result[i] == result[j], condition);
+          expect(result[i].hashCode == result[j].hashCode, condition);
+        }
+      }
     });
   });
   group('context', () {
