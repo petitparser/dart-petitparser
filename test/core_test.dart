@@ -1180,139 +1180,146 @@ main() {
     });
   });
   group('expression', () {
-    var root = failure().settable();
-    var builder = new ExpressionBuilder();
-    builder.group()
-      ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
-      ..primitive(digit()
-          .plus()
-          .seq(char('.').seq(digit().plus()).optional())
-          .flatten()
-          .trim()
-          .map((a) => double.parse(a)));
-    builder.group()..prefix(char('-').trim(), (op, a) => -a);
-    builder.group()
-      ..postfix(string('++').trim(), (a, op) => ++a)
-      ..postfix(string('--').trim(), (a, op) => --a);
-    builder.group()..right(char('^').trim(), (a, op, b) => math.pow(a, b));
-    builder.group()
-      ..left(char('*').trim(), (a, op, b) => a * b)
-      ..left(char('/').trim(), (a, op, b) => a / b);
-    builder.group()
-      ..left(char('+').trim(), (a, op, b) => a + b)
-      ..left(char('-').trim(), (a, op, b) => a - b);
-    root.set(builder.build());
-    var parser = root.end();
+    Parser build({attachAction: true}) {
+      var action = attachAction ? (func) => func : (func) => null;
+      var root = failure().settable();
+      var builder = new ExpressionBuilder();
+      builder.group()
+        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+        ..primitive(digit().plus().seq(char('.').seq(digit().plus()).optional())
+            .flatten().trim().map((a) => double.parse(a)));
+      builder.group()
+        ..prefix(char('-').trim(), action((op, a) => -a));
+      builder.group()
+        ..postfix(string('++').trim(), action((a, op) => ++a))
+        ..postfix(string('--').trim(), action((a, op) => --a));
+      builder.group()
+        ..right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+      builder.group()
+        ..left(char('*').trim(), action((a, op, b) => a * b))
+        ..left(char('/').trim(), action((a, op, b) => a / b));
+      builder.group()
+        ..left(char('+').trim(), action((a, op, b) => a + b))
+        ..left(char('-').trim(), action((a, op, b) => a - b));
+      root.set(builder.build());
+      return root.end();
+    }
     var epsilon = 1e-5;
+    var evaluator = build(attachAction: true);
+    var parser = build(attachAction: false);
+    test('parsing', () {
+      expect(parser.parse('2 * 3 + 4').value, [[2.0, '*', 3.0], '+', 4.0]);
+      expect(parser.parse('2 + 3 * 4').value, [2.0, '+', [3.0, '*', 4.0]]);
+    });
     test('number', () {
-      expect(parser.parse('0').value, closeTo(0, epsilon));
-      expect(parser.parse('0.0').value, closeTo(0, epsilon));
-      expect(parser.parse('1').value, closeTo(1, epsilon));
-      expect(parser.parse('1.2').value, closeTo(1.2, epsilon));
-      expect(parser.parse('34').value, closeTo(34, epsilon));
-      expect(parser.parse('34.7').value, closeTo(34.7, epsilon));
-      expect(parser.parse('56.78').value, closeTo(56.78, epsilon));
+      expect(evaluator.parse('0').value, closeTo(0, epsilon));
+      expect(evaluator.parse('0.0').value, closeTo(0, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1.2').value, closeTo(1.2, epsilon));
+      expect(evaluator.parse('34').value, closeTo(34, epsilon));
+      expect(evaluator.parse('34.7').value, closeTo(34.7, epsilon));
+      expect(evaluator.parse('56.78').value, closeTo(56.78, epsilon));
     });
     test('negative number', () {
-      expect(parser.parse('-1').value, closeTo(-1, epsilon));
-      expect(parser.parse('-1.2').value, closeTo(-1.2, epsilon));
+      expect(evaluator.parse('-1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('-1.2').value, closeTo(-1.2, epsilon));
     });
     test('add', () {
-      expect(parser.parse('1 + 2').value, closeTo(3, epsilon));
-      expect(parser.parse('2 + 1').value, closeTo(3, epsilon));
-      expect(parser.parse('1 + 2.3').value, closeTo(3.3, epsilon));
-      expect(parser.parse('2.3 + 1').value, closeTo(3.3, epsilon));
-      expect(parser.parse('1 + -2').value, closeTo(-1, epsilon));
-      expect(parser.parse('-2 + 1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1 + 2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('2 + 1').value, closeTo(3, epsilon));
+      expect(evaluator.parse('1 + 2.3').value, closeTo(3.3, epsilon));
+      expect(evaluator.parse('2.3 + 1').value, closeTo(3.3, epsilon));
+      expect(evaluator.parse('1 + -2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('-2 + 1').value, closeTo(-1, epsilon));
     });
     test('add many', () {
-      expect(parser.parse('1').value, closeTo(1, epsilon));
-      expect(parser.parse('1 + 2').value, closeTo(3, epsilon));
-      expect(parser.parse('1 + 2 + 3').value, closeTo(6, epsilon));
-      expect(parser.parse('1 + 2 + 3 + 4').value, closeTo(10, epsilon));
-      expect(parser.parse('1 + 2 + 3 + 4 + 5').value, closeTo(15, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 + 2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('1 + 2 + 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('1 + 2 + 3 + 4').value, closeTo(10, epsilon));
+      expect(evaluator.parse('1 + 2 + 3 + 4 + 5').value, closeTo(15, epsilon));
     });
     test('sub', () {
-      expect(parser.parse('1 - 2').value, closeTo(-1, epsilon));
-      expect(parser.parse('1.2 - 1.2').value, closeTo(0, epsilon));
-      expect(parser.parse('1 - -2').value, closeTo(3, epsilon));
-      expect(parser.parse('-1 - -2').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 - 2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1.2 - 1.2').value, closeTo(0, epsilon));
+      expect(evaluator.parse('1 - -2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('-1 - -2').value, closeTo(1, epsilon));
     });
     test('sub many', () {
-      expect(parser.parse('1').value, closeTo(1, epsilon));
-      expect(parser.parse('1 - 2').value, closeTo(-1, epsilon));
-      expect(parser.parse('1 - 2 - 3').value, closeTo(-4, epsilon));
-      expect(parser.parse('1 - 2 - 3 - 4').value, closeTo(-8, epsilon));
-      expect(parser.parse('1 - 2 - 3 - 4 - 5').value, closeTo(-13, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 - 2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1 - 2 - 3').value, closeTo(-4, epsilon));
+      expect(evaluator.parse('1 - 2 - 3 - 4').value, closeTo(-8, epsilon));
+      expect(evaluator.parse('1 - 2 - 3 - 4 - 5').value, closeTo(-13, epsilon));
     });
     test('mul', () {
-      expect(parser.parse('2 * 3').value, closeTo(6, epsilon));
-      expect(parser.parse('2 * -4').value, closeTo(-8, epsilon));
+      expect(evaluator.parse('2 * 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('2 * -4').value, closeTo(-8, epsilon));
     });
     test('mul many', () {
-      expect(parser.parse('1 * 2').value, closeTo(2, epsilon));
-      expect(parser.parse('1 * 2 * 3').value, closeTo(6, epsilon));
-      expect(parser.parse('1 * 2 * 3 * 4').value, closeTo(24, epsilon));
-      expect(parser.parse('1 * 2 * 3 * 4 * 5').value, closeTo(120, epsilon));
+      expect(evaluator.parse('1 * 2').value, closeTo(2, epsilon));
+      expect(evaluator.parse('1 * 2 * 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('1 * 2 * 3 * 4').value, closeTo(24, epsilon));
+      expect(evaluator.parse('1 * 2 * 3 * 4 * 5').value, closeTo(120, epsilon));
     });
     test('div', () {
-      expect(parser.parse('12 / 3').value, closeTo(4, epsilon));
-      expect(parser.parse('-16 / -4').value, closeTo(4, epsilon));
+      expect(evaluator.parse('12 / 3').value, closeTo(4, epsilon));
+      expect(evaluator.parse('-16 / -4').value, closeTo(4, epsilon));
     });
     test('div many', () {
-      expect(parser.parse('100 / 2').value, closeTo(50, epsilon));
-      expect(parser.parse('100 / 2 / 2').value, closeTo(25, epsilon));
-      expect(parser.parse('100 / 2 / 2 / 5').value, closeTo(5, epsilon));
-      expect(parser.parse('100 / 2 / 2 / 5 / 5').value, closeTo(1, epsilon));
+      expect(evaluator.parse('100 / 2').value, closeTo(50, epsilon));
+      expect(evaluator.parse('100 / 2 / 2').value, closeTo(25, epsilon));
+      expect(evaluator.parse('100 / 2 / 2 / 5').value, closeTo(5, epsilon));
+      expect(evaluator.parse('100 / 2 / 2 / 5 / 5').value, closeTo(1, epsilon));
     });
     test('pow', () {
-      expect(parser.parse('2 ^ 3').value, closeTo(8, epsilon));
-      expect(parser.parse('-2 ^ 3').value, closeTo(-8, epsilon));
-      expect(parser.parse('-2 ^ -3').value, closeTo(-0.125, epsilon));
+      expect(evaluator.parse('2 ^ 3').value, closeTo(8, epsilon));
+      expect(evaluator.parse('-2 ^ 3').value, closeTo(-8, epsilon));
+      expect(evaluator.parse('-2 ^ -3').value, closeTo(-0.125, epsilon));
     });
     test('pow many', () {
-      expect(parser.parse('4 ^ 3').value, closeTo(64, epsilon));
-      expect(parser.parse('4 ^ 3 ^ 2').value, closeTo(262144, epsilon));
-      expect(parser.parse('4 ^ 3 ^ 2 ^ 1').value, closeTo(262144, epsilon));
-      expect(parser.parse('4 ^ 3 ^ 2 ^ 1 ^ 0').value, closeTo(262144, epsilon));
+      expect(evaluator.parse('4 ^ 3').value, closeTo(64, epsilon));
+      expect(evaluator.parse('4 ^ 3 ^ 2').value, closeTo(262144, epsilon));
+      expect(evaluator.parse('4 ^ 3 ^ 2 ^ 1').value, closeTo(262144, epsilon));
+      expect(evaluator.parse('4 ^ 3 ^ 2 ^ 1 ^ 0').value, closeTo(262144, epsilon));
     });
     test('parens', () {
-      expect(parser.parse('(1)').value, closeTo(1, epsilon));
-      expect(parser.parse('(1 + 2)').value, closeTo(3, epsilon));
-      expect(parser.parse('((1))').value, closeTo(1, epsilon));
-      expect(parser.parse('((1 + 2))').value, closeTo(3, epsilon));
-      expect(parser.parse('2 * (3 + 4)').value, closeTo(14, epsilon));
-      expect(parser.parse('(2 + 3) * 4').value, closeTo(20, epsilon));
-      expect(parser.parse('6 / (2 + 4)').value, closeTo(1, epsilon));
-      expect(parser.parse('(2 + 6) / 2').value, closeTo(4, epsilon));
+      expect(evaluator.parse('(1)').value, closeTo(1, epsilon));
+      expect(evaluator.parse('(1 + 2)').value, closeTo(3, epsilon));
+      expect(evaluator.parse('((1))').value, closeTo(1, epsilon));
+      expect(evaluator.parse('((1 + 2))').value, closeTo(3, epsilon));
+      expect(evaluator.parse('2 * (3 + 4)').value, closeTo(14, epsilon));
+      expect(evaluator.parse('(2 + 3) * 4').value, closeTo(20, epsilon));
+      expect(evaluator.parse('6 / (2 + 4)').value, closeTo(1, epsilon));
+      expect(evaluator.parse('(2 + 6) / 2').value, closeTo(4, epsilon));
     });
     test('priority', () {
-      expect(parser.parse('2 * 3 + 4').value, closeTo(10, epsilon));
-      expect(parser.parse('2 + 3 * 4').value, closeTo(14, epsilon));
-      expect(parser.parse('6 / 3 + 4').value, closeTo(6, epsilon));
-      expect(parser.parse('2 + 6 / 2').value, closeTo(5, epsilon));
+      expect(evaluator.parse('2 * 3 + 4').value, closeTo(10, epsilon));
+      expect(evaluator.parse('2 + 3 * 4').value, closeTo(14, epsilon));
+      expect(evaluator.parse('6 / 3 + 4').value, closeTo(6, epsilon));
+      expect(evaluator.parse('2 + 6 / 2').value, closeTo(5, epsilon));
     });
     test('postfix add', () {
-      expect(parser.parse('0++').value, closeTo(1, epsilon));
-      expect(parser.parse('0++++').value, closeTo(2, epsilon));
-      expect(parser.parse('0++++++').value, closeTo(3, epsilon));
-      expect(parser.parse('0+++1').value, closeTo(2, epsilon));
-      expect(parser.parse('0+++++1').value, closeTo(3, epsilon));
-      expect(parser.parse('0+++++++1').value, closeTo(4, epsilon));
+      expect(evaluator.parse('0++').value, closeTo(1, epsilon));
+      expect(evaluator.parse('0++++').value, closeTo(2, epsilon));
+      expect(evaluator.parse('0++++++').value, closeTo(3, epsilon));
+      expect(evaluator.parse('0+++1').value, closeTo(2, epsilon));
+      expect(evaluator.parse('0+++++1').value, closeTo(3, epsilon));
+      expect(evaluator.parse('0+++++++1').value, closeTo(4, epsilon));
     });
     test('postfix sub', () {
-      expect(parser.parse('1--').value, closeTo(0, epsilon));
-      expect(parser.parse('2----').value, closeTo(0, epsilon));
-      expect(parser.parse('3------').value, closeTo(0, epsilon));
-      expect(parser.parse('2---1').value, closeTo(0, epsilon));
-      expect(parser.parse('3-----1').value, closeTo(0, epsilon));
-      expect(parser.parse('4-------1').value, closeTo(0, epsilon));
+      expect(evaluator.parse('1--').value, closeTo(0, epsilon));
+      expect(evaluator.parse('2----').value, closeTo(0, epsilon));
+      expect(evaluator.parse('3------').value, closeTo(0, epsilon));
+      expect(evaluator.parse('2---1').value, closeTo(0, epsilon));
+      expect(evaluator.parse('3-----1').value, closeTo(0, epsilon));
+      expect(evaluator.parse('4-------1').value, closeTo(0, epsilon));
     });
     test('prefix negate', () {
-      expect(parser.parse('1').value, closeTo(1, epsilon));
-      expect(parser.parse('-1').value, closeTo(-1, epsilon));
-      expect(parser.parse('--1').value, closeTo(1, epsilon));
-      expect(parser.parse('---1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('-1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('--1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('---1').value, closeTo(-1, epsilon));
     });
   });
   group('tutorial', () {

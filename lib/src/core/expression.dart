@@ -92,9 +92,10 @@ class ExpressionGroup {
    * parsed `operator` and `value`.
    */
   void prefix(Parser parser, [action(operator, value)]) {
-    if (action == null) action = (operator, value) => [operator, value];
-    _prefix
-        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) {
+      action = (operator, value) => [operator, value];
+    }
+    _prefix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_prefix(Parser inner) {
@@ -117,9 +118,10 @@ class ExpressionGroup {
    * parsed `value` and `operator`.
    */
   void postfix(Parser parser, [action(value, operator)]) {
-    if (action == null) action = (value, operator) => [value, operator];
-    _postfix
-        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) {
+      action = (value, operator) => [value, operator];
+    }
+    _postfix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_postfix(Parser inner) {
@@ -142,10 +144,10 @@ class ExpressionGroup {
    * the parsed `left` term, `operator`, and `right` term.
    */
   void right(Parser parser, [action(left, operator, right)]) {
-    if (action == null) action =
-        (left, operator, right) => [left, operator, right];
-    _right
-        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) {
+      action = (left, operator, right) => [left, operator, right];
+    }
+    _right.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_right(Parser inner) {
@@ -170,10 +172,10 @@ class ExpressionGroup {
    * the parsed `left` term, `operator`, and `right` term.
    */
   void left(Parser parser, [action(left, operator, right)]) {
-    if (action == null) action =
-        (left, operator, right) => [left, operator, right];
-    _left
-        .add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    if (action == null) {
+      action = (left, operator, right) => [left, operator, right];
+    }
+    _left.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
   Parser _build_left(Parser inner) {
@@ -206,8 +208,7 @@ class ExpressionGroup {
 
   // helper to build the group of parsers
   Parser _build(Parser inner) {
-    return _build_left(
-        _build_right(_build_postfix(_build_prefix(_build_primitive(inner)))));
+    return _build_left(_build_right(_build_postfix(_build_prefix(_build_primitive(inner)))));
   }
 }
 
@@ -216,5 +217,4 @@ class _ExpressionResult {
   final operator;
   final Function action;
   _ExpressionResult(this.operator, this.action);
-  String toString() => operator.toString();
 }
