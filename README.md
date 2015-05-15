@@ -19,16 +19,22 @@ Basic Usage
 
 Add the dependency to your package's pubspec.yaml file:
 
-    dependencies:
-      petitparser: ">=1.0.0 <2.0.0"
+```yaml
+dependencies:
+  petitparser: ">=1.0.0 <2.0.0"
+```
 
 Then on the command line run:
 
-    $ pub get
+```
+$ pub get
+```
 
 To PetitParser in your Dart code write:
 
-    import 'package:petitparser/petitparser.dart';
+```dart
+import 'package:petitparser/petitparser.dart';
+```
 
 ### Examples
 
@@ -44,7 +50,6 @@ The package comes with a large collections of grammars and language experiments 
 Furthermore, there are various open source projects using PetitParser:
 
 - [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
-- [Haml.dart](https://github.com/kevmoo/haml.dart) is an implementation of Haml in Dart.
 - [RythmDart](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
 - [SharkDart](https://github.com/freewind/SharkDart) is a small template engine.
 
