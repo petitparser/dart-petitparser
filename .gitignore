@@ -1,5 +1,6 @@
 .idea/
 .DS_Store
+.pub/
 packages
 pubspec.lock
 *.iml
