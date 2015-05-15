@@ -9,7 +9,7 @@ Grammars for programming languages are traditionally specified statically. They 
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/petitparser/dart-petitparser). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/petitparser+dart).
 
-Continuous build results are available from [Travis CI](https://travis-ci.org/petitparser/dart-petitparser). An introductionary tutorial is part of the [class documentation](http://www.dartdocs.org/documentation/petitparser/latest/index.html).
+An introductionary tutorial is part of the [class documentation](http://www.dartdocs.org/documentation/petitparser/latest/index.html).
 
 
 Basic Usage
