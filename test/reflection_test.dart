@@ -1,6 +1,6 @@
 library reflection_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';

@@ -1,6 +1,6 @@
 library dart_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:petitparser/test.dart';
 import 'package:petitparser/dart.dart';

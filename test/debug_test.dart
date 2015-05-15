@@ -1,13 +1,11 @@
 library debug_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/debug.dart';
 
-// weird bug in transformation makes the test break if we don't start
-// from a clean parser every time
-get identifier => letter() & word().star();
+final IDENTIFIER = letter() & word().star();
 
 main() {
   group('continuation', () {
@@ -63,7 +61,7 @@ main() {
   group('trace', () {
     test('success', () {
       var lines = new List();
-      expect(trace(identifier, (line) => lines.add(line)).parse('a').isSuccess,
+      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('a').isSuccess,
           isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -78,7 +76,7 @@ main() {
     });
     test('failure', () {
       var lines = new List();
-      expect(trace(identifier, (line) => lines.add(line)).parse('1').isFailure,
+      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure,
           isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -91,7 +89,7 @@ main() {
   group('profile', () {
     test('success', () {
       var lines = new List();
-      expect(profile(identifier, (line) => lines.add(line))
+      expect(profile(IDENTIFIER, (line) => lines.add(line))
           .parse('ab123').isSuccess, isTrue);
       lines = lines
           .map((row) => row.split('\t'))
@@ -111,7 +109,7 @@ main() {
     test('failure', () {
       var lines = new List();
       expect(profile(
-          identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
+          IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       lines = lines
           .map((row) => row.split('\t'))
           .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
@@ -131,7 +129,7 @@ main() {
   group('progress', () {
     test('success', () {
       var lines = new List();
-      expect(progress(identifier, (line) => lines.add(line))
+      expect(progress(IDENTIFIER, (line) => lines.add(line))
           .parse('ab123').isSuccess, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
@@ -147,7 +145,7 @@ main() {
     test('failure', () {
       var lines = new List();
       expect(progress(
-          identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
+          IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]'

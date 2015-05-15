@@ -7,7 +7,7 @@ library dart_file_test;
 
 import 'dart:io';
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';

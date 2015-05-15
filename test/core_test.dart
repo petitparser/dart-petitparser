@@ -1,8 +1,7 @@
 library core_test;
 
 import 'dart:math' as math;
-
-import 'package:unittest/unittest.dart' hide anyOf;
+import 'package:test/test.dart' hide anyOf;
 
 import 'package:petitparser/petitparser.dart';
 
