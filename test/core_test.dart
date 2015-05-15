@@ -70,12 +70,16 @@ class LambdaGrammarDefinition extends GrammarDefinition {
 class ExpressionGrammarDefinition extends GrammarDefinition {
   start() => ref(terms).end();
   terms() => ref(addition) | ref(factors);
+
   addition() => ref(factors).separatedBy(token(char('+') | char('-')));
   factors() => ref(multiplication) | ref(power);
+
   multiplication() => ref(power).separatedBy(token(char('*') | char('/')));
   power() => ref(primary).separatedBy(char('^').trim());
+
   primary() => ref(number) | ref(parentheses);
   number() => token(char('-').optional() & digit().plus() & (char('.') & digit().plus()).optional());
+
   parentheses() => token('(') & ref(terms) & token(')');
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
 }
@@ -135,7 +139,7 @@ main() {
       expectSuccess(parser, '123', '123');
       expectSuccess(parser, '1234', '1234');
     });
-    test('token()', () {
+    test('token() on string', () {
       var parser = digit().plus().token();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
@@ -149,6 +153,17 @@ main() {
       expect(token.line, 1);
       expect(token.column, 1);
       expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
+    });
+    test('token() on list', () {
+      var parser = any().plus().token();
+      var token = parser.parse([1, 2, 3]).value;
+      expect(token.value, [1, 2, 3]);
+      expect(token.buffer, [1, 2, 3]);
+      expect(token.start, 0);
+      expect(token.stop, 3);
+      expect(token.input, [1, 2, 3]);
+      expect(token.length, 3);
+      expect(token.toString(), 'Token[0]: [1, 2, 3]');
     });
     test('map()', () {
       var parser = digit().map((String each) {
