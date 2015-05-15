@@ -25,8 +25,7 @@ main() {
     });
     test('resume', () {
       var capture = new List();
-      var parser = new ContinuationParser(digit(),
-          (continuation, Context context) {
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
         capture.add([continuation, context]);
         // we have to return something for now
         return context.failure('Abort');
@@ -42,27 +41,32 @@ main() {
       expect(capture[1][0](capture[1][1]).isSuccess, isFalse);
     });
     test('success', () {
-      var parser = new ContinuationParser(digit(),
-          (continuation, Context context) {
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
         return context.success('Always succeed');
       });
       expect(parser.parse('1').isSuccess, isTrue);
       expect(parser.parse('a').isSuccess, isTrue);
     });
     test('failure', () {
-      var parser = new ContinuationParser(digit(),
-          (continuation, Context context) {
+      var parser = new ContinuationParser(digit(), (continuation, Context context) {
         return context.failure('Always fail');
       });
       expect(parser.parse('1').isSuccess, isFalse);
       expect(parser.parse('a').isSuccess, isFalse);
     });
+    test('copy', () {
+      var parser = new ContinuationParser(digit(), (continuation, context) {
+        return continuation(context);
+      });
+      var copy = parser.copy();
+      expect(copy.parse('1').isSuccess, isTrue);
+      expect(copy.parse('a').isSuccess, isFalse);
+    });
   });
   group('trace', () {
     test('success', () {
       var lines = new List();
-      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('a').isSuccess,
-          isTrue);
+      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('a').isSuccess, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
@@ -76,8 +80,7 @@ main() {
     });
     test('failure', () {
       var lines = new List();
-      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure,
-          isTrue);
+      expect(trace(IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
@@ -96,34 +99,23 @@ main() {
           .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
       expect(lines, hasLength(4));
       expect(lines.every((row) => row[1] >= 0), isTrue);
-      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0],
-          1);
-      expect(
-          lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0],
-          1);
-      expect(lines.firstWhere(
-          (row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
-      expect(lines.firstWhere(
-          (row) => row[2].indexOf('letter or digit expected') > 0)[0], 5);
+      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 5);
     });
     test('failure', () {
       var lines = new List();
-      expect(profile(
-          IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
+      expect(profile(IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       lines = lines
           .map((row) => row.split('\t'))
           .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
       expect(lines, hasLength(4));
       expect(lines.every((row) => row[1] >= 0), isTrue);
-      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0],
-          1);
-      expect(
-          lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0],
-          1);
-      expect(lines.firstWhere(
-          (row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
-      expect(lines.firstWhere(
-          (row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
+      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
+      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
+      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
     });
   });
   group('progress', () {
@@ -144,8 +136,7 @@ main() {
     });
     test('failure', () {
       var lines = new List();
-      expect(progress(
-          IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
+      expect(progress(IDENTIFIER, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]'
