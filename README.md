@@ -20,7 +20,7 @@ Tutorial
 Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits is defined as follows:
 
 ```dart
-Parser id = letter().seq(letter().or(digit()).star());
+Parser id = letter() & (letter() | digit()).star();
 ```
 
 If you look at the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
@@ -31,6 +31,12 @@ If you look at the object `id` in the debugger, you'll notice that the code abov
     - Choice: This parser accepts a single word character.
       - Predicate: This parser accepts a single letter.
       - Predicate: This parser accepts a single digit.
+
+The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls:
+
+```dart
+Parser id = letter().seq(letter().or(digit()).star());
+```
 
 ### Parsing Some Input
 
@@ -86,8 +92,8 @@ var id = letter().seq(word().star());
 
 The next set of parsers are used to combine other parsers together:
 
-- `p1.seq(p2)` and `p1 & p2` parse *p1* followed by *p2* (sequence).
-- `p1.or(p2)` and `p1 | p2` parse *p1*, if that doesn't work parses *p2* (ordered choice).
+- `p1 & p2` and `p1.seq(p2)` parse *p1* followed by *p2* (sequence).
+- `p1 | p2` and `p1.or(p2)` parse *p1*, if that doesn't work parse *p2* (ordered choice).
 - `p.star()` parses *p* zero or more times.
 - `p.plus()` parses *p* one or more times.
 - `p.optional()` parses *p*, if possible.
