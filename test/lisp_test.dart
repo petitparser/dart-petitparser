@@ -30,9 +30,13 @@ void main() {
       cell.head = 3;
       expect(cell.head, 3);
       expect(cell.tail, 2);
-      cell.tail = 4;
+      cell.tail = new Cons(4, 5);
       expect(cell.head, 3);
-      expect(cell.tail, 4);
+      expect(cell.tail.head, 4);
+      expect(cell.tail.tail, 5);
+      expect(cell == cell, isTrue);
+      expect(cell.hashCode, isNonZero);
+      expect(cell.toString(), '(3 4 . 5)');
     });
   });
   group('Parser', () {
