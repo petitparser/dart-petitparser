@@ -26,11 +26,11 @@ Parser id = letter().seq(letter().or(digit()).star());
 If you look at the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
 
 - Sequence: This parser accepts a sequence of parsers.
-- - Predicate: This parser accepts a single letter.
-- - Repeater: This parser accepts zero or more times another parser.
-- - - Choice: This parser accepts a single word character.
-- - - - Predicate: This parser accepts a single letter.
-- - - - Predicate: This parser accepts a single digit.
+  - Predicate: This parser accepts a single letter.
+  - Repeater: This parser accepts zero or more times another parser.
+    - Choice: This parser accepts a single word character.
+      - Predicate: This parser accepts a single letter.
+      - Predicate: This parser accepts a single digit.
 
 ### Parsing Some Input
 
