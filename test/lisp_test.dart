@@ -39,6 +39,19 @@ void main() {
       expect(cell.toString(), '(3 4 . 5)');
     });
   });
+  group('Environment', () {
+    var env = standard.create();
+    test('Standard', () {
+      expect(env.owner, isNotNull);
+      expect(env.keys, isEmpty);
+      expect(env.owner.keys, isNot(isEmpty));
+    });
+    test('Create', () {
+      var sub = env.create();
+      expect(sub.owner, same(env));
+      expect(sub.keys, isEmpty);
+    });
+  });
   group('Parser', () {
     var definition = new LispParserDefinition();
     var atom = definition.build(start: definition.atom);
