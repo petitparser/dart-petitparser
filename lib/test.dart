@@ -15,83 +15,79 @@
 library test_util;
 
 import 'package:matcher/matcher.dart';
-import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/petitparser.dart' hide predicate;
 
 /**
  * Returns a matcher that succeeds if the [parser] accepts the input.
  */
 Matcher accept(Parser parser) {
-  return new _Accept(parser);
-}
-
-class _Accept extends Matcher {
-  final Parser parser;
-
-  _Accept(this.parser);
-
-  bool matches(item, Map matchState) => parser.accept(item);
-
-  Description describe(Description description) {
-    return description.add('$parser to accept input');
-  }
+  return parse(parser, predicate((value) => true, 'input'));
 }
 
 /**
- * Returns a matcher that succeeds if the [parser] results in [matcher].
+ * Returns a matcher that succeeds if the [parser] succeeds and accepts the provided [matcher].
  */
 Matcher parse(Parser parser, matcher, [int position = -1]) {
   return new _Parse(parser, wrapMatcher(matcher), position);
 }
 
 class _Parse extends Matcher {
+
   final Parser parser;
   final Matcher matcher;
   final int position;
 
   _Parse(this.parser, this.matcher, this.position);
 
+  @override
   bool matches(item, Map matchState) {
     Result result = parser.parse(item);
-    if (!matcher.matches(result.value, matchState)) {
-      addStateInfo(matchState, {'property': 'value', 'result': result});
+    if (result.isFailure) {
+      addStateInfo(matchState, {'reason': 'failure', 'result': result});
       return false;
     }
-    if (position >= 0 &&
-        !equals(position).matches(result.position, matchState)) {
-      addStateInfo(matchState, {'property': 'position', 'result': result});
+    if (!matcher.matches(result.value, matchState)) {
+      addStateInfo(matchState, {'reason': 'matcher', 'result': result});
+      return false;
+    }
+    if (position >= 0 && position != result.value) {
+      addStateInfo(matchState, {'reason': 'position', 'result': result});
       return false;
     }
     return true;
   }
 
+  @override
   Description describe(Description description) {
-    return description.add('$parser to accept ').addDescriptionOf(matcher);
+    return description.add('"$parser" accepts ').addDescriptionOf(matcher);
   }
 
-  Description describeMismatch(
-      item, Description mismatchDescription, Map matchState, bool verbose) {
-    mismatchDescription
-        .add('has parse result ')
-        .add('"${matchState['result']}"');
-    if (matchState['property'] == 'value') {
-      mismatchDescription.add(' which parse result ');
-      var subDescription = new StringDescription();
-      matcher.describeMismatch(matchState['result'].value, subDescription,
-          matchState['state'], verbose);
-      if (subDescription.length > 0) {
-        mismatchDescription.add(subDescription.toString());
-      } else {
-        mismatchDescription.add('doesn\'t match');
-        matcher.describe(mismatchDescription);
-      }
-      return mismatchDescription;
-    } else if (matchState['property'] == 'position') {
-      mismatchDescription
-          .add(' that consumes input to ')
-          .add(matchState['result'].position.toString())
-          .add(' instead of ')
-          .add(position.toString());
-      return mismatchDescription;
+  @override
+  Description describeMismatch(item, Description description, Map matchState, bool verbose) {
+    description.add('"$parser" produces "${matchState['result']}"');
+    switch (matchState['reason']) {
+      case 'failure':
+        description.add(' which is not accepted');
+        return description;
+      case 'matcher':
+        description.add(' which parse result ');
+        var subDescription = new StringDescription();
+        matcher.describeMismatch(matchState['result'].value, subDescription,
+            matchState['state'], verbose);
+        if (subDescription.length > 0) {
+          description.add(subDescription.toString());
+        } else {
+          description.add('doesn\'t match');
+          matcher.describe(description);
+        }
+        return description;
+      case 'position':
+        description
+            .add(' that consumes input to ')
+            .add(matchState['result'].position.toString())
+            .add(' instead of ')
+            .add(position.toString());
+        return description;
     }
     throw new Exception('Internal matcher error');
   }
