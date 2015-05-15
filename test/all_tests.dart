@@ -1,4 +1,4 @@
-library all_test;
+library all_tests;
 
 import 'package:test/test.dart';
 

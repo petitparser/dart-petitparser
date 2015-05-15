@@ -9,7 +9,7 @@ dartanalyzer --fatal-warnings \
   test/*.dart
 
 # Verify that all the tests pass.
-dart --checked test/all_test.dart
+pub run test
 
 # Verify the coverage of the tests.
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
@@ -18,5 +18,5 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
     --token $COVERALLS_TOKEN \
     --retry 2 \
     --exclude-test-files \
-    test/all_test.dart
+    test/all_tests.dart
 fi
