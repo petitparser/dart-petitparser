@@ -5,5 +5,7 @@ description: Dynamic parser combinator framework.
 homepage: https://github.com/renggli/dart-petitparser
 environment:
   sdk: '>=1.8.0 <2.0.0'
+dependencies:
+  browser: '>=0.10.0 <0.11.0'
 dev_dependencies:
   test: '>=0.12.1 <0.13.0'
