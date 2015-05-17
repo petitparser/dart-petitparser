@@ -87,7 +87,7 @@ PetitParser provide a large set of ready-made parser that you can compose to con
 So instead of using the letter and digit predicate, we could have written our identifier parser like this:
 
 ```dart
-var id = letter().seq(word().star());
+var id = letter() & word().star();
 ```
 
 The next set of parsers are used to combine other parsers together:
