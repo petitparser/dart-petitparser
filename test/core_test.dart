@@ -42,7 +42,7 @@ class TokenizedListGrammarDefinition extends GrammarDefinition {
   token(p) => p.flatten().trim();
 }
 
-class BuggedGrammarDefintion extends GrammarDefinition {
+class BuggedGrammarDefinition extends GrammarDefinition {
   start() => epsilon();
 
   directRecursion1() => ref(directRecursion1);
@@ -84,7 +84,6 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
 }
 
-// deprecated, do not use
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
 
@@ -1094,7 +1093,7 @@ main() {
     var grammarDefinition = new ListGrammarDefinition();
     var parserDefinition = new ListParserDefinition();
     var tokenDefinition = new TokenizedListGrammarDefinition();
-    var buggedDefinition = new BuggedGrammarDefintion();
+    var buggedDefinition = new BuggedGrammarDefinition();
 
     test('reference without parameters', () {
       var firstReference = grammarDefinition.ref(grammarDefinition.start);

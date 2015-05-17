@@ -3,6 +3,9 @@ part of petitparser;
 /**
  * Helper to compose complex grammars from various primitive parsers.
  *
+ * Note, this class is deprecated in favor of [GrammarDefinition] that provides
+ * a more flexible way to define composite parsers.
+ *
  * To create a new composite grammar subclass [CompositeParser]. Override
  * the method [initialize] and for every production call [def] giving the
  * production a name. The start production must be named 'start'. To refer
@@ -40,7 +43,7 @@ abstract class CompositeParser extends DelegateParser {
   final Map<String, Parser> _defined = new Map();
   final Map<String, SettableParser> _undefined = new Map();
 
-  CompositeParser() : super(failure('Uninitalized production: start')) {
+  CompositeParser() : super(failure('Not initalized production: start')) {
     initialize();
     _complete();
   }
@@ -83,7 +86,7 @@ abstract class CompositeParser extends DelegateParser {
       }
     } else {
       return _undefined.putIfAbsent(name, () {
-        return failure('Uninitalized production: $name').settable();
+        return failure('Not initalized production: $name').settable();
       });
     }
   }
