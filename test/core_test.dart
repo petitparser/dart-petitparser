@@ -84,6 +84,17 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
 }
 
+// deprecated, do not use
+class PluggableCompositeParser extends CompositeParser {
+  final Function _function;
+
+  PluggableCompositeParser(this._function) : super();
+
+  void initialize() {
+    _function(this);
+  }
+}
+
 main() {
   group('parsers', () {
     test('and()', () {
@@ -1376,6 +1387,169 @@ main() {
       var start = term.end();
       expect(7, start.parse('1 + 2 * 3').value);
       expect(9, start.parse('(1 + 2) * 3').value);
+    });
+  });
+  group('composite (deprecated)', () {
+    test('start', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, '');
+    });
+    test('circular', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('loop').or(char('b')));
+        self.def('loop', char('a').seq(self.ref('start')));
+      });
+      expect(parser.accept('b'), isTrue);
+      expect(parser.accept('ab'), isTrue);
+      expect(parser.accept('aab'), isTrue);
+      expect(parser.accept('aaab'), isTrue);
+    });
+    test('redefine parser', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('b'));
+        self.redef('start', char('a'));
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, '');
+    });
+    test('redefine function', () {
+      var parser = new PluggableCompositeParser((self) {
+        var b = char('b');
+        self.def('start', b);
+        self.redef('start', (old) {
+          expect(b, old);
+          return char('a');
+        });
+      });
+      expectSuccess(parser, 'a', 'a', 1);
+      expectFailure(parser, 'b', 0, '"a" expected');
+      expectFailure(parser, '');
+    });
+    test('define completed', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      expect(() => parser.def('other', char('b')), throws);
+      expect(() => parser.redef('start', char('b')), throws);
+      expect(() => parser.action('start', (each) => each), throws);
+    });
+    test('reference completed', () {
+      var parsers = {
+        'start': char('a'),
+        'for_b': char('b'),
+        'for_c': char('c')
+      };
+      var parser = new PluggableCompositeParser((self) {
+        for (var key in parsers.keys) {
+          self.def(key, parsers[key]);
+        }
+      });
+      for (var key in parsers.keys) {
+        expect(parsers[key], parser[key]);
+        expect(parsers[key], parser.ref(key));
+      }
+    });
+    test('reference unknown', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+      });
+      try {
+        parser.ref('star1');
+        fail('Expected UndefinedProductionError to be thrown');
+      } on UndefinedProductionError catch (error) {
+        expect(error.toString(), 'Undefined production: star1');
+      }
+    });
+    test('duplicated start', () {
+      new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+        try {
+          self.def('start', char('b'));
+          fail('Expected UndefinedProductionError to be thrown');
+        } on RedefinedProductionError catch (error) {
+          expect(error.toString(), 'Redefined production: start');
+        }
+      });
+    });
+    test('undefined start', () {
+      expect(() => new PluggableCompositeParser((self) {}), throws);
+    });
+    test('undefined redef', () {
+      new PluggableCompositeParser((self) {
+        self.def('start', char('a'));
+        expect(() => self.redef('star1', char('b')), throws);
+      });
+    });
+    test('example (lambda)', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('expression').end());
+        self.def('variable', letter().seq(word().star()).flatten().trim());
+        self.def('expression', self
+        .ref('variable')
+        .or(self.ref('abstraction'))
+        .or(self.ref('application')));
+        self.def('abstraction', char('\\')
+        .trim()
+        .seq(self.ref('variable'))
+        .seq(char('.').trim())
+        .seq(self.ref('expression')));
+        self.def('application', char('(')
+        .trim()
+        .seq(self.ref('expression'))
+        .seq(self.ref('expression'))
+        .seq(char(')').trim()));
+      });
+      expect(parser.accept('x'), isTrue);
+      expect(parser.accept('xy'), isTrue);
+      expect(parser.accept('x12'), isTrue);
+      expect(parser.accept('\\x.y'), isTrue);
+      expect(parser.accept('\\x.\\y.z'), isTrue);
+      expect(parser.accept('(x x)'), isTrue);
+      expect(parser.accept('(x y)'), isTrue);
+      expect(parser.accept('(x (y z))'), isTrue);
+      expect(parser.accept('((x y) z)'), isTrue);
+    });
+    test('example (expression)', () {
+      var parser = new PluggableCompositeParser((self) {
+        self.def('start', self.ref('terms').end());
+        self.def('terms', self.ref('addition').or(self.ref('factors')));
+        self.def('addition',
+        self.ref('factors').separatedBy(char('+').or(char('-')).trim()));
+        self.def('factors', self.ref('multiplication').or(self.ref('power')));
+        self.def('multiplication',
+        self.ref('power').separatedBy(char('*').or(char('/')).trim()));
+        self.def('power', self.ref('primary').separatedBy(char('^').trim()));
+        self.def('primary', self.ref('number').or(self.ref('parentheses')));
+        self.def('number', char('-')
+        .optional()
+        .seq(digit().plus())
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten()
+        .trim());
+        self.def('parentheses',
+        char('(').trim().seq(self.ref('terms')).seq(char(')').trim()));
+      });
+      expect(parser.accept('1'), isTrue);
+      expect(parser.accept('12'), isTrue);
+      expect(parser.accept('1.23'), isTrue);
+      expect(parser.accept('-12.3'), isTrue);
+      expect(parser.accept('1 + 2'), isTrue);
+      expect(parser.accept('1 + 2 + 3'), isTrue);
+      expect(parser.accept('1 - 2'), isTrue);
+      expect(parser.accept('1 - 2 - 3'), isTrue);
+      expect(parser.accept('1 * 2'), isTrue);
+      expect(parser.accept('1 * 2 * 3'), isTrue);
+      expect(parser.accept('1 / 2'), isTrue);
+      expect(parser.accept('1 / 2 / 3'), isTrue);
+      expect(parser.accept('1 ^ 2'), isTrue);
+      expect(parser.accept('1 ^ 2 ^ 3'), isTrue);
+      expect(parser.accept('1 + (2 * 3)'), isTrue);
+      expect(parser.accept('(1 + 2) * 3'), isTrue);
     });
   });
 }
