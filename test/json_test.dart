@@ -95,6 +95,10 @@ void main() {
       expect(json.parse('00').isFailure, isTrue);
       expect(json.parse('01').isFailure, isTrue);
     });
+    test('invalid integer', () {
+      expect(json.parse('00').isFailure, isTrue);
+      expect(json.parse('01').isFailure, isTrue);
+    });
     test('valid float', () {
       expect(json.parse('0.0').value, 0.0);
       expect(json.parse('0.12').value, 0.12);
@@ -122,10 +126,17 @@ void main() {
       expect(json.parse('"\\r"').value, '\r');
       expect(json.parse('"\\t"').value, '\t');
     });
+    test('unicode string', () {
+      expect(json.parse('"\\u0030"').value, '0');
+      expect(json.parse('"\\u007B"').value, '{');
+      expect(json.parse('"\\u007d"').value, '}');
+    });
     test('invalid string', () {
       expect(json.parse('"').isFailure, isTrue);
       expect(json.parse('"a').isFailure, isTrue);
       expect(json.parse('"a\\\"').isFailure, isTrue);
+      expect(json.parse('"\\u00"').isFailure, isTrue);
+      expect(json.parse('"\\u000X"').isFailure, isTrue);
     });
   });
   group('browser', () {

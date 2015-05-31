@@ -43,11 +43,12 @@ class JsonGrammarDefinition extends GrammarDefinition {
 
   characterPrimitive() => ref(characterNormal)
       | ref(characterEscape)
-      | ref(characterOctal);
+      | ref(characterUnicode);
   characterNormal() => pattern('^"\\');
   characterEscape() => char('\\')
       & pattern(new List.from(JSON_ESCAPE_CHARS.keys).join());
-  characterOctal() => string('\\u').seq(pattern("0-9A-Fa-f").times(4).flatten());
+  characterUnicode() => string('\\u')
+      & pattern("0-9A-Fa-f").times(4);
   numberPrimitive() => char('-').optional()
       & char('0').or(digit().plus())
       & char('.').seq(digit().plus()).optional()
