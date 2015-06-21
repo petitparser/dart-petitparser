@@ -5,13 +5,13 @@ part of lisp;
  */
 class Standard {
 
-  /** Imports the standard library into the [environment]. */
+  /// Imports the standard library into the [environment].
   static Environment import(Environment environment) {
     evalString(lispParser, environment, _standardLibrary);
     return environment;
   }
 
-  /** A simple standard library, should be moved to external file. */
+  /// A simple standard library, should be moved to external file.
   static String _standardLibrary = """
 ; null functions
 (define null '())

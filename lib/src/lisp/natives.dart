@@ -5,7 +5,7 @@ part of lisp;
  */
 class Natives {
 
-  /** Imports the native functions into the [environment]. */
+  /// Imports the native functions into the [environment].
   static Environment import(Environment environment) {
 
     // basic functions

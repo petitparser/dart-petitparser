@@ -5,20 +5,20 @@ part of lisp;
  */
 class Name {
 
-  /** The interned symbols. */
+  /// The interned symbols.
   static final Map<String, Name> _interned = new HashMap();
 
-  /** Factory for new symbol cells. */
+  /// Factory for new symbol cells.
   factory Name(String name) {
     return _interned.putIfAbsent(name, () => new Name._internal(name));
   }
 
-  /** The name of the symbol. */
+  /// The name of the symbol.
   final String _name;
 
-  /** Internal constructor for symbol. */
+  /// Internal constructor for symbol.
   Name._internal(this._name);
 
-  /** Returns the string representation of the symbolic name. */
+  /// Returns the string representation of the symbolic name.
   String toString() => _name;
 }

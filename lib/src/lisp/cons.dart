@@ -5,13 +5,13 @@ part of lisp;
  */
 class Cons {
 
-  /** The head of the cons. */
+  /// The head of the cons.
   dynamic head;
 
-  /** The tail of the cons. */
+  /// The tail of the cons.
   dynamic tail;
 
-  /** Constructs a cons. */
+  /// Constructs a cons.
   Cons(this.head, this.tail);
 
   @override

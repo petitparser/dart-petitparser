@@ -63,7 +63,7 @@ void main(List<String> arguments) {
 
   // add additional primitives
   environment.define(new Name('exit'), (env, args) => exit(args == null ? 0 : args.head));
-  environment.define(new Name('sleep'),  (env, args) => sleep(new Duration(milliseconds: args.head)));
+  environment.define(new Name('sleep'), (env, args) => sleep(new Duration(milliseconds: args.head)));
 
   // process standard library
   if (standardLibrary) {
