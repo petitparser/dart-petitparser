@@ -7,21 +7,23 @@ import 'dart:convert';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/lisp.dart';
 
-/** Read, evaluate, print loop. */
+/// Read, evaluate, print loop.
 void evalInteractive(Parser parser, Environment env, Stream<String> input,
     IOSink output, IOSink error) {
   output.write('>> ');
   input.listen((String line) {
     try {
       output.writeln('=> ${evalString(parser, env, line)}');
-      output.write('>> ');
     } on ParserError catch (exception) {
+      error.writeln('Parser error: ' + exception.toString());
+    } on Error catch (exception) {
       error.writeln(exception.toString());
     }
+    output.write('>> ');
   });
 }
 
-/** Entry point for the command line interpreter. */
+/// Entry point for the command line interpreter.
 void main(List<String> arguments) {
 
   // default options
@@ -59,6 +61,10 @@ void main(List<String> arguments) {
   // evaluation context
   var environment = Natives.import(new Environment());
 
+  // add additional primitives
+  environment.define(new Name('exit'), (env, args) => exit(args == null ? 0 : args.head));
+  environment.define(new Name('sleep'),  (env, args) => sleep(new Duration(milliseconds: args.head)));
+
   // process standard library
   if (standardLibrary) {
     environment = Standard.import(environment.create());
@@ -74,8 +80,9 @@ void main(List<String> arguments) {
 
   // process console input
   if (interactiveMode || files.isEmpty) {
-    var input =
-        stdin.transform(SYSTEM_ENCODING.decoder).transform(new LineSplitter());
+    var input = stdin
+        .transform(SYSTEM_ENCODING.decoder)
+        .transform(new LineSplitter());
     evalInteractive(lispParser, environment, input, stdout, stderr);
   }
 }
