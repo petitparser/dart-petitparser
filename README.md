@@ -1,6 +1,8 @@
 PetitParser for Dart
 ====================
 
+[![Join the chat at https://gitter.im/petitparser/dart-petitparser](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/petitparser/dart-petitparser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Pub Package](https://img.shields.io/pub/v/petitparser.svg)](https://pub.dartlang.org/packages/petitparser)
 [![Build Status](https://travis-ci.org/petitparser/dart-petitparser.svg)](https://travis-ci.org/petitparser/dart-petitparser)
 [![Coverage Status](https://coveralls.io/repos/petitparser/dart-petitparser/badge.svg)](https://coveralls.io/r/petitparser/dart-petitparser)
