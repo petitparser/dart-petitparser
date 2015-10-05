@@ -1,4 +1,4 @@
-library dart_test;
+library petitparser.test.dart_test;
 
 import 'package:test/test.dart';
 

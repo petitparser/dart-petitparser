@@ -1,4 +1,4 @@
-library smalltalk_test;
+library petitparser.test.smalltalk_test;
 
 import 'package:test/test.dart';
 

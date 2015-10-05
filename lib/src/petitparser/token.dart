@@ -71,13 +71,12 @@ class Token {
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
-  static final Parser _NEWLINE_PARSER =
-      char('\n').or(char('\r').seq(char('\n').optional()));
-
   /**
    * Returns a parser for that detects newlines platform independently.
    */
-  static Parser newlineParser() => _NEWLINE_PARSER;
+  static Parser newlineParser() => _newlineParser;
+
+  static final Parser _newlineParser = char('\n') | (char('\r') & char('\n').optional());
 
   /**
    * Converts the [position] index in a [buffer] to a line and column tuple.
@@ -102,7 +101,7 @@ class Token {
       var lineAndColumn = Token.lineAndColumnOf(buffer, position);
       return '${lineAndColumn[0]}:${lineAndColumn[1]}';
     } else {
-      return '${position}';
+      return '$position';
     }
   }
 }

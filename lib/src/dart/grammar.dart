@@ -1,4 +1,4 @@
-part of dart;
+part of petitparser.dart;
 
 /**
  * Dart grammar.

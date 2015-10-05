@@ -1,4 +1,4 @@
-library json_benchmark;
+library petitparser.test.json_benchmark;
 
 import 'package:petitparser/json.dart';
 

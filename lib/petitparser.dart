@@ -4,15 +4,15 @@
  */
 library petitparser;
 
-part 'src/core/actions.dart';
-part 'src/core/characters.dart';
-part 'src/core/combinators.dart';
-part 'src/core/composite.dart';
-part 'src/core/context.dart';
-part 'src/core/definition.dart';
-part 'src/core/expression.dart';
-part 'src/core/parser.dart';
-part 'src/core/parsers.dart';
-part 'src/core/predicates.dart';
-part 'src/core/repeaters.dart';
-part 'src/core/token.dart';
+part 'src/petitparser/actions.dart';
+part 'src/petitparser/characters.dart';
+part 'src/petitparser/combinators.dart';
+part 'src/petitparser/composite.dart';
+part 'src/petitparser/context.dart';
+part 'src/petitparser/definition.dart';
+part 'src/petitparser/expression.dart';
+part 'src/petitparser/parser.dart';
+part 'src/petitparser/parsers.dart';
+part 'src/petitparser/predicates.dart';
+part 'src/petitparser/repeaters.dart';
+part 'src/petitparser/token.dart';

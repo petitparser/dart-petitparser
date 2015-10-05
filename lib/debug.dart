@@ -1,7 +1,7 @@
 /**
  * This package contains some simple debugging tools.
  */
-library debug;
+library petitparser.debug;
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';

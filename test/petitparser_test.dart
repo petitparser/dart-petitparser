@@ -1,4 +1,4 @@
-library core_test;
+library petitparser.test.core_test;
 
 import 'dart:math' as math;
 import 'package:test/test.dart' hide anyOf;
@@ -919,104 +919,106 @@ main() {
     });
   });
   group('examples', () {
-    final IDENTIFIER = letter().seq(word().star()).flatten();
-    final NUMBER = char('-')
+    final identifier = letter().seq(word().star()).flatten();
+    final number = char('-')
         .optional()
         .seq(digit().plus())
         .seq(char('.').seq(digit().plus()).optional())
         .flatten();
-    final STRING =
-        char('"').seq(char('"').neg().star()).seq(char('"')).flatten();
-    final KEYWORD = string('return')
+    final quoted = char('"')
+        .seq(char('"').neg().star())
+        .seq(char('"'))
+        .flatten();
+    final keyword = string('return')
         .seq(whitespace().plus().flatten())
-        .seq(IDENTIFIER.or(NUMBER).or(STRING))
+        .seq(identifier.or(number).or(quoted))
         .map((list) => list.last);
-    final JAVADOC = string('/**')
+    final javadoc = string('/**')
         .seq(string('*/').neg().star())
         .seq(string('*/'))
         .flatten();
     test('valid identifier', () {
-      expectSuccess(IDENTIFIER, 'a', 'a');
-      expectSuccess(IDENTIFIER, 'a1', 'a1');
-      expectSuccess(IDENTIFIER, 'a12', 'a12');
-      expectSuccess(IDENTIFIER, 'ab', 'ab');
-      expectSuccess(IDENTIFIER, 'a1b', 'a1b');
+      expectSuccess(identifier, 'a', 'a');
+      expectSuccess(identifier, 'a1', 'a1');
+      expectSuccess(identifier, 'a12', 'a12');
+      expectSuccess(identifier, 'ab', 'ab');
+      expectSuccess(identifier, 'a1b', 'a1b');
     });
     test('incomplete identifier', () {
-      expectSuccess(IDENTIFIER, 'a=', 'a', 1);
-      expectSuccess(IDENTIFIER, 'a1-', 'a1', 2);
-      expectSuccess(IDENTIFIER, 'a12+', 'a12', 3);
-      expectSuccess(IDENTIFIER, 'ab ', 'ab', 2);
+      expectSuccess(identifier, 'a=', 'a', 1);
+      expectSuccess(identifier, 'a1-', 'a1', 2);
+      expectSuccess(identifier, 'a12+', 'a12', 3);
+      expectSuccess(identifier, 'ab ', 'ab', 2);
     });
     test('invalid identifier', () {
-      expectFailure(IDENTIFIER, '', 0, 'letter expected');
-      expectFailure(IDENTIFIER, '1', 0, 'letter expected');
-      expectFailure(IDENTIFIER, '1a', 0, 'letter expected');
+      expectFailure(identifier, '', 0, 'letter expected');
+      expectFailure(identifier, '1', 0, 'letter expected');
+      expectFailure(identifier, '1a', 0, 'letter expected');
     });
     test('positive number', () {
-      expectSuccess(NUMBER, '1', '1');
-      expectSuccess(NUMBER, '12', '12');
-      expectSuccess(NUMBER, '12.3', '12.3');
-      expectSuccess(NUMBER, '12.34', '12.34');
+      expectSuccess(number, '1', '1');
+      expectSuccess(number, '12', '12');
+      expectSuccess(number, '12.3', '12.3');
+      expectSuccess(number, '12.34', '12.34');
     });
     test('negative number', () {
-      expectSuccess(NUMBER, '-1', '-1');
-      expectSuccess(NUMBER, '-12', '-12');
-      expectSuccess(NUMBER, '-12.3', '-12.3');
-      expectSuccess(NUMBER, '-12.34', '-12.34');
+      expectSuccess(number, '-1', '-1');
+      expectSuccess(number, '-12', '-12');
+      expectSuccess(number, '-12.3', '-12.3');
+      expectSuccess(number, '-12.34', '-12.34');
     });
     test('incomplete number', () {
-      expectSuccess(NUMBER, '1..', '1', 1);
-      expectSuccess(NUMBER, '12-', '12', 2);
-      expectSuccess(NUMBER, '12.3.', '12.3', 4);
-      expectSuccess(NUMBER, '12.34.', '12.34', 5);
+      expectSuccess(number, '1..', '1', 1);
+      expectSuccess(number, '12-', '12', 2);
+      expectSuccess(number, '12.3.', '12.3', 4);
+      expectSuccess(number, '12.34.', '12.34', 5);
     });
     test('invalid number', () {
-      expectFailure(NUMBER, '', 0, 'digit expected');
-      expectFailure(NUMBER, '-', 1, 'digit expected');
-      expectFailure(NUMBER, '-x', 1, 'digit expected');
-      expectFailure(NUMBER, '.', 0, 'digit expected');
-      expectFailure(NUMBER, '.1', 0, 'digit expected');
+      expectFailure(number, '', 0, 'digit expected');
+      expectFailure(number, '-', 1, 'digit expected');
+      expectFailure(number, '-x', 1, 'digit expected');
+      expectFailure(number, '.', 0, 'digit expected');
+      expectFailure(number, '.1', 0, 'digit expected');
     });
     test('valid string', () {
-      expectSuccess(STRING, '""', '""');
-      expectSuccess(STRING, '"a"', '"a"');
-      expectSuccess(STRING, '"ab"', '"ab"');
-      expectSuccess(STRING, '"abc"', '"abc"');
+      expectSuccess(quoted, '""', '""');
+      expectSuccess(quoted, '"a"', '"a"');
+      expectSuccess(quoted, '"ab"', '"ab"');
+      expectSuccess(quoted, '"abc"', '"abc"');
     });
     test('incomplete string', () {
-      expectSuccess(STRING, '""x', '""', 2);
-      expectSuccess(STRING, '"a"x', '"a"', 3);
-      expectSuccess(STRING, '"ab"x', '"ab"', 4);
-      expectSuccess(STRING, '"abc"x', '"abc"', 5);
+      expectSuccess(quoted, '""x', '""', 2);
+      expectSuccess(quoted, '"a"x', '"a"', 3);
+      expectSuccess(quoted, '"ab"x', '"ab"', 4);
+      expectSuccess(quoted, '"abc"x', '"abc"', 5);
     });
     test('invalid string', () {
-      expectFailure(STRING, '"', 1, '""" expected');
-      expectFailure(STRING, '"a', 2, '""" expected');
-      expectFailure(STRING, '"ab', 3, '""" expected');
-      expectFailure(STRING, 'a"', 0, '""" expected');
-      expectFailure(STRING, 'ab"', 0, '""" expected');
+      expectFailure(quoted, '"', 1, '""" expected');
+      expectFailure(quoted, '"a', 2, '""" expected');
+      expectFailure(quoted, '"ab', 3, '""" expected');
+      expectFailure(quoted, 'a"', 0, '""" expected');
+      expectFailure(quoted, 'ab"', 0, '""" expected');
     });
     test('return statement', () {
-      expectSuccess(KEYWORD, 'return f', 'f');
-      expectSuccess(KEYWORD, 'return  f', 'f');
-      expectSuccess(KEYWORD, 'return foo', 'foo');
-      expectSuccess(KEYWORD, 'return    foo', 'foo');
-      expectSuccess(KEYWORD, 'return 1', '1');
-      expectSuccess(KEYWORD, 'return  1', '1');
-      expectSuccess(KEYWORD, 'return -2.3', '-2.3');
-      expectSuccess(KEYWORD, 'return    -2.3', '-2.3');
-      expectSuccess(KEYWORD, 'return "a"', '"a"');
-      expectSuccess(KEYWORD, 'return  "a"', '"a"');
+      expectSuccess(keyword, 'return f', 'f');
+      expectSuccess(keyword, 'return  f', 'f');
+      expectSuccess(keyword, 'return foo', 'foo');
+      expectSuccess(keyword, 'return    foo', 'foo');
+      expectSuccess(keyword, 'return 1', '1');
+      expectSuccess(keyword, 'return  1', '1');
+      expectSuccess(keyword, 'return -2.3', '-2.3');
+      expectSuccess(keyword, 'return    -2.3', '-2.3');
+      expectSuccess(keyword, 'return "a"', '"a"');
+      expectSuccess(keyword, 'return  "a"', '"a"');
     });
     test('invalid statement', () {
-      expectFailure(KEYWORD, 'retur f', 0, 'return expected');
-      expectFailure(KEYWORD, 'return1', 6, 'whitespace expected');
-      expectFailure(KEYWORD, 'return  _', 8, '""" expected');
+      expectFailure(keyword, 'retur f', 0, 'return expected');
+      expectFailure(keyword, 'return1', 6, 'whitespace expected');
+      expectFailure(keyword, 'return  _', 8, '""" expected');
     });
     test('javadoc', () {
-      expectSuccess(JAVADOC, '/** foo */', '/** foo */');
-      expectSuccess(JAVADOC, '/** * * */', '/** * * */');
+      expectSuccess(javadoc, '/** foo */', '/** foo */');
+      expectSuccess(javadoc, '/** * * */', '/** * * */');
     });
   });
   group('copying, matching, replacing', () {

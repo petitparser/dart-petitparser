@@ -1,4 +1,4 @@
-library lispweb;
+library petitparser.example.lispweb;
 
 import 'dart:html';
 import 'package:petitparser/lisp.dart';

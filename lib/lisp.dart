@@ -4,10 +4,10 @@
  * The code is reasonably complete to run and evaluate reasonably complex
  * programs from the console and from the web browser.
  */
-library lisp;
+library petitparser.lisp;
 
 import 'dart:collection';
-import 'package:petitparser/petitparser.dart';
+import 'petitparser.dart';
 
 part 'src/lisp/cons.dart';
 part 'src/lisp/environment.dart';

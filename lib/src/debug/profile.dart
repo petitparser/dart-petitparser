@@ -1,4 +1,4 @@
-part of debug;
+part of petitparser.debug;
 
 /**
  * Returns a transformed [parser] that when being used measures
@@ -42,7 +42,7 @@ Parser profile(Parser root, [OutputHandler output = print]) {
     parsers.forEach((parser) {
       output('${count[parser]}\t'
           '${watch[parser].elapsedMicroseconds}\t'
-          '${parser}');
+          '$parser');
     });
     return result;
   });

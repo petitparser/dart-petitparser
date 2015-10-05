@@ -1,4 +1,4 @@
-part of debug;
+part of petitparser.debug;
 
 /**
  * Handler function for the [ContinuationParser].

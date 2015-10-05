@@ -1,4 +1,4 @@
-library lisp_test;
+library petitparser.test.lisp_test;
 
 import 'package:test/test.dart';
 

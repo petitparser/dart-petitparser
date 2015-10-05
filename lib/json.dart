@@ -11,10 +11,10 @@
  * The grammar definition [JsonGrammar] can be subclassed to construct other
  * objects.
  */
-library json;
+library petitparser.json;
 
 import 'dart:collection';
-import 'package:petitparser/petitparser.dart';
+import 'petitparser.dart';
 
 part 'src/json/grammar.dart';
 part 'src/json/parser.dart';

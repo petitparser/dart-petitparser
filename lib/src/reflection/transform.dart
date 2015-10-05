@@ -1,4 +1,4 @@
-part of reflection;
+part of petitparser.reflection;
 
 /**
  * A function transforming one parser to another one.

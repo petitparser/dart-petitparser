@@ -1,4 +1,4 @@
-part of debug;
+part of petitparser.debug;
 
 /**
  * Returns a transformed [parser] that when being used to read input

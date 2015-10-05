@@ -1,4 +1,4 @@
-part of debug;
+part of petitparser.debug;
 
 /**
  * Returns a transformed [parser] that when being used to read input prints a
@@ -30,11 +30,11 @@ Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
     return new ContinuationParser(each, (continuation, context) {
-      output('${_repeat(level, '  ')}${each}');
+      output('${_repeat(level, '  ')}$each');
       level++;
       var result = continuation(context);
       level--;
-      output('${_repeat(level, '  ')}${result}');
+      output('${_repeat(level, '  ')}$result');
       return result;
     });
   });

@@ -1,4 +1,4 @@
-part of reflection;
+part of petitparser.reflection;
 
 /**
  * Returns a copy of [parser] with all settable parsers removed.

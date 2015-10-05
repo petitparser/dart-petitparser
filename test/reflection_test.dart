@@ -1,4 +1,4 @@
-library reflection_test;
+library petitparser.test.reflection_test;
 
 import 'package:test/test.dart';
 

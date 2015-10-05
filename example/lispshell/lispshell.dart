@@ -1,4 +1,4 @@
-library lispshell;
+library petitparser.example.lispshell;
 
 import 'dart:io';
 import 'dart:async';

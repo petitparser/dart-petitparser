@@ -12,7 +12,7 @@
  *     expect('{"a": 1}', parses(new JsonParser(), {'a': 1}));
  */
 
-library test_util;
+library petitparser.test_util;
 
 import 'package:matcher/matcher.dart';
 import 'package:petitparser/petitparser.dart' hide predicate;

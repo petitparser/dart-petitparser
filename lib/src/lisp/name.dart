@@ -1,4 +1,4 @@
-part of lisp;
+part of petitparser.lisp;
 
 /**
  * An unique symbolic name.

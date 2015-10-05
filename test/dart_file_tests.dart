@@ -3,7 +3,7 @@
  * code. Unfortunately the parser is currently unable to parse most of
  * these files.
  */
-library dart_file_test;
+library petitparser.test.dart_file_test;
 
 import 'dart:io';
 

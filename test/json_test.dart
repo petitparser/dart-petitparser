@@ -1,4 +1,4 @@
-library json_test;
+library petitparser.test.json_test;
 
 import 'package:test/test.dart';
 

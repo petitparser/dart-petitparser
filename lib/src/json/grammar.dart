@@ -1,4 +1,4 @@
-part of json;
+part of petitparser.json;
 
 /**
  * JSON grammar.
@@ -46,7 +46,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
       | ref(characterUnicode);
   characterNormal() => pattern('^"\\');
   characterEscape() => char('\\')
-      & pattern(new List.from(JSON_ESCAPE_CHARS.keys).join());
+      & pattern(new List.from(jsonEscapeChars.keys).join());
   characterUnicode() => string('\\u')
       & pattern("0-9A-Fa-f").times(4);
   numberPrimitive() => char('-').optional()
@@ -59,7 +59,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
 
 }
 
-const JSON_ESCAPE_CHARS = const {
+const jsonEscapeChars = const {
   '\\': '\\',
   '/': '/',
   '"': '"',

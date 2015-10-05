@@ -81,8 +81,8 @@ class ExpressionGroup {
     _primitives.add(parser);
   }
 
-  Parser _build_primitive(Parser inner) {
-    return _build_choice(_primitives, inner);
+  Parser _buildPrimitive(Parser inner) {
+    return _buildChoice(_primitives, inner);
   }
 
   final List<Parser> _primitives = new List();
@@ -98,11 +98,11 @@ class ExpressionGroup {
     _prefix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
-  Parser _build_prefix(Parser inner) {
+  Parser _buildPrefix(Parser inner) {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([_build_choice(_prefix).star(), inner]).map(
+      return new SequenceParser([_buildChoice(_prefix).star(), inner]).map(
           (tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           return result.action(result.operator, value);
@@ -124,11 +124,11 @@ class ExpressionGroup {
     _postfix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
-  Parser _build_postfix(Parser inner) {
+  Parser _buildPostfix(Parser inner) {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([inner, _build_choice(_postfix).star()]).map(
+      return new SequenceParser([inner, _buildChoice(_postfix).star()]).map(
           (tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           return result.action(value, result.operator);
@@ -150,11 +150,11 @@ class ExpressionGroup {
     _right.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
-  Parser _build_right(Parser inner) {
+  Parser _buildRight(Parser inner) {
     if (_right.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(_build_choice(_right)).map((sequence) {
+      return inner.separatedBy(_buildChoice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
           result =
@@ -178,11 +178,11 @@ class ExpressionGroup {
     _left.add(parser.map((operator) => new _ExpressionResult(operator, action)));
   }
 
-  Parser _build_left(Parser inner) {
+  Parser _buildLeft(Parser inner) {
     if (_left.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(_build_choice(_left)).map((sequence) {
+      return inner.separatedBy(_buildChoice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
           result =
@@ -196,7 +196,7 @@ class ExpressionGroup {
   final List<Parser> _left = new List();
 
   // helper to build an optimal choice parser
-  Parser _build_choice(List<Parser> parsers, [Parser otherwise]) {
+  Parser _buildChoice(List<Parser> parsers, [Parser otherwise]) {
     if (parsers.isEmpty) {
       return otherwise;
     } else if (parsers.length == 1) {
@@ -208,7 +208,7 @@ class ExpressionGroup {
 
   // helper to build the group of parsers
   Parser _build(Parser inner) {
-    return _build_left(_build_right(_build_postfix(_build_prefix(_build_primitive(inner)))));
+    return _buildLeft(_buildRight(_buildPostfix(_buildPrefix(_buildPrimitive(inner)))));
   }
 }
 

@@ -1,4 +1,4 @@
-part of reflection;
+part of petitparser.reflection;
 
 /**
  * Returns a lazy iterable over all parsers reachable from a [root].

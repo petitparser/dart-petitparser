@@ -1,4 +1,4 @@
-library all_benchmark;
+library petitparser.test.all_benchmark;
 
 import 'package:petitparser/petitparser.dart';
 

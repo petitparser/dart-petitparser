@@ -3,8 +3,8 @@
  *
  * It was automatically exported from PetitParser for Smalltalk.
  */
-library smalltalk;
+library petitparser.smalltalk;
 
-import 'package:petitparser/petitparser.dart';
+import 'petitparser.dart';
 
 part 'src/smalltalk/grammar.dart';

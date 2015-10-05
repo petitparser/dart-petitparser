@@ -1,4 +1,4 @@
-part of smalltalk;
+part of petitparser.smalltalk;
 
 /**
  * Smalltalk grammar.

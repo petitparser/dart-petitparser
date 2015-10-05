@@ -1,7 +1,7 @@
 /**
  * This package contains tools to reflect on and transform parsers.
  */
-library reflection;
+library petitparser.reflection;
 
 import 'dart:collection';
 

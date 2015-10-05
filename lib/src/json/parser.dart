@@ -1,4 +1,4 @@
-part of json;
+part of petitparser.json;
 
 /**
  * JSON parser.
@@ -39,7 +39,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   });
 
   stringPrimitive() => super.stringPrimitive().map((each) => each[1].join());
-  characterEscape() => super.characterEscape().map((each) => JSON_ESCAPE_CHARS[each[1]]);
+  characterEscape() => super.characterEscape().map((each) => jsonEscapeChars[each[1]]);
   characterUnicode() => super.characterUnicode().map((each) {
     var charCode = int.parse(each[1].join(), radix: 16);
     return new String.fromCharCode(charCode);
