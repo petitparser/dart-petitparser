@@ -9,8 +9,6 @@ class DartGrammar extends GrammarParser {
 
 /**
  * Dart grammar definition.
- *
- * Adapted from [https://code.google.com/p/dart/source/browse/branches/bleeding_edge/dart/language/grammar/Dart.g].
  */
 class DartGrammarDefinition extends GrammarDefinition {
 
