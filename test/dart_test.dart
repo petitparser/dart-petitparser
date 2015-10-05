@@ -15,6 +15,102 @@ void main() {
       expect('library test; void main() { print(2 + 3); }', accept(dart));
     });
   });
+  group('expression', () {
+    var expression = definition.build(start: definition.expression).end();
+    test('literal numbers', () {
+      expect('1', accept(expression));
+      expect('1.2', accept(expression));
+      expect('1.2e3', accept(expression));
+      expect('1.2e-3', accept(expression));
+      expect('-1.2e3', accept(expression));
+      expect('-1.2e-3', accept(expression));
+      expect('-1.2E-3', accept(expression));
+    });
+    test('literal objects', () {
+      expect('true', accept(expression));
+      expect('false', accept(expression));
+      expect('null', accept(expression));
+    });
+    test('unary increment/decrement', () {
+      expect('++a', accept(expression));
+      expect('--a', accept(expression));
+      expect('a++', accept(expression));
+      expect('a--', accept(expression));
+    });
+    test('unary operators', () {
+      expect('+a', accept(expression));
+      expect('-a', accept(expression));
+      expect('!a', accept(expression));
+      expect('~a', accept(expression));
+    });
+    test('binary arithmetic operators', () {
+      expect('a + b', accept(expression));
+      expect('a - b', accept(expression));
+      expect('a * b', accept(expression));
+      expect('a / b', accept(expression));
+      expect('a ~/ b', accept(expression));
+      expect('a % b', accept(expression));
+    });
+    test('binary logical operators', () {
+      expect('a & b', accept(expression));
+      expect('a | b', accept(expression));
+      expect('a ^ b', accept(expression));
+      expect('a && b', accept(expression));
+      expect('a || b', accept(expression));
+    });
+    test('binary conditional operators', () {
+      expect('a > b', accept(expression));
+      expect('a >= b', accept(expression));
+      expect('a < b', accept(expression));
+      expect('a <= b', accept(expression));
+      expect('a == b', accept(expression));
+      expect('a != b', accept(expression));
+      expect('a === b', accept(expression));
+      expect('a !== b', accept(expression));
+    });
+    test('binary shift operators', () {
+      expect('a << b', accept(expression));
+      expect('a >>> b', accept(expression));
+      expect('a >> b', accept(expression));
+    });
+    test('ternary operator', () {
+      expect('a ? b : c', accept(expression));
+    });
+    test('parenthesis', () {
+      expect('(a + b)', accept(expression));
+      expect('a * (b + c)', accept(expression));
+      expect('(a * b) + c', accept(expression));
+    });
+    test('access', () {
+      expect('a.b', accept(expression));
+    });
+    test('invoke', () {
+      expect('a.b()', accept(expression));
+      expect('a.b(c)', accept(expression));
+      expect('a.b(c, d)', accept(expression));
+      expect('a.b(c: d)', accept(expression));
+      expect('a.b(c: d, e: f)', accept(expression));
+    });
+    test('assignment', () {
+      expect('a = b', accept(expression));
+      expect('a += b', accept(expression));
+      expect('a -= b', accept(expression));
+      expect('a *= b', accept(expression));
+      expect('a /= b', accept(expression));
+      expect('a %= b', accept(expression));
+      expect('a ~/= b', accept(expression));
+      expect('a <<= b', accept(expression));
+      expect('a >>>= b', accept(expression));
+      expect('a >>= b', accept(expression));
+      expect('a &= b', accept(expression));
+      expect('a ^= b', accept(expression));
+      expect('a |= b', accept(expression));
+    });
+    test('indexed', () {
+      expect('a[b]', accept(expression));
+      expect('a[b] = c', accept(expression));
+    });
+  });
   group('whitespace', () {
     var whitespaces = definition.build(start: definition.HIDDEN).end();
     test('whitespace', () {
@@ -51,8 +147,7 @@ void main() {
     });
     test('multi-line nested', () {
       expect('/* outer /* nested */ */', accept(whitespaces));
-      expect(
-          '/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
+      expect('/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
       expect('/* outer /* not closed */', isNot(accept(whitespaces)));
     });
     test('combined', () {

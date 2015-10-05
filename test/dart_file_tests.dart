@@ -12,27 +12,28 @@ import 'package:test/test.dart';
 import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
 
-void generateTests(DartGrammar dart, String title, String path) {
+void generateTests(DartGrammar dart, String title, List<FileSystemEntity> files) {
   group(title, () {
-    new Directory(path)
-        .listSync(recursive: true, followLinks: false)
+    files
         .where((file) => file is File && file.path.endsWith('.dart'))
         .forEach((File file) {
-      test(file.path, () {
-        var source = new StringBuffer();
-        file
-            .openRead()
-            .transform(SYSTEM_ENCODING.decoder)
-            .listen((part) => source.write(part), onDone: expectAsync(() {
-          expect(source.toString(), accept(dart));
-        }), onError: fail);
-      });
-    });
+          test(file.path, () {
+            var source = new StringBuffer();
+            file
+                .openRead()
+                .transform(SYSTEM_ENCODING.decoder)
+                .listen((part) => source.write(part), onDone: expectAsync(() {
+                  expect(source.toString(), accept(dart));
+                }), onError: fail);
+          });
+        });
   });
 }
 
 void main() {
   var dart = new DartGrammar();
-  //generateTests(dart, 'Dart SDK', '/Applications/Dart/dart-sdk');
-  generateTests(dart, 'PetitParser', Directory.current.path);
+  generateTests(dart, 'Dart SDK', new Directory('packages')
+      .listSync(recursive: true, followLinks: false));
+  generateTests(dart, 'PetitParser', Directory.current
+      .listSync(recursive: true, followLinks: true));
 }
