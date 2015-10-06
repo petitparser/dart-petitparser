@@ -1,8 +1,6 @@
-/**
- * This test-case automatically generates various tests from Dart source
- * code. Unfortunately the parser is currently unable to parse most of
- * these files.
- */
+/// This test-case automatically generates various tests from Dart source
+/// code. Unfortunately the parser is currently unable to parse most of
+/// these files.
 library petitparser.test.dart_file_test;
 
 import 'dart:io';

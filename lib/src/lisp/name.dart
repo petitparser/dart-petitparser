@@ -1,8 +1,6 @@
 part of petitparser.lisp;
 
-/**
- * An unique symbolic name.
- */
+/// An unique symbolic name.
 class Name {
 
   /// The interned symbols.

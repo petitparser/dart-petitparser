@@ -1,8 +1,6 @@
 part of petitparser.lisp;
 
-/**
- * The basic data structure of LISP.
- */
+/// The basic data structure of LISP.
 class Cons {
 
   /// The head of the cons.

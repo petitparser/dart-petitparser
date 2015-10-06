@@ -1,15 +1,11 @@
 part of petitparser.smalltalk;
 
-/**
- * Smalltalk grammar.
- */
+/// Smalltalk grammar.
 class SmalltalkGrammar extends GrammarParser {
   SmalltalkGrammar() : super(new SmalltalkGrammarDefinition());
 }
 
-/**
- * Smalltalk grammar definition.
- */
+/// Smalltalk grammar definition.
 class SmalltalkGrammarDefinition extends GrammarDefinition {
 
   // the original implementation used a handwritten parser to

@@ -1,15 +1,11 @@
 part of petitparser.lisp;
 
-/**
- * LISP grammar.
- */
+/// LISP grammar.
 class LispGrammar extends GrammarParser {
   LispGrammar() : super(new LispGrammarDefinition());
 }
 
-/**
- * LISP grammar definition.
- */
+/// LISP grammar definition.
 class LispGrammarDefinition extends GrammarDefinition {
 
   start() => ref(atom).star().end();

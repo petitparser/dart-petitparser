@@ -1,8 +1,6 @@
 part of petitparser;
 
-/**
- * Parser class for individual character classes.
- */
+/// Parser class for individual character classes.
 class CharacterParser extends Parser {
   final CharacterPredicate _predicate;
 
@@ -36,14 +34,10 @@ class CharacterParser extends Parser {
   }
 }
 
-/**
- * Abstract character predicate class.
- */
+/// Abstract character predicate class.
 abstract class CharacterPredicate {
 
-  /**
-   * Tests if the character predicate is satisfied.
-   */
+  /// Tests if the character predicate is satisfied.
   bool test(int value);
 }
 
@@ -56,9 +50,7 @@ class _NotCharacterPredicate implements CharacterPredicate {
   bool test(int value) => !predicate.test(value);
 }
 
-/**
- * Returns a parser that accepts any of the specified characters.
- */
+/// Returns a parser that accepts any of the specified characters.
 Parser anyOf(String string, [String message]) {
   return new CharacterParser(_optimizedString(string),
       message != null ? message : 'any of "$string" expected');
@@ -108,18 +100,14 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
   }
 }
 
-/**
- * Returns a parser that accepts none of the specified characters.
- */
+/// Returns a parser that accepts none of the specified characters.
 Parser noneOf(String string, [String message]) {
   return new CharacterParser(
       new _NotCharacterPredicate(_optimizedString(string)),
       message != null ? message : 'none of "$string" expected');
 }
 
-/**
- * Returns a parser that accepts a specific character only.
- */
+/// Returns a parser that accepts a specific character only.
 Parser char(element, [String message]) {
   return new CharacterParser(new _SingleCharPredicate(_toCharCode(element)),
       message != null ? message : '"$element" expected');
@@ -134,9 +122,7 @@ class _SingleCharPredicate implements CharacterPredicate {
   bool test(int value) => identical(this.value, value);
 }
 
-/**
- * Returns a parser that accepts any digit character.
- */
+/// Returns a parser that accepts any digit character.
 Parser digit([String message]) {
   return new CharacterParser(
       _digitCharPredicate, message != null ? message : 'digit expected');
@@ -151,9 +137,7 @@ class _DigitCharPredicate implements CharacterPredicate {
 
 const _digitCharPredicate = const _DigitCharPredicate();
 
-/**
- * Returns a parser that accepts any letter character.
- */
+/// Returns a parser that accepts any letter character.
 Parser letter([String message]) {
   return new CharacterParser(
       _letterCharPredicate, message != null ? message : 'letter expected');
@@ -169,9 +153,7 @@ class _LetterCharPredicate implements CharacterPredicate {
 
 const _letterCharPredicate = const _LetterCharPredicate();
 
-/**
- * Returns a parser that accepts any lowercase character.
- */
+/// Returns a parser that accepts any lowercase character.
 Parser lowercase([String message]) {
   return new CharacterParser(_lowercaseCharPredicate,
       message != null ? message : 'lowercase letter expected');
@@ -186,9 +168,7 @@ class _LowercaseCharPredicate implements CharacterPredicate {
 
 const _lowercaseCharPredicate = const _LowercaseCharPredicate();
 
-/**
- * Returns a parser that accepts the given character class pattern.
- */
+/// Returns a parser that accepts the given character class pattern.
 Parser pattern(String element, [String message]) {
   return new CharacterParser(_patternParser.parse(element).value,
       message != null ? message : '[$element] expected');
@@ -233,10 +213,8 @@ class _RangesCharPredicate implements CharacterPredicate {
   }
 }
 
-/**
- * Returns a parser that accepts any character in the range
- * between [start] and [stop].
- */
+/// Returns a parser that accepts any character in the range
+/// between [start] and [stop].
 Parser range(start, stop, [String message]) {
   return new CharacterParser(
       new _RangeCharPredicate(_toCharCode(start), _toCharCode(stop)),
@@ -253,9 +231,7 @@ class _RangeCharPredicate implements CharacterPredicate {
   bool test(int value) => start <= value && value <= stop;
 }
 
-/**
- * Returns a parser that accepts any uppercase character.
- */
+/// Returns a parser that accepts any uppercase character.
 Parser uppercase([String message]) {
   return new CharacterParser(_uppercaseCharPredicate,
       message != null ? message : 'uppercase letter expected');
@@ -270,9 +246,7 @@ class _UppercaseCharPredicate implements CharacterPredicate {
 
 const _uppercaseCharPredicate = const _UppercaseCharPredicate();
 
-/**
- * Returns a parser that accepts any whitespace character.
- */
+/// Returns a parser that accepts any whitespace character.
 Parser whitespace([String message]) {
   return new CharacterParser(_whitespaceCharPredicate,
       message != null ? message : 'whitespace expected');
@@ -318,9 +292,7 @@ class _WhitespaceCharPredicate implements CharacterPredicate {
 
 const _whitespaceCharPredicate = const _WhitespaceCharPredicate();
 
-/**
- * Returns a parser that accepts any word character.
- */
+/// Returns a parser that accepts any word character.
 Parser word([String message]) {
   return new CharacterParser(_wordCharPredicate,
       message != null ? message : 'letter or digit expected');

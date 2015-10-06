@@ -1,6 +1,4 @@
-/**
- * This package contains some simple debugging tools.
- */
+/// This package contains some simple debugging tools.
 library petitparser.debug;
 
 import 'package:petitparser/petitparser.dart';

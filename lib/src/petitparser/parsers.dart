@@ -1,16 +1,12 @@
 part of petitparser;
 
-/**
- * Returns a parser that consumes nothing and succeeds.
- *
- * For example, `char('a').or(epsilon())` is equivalent to
- * `char('a').optional()`.
- */
+/// Returns a parser that consumes nothing and succeeds.
+///
+/// For example, `char('a').or(epsilon())` is equivalent to
+/// `char('a').optional()`.
 Parser epsilon([result]) => new EpsilonParser(result);
 
-/**
- * A parser that consumes nothing and succeeds.
- */
+/// A parser that consumes nothing and succeeds.
 class EpsilonParser extends Parser {
   final _result;
 
@@ -30,18 +26,14 @@ class EpsilonParser extends Parser {
   }
 }
 
-/**
- * Returns a parser that consumes nothing and fails.
- *
- * For example, `failure()` always fails, no matter what input it is given.
- */
+/// Returns a parser that consumes nothing and fails.
+///
+/// For example, `failure()` always fails, no matter what input it is given.
 Parser failure([String message = 'unable to parse']) {
   return new FailureParser(message);
 }
 
-/**
- * A parser that consumes nothing and fails.
- */
+/// A parser that consumes nothing and fails.
 class FailureParser extends Parser {
   final String _message;
 
@@ -64,30 +56,24 @@ class FailureParser extends Parser {
   }
 }
 
-/**
- * Returns a parser that is not defined, but that can be set at a later
- * point in time.
- *
- * For example, the following code sets up a parser that points to itself
- * and that accepts a sequence of a's ended with the letter b.
- *
- *     var p = undefined();
- *     p.set(char('a').seq(p).or(char('b')));
- */
+/// Returns a parser that is not defined, but that can be set at a later
+/// point in time.
+///
+/// For example, the following code sets up a parser that points to itself
+/// and that accepts a sequence of a's ended with the letter b.
+///
+///     var p = undefined();
+///     p.set(char('a').seq(p).or(char('b')));
 SettableParser undefined([String message = 'undefined parser']) {
   return failure(message).settable();
 }
 
-/**
- * A parser that is not defined, but that can be set at a later
- * point in time.
- */
+/// A parser that is not defined, but that can be set at a later
+/// point in time.
 class SettableParser extends DelegateParser {
   SettableParser(parser) : super(parser);
 
-  /**
-   * Sets the receiver to delegate to [parser].
-   */
+  /// Sets the receiver to delegate to [parser].
   void set(Parser parser) => replace(children[0], parser);
 
   @override

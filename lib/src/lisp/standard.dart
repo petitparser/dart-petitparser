@@ -1,8 +1,6 @@
 part of petitparser.lisp;
 
-/**
- * The standard library.
- */
+/// The standard library.
 class Standard {
 
   /// Imports the standard library into the [environment].

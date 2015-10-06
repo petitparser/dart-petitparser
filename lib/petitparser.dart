@@ -1,7 +1,5 @@
-/**
- * This package contains the core library of PetitParser, a dynamic parser
- * combinator framework.
- */
+/// This package contains the core library of PetitParser, a dynamic parser
+/// combinator framework.
 library petitparser;
 
 part 'src/petitparser/actions.dart';

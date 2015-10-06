@@ -1,8 +1,6 @@
 part of petitparser.reflection;
 
-/**
- * Returns a copy of [parser] with all settable parsers removed.
- */
+/// Returns a copy of [parser] with all settable parsers removed.
 Parser removeSettables(Parser parser) {
   return transformParser(parser, (each) {
     while (each is SettableParser) {
@@ -12,9 +10,7 @@ Parser removeSettables(Parser parser) {
   });
 }
 
-/**
- * Returns a copy of [parser] with all duplicates parsers collapsed.
- */
+/// Returns a copy of [parser] with all duplicates parsers collapsed.
 Parser removeDuplicates(Parser parser) {
   var uniques = new Set();
   return transformParser(parser, (source) {

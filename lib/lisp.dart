@@ -1,9 +1,7 @@
-/**
- * This package contains a simple grammar and evaluator for LISP.
- *
- * The code is reasonably complete to run and evaluate reasonably complex
- * programs from the console and from the web browser.
- */
+/// This package contains a simple grammar and evaluator for LISP.
+///
+/// The code is reasonably complete to run and evaluate reasonably complex
+/// programs from the console and from the web browser.
 library petitparser.lisp;
 
 import 'dart:collection';
@@ -17,10 +15,10 @@ part 'src/lisp/natives.dart';
 part 'src/lisp/parser.dart';
 part 'src/lisp/standard.dart';
 
-/** The standard lisp parser definition. */
+/// The standard lisp parser definition.
 final lispParser = new LispParser();
 
-/** The evaluation function. */
+/// The evaluation function.
 eval(Environment env, expr) {
   if (expr is Cons) {
     return eval(env, expr.head)(env, expr.tail);
@@ -31,7 +29,7 @@ eval(Environment env, expr) {
   }
 }
 
-/** Evaluate a cons of instructions. */
+/// Evaluate a cons of instructions.
 evalList(Environment env, expr) {
   var result = null;
   while (expr is Cons) {
@@ -41,7 +39,7 @@ evalList(Environment env, expr) {
   return result;
 }
 
-/** The arguments evaluation function. */
+/// The arguments evaluation function.
 evalArguments(Environment env, args) {
   if (args is Cons) {
     return new Cons(eval(env, args.head), evalArguments(env, args.tail));
@@ -50,7 +48,7 @@ evalArguments(Environment env, args) {
   }
 }
 
-/** Reads and evaluates a [script]. */
+/// Reads and evaluates a [script].
 evalString(Parser parser, Environment env, String script) {
   var result = null;
   for (var cell in parser.parse(script).value) {

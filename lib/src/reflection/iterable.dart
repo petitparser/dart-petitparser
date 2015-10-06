@@ -1,17 +1,15 @@
 part of petitparser.reflection;
 
-/**
- * Returns a lazy iterable over all parsers reachable from a [root].
- *
- * For example, the following code prints the two parsers of the
- * defined grammar:
- *
- *     var parser = range('0', '9').star();
- *     allParser(parser).forEach((each) {
- *       print(each);
- *     });
- *
- */
+/// Returns a lazy iterable over all parsers reachable from a [root].
+///
+/// For example, the following code prints the two parsers of the
+/// defined grammar:
+///
+///     var parser = range('0', '9').star();
+///     allParser(parser).forEach((each) {
+///       print(each);
+///     });
+///
 Iterable<Parser> allParser(Parser root) => new _ParserIterable(root);
 
 class _ParserIterable extends IterableBase<Parser> {

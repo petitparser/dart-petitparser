@@ -1,15 +1,11 @@
 part of petitparser.dart;
 
-/**
- * Dart grammar.
- */
+/// Dart grammar.
 class DartGrammar extends GrammarParser {
   DartGrammar() : super(new DartGrammarDefinition());
 }
 
-/**
- * Dart grammar definition.
- */
+/// Dart grammar definition.
 class DartGrammarDefinition extends GrammarDefinition {
 
   Parser token(input) {

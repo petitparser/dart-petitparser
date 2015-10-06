@@ -1,9 +1,7 @@
 part of petitparser;
 
-/**
- * A parser that delegates to another one. Normally users do not need to
- * directly use a delegate parser.
- */
+/// A parser that delegates to another one. Normally users do not need to
+/// directly use a delegate parser.
 class DelegateParser extends Parser {
   Parser _delegate;
 
@@ -29,9 +27,7 @@ class DelegateParser extends Parser {
   Parser copy() => new DelegateParser(_delegate);
 }
 
-/**
- * A parser that succeeds only at the end of the input.
- */
+/// A parser that succeeds only at the end of the input.
 class EndOfInputParser extends DelegateParser {
   final String _message;
 
@@ -59,10 +55,8 @@ class EndOfInputParser extends DelegateParser {
   }
 }
 
-/**
- * The and-predicate, a parser that succeeds whenever its delegate does, but
- * does not consume the input stream [Parr 1994, 1995].
- */
+/// The and-predicate, a parser that succeeds whenever its delegate does, but
+/// does not consume the input stream [Parr 1994, 1995].
 class AndParser extends DelegateParser {
   AndParser(parser) : super(parser);
 
@@ -80,10 +74,8 @@ class AndParser extends DelegateParser {
   Parser copy() => new AndParser(_delegate);
 }
 
-/**
- * The not-predicate, a parser that succeeds whenever its delegate does not,
- * but consumes no input [Parr 1994, 1995].
- */
+/// The not-predicate, a parser that succeeds whenever its delegate does not,
+/// but consumes no input [Parr 1994, 1995].
 class NotParser extends DelegateParser {
   final String _message;
 
@@ -113,9 +105,7 @@ class NotParser extends DelegateParser {
   }
 }
 
-/**
- * A parser that optionally parsers its delegate, or answers nil.
- */
+/// A parser that optionally parsers its delegate, or answers nil.
 class OptionalParser extends DelegateParser {
   final _otherwise;
 
@@ -142,9 +132,7 @@ class OptionalParser extends DelegateParser {
   }
 }
 
-/**
- * Abstract parser that parses a list of things in some way.
- */
+/// Abstract parser that parses a list of things in some way.
 abstract class ListParser extends Parser {
   final List<Parser> _parsers;
 
@@ -164,9 +152,7 @@ abstract class ListParser extends Parser {
   }
 }
 
-/**
- * A parser that uses the first parser that succeeds.
- */
+/// A parser that uses the first parser that succeeds.
 class ChoiceParser extends ListParser {
   factory ChoiceParser(Iterable<Parser> parsers) {
     return new ChoiceParser._(new List.from(parsers, growable: false));
@@ -197,9 +183,7 @@ class ChoiceParser extends ListParser {
   Parser copy() => new ChoiceParser(_parsers);
 }
 
-/**
- * A parser that parses a sequence of parsers.
- */
+/// A parser that parses a sequence of parsers.
 class SequenceParser extends ListParser {
   factory SequenceParser(Iterable<Parser> parsers) {
     return new SequenceParser._(new List.from(parsers, growable: false));

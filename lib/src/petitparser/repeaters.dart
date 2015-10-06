@@ -1,14 +1,10 @@
 part of petitparser;
 
-/**
- * An [int] used to mark an unbounded maximum repetition.
- */
+/// An [int] used to mark an unbounded maximum repetition.
 const int unbounded = -1;
 
-/**
- * An abstract parser that repeatedly parses between 'min' and 'max' instances of
- * its delegate.
- */
+/// An abstract parser that repeatedly parses between 'min' and 'max' instances of
+/// its delegate.
 abstract class RepeatingParser extends DelegateParser {
   final int _min;
   final int _max;
@@ -33,10 +29,8 @@ abstract class RepeatingParser extends DelegateParser {
   }
 }
 
-/**
- * A greedy parser that repeatedly parses between 'min' and 'max' instances of
- * its delegate.
- */
+/// A greedy parser that repeatedly parses between 'min' and 'max' instances of
+/// its delegate.
 class PossessiveRepeatingParser extends RepeatingParser {
   PossessiveRepeatingParser(Parser parser, int min, int max)
       : super(parser, min, max);
@@ -68,12 +62,10 @@ class PossessiveRepeatingParser extends RepeatingParser {
   Parser copy() => new PossessiveRepeatingParser(_delegate, _min, _max);
 }
 
-/**
- * An abstract parser that repeatedly parses between 'min' and 'max' instances of
- * its delegate and that requires the input to be completed with a specified parser
- * 'limit'. Subclasses provide repeating behavior as typically seen in regular
- * expression implementations (non-blind).
- */
+/// An abstract parser that repeatedly parses between 'min' and 'max' instances of
+/// its delegate and that requires the input to be completed with a specified parser
+/// 'limit'. Subclasses provide repeating behavior as typically seen in regular
+/// expression implementations (non-blind).
 abstract class LimitedRepeatingParser extends RepeatingParser {
   Parser _limit;
 
@@ -92,11 +84,9 @@ abstract class LimitedRepeatingParser extends RepeatingParser {
   }
 }
 
-/**
- * A greedy repeating parser, commonly seen in regular expression implementations. It
- * aggressively consumes as much input as possible and then backtracks to meet the
- * 'limit' condition.
- */
+/// A greedy repeating parser, commonly seen in regular expression implementations. It
+/// aggressively consumes as much input as possible and then backtracks to meet the
+/// 'limit' condition.
 class GreedyRepeatingParser extends LimitedRepeatingParser {
   GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
@@ -142,10 +132,8 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
   Parser copy() => new GreedyRepeatingParser(_delegate, _limit, _min, _max);
 }
 
-/**
- * A lazy repeating parser, commonly seen in regular expression implementations. It
- * limits its consumption to meet the 'limit' condition as early as possible.
- */
+/// A lazy repeating parser, commonly seen in regular expression implementations. It
+/// limits its consumption to meet the 'limit' condition as early as possible.
 class LazyRepeatingParser extends LimitedRepeatingParser {
   LazyRepeatingParser(Parser parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);

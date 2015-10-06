@@ -1,32 +1,26 @@
-/**
- * This package contains matches to write tests for parsers.
- *
- * Examples:
- *
- *     var json = new JsonParser();
- *
- *     // verifies that the input gets parsed and all input is consumed
- *     expect('{"a": 1}', accepts(new JsonParser()));
- *
- *     // verifies that the input gets parsed to a dictionary and that all input is consumed
- *     expect('{"a": 1}', parses(new JsonParser(), {'a': 1}));
- */
+/// This package contains matches to write tests for parsers.
+///
+/// Examples:
+///
+///     var json = new JsonParser();
+///
+///     // verifies that the input gets parsed and all input is consumed
+///     expect('{"a": 1}', accepts(new JsonParser()));
+///
+///     // verifies that the input gets parsed to a dictionary and that all input is consumed
+///     expect('{"a": 1}', parses(new JsonParser(), {'a': 1}));
 
 library petitparser.test_util;
 
 import 'package:matcher/matcher.dart';
 import 'package:petitparser/petitparser.dart' hide predicate;
 
-/**
- * Returns a matcher that succeeds if the [parser] accepts the input.
- */
+/// Returns a matcher that succeeds if the [parser] accepts the input.
 Matcher accept(Parser parser) {
   return parse(parser, predicate((value) => true, 'input'));
 }
 
-/**
- * Returns a matcher that succeeds if the [parser] succeeds and accepts the provided [matcher].
- */
+/// Returns a matcher that succeeds if the [parser] succeeds and accepts the provided [matcher].
 Matcher parse(Parser parser, matcher, [int position = -1]) {
   return new _Parse(parser, wrapMatcher(matcher), position);
 }

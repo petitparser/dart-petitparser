@@ -1,15 +1,11 @@
 part of petitparser.json;
 
-/**
- * JSON parser.
- */
+/// JSON parser.
 class JsonParser extends GrammarParser {
   JsonParser() : super(const JsonParserDefinition());
 }
 
-/**
- * JSON parser definition.
- */
+/// JSON parser definition.
 class JsonParserDefinition extends JsonGrammarDefinition {
   const JsonParserDefinition();
 

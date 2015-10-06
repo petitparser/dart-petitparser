@@ -1,8 +1,6 @@
 part of petitparser.lisp;
 
-/**
- * The native functions.
- */
+/// The native functions.
 class Natives {
 
   /// Imports the native functions into the [environment].

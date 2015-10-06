@@ -1,8 +1,6 @@
 part of petitparser.lisp;
 
-/**
- * Environment of bindings.
- */
+/// Environment of bindings.
 class Environment {
 
   /// The owning environment.

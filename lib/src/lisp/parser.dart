@@ -1,15 +1,11 @@
 part of petitparser.lisp;
 
-/**
- * LISP parser.
- */
+/// LISP parser.
 class LispParser extends GrammarParser {
   LispParser() : super(new LispParserDefinition());
 }
 
-/**
- * LISP parser definition.
- */
+/// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {
 
   list() => super.list().map((each) => each[1]);
