@@ -35,7 +35,6 @@ void main() {
     });
     test('export', () {
       expect('export "abc";', accept(dart));
-      expect('export "abc" as a;', accept(dart));
       expect('export "abc" show a;', accept(dart));
       expect('export "abc" show a, b;', accept(dart));
       expect('export "abc" hide a;', accept(dart));
