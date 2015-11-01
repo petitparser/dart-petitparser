@@ -8,8 +8,40 @@ import 'package:petitparser/dart.dart';
 void main() {
   var definition = new DartGrammarDefinition();
   var dart = new DartGrammar();
-  group('basic', () {
-    test('structure', () {
+  group('directives', () {
+    test('hashbang', () {
+      expect('#!/bin/dart\n', accept(dart));
+    });
+    test('library', () {
+      expect('library a;', accept(dart));
+      expect('library a.b;', accept(dart));
+      expect('library a.b.c_d;', accept(dart));
+    });
+    test('part of', () {
+      expect('part of a;', accept(dart));
+      expect('part of a.b;', accept(dart));
+      expect('part of a.b.c_d;', accept(dart));
+    });
+    test('part', () {
+      expect('part "abc";', accept(dart));
+    });
+    test('import', () {
+      expect('import "abc";', accept(dart));
+      expect('import "abc" as a;', accept(dart));
+      expect('import "abc" show a;', accept(dart));
+      expect('import "abc" show a, b;', accept(dart));
+      expect('import "abc" hide a;', accept(dart));
+      expect('import "abc" hide a, b;', accept(dart));
+    });
+    test('export', () {
+      expect('export "abc";', accept(dart));
+      expect('export "abc" as a;', accept(dart));
+      expect('export "abc" show a;', accept(dart));
+      expect('export "abc" show a, b;', accept(dart));
+      expect('export "abc" hide a;', accept(dart));
+      expect('export "abc" hide a, b;', accept(dart));
+    });
+    test('full', () {
       expect('library test;', accept(dart));
       expect('library test; void main() { }', accept(dart));
       expect('library test; void main() { print(2 + 3); }', accept(dart));
