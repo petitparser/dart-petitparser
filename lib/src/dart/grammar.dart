@@ -60,6 +60,7 @@ class DartGrammarDefinition extends GrammarDefinition {
   AS()         => ref(token, 'as');
   ASSERT()     => ref(token, 'assert');
   CLASS()      => ref(token, 'class');
+  DEFERRED()   => ref(token, 'deferred');
   EXPORT()     => ref(token, 'export');
   EXTENDS()    => ref(token, 'extends');
   FACTORY()    => ref(token, 'factory');
@@ -98,6 +99,7 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   importDirective() =>
         ref(IMPORT) & ref(SINGLE_LINE_STRING)
+            & ref(DEFERRED).optional()
             & (ref(AS) & ref(identifier)).optional()
             & ((ref(SHOW) | ref(HIDE)) & ref(identifier).separatedBy(ref(token, ','))).optional()
             & ref(token, ';')

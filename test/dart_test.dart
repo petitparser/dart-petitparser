@@ -27,11 +27,13 @@ void main() {
     });
     test('import', () {
       expect('import "abc";', accept(dart));
+      expect('import "abc" deferred;', accept(dart));
       expect('import "abc" as a;', accept(dart));
+      expect('import "abc" deferred as a;', accept(dart));
       expect('import "abc" show a;', accept(dart));
-      expect('import "abc" show a, b;', accept(dart));
+      expect('import "abc" deferred show a, b;', accept(dart));
       expect('import "abc" hide a;', accept(dart));
-      expect('import "abc" hide a, b;', accept(dart));
+      expect('import "abc" deferred hide a, b;', accept(dart));
     });
     test('export', () {
       expect('export "abc";', accept(dart));
