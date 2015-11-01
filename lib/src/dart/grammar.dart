@@ -397,7 +397,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   defaultCase() =>
-        ref(label).optional() & (ref(CASE) & ref(expression) & ref(token, ':')).star() & ref(DEFAULT) & ref(token, ':') & ref(statements)
+        ref(label).optional() & ref(DEFAULT) & ref(token, ':') & ref(statements)
       ;
 
   tryStatement() =>
@@ -451,7 +451,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   expressionList() =>
-        ref(expression) & (ref(token, ',') & ref(expression)).star()
+        ref(expression).separatedBy(ref(token, ','))
       ;
 
   arguments() =>
@@ -459,12 +459,12 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   argumentList() =>
-        ref(namedArgument) & (ref(token, ',') & ref(namedArgument)).star()
-      | ref(expressionList) & (ref(token, ',') & ref(namedArgument)).star()
+        ref(argumentElement).separatedBy(ref(token, ','))
       ;
 
-  namedArgument() =>
+  argumentElement() =>
         ref(label) & ref(expression)
+      | ref(expression)
       ;
 
   assignableExpression() =>
@@ -607,7 +607,8 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   functionDeclaration() =>
-        ref(returnType).optional() & ref(identifier) & ref(formalParameterList)
+        ref(returnType) & ref(identifier) & ref(formalParameterList)
+      | ref(identifier) & ref(formalParameterList)
       ;
 
   functionPrefix() =>

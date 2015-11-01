@@ -110,6 +110,113 @@ void main() {
       expect('a[b]', accept(expression));
       expect('a[b] = c', accept(expression));
     });
+    test('method', () {
+      expect('a()', accept(expression));
+      expect('a(b)', accept(expression));
+      expect('a(b, c)', accept(expression));
+      expect('a(b: c)', accept(expression));
+      expect('a(b: c, d: e)', accept(expression));
+      expect('a(a, b: c)', accept(expression));
+      expect('a(a, b, c: d, e: f)', accept(expression));
+    });
+  });
+  group('statement', () {
+    var statement = definition.build(start: definition.statement).end();
+    test('label', () {
+      expect('a: {}', accept(statement));
+      expect('a: b: {}', accept(statement));
+      expect('a: b: c: {}', accept(statement));
+    });
+    test('block', () {
+      expect('{}', accept(statement));
+      expect('{{}}', accept(statement));
+    });
+    test('declaration', () {
+      expect('final a;', accept(statement));
+      expect('final a b;', accept(statement));
+      expect('var a;', accept(statement));
+      expect('a b;', accept(statement));
+    });
+    test('initialized declaration', () {
+      expect('final a = b;', accept(statement));
+      expect('final a b = c;', accept(statement));
+      expect('var a = b;', accept(statement));
+      expect('a b = c;', accept(statement));
+    });
+    test('while', () {
+      expect('while (a) {}', accept(statement));
+    });
+    test('do', () {
+      expect('do {} while (b);', accept(statement));
+    });
+    test('for', () {
+      expect('for (;;) {}', accept(statement));
+      expect('for (var a = b; c; d++) {}', accept(statement));
+      expect('for (var a = b, c = d; e; f++) {}', accept(statement));
+    });
+    test('if', () {
+      expect('if (a) {}', accept(statement));
+      expect('if (a) {} else {}', accept(statement));
+      expect('if (a) {} else if (b) {}', accept(statement));
+      expect('if (a) {} else if (b) {} else {}', accept(statement));
+    });
+    test('switch', () {
+      expect('switch (a) {}', accept(statement));
+      expect('switch (a) { case b: {} }', accept(statement));
+      expect('switch (a) { case b: {} case d: {}}', accept(statement));
+      expect('switch (a) { case b: {} default: {}}', accept(statement));
+    });
+    test('try', () {
+      expect('try {} finally {}', accept(statement));
+      expect('try {} catch (a b) {}', accept(statement));
+      expect('try {} catch (a b, c d) {}', accept(statement));
+      expect('try {} catch (a b) {} finally {}', accept(statement));
+      expect('try {} catch (a b, c d) {} finally {}', accept(statement));
+      expect('try {} catch (a b) {} catch (c d) {}', accept(statement));
+      expect('try {} catch (a b) {} catch (c d) {} finally {}', accept(statement));
+    });
+    test('break', () {
+      expect('break;', accept(statement));
+      expect('break a;', accept(statement));
+    });
+    test('continue', () {
+      expect('continue;', accept(statement));
+      expect('continue a;', accept(statement));
+    });
+    test('return', () {
+      expect('return;', accept(statement));
+      expect('return b;', accept(statement));
+    });
+    test('throw', () {
+      expect('throw;', accept(statement));
+      expect('throw b;', accept(statement));
+    });
+    test('expression', () {
+      expect('a;', accept(statement));
+      expect('a + b;', accept(statement));
+    });
+    test('assert', () {
+      expect('assert(a);', accept(statement));
+    });
+    test('function', () {
+      expect('a() {}', accept(statement));
+      expect('a b() {}', accept(statement));
+      expect('a() => b;', accept(statement));
+      expect('a b() => c;', accept(statement));
+    });
+    test('function arguments', () {
+      expect('a() {}', accept(statement));
+      expect('a(b) {}', accept(statement));
+      expect('a(b, c) {}', accept(statement));
+      expect('a([b]) {}', accept(statement));
+      expect('a([b, c]) {}', accept(statement));
+      expect('a(b, [c, d]) {}', accept(statement));
+      expect('a(b, c, [d, e]) {}', accept(statement));
+      expect('a([b = c]) {}', accept(statement));
+      expect('a([b = c, d = e]) {}', accept(statement));
+      expect('a(b, [c = d, e = f]) {}', accept(statement));
+      expect('a(b, c, [d = e, f = g]) {}', accept(statement));
+    });
   });
   group('whitespace', () {
     var whitespaces = definition.build(start: definition.HIDDEN).end();
