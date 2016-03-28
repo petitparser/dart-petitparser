@@ -137,8 +137,8 @@ abstract class CompositeParser extends DelegateParser {
   }
 }
 
-/// Error raised when somebody tries to modify a [CompositeParser] outside
-/// the [CompositeParser.initialize] method.
+/// Error raised when somebody tries to modify a CompositeParser outside
+/// the CompositeParser.initialize method.
 class CompletedParserError extends Error {
   CompletedParserError();
 

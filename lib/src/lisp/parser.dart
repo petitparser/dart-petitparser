@@ -13,7 +13,7 @@ class LispParserDefinition extends LispGrammarDefinition {
   cell() => super.cell().map((each) => new Cons(each[0], each[1]));
   empty() => super.empty().map((each) => null);
 
-  string() => super.string().map((each) => new String.fromCharCodes(each[1]));
+  string() => super.string().map((each) => new String.fromCharCodes(each[1] as Iterable<int>));
   characterEscape() => super.characterEscape().map((each) => each[1].codeUnitAt(0));
   characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
 

@@ -27,7 +27,7 @@ Function charTest(List<String> inputs, Parser parser) {
   };
 }
 
-final characters = new List.generate(256, (value) => new String.fromCharCode(value));
+final List<String> characters = new List.generate(256, (value) => new String.fromCharCode(value));
 
 Function stringTest(String input, Parser parser) {
   return () {
