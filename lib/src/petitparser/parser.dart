@@ -220,10 +220,11 @@ abstract class Parser {
   /// `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.
   Parser token() => new TokenParser(this);
 
-  /// Returns a parser that consumes input before and after the receiver. The
-  /// optional argument is a parser that consumes the excess input. By default
-  /// `whitespace()` is used. Two arguments can be provided to have different
-  /// parsers on the [left] and [right] side.
+  /// Returns a parser that consumes input before and after the receiver,
+  /// discards the excess input and only returns returns the result of the
+  /// receiver. The optional argument is a parser that consumes the excess
+  /// input. By default `whitespace()` is used. Up to two arguments can be
+  /// provided to have different parsers on the [left] and [right] side.
   ///
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
