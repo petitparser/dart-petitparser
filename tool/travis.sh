@@ -4,9 +4,8 @@
 set -e
 
 # Verify that the libraries are error free.
-dartanalyzer --fatal-warnings \
-  lib/*.dart \
-  test/*.dart
+dartanalyzer --fatal-warnings --strong lib/*.dart
+dartanalyzer --fatal-warnings test/*.dart
 
 # Verify that all the tests pass.
 pub run test

@@ -95,8 +95,8 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
         : mergedRanges[0];
   } else {
     return new _RangesCharPredicate(mergedRanges.length,
-        mergedRanges.map((range) => range.start).toList(growable: false),
-        mergedRanges.map((range) => range.stop).toList(growable: false));
+        mergedRanges.map((range) => range.start).toList(growable: false) as List<int>,
+        mergedRanges.map((range) => range.stop).toList(growable: false) as List<int>);
   }
 }
 
@@ -180,7 +180,7 @@ Parser _createPatternParser() {
   var multiple = any().seq(char('-')).seq(any()).map((each) =>
       new _RangeCharPredicate(_toCharCode(each[0]), _toCharCode(each[2])));
   var positive =
-      multiple.or(single).plus().map((each) => _optimizedRanges(each));
+      multiple.or(single).plus().map((each) => _optimizedRanges(each as Iterable<_RangeCharPredicate>));
   return char('^').optional().seq(positive).map((each) =>
       each[0] == null ? each[1] : new _NotCharacterPredicate(each[1]));
 }

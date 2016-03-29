@@ -41,7 +41,7 @@ class TrimmingParser extends DelegateParser {
     var current = context;
     do {
       current = _left.parseOn(current);
-    } while (current.isSuccess);
+    } while ((current as Result).isSuccess);
     var result = _delegate.parseOn(current);
     if (result.isFailure) {
       return result;
@@ -49,7 +49,7 @@ class TrimmingParser extends DelegateParser {
     current = result;
     do {
       current = _right.parseOn(current);
-    } while (current.isSuccess);
+    } while ((current as Result).isSuccess);
     return current.success(result.value);
   }
 

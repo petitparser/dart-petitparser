@@ -158,7 +158,7 @@ class ChoiceParser extends ListParser {
     return new ChoiceParser._(new List.from(parsers, growable: false));
   }
 
-  ChoiceParser._(parsers) : super(parsers);
+  ChoiceParser._(List<Parser> parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
@@ -189,7 +189,7 @@ class SequenceParser extends ListParser {
     return new SequenceParser._(new List.from(parsers, growable: false));
   }
 
-  SequenceParser._(parsers) : super(parsers);
+  SequenceParser._(List<Parser> parsers) : super(parsers);
 
   @override
   Result parseOn(Context context) {
