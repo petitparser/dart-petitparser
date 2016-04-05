@@ -82,7 +82,7 @@ void main(List<String> arguments) {
   if (interactiveMode || files.isEmpty) {
     var input = stdin
         .transform(SYSTEM_ENCODING.decoder as StreamTransformer<List<int>, String>)
-        .transform(new LineSplitter() as Converter<String, List<String>>);
+        .transform(new LineSplitter() as StreamTransformer<String, List<String>>);
     evalInteractive(lispParser, environment, input as Stream<String>, stdout, stderr);
   }
 }
