@@ -4,7 +4,7 @@
 set -e
 
 # Verify that the libraries are error free.
-dartanalyzer --fatal-warnings --strong \
+dartanalyzer --fatal-warnings \
     lib/*.dart \
     test/*.dart \
     example/**/*.dart
