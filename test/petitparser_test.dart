@@ -84,11 +84,13 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
 }
 
+@deprecated
 class PluggableCompositeParser extends CompositeParser {
   final Function _function;
 
   PluggableCompositeParser(this._function) : super();
 
+  @override
   void initialize() {
     _function(this);
   }

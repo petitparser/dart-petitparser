@@ -92,30 +92,33 @@ main() {
   group('profile', () {
     test('success', () {
       var lines = new List();
-      expect(profile(identifier, (line) => lines.add(line))
-          .parse('ab123').isSuccess, isTrue);
-      lines = lines
-          .map((row) => row.split('\t'))
-          .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
+      expect(profile(identifier, (line) => lines.add(line)).parse('ab123').isSuccess, isTrue);
       expect(lines, hasLength(4));
-      expect(lines.every((row) => row[1] >= 0), isTrue);
-      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
-      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
-      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 1);
-      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 5);
+      var splitLines = lines.map((row) => row.split('\t'));
+      var counts = splitLines.map((row) => int.parse(row[0]));
+      var times = splitLines.map((row) => int.parse(row[1]));
+      var names = splitLines.map((row) => row[2]);
+      expect(counts.every((cell) => cell >= 0), isTrue);
+      expect(times.every((cell) => cell >= 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0), isTrue);
     });
     test('failure', () {
       var lines = new List();
       expect(profile(identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
-      lines = lines
-          .map((row) => row.split('\t'))
-          .map((row) => [int.parse(row[0]), int.parse(row[1]), row[2]]);
       expect(lines, hasLength(4));
-      expect(lines.every((row) => row[1] >= 0), isTrue);
-      expect(lines.firstWhere((row) => row[2].indexOf('SequenceParser') > 0)[0], 1);
-      expect(lines.firstWhere((row) => row[2].indexOf('letter expected') > 0)[0], 1);
-      expect(lines.firstWhere((row) => row[2].indexOf('PossessiveRepeatingParser') > 0)[0], 0);
-      expect(lines.firstWhere((row) => row[2].indexOf('letter or digit expected') > 0)[0], 0);
+      var splitLines = lines.map((row) => row.split('\t'));
+      var counts = splitLines.map((row) => int.parse(row[0]));
+      var times = splitLines.map((row) => int.parse(row[1]));
+      var names = splitLines.map((row) => row[2]);
+      expect(counts.every((cell) => cell >= 0), isTrue);
+      expect(times.every((cell) => cell >= 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0), isTrue);
     });
   });
   group('progress', () {

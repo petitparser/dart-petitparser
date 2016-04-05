@@ -1,0 +1,19 @@
+analyzer:
+  strong-mode: true
+linter:
+  rules:
+    - avoid_empty_else
+    - hash_and_equals
+    - camel_case_types
+    - empty_constructor_bodies
+    - implementation_imports
+    - library_names
+    - library_prefixes
+    - package_prefixed_library_names
+    - prefer_is_not_empty
+    - slash_for_doc_comments
+    - super_goes_last
+    - type_init_formals
+    - unnecessary_brace_in_string_interp
+    - unnecessary_getters_setters
+    - package_names

@@ -5,7 +5,7 @@ part of petitparser;
 /// Note, this class is deprecated in favor of [GrammarDefinition] that provides
 /// a more flexible way to define composite parsers.
 ///
-/// To create a new composite grammar subclass [CompositeParser]. Override
+/// To create a new composite grammar subclass `CompositeParser`. Override
 /// the method [initialize] and for every production call [def] giving the
 /// production a name. The start production must be named 'start'. To refer
 /// to other productions (forward and backward) use [ref].
@@ -84,7 +84,7 @@ abstract class CompositeParser extends DelegateParser {
   }
 
   /// Convenience operator returning a reference to a production with
-  /// a [name]. See [CompositeParser.ref] for details.
+  /// a [name]. See `CompositeParser.ref` for details.
   Parser operator [](String name) => ref(name);
 
   /// Defines a production with a [name] and a [parser]. Only call this method

@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 
-main() {
+void main() {
   group('iterator', () {
     test('single', () {
       var parser1 = lowercase();
@@ -108,7 +108,7 @@ main() {
     });
     test('loop (existing)', () {
       var input = failure().settable().settable().settable();
-      input.children.single.children.single.set(input);
+      (input.children.single.children.single as SettableParser).set(input);
       var output = transformParser(input, (parser) {
         return parser;
       });
@@ -123,7 +123,7 @@ main() {
       var source = lowercase();
       var input = source;
       var target = failure().settable().settable().settable();
-      target.children.single.children.single.set(target);
+      (target.children.single.children.single as SettableParser).set(target);
       var output = transformParser(input, (parser) {
         return source.isEqualTo(parser) ? target : parser;
       });

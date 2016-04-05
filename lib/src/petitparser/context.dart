@@ -21,6 +21,7 @@ class Context {
   }
 
   /// Returns a human readable string of the current context.
+  @override
   String toString() => 'Context[${toPositionString()}]';
 
   /// Returns the line:column if the input is a string, otherwise the position.

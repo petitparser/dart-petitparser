@@ -57,8 +57,8 @@ Parser anyOf(String string, [String message]) {
 }
 
 CharacterPredicate _optimizedString(String string) {
-  var ranges =
-      string.codeUnits.map((value) => new _RangeCharPredicate(value, value));
+  var ranges = string.codeUnits
+      .map((value) => new _RangeCharPredicate(value, value));
   return _optimizedRanges(ranges);
 }
 

@@ -18,5 +18,6 @@ class Name {
   Name._internal(this._name);
 
   /// Returns the string representation of the symbolic name.
+  @override
   String toString() => _name;
 }
