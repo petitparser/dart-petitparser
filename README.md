@@ -19,6 +19,14 @@ Up-to-date [class documentation](http://www.dartdocs.org/documentation/petitpars
 Tutorial
 --------
 
+Follow the _Installing_ instructions on https://pub.dartlang.org/packages/petitparser.
+
+Import the package into your Dart code using:
+
+```dart
+import 'package:petitparser/petitparser.dart';
+```
+
 ### Writing a Simple Grammar
 
 Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits is defined as follows:
