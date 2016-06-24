@@ -29,7 +29,7 @@ void main(List<String> arguments) {
   // default options
   var standardLibrary = true;
   var interactiveMode = false;
-  var files = new List();
+  var files = new List<File>();
 
   // parse arguments
   for (var option in arguments) {
@@ -81,8 +81,8 @@ void main(List<String> arguments) {
   // process console input
   if (interactiveMode || files.isEmpty) {
     var input = stdin
-        .transform(SYSTEM_ENCODING.decoder as StreamTransformer<List<int>, String>)
-        .transform(new LineSplitter() as StreamTransformer<String, List<String>>);
-    evalInteractive(lispParser, environment, input as Stream<String>, stdout, stderr);
+        .transform(SYSTEM_ENCODING.decoder)
+        .transform(new LineSplitter());
+    evalInteractive(lispParser, environment, input, stdout, stderr);
   }
 }
