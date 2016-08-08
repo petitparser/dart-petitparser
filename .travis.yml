@@ -3,5 +3,12 @@ sudo: false
 dart:
   - stable
   - dev
+matrix:
+  allow_failures:
+  - dart: dev
+cache:
+  directories:
+    - $HOME/.pub-cache
+with_content_shell: true
 script:
   - ./tool/travis.sh
