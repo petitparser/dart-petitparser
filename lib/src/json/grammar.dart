@@ -10,7 +10,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
   const JsonGrammarDefinition();
 
   start() => ref(value).end();
-  token(p) => p.flatten().trim();
+  token(Parser p) => p.flatten().trim();
 
   array() => ref(token, char('['))
       & ref(elements).optional()
