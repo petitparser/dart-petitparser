@@ -65,8 +65,9 @@ class _Parse extends Matcher {
         return description;
       case 'matcher':
         description.add(' which parse result ');
+        var result = matchState['result'] as Result;
         var subDescription = new StringDescription();
-        matcher.describeMismatch(matchState['result'].value, subDescription,
+        matcher.describeMismatch(result.value, subDescription,
             matchState['state'], verbose);
         if (subDescription.length > 0) {
           description.add(subDescription.toString());
@@ -76,9 +77,10 @@ class _Parse extends Matcher {
         }
         return description;
       case 'position':
+        var result = matchState['result'] as Result;
         description
             .add(' that consumes input to ')
-            .add(matchState['result'].position.toString())
+            .add(result.position.toString())
             .add(' instead of ')
             .add(position.toString());
         return description;
