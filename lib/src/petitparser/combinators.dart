@@ -162,7 +162,7 @@ class ChoiceParser extends ListParser {
 
   @override
   Result parseOn(Context context) {
-    var result;
+    Result result;
     for (var i = 0; i < _parsers.length; i++) {
       result = _parsers[i].parseOn(context);
       if (result.isSuccess) {

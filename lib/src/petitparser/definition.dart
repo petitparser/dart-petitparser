@@ -69,7 +69,7 @@ abstract class GrammarDefinition {
 
   /// Internal helper to resolve a complete parser graph.
   Parser _resolve(_Reference reference) {
-    var mapping = new Map();
+    Map<Parser, _Reference> mapping = new Map();
 
     Parser _dereference(_Reference reference) {
       var parser = mapping[reference];
@@ -127,27 +127,29 @@ class _Reference extends Parser {
 
   @override
   bool operator ==(other) {
-    if (other is! _Reference ||
-        other.function != function ||
-        other.arguments.length != arguments.length) {
-      return false;
-    }
-    for (var i = 0; i < arguments.length; i++) {
-      var a = arguments[i],
-          b = other.arguments[i];
-      if (a is Parser && a is! _Reference && b is Parser && b is! _Reference) {
-        // for parsers do a deep equality check
-        if (!a.isEqualTo(b)) {
-          return false;
-        }
-      } else {
-        // for everything else just do standard equality
-        if (a != b) {
-          return false;
+    if (other is _Reference) {
+      if (other.function != function ||
+          other.arguments.length != arguments.length) {
+        return false;
+      }
+      for (var i = 0; i < arguments.length; i++) {
+        var a = arguments[i],
+            b = other.arguments[i];
+        if (a is Parser && a is! _Reference && b is Parser && b is! _Reference) {
+          // for parsers do a deep equality check
+          if (!a.isEqualTo(b)) {
+            return false;
+          }
+        } else {
+          // for everything else just do standard equality
+          if (a != b) {
+            return false;
+          }
         }
       }
+      return true;
     }
-    return true;
+    return false;
   }
 
   @override

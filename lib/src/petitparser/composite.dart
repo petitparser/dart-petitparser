@@ -119,8 +119,7 @@ abstract class CompositeParser extends DelegateParser {
     } else if (!_defined.containsKey(name)) {
       throw new UndefinedProductionError(name);
     } else {
-      _defined[name] =
-          replacement is Parser ? replacement : replacement(_defined[name]);
+      _defined[name] = replacement is Parser ? replacement : replacement(_defined[name]);
     }
   }
 
@@ -133,7 +132,7 @@ abstract class CompositeParser extends DelegateParser {
   ///
   ///     action('list', (list) => list.length);
   void action(String name, Function function) {
-    redef(name, (parser) => parser.map(function));
+    redef(name, (Parser parser) => parser.map(function));
   }
 }
 

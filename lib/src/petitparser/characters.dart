@@ -65,7 +65,7 @@ CharacterPredicate _optimizedString(String string) {
 CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
 
   // 1. sort the ranges
-  var sortedRanges = new List.from(ranges, growable: false);
+  List<_RangeCharPredicate> sortedRanges = new List.from(ranges, growable: false);
   sortedRanges.sort((first, second) {
     return first.start != second.start
         ? first.start - second.start
@@ -73,7 +73,7 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
   });
 
   // 2. merge adjacent or overlapping ranges
-  var mergedRanges = new List();
+  List<_RangeCharPredicate> mergedRanges = new List();
   for (var thisRange in sortedRanges) {
     if (mergedRanges.isEmpty) {
       mergedRanges.add(thisRange);
@@ -95,8 +95,8 @@ CharacterPredicate _optimizedRanges(Iterable<_RangeCharPredicate> ranges) {
         : mergedRanges[0];
   } else {
     return new _RangesCharPredicate(mergedRanges.length,
-        mergedRanges.map((range) => range.start).toList(growable: false) as List<int>,
-        mergedRanges.map((range) => range.stop).toList(growable: false) as List<int>);
+        mergedRanges.map((range) => range.start).toList(growable: false),
+        mergedRanges.map((range) => range.stop).toList(growable: false));
   }
 }
 
@@ -147,8 +147,7 @@ class _LetterCharPredicate implements CharacterPredicate {
   const _LetterCharPredicate();
 
   @override
-  bool test(int value) =>
-      (65 <= value && value <= 90) || (97 <= value && value <= 122);
+  bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
 }
 
 const _letterCharPredicate = const _LetterCharPredicate();
@@ -311,7 +310,7 @@ class _WordCharPredicate implements CharacterPredicate {
 const _wordCharPredicate = const _WordCharPredicate();
 
 // internal converter for character codes
-int _toCharCode(element) {
+int _toCharCode(Object element) {
   if (element is num) {
     return element.round();
   }
