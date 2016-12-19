@@ -25,15 +25,21 @@ void main() {
     });
     test('Cons', () {
       var cell = new Cons(1, 2);
+      expect(cell.car, 1);
       expect(cell.head, 1);
-      expect(cell.tail, 2);
-      cell.head = 3;
+      expect(cell.cdr, 2);
+      expect(() => cell.tail, throws);
+      cell.car = 3;
+      expect(cell.car, 3);
       expect(cell.head, 3);
-      expect(cell.tail, 2);
-      cell.tail = new Cons(4, 5);
+      expect(cell.cdr, 2);
+      expect(() => cell.tail, throws);
+      cell.cdr = new Cons(4, 5);
+      expect(cell.car, 3);
       expect(cell.head, 3);
+      expect(cell.tail.car, 4);
       expect(cell.tail.head, 4);
-      expect(cell.tail.tail, 5);
+      expect(cell.tail.cdr, 5);
       expect(cell == cell, isTrue);
       expect(cell.hashCode, isNonZero);
       expect(cell.toString(), '(3 4 . 5)');
@@ -325,6 +331,10 @@ void main() {
     });
     test('Cons', () {
       expect(exec('(cons 1 2)'), new Cons(1, 2));
+      expect(exec('(cons 1 null)'), new Cons(1, null));
+      expect(exec('(cons null 2)'), new Cons(null, 2));
+      expect(exec('(cons null null)'), new Cons(null, null));
+      expect(exec('(cons 1 (cons 2 (cons 3 null)))'), new Cons(1, new Cons(2, new Cons(3))));
     });
     test('Car', () {
       expect(exec('(car null)'), isNull);

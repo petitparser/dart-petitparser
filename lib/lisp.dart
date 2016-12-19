@@ -30,7 +30,7 @@ eval(Environment env, expr) {
 }
 
 /// Evaluate a cons of instructions.
-evalList(Environment env, expr) {
+evalList(Environment env, Cons expr) {
   var result = null;
   while (expr is Cons) {
     result = eval(env, expr.head);

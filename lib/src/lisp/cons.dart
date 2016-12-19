@@ -3,22 +3,36 @@ part of petitparser.lisp;
 /// The basic data structure of LISP.
 class Cons {
 
-  /// The head of the cons.
-  dynamic head;
+  /// The first object.
+  Object car;
 
-  /// The tail of the cons.
-  dynamic tail;
+  /// The head of the cons.
+  Object get head => this.car;
+
+  /// The second object.
+  Object cdr;
+
+  /// The tail of the cons, if applicable.
+  Cons get tail {
+    if (cdr is Cons) {
+      return cdr as Cons;
+    } else if (cdr == null) {
+      return null;
+    } else {
+      throw new StateError('${toString()} does not have a tail.');
+    }
+  }
 
   /// Constructs a cons.
-  Cons(this.head, this.tail);
+  Cons(this.car, [this.cdr]);
 
   @override
   bool operator ==(other) {
-    return other is Cons && head == other.head && tail == other.tail;
+    return other is Cons && car == other.car && cdr == other.cdr;
   }
 
   @override
-  int get hashCode => 31 * head.hashCode + tail.hashCode;
+  int get hashCode => 31 * car.hashCode + cdr.hashCode;
 
   @override
   String toString() {
@@ -26,8 +40,8 @@ class Cons {
     buffer.write('(');
     var current = this;
     while (current is Cons) {
-      buffer.write(current.head.toString());
-      current = current.tail;
+      buffer.write(current.car.toString());
+      current = current.cdr;
       if (current != null) {
         buffer.write(' ');
       }
