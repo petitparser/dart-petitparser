@@ -19,9 +19,9 @@ part of petitparser.debug;
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser profile(Parser root, [OutputHandler output = print]) {
-  var count = new Map();
-  var watch = new Map();
-  var parsers = new List();
+  Map<Parser, int> count = new Map();
+  Map<Parser, Stopwatch> watch = new Map();
+  List<Parser> parsers = new List();
   return new ContinuationParser(transformParser(root, (parser) {
     parsers.add(parser);
     return new ContinuationParser(parser, (continuation, context) {
