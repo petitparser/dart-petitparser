@@ -27,7 +27,7 @@ void main() {
   var output = querySelector('#output') as TextAreaElement;
 
   querySelector('#evaluate').onClick.listen((event) {
-    var result = evalString(lispParser, environment, input.value);
+    Object result = evalString(lispParser, environment, input.value);
     output.value = result.toString();
     inspector(querySelector('#inspector'), environment);
   });
