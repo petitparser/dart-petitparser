@@ -12,9 +12,12 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   // build special token objects
   token(input) {
     if (input is String) {
-      input = input.length == 1 ? char(input) : string(input);
+      return token(input.length == 1 ? char(input) : string(input));
+    } else if (input is Parser) {
+      return input.token().trim(ref(spacer));
+    } else {
+      throw new ArgumentError('Invalid token parser: $input');
     }
-    return input.token().trim(ref(spacer));
   }
 
   // the original implementation uses a handwritten parser to
