@@ -151,7 +151,12 @@ main() {
       expectSuccess(parser, '123', '123');
       expectSuccess(parser, '1234', '1234');
     });
-    test('token() on string', () {
+    test('flatten() on list', () {
+      var parser = any().plus().flatten();
+      var flatten = parser.parse([1, 2, 3]).value;
+      expect(flatten, [1, 2, 3]);
+    });
+    test('token()', () {
       var parser = digit().plus().token();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
