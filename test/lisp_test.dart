@@ -28,12 +28,12 @@ void main() {
       expect(cell.car, 1);
       expect(cell.head, 1);
       expect(cell.cdr, 2);
-      expect(() => cell.tail, throws);
+      expect(() => cell.tail, throwsStateError);
       cell.car = 3;
       expect(cell.car, 3);
       expect(cell.head, 3);
       expect(cell.cdr, 2);
-      expect(() => cell.tail, throws);
+      expect(() => cell.tail, throwsStateError);
       cell.cdr = new Cons(4, 5);
       expect(cell.car, 3);
       expect(cell.head, 3);
@@ -191,8 +191,8 @@ void main() {
       expect(exec('(set! a (+ 1 2)) (+ a 1)', env), 4);
     });
     test('Set! (undefined)', () {
-      expect(() => exec('(set! a 1)'), throws);
-      expect(() => standard[new Name('a')], throws);
+      expect(() => exec('(set! a 1)'), throwsArgumentError);
+      expect(() => standard[new Name('a')], throwsArgumentError);
     });
     test('If', () {
       expect(exec('(if true)'), isNull);

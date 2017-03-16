@@ -1442,9 +1442,9 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.def('other', char('b')), throws);
-      expect(() => parser.redef('start', char('b')), throws);
-      expect(() => parser.action('start', (each) => each), throws);
+      expect(() => parser.def('other', char('b')), throwsA((e) => e is CompletedParserError));
+      expect(() => parser.redef('start', char('b')), throwsA((e) => e is CompletedParserError));
+      expect(() => parser.action('start', (each) => each), throwsA((e) => e is CompletedParserError));
     });
     test('reference completed', () {
       var parsers = {
@@ -1485,12 +1485,16 @@ main() {
       });
     });
     test('undefined start', () {
-      expect(() => new PluggableCompositeParser((self) {}), throws);
+      expect(
+          () => new PluggableCompositeParser((self) {}),
+          throwsA((e) => e is UndefinedProductionError));
     });
     test('undefined redef', () {
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
-        expect(() => self.redef('star1', char('b')), throws);
+        expect(
+            () => self.redef('star1', char('b')),
+            throwsA((e) => e is UndefinedProductionError));
       });
     });
     test('example (lambda)', () {
