@@ -77,14 +77,15 @@ abstract class GrammarDefinition {
         var references = [reference];
         parser = reference.resolve();
         while (parser is _Reference) {
-          if (references.contains(parser)) {
+          var otherReference = parser as _Reference;
+          if (references.contains(otherReference)) {
             throw new StateError('Recursive references detected: $references');
           }
-          references.add(parser);
-          parser = (parser as _Reference).resolve();
+          references.add(otherReference);
+          parser = otherReference.resolve();
         }
-        for (var each in references) {
-          mapping[each] = parser;
+        for (var otherReference in references) {
+          mapping[otherReference] = parser;
         }
       }
       return parser;
