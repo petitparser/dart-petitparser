@@ -59,7 +59,7 @@ const jsonEvent = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancela
 
 // All benchmarks
 
-final benchmarks = {
+final Map<String, Function> benchmarks = {
 
   // char tests
   "any()": charTest(characters, any()),
