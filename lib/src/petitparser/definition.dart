@@ -69,7 +69,7 @@ abstract class GrammarDefinition {
 
   /// Internal helper to resolve a complete parser graph.
   Parser _resolve(_Reference reference) {
-    Map<Parser, _Reference> mapping = new Map();
+    Map<_Reference, Parser> mapping = new Map();
 
     Parser _dereference(_Reference reference) {
       var parser = mapping[reference];
@@ -81,7 +81,7 @@ abstract class GrammarDefinition {
             throw new StateError('Recursive references detected: $references');
           }
           references.add(parser);
-          parser = parser.resolve();
+          parser = (parser as _Reference).resolve();
         }
         for (var each in references) {
           mapping[each] = parser;
