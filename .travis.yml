@@ -9,6 +9,5 @@ matrix:
 cache:
   directories:
     - $HOME/.pub-cache
-with_content_shell: true
 script:
   - ./tool/travis.sh
