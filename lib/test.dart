@@ -13,7 +13,7 @@
 library petitparser.test_util;
 
 import 'package:matcher/matcher.dart';
-import 'package:petitparser/petitparser.dart' hide predicate;
+import 'package:petitparser/petitparser.dart';
 
 /// Returns a matcher that succeeds if the [parser] accepts the input.
 Matcher accept(Parser parser) {
