@@ -1,8 +1,27 @@
-part of petitparser;
+library petitparser.core.parser;
+
+import 'package:petitparser/src/core/actions/action.dart';
+import 'package:petitparser/src/core/actions/flatten.dart';
+import 'package:petitparser/src/core/actions/token.dart';
+import 'package:petitparser/src/core/actions/trimming.dart';
+import 'package:petitparser/src/core/characters/whitespace.dart';
+import 'package:petitparser/src/core/combinators/and.dart';
+import 'package:petitparser/src/core/combinators/choice.dart';
+import 'package:petitparser/src/core/combinators/eof.dart';
+import 'package:petitparser/src/core/combinators/not.dart';
+import 'package:petitparser/src/core/combinators/optional.dart';
+import 'package:petitparser/src/core/combinators/sequence.dart';
+import 'package:petitparser/src/core/contexts/context.dart';
+import 'package:petitparser/src/core/contexts/result.dart';
+import 'package:petitparser/src/core/parsers/settable.dart';
+import 'package:petitparser/src/core/predicates/any.dart';
+import 'package:petitparser/src/core/repeaters/greedy.dart';
+import 'package:petitparser/src/core/repeaters/lazy.dart';
+import 'package:petitparser/src/core/repeaters/possesive.dart';
+import 'package:petitparser/src/core/repeaters/unbounded.dart';
 
 /// Abstract base class of all parsers.
 abstract class Parser {
-
   /// Primitive method doing the actual parsing.
   ///
   /// The method is overridden in concrete subclasses to implement the
@@ -23,17 +42,13 @@ abstract class Parser {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Result.position] is `0` and [Failure.message] is
   /// ['letter expected'].
-  Result parse(input) {
-    return parseOn(new Context(input, 0));
-  }
+  Result parse(input) => parseOn(new Context(input, 0));
 
   /// Tests if the [input] can be successfully parsed.
   ///
   /// For example, `letter().plus().accept('abc')` returns `true`, and
   /// `letter().plus().accept('123')` returns `false`.
-  bool accept(input) {
-    return parse(input).isSuccess;
-  }
+  bool accept(input) => parse(input).isSuccess;
 
   /// Returns a list of all successful overlapping parses of the [input].
   ///
@@ -42,12 +57,7 @@ abstract class Parser {
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
   Iterable matches(input) {
     var list = new List();
-    and()
-        .map((each) => list.add(each))
-        .seq(any())
-        .or(any())
-        .star()
-        .parse(input);
+    and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
@@ -315,9 +325,7 @@ abstract class Parser {
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators &&
-          optionalSeparatorAtEnd &&
-          !identical(list[2], separator)) {
+      if (includeSeparators && optionalSeparatorAtEnd && !identical(list[2], separator)) {
         result.add(list[2]);
       }
       return result;
@@ -359,8 +367,7 @@ abstract class Parser {
   /// Normally this method does not need to be overridden, as this method works
   /// generically on the returned [Parser#children].
   bool hasEqualChildren(Parser other, Set<Parser> seen) {
-    var thisChildren = children,
-        otherChildren = other.children;
+    var thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
     }

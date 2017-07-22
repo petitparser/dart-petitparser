@@ -1,4 +1,7 @@
-part of petitparser;
+library petitparser.core.token;
+
+import 'package:petitparser/src/core/characters/char.dart';
+import 'package:petitparser/src/core/parser.dart';
 
 /// A token represents a parsed part of the input stream.
 ///
@@ -6,7 +9,6 @@ part of petitparser;
 /// and the start and stop position in the input buffer. It provides many
 /// convenience methods to access the state of the token.
 class Token {
-
   /// The parsed value of the token.
   final value;
 
@@ -24,9 +26,7 @@ class Token {
   const Token(this.value, this.buffer, this.start, this.stop);
 
   /// The consumed input of the token.
-  get input => buffer is String
-      ? buffer.substring(start, stop)
-      : buffer.sublist(start, stop);
+  get input => buffer is String ? buffer.substring(start, stop) : buffer.sublist(start, stop);
 
   /// The length of the token.
   int get length => stop - start;
@@ -42,10 +42,7 @@ class Token {
 
   @override
   bool operator ==(other) {
-    return other is Token
-        && value == other.value
-        && start == other.start
-        && stop == other.stop;
+    return other is Token && value == other.value && start == other.start && stop == other.stop;
   }
 
   @override

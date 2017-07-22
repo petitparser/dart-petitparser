@@ -1,4 +1,9 @@
-part of petitparser;
+library petitparser.core.expression;
+
+import 'package:petitparser/src/core/combinators/choice.dart';
+import 'package:petitparser/src/core/combinators/sequence.dart';
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/core/parsers/failure.dart';
 
 /// A builder that allows the simple definition of expression grammars with
 /// prefix, postfix, and left- and right-associative infix operators.
@@ -59,13 +64,11 @@ class ExpressionBuilder {
 
   /// Builds the expression parser.
   Parser build() => _groups.fold(
-      failure('Highest priority group should define a primitive parser.'),
-      (a, b) => b._build(a));
+      failure('Highest priority group should define a primitive parser.'), (a, b) => b._build(a));
 }
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
-
   /// Defines a new primitive or literal [parser].
   void primitive(Parser parser) {
     _primitives.add(parser);
@@ -90,8 +93,7 @@ class ExpressionGroup {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([_buildChoice(_prefix).star(), inner]).map(
-          (tuple) {
+      return new SequenceParser([_buildChoice(_prefix).star(), inner]).map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           return result.action(result.operator, value);
         });
@@ -114,8 +116,7 @@ class ExpressionGroup {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([inner, _buildChoice(_postfix).star()]).map(
-          (tuple) {
+      return new SequenceParser([inner, _buildChoice(_postfix).star()]).map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           return result.action(value, result.operator);
         });
@@ -141,8 +142,7 @@ class ExpressionGroup {
       return inner.separatedBy(_buildChoice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
-          result =
-              sequence[i].action(sequence[i - 1], sequence[i].operator, result);
+          result = sequence[i].action(sequence[i - 1], sequence[i].operator, result);
         }
         return result;
       });
@@ -167,8 +167,7 @@ class ExpressionGroup {
       return inner.separatedBy(_buildChoice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
-          result =
-              sequence[i].action(result, sequence[i].operator, sequence[i + 1]);
+          result = sequence[i].action(result, sequence[i].operator, sequence[i + 1]);
         }
         return result;
       });

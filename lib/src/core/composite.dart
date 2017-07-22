@@ -1,4 +1,9 @@
-part of petitparser;
+library petitparser.core.composite;
+
+import 'package:petitparser/src/core/combinators/delegate.dart';
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/core/parsers/failure.dart';
+import 'package:petitparser/src/core/parsers/settable.dart';
 
 /// Helper to compose complex grammars from various primitive parsers.
 ///
@@ -51,7 +56,7 @@ abstract class CompositeParser extends DelegateParser {
 
   /// Internal method to complete the grammar.
   void _complete() {
-    _delegate = ref('start');
+    delegate = ref('start');
     _undefined.forEach((name, parser) {
       if (!_defined.containsKey(name)) {
         throw new UndefinedProductionError(name);
@@ -60,7 +65,7 @@ abstract class CompositeParser extends DelegateParser {
     });
     _undefined.clear();
     _completed = true;
-    _delegate = ref('start');
+    delegate = ref('start');
   }
 
   /// Returns a reference to a production with a [name].

@@ -1,4 +1,9 @@
-part of petitparser;
+library petitparser.core.definition;
+
+import 'package:petitparser/src/core/combinators/delegate.dart';
+import 'package:petitparser/src/core/contexts/context.dart';
+import 'package:petitparser/src/core/contexts/result.dart';
+import 'package:petitparser/src/core/parser.dart';
 
 /// Helper to conveniently define and build complex, recursive grammars using
 /// plain Dart code.
@@ -63,8 +68,7 @@ abstract class GrammarDefinition {
   /// The optional [start] reference specifies a different starting production into
   /// the grammar. The optional [arguments] list parametrizes the called production.
   Parser build({Function start: null, List arguments: const []}) {
-    return _resolve(
-        new _Reference(start != null ? start : this.start, arguments));
+    return _resolve(new _Reference(start != null ? start : this.start, arguments));
   }
 
   /// Internal helper to resolve a complete parser graph.
@@ -129,13 +133,11 @@ class _Reference extends Parser {
   @override
   bool operator ==(other) {
     if (other is _Reference) {
-      if (other.function != function ||
-          other.arguments.length != arguments.length) {
+      if (other.function != function || other.arguments.length != arguments.length) {
         return false;
       }
       for (var i = 0; i < arguments.length; i++) {
-        var a = arguments[i],
-            b = other.arguments[i];
+        var a = arguments[i], b = other.arguments[i];
         if (a is Parser && a is! _Reference && b is Parser && b is! _Reference) {
           // for parsers do a deep equality check
           if (!a.isEqualTo(b)) {
