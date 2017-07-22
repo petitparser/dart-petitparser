@@ -1,13 +1,14 @@
-part of petitparser.lisp;
+library petitparser.example.lisp.environment;
+
+import 'name.dart';
 
 /// Environment of bindings.
 class Environment {
-
   /// The owning environment.
   final Environment _owner;
 
   /// The internal environment bindings.
-  final Map<Name, dynamic> _bindings;
+  final Map<Name, Object> _bindings;
 
   /// Constructor for the nested environment.
   Environment([this._owner]) : _bindings = new Map();
@@ -16,7 +17,7 @@ class Environment {
   Environment create() => new Environment(this);
 
   /// Return the binding for [key].
-  operator [](Name key) {
+  Object operator [](Name key) {
     if (_bindings.containsKey(key)) {
       return _bindings[key];
     } else if (_owner != null) {
@@ -38,7 +39,7 @@ class Environment {
   }
 
   /// Defines a new binding from [key] to [value].
-  define(Name key, value) {
+  define(Name key, Object value) {
     return _bindings[key] = value;
   }
 

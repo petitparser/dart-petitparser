@@ -1,10 +1,9 @@
-part of petitparser.lisp;
+library petitparser.example.lisp.name;
 
 /// An unique symbolic name.
 class Name {
-
   /// The interned symbols.
-  static final Map<String, Name> _interned = new HashMap();
+  static final Map<String, Name> _interned = new Map();
 
   /// Factory for new symbol cells.
   factory Name(String name) {

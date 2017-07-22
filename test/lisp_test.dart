@@ -1,12 +1,12 @@
 library petitparser.test.lisp_test;
 
-import 'package:petitparser/lisp.dart';
 import 'package:test/test.dart';
 
+import '../example/lisp/lisp.dart';
+
 void main() {
-  var root = new Environment();
-  var native = Natives.import(root);
-  var standard = Standard.import(native.create());
+  var native = new NativeEnvironment();
+  var standard = new StandardEnvironment(native);
 
   dynamic exec(String value, [Environment env]) {
     return evalString(lispParser, env != null ? env : standard.create(), value);

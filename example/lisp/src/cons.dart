@@ -1,8 +1,7 @@
-part of petitparser.lisp;
+library petitparser.example.lisp.cons;
 
 /// The basic data structure of LISP.
 class Cons {
-
   /// The first object.
   Object car;
 
@@ -40,7 +39,7 @@ class Cons {
     buffer.write('(');
     var current = this;
     while (current is Cons) {
-      buffer.write(current.car.toString());
+      buffer.write(current.car);
       current = current.cdr;
       if (current != null) {
         buffer.write(' ');

@@ -1,51 +1,50 @@
-part of petitparser.lisp;
+library petitparser.example.lisp.native;
 
-/// The native functions.
-class Natives {
+import 'cons.dart';
+import 'environment.dart';
+import 'evaluator.dart';
+import 'name.dart';
 
-  /// Imports the native functions into the [environment].
-  static Environment import(Environment environment) {
-
+class NativeEnvironment extends Environment {
+  NativeEnvironment([Environment owner]) : super(owner) {
     // basic functions
-    environment.define(new Name('define'), _define);
-    environment.define(new Name('lambda'), _lambda);
-    environment.define(new Name('quote'), _quote);
-    environment.define(new Name('eval'), _eval);
-    environment.define(new Name('apply'), _apply);
-    environment.define(new Name('let'), _let);
-    environment.define(new Name('set!'), _set);
-    environment.define(new Name('print'), _print);
+    define(new Name('define'), _define);
+    define(new Name('lambda'), _lambda);
+    define(new Name('quote'), _quote);
+    define(new Name('eval'), _eval);
+    define(new Name('apply'), _apply);
+    define(new Name('let'), _let);
+    define(new Name('set!'), _set);
+    define(new Name('print'), _print);
 
     // control structures
-    environment.define(new Name('if'), _if);
-    environment.define(new Name('while'), _while);
-    environment.define(new Name('and'), _and);
-    environment.define(new Name('or'), _or);
-    environment.define(new Name('not'), _not);
+    define(new Name('if'), _if);
+    define(new Name('while'), _while);
+    define(new Name('and'), _and);
+    define(new Name('or'), _or);
+    define(new Name('not'), _not);
 
     // arithmetic operators
-    environment.define(new Name('+'), _plus);
-    environment.define(new Name('-'), _minus);
-    environment.define(new Name('*'), _multiply);
-    environment.define(new Name('/'), _divide);
-    environment.define(new Name('%'), _modulo);
+    define(new Name('+'), _plus);
+    define(new Name('-'), _minus);
+    define(new Name('*'), _multiply);
+    define(new Name('/'), _divide);
+    define(new Name('%'), _modulo);
 
     // arithmetic comparators
-    environment.define(new Name('<'), _smaller);
-    environment.define(new Name('<='), _smallerOrEqual);
-    environment.define(new Name('='), _equal);
-    environment.define(new Name('!='), _notEqual);
-    environment.define(new Name('>'), _larger);
-    environment.define(new Name('>='), _largerOrEqual);
+    define(new Name('<'), _smaller);
+    define(new Name('<='), _smallerOrEqual);
+    define(new Name('='), _equal);
+    define(new Name('!='), _notEqual);
+    define(new Name('>'), _larger);
+    define(new Name('>='), _largerOrEqual);
 
     // list operators
-    environment.define(new Name('cons'), _cons);
-    environment.define(new Name('car'), _car);
-    environment.define(new Name('car!'), _carSet);
-    environment.define(new Name('cdr'), _cdr);
-    environment.define(new Name('cdr!'), _cdrSet);
-
-    return environment;
+    define(new Name('cons'), _cons);
+    define(new Name('car'), _car);
+    define(new Name('car!'), _carSet);
+    define(new Name('cdr'), _cdr);
+    define(new Name('cdr!'), _cdrSet);
   }
 
   static _define(Environment env, Cons args) {
@@ -84,7 +83,8 @@ class Natives {
   }
 
   static _apply(Environment env, Cons args) {
-    return eval(env, args.head)(env.create(), args.tail);
+    var fun = eval(env, args.head);
+    return fun(env.create(), args.tail);
   }
 
   static _let(Environment env, Cons args) {
@@ -159,74 +159,86 @@ class Natives {
   }
 
   static _plus(Environment env, Cons args) {
-    var value = eval(env, args.head);
+    var value = eval(env, args.head) as num;
     for (args = args.tail; args != null; args = args.tail) {
-      value += eval(env, args.head);
+      value += eval(env, args.head) as num;;
     }
     return value;
   }
 
   static _minus(Environment env, Cons args) {
-    var value = eval(env, args.head);
+    var value = eval(env, args.head) as num;
     if (args.tail == null) {
       return -value;
     }
     for (args = args.tail; args != null; args = args.tail) {
-      value -= eval(env, args.head);
+      value -= eval(env, args.head) as num;
     }
     return value;
   }
 
   static _multiply(Environment env, Cons args) {
-    var value = eval(env, args.head);
+    var value = eval(env, args.head) as num;
     for (args = args.tail; args != null; args = args.tail) {
-      value *= eval(env, args.head);
+      value *= eval(env, args.head) as num;
     }
     return value;
   }
 
   static _divide(Environment env, Cons args) {
-    var value = eval(env, args.head);
+    var value = eval(env, args.head) as num;
     for (args = args.tail; args != null; args = args.tail) {
-      value /= eval(env, args.head);
+      value /= eval(env, args.head) as num;
     }
     return value;
   }
 
   static _modulo(Environment env, Cons args) {
-    var value = eval(env, args.head);
+    var value = eval(env, args.head) as num;
     for (args = args.tail; args != null; args = args.tail) {
-      value %= eval(env, args.head);
+      value %= eval(env, args.head) as num;
     }
     return value;
   }
 
   static _smaller(Environment env, Cons args) {
-    return eval(env, args.head) < eval(env, args.tail.head);
+    var a = eval(env, args.head) as num;
+    var b = eval(env, args.tail.head) as num;
+    return a < b;
   }
 
   static _smallerOrEqual(Environment env, Cons args) {
-    return eval(env, args.head) <= eval(env, args.tail.head);
+    var a = eval(env, args.head) as num;
+    var b = eval(env, args.tail.head) as num;
+    return a <= b;
   }
 
   static _equal(Environment env, Cons args) {
-    return eval(env, args.head) == eval(env, args.tail.head);
+    var a = eval(env, args.head);
+    var b = eval(env, args.tail.head);
+    return a == b;
   }
 
   static _notEqual(Environment env, Cons args) {
-    return eval(env, args.head) != eval(env, args.tail.head);
+    var a = eval(env, args.head);
+    var b = eval(env, args.tail.head);
+    return a != b;
   }
 
   static _larger(Environment env, Cons args) {
-    return eval(env, args.head) > eval(env, args.tail.head);
+    var a = eval(env, args.head) as num;
+    var b = eval(env, args.tail.head) as num;
+    return a > b;
   }
 
   static _largerOrEqual(Environment env, Cons args) {
-    return eval(env, args.head) >= eval(env, args.tail.head);
+    var a = eval(env, args.head) as num;
+    var b = eval(env, args.tail.head) as num;
+    return a >= b;
   }
 
   static _cons(Environment env, Cons args) {
-    return new Cons(eval(env, args.head),  eval(env, args.tail.head));
+    return new Cons(eval(env, args.head), eval(env, args.tail.head));
   }
 
   static _car(Environment env, Cons args) {

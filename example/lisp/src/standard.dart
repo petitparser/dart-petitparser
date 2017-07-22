@@ -1,12 +1,14 @@
-part of petitparser.lisp;
+library petitparser.example.lisp.standard;
+
+import 'environment.dart';
+import 'evaluator.dart';
+import 'parser.dart';
 
 /// The standard library.
-class Standard {
-
+class StandardEnvironment extends Environment {
   /// Imports the standard library into the [environment].
-  static Environment import(Environment environment) {
-    evalString(lispParser, environment, _standardLibrary);
-    return environment;
+  StandardEnvironment(Environment owner) : super(owner) {
+    evalString(lispParser, this, _standardLibrary);
   }
 
   /// A simple standard library, should be moved to external file.

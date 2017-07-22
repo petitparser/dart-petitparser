@@ -2,7 +2,7 @@ library petitparser.example.lispweb;
 
 import 'dart:html';
 
-import 'package:petitparser/lisp.dart';
+import '../lisp/lisp.dart';
 
 void inspector(Element element, Environment environment) {
   var result = '';
@@ -19,9 +19,8 @@ void inspector(Element element, Environment environment) {
 }
 
 void main() {
-  var root = new Environment();
-  var native = Natives.import(root);
-  var standard = Standard.import(native.create());
+  var root = new NativeEnvironment();
+  var standard = new StandardEnvironment(root);
   var environment = standard.create();
 
   var input = querySelector('#input') as TextAreaElement;
