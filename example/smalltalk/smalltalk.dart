@@ -1,8 +1,7 @@
 /// This package contains the complete grammar of Smalltalk.
 ///
 /// It was automatically exported from PetitParser for Smalltalk.
-library petitparser.smalltalk;
+library petitparser.example.smalltalk;
 
-import 'petitparser.dart';
-
-part 'src/smalltalk/grammar.dart';
+export 'src/grammar.dart';
+export 'src/parser.dart';
