@@ -1,9 +1,8 @@
 library petitparser.test.reflection_test;
 
-import 'package:test/test.dart';
-
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('iterator', () {

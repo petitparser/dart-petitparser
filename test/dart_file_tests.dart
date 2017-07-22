@@ -5,10 +5,9 @@ library petitparser.test.dart_file_test;
 
 import 'dart:io';
 
-import 'package:test/test.dart';
-
 import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
+import 'package:test/test.dart';
 
 void generateTests(DartGrammar dart, String title, Directory root) {
   group(title, () {

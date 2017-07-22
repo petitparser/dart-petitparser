@@ -1,8 +1,7 @@
 library petitparser.test.lisp_test;
 
-import 'package:test/test.dart';
-
 import 'package:petitparser/lisp.dart';
+import 'package:test/test.dart';
 
 void main() {
   var root = new Environment();

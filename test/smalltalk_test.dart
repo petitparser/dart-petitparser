@@ -1,8 +1,7 @@
 library petitparser.test.smalltalk_test;
 
-import 'package:test/test.dart';
-
 import 'package:petitparser/smalltalk.dart';
+import 'package:test/test.dart';
 
 var definition = new SmalltalkGrammarDefinition();
 

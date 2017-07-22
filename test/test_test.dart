@@ -1,9 +1,8 @@
 library petitparser.test.test_test;
 
-import 'package:test/test.dart';
-
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/test.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('accept', () {

@@ -12,6 +12,7 @@
 library petitparser.json;
 
 import 'dart:collection';
+
 import 'petitparser.dart';
 
 part 'src/json/grammar.dart';

@@ -1,9 +1,8 @@
 library petitparser.test.debug_test;
 
-import 'package:test/test.dart';
-
-import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/debug.dart';
+import 'package:petitparser/petitparser.dart';
+import 'package:test/test.dart';
 
 final identifier = letter() & word().star();
 

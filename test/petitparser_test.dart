@@ -1,9 +1,9 @@
 library petitparser.test.core_test;
 
 import 'dart:math' as math;
-import 'package:test/test.dart' hide anyOf;
 
 import 'package:petitparser/petitparser.dart';
+import 'package:test/test.dart' hide anyOf;
 
 void expectSuccess(Parser parser, dynamic input, dynamic expected,
     [int position]) {
