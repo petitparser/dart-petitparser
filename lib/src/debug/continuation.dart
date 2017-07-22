@@ -1,8 +1,12 @@
-part of petitparser.debug;
+library petitparser.debug.continuation;
+
+import 'package:petitparser/src/core/combinators/delegate.dart';
+import 'package:petitparser/src/core/contexts/context.dart';
+import 'package:petitparser/src/core/contexts/result.dart';
+import 'package:petitparser/src/core/parser.dart';
 
 /// Handler function for the [ContinuationParser].
-typedef Result ContinuationHandler(
-    Result continuation(Context context), Context context);
+typedef Result ContinuationHandler(Result continuation(Context context), Context context);
 
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.
@@ -26,7 +30,7 @@ typedef Result ContinuationHandler(
 class ContinuationParser extends DelegateParser {
   final ContinuationHandler handler;
 
-  ContinuationParser(parser, this.handler) : super(parser);
+  ContinuationParser(Parser delegate, this.handler) : super(delegate);
 
   @override
   Result parseOn(Context context) {
@@ -34,5 +38,5 @@ class ContinuationParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new ContinuationParser(children[0], handler);
+  Parser copy() => new ContinuationParser(delegate, handler);
 }

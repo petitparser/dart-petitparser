@@ -1,4 +1,9 @@
-part of petitparser.debug;
+library petitparser.debug.progress;
+
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/debug/continuation.dart';
+import 'package:petitparser/src/debug/output.dart';
+import 'package:petitparser/src/reflection/transform.dart';
 
 /// Returns a transformed [parser] that when being used to read input
 /// visually prints its progress while progressing.
@@ -23,7 +28,7 @@ part of petitparser.debug;
 Parser progress(Parser parser, [OutputHandler output = print]) {
   return transformParser(parser, (each) {
     return new ContinuationParser(each, (continuation, context) {
-      output('${_repeat(1 + context.position, '*')} $each');
+      output('${repeat(1 + context.position, '*')} $each');
       return continuation(context);
     });
   });

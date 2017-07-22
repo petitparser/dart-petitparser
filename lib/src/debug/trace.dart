@@ -1,4 +1,9 @@
-part of petitparser.debug;
+library petitparser.debug.trace;
+
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/debug/continuation.dart';
+import 'package:petitparser/src/debug/output.dart';
+import 'package:petitparser/src/reflection/transform.dart';
 
 /// Returns a transformed [parser] that when being used to read input prints a
 /// trace of all activated parsers and their respective parse results.
@@ -28,11 +33,11 @@ Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
     return new ContinuationParser(each, (continuation, context) {
-      output('${_repeat(level, '  ')}$each');
+      output('${repeat(level, '  ')}$each');
       level++;
       var result = continuation(context);
       level--;
-      output('${_repeat(level, '  ')}$result');
+      output('${repeat(level, '  ')}$result');
       return result;
     });
   });

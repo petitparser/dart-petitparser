@@ -1,4 +1,7 @@
-part of petitparser.reflection;
+library petitparser.reflection.transform;
+
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/reflection/iterable.dart';
 
 /// A function transforming one parser to another one.
 typedef Parser TransformationHandler(Parser parser);

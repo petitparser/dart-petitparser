@@ -1,4 +1,9 @@
-part of petitparser.debug;
+library petitparser.debug.profile;
+
+import 'package:petitparser/src/core/parser.dart';
+import 'package:petitparser/src/debug/continuation.dart';
+import 'package:petitparser/src/debug/output.dart';
+import 'package:petitparser/src/reflection/transform.dart';
 
 /// Returns a transformed [parser] that when being used measures
 /// the activation count and total time of each parser.
@@ -22,16 +27,17 @@ Parser profile(Parser root, [OutputHandler output = print]) {
   Map<Parser, int> count = new Map();
   Map<Parser, Stopwatch> watch = new Map();
   List<Parser> parsers = new List();
-  return new ContinuationParser(transformParser(root, (parser) {
-    parsers.add(parser);
-    return new ContinuationParser(parser, (continuation, context) {
-      count[parser]++;
-      watch[parser].start();
-      var result = continuation(context);
-      watch[parser].stop();
-      return result;
-    });
-  }), (continuation, context) {
+  return new ContinuationParser(
+      transformParser(root, (parser) {
+        parsers.add(parser);
+        return new ContinuationParser(parser, (continuation, context) {
+          count[parser]++;
+          watch[parser].start();
+          var result = continuation(context);
+          watch[parser].stop();
+          return result;
+        });
+      }), (continuation, context) {
     parsers.forEach((parser) {
       count[parser] = 0;
       watch[parser] = new Stopwatch();

@@ -1,4 +1,8 @@
-part of petitparser.reflection;
+library petitparser.reflection.iterable;
+
+import 'dart:collection';
+
+import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a lazy iterable over all parsers reachable from a [root].
 ///
@@ -10,22 +14,22 @@ part of petitparser.reflection;
 ///       print(each);
 ///     });
 ///
-Iterable<Parser> allParser(Parser root) => new _ParserIterable(root);
+Iterable<Parser> allParser(Parser root) => new ParserIterable(root);
 
-class _ParserIterable extends IterableBase<Parser> {
+class ParserIterable extends IterableBase<Parser> {
   final Parser root;
 
-  _ParserIterable(this.root);
+  ParserIterable(this.root);
 
   @override
-  Iterator<Parser> get iterator => new _ParserIterator([root]);
+  Iterator<Parser> get iterator => new ParserIterator([root]);
 }
 
-class _ParserIterator implements Iterator<Parser> {
+class ParserIterator implements Iterator<Parser> {
   final List<Parser> todo;
   final Set<Parser> seen;
 
-  _ParserIterator(Iterable<Parser> roots)
+  ParserIterator(Iterable<Parser> roots)
       : todo = new List.from(roots),
         seen = new Set.from(roots);
 
