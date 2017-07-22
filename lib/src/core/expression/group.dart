@@ -1,71 +1,9 @@
-library petitparser.core.expression;
+library petitparser.core.expression.group;
 
 import 'package:petitparser/src/core/combinators/choice.dart';
 import 'package:petitparser/src/core/combinators/sequence.dart';
+import 'package:petitparser/src/core/expression/result.dart';
 import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/parsers/failure.dart';
-
-/// A builder that allows the simple definition of expression grammars with
-/// prefix, postfix, and left- and right-associative infix operators.
-///
-/// The following code creates the empty expression builder:
-///
-///     var builder = new ExpressionBuilder();
-///
-/// Then we define the operator-groups in descending precedence. The highest
-/// precedence have the literal numbers themselves:
-///
-///     builder.group()
-///       ..primitive(digit().plus()
-///         .seq(char('.').seq(digit().plus()).optional())
-///         .flatten().trim().map((a) => double.parse(a)));
-///
-/// Then come the normal arithmetic operators. Note, that the action blocks receive
-/// both, the terms and the parsed operator in the order they appear in the parsed
-/// input.
-///
-///     // negation is a prefix operator
-///     builder.group()
-///       ..prefix(char('-').trim(), (op, a) => -a);
-///
-///     // power is right-associative
-///     builder.group()
-///       ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
-///
-///     // multiplication and addition is left-associative
-///     builder.group()
-///       ..left(char('*').trim(), (a, op, b) => a * b)
-///       ..left(char('/').trim(), (a, op, b) => a / b);
-///     builder.group()
-///       ..left(char('+').trim(), (a, op, b) => a + b)
-///       ..left(char('-').trim(), (a, op, b) => a - b);
-///
-/// Finally we can build the parser:
-///
-///     var parser = builder.build();
-///
-/// After executing the above code we get an efficient parser that correctly
-/// evaluates expressions like:
-///
-///     parser.parse('-8');      // -8
-///     parser.parse('1+2*3');   // 7
-///     parser.parse('1*2+3');   // 5
-///     parser.parse('8/4/2');   // 2
-///     parser.parse('2^2^3');   // 256
-class ExpressionBuilder {
-  final List<ExpressionGroup> _groups = new List();
-
-  /// Creates a new group of operators that share the same priority.
-  ExpressionGroup group() {
-    var group = new ExpressionGroup();
-    _groups.add(group);
-    return group;
-  }
-
-  /// Builds the expression parser.
-  Parser build() => _groups.fold(
-      failure('Highest priority group should define a primitive parser.'), (a, b) => b._build(a));
-}
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
@@ -86,7 +24,7 @@ class ExpressionGroup {
     if (action == null) {
       action = (operator, value) => [operator, value];
     }
-    _prefix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _prefix.add(parser.map((operator) => new ExpressionResult(operator, action)));
   }
 
   Parser _buildPrefix(Parser inner) {
@@ -109,7 +47,7 @@ class ExpressionGroup {
     if (action == null) {
       action = (value, operator) => [value, operator];
     }
-    _postfix.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _postfix.add(parser.map((operator) => new ExpressionResult(operator, action)));
   }
 
   Parser _buildPostfix(Parser inner) {
@@ -132,7 +70,7 @@ class ExpressionGroup {
     if (action == null) {
       action = (left, operator, right) => [left, operator, right];
     }
-    _right.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _right.add(parser.map((operator) => new ExpressionResult(operator, action)));
   }
 
   Parser _buildRight(Parser inner) {
@@ -157,7 +95,7 @@ class ExpressionGroup {
     if (action == null) {
       action = (left, operator, right) => [left, operator, right];
     }
-    _left.add(parser.map((operator) => new _ExpressionResult(operator, action)));
+    _left.add(parser.map((operator) => new ExpressionResult(operator, action)));
   }
 
   Parser _buildLeft(Parser inner) {
@@ -188,14 +126,7 @@ class ExpressionGroup {
   }
 
   // helper to build the group of parsers
-  Parser _build(Parser inner) {
+  Parser build(Parser inner) {
     return _buildLeft(_buildRight(_buildPostfix(_buildPrefix(_buildPrimitive(inner)))));
   }
-}
-
-// helper class to associate operators and actions
-class _ExpressionResult {
-  final operator;
-  final Function action;
-  _ExpressionResult(this.operator, this.action);
 }

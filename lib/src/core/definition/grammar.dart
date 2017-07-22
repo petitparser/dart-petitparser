@@ -1,8 +1,6 @@
-library petitparser.core.definition;
+library petitparser.core.definition.grammar;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
+import 'package:petitparser/src/core/definition/reference.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Helper to conveniently define and build complex, recursive grammars using
@@ -60,7 +58,7 @@ abstract class GrammarDefinition {
     var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
-    return new _Reference(function, arguments);
+    return new Reference(function, arguments);
   }
 
   /// Builds a composite parser from this definition.
@@ -68,20 +66,20 @@ abstract class GrammarDefinition {
   /// The optional [start] reference specifies a different starting production into
   /// the grammar. The optional [arguments] list parametrizes the called production.
   Parser build({Function start: null, List arguments: const []}) {
-    return _resolve(new _Reference(start != null ? start : this.start, arguments));
+    return _resolve(new Reference(start != null ? start : this.start, arguments));
   }
 
   /// Internal helper to resolve a complete parser graph.
-  Parser _resolve(_Reference reference) {
-    Map<_Reference, Parser> mapping = new Map();
+  Parser _resolve(Reference reference) {
+    Map<Reference, Parser> mapping = new Map();
 
-    Parser _dereference(_Reference reference) {
+    Parser _dereference(Reference reference) {
       var parser = mapping[reference];
       if (parser == null) {
         var references = [reference];
         parser = reference.resolve();
-        while (parser is _Reference) {
-          var otherReference = parser as _Reference;
+        while (parser is Reference) {
+          var otherReference = parser as Reference;
           if (references.contains(otherReference)) {
             throw new StateError('Recursive references detected: $references');
           }
@@ -101,7 +99,7 @@ abstract class GrammarDefinition {
     while (todo.isNotEmpty) {
       var parent = todo.removeLast();
       for (var child in parent.children) {
-        if (child is _Reference) {
+        if (child is Reference) {
           var referenced = _dereference(child);
           parent.replace(child, referenced);
           child = referenced;
@@ -115,52 +113,4 @@ abstract class GrammarDefinition {
 
     return mapping[reference];
   }
-}
-
-/// A helper to build a parser from a {@link GrammarDefinition}.
-class GrammarParser extends DelegateParser {
-  GrammarParser(GrammarDefinition definition) : super(definition.build());
-}
-
-class _Reference extends Parser {
-  final Function function;
-  final List arguments;
-
-  _Reference(this.function, this.arguments);
-
-  Parser resolve() => Function.apply(function, arguments);
-
-  @override
-  bool operator ==(other) {
-    if (other is _Reference) {
-      if (other.function != function || other.arguments.length != arguments.length) {
-        return false;
-      }
-      for (var i = 0; i < arguments.length; i++) {
-        var a = arguments[i], b = other.arguments[i];
-        if (a is Parser && a is! _Reference && b is Parser && b is! _Reference) {
-          // for parsers do a deep equality check
-          if (!a.isEqualTo(b)) {
-            return false;
-          }
-        } else {
-          // for everything else just do standard equality
-          if (a != b) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
-  @override
-  int get hashCode => function.hashCode;
-
-  @override
-  Parser copy() => throw new UnsupportedError('References cannot be copied.');
-
-  @override
-  Result parseOn(Context context) => throw new UnsupportedError('References cannot be parsed.');
 }
