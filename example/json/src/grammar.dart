@@ -1,8 +1,10 @@
-part of petitparser.json;
+library petitparser.example.json.grammar;
+
+import 'package:petitparser/petitparser.dart';
 
 /// JSON grammar.
 class JsonGrammar extends GrammarParser {
-  JsonGrammar() : super(const JsonGrammarDefinition());
+  JsonGrammar() : super(new JsonGrammarDefinition());
 }
 
 /// JSON grammar definition.

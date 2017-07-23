@@ -1,8 +1,12 @@
-part of petitparser.json;
+library petitparser.example.json.parser;
+
+import 'package:petitparser/petitparser.dart';
+
+import 'grammar.dart';
 
 /// JSON parser.
 class JsonParser extends GrammarParser {
-  JsonParser() : super(const JsonParserDefinition());
+  JsonParser() : super(new JsonParserDefinition());
 }
 
 /// JSON parser definition.
@@ -11,7 +15,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
 
   array() => super.array().map((each) => each[1] != null ? each[1] : new List());
   object() => super.object().map((each) {
-    var result = new LinkedHashMap();
+    var result = new Map();
     if (each[1] != null) {
       for (var element in each[1]) {
         result[element[0]] = element[2];

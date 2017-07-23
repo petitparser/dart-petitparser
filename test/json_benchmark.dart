@@ -2,7 +2,7 @@ library petitparser.test.json_benchmark;
 
 import 'dart:convert';
 
-import 'package:petitparser/json.dart';
+import '../example/json/json.dart';
 
 double benchmark(Function function, [int warmup = 1000, int milliseconds = 5000]) {
   var count = 0;

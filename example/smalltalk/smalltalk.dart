@@ -4,4 +4,3 @@
 library petitparser.example.smalltalk;
 
 export 'src/grammar.dart';
-export 'src/parser.dart';
