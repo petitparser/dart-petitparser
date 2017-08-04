@@ -1,3 +1,27 @@
+# Changelog
+
+## 1.6.0
+
+* Migrate to micro libraries.
+* Move Smalltalk, Json, Dart and Lisp grammars to examples.
+
+## 1.5.5
+
+* Strict typing fixes.
+
+## 1.5.4
+
+* Fix analyzer warnings.
+* Fix package dependencies.
+
+## 1.5.3
+
+* Dev compiler support.
+
+## 1.5.2
+
+* Enable strong mode.
+
 ## 1.5.1
 
 * Improve the Dart parser and add more tests.
