@@ -1,4 +1,4 @@
-library petitparser.core.characters.any_of;
+library petitparser.core.characters.optimize;
 
 import 'package:petitparser/src/core/characters/char.dart';
 import 'package:petitparser/src/core/characters/predicate.dart';
