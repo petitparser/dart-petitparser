@@ -30,7 +30,7 @@
 
 * Update documentation to match the style guide.
 * Change library names.
-* Add optimizations and tests for the Dart language grammer.
+* Add optimizations and tests for the Dart language grammar.
 * Improve comments.
 * Better error-handling and primitives for Lisp command line app.
 * Fix unicode parsing in the JSON parser.

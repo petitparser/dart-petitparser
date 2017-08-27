@@ -4,11 +4,11 @@ import 'dart:convert';
 
 import '../example/json/json.dart';
 
-double benchmark(Function function, [int warmup = 1000, int milliseconds = 5000]) {
+double benchmark(Function function, [int warmUp = 1000, int milliseconds = 5000]) {
   var count = 0;
   var elapsed = 0;
   var watch = new Stopwatch();
-  while (warmup-- > 0) {
+  while (warmUp-- > 0) {
     function();
   }
   watch.start();
