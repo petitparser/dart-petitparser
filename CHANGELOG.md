@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1
+
+* Fix bug with duplicated package name.
+* Update documentation.
+
 ## 1.6.0
 
 * Migrate to micro libraries.
