@@ -15,34 +15,43 @@ class WhitespaceCharPredicate implements CharacterPredicate {
   @override
   bool test(int value) {
     if (value < 256) {
-      return value == 0x09 ||
-          value == 0x0A ||
-          value == 0x0B ||
-          value == 0x0C ||
-          value == 0x0D ||
-          value == 0x20 ||
-          value == 0x85 ||
-          value == 0xA0;
+      switch (value) {
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 32:
+        case 133:
+        case 160:
+          return true;
+        default:
+          return false;
+      }
     } else {
-      return value == 0x1680 ||
-          value == 0x180E ||
-          value == 0x2000 ||
-          value == 0x2001 ||
-          value == 0x2002 ||
-          value == 0x2003 ||
-          value == 0x2004 ||
-          value == 0x2005 ||
-          value == 0x2006 ||
-          value == 0x2007 ||
-          value == 0x2008 ||
-          value == 0x2009 ||
-          value == 0x200A ||
-          value == 0x2028 ||
-          value == 0x2029 ||
-          value == 0x202F ||
-          value == 0x205F ||
-          value == 0x3000 ||
-          value == 0xFEFF;
+      switch (value) {
+        case 5760:
+        case 8192:
+        case 8193:
+        case 8194:
+        case 8195:
+        case 8196:
+        case 8197:
+        case 8198:
+        case 8199:
+        case 8200:
+        case 8201:
+        case 8202:
+        case 8232:
+        case 8233:
+        case 8239:
+        case 8287:
+        case 12288:
+        case 65279:
+          return true;
+        default:
+          return false;
+      }
     }
   }
 }
