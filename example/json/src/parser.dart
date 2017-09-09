@@ -13,7 +13,7 @@ class JsonParser extends GrammarParser {
 class JsonParserDefinition extends JsonGrammarDefinition {
   const JsonParserDefinition();
 
-  array() => super.array().map((each) => each[1] != null ? each[1] : new List());
+  array() => super.array().map((each) => each[1] ?? new List());
   object() => super.object().map((each) {
     var result = new Map();
     if (each[1] != null) {

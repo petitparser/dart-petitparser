@@ -11,7 +11,7 @@ void expectSuccess(Parser parser, dynamic input, dynamic expected,
   expect(result.isSuccess, isTrue);
   expect(result.isFailure, isFalse);
   expect(result.value, expected);
-  expect(result.position, position != null ? position : input.length);
+  expect(result.position, position ?? input.length);
 }
 
 void expectFailure(Parser parser, dynamic input,

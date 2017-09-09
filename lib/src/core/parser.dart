@@ -239,9 +239,7 @@ abstract class Parser {
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
   Parser trim([Parser left, Parser right]) {
-    if (left == null) left = whitespace();
-    if (right == null) right = left;
-    return new TrimmingParser(this, left, right);
+    return new TrimmingParser(this, left ??= whitespace(), right ??= left);
   }
 
   /// Returns a parser that succeeds only if the receiver consumes the complete
@@ -343,9 +341,7 @@ abstract class Parser {
   /// refer to other parsers. This code is supposed to be overridden by parsers
   /// that add other state.
   bool isEqualTo(Parser other, [Set<Parser> seen]) {
-    if (seen == null) {
-      seen = new Set();
-    }
+    seen ??= new Set();
     if (this == other || seen.contains(this)) {
       return true;
     }

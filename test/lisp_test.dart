@@ -9,7 +9,7 @@ void main() {
   var standard = new StandardEnvironment(native);
 
   dynamic exec(String value, [Environment env]) {
-    return evalString(lispParser, env != null ? env : standard.create(), value);
+    return evalString(lispParser, env ?? standard.create(), value);
   }
 
   group('Cell', () {
