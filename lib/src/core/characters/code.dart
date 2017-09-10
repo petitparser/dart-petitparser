@@ -19,7 +19,6 @@ String toReadableString(Object element) {
     for (var i = 0; i < element.length; i++) {
       buffer.write(toReadableString(element[i]));
     }
-    print(buffer.toString());
     return buffer.toString();
   }
   var code = toCharCode(element);
