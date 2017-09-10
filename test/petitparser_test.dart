@@ -691,6 +691,9 @@ main() {
       expectFailure(parser, 'c', 0, '[^a-c] expected');
       expectFailure(parser, '');
     });
+    test('pattern() with error', () {
+      expect(() => pattern('c-a'), throwsArgumentError);
+    });
     test('range()', () {
       var parser = range('e', 'o');
       expectSuccess(parser, 'e', 'e');
@@ -699,6 +702,7 @@ main() {
       expectFailure(parser, 'p', 0, 'e..o expected');
       expectFailure(parser, 'd', 0, 'e..o expected');
       expectFailure(parser, '');
+      expect(() => range('o', 'e'), throwsArgumentError);
     });
     test('uppercase()', () {
       var parser = uppercase();
@@ -999,11 +1003,11 @@ main() {
       expectSuccess(quoted, '"abc"x', '"abc"', 5);
     });
     test('invalid string', () {
-      expectFailure(quoted, '"', 1, '""" expected');
-      expectFailure(quoted, '"a', 2, '""" expected');
-      expectFailure(quoted, '"ab', 3, '""" expected');
-      expectFailure(quoted, 'a"', 0, '""" expected');
-      expectFailure(quoted, 'ab"', 0, '""" expected');
+      expectFailure(quoted, '"', 1, '"\\"" expected');
+      expectFailure(quoted, '"a', 2, '"\\"" expected');
+      expectFailure(quoted, '"ab', 3, '"\\"" expected');
+      expectFailure(quoted, 'a"', 0, '"\\"" expected');
+      expectFailure(quoted, 'ab"', 0, '"\\"" expected');
     });
     test('return statement', () {
       expectSuccess(keyword, 'return f', 'f');
@@ -1020,7 +1024,7 @@ main() {
     test('invalid statement', () {
       expectFailure(keyword, 'retur f', 0, 'return expected');
       expectFailure(keyword, 'return1', 6, 'whitespace expected');
-      expectFailure(keyword, 'return  _', 8, '""" expected');
+      expectFailure(keyword, 'return  _', 8, '"\\"" expected');
     });
     test('javadoc', () {
       expectSuccess(javadoc, '/** foo */', '/** foo */');

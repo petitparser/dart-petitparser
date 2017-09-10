@@ -8,7 +8,7 @@ import 'package:petitparser/src/core/parser.dart';
 /// Returns a parser that accepts a specific character only.
 Parser char(Object char, [String message]) {
   return new CharacterParser(
-      new SingleCharPredicate(toCharCode(char)), message ?? '"$char" expected');
+      new SingleCharPredicate(toCharCode(char)), message ?? '"${toReadableString(char)}" expected');
 }
 
 class SingleCharPredicate implements CharacterPredicate {

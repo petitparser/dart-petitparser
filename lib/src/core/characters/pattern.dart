@@ -11,7 +11,8 @@ import 'package:petitparser/src/core/predicates/any.dart';
 
 /// Returns a parser that accepts the given character class pattern.
 Parser pattern(String element, [String message]) {
-  return new CharacterParser(_patternParser.parse(element).value, message ?? '[$element] expected');
+  return new CharacterParser(
+      _patternParser.parse(element).value, message ?? '[${toReadableString(element)}] expected');
 }
 
 Parser _createPatternParser() {
