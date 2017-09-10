@@ -9,14 +9,18 @@ import 'package:petitparser/src/core/parser.dart';
 /// between [start] and [stop].
 Parser range(Object start, Object stop, [String message]) {
   return new CharacterParser(new RangeCharPredicate(toCharCode(start), toCharCode(stop)),
-      message ?? '$start..$stop expected');
+      message ?? '${toReadableString(start)}..${toReadableString(stop)} expected');
 }
 
 class RangeCharPredicate implements CharacterPredicate {
   final int start;
   final int stop;
 
-  const RangeCharPredicate(this.start, this.stop);
+  RangeCharPredicate(this.start, this.stop) {
+    if (start > stop) {
+      throw new ArgumentError('Invalid range: ${start}-${stop}');
+    }
+  }
 
   @override
   bool test(int value) => start <= value && value <= stop;
