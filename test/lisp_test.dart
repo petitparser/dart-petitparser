@@ -150,6 +150,7 @@ void main() {
       expect(exec('(define (a) 4) (a)'), 4);
       expect(exec('((define (a x) x) 5)'), 5);
       expect(exec('(define (a x) x) (a 6)'), 6);
+      expect(() => exec('(define 12)'), throwsArgumentError);
     });
     test('Lambda', () {
       expect(exec('((lambda () 1) 2)'), 1);
@@ -181,6 +182,28 @@ void main() {
       expect(exec('(let ((a 1) (b 2)) b)'), 2);
       expect(exec('(let ((a 1) (b 2)) (+ a b))'), 3);
       expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
+    });
+    group('Print', () {
+      var buffer = new StringBuffer();
+      setUp(() {
+        printer = buffer.write;
+      });
+      tearDown(() {
+        printer = print;
+        buffer.clear();
+      });
+      test('empty', () {
+        expect(exec('(print)'), isNull);
+        expect(buffer.toString(), isEmpty);
+      });
+      test('elements', () {
+        expect(exec('(print 1 2 3)'), isNull);
+        expect(buffer.toString(), '123');
+      });
+      test('expression', () {
+        expect(exec('(print (+ 1 2) " " (+ 3 4))'), isNull);
+        expect(buffer.toString(), '3 7');
+      });
     });
     test('Set!', () {
       var env = standard.create();
@@ -410,9 +433,9 @@ void main() {
     test('Fibonacci', () {
       var env = standard.create();
       exec('(define (fib n)'
-          '  (if (<= n 1)'
-          '    1'
-          '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
+           '  (if (<= n 1)'
+           '    1'
+           '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
       expect(exec('(fib 0)', env), 1);
       expect(exec('(fib 1)', env), 1);
       expect(exec('(fib 2)', env), 2);
@@ -423,7 +446,7 @@ void main() {
     test('Closure', () {
       var env = standard.create();
       exec('(define (mul n)'
-          '  (lambda (x) (* n x)))', env);
+           '  (lambda (x) (* n x)))', env);
       expect(exec('((mul 2) 3)', env), 6);
       expect(exec('((mul 3) 4)', env), 12);
       expect(exec('((mul 4) 5)', env), 20);
@@ -431,9 +454,9 @@ void main() {
     test('Object', () {
       var env = standard.create();
       exec('(define (counter start)'
-          '  (let ((count start))'
-          '    (lambda ()'
-          '      (set! count (+ count 1)))))', env);
+           '  (let ((count start))'
+           '    (lambda ()'
+           '      (set! count (+ count 1)))))', env);
       exec('(define a (counter 10))', env);
       exec('(define b (counter 20))', env);
       expect(exec('(a)', env), 11);

@@ -108,7 +108,7 @@ class NativeEnvironment extends Environment {
       buffer.write(eval(env, args.head));
       args = args.tail;
     }
-    print(buffer);
+    printer(buffer.toString());
     return null;
   }
 
@@ -161,7 +161,7 @@ class NativeEnvironment extends Environment {
   static _plus(Environment env, Cons args) {
     var value = eval(env, args.head) as num;
     for (args = args.tail; args != null; args = args.tail) {
-      value += eval(env, args.head) as num;;
+      value += eval(env, args.head) as num;
     }
     return value;
   }
@@ -267,3 +267,9 @@ class NativeEnvironment extends Environment {
     return cons;
   }
 }
+
+/// Type of printer function to output text on the console.
+typedef void Printer(Object);
+
+/// Default printer to output text on the console.
+Printer printer = print;
