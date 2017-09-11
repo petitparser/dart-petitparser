@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import '../example/smalltalk/smalltalk.dart';
 
 var definition = new SmalltalkGrammarDefinition();
+var grammar = new SmalltalkGrammar();
 
 dynamic validate(String source, Function production) {
   var parser = definition.build(start: production).end();
@@ -13,6 +14,28 @@ dynamic validate(String source, Function production) {
 }
 
 void main() {
+  test('start', () {
+    return validate(r'''exampleWithNumber: x
+
+"A method that illustrates every part of Smalltalk method syntax
+except primitives. It has unary, binary, and keyword messages,
+declares arguments and temporaries, accesses a global variable
+(but not and instance variable), uses literals (array, character,
+symbol, string, integer, float), uses the pseudo variables
+true false, nil, self, and super, and has sequence, assignment,
+return and cascade. It has both zero argument and one argument blocks."	
+
+    |y|
+    true & false not & (nil isNil) ifFalse: [self halt].
+    y := self size + super size.
+    #($a #a "a" 1 1.0)
+        do: [:each | Transcript show: (each class name);
+                                 show: ' '].
+    ^ x < y''', definition.start);
+  });
+  test('token', () {
+    expect(() => definition.token(123), throwsArgumentError);
+  });
   test('testArray1', () {
     return validate('{}', definition.array);
   });
