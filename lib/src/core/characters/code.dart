@@ -23,20 +23,18 @@ String toReadableString(Object element) {
   }
   var code = toCharCode(element);
   switch (code) {
-    case 0x07:
-      return '\\a'; // alert
     case 0x08:
       return '\\b'; // backspace
-    case 0x0C:
-      return '\\f'; // form feed
-    case 0x0A:
-      return '\\n'; // new line
-    case 0x0D:
-      return '\\r'; // carriage return
     case 0x09:
       return '\\t'; // horizontal tab
+    case 0x0A:
+      return '\\n'; // new line
     case 0x0B:
       return '\\v'; // vertical tab
+    case 0x0C:
+      return '\\f'; // form feed
+    case 0x0D:
+      return '\\r'; // carriage return
     case 0x22:
       return '\\"'; // double quote
     case 0x27:
@@ -45,7 +43,7 @@ String toReadableString(Object element) {
       return '\\\\'; // backslash
   }
   if (code < 0x20) {
-    return '\\x${code.toRadixString(16)}';
+    return '\\x${code.toRadixString(16).padLeft(2, '0')}';
   }
   return new String.fromCharCode(code);
 }

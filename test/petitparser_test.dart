@@ -586,6 +586,27 @@ main() {
     test('char() invalid', () {
       expect(() => char('ab'), throwsArgumentError);
     });
+    var specialChars = {
+      '\\x00': '\x00',
+      '\\b': '\b',
+      '\\t': '\t',
+      '\\n': '\n',
+      '\\v': '\v',
+      '\\f': '\f',
+      '\\r': '\r',
+      '\\"': '\"',
+      '\\\'': '\'',
+      '\\\\': '\\',
+      '☠': '\u2620',
+      ' ': ' ',
+    };
+    specialChars.forEach((key, value) {
+      test('char("${key}")', () {
+        var parser = char(value);
+        expectSuccess(parser, value, value);
+        expectFailure(parser, 'a', 0, '"$key" expected');
+      });
+    });
     test('digit()', () {
       var parser = digit();
       expectSuccess(parser, '1', '1');
