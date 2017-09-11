@@ -7,9 +7,10 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
-  /// Defines a new primitive or literal [parser].
-  void primitive(Parser parser) {
-    _primitives.add(parser);
+
+  /// Defines a new primitive or literal [parser]. Evaluates the optional [action].
+  void primitive(Parser parser, [action(value)]) {
+    _primitives.add(action != null ? parser.map(action) : parser);
   }
 
   Parser _buildPrimitive(Parser inner) {
