@@ -1209,28 +1209,30 @@ main() {
       var root = failure().settable();
       var builder = new ExpressionBuilder();
       builder.group()
-        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))..primitive(
-          digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim().map((a) =>
-              double.parse(a)));
+        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+        ..primitive(
+            digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
+            action((a) => double.parse(a)),
+        );
       builder.group()
         ..prefix(char('-').trim(), action((op, a) => -a));
       builder.group()
-        ..postfix(string('++').trim(), action((a, op) => ++a))..postfix(
-          string('--').trim(), action((a, op) => --a));
+        ..postfix(string('++').trim(), action((a, op) => ++a))
+        ..postfix(string('--').trim(), action((a, op) => --a));
       builder.group()
         ..right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
       builder.group()
-        ..left(char('*').trim(), action((a, op, b) => a * b))..left(
-          char('/').trim(), action((a, op, b) => a / b));
+        ..left(char('*').trim(), action((a, op, b) => a * b))
+        ..left(char('/').trim(), action((a, op, b) => a / b));
       builder.group()
-        ..left(char('+').trim(), action((a, op, b) => a + b))..left(
-          char('-').trim(), action((a, op, b) => a - b));
+        ..left(char('+').trim(), action((a, op, b) => a + b))
+        ..left(char('-').trim(), action((a, op, b) => a - b));
       root.set(builder.build());
       return root.end();
     }
     var epsilon = 1e-5;
-    var evaluator = build(attachAction: true);
     var parser = build(attachAction: false);
+    var evaluator = build(attachAction: true);
     test('number', () {
       expect(evaluator
           .parse('0')
@@ -1265,10 +1267,10 @@ main() {
     test('number parse', () {
       expect(parser
           .parse('0')
-          .value, 0);
+          .value, '0');
       expect(parser
           .parse('-1')
-          .value, ['-', 1]);
+          .value, ['-', '1']);
     });
     test('add', () {
       expect(evaluator
@@ -1310,7 +1312,7 @@ main() {
     test('add parse', () {
       expect(parser
           .parse('1 + 2 + 3')
-          .value, [[1, '+', 2], '+', 3]);
+          .value, [['1', '+', '2'], '+', '3']);
     });
     test('sub', () {
       expect(evaluator
@@ -1346,7 +1348,7 @@ main() {
     test('sub parse', () {
       expect(parser
           .parse('1 - 2 - 3')
-          .value, [[1, '-', 2], '-', 3]);
+          .value, [['1', '-', '2'], '-', '3']);
     });
     test('mul', () {
       expect(evaluator
@@ -1373,7 +1375,7 @@ main() {
     test('mul parse', () {
       expect(parser
           .parse('1 * 2 * 3')
-          .value, [[1, '*', 2], '*', 3]);
+          .value, [['1', '*', '2'], '*', '3']);
     });
     test('div', () {
       expect(evaluator
@@ -1400,7 +1402,7 @@ main() {
     test('mul parse', () {
       expect(parser
           .parse('1 / 2 / 3')
-          .value, [[1, '/', 2], '/', 3]);
+          .value, [['1', '/', '2'], '/', '3']);
     });
     test('pow', () {
       expect(evaluator
@@ -1430,7 +1432,7 @@ main() {
     test('pow parse', () {
       expect(parser
           .parse('1 ^ 2 ^ 3')
-          .value, [1, '^', [2, '^', 3]]);
+          .value, ['1', '^', ['2', '^', '3']]);
     });
     test('parens', () {
       expect(evaluator
@@ -1475,10 +1477,10 @@ main() {
     test('priority parse', () {
       expect(parser
           .parse('2 * 3 + 4')
-          .value, [[2.0, '*', 3.0], '+', 4.0]);
+          .value, [['2', '*', '3'], '+', '4']);
       expect(parser
           .parse('2 + 3 * 4')
-          .value, [2.0, '+', [3.0, '*', 4.0]]);
+          .value, ['2', '+', ['3', '*', '4']]);
     });
     test('postfix add', () {
       expect(evaluator
@@ -1500,6 +1502,26 @@ main() {
           .parse('0+++++++1')
           .value, closeTo(4, epsilon));
     });
+    test('postfix add parse', () {
+      expect(parser
+          .parse('0++')
+          .value, ['0', '++']);
+      expect(parser
+          .parse('0++++')
+          .value, [['0', '++'], '++']);
+      expect(parser
+          .parse('0++++++')
+          .value, [[['0', '++'], '++'], '++']);
+      expect(parser
+          .parse('0+++1')
+          .value, [['0', '++'], '+', '1']);
+      expect(parser
+          .parse('0+++++1')
+          .value, [[['0', '++'], '++'], '+', '1']);
+      expect(parser
+          .parse('0+++++++1')
+          .value, [[[['0', '++'], '++'], '++'], '+', '1']);
+    });
     test('postfix sub', () {
       expect(evaluator
           .parse('1--')
@@ -1520,7 +1542,27 @@ main() {
           .parse('4-------1')
           .value, closeTo(0, epsilon));
     });
-    test('prefix negate', () {
+    test('postfix sub parse', () {
+      expect(parser
+          .parse('0--')
+          .value, ['0', '--']);
+      expect(parser
+          .parse('0----')
+          .value, [['0', '--'], '--']);
+      expect(parser
+          .parse('0------')
+          .value, [[['0', '--'], '--'], '--']);
+      expect(parser
+          .parse('0---1')
+          .value, [['0', '--'], '-', '1']);
+      expect(parser
+          .parse('0-----1')
+          .value, [[['0', '--'], '--'], '-', '1']);
+      expect(parser
+          .parse('0-------1')
+          .value, [[[['0', '--'], '--'], '--'], '-', '1']);
+    });
+    test('negate', () {
       expect(evaluator
           .parse('1')
           .value, closeTo(1, epsilon));
@@ -1533,6 +1575,20 @@ main() {
       expect(evaluator
           .parse('---1')
           .value, closeTo(-1, epsilon));
+    });
+    test('negate parse', () {
+      expect(parser
+          .parse('1')
+          .value, '1');
+      expect(parser
+          .parse('-1')
+          .value, ['-', '1']);
+      expect(parser
+          .parse('--1')
+          .value, ['-', ['-', '1']]);
+      expect(parser
+          .parse('---1')
+          .value, ['-', ['-', ['-', '1']]]);
     });
   });
   group('tutorial', () {
