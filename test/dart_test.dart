@@ -8,6 +8,13 @@ import '../example/dart/dart.dart';
 void main() {
   var definition = new DartGrammarDefinition();
   var dart = new DartGrammar();
+  group('helpers', () {
+    test('token', () {
+      expect(() => definition.token(dart.token()), throwsArgumentError);
+      expect(() => definition.token(dart.trim()), throwsArgumentError);
+      expect(() => definition.token(12345), throwsArgumentError);
+    });
+  });
   group('directives', () {
     test('hashbang', () {
       expect('#!/bin/dart\n', accept(dart));

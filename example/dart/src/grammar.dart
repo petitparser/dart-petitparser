@@ -16,8 +16,8 @@ class DartGrammarDefinition extends GrammarDefinition {
     } else if (input is Function) {
       input = ref(input);
     }
-    if (input is! Parser && input is TrimmingParser) {
-      throw new StateError('Invalid token parser: $input');
+    if (input is! Parser || input is TrimmingParser || input is TokenParser) {
+      throw new ArgumentError('Invalid token parser: $input');
     }
     return input.token().trim(ref(HIDDEN_STUFF));
   }
