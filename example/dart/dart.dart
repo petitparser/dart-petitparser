@@ -2,8 +2,6 @@
 ///
 /// The grammar is adapted from [https://code.google.com/p/dart/source/browse/branches/bleeding_edge/dart/language/grammar/Dart.g].
 /// Unfortunately, it is unable to parse all valid Dart programs yet.
-library petitparser.dart;
+library petitparser.example.dart;
 
-import 'petitparser.dart';
-
-part 'src/dart/grammar.dart';
+export 'src/grammar.dart';

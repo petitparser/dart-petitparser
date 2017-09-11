@@ -1,8 +1,9 @@
 library petitparser.test.dart_test;
 
-import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
 import 'package:test/test.dart';
+
+import '../example/dart/dart.dart';
 
 void main() {
   var definition = new DartGrammarDefinition();

@@ -1,4 +1,6 @@
-part of petitparser.dart;
+library petitparser.example.dart.grammar;
+
+import 'package:petitparser/petitparser.dart';
 
 /// Dart grammar.
 class DartGrammar extends GrammarParser {

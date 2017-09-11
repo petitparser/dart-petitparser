@@ -5,9 +5,10 @@ library petitparser.test.dart_file_test;
 
 import 'dart:io';
 
-import 'package:petitparser/dart.dart';
 import 'package:petitparser/test.dart';
 import 'package:test/test.dart';
+
+import '../example/dart/dart.dart';
 
 void generateTests(DartGrammar dart, String title, Directory root) {
   group(title, () {
@@ -23,7 +24,5 @@ void generateTests(DartGrammar dart, String title, Directory root) {
 }
 
 void main() {
-  var dart = new DartGrammar();
-  generateTests(dart, 'Dart SDK', new Directory('packages'));
-  generateTests(dart, 'PetitParser', Directory.current);
+  generateTests(new DartGrammar(), 'PetitParser', Directory.current);
 }
