@@ -80,7 +80,6 @@ class DartGrammarDefinition extends GrammarDefinition {
   PART()       => ref(token, 'part');
   SET()        => ref(token, 'set');
   SHOW()       => ref(token, 'show');
-  SOURCE()     => ref(token, 'source');
   STATIC()     => ref(token, 'static');
   TYPEDEF()    => ref(token, 'typedef');
 
@@ -647,13 +646,8 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Lexical tokens.
   // -----------------------------------------------------------------
-  IDENTIFIER_NO_DOLLAR() =>
-        ref(IDENTIFIER_START_NO_DOLLAR) & ref(IDENTIFIER_PART_NO_DOLLAR).star()
-      ;
-
   IDENTIFIER() =>
-        ref(IDENTIFIER_START) & ref(IDENTIFIER_PART).star()
-      ;
+        ref(IDENTIFIER_START) & ref(IDENTIFIER_PART).star();
 
   HEX_NUMBER() =>
         string('0x') & ref(HEX_DIGIT).plus()
@@ -680,8 +674,6 @@ class DartGrammarDefinition extends GrammarDefinition {
   IDENTIFIER_START() => ref(IDENTIFIER_START_NO_DOLLAR) | char('\$');
 
   IDENTIFIER_START_NO_DOLLAR() => ref(LETTER) | char('_');
-
-  IDENTIFIER_PART_NO_DOLLAR() => ref(IDENTIFIER_START_NO_DOLLAR) | ref(DIGIT);
 
   IDENTIFIER_PART() => ref(IDENTIFIER_START) | ref(DIGIT);
 

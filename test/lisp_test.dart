@@ -57,6 +57,73 @@ void main() {
       expect(sub.keys, isEmpty);
     });
   });
+  group('Grammar', () {
+    var grammar = new LispGrammar();
+    test('Name', () {
+      var result = grammar.parse('foo').value;
+      expect(result, ['foo']);
+    });
+    test('Name for operator', () {
+      var result = grammar.parse('+').value;
+      expect(result, ['+']);
+    });
+    test('Name for special', () {
+      var result = grammar.parse('set!').value;
+      expect(result, ['set!']);
+    });
+    test('String', () {
+      var result = grammar.parse('"foo"').value;
+      expect(result, [['"', ['f', 'o', 'o'], '"']]);
+    });
+    test('String with escape', () {
+      var result = grammar.parse('"\\""').value;
+      expect(result, [['"', [['\\', '"']], '"']]);
+    });
+    test('Number integer', () {
+      var result = grammar.parse('123').value;
+      expect(result, ['123']);
+    });
+    test('Number negative integer', () {
+      var result = grammar.parse('-123').value;
+      expect(result, ['-123']);
+    });
+    test('Number positive integer', () {
+      var result = grammar.parse('+123').value;
+      expect(result, ['+123']);
+    });
+    test('Number floating', () {
+      var result = grammar.parse('123.45').value;
+      expect(result, ['123.45']);
+    });
+    test('Number floating exponential', () {
+      var result = grammar.parse('1.23e4').value;
+      expect(result, ['1.23e4']);
+    });
+    test('List empty', () {
+      var result = grammar.parse('()').value;
+      expect(result, [['(', [], ')']]);
+    });
+    test('List empty []', () {
+      var result = grammar.parse('[]').value;
+      expect(result, [['[', [], ']']]);
+    });
+    test('List empty {}', () {
+      var result = grammar.parse('{}').value;
+      expect(result, [['{', [], '}']]);
+    });
+    test('List one element', () {
+      var result = grammar.parse('(1)').value;
+      expect(result, [['(', ['1', []], ')']]);
+    });
+    test('List two elements', () {
+      var result = grammar.parse('(1 2)').value;
+      expect(result, [['(', ['1', ['2', []]], ')']]);
+    });
+    test('List three elements', () {
+      var result = grammar.parse('(+ 1 2)').value;
+      expect(result, [['(', ['+', ['1', ['2', []]]], ')']]);
+    });
+  });
   group('Parser', () {
     var definition = new LispParserDefinition();
     var atom = definition.build(start: definition.atom);

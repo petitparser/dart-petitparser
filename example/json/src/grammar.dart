@@ -44,7 +44,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
       | ref(characterUnicode);
   characterNormal() => pattern('^"\\');
   characterEscape() => char('\\')
-      & pattern(new List.from(jsonEscapeChars.keys).join());
+      & pattern(jsonEscapeChars.keys.join());
   characterUnicode() => string('\\u')
       & pattern("0-9A-Fa-f").times(4);
   numberPrimitive() => char('-').optional()
