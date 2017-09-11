@@ -826,6 +826,11 @@ main() {
       expectFailure(parser, 'f');
       expectFailure(parser, 'Fo');
     });
+    test('on list', () {
+      var parser = new PredicateParser(2, (List<int> list) => list[0] + list[1] == 3, 'sum is 3');
+      var result = parser.matches([0, 1, 2, 3, 0]);
+      expect(result, [[1, 2], [3, 0]]);
+    });
   });
   group('token', () {
     var parser = any().map((value) => value.codeUnitAt(0)).token().star();
