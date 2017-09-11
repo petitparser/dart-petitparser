@@ -1230,24 +1230,24 @@ main() {
       var root = failure().settable();
       var builder = new ExpressionBuilder();
       builder.group()
-        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
-        ..primitive(
+        .primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+        .primitive(
             digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
             action((a) => double.parse(a)),
         );
       builder.group()
-        ..prefix(char('-').trim(), action((op, a) => -a));
+        .prefix(char('-').trim(), action((op, a) => -a));
       builder.group()
-        ..postfix(string('++').trim(), action((a, op) => ++a))
-        ..postfix(string('--').trim(), action((a, op) => --a));
+        .postfix(string('++').trim(), action((a, op) => ++a))
+        .postfix(string('--').trim(), action((a, op) => --a));
       builder.group()
-        ..right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+        .right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
       builder.group()
-        ..left(char('*').trim(), action((a, op, b) => a * b))
-        ..left(char('/').trim(), action((a, op, b) => a / b));
+        .left(char('*').trim(), action((a, op, b) => a * b))
+        .left(char('/').trim(), action((a, op, b) => a / b));
       builder.group()
-        ..left(char('+').trim(), action((a, op, b) => a + b))
-        ..left(char('-').trim(), action((a, op, b) => a - b));
+        .left(char('+').trim(), action((a, op, b) => a + b))
+        .left(char('-').trim(), action((a, op, b) => a - b));
       root.set(builder.build());
       return root.end();
     }

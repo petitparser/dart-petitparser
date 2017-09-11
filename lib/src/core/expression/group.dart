@@ -9,8 +9,9 @@ import 'package:petitparser/src/core/parser.dart';
 class ExpressionGroup {
 
   /// Defines a new primitive or literal [parser]. Evaluates the optional [action].
-  void primitive(Parser parser, [action(value)]) {
+  ExpressionGroup primitive(Parser parser, [action(value)]) {
     _primitives.add(action != null ? parser.map(action) : parser);
+    return this;
   }
 
   Parser _buildPrimitive(Parser inner) {
@@ -21,11 +22,10 @@ class ExpressionGroup {
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
-  void prefix(Parser parser, [action(operator, value)]) {
-    if (action == null) {
-      action = (operator, value) => [operator, value];
-    }
+  ExpressionGroup prefix(Parser parser, [action(operator, value)]) {
+    action ??= (operator, value) => [operator, value];
     _prefix.add(parser.map((operator) => new ExpressionResult(operator, action)));
+    return this;
   }
 
   Parser _buildPrefix(Parser inner) {
@@ -44,11 +44,10 @@ class ExpressionGroup {
 
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
-  void postfix(Parser parser, [action(value, operator)]) {
-    if (action == null) {
-      action = (value, operator) => [value, operator];
-    }
+  ExpressionGroup postfix(Parser parser, [action(value, operator)]) {
+    action ??= (value, operator) => [value, operator];
     _postfix.add(parser.map((operator) => new ExpressionResult(operator, action)));
+    return this;
   }
 
   Parser _buildPostfix(Parser inner) {
@@ -67,11 +66,10 @@ class ExpressionGroup {
 
   /// Adds a right-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
-  void right(Parser parser, [action(left, operator, right)]) {
-    if (action == null) {
-      action = (left, operator, right) => [left, operator, right];
-    }
+  ExpressionGroup right(Parser parser, [action(left, operator, right)]) {
+    action ??= (left, operator, right) => [left, operator, right];
     _right.add(parser.map((operator) => new ExpressionResult(operator, action)));
+    return this;
   }
 
   Parser _buildRight(Parser inner) {
@@ -92,11 +90,10 @@ class ExpressionGroup {
 
   /// Adds a left-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
-  void left(Parser parser, [action(left, operator, right)]) {
-    if (action == null) {
-      action = (left, operator, right) => [left, operator, right];
-    }
+  ExpressionGroup left(Parser parser, [action(left, operator, right)]) {
+    action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => new ExpressionResult(operator, action)));
+    return this;
   }
 
   Parser _buildLeft(Parser inner) {
