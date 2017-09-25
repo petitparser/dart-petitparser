@@ -84,15 +84,16 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 }
 
 @deprecated
-class PluggableCompositeParser extends CompositeParser {
-  final Function _function;
+typedef void PluggableCompositeParserCallback(CompositeParser self);
 
-  PluggableCompositeParser(this._function) : super();
+@deprecated
+class PluggableCompositeParser extends CompositeParser {
+  final PluggableCompositeParserCallback _callback;
+
+  PluggableCompositeParser(this._callback) : super();
 
   @override
-  void initialize() {
-    _function(this);
-  }
+  void initialize() => _callback(this);
 }
 
 main() {
@@ -161,7 +162,7 @@ main() {
       var parser = digit().plus().token();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
-      var token = parser
+      Token token = parser
           .parse('123')
           .value;
       expect(token.value, ['1', '2', '3']);
@@ -176,7 +177,7 @@ main() {
     });
     test('token() on list', () {
       var parser = any().plus().token();
-      var token = parser
+      Token token = parser
           .parse([1, 2, 3])
           .value;
       expect(token.value, [1, 2, 3]);
@@ -833,42 +834,42 @@ main() {
     });
   });
   group('token', () {
-    var parser = any().map((value) => value.codeUnitAt(0)).token().star();
+    var parser = any().map((String value) => value.codeUnitAt(0)).token().star();
     var buffer = '1\r12\r\n123\n1234';
-    var result = parser
+    List<Token> result = parser
         .parse(buffer)
         .value;
     test('value', () {
       var expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
-      expect(result.map((token) => token.value), expected);
+      expect(result.map((Token token) => token.value), expected);
     });
     test('buffer', () {
       var expected = new List.filled(buffer.length, buffer);
-      expect(result.map((token) => token.buffer), expected);
+      expect(result.map((Token token) => token.buffer), expected);
     });
     test('start', () {
       var expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-      expect(result.map((token) => token.start), expected);
+      expect(result.map((Token token) => token.start), expected);
     });
     test('stop', () {
       var expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-      expect(result.map((token) => token.stop), expected);
+      expect(result.map((Token token) => token.stop), expected);
     });
     test('length', () {
       var expected = new List.filled(buffer.length, 1);
-      expect(result.map((token) => token.length), expected);
+      expect(result.map((Token token) => token.length), expected);
     });
     test('line', () {
       var expected = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4];
-      expect(result.map((token) => token.line), expected);
+      expect(result.map((Token token) => token.line), expected);
     });
     test('column', () {
       var expected = [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
-      expect(result.map((token) => token.column), expected);
+      expect(result.map((Token token) => token.column), expected);
     });
     test('input', () {
       var expected = ['1', '\r', '1', '2', '\r', '\n', '1', '2', '3', '\n', '1', '2', '3', '4'];
-      expect(result.map((token) => token.input), expected);
+      expect(result.map((Token token) => token.input), expected);
     });
     test('unique', () {
       expect(new Set.from(result).length, result.length);
