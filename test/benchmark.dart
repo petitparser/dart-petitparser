@@ -63,12 +63,12 @@ const jsonEvent = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancela
 final Map<String, Function> benchmarks = {
 
   // char tests
-  "any()": charTest(characters, any()),
+  'any()': charTest(characters, any()),
   "anyOf('uncopyrightable')": charTest(characters, anyOf('uncopyrightable')),
   "char('a')": charTest(characters, char('a')),
-  "digit()": charTest(characters, digit()),
-  "letter()": charTest(characters, letter()),
-  "lowercase()": charTest(characters, lowercase()),
+  'digit()': charTest(characters, digit()),
+  'letter()': charTest(characters, letter()),
+  'lowercase()': charTest(characters, lowercase()),
   "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
   "pattern('^a')": charTest(characters, pattern('^a')),
   "pattern('^a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
@@ -79,23 +79,23 @@ final Map<String, Function> benchmarks = {
   "pattern('a-z')": charTest(characters, pattern('a-z')),
   "pattern('acegik')": charTest(characters, pattern('acegik')),
   "range('a', 'z')": charTest(characters, range('a', 'z')),
-  "uppercase()": charTest(characters, uppercase()),
-  "whitespace()": charTest(characters, whitespace()),
-  "word()": charTest(characters, word()),
+  'uppercase()': charTest(characters, uppercase()),
+  'whitespace()': charTest(characters, whitespace()),
+  'word()': charTest(characters, word()),
 
   // combinator tests
-  "star()": stringTest(string, any().star()),
-  "starLazy()": stringTest(string, any().starLazy(failure())),
-  "starGreedy()": stringTest(string, any().starGreedy(failure())),
-  "plus()": stringTest(string, any().plus()),
-  "plusLazy()": stringTest(string, any().plusLazy(failure())),
-  "plusGreedy()": stringTest(string, any().plusGreedy(failure())),
-  "or()": stringTest(string, failure().or(any()).star()),
-  "seq()": stringTest(string, new SequenceParser(new List.filled(string.length, any()))),
+  'star()': stringTest(string, any().star()),
+  'starLazy()': stringTest(string, any().starLazy(failure())),
+  'starGreedy()': stringTest(string, any().starGreedy(failure())),
+  'plus()': stringTest(string, any().plus()),
+  'plusLazy()': stringTest(string, any().plusLazy(failure())),
+  'plusGreedy()': stringTest(string, any().plusGreedy(failure())),
+  'or()': stringTest(string, failure().or(any()).star()),
+  'seq()': stringTest(string, new SequenceParser(new List.filled(string.length, any()))),
 
   // json tests
-  "JSON.decode()": () => JSON.decode(jsonEvent),
-  "JsonParser()": () => json.parse(jsonEvent).value
+  'JSON.decode()': () => JSON.decode(jsonEvent),
+  'JsonParser()': () => json.parse(jsonEvent).value
 
 };
 

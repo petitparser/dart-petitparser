@@ -12,13 +12,16 @@ import 'package:petitparser/src/core/combinators/not.dart';
 import 'package:petitparser/src/core/combinators/optional.dart';
 import 'package:petitparser/src/core/combinators/sequence.dart';
 import 'package:petitparser/src/core/contexts/context.dart';
+import 'package:petitparser/src/core/contexts/failure.dart';
 import 'package:petitparser/src/core/contexts/result.dart';
+import 'package:petitparser/src/core/contexts/success.dart';
 import 'package:petitparser/src/core/parsers/settable.dart';
 import 'package:petitparser/src/core/predicates/any.dart';
 import 'package:petitparser/src/core/repeaters/greedy.dart';
 import 'package:petitparser/src/core/repeaters/lazy.dart';
 import 'package:petitparser/src/core/repeaters/possesive.dart';
 import 'package:petitparser/src/core/repeaters/unbounded.dart';
+import 'package:petitparser/src/core/token.dart';
 
 /// Abstract base class of all parsers.
 abstract class Parser {
@@ -56,7 +59,7 @@ abstract class Parser {
   /// `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
   Iterable matches(input) {
-    var list = new List();
+    var list = [];
     and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
     return list;
   }
@@ -67,7 +70,7 @@ abstract class Parser {
   /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
   /// overlapping parse results.
   Iterable matchesSkipping(input) {
-    var list = new List();
+    var list = [];
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;
   }
@@ -168,7 +171,7 @@ abstract class Parser {
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [Parser.seq] for details.
-  Parser operator &(Parser other) => this.seq(other);
+  Parser operator &(Parser other) => seq(other);
 
   /// Returns a parser that accepts the receiver or [other]. The resulting
   /// parser returns the parse result of the receiver, if the receiver fails
@@ -184,7 +187,7 @@ abstract class Parser {
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [Parser.or] for details.
-  Parser operator |(Parser other) => this.or(other);
+  Parser operator |(Parser other) => or(other);
 
   /// Returns a parser (logical and-predicate) that succeeds whenever the
   /// receiver does, but never consumes input.
@@ -275,7 +278,7 @@ abstract class Parser {
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
   Parser pick(int index) {
-    return this.map((List list) {
+    return map((List list) {
       return list[index < 0 ? list.length + index : index];
     });
   }
@@ -288,7 +291,7 @@ abstract class Parser {
   /// first and last letter parsed. For the input `'abc'` it returns
   /// `['a', 'c']`.
   Parser permute(List<int> indexes) {
-    return this.map((List list) {
+    return map((List list) {
       return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
       }).toList();
@@ -315,7 +318,7 @@ abstract class Parser {
         ? [this, repeater, separator.optional(separator)]
         : [this, repeater]);
     return parser.map((List list) {
-      var result = new List();
+      var result = [];
       result.add(list[0]);
       for (var tuple in list[1]) {
         if (includeSeparators) {

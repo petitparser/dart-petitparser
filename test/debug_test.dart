@@ -23,9 +23,11 @@ main() {
       expect(parser.parse('a').isSuccess, isTrue);
     });
     test('resume', () {
-      var capture = new List();
-      var parser = new ContinuationParser(digit(), (continuation, Context context) {
-        capture.add([continuation, context]);
+      var continuations = <ContinuationCallback>[];
+      var contexts = <Context>[];
+      var parser = new ContinuationParser(digit(), (continuation, context) {
+        continuations.add(continuation);
+        contexts.add(context);
         // we have to return something for now
         return context.failure('Abort');
       });
@@ -33,21 +35,21 @@ main() {
       expect(parser.parse('1').isSuccess, isFalse);
       expect(parser.parse('a').isSuccess, isFalse);
       // later we can execute the captured continuations
-      expect(capture[0][0](capture[0][1]).isSuccess, isTrue);
-      expect(capture[1][0](capture[1][1]).isSuccess, isFalse);
+      expect(continuations[0](contexts[0]).isSuccess, isTrue);
+      expect(continuations[1](contexts[1]).isSuccess, isFalse);
       // of course the continuations can be resumed multiple times
-      expect(capture[0][0](capture[0][1]).isSuccess, isTrue);
-      expect(capture[1][0](capture[1][1]).isSuccess, isFalse);
+      expect(continuations[0](contexts[0]).isSuccess, isTrue);
+      expect(continuations[1](contexts[1]).isSuccess, isFalse);
     });
     test('success', () {
-      var parser = new ContinuationParser(digit(), (continuation, Context context) {
+      var parser = new ContinuationParser(digit(), (continuation, context) {
         return context.success('Always succeed');
       });
       expect(parser.parse('1').isSuccess, isTrue);
       expect(parser.parse('a').isSuccess, isTrue);
     });
     test('failure', () {
-      var parser = new ContinuationParser(digit(), (continuation, Context context) {
+      var parser = new ContinuationParser(digit(), (continuation, context) {
         return context.failure('Always fail');
       });
       expect(parser.parse('1').isSuccess, isFalse);
@@ -64,7 +66,7 @@ main() {
   });
   group('trace', () {
     test('success', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(trace(identifier, (line) => lines.add(line)).parse('a').isSuccess, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -78,7 +80,7 @@ main() {
       ]);
     });
     test('failure', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(trace(identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -90,7 +92,7 @@ main() {
   });
   group('profile', () {
     test('success', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(profile(identifier, (line) => lines.add(line)).parse('ab123').isSuccess, isTrue);
       expect(lines, hasLength(4));
       var splitLines = lines.map((row) => row.split('\t'));
@@ -105,7 +107,7 @@ main() {
       expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0), isTrue);
     });
     test('failure', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(profile(identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, hasLength(4));
       var splitLines = lines.map((row) => row.split('\t'));
@@ -122,7 +124,7 @@ main() {
   });
   group('progress', () {
     test('success', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(progress(identifier, (line) => lines.add(line))
           .parse('ab123').isSuccess, isTrue);
       expect(lines, [
@@ -137,7 +139,7 @@ main() {
       ]);
     });
     test('failure', () {
-      var lines = new List();
+      var lines = <String>[];
       expect(progress(identifier, (line) => lines.add(line)).parse('1').isFailure, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',

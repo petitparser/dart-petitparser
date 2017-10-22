@@ -15,7 +15,7 @@ class LazyRepeatingParser extends LimitedRepeatingParser {
   @override
   Result parseOn(Context context) {
     var current = context;
-    var elements = new List();
+    var elements = [];
     while (elements.length < min) {
       var result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -24,7 +24,7 @@ class LazyRepeatingParser extends LimitedRepeatingParser {
       elements.add(result.value);
       current = result;
     }
-    while (true) {
+    for (;;) {
       var limiter = limit.parseOn(current);
       if (limiter.isSuccess) {
         return current.success(elements);

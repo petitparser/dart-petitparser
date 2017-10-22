@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 class ExpressionGroup {
 
   /// Defines a new primitive or literal [parser]. Evaluates the optional [action].
-  ExpressionGroup primitive(Parser parser, [action(value)]) {
+  ExpressionGroup primitive(Parser parser, [action(value)]) { // ignore: avoid_returning_this
     _primitives.add(action != null ? parser.map(action) : parser);
     return this;
   }
@@ -18,11 +18,11 @@ class ExpressionGroup {
     return _buildChoice(_primitives, inner);
   }
 
-  final List<Parser> _primitives = new List();
+  final List<Parser> _primitives = [];
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
-  ExpressionGroup prefix(Parser parser, [action(operator, value)]) {
+  ExpressionGroup prefix(Parser parser, [action(operator, value)]) { // ignore: avoid_returning_this
     action ??= (operator, value) => [operator, value];
     _prefix.add(parser.map((operator) => new ExpressionResult(operator, action)));
     return this;
@@ -40,11 +40,11 @@ class ExpressionGroup {
     }
   }
 
-  final List<Parser> _prefix = new List();
+  final List<Parser> _prefix = [];
 
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
-  ExpressionGroup postfix(Parser parser, [action(value, operator)]) {
+  ExpressionGroup postfix(Parser parser, [action(value, operator)]) { // ignore: avoid_returning_this
     action ??= (value, operator) => [value, operator];
     _postfix.add(parser.map((operator) => new ExpressionResult(operator, action)));
     return this;
@@ -62,11 +62,11 @@ class ExpressionGroup {
     }
   }
 
-  final List<Parser> _postfix = new List();
+  final List<Parser> _postfix = [];
 
   /// Adds a right-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
-  ExpressionGroup right(Parser parser, [action(left, operator, right)]) {
+  ExpressionGroup right(Parser parser, [action(left, operator, right)]) { // ignore: avoid_returning_this
     action ??= (left, operator, right) => [left, operator, right];
     _right.add(parser.map((operator) => new ExpressionResult(operator, action)));
     return this;
@@ -86,11 +86,11 @@ class ExpressionGroup {
     }
   }
 
-  final List<Parser> _right = new List();
+  final List<Parser> _right = [];
 
   /// Adds a left-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
-  ExpressionGroup left(Parser parser, [action(left, operator, right)]) {
+  ExpressionGroup left(Parser parser, [action(left, operator, right)]) { // ignore: avoid_returning_this
     action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => new ExpressionResult(operator, action)));
     return this;
@@ -110,7 +110,7 @@ class ExpressionGroup {
     }
   }
 
-  final List<Parser> _left = new List();
+  final List<Parser> _left = [];
 
   // helper to build an optimal choice parser
   Parser _buildChoice(List<Parser> parsers, [Parser otherwise]) {

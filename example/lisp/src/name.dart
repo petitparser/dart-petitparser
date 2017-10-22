@@ -3,7 +3,7 @@ library petitparser.example.lisp.name;
 /// An unique symbolic name.
 class Name {
   /// The interned symbols.
-  static final Map<String, Name> _interned = new Map();
+  static final Map<String, Name> _interned = {};
 
   /// Factory for new symbol cells.
   factory Name(String name) {

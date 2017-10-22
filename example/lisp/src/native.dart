@@ -127,7 +127,7 @@ class NativeEnvironment extends Environment {
   }
 
   static _while(Environment env, Cons args) {
-    var result = null;
+    var result;
     while (eval(env, args.head)) {
       result = evalList(env, args.tail);
     }

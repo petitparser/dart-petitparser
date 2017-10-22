@@ -6,13 +6,13 @@ import 'parser.dart';
 
 /// The standard library.
 class StandardEnvironment extends Environment {
-  /// Imports the standard library into the [environment].
+  /// Imports the standard library into the [Environment].
   StandardEnvironment(Environment owner) : super(owner) {
     evalString(lispParser, this, _standardLibrary);
   }
 
   /// A simple standard library, should be moved to external file.
-  static String _standardLibrary = """
+  static final String _standardLibrary = """
 ; null functions
 (define null '())
 (define (null? x) (= '() x))

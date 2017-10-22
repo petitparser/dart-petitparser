@@ -5,11 +5,14 @@ class Cons {
   /// The first object.
   Object car;
 
-  /// The head of the cons.
-  Object get head => this.car;
-
   /// The second object.
   Object cdr;
+
+  /// Constructs a cons.
+  Cons(this.car, [this.cdr]);
+
+  /// The head of the cons.
+  Object get head => car;
 
   /// The tail of the cons, if applicable.
   Cons get tail {
@@ -21,9 +24,6 @@ class Cons {
       throw new StateError('${toString()} does not have a tail.');
     }
   }
-
-  /// Constructs a cons.
-  Cons(this.car, [this.cdr]);
 
   @override
   bool operator ==(other) {

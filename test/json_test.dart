@@ -44,7 +44,7 @@ void main() {
       });
     });
     test('nested', () {
-      expect(parser.parse('{"obj": {"a": 1}}').value, {'obj': {"a": 1}});
+      expect(parser.parse('{"obj": {"a": 1}}').value, {'obj': {'a': 1}});
     });
     test('invalid', () {
       expect(parser.parse('{').isFailure, isTrue);

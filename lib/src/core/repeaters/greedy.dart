@@ -16,7 +16,7 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
   @override
   Result parseOn(Context context) {
     var current = context;
-    var elements = new List();
+    var elements = [];
     while (elements.length < min) {
       var result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -34,7 +34,7 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
       elements.add(result.value);
       contexts.add(current = result);
     }
-    while (true) {
+    for (;;) {
       var limiter = limit.parseOn(contexts.last);
       if (limiter.isSuccess) {
         return contexts.last.success(elements);

@@ -17,7 +17,7 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   });
 
   // 2. merge adjacent or overlapping ranges
-  List<RangeCharPredicate> mergedRanges = new List();
+  List<RangeCharPredicate> mergedRanges = [];
   for (var thisRange in sortedRanges) {
     if (mergedRanges.isEmpty) {
       mergedRanges.add(thisRange);

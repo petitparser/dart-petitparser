@@ -5,7 +5,7 @@ import 'dart:math' as math;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position]) {
+void expectSuccess(Parser parser, input, expected, [int position]) {
   var result = parser.parse(input);
   expect(result.isSuccess, isTrue);
   expect(result.isFailure, isFalse);
@@ -13,7 +13,7 @@ void expectSuccess(Parser parser, dynamic input, dynamic expected, [int position
   expect(result.position, position ?? input.length);
 }
 
-void expectFailure(Parser parser, dynamic input, [int position = 0, String message]) {
+void expectFailure(Parser parser, input, [int position = 0, String message]) {
   var result = parser.parse(input);
   expect(result.isFailure, isTrue);
   expect(result.isSuccess, isFalse);
@@ -30,7 +30,7 @@ class ListGrammarDefinition extends GrammarDefinition {
 }
 
 class ListParserDefinition extends ListGrammarDefinition {
-  element() => super.element().map((value) => int.parse(value));
+  element() => super.element().map(int.parse);
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
@@ -83,10 +83,10 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
 }
 
-@deprecated
+@deprecated // ignore: deprecated_member_use
 typedef void PluggableCompositeParserCallback(CompositeParser self);
 
-@deprecated
+@deprecated // ignore: deprecated_member_use
 class PluggableCompositeParser extends CompositeParser {
   final PluggableCompositeParserCallback _callback;
 
@@ -348,8 +348,8 @@ main() {
       var inputLetter = new List.filled(100000, 'a');
       var inputDigit = new List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
-      expectSuccess(parser, inputLetter.join() + '1', inputLetter, inputLetter.length);
-      expectSuccess(parser, inputDigit.join() + '1', inputDigit, inputDigit.length);
+      expectSuccess(parser, '${inputLetter.join()}1', inputLetter, inputLetter.length);
+      expectSuccess(parser, '${inputDigit.join()}1', inputDigit, inputDigit.length);
     });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
@@ -381,7 +381,7 @@ main() {
     test('repeatLazy() unbounded', () {
       var input = new List.filled(100000, 'a');
       var parser = word().repeatLazy(digit(), 2, unbounded);
-      expectSuccess(parser, input.join() + '1111', input, input.length);
+      expectSuccess(parser, '${input.join()}1111', input, input.length);
     });
     test('separatedBy()', () {
       var parser = char('a').separatedBy(char('b'));
@@ -602,7 +602,7 @@ main() {
       ' ': ' ',
     };
     specialChars.forEach((key, value) {
-      test('char("${key}")', () {
+      test('char("$key")', () {
         var parser = char(value);
         expectSuccess(parser, value, value);
         expectFailure(parser, 'a', 0, '"$key" expected');
@@ -828,7 +828,7 @@ main() {
       expectFailure(parser, 'Fo');
     });
     test('on list', () {
-      var parser = new PredicateParser(2, (List<int> list) => list[0] + list[1] == 3, 'sum is 3');
+      var parser = new PredicateParser(2, (list) => list[0] + list[1] == 3, 'sum is 3');
       var result = parser.matches([0, 1, 2, 3, 0]);
       expect(result, [[1, 2], [3, 0]]);
     });
@@ -1075,7 +1075,7 @@ main() {
       expect(copy.isEqualTo(parser), isTrue);
       expect(parser.isEqualTo(copy), isTrue);
       // check replacing
-      var replaced = new List();
+      var replaced = [];
       for (var i = 0; i < copy.children.length; i++) {
         var source = copy.children[i],
             target = any();
@@ -1239,7 +1239,7 @@ main() {
         .primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
         .primitive(
             digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
-            action((a) => double.parse(a)),
+            action(double.parse),
         );
       builder.group()
         .prefix(char('-').trim(), action((op, a) => -a));
@@ -1661,6 +1661,7 @@ main() {
   });
   group('composite (deprecated)', () {
     test('start', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
@@ -1669,6 +1670,7 @@ main() {
       expectFailure(parser, '');
     });
     test('circular', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('loop').or(char('b')));
         self.def('loop', char('a').seq(self.ref('start')));
@@ -1679,6 +1681,7 @@ main() {
       expect(parser.accept('aaab'), isTrue);
     });
     test('redefine parser', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('b'));
         self.redef('start', char('a'));
@@ -1688,6 +1691,7 @@ main() {
       expectFailure(parser, '');
     });
     test('redefine function', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         var b = char('b');
         self.def('start', b);
@@ -1701,16 +1705,18 @@ main() {
       expectFailure(parser, '');
     });
     test('define completed', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.def('other', char('b')), throwsA((e) => e is CompletedParserError));
-      expect(() => parser.redef('start', char('b')), throwsA((e) => e is CompletedParserError));
+      expect(() => parser.def('other', char('b')), throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(() => parser.redef('start', char('b')), throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
       expect(() => parser.action('start', (each) => each),
-          throwsA((e) => e is CompletedParserError));
+          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
     });
     test('reference completed', () {
       var parsers = {'start': char('a'), 'for_b': char('b'), 'for_c': char('c')};
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         for (var key in parsers.keys) {
           self.def(key, parsers[key]);
@@ -1722,38 +1728,45 @@ main() {
       }
     });
     test('reference unknown', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
       try {
         parser.ref('star1');
         fail('Expected UndefinedProductionError to be thrown');
-      } on UndefinedProductionError catch (error) {
+      } on UndefinedProductionError catch (error) { // ignore: deprecated_member_use
         expect(error.toString(), 'Undefined production: star1');
       }
     });
     test('duplicated start', () {
+      // ignore: deprecated_member_use
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
         try {
           self.def('start', char('b'));
           fail('Expected UndefinedProductionError to be thrown');
-        } on RedefinedProductionError catch (error) {
+        } on RedefinedProductionError catch (error) { // ignore: deprecated_member_use
           expect(error.toString(), 'Redefined production: start');
         }
       });
     });
     test('undefined start', () {
+      // ignore: deprecated_member_use
       expect(() => new PluggableCompositeParser((self) {}),
-          throwsA((e) => e is UndefinedProductionError));
+          throwsA((e) => e is UndefinedProductionError)); // ignore: deprecated_member_use
     });
     test('undefined redef', () {
+      // ignore: deprecated_member_use
       new PluggableCompositeParser((self) {
         self.def('start', char('a'));
-        expect(() => self.redef('star1', char('b')), throwsA((e) => e is UndefinedProductionError));
+        expect(
+            () => self.redef('star1', char('b')),
+            throwsA((e) => e is UndefinedProductionError)); // ignore: deprecated_member_use
       });
     });
     test('example (lambda)', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('expression').end());
         self.def('variable', letter().seq(word().star()).flatten().trim());
@@ -1777,6 +1790,7 @@ main() {
       expect(parser.accept('((x y) z)'), isTrue);
     });
     test('example (expression)', () {
+      // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('terms').end());
         self.def('terms', self.ref('addition').or(self.ref('factors')));

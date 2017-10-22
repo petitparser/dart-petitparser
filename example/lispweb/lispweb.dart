@@ -5,17 +5,17 @@ import 'dart:html';
 import '../lisp/lisp.dart';
 
 void inspect(Element element, Environment environment) {
-  var result = '';
+  var buffer = new StringBuffer();
   while (environment != null) {
-    result = '$result<ul>';
+    buffer.write('<ul>');
     for (var symbol in environment.keys) {
-      result = '$result<li><b>$symbol</b>: ${environment[symbol]}</li>';
+      buffer.write('<li><b>$symbol</b>: ${environment[symbol]}</li>');
     }
-    result = '$result</ul>';
-    result = '$result<hr/>';
+    buffer.write('</ul>');
+    buffer.write('<hr/>');
     environment = environment.owner;
   }
-  element.innerHtml = result;
+  element.innerHtml = buffer.toString();
 }
 
 void main() {
@@ -30,7 +30,7 @@ void main() {
 
   printer = (Object object) {
     transcript.appendText(object.toString());
-    transcript.append(document.createElement("br"));
+    transcript.append(document.createElement('br'));
   };
   querySelector('#evaluate').onClick.listen((event) {
     transcript.innerHtml = '';

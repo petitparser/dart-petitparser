@@ -23,7 +23,7 @@ Parser _createPatternParser() {
   var positive = multiple
       .or(single)
       .plus()
-      .map((List<RangeCharPredicate> predicates) => optimizedRanges(predicates));
+      .map(optimizedRanges);
   return char('^').optional().seq(positive).map((List<RangeCharPredicate> predicates) =>
       predicates[0] == null ? predicates[1] : new NotCharacterPredicate(predicates[1]));
 }

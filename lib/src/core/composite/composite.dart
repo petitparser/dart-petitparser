@@ -2,6 +2,7 @@ library petitparser.core.composite.composite;
 
 import 'package:petitparser/src/core/combinators/delegate.dart';
 import 'package:petitparser/src/core/composite/exceptions.dart';
+import 'package:petitparser/src/core/definition/grammar.dart';
 import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/parsers/failure.dart';
 import 'package:petitparser/src/core/parsers/settable.dart';
@@ -44,8 +45,8 @@ import 'package:petitparser/src/core/parsers/settable.dart';
 @deprecated
 abstract class CompositeParser extends DelegateParser {
   bool _completed = false;
-  final Map<String, Parser> _defined = new Map();
-  final Map<String, SettableParser> _undefined = new Map();
+  final Map<String, Parser> _defined = {};
+  final Map<String, SettableParser> _undefined = {};
 
   CompositeParser() : super(failure('Not initalized production: start')) {
     initialize();

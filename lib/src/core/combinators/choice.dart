@@ -27,7 +27,7 @@ class ChoiceParser extends ListParser {
 
   @override
   Parser or(Parser other) {
-    return new ChoiceParser(new List()
+    return new ChoiceParser([]
       ..addAll(children)
       ..add(other));
   }

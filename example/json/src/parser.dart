@@ -6,16 +6,16 @@ import 'grammar.dart';
 
 /// JSON parser.
 class JsonParser extends GrammarParser {
-  JsonParser() : super(new JsonParserDefinition());
+  JsonParser() : super(const JsonParserDefinition());
 }
 
 /// JSON parser definition.
 class JsonParserDefinition extends JsonGrammarDefinition {
   const JsonParserDefinition();
 
-  array() => super.array().map((each) => each[1] ?? new List());
+  array() => super.array().map((each) => each[1] ?? []);
   object() => super.object().map((each) {
-    var result = new Map();
+    var result = {};
     if (each[1] != null) {
       for (var element in each[1]) {
         result[element[0]] = element[2];

@@ -5,7 +5,7 @@ import 'package:petitparser/src/debug/continuation.dart';
 import 'package:petitparser/src/debug/output.dart';
 import 'package:petitparser/src/reflection/transform.dart';
 
-/// Returns a transformed [parser] that when being used measures
+/// Returns a transformed [Parser] that when being used measures
 /// the activation count and total time of each parser.
 ///
 /// For example, the snippet
@@ -24,9 +24,9 @@ import 'package:petitparser/src/reflection/transform.dart';
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser profile(Parser root, [OutputHandler output = print]) {
-  Map<Parser, int> count = new Map();
-  Map<Parser, Stopwatch> watch = new Map();
-  List<Parser> parsers = new List();
+  Map<Parser, int> count = {};
+  Map<Parser, Stopwatch> watch = {};
+  List<Parser> parsers = [];
   return new ContinuationParser(
       transformParser(root, (parser) {
         parsers.add(parser);
@@ -38,16 +38,16 @@ Parser profile(Parser root, [OutputHandler output = print]) {
           return result;
         });
       }), (continuation, context) {
-    parsers.forEach((parser) {
+    for (var parser in parsers) {
       count[parser] = 0;
       watch[parser] = new Stopwatch();
-    });
+    }
     var result = continuation(context);
-    parsers.forEach((parser) {
+    for (var parser in parsers) {
       output('${count[parser]}\t'
           '${watch[parser].elapsedMicroseconds}\t'
           '$parser');
-    });
+    }
     return result;
   });
 }

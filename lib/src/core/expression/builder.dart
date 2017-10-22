@@ -52,7 +52,7 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///     parser.parse('8/4/2');   // 2
 ///     parser.parse('2^2^3');   // 256
 class ExpressionBuilder {
-  final List<ExpressionGroup> _groups = new List();
+  final List<ExpressionGroup> _groups = [];
 
   /// Creates a new group of operators that share the same priority.
   ExpressionGroup group() {

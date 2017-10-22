@@ -16,7 +16,7 @@ void evalInteractive(
     try {
       output.writeln('=> ${evalString(parser, env, line)}');
     } on ParserError catch (exception) {
-      error.writeln('Parser error: ' + exception.toString());
+      error.writeln('Parser error: ${exception.toString()}');
     } on Error catch (exception) {
       error.writeln(exception.toString());
     }
@@ -29,7 +29,7 @@ void main(List<String> arguments) {
   // default options
   var standardLibrary = true;
   var interactiveMode = false;
-  var files = new List<File>();
+  var files = <File>[];
 
   // parse arguments
   for (var option in arguments) {
@@ -78,13 +78,13 @@ void main(List<String> arguments) {
   environment = environment.create();
 
   // process files given as argument
-  files.forEach((file) {
+  for (var file in files) {
     evalString(lispParser, environment, file.readAsStringSync());
-  });
+  }
 
   // process console input
   if (interactiveMode || files.isEmpty) {
-    var input = stdin.transform(SYSTEM_ENCODING.decoder).transform(new LineSplitter());
+    var input = stdin.transform(SYSTEM_ENCODING.decoder).transform(const LineSplitter());
     evalInteractive(lispParser, environment, input, stdout, stderr);
   }
 }

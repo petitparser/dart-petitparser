@@ -115,8 +115,12 @@ void main() {
       expect(input.isEqualTo(output), isTrue);
       var inputs = allParser(input).toSet();
       var outputs = allParser(output).toSet();
-      inputs.forEach((each) => expect(outputs.contains(each), isFalse));
-      outputs.forEach((each) => expect(inputs.contains(each), isFalse));
+      for (var input in inputs) {
+        expect(outputs.contains(input), isFalse);
+      }
+      for (var output in outputs) {
+        expect(inputs.contains(output), isFalse);
+      }
     });
     test('loop (new)', () {
       var source = lowercase();

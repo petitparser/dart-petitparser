@@ -20,7 +20,7 @@ Object eval(Environment env, Object expr) {
 
 /// Evaluate a cons of instructions.
 Object evalList(Environment env, Cons expr) {
-  var result = null;
+  var result;
   while (expr is Cons) {
     result = eval(env, expr.head);
     expr = expr.tail;
@@ -39,7 +39,7 @@ Object evalArguments(Environment env, Cons args) {
 
 /// Reads and evaluates a [script].
 Object evalString(Parser parser, Environment env, String script) {
-  var result = null;
+  var result;
   for (var cell in parser.parse(script).value) {
     result = eval(env, cell);
   }

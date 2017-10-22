@@ -12,14 +12,14 @@ import '../example/dart/dart.dart';
 
 void generateTests(DartGrammar dart, String title, Directory root) {
   group(title, () {
-    root.listSync(recursive: true)
+    var files = root.listSync(recursive: true)
         .where((file) => file is File && file.path.endsWith('.dart'))
-        .map((file) => file as File)
-        .forEach((File file) {
-          test(file.path.substring(root.path.length + 1), () {
-            expect(file.readAsStringSync(), accept(dart));
-          });
-        });
+        .map((file) => file as File);
+    for (var file in files) {
+      test(file.path.substring(root.path.length + 1), () {
+        expect(file.readAsStringSync(), accept(dart));
+      });
+    }
   });
 }
 

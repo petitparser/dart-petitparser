@@ -30,7 +30,7 @@ class SequenceParser extends ListParser {
 
   @override
   Parser seq(Parser other) {
-    return new SequenceParser(new List()
+    return new SequenceParser([]
       ..addAll(children)
       ..add(other));
   }

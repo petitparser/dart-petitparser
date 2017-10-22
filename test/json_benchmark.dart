@@ -36,8 +36,8 @@ dynamic native(String input) => JSON.decode(input);
 dynamic custom(String input) => json.parse(input).value;
 
 void main() {
-  var nativeResult = native(jsonEvent);
-  var customResult = custom(jsonEvent);
+  Map nativeResult = native(jsonEvent);
+  Map customResult = custom(jsonEvent);
 
   if (nativeResult.toString() != customResult.toString()) {
     print('Results not matching!');

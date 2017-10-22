@@ -8,7 +8,7 @@ void main() {
   group('accept', () {
     test('success', () {
       var matcher = accept(char('a'));
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('a', state), isTrue);
       expect(state, isEmpty);
       var description = new StringDescription();
@@ -17,7 +17,7 @@ void main() {
     });
     test('failure', () {
       var matcher = accept(char('a'));
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('b', state), isFalse);
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
@@ -28,7 +28,7 @@ void main() {
   group('parse', () {
     test('success', () {
       var matcher = parse(char('a'), 'a');
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('a', state), isTrue);
       expect(state, isEmpty);
       var description = new StringDescription();
@@ -38,7 +38,7 @@ void main() {
     });
     test('failure', () {
       var matcher = parse(char('a'), 'a');
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('b', state), isFalse);
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
@@ -48,7 +48,7 @@ void main() {
     });
     test('matcher', () {
       var matcher = parse(char('a'), 'b');
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('a', state), isFalse);
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
@@ -59,7 +59,7 @@ void main() {
     });
     test('position', () {
       var matcher = parse(char('a'), 'a', 0);
-      var state = new Map();
+      var state = {};
       expect(matcher.matches('a', state), isFalse);
       expect(state, isNot(isEmpty));
       var description = new StringDescription();

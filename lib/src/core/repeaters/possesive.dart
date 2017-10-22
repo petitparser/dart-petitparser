@@ -14,7 +14,7 @@ class PossessiveRepeatingParser extends RepeatingParser {
   @override
   Result parseOn(Context context) {
     var current = context;
-    var elements = new List();
+    var elements = [];
     while (elements.length < min) {
       var result = delegate.parseOn(current);
       if (result.isFailure) {
