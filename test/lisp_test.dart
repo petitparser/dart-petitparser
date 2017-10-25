@@ -392,31 +392,49 @@ void main() {
       expect(exec('(< 1 2)'), isTrue);
       expect(exec('(< 1 1)'), isFalse);
       expect(exec('(< 2 1)'), isFalse);
+      expect(exec('(< "a" "b")'), isTrue);
+      expect(exec('(< "a" "a")'), isFalse);
+      expect(exec('(< "b" "a")'), isFalse);
     });
     test('Less equal', () {
       expect(exec('(<= 1 2)'), isTrue);
       expect(exec('(<= 1 1)'), isTrue);
       expect(exec('(<= 2 1)'), isFalse);
+      expect(exec('(<= "a" "b")'), isTrue);
+      expect(exec('(<= "a" "a")'), isTrue);
+      expect(exec('(<= "b" "a")'), isFalse);
     });
     test('Equal', () {
       expect(exec('(= 1 1)'), isTrue);
       expect(exec('(= 1 2)'), isFalse);
       expect(exec('(= 2 1)'), isFalse);
+      expect(exec('(= "a" "a")'), isTrue);
+      expect(exec('(= "a" "b")'), isFalse);
+      expect(exec('(= "b" "a")'), isFalse);
     });
     test('Not equal', () {
       expect(exec('(!= 1 1)'), isFalse);
       expect(exec('(!= 1 2)'), isTrue);
       expect(exec('(!= 2 1)'), isTrue);
+      expect(exec('(!= "a" "a")'), isFalse);
+      expect(exec('(!= "a" "b")'), isTrue);
+      expect(exec('(!= "b" "a")'), isTrue);
     });
     test('Larger', () {
       expect(exec('(> 1 1)'), isFalse);
       expect(exec('(> 1 2)'), isFalse);
       expect(exec('(> 2 1)'), isTrue);
+      expect(exec('(> "a" "a")'), isFalse);
+      expect(exec('(> "a" "b")'), isFalse);
+      expect(exec('(> "b" "a")'), isTrue);
     });
     test('Larger equal', () {
       expect(exec('(>= 1 1)'), isTrue);
       expect(exec('(>= 1 2)'), isFalse);
       expect(exec('(>= 2 1)'), isTrue);
+      expect(exec('(>= "a" "a")'), isTrue);
+      expect(exec('(>= "a" "b")'), isFalse);
+      expect(exec('(>= "b" "a")'), isTrue);
     });
     test('Cons', () {
       expect(exec('(cons 1 2)'), new Cons(1, 2));

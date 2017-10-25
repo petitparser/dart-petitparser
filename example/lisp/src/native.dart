@@ -202,15 +202,15 @@ class NativeEnvironment extends Environment {
   }
 
   static _smaller(Environment env, Cons args) {
-    var a = eval(env, args.head) as num;
-    var b = eval(env, args.tail.head) as num;
-    return a < b;
+    var a = eval(env, args.head) as Comparable;
+    var b = eval(env, args.tail.head) as Comparable;
+    return a.compareTo(b) < 0;
   }
 
   static _smallerOrEqual(Environment env, Cons args) {
-    var a = eval(env, args.head) as num;
-    var b = eval(env, args.tail.head) as num;
-    return a <= b;
+    var a = eval(env, args.head) as Comparable;
+    var b = eval(env, args.tail.head) as Comparable;
+    return a.compareTo(b) <= 0;
   }
 
   static _equal(Environment env, Cons args) {
@@ -226,15 +226,15 @@ class NativeEnvironment extends Environment {
   }
 
   static _larger(Environment env, Cons args) {
-    var a = eval(env, args.head) as num;
-    var b = eval(env, args.tail.head) as num;
-    return a > b;
+    var a = eval(env, args.head) as Comparable;
+    var b = eval(env, args.tail.head) as Comparable;
+    return a.compareTo(b) > 0;
   }
 
   static _largerOrEqual(Environment env, Cons args) {
-    var a = eval(env, args.head) as num;
-    var b = eval(env, args.tail.head) as num;
-    return a >= b;
+    var a = eval(env, args.head) as Comparable;
+    var b = eval(env, args.tail.head) as Comparable;
+    return a.compareTo(b) >= 0;
   }
 
   static _cons(Environment env, Cons args) {
