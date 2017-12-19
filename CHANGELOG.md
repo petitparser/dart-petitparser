@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0
+
+* Dart 2.0 compatibility.
+* Fixed numerous analyzer warnings.
+* Generate better default error messages.
+* Moved example grammars to examples.
+
 ## 1.6.1
 
 * Fix bug with duplicated package name.
