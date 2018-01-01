@@ -84,7 +84,7 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 }
 
 @deprecated // ignore: deprecated_member_use
-typedef void PluggableCompositeParserCallback(CompositeParser self);
+typedef void PluggableCompositeParserCallback(CompositeParser self); // ignore: deprecated_member_use
 
 @deprecated // ignore: deprecated_member_use
 class PluggableCompositeParser extends CompositeParser {

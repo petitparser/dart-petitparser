@@ -6,10 +6,10 @@ import 'package:petitparser/src/core/contexts/context.dart';
 abstract class Result extends Context {
   const Result(buffer, position) : super(buffer, position);
 
-  /// Returns [true] if this result indicates a parse success.
+  /// Returns `true` if this result indicates a parse success.
   bool get isSuccess => false;
 
-  /// Returns [true] if this result indicates a parse failure.
+  /// Returns `true` if this result indicates a parse failure.
   bool get isFailure => false;
 
   /// Returns the parse result of the current context.

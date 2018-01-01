@@ -4,7 +4,7 @@ import 'package:petitparser/src/core/contexts/context.dart';
 import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
-/// A generic predicate function returning [true] or [false] for a given
+/// A generic predicate function returning `true` or `false` for a given
 /// [input] argument.
 typedef bool Predicate(input);
 
