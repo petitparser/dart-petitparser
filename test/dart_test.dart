@@ -71,6 +71,22 @@ void main() {
       expect('false', accept(expression));
       expect('null', accept(expression));
     });
+    test('literal array', () {
+      expect('[]', accept(expression));
+      expect('[a]', accept(expression));
+      expect('[a, b]', accept(expression));
+      expect('[a, b, c]', accept(expression));
+    });
+    test('literal map', () {
+      expect('{}', accept(expression));
+      expect('{"a": b}', accept(expression));
+      expect('{"a": b, "c": d}', accept(expression));
+      expect('{"a": b, "c": d, "e": f}', accept(expression));
+    });
+    test('literal (nested)', () {
+      expect('[1, true, [1], {"a": b}]', accept(expression));
+      expect('{"a": 1, "b": true, "c": [1], "d": {"a": b}}', accept(expression));
+    });
     test('unary increment/decrement', () {
       expect('++a', accept(expression));
       expect('--a', accept(expression));
