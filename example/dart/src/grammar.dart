@@ -70,7 +70,6 @@ class DartGrammarDefinition extends GrammarDefinition {
   HIDE()       => ref(token, 'hide');
   IMPLEMENTS() => ref(token, 'implements');
   IMPORT()     => ref(token, 'import');
-  INTERFACE()  => ref(token, 'interface');
   IS()         => ref(token, 'is');
   LIBRARY()    => ref(token, 'library');
   NATIVE()     => ref(token, 'native');
@@ -111,7 +110,6 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   topLevelDefinition() =>
         ref(classDefinition)
-      | ref(interfaceDefinition)
       | ref(functionTypeAlias)
       | ref(functionDeclaration) & ref(functionBodyOrNative)
       | ref(returnType).optional() & ref(getOrSet) & ref(identifier) & ref(formalParameterList) & ref(functionBodyOrNative)
@@ -119,10 +117,12 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(constInitializedVariableDeclaration) & ref(token, ';');
 
   classDefinition() =>
-        ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(superclass).optional() & ref(interfaces).optional() &
-        ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}')
-      | ref(CLASS) & ref(identifier) & ref(typeParameters).optional() & ref(interfaces).optional() & ref(NATIVE) & ref(token, STRING) &
-        ref(token, '{') & ref(classMemberDefinition).star() & ref(token, '}');
+        ref(ABSTRACT).optional() & ref(CLASS) & ref(identifier) & ref(typeParameters).optional() &
+        ref(superclass).optional() & ref(interfaces).optional() & ref(token, '{') &
+        ref(classMemberDefinition).star() & ref(token, '}')
+      | ref(ABSTRACT).optional() & ref(CLASS) & ref(identifier) & ref(typeParameters).optional() &
+        ref(interfaces).optional() & ref(NATIVE) & ref(token, STRING) & ref(token, '{') &
+        ref(classMemberDefinition).star() & ref(token, '}');
 
   typeParameter() => ref(identifier) & (ref(EXTENDS) & ref(type)).optional();
 
@@ -131,8 +131,6 @@ class DartGrammarDefinition extends GrammarDefinition {
   superclass() => ref(EXTENDS) & ref(type);
 
   interfaces() => ref(IMPLEMENTS) & ref(typeList);
-
-  superinterfaces() => ref(EXTENDS) & ref(typeList);
 
   // This rule is organized in a way that may not be most readable, but
   // gives the best error messages.
@@ -184,22 +182,8 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   staticFinalDeclaration() => ref(identifier) & ref(token, '=') & ref(constantExpression);
 
-  interfaceDefinition() => ref(INTERFACE) & ref(identifier) & ref(typeParameters).optional() &
-      ref(superinterfaces).optional() & ref(factorySpecification).optional() & ref(token, '{') &
-      ref(interfaceMemberDefinition).star() & ref(token, '}');
-
-  factorySpecification() => ref(FACTORY) & ref(type);
-
   functionTypeAlias() => ref(TYPEDEF) & ref(functionPrefix) & ref(typeParameters).optional() &
       ref(formalParameterList) & ref(token, ';');
-
-  interfaceMemberDefinition() =>
-        ref(STATIC) & ref(FINAL) & ref(type).optional() & ref(initializedIdentifierList) & ref(token, ';')
-      | ref(functionDeclaration) & ref(token, ';')
-      | ref(constantConstructorDeclaration) & ref(token, ';')
-      | ref(namedConstructorDeclaration) & ref(token, ';')
-      | ref(specialSignatureDefinition) & ref(token, ';')
-      | ref(variableDeclaration) & ref(token, ';');
 
   factoryConstructorDeclaration() => ref(FACTORY) & ref(qualified) & ref(typeParameters).optional() &
       (ref(token, '.') & ref(identifier)).optional() & ref(formalParameterList);

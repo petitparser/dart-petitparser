@@ -6,57 +6,50 @@ import 'package:test/test.dart';
 import '../example/dart/dart.dart';
 
 void main() {
-  var definition = new DartGrammarDefinition();
-  var dart = new DartGrammar();
-  group('helpers', () {
-    test('token', () {
-      expect(() => definition.token(dart.token()), throwsArgumentError);
-      expect(() => definition.token(dart.trim()), throwsArgumentError);
-      expect(() => definition.token(12345), throwsArgumentError);
-    });
-  });
+  final grammar = new DartGrammarDefinition();
   group('directives', () {
+    final directives = grammar.build(start: grammar.start).end();
     test('hashbang', () {
-      expect('#!/bin/dart\n', accept(dart));
+      expect('#!/bin/dart\n', accept(directives));
     });
     test('library', () {
-      expect('library a;', accept(dart));
-      expect('library a.b;', accept(dart));
-      expect('library a.b.c_d;', accept(dart));
+      expect('library a;', accept(directives));
+      expect('library a.b;', accept(directives));
+      expect('library a.b.c_d;', accept(directives));
     });
     test('part of', () {
-      expect('part of a;', accept(dart));
-      expect('part of a.b;', accept(dart));
-      expect('part of a.b.c_d;', accept(dart));
+      expect('part of a;', accept(directives));
+      expect('part of a.b;', accept(directives));
+      expect('part of a.b.c_d;', accept(directives));
     });
     test('part', () {
-      expect('part "abc";', accept(dart));
+      expect('part "abc";', accept(directives));
     });
     test('import', () {
-      expect('import "abc";', accept(dart));
-      expect('import "abc" deferred;', accept(dart));
-      expect('import "abc" as a;', accept(dart));
-      expect('import "abc" deferred as a;', accept(dart));
-      expect('import "abc" show a;', accept(dart));
-      expect('import "abc" deferred show a, b;', accept(dart));
-      expect('import "abc" hide a;', accept(dart));
-      expect('import "abc" deferred hide a, b;', accept(dart));
+      expect('import "abc";', accept(directives));
+      expect('import "abc" deferred;', accept(directives));
+      expect('import "abc" as a;', accept(directives));
+      expect('import "abc" deferred as a;', accept(directives));
+      expect('import "abc" show a;', accept(directives));
+      expect('import "abc" deferred show a, b;', accept(directives));
+      expect('import "abc" hide a;', accept(directives));
+      expect('import "abc" deferred hide a, b;', accept(directives));
     });
     test('export', () {
-      expect('export "abc";', accept(dart));
-      expect('export "abc" show a;', accept(dart));
-      expect('export "abc" show a, b;', accept(dart));
-      expect('export "abc" hide a;', accept(dart));
-      expect('export "abc" hide a, b;', accept(dart));
+      expect('export "abc";', accept(directives));
+      expect('export "abc" show a;', accept(directives));
+      expect('export "abc" show a, b;', accept(directives));
+      expect('export "abc" hide a;', accept(directives));
+      expect('export "abc" hide a, b;', accept(directives));
     });
     test('full', () {
-      expect('library test;', accept(dart));
-      expect('library test; void main() { }', accept(dart));
-      expect('library test; void main() { print(2 + 3); }', accept(dart));
+      expect('library test;', accept(directives));
+      expect('library test; void main() { }', accept(directives));
+      expect('library test; void main() { print(2 + 3); }', accept(directives));
     });
   });
   group('expression', () {
-    var expression = definition.build(start: definition.expression).end();
+    final expression = grammar.build(start: grammar.expression).end();
     test('literal numbers', () {
       expect('1', accept(expression));
       expect('1.2', accept(expression));
@@ -177,7 +170,7 @@ void main() {
     });
   });
   group('statement', () {
-    var statement = definition.build(start: definition.statement).end();
+    final statement = grammar.build(start: grammar.statement).end();
     test('label', () {
       expect('a: {}', accept(statement));
       expect('a: b: {}', accept(statement));
@@ -271,7 +264,7 @@ void main() {
     });
   });
   group('member', () {
-    var member = definition.build(start: definition.classMemberDefinition).end();
+    final member = grammar.build(start: grammar.classMemberDefinition).end();
     test('function', () {
       expect('a() {}', accept(member));
       expect('a b() {}', accept(member));
@@ -339,8 +332,45 @@ void main() {
       expect('factory A._() {}', accept(member));
     });
   });
+  group('definition', () {
+    final definition = grammar.build(start: grammar.topLevelDefinition).end();
+    test('class', () {
+      expect('class A {}', accept(definition));
+      expect('class A extends B {}', accept(definition));
+      expect('class A implements B {}', accept(definition));
+      expect('class A implements B, C {}', accept(definition));
+      expect('class A extends B implements C {}', accept(definition));
+      expect('class A extends B implements C, D {}', accept(definition));
+    });
+    test('class (typed)', () {
+      expect('class A<T> {}', accept(definition));
+      expect('class A<T> extends B<T> {}', accept(definition));
+      expect('class A<T> implements B<T> {}', accept(definition));
+      expect('class A<T> implements B<T>, C<T> {}', accept(definition));
+      expect('class A<T> extends B<T> implements C<T> {}', accept(definition));
+      expect('class A<T> extends B<T> implements C<T>, D<T> {}', accept(definition));
+    });
+    test('class (abstract)', () {
+      expect('abstract class A {}', accept(definition));
+      expect('abstract class A extends B {}', accept(definition));
+      expect('abstract class A implements B {}', accept(definition));
+      expect('abstract class A implements B, C {}', accept(definition));
+      expect('abstract class A extends B implements C {}', accept(definition));
+      expect('abstract class A extends B implements C, D {}', accept(definition));
+    });
+    test('typedef', () {
+      expect('typedef a b();', accept(definition));
+      expect('typedef a b(c);', accept(definition));
+      expect('typedef a b(c d);', accept(definition));
+    });
+    test('typedef (typed)', () {
+      expect('typedef a b<T>();', accept(definition));
+      expect('typedef a b<T>(c);', accept(definition));
+      expect('typedef a b<T>(c d);', accept(definition));
+    });
+  });
   group('whitespace', () {
-    var whitespaces = definition.build(start: definition.HIDDEN).end();
+    final whitespaces = grammar.build(start: grammar.HIDDEN).end();
     test('whitespace', () {
       expect(' ', accept(whitespaces));
       expect('\t', accept(whitespaces));
@@ -389,7 +419,7 @@ void main() {
     });
   });
   group('child parsers', () {
-    var parser = definition.build(start: definition.STRING).end();
+    final parser = grammar.build(start: grammar.STRING).end();
     test('singleLineString', () {
       expect("'hi'", accept(parser));
       expect('"hi"', accept(parser));
@@ -400,7 +430,7 @@ void main() {
   });
   group('offical', () {
     test('identifier', () {
-      var parser = definition.build(start: definition.identifier).end();
+      final parser = grammar.build(start: grammar.identifier).end();
       expect('foo', accept(parser));
       expect('bar9', accept(parser));
       expect('dollar\$', accept(parser));
@@ -414,7 +444,7 @@ void main() {
       expect('', isNot(accept(parser)));
     });
     test('numeric literal', () {
-      var parser = definition.build(start: definition.literal).end();
+      final parser = grammar.build(start: grammar.literal).end();
       expect('0', accept(parser));
       expect('1984', accept(parser));
       expect(' 1984', accept(parser));
@@ -439,7 +469,7 @@ void main() {
       expect('', isNot(accept(parser)));
     });
     test('boolean literal', () {
-      var parser = definition.build(start: definition.literal).end();
+      final parser = grammar.build(start: grammar.literal).end();
       expect('true', accept(parser));
       expect('false', accept(parser));
       expect(' true', accept(parser));
