@@ -238,24 +238,61 @@ void main() {
     test('assert', () {
       expect('assert(a);', accept(statement));
     });
-    test('function', () {
-      expect('a() {}', accept(statement));
-      expect('a b() {}', accept(statement));
-      expect('a() => b;', accept(statement));
-      expect('a b() => c;', accept(statement));
+    test('invokation', () {
+      expect('a();', accept(statement));
+      expect('a(b);', accept(statement));
+      expect('a(b, c);', accept(statement));
+      expect('a(b, c, d);', accept(statement));
     });
-    test('function arguments', () {
-      expect('a() {}', accept(statement));
-      expect('a(b) {}', accept(statement));
-      expect('a(b, c) {}', accept(statement));
-      expect('a([b]) {}', accept(statement));
-      expect('a([b, c]) {}', accept(statement));
-      expect('a(b, [c, d]) {}', accept(statement));
-      expect('a(b, c, [d, e]) {}', accept(statement));
-      expect('a([b = c]) {}', accept(statement));
-      expect('a([b = c, d = e]) {}', accept(statement));
-      expect('a(b, [c = d, e = f]) {}', accept(statement));
-      expect('a(b, c, [d = e, f = g]) {}', accept(statement));
+    test('invokation (named)', () {
+      expect('a(b: c);', accept(statement));
+      expect('a(b: c, d: e);', accept(statement));
+      expect('a(b: c, d: e, f: g);', accept(statement));
+    });
+  });
+  group('member', () {
+    var member = definition.build(start: definition.classMemberDefinition).end();
+    test('function', () {
+      expect('a() {}', accept(member));
+      expect('a b() {}', accept(member));
+    });
+    test('function (abstract)', () {
+      expect('abstract a();', accept(member));
+      expect('abstract a b();', accept(member));
+    });
+    test('function (static)', () {
+      expect('static a() {}', accept(member));
+      expect('static a b() {}', accept(member));
+    });
+    test('function arguments (plain)', () {
+      expect('a() {}', accept(member));
+      expect('a(b) {}', accept(member));
+      expect('a(b, c) {}', accept(member));
+      expect('a(b, c, d) {}', accept(member));
+    });
+    test('function arguments (optional)', () {
+      expect('a([b]) {}', accept(member));
+      expect('a([b, c]) {}', accept(member));
+      expect('a(b, [c, d]) {}', accept(member));
+      expect('a(b, c, [d, e]) {}', accept(member));
+    });
+    test('function arguments (optional, defaults)', () {
+      expect('a([b = c]) {}', accept(member));
+      expect('a([b = c, d = e]) {}', accept(member));
+      expect('a(b, [c = d, e = f]) {}', accept(member));
+      expect('a(b, c, [d = e, f = g]) {}', accept(member));
+    });
+    test('function arguments (named)', () {
+      expect('a({b}) {}', accept(member));
+      expect('a({b, c}) {}', accept(member));
+      expect('a(b, {c, d}) {}', accept(member));
+      expect('a(b, c, {d, e}) {}', accept(member));
+    });
+    test('function arguments (named, defaults)', () {
+      expect('a({b: c}) {}', accept(member));
+      expect('a({b: c, d: e}) {}', accept(member));
+      expect('a(b, {c: d, e: f}) {}', accept(member));
+      expect('a(b, c, {d: e, f: g}) {}', accept(member));
     });
   });
   group('whitespace', () {

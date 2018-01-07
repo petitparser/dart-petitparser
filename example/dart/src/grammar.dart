@@ -294,11 +294,13 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(token, '|');
 
   formalParameterList() =>
-        ref(token, '(') & ref(namedFormalParameters).optional() & ref(token, ')')
+        ref(token, '(') & ref(optionalFormalParameters).optional() & ref(token, ')')
+      | ref(token, '(') & ref(namedFormalParameters).optional() & ref(token, ')')
       | ref(token, '(') & ref(normalFormalParameter) & ref(normalFormalParameterTail).optional() & ref(token, ')');
 
   normalFormalParameterTail() =>
-        ref(token, ',') & ref(namedFormalParameters)
+        ref(token, ',') & ref(optionalFormalParameters)
+      | ref(token, ',') & ref(namedFormalParameters)
       | ref(token, ',') & ref(normalFormalParameter) & ref(normalFormalParameterTail).optional();
 
   normalFormalParameter() =>
@@ -313,8 +315,14 @@ class DartGrammarDefinition extends GrammarDefinition {
   fieldFormalParameter() =>
         ref(finalVarOrType).optional() & ref(THIS) & ref(token, '.') & ref(identifier);
 
-  namedFormalParameters() =>
+  optionalFormalParameters() =>
         ref(token, '[') & ref(defaultFormalParameter) & (ref(token, ',') & ref(defaultFormalParameter)).star() & ref(token, ']');
+
+  namedFormalParameters() =>
+        ref(token, '{') & ref(namedFormatParameter) & (ref(token, ',') & ref(namedFormatParameter)).star() & ref(token, '}');
+
+  namedFormatParameter() =>
+        ref(normalFormalParameter) & (ref(token, ':') & ref(constantExpression)).optional();
 
   defaultFormalParameter() =>
         ref(normalFormalParameter) & (ref(token, '=') & ref(constantExpression)).optional();
