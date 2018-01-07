@@ -188,16 +188,20 @@ void main() {
       expect('{{}}', accept(statement));
     });
     test('declaration', () {
-      expect('final a;', accept(statement));
-      expect('final a b;', accept(statement));
       expect('var a;', accept(statement));
-      expect('a b;', accept(statement));
+      expect('final a;', accept(statement));
     });
-    test('initialized declaration', () {
-      expect('final a = b;', accept(statement));
-      expect('final a b = c;', accept(statement));
+    test('declaration (initialized)', () {
       expect('var a = b;', accept(statement));
+      expect('final a = b;', accept(statement));
+    });
+    test('declaration (typed)', () {
+      expect('a b;', accept(statement));
+      expect('final a b;', accept(statement));
+    });
+    test('declaration (typed, initialized)', () {
       expect('a b = c;', accept(statement));
+      expect('final a b = c;', accept(statement));
     });
     test('while', () {
       expect('while (a) {}', accept(statement));
@@ -309,6 +313,30 @@ void main() {
       expect('a({b: c, d: e}) {}', accept(member));
       expect('a(b, {c: d, e: f}) {}', accept(member));
       expect('a(b, c, {d: e, f: g}) {}', accept(member));
+    });
+    test('constructor', () {
+      expect('A() {}', accept(member));
+      expect('A() : super();', accept(member));
+      expect('A() : super() {}', accept(member));
+      expect('A() : super(), a = b;', accept(member));
+      expect('A() : super(), a = b {}', accept(member));
+      expect('A() : super(), a = b, c = d;', accept(member));
+      expect('A() : super(), a = b, c = d {}', accept(member));
+    });
+    test('constructor (named)', () {
+      expect('A._() {}', accept(member));
+      expect('A._() : super();', accept(member));
+      expect('A._() : super() {}', accept(member));
+      expect('A._() : super(), a = b;', accept(member));
+      expect('A._() : super(), a = b {}', accept(member));
+      expect('A._() : super(), a = b, c = d;', accept(member));
+      expect('A._() : super(), a = b, c = d {}', accept(member));
+    });
+    test('constructor (factory)', () {
+      expect('factory A() {}', accept(member));
+    });
+    test('constructor (factory, named)', () {
+      expect('factory A._() {}', accept(member));
     });
   });
   group('whitespace', () {
