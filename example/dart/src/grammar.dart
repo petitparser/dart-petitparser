@@ -114,6 +114,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(functionDeclaration) & ref(functionBodyOrNative)
       | ref(returnType).optional() & ref(getOrSet) & ref(identifier) & ref(formalParameterList) & ref(functionBodyOrNative)
       | ref(FINAL) & ref(type).optional() & ref(staticFinalDeclarationList) & ref(token, ';')
+      | ref(CONST) & ref(type).optional() & ref(staticFinalDeclarationList) & ref(token, ';')
       | ref(constInitializedVariableDeclaration) & ref(token, ';');
 
   classDefinition() =>

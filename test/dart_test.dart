@@ -206,6 +206,7 @@ void main() {
       expect('for (;;) {}', accept(statement));
       expect('for (var a = b; c; d++) {}', accept(statement));
       expect('for (var a = b, c = d; e; f++) {}', accept(statement));
+      expect('for (a in b) {}', accept(statement));
     });
     test('if', () {
       expect('if (a) {}', accept(statement));
@@ -367,6 +368,14 @@ void main() {
       expect('typedef a b<T>();', accept(definition));
       expect('typedef a b<T>(c);', accept(definition));
       expect('typedef a b<T>(c d);', accept(definition));
+    });
+    test('final', () {
+      expect('final a = 0;', accept(definition));
+      expect('final a b = 0;', accept(definition));
+    });
+    test('const', () {
+      expect('const a = 0;', accept(definition));
+      expect('const a b = 0;', accept(definition));
     });
   });
   group('whitespace', () {
