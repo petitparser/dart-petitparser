@@ -80,6 +80,14 @@ void main() {
       expect('[1, true, [1], {"a": b}]', accept(expression));
       expect('{"a": 1, "b": true, "c": [1], "d": {"a": b}}', accept(expression));
     });
+    test('conditional', () {
+      expect('a ? b : c', accept(expression));
+      expect('a ? b ? c : d : c', accept(expression));
+    });
+    test('relational', () {
+      expect('a is b', accept(expression));
+      expect('a is !b', accept(expression));
+    });
     test('unary increment/decrement', () {
       expect('++a', accept(expression));
       expect('--a', accept(expression));
@@ -122,9 +130,6 @@ void main() {
       expect('a >>> b', accept(expression));
       expect('a >> b', accept(expression));
     });
-    test('ternary operator', () {
-      expect('a ? b : c', accept(expression));
-    });
     test('parenthesis', () {
       expect('(a + b)', accept(expression));
       expect('a * (b + c)', accept(expression));
@@ -132,13 +137,51 @@ void main() {
     });
     test('access', () {
       expect('a.b', accept(expression));
+      expect('a.b.c', accept(expression));
+    });
+    test('indexed', () {
+      expect('a[b]', accept(expression));
+      expect('a[b] = c', accept(expression));
+      expect('a[b][c]', accept(expression));
+      expect('a[b][c] = d', accept(expression));
     });
     test('invoke', () {
-      expect('a.b()', accept(expression));
-      expect('a.b(c)', accept(expression));
-      expect('a.b(c, d)', accept(expression));
-      expect('a.b(c: d)', accept(expression));
-      expect('a.b(c: d, e: f)', accept(expression));
+      expect('a()', accept(expression));
+      expect('a(b)', accept(expression));
+      expect('a(b, c)', accept(expression));
+      expect('a(b: c)', accept(expression));
+      expect('a(b: c, d: e)', accept(expression));
+    });
+    test('invoke (double)', () {
+      expect('a()()', accept(expression));
+      expect('a(b)(b)', accept(expression));
+      expect('a(b, c)(b, c)', accept(expression));
+      expect('a(b: c)(b: c)', accept(expression));
+      expect('a(b: c, d: e)(b: c, d: e)', accept(expression));
+    });
+    test('constructor', () {
+      expect('new a()', accept(expression));
+      expect('const a()', accept(expression));
+      expect('new a<b>()', accept(expression));
+      expect('const a<b>()', accept(expression));
+      expect('new a.b()', accept(expression));
+      expect('const a.b()', accept(expression));
+    });
+    test('function (expression)', () {
+      expect('() => a', accept(expression));
+      expect('a() => b', accept(expression));
+      expect('a () => b', accept(expression));
+      expect('a b() => c', accept(expression));
+      expect('a (b) => c', accept(expression));
+      expect('a b(c) => d', accept(expression));
+    });
+    test('function (block)', () {
+      expect('() {}', accept(expression));
+      expect('a() {}', accept(expression));
+      expect('a () {}', accept(expression));
+      expect('a b() {}', accept(expression));
+      expect('a (b) {}', accept(expression));
+      expect('a b(c) {}', accept(expression));
     });
     test('assignment', () {
       expect('a = b', accept(expression));
@@ -154,19 +197,6 @@ void main() {
       expect('a &= b', accept(expression));
       expect('a ^= b', accept(expression));
       expect('a |= b', accept(expression));
-    });
-    test('indexed', () {
-      expect('a[b]', accept(expression));
-      expect('a[b] = c', accept(expression));
-    });
-    test('method', () {
-      expect('a()', accept(expression));
-      expect('a(b)', accept(expression));
-      expect('a(b, c)', accept(expression));
-      expect('a(b: c)', accept(expression));
-      expect('a(b: c, d: e)', accept(expression));
-      expect('a(a, b: c)', accept(expression));
-      expect('a(a, b, c: d, e: f)', accept(expression));
     });
   });
   group('statement', () {
@@ -309,6 +339,7 @@ void main() {
       expect('a(b, c, {d: e, f: g}) {}', accept(member));
     });
     test('constructor', () {
+      expect('A();', accept(member));
       expect('A() {}', accept(member));
       expect('A() : super();', accept(member));
       expect('A() : super() {}', accept(member));
@@ -316,6 +347,16 @@ void main() {
       expect('A() : super(), a = b {}', accept(member));
       expect('A() : super(), a = b, c = d;', accept(member));
       expect('A() : super(), a = b, c = d {}', accept(member));
+    });
+    test('constructor (field)', () {
+      expect('A(this.a);', accept(member));
+      expect('A(this.a) {}', accept(member));
+      expect('A(this.a, this.b);', accept(member));
+      expect('A(this.a, this.b) {}', accept(member));
+    });
+    test('constructor (const)', () {
+      expect('const A();', accept(member));
+      expect('const A._();', accept(member));
     });
     test('constructor (named)', () {
       expect('A._() {}', accept(member));

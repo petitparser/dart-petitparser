@@ -160,8 +160,7 @@ class DartGrammarDefinition extends GrammarDefinition {
   // An abstract method/operator, a field, or const constructor (which
   // all should be followed by a semicolon).
   declaration() =>
-        ref(constantConstructorDeclaration) & (ref(redirection) | ref(initializers)).optional()
-      | ref(functionDeclaration) & ref(redirection)
+        ref(functionDeclaration) & ref(redirection)
       | ref(namedConstructorDeclaration) & ref(redirection)
       | ref(ABSTRACT) & ref(specialSignatureDefinition)
       | ref(ABSTRACT) & ref(functionDeclaration)
@@ -189,12 +188,12 @@ class DartGrammarDefinition extends GrammarDefinition {
   factoryConstructorDeclaration() => ref(FACTORY) & ref(qualified) & ref(typeParameters).optional() &
       (ref(token, '.') & ref(identifier)).optional() & ref(formalParameterList);
 
-  namedConstructorDeclaration() => ref(identifier) & ref(token, '.') & ref(identifier) &
-      ref(formalParameterList);
-
   constructorDeclaration() =>
-        ref(identifier) & ref(formalParameterList) & (ref(redirection) | ref(initializers)).optional()
-      | ref(namedConstructorDeclaration) & (ref(redirection) | ref(initializers)).optional();
+        ref(CONST).optional() & ref(identifier) & ref(formalParameterList) & (ref(redirection) | ref(initializers)).optional()
+      | ref(CONST).optional() & ref(namedConstructorDeclaration) & (ref(redirection) | ref(initializers)).optional();
+
+  namedConstructorDeclaration() =>
+      ref(identifier) & ref(token, '.') & ref(identifier) & ref(formalParameterList);
 
   constantConstructorDeclaration() => ref(CONST) & ref(qualified) & ref(formalParameterList);
 
@@ -289,8 +288,8 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(token, ',') & ref(normalFormalParameter) & ref(normalFormalParameterTail).optional();
 
   normalFormalParameter() =>
-        ref(functionDeclaration)
-      | ref(fieldFormalParameter)
+        ref(fieldFormalParameter)
+      | ref(functionDeclaration)
       | ref(simpleFormalParameter);
 
   simpleFormalParameter() =>
@@ -298,7 +297,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       | ref(identifier);
 
   fieldFormalParameter() =>
-        ref(finalVarOrType).optional() & ref(THIS) & ref(token, '.') & ref(identifier);
+        ref(THIS) & ref(token, '.') & ref(identifier);
 
   optionalFormalParameters() =>
         ref(token, '[') & ref(defaultFormalParameter) & (ref(token, ',') & ref(defaultFormalParameter)).star() & ref(token, ']');
@@ -315,12 +314,6 @@ class DartGrammarDefinition extends GrammarDefinition {
   returnType() =>
         ref(VOID)
       | ref(type);
-
-  finalVarOrType() =>
-        ref(FINAL) & ref(type).optional()
-      | ref(VAR)
-      | ref(type)
-      ;
 
   // We have to introduce a separate rule for 'declared' identifiers to
   // allow ANTLR to decide if the first identifier we encounter after
@@ -564,23 +557,14 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   primary() =>
-        ref(primaryNoFE)
-      | ref(primaryFE)
-      ;
-
-  primaryFE() =>
-        ref(functionExpression)
-      | ref(primaryNoFE)
-      ;
-
-  primaryNoFE() =>
         ref(THIS)
       | ref(SUPER) & ref(assignableSelector)
-      | ref(literal)
-      | ref(identifier)
       | ref(CONST).optional() & ref(typeArguments).optional() & ref(compoundLiteral)
       | (ref(NEW) | ref(CONST)) & ref(type) & (ref(token, '.') & ref(identifier)).optional() & ref(arguments)
+      | ref(functionExpression)
       | ref(expressionInParentheses)
+      | ref(literal)
+      | ref(identifier)
       ;
 
   expressionInParentheses() =>
@@ -614,7 +598,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       ;
 
   functionExpression() =>
-        (ref(returnType).optional() & ref(identifier)).optional() & ref(formalParameterList) & ref(functionExpressionBody)
+        ref(returnType).optional() & ref(identifier).optional() & ref(formalParameterList) & ref(functionExpressionBody)
       ;
 
   functionDeclaration() =>
