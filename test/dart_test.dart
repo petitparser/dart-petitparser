@@ -308,6 +308,10 @@ void main() {
       expect('static a() {}', accept(member));
       expect('static a b() {}', accept(member));
     });
+    test('function (expression)', () {
+      expect('a() => b;', accept(member));
+      expect('a b() => c;', accept(member));
+    });
     test('function arguments (plain)', () {
       expect('a() {}', accept(member));
       expect('a(b) {}', accept(member));
