@@ -45,6 +45,17 @@ import 'package:petitparser/src/core/parser.dart';
 ///       element() => ref(token, digit().plus());
 ///       token(p)  => p.token().trim();
 ///     }
+///
+/// To get a runnable parser call the [build] method on the definition. It resolves
+/// recursive references and returns an efficient parser that can be further composed.
+/// The optional `start` reference specifies a different starting production into the
+/// grammar. The optional `arguments` parametrize the start production.
+///
+///     let parser = new ListParserDefinition().build();
+///
+///     parser.parse('1');          // [1]
+///     parser.parse('1,2,3');      // [1, 2, 3]
+///
 abstract class GrammarDefinition {
   const GrammarDefinition();
 
