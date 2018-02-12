@@ -83,7 +83,7 @@ class NativeEnvironment extends Environment {
   }
 
   static _apply(Environment env, Cons args) {
-    var fun = eval(env, args.head);
+    Function fun = eval(env, args.head);
     return fun(env.create(), args.tail);
   }
 
