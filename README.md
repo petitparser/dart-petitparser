@@ -126,7 +126,7 @@ To attach an action or transformation to a parser we can use the following metho
 To return a string of the parsed identifier, we can modify our parser like this:
 
 ```dart
-var id = letter().seq(word().star()).flatten();
+var id = (letter() & word().star()).flatten();
 ```
 
 To conveniently find all matches in a given input string you can use `Parser.matchesSkipping`:
@@ -187,14 +187,14 @@ Misc
 
 ### Examples
 
-The package comes with a large collections of grammars and language experiments ready to explore:
+The package comes with a large collection of example grammars and language experiments ready to explore:
 
-- `lib/dart.dart` contains an experimental Dart grammar.
-- `lib/json.dart` contains a complete JSON grammar and parser.
-- `lib/lisp.dart` contains a complete Lisp grammar, parser and evaluator:
+- `example/dart` contains an experimental Dart grammar.
+- `example/json` contains a complete JSON grammar and parser.
+- `example/lisp` contains a complete Lisp grammar, parser and evaluator:
 - `example/lisphell` contains a command line lisp interpreter.
-  - `example/lispweb` contains a web based lisp interpreter.
-  - `lib/smalltalk.dart` contains a complete Smalltalk grammar.
+- `example/lispweb` contains a web based lisp interpreter.
+- `example/smalltalk` contains a complete Smalltalk grammar.
 
 Furthermore, there are various open source projects using PetitParser:
 
