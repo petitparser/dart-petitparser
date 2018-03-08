@@ -84,7 +84,8 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 }
 
 @deprecated // ignore: deprecated_member_use
-typedef void PluggableCompositeParserCallback(CompositeParser self); // ignore: deprecated_member_use
+typedef void PluggableCompositeParserCallback(
+    CompositeParser self); // ignore: deprecated_member_use
 
 @deprecated // ignore: deprecated_member_use
 class PluggableCompositeParser extends CompositeParser {
@@ -1085,6 +1086,7 @@ main() {
       }
       expect(copy.children, pairwiseCompare(replaced, identical, 'replaced children'));
     }
+
     test('any()', () => verify(any()));
     test('and()', () => verify(digit().and()));
     test('char()', () => verify(char('a')));
@@ -1192,9 +1194,9 @@ main() {
           throwsStateError);
     });
     test('delegation', () {
-      expect(buggedDefinition.build(start: buggedDefinition.delegation1) is EpsilonParser, isTrue);
-      expect(buggedDefinition.build(start: buggedDefinition.delegation2) is EpsilonParser, isTrue);
-      expect(buggedDefinition.build(start: buggedDefinition.delegation3) is EpsilonParser, isTrue);
+      expect(buggedDefinition.build(start: buggedDefinition.delegation1)is EpsilonParser, isTrue);
+      expect(buggedDefinition.build(start: buggedDefinition.delegation2)is EpsilonParser, isTrue);
+      expect(buggedDefinition.build(start: buggedDefinition.delegation3)is EpsilonParser, isTrue);
     });
     test('lambda example', () {
       var definition = new LambdaGrammarDefinition();
@@ -1235,28 +1237,21 @@ main() {
       var action = attachAction ? (func) => func : (func) => null;
       var root = failure().settable();
       var builder = new ExpressionBuilder();
-      builder.group()
-        .primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
-        .primitive(
-            digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
-            action(double.parse),
-        );
-      builder.group()
-        .prefix(char('-').trim(), action((op, a) => -a));
-      builder.group()
-        .postfix(string('++').trim(), action((a, op) => ++a))
-        .postfix(string('--').trim(), action((a, op) => --a));
-      builder.group()
-        .right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
-      builder.group()
-        .left(char('*').trim(), action((a, op, b) => a * b))
-        .left(char('/').trim(), action((a, op, b) => a / b));
-      builder.group()
-        .left(char('+').trim(), action((a, op, b) => a + b))
-        .left(char('-').trim(), action((a, op, b) => a - b));
+      builder.group().primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1)).primitive(
+        digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
+            action(double.parse),);
+      builder.group().prefix(char('-').trim(), action((op, a) => -a));
+      builder.group().postfix(string('++').trim(), action((a, op) => ++a)).postfix(
+          string('--').trim(), action((a, op) => --a));
+      builder.group().right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+      builder.group().left(char('*').trim(), action((a, op, b) => a * b)).left(
+          char('/').trim(), action((a, op, b) => a / b));
+      builder.group().left(char('+').trim(), action((a, op, b) => a + b)).left(
+          char('-').trim(), action((a, op, b) => a - b));
       root.set(builder.build());
       return root.end();
     }
+
     var epsilon = 1e-5;
     var parser = build(attachAction: false);
     var evaluator = build(attachAction: true);
@@ -1709,8 +1704,10 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.def('other', char('b')), throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
-      expect(() => parser.redef('start', char('b')), throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(() => parser.def('other', char('b')),
+          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(() => parser.redef('start', char('b')),
+          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
       expect(() => parser.action('start', (each) => each),
           throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
     });
@@ -1735,7 +1732,8 @@ main() {
       try {
         parser.ref('star1');
         fail('Expected UndefinedProductionError to be thrown');
-      } on UndefinedProductionError catch (error) { // ignore: deprecated_member_use
+      } on UndefinedProductionError catch (error) {
+        // ignore: deprecated_member_use
         expect(error.toString(), 'Undefined production: star1');
       }
     });
@@ -1746,7 +1744,8 @@ main() {
         try {
           self.def('start', char('b'));
           fail('Expected UndefinedProductionError to be thrown');
-        } on RedefinedProductionError catch (error) { // ignore: deprecated_member_use
+        } on RedefinedProductionError catch (error) {
+          // ignore: deprecated_member_use
           expect(error.toString(), 'Redefined production: start');
         }
       });
@@ -1762,7 +1761,7 @@ main() {
         self.def('start', char('a'));
         expect(
             () => self.redef('star1', char('b')),
-            throwsA((e) => e is UndefinedProductionError)); // ignore: deprecated_member_use
+            throwsA((e) => eis UndefinedProductionError)); // ignore: deprecated_member_use
       });
     });
     test('example (lambda)', () {

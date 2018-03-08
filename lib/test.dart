@@ -26,7 +26,6 @@ Matcher parse(Parser parser, matcher, [int position = -1]) {
 }
 
 class _Parse extends Matcher {
-
   final Parser parser;
   final Matcher matcher;
   final int position;
@@ -67,8 +66,7 @@ class _Parse extends Matcher {
         description.add(' which parse result ');
         var result = matchState['result'] as Result;
         var subDescription = new StringDescription();
-        matcher.describeMismatch(result.value, subDescription,
-            matchState['state'], verbose);
+        matcher.describeMismatch(result.value, subDescription, matchState['state'], verbose);
         if (subDescription.length > 0) {
           description.add(subDescription.toString());
         } else {

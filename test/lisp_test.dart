@@ -518,9 +518,9 @@ void main() {
     test('Fibonacci', () {
       var env = standard.create();
       exec('(define (fib n)'
-           '  (if (<= n 1)'
-           '    1'
-           '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
+          '  (if (<= n 1)'
+          '    1'
+          '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
       expect(exec('(fib 0)', env), 1);
       expect(exec('(fib 1)', env), 1);
       expect(exec('(fib 2)', env), 2);
@@ -531,7 +531,7 @@ void main() {
     test('Closure', () {
       var env = standard.create();
       exec('(define (mul n)'
-           '  (lambda (x) (* n x)))', env);
+          '  (lambda (x) (* n x)))', env);
       expect(exec('((mul 2) 3)', env), 6);
       expect(exec('((mul 3) 4)', env), 12);
       expect(exec('((mul 4) 5)', env), 20);
@@ -539,9 +539,9 @@ void main() {
     test('Object', () {
       var env = standard.create();
       exec('(define (counter start)'
-           '  (let ((count start))'
-           '    (lambda ()'
-           '      (set! count (+ count 1)))))', env);
+          '  (let ((count start))'
+          '    (lambda ()'
+          '      (set! count (+ count 1)))))', env);
       exec('(define a (counter 10))', env);
       exec('(define b (counter 20))', env);
       expect(exec('(a)', env), 11);

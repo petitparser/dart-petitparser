@@ -9,8 +9,8 @@ import 'package:petitparser/petitparser.dart';
 import '../lisp/lisp.dart';
 
 /// Read, evaluate, print loop.
-void evalInteractive(
-    Parser parser, Environment env, Stream<String> input, IOSink output, IOSink error) {
+void evalInteractive(Parser parser, Environment env, Stream<String> input, IOSink output,
+    IOSink error) {
   output.write('>> ');
   input.listen((String line) {
     try {

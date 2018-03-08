@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.2
+
+* Reformatted all code using dartfmt.
+
 ## 1.7.1
 
 * Fixed Dart 2.0 strong mode error.

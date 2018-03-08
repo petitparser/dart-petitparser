@@ -61,7 +61,6 @@ const jsonEvent = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancela
 // All benchmarks
 
 final Map<String, Function> benchmarks = {
-
   // char tests
   'any()': charTest(characters, any()),
   "anyOf('uncopyrightable')": charTest(characters, anyOf('uncopyrightable')),
@@ -96,7 +95,6 @@ final Map<String, Function> benchmarks = {
   // json tests
   'JSON.decode()': () => JSON.decode(jsonEvent),
   'JsonParser()': () => json.parse(jsonEvent).value
-
 };
 
 void main() {

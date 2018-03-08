@@ -142,4 +142,3 @@ abstract class CompositeParser extends DelegateParser {
     redef(name, (Parser parser) => parser.map(function));
   }
 }
-

@@ -13,7 +13,8 @@ void main() {
       expect(state, isEmpty);
       var description = new StringDescription();
       matcher.describe(description);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" accepts input');
+      expect(
+          description.toString(), '"Instance of \'CharacterParser\'["a" expected]" accepts input');
     });
     test('failure', () {
       var matcher = accept(char('a'));
@@ -22,7 +23,8 @@ void main() {
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
       matcher.describeMismatch('b', description, state, false);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" produces "Failure[1:1]: "a" expected" which is not accepted');
+      expect(description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" produces "Failure[1:1]: "a" expected" which is not accepted');
     });
   });
   group('parse', () {
@@ -65,7 +67,7 @@ void main() {
       var description = new StringDescription();
       matcher.describeMismatch('a', description, state, false);
       expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" '
-      'produces "Success[1:2]: a" that consumes input to 1 instead of 0');
+          'produces "Success[1:2]: a" that consumes input to 1 instead of 0');
     });
   });
 }

@@ -18,7 +18,9 @@ void main() {
       expect(parser.parse('["a", "b", "c"]').value, ['a', 'b', 'c']);
     });
     test('nested', () {
-      expect(parser.parse('[["a"]]').value, [['a']]);
+      expect(parser
+          .parse('[["a"]]')
+          .value, [['a']]);
     });
     test('invalid', () {
       expect(parser.parse('[').isFailure, isTrue);
@@ -37,14 +39,14 @@ void main() {
       expect(parser.parse('{"a": 1}').value, {'a': 1});
     });
     test('large', () {
-      expect(parser.parse('{"a": 1, "b": 2, "c": 3}').value, {
-        'a': 1,
-        'b': 2,
-        'c': 3
-      });
+      expect(parser
+          .parse('{"a": 1, "b": 2, "c": 3}')
+          .value, {'a': 1, 'b': 2, 'c': 3});
     });
     test('nested', () {
-      expect(parser.parse('{"obj": {"a": 1}}').value, {'obj': {'a': 1}});
+      expect(parser
+          .parse('{"obj": {"a": 1}}')
+          .value, {'obj': {'a': 1}});
     });
     test('invalid', () {
       expect(parser.parse('{').isFailure, isTrue);
