@@ -6,14 +6,18 @@ import 'package:petitparser/src/core/characters/range.dart';
 import 'package:petitparser/src/core/characters/ranges.dart';
 
 CharacterPredicate optimizedString(String string) {
-  return optimizedRanges(string.codeUnits.map((value) => new RangeCharPredicate(value, value)));
+  return optimizedRanges(
+      string.codeUnits.map((value) => new RangeCharPredicate(value, value)));
 }
 
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 1. sort the ranges
-  List<RangeCharPredicate> sortedRanges = new List.from(ranges, growable: false);
+  List<RangeCharPredicate> sortedRanges =
+      new List.from(ranges, growable: false);
   sortedRanges.sort((first, second) {
-    return first.start != second.start ? first.start - second.start : first.stop - second.stop;
+    return first.start != second.start
+        ? first.start - second.start
+        : first.stop - second.stop;
   });
 
   // 2. merge adjacent or overlapping ranges
@@ -24,7 +28,8 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
     } else {
       var lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        var characterRange = new RangeCharPredicate(lastRange.start, thisRange.stop);
+        var characterRange =
+            new RangeCharPredicate(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
         mergedRanges.add(thisRange);

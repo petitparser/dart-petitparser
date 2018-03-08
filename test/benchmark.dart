@@ -6,7 +6,8 @@ import 'package:petitparser/petitparser.dart';
 
 import '../example/json/json.dart';
 
-double benchmark(Function function, [int warmUp = 1000, int milliseconds = 2500]) {
+double benchmark(Function function,
+    [int warmUp = 1000, int milliseconds = 2500]) {
   var count = 0;
   var elapsed = 0;
   var watch = new Stopwatch();
@@ -32,7 +33,8 @@ Function charTest(List<String> inputs, Parser parser) {
   };
 }
 
-final List<String> characters = new List.generate(256, (value) => new String.fromCharCode(value));
+final List<String> characters =
+    new List.generate(256, (value) => new String.fromCharCode(value));
 
 // String tests
 
@@ -48,7 +50,8 @@ final string = characters.join();
 
 final json = new JsonParser();
 
-const jsonEvent = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
+const jsonEvent =
+    '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
     '"timeStamp": 0, "CAPTURING_PHASE": 1, "AT_TARGET": 2, "BUBBLING_PHASE": 3, "isTrusted": '
     'true, "MOUSEDOWN": 1, "MOUSEUP": 2, "MOUSEOVER": 4, "MOUSEOUT": 8, "MOUSEMOVE": 16, '
     '"MOUSEDRAG": 32, "CLICK": 64, "DBLCLICK": 128, "KEYDOWN": 256, "KEYUP": 512, "KEYPRESS": '
@@ -70,11 +73,13 @@ final Map<String, Function> benchmarks = {
   'lowercase()': charTest(characters, lowercase()),
   "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
   "pattern('^a')": charTest(characters, pattern('^a')),
-  "pattern('^a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
+  "pattern('^a-cx-zA-CX-Z1-37-9')":
+      charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
   "pattern('^a-z')": charTest(characters, pattern('^a-z')),
   "pattern('^acegik')": charTest(characters, pattern('^acegik')),
   "pattern('a')": charTest(characters, pattern('a')),
-  "pattern('a-cx-zA-CX-Z1-37-9')": charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
+  "pattern('a-cx-zA-CX-Z1-37-9')":
+      charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
   "pattern('a-z')": charTest(characters, pattern('a-z')),
   "pattern('acegik')": charTest(characters, pattern('acegik')),
   "range('a', 'z')": charTest(characters, range('a', 'z')),
@@ -90,7 +95,8 @@ final Map<String, Function> benchmarks = {
   'plusLazy()': stringTest(string, any().plusLazy(failure())),
   'plusGreedy()': stringTest(string, any().plusGreedy(failure())),
   'or()': stringTest(string, failure().or(any()).star()),
-  'seq()': stringTest(string, new SequenceParser(new List.filled(string.length, any()))),
+  'seq()': stringTest(
+      string, new SequenceParser(new List.filled(string.length, any()))),
 
   // json tests
   'JSON.decode()': () => JSON.decode(jsonEvent),

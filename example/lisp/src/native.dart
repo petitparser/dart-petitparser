@@ -53,7 +53,8 @@ class NativeEnvironment extends Environment {
     } else if (args.head is Cons) {
       Cons head = args.head;
       if (head.head is Name) {
-        return env.define(head.head, _lambda(env, new Cons(head.tail, args.tail)));
+        return env.define(
+            head.head, _lambda(env, new Cons(head.tail, args.tail)));
       }
     } else {
       throw new ArgumentError('Invalid define: $args');

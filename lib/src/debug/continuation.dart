@@ -12,7 +12,8 @@ import 'package:petitparser/src/debug/trace.dart';
 typedef Result ContinuationCallback(Context context);
 
 /// Handler function for the [ContinuationParser].
-typedef Result ContinuationHandler(ContinuationCallback continuation, Context context);
+typedef Result ContinuationHandler(
+    ContinuationCallback continuation, Context context);
 
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.

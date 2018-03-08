@@ -21,8 +21,11 @@ class LispParserDefinition extends LispGrammarDefinition {
   cell() => super.cell().map((each) => new Cons(each[0], each[1]));
   empty() => super.empty().map((each) => null);
 
-  string() => super.string().map((each) => new String.fromCharCodes(each[1] as Iterable<int>));
-  characterEscape() => super.characterEscape().map((each) => each[1].codeUnitAt(0));
+  string() => super
+      .string()
+      .map((each) => new String.fromCharCodes(each[1] as Iterable<int>));
+  characterEscape() =>
+      super.characterEscape().map((each) => each[1].codeUnitAt(0));
   characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
 
   symbol() => super.symbol().map((each) => new Name(each));
@@ -36,5 +39,6 @@ class LispParserDefinition extends LispGrammarDefinition {
         }
       });
 
-  quote() => super.quote().map((each) => new Cons((_, Cons args) => args, each[1]));
+  quote() =>
+      super.quote().map((each) => new Cons((_, Cons args) => args, each[1]));
 }

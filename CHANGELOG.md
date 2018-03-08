@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.3
+
+* Really reformatted all code using dartfmt.
+
 ## 1.7.2
 
 * Reformatted all code using dartfmt.

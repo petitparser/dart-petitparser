@@ -67,9 +67,8 @@ main() {
   group('trace', () {
     test('success', () {
       var lines = <String>[];
-      expect(trace(identifier, (line) => lines.add(line))
-          .parse('a')
-          .isSuccess, isTrue);
+      expect(trace(identifier, (line) => lines.add(line)).parse('a').isSuccess,
+          isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
@@ -83,9 +82,8 @@ main() {
     });
     test('failure', () {
       var lines = <String>[];
-      expect(trace(identifier, (line) => lines.add(line))
-          .parse('1')
-          .isFailure, isTrue);
+      expect(trace(identifier, (line) => lines.add(line)).parse('1').isFailure,
+          isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
@@ -97,9 +95,11 @@ main() {
   group('profile', () {
     test('success', () {
       var lines = <String>[];
-      expect(profile(identifier, (line) => lines.add(line))
-          .parse('ab123')
-          .isSuccess, isTrue);
+      expect(
+          profile(identifier, (line) => lines.add(line))
+              .parse('ab123')
+              .isSuccess,
+          isTrue);
       expect(lines, hasLength(4));
       var splitLines = lines.map((row) => row.split('\t'));
       var counts = splitLines.map((row) => int.parse(row[0]));
@@ -109,14 +109,16 @@ main() {
       expect(times.every((cell) => cell >= 0), isTrue);
       expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
+          isTrue);
+      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
+          isTrue);
     });
     test('failure', () {
       var lines = <String>[];
-      expect(profile(identifier, (line) => lines.add(line))
-          .parse('1')
-          .isFailure, isTrue);
+      expect(
+          profile(identifier, (line) => lines.add(line)).parse('1').isFailure,
+          isTrue);
       expect(lines, hasLength(4));
       var splitLines = lines.map((row) => row.split('\t'));
       var counts = splitLines.map((row) => int.parse(row[0]));
@@ -126,16 +128,20 @@ main() {
       expect(times.every((cell) => cell >= 0), isTrue);
       expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0), isTrue);
+      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
+          isTrue);
+      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
+          isTrue);
     });
   });
   group('progress', () {
     test('success', () {
       var lines = <String>[];
-      expect(progress(identifier, (line) => lines.add(line))
-          .parse('ab123')
-          .isSuccess, isTrue);
+      expect(
+          progress(identifier, (line) => lines.add(line))
+              .parse('ab123')
+              .isSuccess,
+          isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]',
@@ -149,9 +155,9 @@ main() {
     });
     test('failure', () {
       var lines = <String>[];
-      expect(progress(identifier, (line) => lines.add(line))
-          .parse('1')
-          .isFailure, isTrue);
+      expect(
+          progress(identifier, (line) => lines.add(line)).parse('1').isFailure,
+          isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]'

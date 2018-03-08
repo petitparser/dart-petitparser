@@ -15,7 +15,8 @@ class Reference extends Parser {
   @override
   bool operator ==(other) {
     if (other is Reference) {
-      if (other.function != function || other.arguments.length != arguments.length) {
+      if (other.function != function ||
+          other.arguments.length != arguments.length) {
         return false;
       }
       for (var i = 0; i < arguments.length; i++) {
@@ -44,5 +45,6 @@ class Reference extends Parser {
   Parser copy() => throw new UnsupportedError('References cannot be copied.');
 
   @override
-  Result parseOn(Context context) => throw new UnsupportedError('References cannot be parsed.');
+  Result parseOn(Context context) =>
+      throw new UnsupportedError('References cannot be parsed.');
 }

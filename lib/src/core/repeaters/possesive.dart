@@ -9,7 +9,8 @@ import 'package:petitparser/src/core/repeaters/unbounded.dart';
 /// A greedy parser that repeatedly parses between 'min' and 'max' instances of
 /// its delegate.
 class PossessiveRepeatingParser extends RepeatingParser {
-  PossessiveRepeatingParser(Parser parser, int min, int max) : super(parser, min, max);
+  PossessiveRepeatingParser(Parser parser, int min, int max)
+      : super(parser, min, max);
 
   @override
   Result parseOn(Context context) {

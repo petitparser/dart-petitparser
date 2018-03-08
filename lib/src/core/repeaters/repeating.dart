@@ -12,15 +12,18 @@ abstract class RepeatingParser extends DelegateParser {
 
   RepeatingParser(Parser parser, this.min, this.max) : super(parser) {
     if (min < 0) {
-      throw new ArgumentError('Minimum repetitions must be positive, but got $min.');
+      throw new ArgumentError(
+          'Minimum repetitions must be positive, but got $min.');
     }
     if (max != unbounded && max < min) {
-      throw new ArgumentError('Maximum repetitions must be larger than $min, but got $max.');
+      throw new ArgumentError(
+          'Maximum repetitions must be larger than $min, but got $max.');
     }
   }
 
   @override
-  String toString() => '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
+  String toString() =>
+      '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
 
   @override
   bool hasEqualProperties(Parser other) {

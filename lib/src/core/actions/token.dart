@@ -14,7 +14,8 @@ class TokenParser extends DelegateParser {
   Result parseOn(Context context) {
     var result = delegate.parseOn(context);
     if (result.isSuccess) {
-      var token = new Token(result.value, context.buffer, context.position, result.position);
+      var token = new Token(
+          result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
       return result;

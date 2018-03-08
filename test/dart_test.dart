@@ -78,7 +78,8 @@ void main() {
     });
     test('literal (nested)', () {
       expect('[1, true, [1], {"a": b}]', accept(expression));
-      expect('{"a": 1, "b": true, "c": [1], "d": {"a": b}}', accept(expression));
+      expect(
+          '{"a": 1, "b": true, "c": [1], "d": {"a": b}}', accept(expression));
     });
     test('conditional', () {
       expect('a ? b : c', accept(expression));
@@ -257,7 +258,8 @@ void main() {
       expect('try {} catch (a b) {} finally {}', accept(statement));
       expect('try {} catch (a b, c d) {} finally {}', accept(statement));
       expect('try {} catch (a b) {} catch (c d) {}', accept(statement));
-      expect('try {} catch (a b) {} catch (c d) {} finally {}', accept(statement));
+      expect(
+          'try {} catch (a b) {} catch (c d) {} finally {}', accept(statement));
     });
     test('break', () {
       expect('break;', accept(statement));
@@ -394,7 +396,8 @@ void main() {
       expect('class A<T> implements B<T> {}', accept(definition));
       expect('class A<T> implements B<T>, C<T> {}', accept(definition));
       expect('class A<T> extends B<T> implements C<T> {}', accept(definition));
-      expect('class A<T> extends B<T> implements C<T>, D<T> {}', accept(definition));
+      expect('class A<T> extends B<T> implements C<T>, D<T> {}',
+          accept(definition));
     });
     test('class (abstract)', () {
       expect('abstract class A {}', accept(definition));
@@ -402,7 +405,8 @@ void main() {
       expect('abstract class A implements B {}', accept(definition));
       expect('abstract class A implements B, C {}', accept(definition));
       expect('abstract class A extends B implements C {}', accept(definition));
-      expect('abstract class A extends B implements C, D {}', accept(definition));
+      expect(
+          'abstract class A extends B implements C, D {}', accept(definition));
     });
     test('typedef', () {
       expect('typedef a b();', accept(definition));
@@ -459,7 +463,8 @@ void main() {
     });
     test('multi-line nested', () {
       expect('/* outer /* nested */ */', accept(whitespaces));
-      expect('/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
+      expect(
+          '/* outer /* nested /* deeply nested */ */ */', accept(whitespaces));
       expect('/* outer /* not closed */', isNot(accept(whitespaces)));
     });
     test('combined', () {

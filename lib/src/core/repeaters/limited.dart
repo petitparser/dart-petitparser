@@ -10,7 +10,8 @@ import 'package:petitparser/src/core/repeaters/repeating.dart';
 abstract class LimitedRepeatingParser extends RepeatingParser {
   Parser limit;
 
-  LimitedRepeatingParser(Parser delegate, this.limit, int min, int max) : super(delegate, min, max);
+  LimitedRepeatingParser(Parser delegate, this.limit, int min, int max)
+      : super(delegate, min, max);
 
   @override
   List<Parser> get children => [delegate, limit];

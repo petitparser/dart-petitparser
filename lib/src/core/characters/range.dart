@@ -8,8 +8,10 @@ import 'package:petitparser/src/core/parser.dart';
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
 Parser range(Object start, Object stop, [String message]) {
-  return new CharacterParser(new RangeCharPredicate(toCharCode(start), toCharCode(stop)),
-      message ?? '${toReadableString(start)}..${toReadableString(stop)} expected');
+  return new CharacterParser(
+      new RangeCharPredicate(toCharCode(start), toCharCode(stop)),
+      message ??
+          '${toReadableString(start)}..${toReadableString(stop)} expected');
 }
 
 class RangeCharPredicate implements CharacterPredicate {

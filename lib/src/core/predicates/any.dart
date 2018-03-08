@@ -32,6 +32,8 @@ class AnyParser extends Parser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is AnyParser && super.hasEqualProperties(other) && _message == other._message;
+    return other is AnyParser &&
+        super.hasEqualProperties(other) &&
+        _message == other._message;
   }
 }

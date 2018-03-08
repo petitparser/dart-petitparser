@@ -30,6 +30,8 @@ class NotParser extends DelegateParser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is NotParser && super.hasEqualProperties(other) && _message == other._message;
+    return other is NotParser &&
+        super.hasEqualProperties(other) &&
+        _message == other._message;
   }
 }

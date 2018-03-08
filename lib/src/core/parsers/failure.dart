@@ -28,6 +28,8 @@ class FailureParser extends Parser {
 
   @override
   bool hasEqualProperties(Parser other) {
-    return other is FailureParser && super.hasEqualProperties(other) && _message == other._message;
+    return other is FailureParser &&
+        super.hasEqualProperties(other) &&
+        _message == other._message;
   }
 }

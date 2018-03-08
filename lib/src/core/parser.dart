@@ -60,7 +60,12 @@ abstract class Parser {
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
   Iterable matches(input) {
     var list = [];
-    and().map((each) => list.add(each)).seq(any()).or(any()).star().parse(input);
+    and()
+        .map((each) => list.add(each))
+        .seq(any())
+        .or(any())
+        .star()
+        .parse(input);
     return list;
   }
 
@@ -326,7 +331,9 @@ abstract class Parser {
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators && optionalSeparatorAtEnd && !identical(list[2], separator)) {
+      if (includeSeparators &&
+          optionalSeparatorAtEnd &&
+          !identical(list[2], separator)) {
         result.add(list[2]);
       }
       return result;

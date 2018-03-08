@@ -13,8 +13,8 @@ void main() {
       expect(state, isEmpty);
       var description = new StringDescription();
       matcher.describe(description);
-      expect(
-          description.toString(), '"Instance of \'CharacterParser\'["a" expected]" accepts input');
+      expect(description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" accepts input');
     });
     test('failure', () {
       var matcher = accept(char('a'));
@@ -35,7 +35,9 @@ void main() {
       expect(state, isEmpty);
       var description = new StringDescription();
       matcher.describe(description);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" '
+      expect(
+          description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" '
           'accepts \'a\'');
     });
     test('failure', () {
@@ -45,7 +47,9 @@ void main() {
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
       matcher.describeMismatch('b', description, state, false);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" '
+      expect(
+          description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" '
           'produces "Failure[1:1]: "a" expected" which is not accepted');
     });
     test('matcher', () {
@@ -55,7 +59,9 @@ void main() {
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
       matcher.describeMismatch('a', description, state, false);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" '
+      expect(
+          description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" '
           'produces "Success[1:2]: a" which parse result is different.\n'
           'Expected: b\n  Actual: a\n          ^\n Differ at offset 0');
     });
@@ -66,7 +72,9 @@ void main() {
       expect(state, isNot(isEmpty));
       var description = new StringDescription();
       matcher.describeMismatch('a', description, state, false);
-      expect(description.toString(), '"Instance of \'CharacterParser\'["a" expected]" '
+      expect(
+          description.toString(),
+          '"Instance of \'CharacterParser\'["a" expected]" '
           'produces "Success[1:2]: a" that consumes input to 1 instead of 0');
     });
   });

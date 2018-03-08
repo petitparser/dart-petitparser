@@ -13,5 +13,6 @@ class LetterCharPredicate implements CharacterPredicate {
   const LetterCharPredicate();
 
   @override
-  bool test(int value) => (65 <= value && value <= 90) || (97 <= value && value <= 122);
+  bool test(int value) =>
+      (65 <= value && value <= 90) || (97 <= value && value <= 122);
 }

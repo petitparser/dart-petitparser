@@ -44,7 +44,8 @@ class LispGrammarDefinition extends GrammarDefinition {
 
   symbol() => ref(symbol_).flatten();
   symbol_() =>
-      pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-') & pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star();
+      pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-') &
+      pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star();
 
   quote() => char('\'') & ref(list);
   quasiquote() => char('`') & ref(list);
@@ -53,5 +54,6 @@ class LispGrammarDefinition extends GrammarDefinition {
 
   space() => whitespace() | ref(comment);
   comment() => char(';') & Token.newlineParser().neg().star();
-  bracket(String brackets, Parser parser) => char(brackets[0]) & parser & char(brackets[1]);
+  bracket(String brackets, Parser parser) =>
+      char(brackets[0]) & parser & char(brackets[1]);
 }

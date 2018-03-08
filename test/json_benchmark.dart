@@ -4,7 +4,8 @@ import 'dart:convert';
 
 import '../example/json/json.dart';
 
-double benchmark(Function function, [int warmUp = 1000, int milliseconds = 5000]) {
+double benchmark(Function function,
+    [int warmUp = 1000, int milliseconds = 5000]) {
   var count = 0;
   var elapsed = 0;
   var watch = new Stopwatch();
@@ -20,7 +21,8 @@ double benchmark(Function function, [int warmUp = 1000, int milliseconds = 5000]
   return elapsed / count;
 }
 
-const jsonEvent = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
+const jsonEvent =
+    '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
     '"timeStamp": 0, "CAPTURING_PHASE": 1, "AT_TARGET": 2, "BUBBLING_PHASE": 3, "isTrusted": '
     'true, "MOUSEDOWN": 1, "MOUSEUP": 2, "MOUSEOVER": 4, "MOUSEOUT": 8, "MOUSEMOVE": 16, '
     '"MOUSEDRAG": 32, "CLICK": 64, "DBLCLICK": 128, "KEYDOWN": 256, "KEYUP": 512, "KEYPRESS": '

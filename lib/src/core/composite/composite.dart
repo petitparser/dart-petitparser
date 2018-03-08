@@ -126,7 +126,8 @@ abstract class CompositeParser extends DelegateParser {
     } else if (!_defined.containsKey(name)) {
       throw new UndefinedProductionError(name);
     } else {
-      _defined[name] = replacement is Parser ? replacement : replacement(_defined[name]);
+      _defined[name] =
+          replacement is Parser ? replacement : replacement(_defined[name]);
     }
   }
 

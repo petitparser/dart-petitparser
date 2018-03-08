@@ -26,7 +26,9 @@ class Token {
   const Token(this.value, this.buffer, this.start, this.stop);
 
   /// The consumed input of the token.
-  get input => buffer is String ? buffer.substring(start, stop) : buffer.sublist(start, stop);
+  get input => buffer is String
+      ? buffer.substring(start, stop)
+      : buffer.sublist(start, stop);
 
   /// The length of the token.
   int get length => stop - start;
@@ -42,7 +44,10 @@ class Token {
 
   @override
   bool operator ==(other) {
-    return other is Token && value == other.value && start == other.start && stop == other.stop;
+    return other is Token &&
+        value == other.value &&
+        start == other.start &&
+        stop == other.stop;
   }
 
   @override
@@ -51,7 +56,8 @@ class Token {
   /// Returns a parser for that detects newlines platform independently.
   static Parser newlineParser() => _newlineParser;
 
-  static final Parser _newlineParser = char('\n') | (char('\r') & char('\n').optional());
+  static final Parser _newlineParser =
+      char('\n') | (char('\r') & char('\n').optional());
 
   /// Converts the [position] index in a [buffer] to a line and column tuple.
   static List<int> lineAndColumnOf(String buffer, int position) {

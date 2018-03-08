@@ -76,8 +76,9 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
   power() => ref(primary).separatedBy(char('^').trim());
 
   primary() => ref(number) | ref(parentheses);
-  number() =>
-      token(char('-').optional() & digit().plus() & (char('.') & digit().plus()).optional());
+  number() => token(char('-').optional() &
+      digit().plus() &
+      (char('.') & digit().plus()).optional());
 
   parentheses() => token('(') & ref(terms) & token(')');
   token(value) => value is String ? char(value).trim() : value.flatten().trim();
@@ -154,18 +155,14 @@ main() {
     });
     test('flatten() on list', () {
       var parser = any().plus().flatten();
-      var flatten = parser
-          .parse([1, 2, 3])
-          .value;
+      var flatten = parser.parse([1, 2, 3]).value;
       expect(flatten, [1, 2, 3]);
     });
     test('token()', () {
       var parser = digit().plus().token();
       expectFailure(parser, '');
       expectFailure(parser, 'a');
-      Token token = parser
-          .parse('123')
-          .value;
+      Token token = parser.parse('123').value;
       expect(token.value, ['1', '2', '3']);
       expect(token.buffer, '123');
       expect(token.start, 0);
@@ -178,9 +175,7 @@ main() {
     });
     test('token() on list', () {
       var parser = any().plus().token();
-      Token token = parser
-          .parse([1, 2, 3])
-          .value;
+      Token token = parser.parse([1, 2, 3]).value;
       expect(token.value, [1, 2, 3]);
       expect(token.buffer, [1, 2, 3]);
       expect(token.start, 0);
@@ -349,8 +344,10 @@ main() {
       var inputLetter = new List.filled(100000, 'a');
       var inputDigit = new List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
-      expectSuccess(parser, '${inputLetter.join()}1', inputLetter, inputLetter.length);
-      expectSuccess(parser, '${inputDigit.join()}1', inputDigit, inputDigit.length);
+      expectSuccess(
+          parser, '${inputLetter.join()}1', inputLetter, inputLetter.length);
+      expectSuccess(
+          parser, '${inputDigit.join()}1', inputDigit, inputDigit.length);
     });
     test('repeatLazy()', () {
       var parser = word().repeatLazy(digit(), 2, 4);
@@ -405,7 +402,8 @@ main() {
       expectSuccess(parser, 'ababab', ['a', 'a', 'a'], 5);
     });
     test('separatedBy() separator at end', () {
-      var parser = char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
+      var parser =
+          char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
       expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a', 'b']);
@@ -415,8 +413,8 @@ main() {
       expectSuccess(parser, 'ababab', ['a', 'b', 'a', 'b', 'a', 'b']);
     });
     test('separatedBy() without separators & separator at end', () {
-      var parser = char('a').separatedBy(
-          char('b'), includeSeparators: false, optionalSeparatorAtEnd: true);
+      var parser = char('a').separatedBy(char('b'),
+          includeSeparators: false, optionalSeparatorAtEnd: true);
       expectFailure(parser, '', 0, '"a" expected');
       expectSuccess(parser, 'a', ['a']);
       expectSuccess(parser, 'ab', ['a']);
@@ -829,17 +827,20 @@ main() {
       expectFailure(parser, 'Fo');
     });
     test('on list', () {
-      var parser = new PredicateParser(2, (list) => list[0] + list[1] == 3, 'sum is 3');
+      var parser =
+          new PredicateParser(2, (list) => list[0] + list[1] == 3, 'sum is 3');
       var result = parser.matches([0, 1, 2, 3, 0]);
-      expect(result, [[1, 2], [3, 0]]);
+      expect(result, [
+        [1, 2],
+        [3, 0]
+      ]);
     });
   });
   group('token', () {
-    var parser = any().map((String value) => value.codeUnitAt(0)).token().star();
+    var parser =
+        any().map((String value) => value.codeUnitAt(0)).token().star();
     var buffer = '1\r12\r\n123\n1234';
-    List<Token> result = parser
-        .parse(buffer)
-        .value;
+    List<Token> result = parser.parse(buffer).value;
     test('value', () {
       var expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
       expect(result.map((Token token) => token.value), expected);
@@ -869,7 +870,22 @@ main() {
       expect(result.map((Token token) => token.column), expected);
     });
     test('input', () {
-      var expected = ['1', '\r', '1', '2', '\r', '\n', '1', '2', '3', '\n', '1', '2', '3', '4'];
+      var expected = [
+        '1',
+        '\r',
+        '1',
+        '2',
+        '\r',
+        '\n',
+        '1',
+        '2',
+        '3',
+        '\n',
+        '1',
+        '2',
+        '3',
+        '4'
+      ];
       expect(result.map((Token token) => token.input), expected);
     });
     test('unique', () {
@@ -949,12 +965,8 @@ main() {
   group('parsing', () {
     test('parse()', () {
       var parser = char('a');
-      expect(parser
-          .parse('a')
-          .isSuccess, isTrue);
-      expect(parser
-          .parse('b')
-          .isSuccess, isFalse);
+      expect(parser.parse('a').isSuccess, isTrue);
+      expect(parser.parse('b').isSuccess, isFalse);
     });
     test('accept()', () {
       var parser = char('a');
@@ -972,12 +984,21 @@ main() {
   });
   group('examples', () {
     final identifier = letter().seq(word().star()).flatten();
-    final number = char('-').optional().seq(digit().plus()).seq(
-        char('.').seq(digit().plus()).optional()).flatten();
-    final quoted = char('"').seq(char('"').neg().star()).seq(char('"')).flatten();
-    final keyword = string('return').seq(whitespace().plus().flatten()).seq(
-        identifier.or(number).or(quoted)).map((list) => list.last);
-    final javadoc = string('/**').seq(string('*/').neg().star()).seq(string('*/')).flatten();
+    final number = char('-')
+        .optional()
+        .seq(digit().plus())
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten();
+    final quoted =
+        char('"').seq(char('"').neg().star()).seq(char('"')).flatten();
+    final keyword = string('return')
+        .seq(whitespace().plus().flatten())
+        .seq(identifier.or(number).or(quoted))
+        .map((list) => list.last);
+    final javadoc = string('/**')
+        .seq(string('*/').neg().star())
+        .seq(string('*/'))
+        .flatten();
     test('valid identifier', () {
       expectSuccess(identifier, 'a', 'a');
       expectSuccess(identifier, 'a1', 'a1');
@@ -1069,7 +1090,8 @@ main() {
       expect(copy, isNot(same(parser)));
       expect(copy.toString(), parser.toString());
       expect(copy.runtimeType, parser.runtimeType);
-      expect(copy.children, pairwiseCompare(parser.children, identical, 'same children'));
+      expect(copy.children,
+          pairwiseCompare(parser.children, identical, 'same children'));
       // check equality
       expect(copy.isEqualTo(copy), isTrue);
       expect(parser.isEqualTo(parser), isTrue);
@@ -1078,13 +1100,13 @@ main() {
       // check replacing
       var replaced = [];
       for (var i = 0; i < copy.children.length; i++) {
-        var source = copy.children[i],
-            target = any();
+        var source = copy.children[i], target = any();
         copy.replace(source, target);
         expect(copy.children[i], same(target));
         replaced.add(target);
       }
-      expect(copy.children, pairwiseCompare(replaced, identical, 'replaced children'));
+      expect(copy.children,
+          pairwiseCompare(replaced, identical, 'replaced children'));
     }
 
     test('any()', () => verify(any()));
@@ -1169,34 +1191,63 @@ main() {
     test('grammar', () {
       var parser = grammarDefinition.build();
       expectSuccess(parser, '1,2', ['1', ',', '2']);
-      expectSuccess(parser, '1,2,3', ['1', ',', ['2', ',', '3']]);
+      expectSuccess(parser, '1,2,3', [
+        '1',
+        ',',
+        ['2', ',', '3']
+      ]);
     });
     test('parser', () {
       var parser = parserDefinition.build();
       expectSuccess(parser, '1,2', [1, ',', 2]);
-      expectSuccess(parser, '1,2,3', [1, ',', [2, ',', 3]]);
+      expectSuccess(parser, '1,2,3', [
+        1,
+        ',',
+        [2, ',', 3]
+      ]);
     });
     test('token', () {
       var parser = tokenDefinition.build();
       expectSuccess(parser, '1, 2', ['1', ',', '2']);
-      expectSuccess(parser, '1, 2, 3', ['1', ',', ['2', ',', '3']]);
+      expectSuccess(parser, '1, 2, 3', [
+        '1',
+        ',',
+        ['2', ',', '3']
+      ]);
     });
     test('direct recursion', () {
-      expect(() => buggedDefinition.build(start: buggedDefinition.directRecursion1),
+      expect(
+          () =>
+              buggedDefinition.build(start: buggedDefinition.directRecursion1),
           throwsStateError);
     });
     test('indirect recursion', () {
-      expect(() => buggedDefinition.build(start: buggedDefinition.indirectRecursion1),
+      expect(
+          () => buggedDefinition.build(
+              start: buggedDefinition.indirectRecursion1),
           throwsStateError);
-      expect(() => buggedDefinition.build(start: buggedDefinition.indirectRecursion2),
+      expect(
+          () => buggedDefinition.build(
+              start: buggedDefinition.indirectRecursion2),
           throwsStateError);
-      expect(() => buggedDefinition.build(start: buggedDefinition.indirectRecursion3),
+      expect(
+          () => buggedDefinition.build(
+              start: buggedDefinition.indirectRecursion3),
           throwsStateError);
     });
     test('delegation', () {
-      expect(buggedDefinition.build(start: buggedDefinition.delegation1)is EpsilonParser, isTrue);
-      expect(buggedDefinition.build(start: buggedDefinition.delegation2)is EpsilonParser, isTrue);
-      expect(buggedDefinition.build(start: buggedDefinition.delegation3)is EpsilonParser, isTrue);
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation1)
+              is EpsilonParser,
+          isTrue);
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation2)
+              is EpsilonParser,
+          isTrue);
+      expect(
+          buggedDefinition.build(start: buggedDefinition.delegation3)
+              is EpsilonParser,
+          isTrue);
     });
     test('lambda example', () {
       var definition = new LambdaGrammarDefinition();
@@ -1237,17 +1288,33 @@ main() {
       var action = attachAction ? (func) => func : (func) => null;
       var root = failure().settable();
       var builder = new ExpressionBuilder();
-      builder.group().primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1)).primitive(
-        digit().plus().seq(char('.').seq(digit().plus()).optional()).flatten().trim(),
-            action(double.parse),);
+      builder
+          .group()
+          .primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+          .primitive(
+            digit()
+                .plus()
+                .seq(char('.').seq(digit().plus()).optional())
+                .flatten()
+                .trim(),
+            action(double.parse),
+          );
       builder.group().prefix(char('-').trim(), action((op, a) => -a));
-      builder.group().postfix(string('++').trim(), action((a, op) => ++a)).postfix(
-          string('--').trim(), action((a, op) => --a));
-      builder.group().right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
-      builder.group().left(char('*').trim(), action((a, op, b) => a * b)).left(
-          char('/').trim(), action((a, op, b) => a / b));
-      builder.group().left(char('+').trim(), action((a, op, b) => a + b)).left(
-          char('-').trim(), action((a, op, b) => a - b));
+      builder
+          .group()
+          .postfix(string('++').trim(), action((a, op) => ++a))
+          .postfix(string('--').trim(), action((a, op) => --a));
+      builder
+          .group()
+          .right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+      builder
+          .group()
+          .left(char('*').trim(), action((a, op, b) => a * b))
+          .left(char('/').trim(), action((a, op, b) => a / b));
+      builder
+          .group()
+          .left(char('+').trim(), action((a, op, b) => a + b))
+          .left(char('-').trim(), action((a, op, b) => a - b));
       root.set(builder.build());
       return root.end();
     }
@@ -1256,361 +1323,257 @@ main() {
     var parser = build(attachAction: false);
     var evaluator = build(attachAction: true);
     test('number', () {
-      expect(evaluator
-          .parse('0')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('0.0')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('1')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('1.2')
-          .value, closeTo(1.2, epsilon));
-      expect(evaluator
-          .parse('34')
-          .value, closeTo(34, epsilon));
-      expect(evaluator
-          .parse('34.7')
-          .value, closeTo(34.7, epsilon));
-      expect(evaluator
-          .parse('56.78')
-          .value, closeTo(56.78, epsilon));
+      expect(evaluator.parse('0').value, closeTo(0, epsilon));
+      expect(evaluator.parse('0.0').value, closeTo(0, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1.2').value, closeTo(1.2, epsilon));
+      expect(evaluator.parse('34').value, closeTo(34, epsilon));
+      expect(evaluator.parse('34.7').value, closeTo(34.7, epsilon));
+      expect(evaluator.parse('56.78').value, closeTo(56.78, epsilon));
     });
     test('number negative', () {
-      expect(evaluator
-          .parse('-1')
-          .value, closeTo(-1, epsilon));
-      expect(evaluator
-          .parse('-1.2')
-          .value, closeTo(-1.2, epsilon));
+      expect(evaluator.parse('-1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('-1.2').value, closeTo(-1.2, epsilon));
     });
     test('number parse', () {
-      expect(parser
-          .parse('0')
-          .value, '0');
-      expect(parser
-          .parse('-1')
-          .value, ['-', '1']);
+      expect(parser.parse('0').value, '0');
+      expect(parser.parse('-1').value, ['-', '1']);
     });
     test('add', () {
-      expect(evaluator
-          .parse('1 + 2')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('2 + 1')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('1 + 2.3')
-          .value, closeTo(3.3, epsilon));
-      expect(evaluator
-          .parse('2.3 + 1')
-          .value, closeTo(3.3, epsilon));
-      expect(evaluator
-          .parse('1 + -2')
-          .value, closeTo(-1, epsilon));
-      expect(evaluator
-          .parse('-2 + 1')
-          .value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1 + 2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('2 + 1').value, closeTo(3, epsilon));
+      expect(evaluator.parse('1 + 2.3').value, closeTo(3.3, epsilon));
+      expect(evaluator.parse('2.3 + 1').value, closeTo(3.3, epsilon));
+      expect(evaluator.parse('1 + -2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('-2 + 1').value, closeTo(-1, epsilon));
     });
     test('add many', () {
-      expect(evaluator
-          .parse('1')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('1 + 2')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('1 + 2 + 3')
-          .value, closeTo(6, epsilon));
-      expect(evaluator
-          .parse('1 + 2 + 3 + 4')
-          .value, closeTo(10, epsilon));
-      expect(evaluator
-          .parse('1 + 2 + 3 + 4 + 5')
-          .value, closeTo(15, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 + 2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('1 + 2 + 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('1 + 2 + 3 + 4').value, closeTo(10, epsilon));
+      expect(evaluator.parse('1 + 2 + 3 + 4 + 5').value, closeTo(15, epsilon));
     });
     test('add parse', () {
-      expect(parser
-          .parse('1 + 2 + 3')
-          .value, [['1', '+', '2'], '+', '3']);
+      expect(parser.parse('1 + 2 + 3').value, [
+        ['1', '+', '2'],
+        '+',
+        '3'
+      ]);
     });
     test('sub', () {
-      expect(evaluator
-          .parse('1 - 2')
-          .value, closeTo(-1, epsilon));
-      expect(evaluator
-          .parse('1.2 - 1.2')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('1 - -2')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('-1 - -2')
-          .value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 - 2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1.2 - 1.2').value, closeTo(0, epsilon));
+      expect(evaluator.parse('1 - -2').value, closeTo(3, epsilon));
+      expect(evaluator.parse('-1 - -2').value, closeTo(1, epsilon));
     });
     test('sub many', () {
-      expect(evaluator
-          .parse('1')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('1 - 2')
-          .value, closeTo(-1, epsilon));
-      expect(evaluator
-          .parse('1 - 2 - 3')
-          .value, closeTo(-4, epsilon));
-      expect(evaluator
-          .parse('1 - 2 - 3 - 4')
-          .value, closeTo(-8, epsilon));
-      expect(evaluator
-          .parse('1 - 2 - 3 - 4 - 5')
-          .value, closeTo(-13, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('1 - 2').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1 - 2 - 3').value, closeTo(-4, epsilon));
+      expect(evaluator.parse('1 - 2 - 3 - 4').value, closeTo(-8, epsilon));
+      expect(evaluator.parse('1 - 2 - 3 - 4 - 5').value, closeTo(-13, epsilon));
     });
     test('sub parse', () {
-      expect(parser
-          .parse('1 - 2 - 3')
-          .value, [['1', '-', '2'], '-', '3']);
+      expect(parser.parse('1 - 2 - 3').value, [
+        ['1', '-', '2'],
+        '-',
+        '3'
+      ]);
     });
     test('mul', () {
-      expect(evaluator
-          .parse('2 * 3')
-          .value, closeTo(6, epsilon));
-      expect(evaluator
-          .parse('2 * -4')
-          .value, closeTo(-8, epsilon));
+      expect(evaluator.parse('2 * 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('2 * -4').value, closeTo(-8, epsilon));
     });
     test('mul many', () {
-      expect(evaluator
-          .parse('1 * 2')
-          .value, closeTo(2, epsilon));
-      expect(evaluator
-          .parse('1 * 2 * 3')
-          .value, closeTo(6, epsilon));
-      expect(evaluator
-          .parse('1 * 2 * 3 * 4')
-          .value, closeTo(24, epsilon));
-      expect(evaluator
-          .parse('1 * 2 * 3 * 4 * 5')
-          .value, closeTo(120, epsilon));
+      expect(evaluator.parse('1 * 2').value, closeTo(2, epsilon));
+      expect(evaluator.parse('1 * 2 * 3').value, closeTo(6, epsilon));
+      expect(evaluator.parse('1 * 2 * 3 * 4').value, closeTo(24, epsilon));
+      expect(evaluator.parse('1 * 2 * 3 * 4 * 5').value, closeTo(120, epsilon));
     });
     test('mul parse', () {
-      expect(parser
-          .parse('1 * 2 * 3')
-          .value, [['1', '*', '2'], '*', '3']);
+      expect(parser.parse('1 * 2 * 3').value, [
+        ['1', '*', '2'],
+        '*',
+        '3'
+      ]);
     });
     test('div', () {
-      expect(evaluator
-          .parse('12 / 3')
-          .value, closeTo(4, epsilon));
-      expect(evaluator
-          .parse('-16 / -4')
-          .value, closeTo(4, epsilon));
+      expect(evaluator.parse('12 / 3').value, closeTo(4, epsilon));
+      expect(evaluator.parse('-16 / -4').value, closeTo(4, epsilon));
     });
     test('div many', () {
-      expect(evaluator
-          .parse('100 / 2')
-          .value, closeTo(50, epsilon));
-      expect(evaluator
-          .parse('100 / 2 / 2')
-          .value, closeTo(25, epsilon));
-      expect(evaluator
-          .parse('100 / 2 / 2 / 5')
-          .value, closeTo(5, epsilon));
-      expect(evaluator
-          .parse('100 / 2 / 2 / 5 / 5')
-          .value, closeTo(1, epsilon));
+      expect(evaluator.parse('100 / 2').value, closeTo(50, epsilon));
+      expect(evaluator.parse('100 / 2 / 2').value, closeTo(25, epsilon));
+      expect(evaluator.parse('100 / 2 / 2 / 5').value, closeTo(5, epsilon));
+      expect(evaluator.parse('100 / 2 / 2 / 5 / 5').value, closeTo(1, epsilon));
     });
     test('mul parse', () {
-      expect(parser
-          .parse('1 / 2 / 3')
-          .value, [['1', '/', '2'], '/', '3']);
+      expect(parser.parse('1 / 2 / 3').value, [
+        ['1', '/', '2'],
+        '/',
+        '3'
+      ]);
     });
     test('pow', () {
-      expect(evaluator
-          .parse('2 ^ 3')
-          .value, closeTo(8, epsilon));
-      expect(evaluator
-          .parse('-2 ^ 3')
-          .value, closeTo(-8, epsilon));
-      expect(evaluator
-          .parse('-2 ^ -3')
-          .value, closeTo(-0.125, epsilon));
+      expect(evaluator.parse('2 ^ 3').value, closeTo(8, epsilon));
+      expect(evaluator.parse('-2 ^ 3').value, closeTo(-8, epsilon));
+      expect(evaluator.parse('-2 ^ -3').value, closeTo(-0.125, epsilon));
     });
     test('pow many', () {
-      expect(evaluator
-          .parse('4 ^ 3')
-          .value, closeTo(64, epsilon));
-      expect(evaluator
-          .parse('4 ^ 3 ^ 2')
-          .value, closeTo(262144, epsilon));
-      expect(evaluator
-          .parse('4 ^ 3 ^ 2 ^ 1')
-          .value, closeTo(262144, epsilon));
-      expect(evaluator
-          .parse('4 ^ 3 ^ 2 ^ 1 ^ 0')
-          .value, closeTo(262144, epsilon));
+      expect(evaluator.parse('4 ^ 3').value, closeTo(64, epsilon));
+      expect(evaluator.parse('4 ^ 3 ^ 2').value, closeTo(262144, epsilon));
+      expect(evaluator.parse('4 ^ 3 ^ 2 ^ 1').value, closeTo(262144, epsilon));
+      expect(
+          evaluator.parse('4 ^ 3 ^ 2 ^ 1 ^ 0').value, closeTo(262144, epsilon));
     });
     test('pow parse', () {
-      expect(parser
-          .parse('1 ^ 2 ^ 3')
-          .value, ['1', '^', ['2', '^', '3']]);
+      expect(parser.parse('1 ^ 2 ^ 3').value, [
+        '1',
+        '^',
+        ['2', '^', '3']
+      ]);
     });
     test('parens', () {
-      expect(evaluator
-          .parse('(1)')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('(1 + 2)')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('((1))')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('((1 + 2))')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('2 * (3 + 4)')
-          .value, closeTo(14, epsilon));
-      expect(evaluator
-          .parse('(2 + 3) * 4')
-          .value, closeTo(20, epsilon));
-      expect(evaluator
-          .parse('6 / (2 + 4)')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('(2 + 6) / 2')
-          .value, closeTo(4, epsilon));
+      expect(evaluator.parse('(1)').value, closeTo(1, epsilon));
+      expect(evaluator.parse('(1 + 2)').value, closeTo(3, epsilon));
+      expect(evaluator.parse('((1))').value, closeTo(1, epsilon));
+      expect(evaluator.parse('((1 + 2))').value, closeTo(3, epsilon));
+      expect(evaluator.parse('2 * (3 + 4)').value, closeTo(14, epsilon));
+      expect(evaluator.parse('(2 + 3) * 4').value, closeTo(20, epsilon));
+      expect(evaluator.parse('6 / (2 + 4)').value, closeTo(1, epsilon));
+      expect(evaluator.parse('(2 + 6) / 2').value, closeTo(4, epsilon));
     });
     test('priority', () {
-      expect(evaluator
-          .parse('2 * 3 + 4')
-          .value, closeTo(10, epsilon));
-      expect(evaluator
-          .parse('2 + 3 * 4')
-          .value, closeTo(14, epsilon));
-      expect(evaluator
-          .parse('6 / 3 + 4')
-          .value, closeTo(6, epsilon));
-      expect(evaluator
-          .parse('2 + 6 / 2')
-          .value, closeTo(5, epsilon));
+      expect(evaluator.parse('2 * 3 + 4').value, closeTo(10, epsilon));
+      expect(evaluator.parse('2 + 3 * 4').value, closeTo(14, epsilon));
+      expect(evaluator.parse('6 / 3 + 4').value, closeTo(6, epsilon));
+      expect(evaluator.parse('2 + 6 / 2').value, closeTo(5, epsilon));
     });
     test('priority parse', () {
-      expect(parser
-          .parse('2 * 3 + 4')
-          .value, [['2', '*', '3'], '+', '4']);
-      expect(parser
-          .parse('2 + 3 * 4')
-          .value, ['2', '+', ['3', '*', '4']]);
+      expect(parser.parse('2 * 3 + 4').value, [
+        ['2', '*', '3'],
+        '+',
+        '4'
+      ]);
+      expect(parser.parse('2 + 3 * 4').value, [
+        '2',
+        '+',
+        ['3', '*', '4']
+      ]);
     });
     test('postfix add', () {
-      expect(evaluator
-          .parse('0++')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('0++++')
-          .value, closeTo(2, epsilon));
-      expect(evaluator
-          .parse('0++++++')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('0+++1')
-          .value, closeTo(2, epsilon));
-      expect(evaluator
-          .parse('0+++++1')
-          .value, closeTo(3, epsilon));
-      expect(evaluator
-          .parse('0+++++++1')
-          .value, closeTo(4, epsilon));
+      expect(evaluator.parse('0++').value, closeTo(1, epsilon));
+      expect(evaluator.parse('0++++').value, closeTo(2, epsilon));
+      expect(evaluator.parse('0++++++').value, closeTo(3, epsilon));
+      expect(evaluator.parse('0+++1').value, closeTo(2, epsilon));
+      expect(evaluator.parse('0+++++1').value, closeTo(3, epsilon));
+      expect(evaluator.parse('0+++++++1').value, closeTo(4, epsilon));
     });
     test('postfix add parse', () {
-      expect(parser
-          .parse('0++')
-          .value, ['0', '++']);
-      expect(parser
-          .parse('0++++')
-          .value, [['0', '++'], '++']);
-      expect(parser
-          .parse('0++++++')
-          .value, [[['0', '++'], '++'], '++']);
-      expect(parser
-          .parse('0+++1')
-          .value, [['0', '++'], '+', '1']);
-      expect(parser
-          .parse('0+++++1')
-          .value, [[['0', '++'], '++'], '+', '1']);
-      expect(parser
-          .parse('0+++++++1')
-          .value, [[[['0', '++'], '++'], '++'], '+', '1']);
+      expect(parser.parse('0++').value, ['0', '++']);
+      expect(parser.parse('0++++').value, [
+        ['0', '++'],
+        '++'
+      ]);
+      expect(parser.parse('0++++++').value, [
+        [
+          ['0', '++'],
+          '++'
+        ],
+        '++'
+      ]);
+      expect(parser.parse('0+++1').value, [
+        ['0', '++'],
+        '+',
+        '1'
+      ]);
+      expect(parser.parse('0+++++1').value, [
+        [
+          ['0', '++'],
+          '++'
+        ],
+        '+',
+        '1'
+      ]);
+      expect(parser.parse('0+++++++1').value, [
+        [
+          [
+            ['0', '++'],
+            '++'
+          ],
+          '++'
+        ],
+        '+',
+        '1'
+      ]);
     });
     test('postfix sub', () {
-      expect(evaluator
-          .parse('1--')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('2----')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('3------')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('2---1')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('3-----1')
-          .value, closeTo(0, epsilon));
-      expect(evaluator
-          .parse('4-------1')
-          .value, closeTo(0, epsilon));
+      expect(evaluator.parse('1--').value, closeTo(0, epsilon));
+      expect(evaluator.parse('2----').value, closeTo(0, epsilon));
+      expect(evaluator.parse('3------').value, closeTo(0, epsilon));
+      expect(evaluator.parse('2---1').value, closeTo(0, epsilon));
+      expect(evaluator.parse('3-----1').value, closeTo(0, epsilon));
+      expect(evaluator.parse('4-------1').value, closeTo(0, epsilon));
     });
     test('postfix sub parse', () {
-      expect(parser
-          .parse('0--')
-          .value, ['0', '--']);
-      expect(parser
-          .parse('0----')
-          .value, [['0', '--'], '--']);
-      expect(parser
-          .parse('0------')
-          .value, [[['0', '--'], '--'], '--']);
-      expect(parser
-          .parse('0---1')
-          .value, [['0', '--'], '-', '1']);
-      expect(parser
-          .parse('0-----1')
-          .value, [[['0', '--'], '--'], '-', '1']);
-      expect(parser
-          .parse('0-------1')
-          .value, [[[['0', '--'], '--'], '--'], '-', '1']);
+      expect(parser.parse('0--').value, ['0', '--']);
+      expect(parser.parse('0----').value, [
+        ['0', '--'],
+        '--'
+      ]);
+      expect(parser.parse('0------').value, [
+        [
+          ['0', '--'],
+          '--'
+        ],
+        '--'
+      ]);
+      expect(parser.parse('0---1').value, [
+        ['0', '--'],
+        '-',
+        '1'
+      ]);
+      expect(parser.parse('0-----1').value, [
+        [
+          ['0', '--'],
+          '--'
+        ],
+        '-',
+        '1'
+      ]);
+      expect(parser.parse('0-------1').value, [
+        [
+          [
+            ['0', '--'],
+            '--'
+          ],
+          '--'
+        ],
+        '-',
+        '1'
+      ]);
     });
     test('negate', () {
-      expect(evaluator
-          .parse('1')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('-1')
-          .value, closeTo(-1, epsilon));
-      expect(evaluator
-          .parse('--1')
-          .value, closeTo(1, epsilon));
-      expect(evaluator
-          .parse('---1')
-          .value, closeTo(-1, epsilon));
+      expect(evaluator.parse('1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('-1').value, closeTo(-1, epsilon));
+      expect(evaluator.parse('--1').value, closeTo(1, epsilon));
+      expect(evaluator.parse('---1').value, closeTo(-1, epsilon));
     });
     test('negate parse', () {
-      expect(parser
-          .parse('1')
-          .value, '1');
-      expect(parser
-          .parse('-1')
-          .value, ['-', '1']);
-      expect(parser
-          .parse('--1')
-          .value, ['-', ['-', '1']]);
-      expect(parser
-          .parse('---1')
-          .value, ['-', ['-', ['-', '1']]]);
+      expect(parser.parse('1').value, '1');
+      expect(parser.parse('-1').value, ['-', '1']);
+      expect(parser.parse('--1').value, [
+        '-',
+        ['-', '1']
+      ]);
+      expect(parser.parse('---1').value, [
+        '-',
+        [
+          '-',
+          ['-', '1']
+        ]
+      ]);
     });
   });
   group('tutorial', () {
@@ -1618,8 +1581,14 @@ main() {
       var id = letter().seq(letter().or(digit()).star());
       var id1 = id.parse('yeah');
       var id2 = id.parse('f12');
-      expect(id1.value, ['y', ['e', 'a', 'h']]);
-      expect(id2.value, ['f', ['1', '2']]);
+      expect(id1.value, [
+        'y',
+        ['e', 'a', 'h']
+      ]);
+      expect(id2.value, [
+        'f',
+        ['1', '2']
+      ]);
       var id3 = id.parse('123');
       expect(id3.message, 'letter expected');
       expect(id3.position, 0);
@@ -1646,12 +1615,8 @@ main() {
         return values[1];
       }).or(number));
       var start = term.end();
-      expect(7, start
-          .parse('1 + 2 * 3')
-          .value);
-      expect(9, start
-          .parse('(1 + 2) * 3')
-          .value);
+      expect(7, start.parse('1 + 2 * 3').value);
+      expect(9, start.parse('(1 + 2) * 3').value);
     });
   });
   group('composite (deprecated)', () {
@@ -1704,15 +1669,25 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', char('a'));
       });
-      expect(() => parser.def('other', char('b')),
-          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
-      expect(() => parser.redef('start', char('b')),
-          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
-      expect(() => parser.action('start', (each) => each),
-          throwsA((e) => e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(
+          () => parser.def('other', char('b')),
+          throwsA((e) =>
+              e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(
+          () => parser.redef('start', char('b')),
+          throwsA((e) =>
+              e is CompletedParserError)); // ignore: deprecated_member_use
+      expect(
+          () => parser.action('start', (each) => each),
+          throwsA((e) =>
+              e is CompletedParserError)); // ignore: deprecated_member_use
     });
     test('reference completed', () {
-      var parsers = {'start': char('a'), 'for_b': char('b'), 'for_c': char('c')};
+      var parsers = {
+        'start': char('a'),
+        'for_b': char('b'),
+        'for_c': char('c')
+      };
       // ignore: deprecated_member_use
       var parser = new PluggableCompositeParser((self) {
         for (var key in parsers.keys) {
@@ -1752,8 +1727,10 @@ main() {
     });
     test('undefined start', () {
       // ignore: deprecated_member_use
-      expect(() => new PluggableCompositeParser((self) {}),
-          throwsA((e) => e is UndefinedProductionError)); // ignore: deprecated_member_use
+      expect(
+          () => new PluggableCompositeParser((self) {}),
+          throwsA((e) =>
+              e is UndefinedProductionError)); // ignore: deprecated_member_use
     });
     test('undefined redef', () {
       // ignore: deprecated_member_use
@@ -1761,7 +1738,8 @@ main() {
         self.def('start', char('a'));
         expect(
             () => self.redef('star1', char('b')),
-            throwsA((e) => eis UndefinedProductionError)); // ignore: deprecated_member_use
+            throwsA((e) => e
+                is UndefinedProductionError)); // ignore: deprecated_member_use
       });
     });
     test('example (lambda)', () {
@@ -1769,14 +1747,26 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('expression').end());
         self.def('variable', letter().seq(word().star()).flatten().trim());
-        self.def('expression',
-            self.ref('variable').or(self.ref('abstraction')).or(self.ref('application')));
-        self.def('abstraction',
-            char('\\').trim().seq(self.ref('variable')).seq(char('.').trim()).seq(
-                self.ref('expression')));
-        self.def('application',
-            char('(').trim().seq(self.ref('expression')).seq(self.ref('expression')).seq(
-                char(')').trim()));
+        self.def(
+            'expression',
+            self
+                .ref('variable')
+                .or(self.ref('abstraction'))
+                .or(self.ref('application')));
+        self.def(
+            'abstraction',
+            char('\\')
+                .trim()
+                .seq(self.ref('variable'))
+                .seq(char('.').trim())
+                .seq(self.ref('expression')));
+        self.def(
+            'application',
+            char('(')
+                .trim()
+                .seq(self.ref('expression'))
+                .seq(self.ref('expression'))
+                .seq(char(')').trim()));
       });
       expect(parser.accept('x'), isTrue);
       expect(parser.accept('xy'), isTrue);
@@ -1793,15 +1783,23 @@ main() {
       var parser = new PluggableCompositeParser((self) {
         self.def('start', self.ref('terms').end());
         self.def('terms', self.ref('addition').or(self.ref('factors')));
-        self.def('addition', self.ref('factors').separatedBy(char('+').or(char('-')).trim()));
+        self.def('addition',
+            self.ref('factors').separatedBy(char('+').or(char('-')).trim()));
         self.def('factors', self.ref('multiplication').or(self.ref('power')));
-        self.def('multiplication', self.ref('power').separatedBy(char('*').or(char('/')).trim()));
+        self.def('multiplication',
+            self.ref('power').separatedBy(char('*').or(char('/')).trim()));
         self.def('power', self.ref('primary').separatedBy(char('^').trim()));
         self.def('primary', self.ref('number').or(self.ref('parentheses')));
-        self.def('number',
-            char('-').optional().seq(digit().plus()).seq(char('.').seq(digit().plus()).optional())
-                .flatten().trim());
-        self.def('parentheses', char('(').trim().seq(self.ref('terms')).seq(char(')').trim()));
+        self.def(
+            'number',
+            char('-')
+                .optional()
+                .seq(digit().plus())
+                .seq(char('.').seq(digit().plus()).optional())
+                .flatten()
+                .trim());
+        self.def('parentheses',
+            char('(').trim().seq(self.ref('terms')).seq(char(')').trim()));
       });
       expect(parser.accept('1'), isTrue);
       expect(parser.accept('12'), isTrue);

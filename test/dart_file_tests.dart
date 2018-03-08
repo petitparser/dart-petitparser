@@ -14,7 +14,8 @@ final grammar = new DartGrammar();
 
 void generateTests(String title, Directory root) {
   group(title, () {
-    var files = root.listSync(recursive: true)
+    var files = root
+        .listSync(recursive: true)
         .where((file) => file is File && file.path.endsWith('.dart'))
         .map((file) => file as File);
     for (var file in files) {

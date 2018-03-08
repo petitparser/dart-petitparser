@@ -18,9 +18,9 @@ void main() {
       expect(parser.parse('["a", "b", "c"]').value, ['a', 'b', 'c']);
     });
     test('nested', () {
-      expect(parser
-          .parse('[["a"]]')
-          .value, [['a']]);
+      expect(parser.parse('[["a"]]').value, [
+        ['a']
+      ]);
     });
     test('invalid', () {
       expect(parser.parse('[').isFailure, isTrue);
@@ -39,14 +39,13 @@ void main() {
       expect(parser.parse('{"a": 1}').value, {'a': 1});
     });
     test('large', () {
-      expect(parser
-          .parse('{"a": 1, "b": 2, "c": 3}')
-          .value, {'a': 1, 'b': 2, 'c': 3});
+      expect(parser.parse('{"a": 1, "b": 2, "c": 3}').value,
+          {'a': 1, 'b': 2, 'c': 3});
     });
     test('nested', () {
-      expect(parser
-          .parse('{"obj": {"a": 1}}')
-          .value, {'obj': {'a': 1}});
+      expect(parser.parse('{"obj": {"a": 1}}').value, {
+        'obj': {'a': 1}
+      });
     });
     test('invalid', () {
       expect(parser.parse('{').isFailure, isTrue);
@@ -144,7 +143,8 @@ void main() {
   });
   group('browser', () {
     test('Internet Explorer', () {
-      var input = '{"recordset": null, "type": "change", "fromElement": null, "toElement": null, '
+      var input =
+          '{"recordset": null, "type": "change", "fromElement": null, "toElement": null, '
           '"altLeft": false, "keyCode": 0, "repeat": false, "reason": 0, "behaviorCookie": 0, '
           '"contentOverflow": false, "behaviorPart": 0, "dataTransfer": null, "ctrlKey": false, '
           '"shiftLeft": false, "dataFld": "", "qualifier": "", "wheelDelta": 0, "bookmarks": null, '
@@ -156,7 +156,8 @@ void main() {
       expect(parser.parse(input).isSuccess, isTrue);
     });
     test('FireFox', () {
-      var input = '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
+      var input =
+          '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
           '"timeStamp": 0, "CAPTURING_PHASE": 1, "AT_TARGET": 2, "BUBBLING_PHASE": 3, '
           '"isTrusted": true, "MOUSEDOWN": 1, "MOUSEUP": 2, "MOUSEOVER": 4, "MOUSEOUT": 8, '
           '"MOUSEMOVE": 16, "MOUSEDRAG": 32, "CLICK": 64, "DBLCLICK": 128, "KEYDOWN": 256, '
@@ -170,7 +171,8 @@ void main() {
       expect(parser.parse(input).isSuccess, isTrue);
     });
     test('WebKit', () {
-      var input = '{"returnValue": true, "timeStamp": 1226697417289, "eventPhase": 2, "type": '
+      var input =
+          '{"returnValue": true, "timeStamp": 1226697417289, "eventPhase": 2, "type": '
           '"change", "cancelable": false, "bubbles": true, "cancelBubble": false, "MOUSEOUT": 8, '
           '"FOCUS": 4096, "CHANGE": 32768, "MOUSEMOVE": 16, "AT_TARGET": 2, "SELECT": 16384, '
           '"BLUR": 8192, "KEYUP": 512, "MOUSEDOWN": 1, "MOUSEDRAG": 32, "BUBBLING_PHASE": 3, '

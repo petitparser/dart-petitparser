@@ -73,11 +73,25 @@ void main() {
     });
     test('String', () {
       var result = grammar.parse('"foo"').value;
-      expect(result, [['"', ['f', 'o', 'o'], '"']]);
+      expect(result, [
+        [
+          '"',
+          ['f', 'o', 'o'],
+          '"'
+        ]
+      ]);
     });
     test('String with escape', () {
       var result = grammar.parse('"\\""').value;
-      expect(result, [['"', [['\\', '"']], '"']]);
+      expect(result, [
+        [
+          '"',
+          [
+            ['\\', '"']
+          ],
+          '"'
+        ]
+      ]);
     });
     test('Number integer', () {
       var result = grammar.parse('123').value;
@@ -101,27 +115,60 @@ void main() {
     });
     test('List empty', () {
       var result = grammar.parse('()').value;
-      expect(result, [['(', [], ')']]);
+      expect(result, [
+        ['(', [], ')']
+      ]);
     });
     test('List empty []', () {
       var result = grammar.parse('[]').value;
-      expect(result, [['[', [], ']']]);
+      expect(result, [
+        ['[', [], ']']
+      ]);
     });
     test('List empty {}', () {
       var result = grammar.parse('{}').value;
-      expect(result, [['{', [], '}']]);
+      expect(result, [
+        ['{', [], '}']
+      ]);
     });
     test('List one element', () {
       var result = grammar.parse('(1)').value;
-      expect(result, [['(', ['1', []], ')']]);
+      expect(result, [
+        [
+          '(',
+          ['1', []],
+          ')'
+        ]
+      ]);
     });
     test('List two elements', () {
       var result = grammar.parse('(1 2)').value;
-      expect(result, [['(', ['1', ['2', []]], ')']]);
+      expect(result, [
+        [
+          '(',
+          [
+            '1',
+            ['2', []]
+          ],
+          ')'
+        ]
+      ]);
     });
     test('List three elements', () {
       var result = grammar.parse('(+ 1 2)').value;
-      expect(result, [['(', ['+', ['1', ['2', []]]], ')']]);
+      expect(result, [
+        [
+          '(',
+          [
+            '+',
+            [
+              '1',
+              ['2', []]
+            ]
+          ],
+          ')'
+        ]
+      ]);
     });
   });
   group('Parser', () {
@@ -441,7 +488,8 @@ void main() {
       expect(exec('(cons 1 null)'), new Cons(1, null));
       expect(exec('(cons null 2)'), new Cons(null, 2));
       expect(exec('(cons null null)'), new Cons(null, null));
-      expect(exec('(cons 1 (cons 2 (cons 3 null)))'), new Cons(1, new Cons(2, new Cons(3))));
+      expect(exec('(cons 1 (cons 2 (cons 3 null)))'),
+          new Cons(1, new Cons(2, new Cons(3))));
     });
     test('Car', () {
       expect(exec('(car null)'), isNull);
@@ -517,10 +565,12 @@ void main() {
   group('Examples', () {
     test('Fibonacci', () {
       var env = standard.create();
-      exec('(define (fib n)'
+      exec(
+          '(define (fib n)'
           '  (if (<= n 1)'
           '    1'
-          '    (+ (fib (- n 1)) (fib (- n 2)))))', env);
+          '    (+ (fib (- n 1)) (fib (- n 2)))))',
+          env);
       expect(exec('(fib 0)', env), 1);
       expect(exec('(fib 1)', env), 1);
       expect(exec('(fib 2)', env), 2);
@@ -530,18 +580,22 @@ void main() {
     });
     test('Closure', () {
       var env = standard.create();
-      exec('(define (mul n)'
-          '  (lambda (x) (* n x)))', env);
+      exec(
+          '(define (mul n)'
+          '  (lambda (x) (* n x)))',
+          env);
       expect(exec('((mul 2) 3)', env), 6);
       expect(exec('((mul 3) 4)', env), 12);
       expect(exec('((mul 4) 5)', env), 20);
     });
     test('Object', () {
       var env = standard.create();
-      exec('(define (counter start)'
+      exec(
+          '(define (counter start)'
           '  (let ((count start))'
           '    (lambda ()'
-          '      (set! count (+ count 1)))))', env);
+          '      (set! count (+ count 1)))))',
+          env);
       exec('(define a (counter 10))', env);
       exec('(define b (counter 20))', env);
       expect(exec('(a)', env), 11);
