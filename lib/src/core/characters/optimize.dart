@@ -9,7 +9,7 @@ CharacterPredicate optimizedString(String string) {
   return optimizedRanges(string.codeUnits.map((value) => new RangeCharPredicate(value, value)));
 }
 
-CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
+CharacterPredicate optimizedRanges(Iterable ranges) {
   // 1. sort the ranges
   List<RangeCharPredicate> sortedRanges = new List.from(ranges, growable: false);
   sortedRanges.sort((first, second) {

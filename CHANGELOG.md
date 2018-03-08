@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.1
+
+* Fixed Dart 2.0 strong mode error (parseOn method in
+  'core/repeaters/possesive.dart' is not returning the correct Iterable)
+
 ## 1.7.0
 
 * Dart 2.0 compatibility.
