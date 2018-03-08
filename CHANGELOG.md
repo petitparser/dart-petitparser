@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.1
+
+* Fixed Dart 2.0 strong mode error.
+
 ## 1.7.0
 
 * Dart 2.0 compatibility.

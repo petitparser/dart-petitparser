@@ -17,15 +17,23 @@ Parser pattern(String element, [String message]) {
 
 Parser _createPatternParser() {
   var single = any()
-      .map((Object element) => new RangeCharPredicate(toCharCode(element), toCharCode(element)));
-  var multiple = any().seq(char('-')).seq(any()).map((List<Object> elements) =>
-      new RangeCharPredicate(toCharCode(elements[0]), toCharCode(elements[2])));
-  var positive = multiple
+      .map((String element) {
+        return new RangeCharPredicate(toCharCode(element), toCharCode(element));
+      });
+  var range = any().seq(char('-')).seq(any())
+      .map((List<String> elements) {
+        return new RangeCharPredicate(toCharCode(elements[0]), toCharCode(elements[2]));
+      });
+  var positive = range
       .or(single)
       .plus()
-      .map(optimizedRanges);
-  return char('^').optional().seq(positive).map((List<RangeCharPredicate> predicates) =>
-      predicates[0] == null ? predicates[1] : new NotCharacterPredicate(predicates[1]));
+      .map((List<RangeCharPredicate> predicates) {
+        return optimizedRanges(predicates);
+      });
+  return char('^').optional().seq(positive)
+      .map((List<RangeCharPredicate> predicates) {
+        return predicates[0] == null ? predicates[1] : new NotCharacterPredicate(predicates[1]);
+      });
 }
 
 final _patternParser = _createPatternParser();
