@@ -1707,8 +1707,8 @@ main() {
       try {
         parser.ref('star1');
         fail('Expected UndefinedProductionError to be thrown');
-      } on UndefinedProductionError catch (error) {
         // ignore: deprecated_member_use
+      } on UndefinedProductionError catch (error) {
         expect(error.toString(), 'Undefined production: star1');
       }
     });
@@ -1719,15 +1719,15 @@ main() {
         try {
           self.def('start', char('b'));
           fail('Expected UndefinedProductionError to be thrown');
-        } on RedefinedProductionError catch (error) {
           // ignore: deprecated_member_use
+        } on RedefinedProductionError catch (error) {
           expect(error.toString(), 'Redefined production: start');
         }
       });
     });
     test('undefined start', () {
-      // ignore: deprecated_member_use
       expect(
+          // ignore: deprecated_member_use
           () => new PluggableCompositeParser((self) {}),
           throwsA((e) =>
               e is UndefinedProductionError)); // ignore: deprecated_member_use

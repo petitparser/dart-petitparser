@@ -8,8 +8,8 @@ import 'package:petitparser/src/core/parser.dart';
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
   /// Defines a new primitive or literal [parser]. Evaluates the optional [action].
+  // ignore: avoid_returning_this
   ExpressionGroup primitive(Parser parser, [action(value)]) {
-    // ignore: avoid_returning_this
     _primitives.add(action != null ? parser.map(action) : parser);
     return this;
   }
@@ -22,8 +22,8 @@ class ExpressionGroup {
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
+  // ignore: avoid_returning_this
   ExpressionGroup prefix(Parser parser, [action(operator, value)]) {
-    // ignore: avoid_returning_this
     action ??= (operator, value) => [operator, value];
     _prefix
         .add(parser.map((operator) => new ExpressionResult(operator, action)));
@@ -47,8 +47,8 @@ class ExpressionGroup {
 
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
+  // ignore: avoid_returning_this
   ExpressionGroup postfix(Parser parser, [action(value, operator)]) {
-    // ignore: avoid_returning_this
     action ??= (value, operator) => [value, operator];
     _postfix
         .add(parser.map((operator) => new ExpressionResult(operator, action)));
@@ -72,8 +72,8 @@ class ExpressionGroup {
 
   /// Adds a right-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
+  // ignore: avoid_returning_this
   ExpressionGroup right(Parser parser, [action(left, operator, right)]) {
-    // ignore: avoid_returning_this
     action ??= (left, operator, right) => [left, operator, right];
     _right
         .add(parser.map((operator) => new ExpressionResult(operator, action)));
@@ -99,8 +99,8 @@ class ExpressionGroup {
 
   /// Adds a left-associative operator [parser]. Evaluates the optional [action] with
   /// the parsed `left` term, `operator`, and `right` term.
+  // ignore: avoid_returning_this
   ExpressionGroup left(Parser parser, [action(left, operator, right)]) {
-    // ignore: avoid_returning_this
     action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => new ExpressionResult(operator, action)));
     return this;
