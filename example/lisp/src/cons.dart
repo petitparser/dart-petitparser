@@ -17,7 +17,7 @@ class Cons {
   /// The tail of the cons, if applicable.
   Cons get tail {
     if (cdr is Cons) {
-      return cdr as Cons;
+      return cdr;
     } else if (cdr == null) {
       return null;
     } else {
@@ -38,18 +38,20 @@ class Cons {
     var buffer = new StringBuffer();
     buffer.write('(');
     var current = this;
-    while (current is Cons) {
+    while (true) {
       buffer.write(current.car);
-      current = current.cdr;
-      if (current != null) {
+      if (current.cdr is Cons) {
+        current = current.cdr;
         buffer.write(' ');
+      } else if (current.cdr == null) {
+        buffer.write(')');
+        return buffer.toString();
+      } else {
+        buffer.write(' . ');
+        buffer.write(current.cdr);
+        buffer.write(')');
+        return buffer.toString();
       }
     }
-    if (current != null) {
-      buffer.write('. ');
-      buffer.write(current);
-    }
-    buffer.write(')');
-    return buffer.toString();
   }
 }

@@ -826,34 +826,34 @@ main() {
     var parser =
         any().map((String value) => value.codeUnitAt(0)).token().star();
     var buffer = '1\r12\r\n123\n1234';
-    List<Token> result = parser.parse(buffer).value;
+    var result = new List<Token>.from(parser.parse(buffer).value);
     test('value', () {
       var expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
-      expect(result.map((Token token) => token.value), expected);
+      expect(result.map((token) => token.value), expected);
     });
     test('buffer', () {
       var expected = new List.filled(buffer.length, buffer);
-      expect(result.map((Token token) => token.buffer), expected);
+      expect(result.map((token) => token.buffer), expected);
     });
     test('start', () {
       var expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-      expect(result.map((Token token) => token.start), expected);
+      expect(result.map((token) => token.start), expected);
     });
     test('stop', () {
       var expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-      expect(result.map((Token token) => token.stop), expected);
+      expect(result.map((token) => token.stop), expected);
     });
     test('length', () {
       var expected = new List.filled(buffer.length, 1);
-      expect(result.map((Token token) => token.length), expected);
+      expect(result.map((token) => token.length), expected);
     });
     test('line', () {
       var expected = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4];
-      expect(result.map((Token token) => token.line), expected);
+      expect(result.map((token) => token.line), expected);
     });
     test('column', () {
       var expected = [1, 2, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
-      expect(result.map((Token token) => token.column), expected);
+      expect(result.map((token) => token.column), expected);
     });
     test('input', () {
       var expected = [
@@ -872,7 +872,7 @@ main() {
         '3',
         '4'
       ];
-      expect(result.map((Token token) => token.input), expected);
+      expect(result.map((token) => token.input), expected);
     });
     test('unique', () {
       expect(new Set.from(result).length, result.length);
@@ -1274,33 +1274,28 @@ main() {
       var action = attachAction ? (func) => func : (func) => null;
       var root = failure().settable();
       var builder = new ExpressionBuilder();
-      builder
-          .group()
-          .primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
-          .primitive(
-            digit()
-                .plus()
-                .seq(char('.').seq(digit().plus()).optional())
-                .flatten()
-                .trim(),
-            action(double.parse),
-          );
-      builder.group().prefix(char('-').trim(), action((op, a) => -a));
-      builder
-          .group()
-          .postfix(string('++').trim(), action((a, op) => ++a))
-          .postfix(string('--').trim(), action((a, op) => --a));
-      builder
-          .group()
-          .right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
-      builder
-          .group()
-          .left(char('*').trim(), action((a, op, b) => a * b))
-          .left(char('/').trim(), action((a, op, b) => a / b));
-      builder
-          .group()
-          .left(char('+').trim(), action((a, op, b) => a + b))
-          .left(char('-').trim(), action((a, op, b) => a - b));
+      builder.group()
+        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
+        ..primitive(
+          digit()
+              .plus()
+              .seq(char('.').seq(digit().plus()).optional())
+              .flatten()
+              .trim(),
+          action(double.parse),
+        );
+      builder.group()..prefix(char('-').trim(), action((op, a) => -a));
+      builder.group()
+        ..postfix(string('++').trim(), action((a, op) => ++a))
+        ..postfix(string('--').trim(), action((a, op) => --a));
+      builder.group()
+        ..right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+      builder.group()
+        ..left(char('*').trim(), action((a, op, b) => a * b))
+        ..left(char('/').trim(), action((a, op, b) => a / b));
+      builder.group()
+        ..left(char('+').trim(), action((a, op, b) => a + b))
+        ..left(char('-').trim(), action((a, op, b) => a - b));
       root.set(builder.build());
       return root.end();
     }

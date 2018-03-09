@@ -23,10 +23,10 @@ void main() {
   final standard = new StandardEnvironment(root);
   final environment = standard.create();
 
-  final input = querySelector('#input') as TextAreaElement;
-  final output = querySelector('#output') as TextAreaElement;
-  final transcript = querySelector('#transcript');
-  final inspector = querySelector('#inspector');
+  final TextAreaElement input = querySelector('#input');
+  final TextAreaElement output = querySelector('#output');
+  final DivElement transcript = querySelector('#transcript');
+  final DivElement inspector = querySelector('#inspector');
 
   printer = (Object object) {
     transcript.appendText(object.toString());

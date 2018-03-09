@@ -160,57 +160,57 @@ class NativeEnvironment extends Environment {
   }
 
   static _plus(Environment env, Cons args) {
-    var value = eval(env, args.head) as num;
+    num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
-      value += eval(env, args.head) as num;
+      value += eval(env, args.head);
     }
     return value;
   }
 
   static _minus(Environment env, Cons args) {
-    var value = eval(env, args.head) as num;
+    num value = eval(env, args.head);
     if (args.tail == null) {
       return -value;
     }
     for (args = args.tail; args != null; args = args.tail) {
-      value -= eval(env, args.head) as num;
+      value -= eval(env, args.head);
     }
     return value;
   }
 
   static _multiply(Environment env, Cons args) {
-    var value = eval(env, args.head) as num;
+    num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
-      value *= eval(env, args.head) as num;
+      value *= eval(env, args.head);
     }
     return value;
   }
 
   static _divide(Environment env, Cons args) {
-    var value = eval(env, args.head) as num;
+    num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
-      value /= eval(env, args.head) as num;
+      value /= eval(env, args.head);
     }
     return value;
   }
 
   static _modulo(Environment env, Cons args) {
-    var value = eval(env, args.head) as num;
+    num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
-      value %= eval(env, args.head) as num;
+      value %= eval(env, args.head);
     }
     return value;
   }
 
   static _smaller(Environment env, Cons args) {
-    var a = eval(env, args.head) as Comparable;
-    var b = eval(env, args.tail.head) as Comparable;
+    Comparable a = eval(env, args.head);
+    Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) < 0;
   }
 
   static _smallerOrEqual(Environment env, Cons args) {
-    var a = eval(env, args.head) as Comparable;
-    var b = eval(env, args.tail.head) as Comparable;
+    Comparable a = eval(env, args.head);
+    Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) <= 0;
   }
 
@@ -227,14 +227,14 @@ class NativeEnvironment extends Environment {
   }
 
   static _larger(Environment env, Cons args) {
-    var a = eval(env, args.head) as Comparable;
-    var b = eval(env, args.tail.head) as Comparable;
+    Comparable a = eval(env, args.head);
+    Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) > 0;
   }
 
   static _largerOrEqual(Environment env, Cons args) {
-    var a = eval(env, args.head) as Comparable;
-    var b = eval(env, args.tail.head) as Comparable;
+    Comparable a = eval(env, args.head);
+    Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) >= 0;
   }
 

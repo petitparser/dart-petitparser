@@ -23,7 +23,7 @@ class LispParserDefinition extends LispGrammarDefinition {
 
   string() => super
       .string()
-      .map((each) => new String.fromCharCodes(each[1] as Iterable<int>));
+      .map((each) => new String.fromCharCodes(new List<int>.from(each[1])));
   characterEscape() =>
       super.characterEscape().map((each) => each[1].codeUnitAt(0));
   characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
