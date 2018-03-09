@@ -1,5 +1,5 @@
 name: petitparser
-version: 1.7.4
+version: 1.7.5
 author: Lukas Renggli <renggli@gmail.com>
 description: Parser framework that combines ideas from scannnerless
   parsing, parser combinators, parsing expression grammars and packrat
