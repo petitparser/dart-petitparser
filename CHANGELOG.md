@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.4
+
+* Removed deprecated code, and empty beta package.
+
 ## 1.7.3
 
 * Really reformatted all code using dartfmt.
