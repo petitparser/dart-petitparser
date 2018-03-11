@@ -1,10 +1,8 @@
 name: petitparser
 version: 1.7.6
 author: Lukas Renggli <renggli@gmail.com>
-description: Parser framework that combines ideas from scannnerless
-  parsing, parser combinators, parsing expression grammars and packrat
-  parsers to model complex grammars and parsers as objects that can be
-  reconfigured dynamically.
+description: A dynamic parser framework to build efficient gramamars and
+  parsers quickly.
 homepage: https://github.com/petitparser/dart-petitparser
 environment:
   sdk: ">=1.20.0 <2.0.0"
