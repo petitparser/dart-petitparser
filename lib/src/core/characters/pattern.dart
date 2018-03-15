@@ -23,14 +23,11 @@ Parser _createPatternParser() {
     return new RangeCharPredicate(
         toCharCode(elements[0]), toCharCode(elements[2]));
   });
-  var positive =
-      range.or(single).plus().map((List predicates) {
-    return optimizedRanges(new List<RangeCharPredicate>.from(predicates, growable: false));
+  var positive = range.or(single).plus().map((List predicates) {
+    return optimizedRanges(
+        new List<RangeCharPredicate>.from(predicates, growable: false));
   });
-  return char('^')
-      .optional()
-      .seq(positive)
-      .map((List predicates) {
+  return char('^').optional().seq(positive).map((List predicates) {
     return predicates[0] == null
         ? predicates[1]
         : new NotCharacterPredicate(predicates[1]);
