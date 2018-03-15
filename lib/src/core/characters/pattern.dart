@@ -19,18 +19,18 @@ Parser _createPatternParser() {
   var single = any().map((String element) {
     return new RangeCharPredicate(toCharCode(element), toCharCode(element));
   });
-  var range = any().seq(char('-')).seq(any()).map((List<String> elements) {
+  var range = any().seq(char('-')).seq(any()).map((List elements) {
     return new RangeCharPredicate(
         toCharCode(elements[0]), toCharCode(elements[2]));
   });
   var positive =
-      range.or(single).plus().map((List<RangeCharPredicate> predicates) {
+      range.or(single).plus().map((List predicates) {
     return optimizedRanges(predicates);
   });
   return char('^')
       .optional()
       .seq(positive)
-      .map((List<RangeCharPredicate> predicates) {
+      .map((List predicates) {
     return predicates[0] == null
         ? predicates[1]
         : new NotCharacterPredicate(predicates[1]);
