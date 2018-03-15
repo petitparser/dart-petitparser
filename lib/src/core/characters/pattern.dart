@@ -25,7 +25,7 @@ Parser _createPatternParser() {
   });
   var positive =
       range.or(single).plus().map((List predicates) {
-    return optimizedRanges(predicates.cast<RangeCharPredicate>());
+    return optimizedRanges(new List<RangeCharPredicate>.from(predicates, growable: false));
   });
   return char('^')
       .optional()
