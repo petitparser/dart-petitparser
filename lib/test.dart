@@ -4,11 +4,12 @@
 ///
 ///     var json = new JsonParser();
 ///
-///     // verifies that the input gets parsed and all input is consumed
-///     expect('{"a": 1}', accepts(new JsonParser()));
+///     // Verifies that the input gets parsed and all input is consumed:
+///     expect('{"a": 1}', accept(new JsonParser()));
 ///
-///     // verifies that the input gets parsed to a dictionary and that all input is consumed
-///     expect('{"a": 1}', parses(new JsonParser(), {'a': 1}));
+///     // Verifies that the input gets parsed to a dictionary and that all
+///     // input is consumed:
+///     expect('{"a": 1}', parse(new JsonParser(), {'a': 1}));
 
 library petitparser.test_util;
 
@@ -20,7 +21,8 @@ Matcher accept(Parser parser) {
   return parse(parser, predicate((value) => true, 'input'));
 }
 
-/// Returns a matcher that succeeds if the [parser] succeeds and accepts the provided [matcher].
+/// Returns a matcher that succeeds if the [parser] succeeds and accepts the
+/// provided [matcher].
 Matcher parse(Parser parser, matcher, [int position = -1]) {
   return new _Parse(parser, wrapMatcher(matcher), position);
 }
