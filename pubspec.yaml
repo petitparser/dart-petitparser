@@ -1,11 +1,11 @@
 name: petitparser
-version: 1.7.6
+version: 1.7.7
 author: Lukas Renggli <renggli@gmail.com>
 description: A dynamic parser framework to build efficient gramamars and
   parsers quickly.
 homepage: https://github.com/petitparser/dart-petitparser
 environment:
-  sdk: ">=1.20.0 <2.0.0"
+  sdk: ">=1.20.0 <3.0.0"
 dependencies:
   matcher: ^0.12.0
 dev_dependencies:
