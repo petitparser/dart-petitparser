@@ -8,12 +8,12 @@ import 'package:petitparser/src/core/parser.dart';
 /// The token holds the resulting value of the input, the input buffer,
 /// and the start and stop position in the input buffer. It provides many
 /// convenience methods to access the state of the token.
-class Token {
+class Token<T> {
   /// The parsed value of the token.
-  final value;
+  final T value;
 
   /// The parsed buffer of the token.
-  final buffer;
+  final String buffer;
 
   /// The start position of the token in the buffer.
   final int start;
@@ -26,9 +26,7 @@ class Token {
   const Token(this.value, this.buffer, this.start, this.stop);
 
   /// The consumed input of the token.
-  get input => buffer is String
-      ? buffer.substring(start, stop)
-      : buffer.sublist(start, stop);
+  String get input => buffer.substring(start, stop);
 
   /// The length of the token.
   int get length => stop - start;
@@ -73,12 +71,8 @@ class Token {
   }
 
   /// Returns a human readable string representing the [position] index in a [buffer].
-  static String positionString(buffer, int position) {
-    if (buffer is String) {
-      var lineAndColumn = Token.lineAndColumnOf(buffer, position);
-      return '${lineAndColumn[0]}:${lineAndColumn[1]}';
-    } else {
-      return '$position';
-    }
+  static String positionString(String buffer, int position) {
+    var lineAndColumn = lineAndColumnOf(buffer, position);
+    return '${lineAndColumn[0]}:${lineAndColumn[1]}';
   }
 }

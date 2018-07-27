@@ -27,9 +27,7 @@ class PredicateParser extends Parser {
     final start = context.position;
     final stop = start + _length;
     if (stop <= context.buffer.length) {
-      var result = context.buffer is String
-          ? context.buffer.substring(start, stop)
-          : context.buffer.sublist(start, stop);
+      var result = context.buffer.substring(start, stop);
       if (_predicate(result)) {
         return context.success(result, stop);
       }

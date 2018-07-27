@@ -10,7 +10,7 @@ class Context {
   const Context(this.buffer, this.position);
 
   /// The buffer we are working on.
-  final buffer;
+  final String buffer;
 
   /// The current position in the buffer.
   final int position;

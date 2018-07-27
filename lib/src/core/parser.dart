@@ -45,20 +45,20 @@ abstract class Parser {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Result.position] is `0` and [Failure.message] is
   /// ['letter expected'].
-  Result parse(input) => parseOn(new Context(input, 0));
+  Result parse(String input) => parseOn(new Context(input, 0));
 
   /// Tests if the [input] can be successfully parsed.
   ///
   /// For example, `letter().plus().accept('abc')` returns `true`, and
   /// `letter().plus().accept('123')` returns `false`.
-  bool accept(input) => parse(input).isSuccess;
+  bool accept(String input) => parse(input).isSuccess;
 
   /// Returns a list of all successful overlapping parses of the [input].
   ///
   /// For example, `letter().plus().matches('abc de')` results in the list
   /// `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
-  Iterable matches(input) {
+  Iterable matches(String input) {
     var list = [];
     and()
         .map((each) => list.add(each))
@@ -74,7 +74,7 @@ abstract class Parser {
   /// For example, `letter().plus().matchesSkipping('abc de')` results in the
   /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
   /// overlapping parse results.
-  Iterable matchesSkipping(input) {
+  Iterable matchesSkipping(String input) {
     var list = [];
     map((each) => list.add(each)).or(any()).star().parse(input);
     return list;

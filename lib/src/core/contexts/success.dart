@@ -4,7 +4,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 
 /// An immutable parse result in case of a successful parse.
 class Success extends Result {
-  const Success(buffer, position, this.value) : super(buffer, position);
+  const Success(String buffer, int position, this.value) : super(buffer, position);
 
   @override
   bool get isSuccess => true;

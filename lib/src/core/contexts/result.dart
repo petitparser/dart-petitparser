@@ -4,7 +4,7 @@ import 'package:petitparser/src/core/contexts/context.dart';
 
 /// An immutable parse result.
 abstract class Result extends Context {
-  const Result(buffer, position) : super(buffer, position);
+  const Result(String buffer, int position) : super(buffer, position);
 
   /// Returns `true` if this result indicates a parse success.
   bool get isSuccess => false;

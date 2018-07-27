@@ -139,11 +139,6 @@ main() {
       expectSuccess(parser, '123', '123');
       expectSuccess(parser, '1234', '1234');
     });
-    test('flatten() on list', () {
-      var parser = any().plus().flatten();
-      var flatten = parser.parse([1, 2, 3]).value;
-      expect(flatten, [1, 2, 3]);
-    });
     test('token()', () {
       var parser = digit().plus().token();
       expectFailure(parser, '');
@@ -158,17 +153,6 @@ main() {
       expect(token.line, 1);
       expect(token.column, 1);
       expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
-    });
-    test('token() on list', () {
-      var parser = any().plus().token();
-      Token token = parser.parse([1, 2, 3]).value;
-      expect(token.value, [1, 2, 3]);
-      expect(token.buffer, [1, 2, 3]);
-      expect(token.start, 0);
-      expect(token.stop, 3);
-      expect(token.input, [1, 2, 3]);
-      expect(token.length, 3);
-      expect(token.toString(), 'Token[0]: [1, 2, 3]');
     });
     test('map()', () {
       var parser = digit().map((String each) {
@@ -811,15 +795,6 @@ main() {
       expectFailure(parser, '');
       expectFailure(parser, 'f');
       expectFailure(parser, 'Fo');
-    });
-    test('on list', () {
-      var parser =
-          new PredicateParser(2, (list) => list[0] + list[1] == 3, 'sum is 3');
-      var result = parser.matches([0, 1, 2, 3, 0]);
-      expect(result, [
-        [1, 2],
-        [3, 0]
-      ]);
     });
   });
   group('token', () {

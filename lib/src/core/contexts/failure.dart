@@ -5,7 +5,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 
 /// An immutable parse result in case of a failed parse.
 class Failure extends Result {
-  const Failure(buffer, position, this.message) : super(buffer, position);
+  const Failure(String buffer, int position, this.message) : super(buffer, position);
 
   @override
   bool get isFailure => true;
