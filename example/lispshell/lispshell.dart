@@ -85,7 +85,7 @@ void main(List<String> arguments) {
   // process console input
   if (interactiveMode || files.isEmpty) {
     var input = stdin
-        .transform(SYSTEM_ENCODING.decoder)
+        .transform(systemEncoding.decoder)
         .transform(const LineSplitter());
     evalInteractive(lispParser, environment, input, stdout, stderr);
   }

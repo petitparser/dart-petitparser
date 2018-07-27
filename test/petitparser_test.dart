@@ -1270,7 +1270,7 @@ main() {
     });
   });
   group('expression', () {
-    Parser build({attachAction: true}) {
+    Parser build({bool attachAction: true}) {
       var action = attachAction ? (func) => func : (func) => null;
       var root = failure().settable();
       var builder = new ExpressionBuilder();

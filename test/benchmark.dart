@@ -1,6 +1,6 @@
 library petitparser.test.all_benchmark;
 
-import 'dart:convert';
+import 'dart:convert' as convert;
 
 import 'package:petitparser/petitparser.dart';
 
@@ -99,7 +99,7 @@ final Map<String, Function> benchmarks = {
       string, new SequenceParser(new List.filled(string.length, any()))),
 
   // json tests
-  'JSON.decode()': () => JSON.decode(jsonEvent),
+  'JSON.decode()': () => convert.json.decode(jsonEvent),
   'JsonParser()': () => json.parse(jsonEvent).value
 };
 

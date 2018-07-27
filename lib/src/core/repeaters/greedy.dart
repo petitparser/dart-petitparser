@@ -25,7 +25,7 @@ class GreedyRepeatingParser extends LimitedRepeatingParser {
       elements.add(result.value);
       current = result;
     }
-    List<Context> contexts = new List.from([current]);
+    List<Context> contexts = <Context>[current];
     while (max == unbounded || elements.length < max) {
       var result = delegate.parseOn(current);
       if (result.isFailure) {

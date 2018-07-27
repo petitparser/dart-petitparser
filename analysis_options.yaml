@@ -1,5 +1,7 @@
 analyzer:
-  strong-mode: true
+  strong-mode:
+    implicit-casts: true
+    implicit-dynamic: true
 
 linter:
   rules:

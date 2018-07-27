@@ -4,6 +4,10 @@ import 'package:test/test.dart';
 
 import '../example/lisp/lisp.dart';
 
+const isName = const TypeMatcher<Name>();
+const isString = const TypeMatcher<String>();
+const isCons = const TypeMatcher<Cons>();
+
 void main() {
   var native = new NativeEnvironment();
   var standard = new StandardEnvironment(native);
@@ -176,22 +180,22 @@ void main() {
     var atom = definition.build(start: definition.atom);
     test('Name', () {
       var cell = atom.parse('foo').value;
-      expect(cell, const isInstanceOf<Name>());
+      expect(cell, isName);
       expect(cell.toString(), 'foo');
     });
     test('Name for operator', () {
       var cell = atom.parse('+').value;
-      expect(cell, const isInstanceOf<Name>());
+      expect(cell, isName);
       expect(cell.toString(), '+');
     });
     test('Name for special', () {
       var cell = atom.parse('set!').value;
-      expect(cell, const isInstanceOf<Name>());
+      expect(cell, isName);
       expect(cell.toString(), 'set!');
     });
     test('String', () {
       var cell = atom.parse('"foo"').value;
-      expect(cell, const isInstanceOf<String>());
+      expect(cell, isString);
       expect(cell, 'foo');
     });
     test('String with escape', () {
@@ -232,26 +236,26 @@ void main() {
     });
     test('List one element', () {
       var cell = atom.parse('(1)').value;
-      expect(cell, const isInstanceOf<Cons>());
+      expect(cell, isCons);
       expect(cell.head, 1);
       expect(cell.tail, isNull);
     });
     test('List two elements', () {
       var cell = atom.parse('(1 2)').value;
-      expect(cell, const isInstanceOf<Cons>());
+      expect(cell, isCons);
       expect(cell.head, 1);
-      expect(cell.tail, const isInstanceOf<Cons>());
+      expect(cell.tail, isCons);
       expect(cell.tail.head, 2);
       expect(cell.tail.tail, isNull);
     });
     test('List three elements', () {
       var cell = atom.parse('(+ 1 2)').value;
-      expect(cell, const isInstanceOf<Cons>());
-      expect(cell.head, const isInstanceOf<Name>());
+      expect(cell, isCons);
+      expect(cell.head, isName);
       expect(cell.head.toString(), '+');
-      expect(cell.tail, const isInstanceOf<Cons>());
+      expect(cell.tail, isCons);
       expect(cell.tail.head, 1);
-      expect(cell.tail.tail, const isInstanceOf<Cons>());
+      expect(cell.tail.tail, isCons);
       expect(cell.tail.tail.head, 2);
       expect(cell.tail.tail.tail, isNull);
     });

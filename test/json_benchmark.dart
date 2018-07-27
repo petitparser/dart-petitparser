@@ -1,6 +1,6 @@
 library petitparser.test.json_benchmark;
 
-import 'dart:convert';
+import 'dart:convert' as convert;
 
 import '../example/json/json.dart';
 
@@ -34,7 +34,7 @@ const jsonEvent =
 
 final JsonParser json = new JsonParser();
 
-dynamic native(String input) => JSON.decode(input);
+dynamic native(String input) => convert.json.decode(input);
 dynamic custom(String input) => json.parse(input).value;
 
 void main() {
