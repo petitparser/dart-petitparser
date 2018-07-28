@@ -54,7 +54,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
   stringPrimitive() => char('"') & ref(characterPrimitive).star() & char('"');
 }
 
-const jsonEscapeChars = const {
+const jsonEscapeChars = {
   '\\': '\\',
   '/': '/',
   '"': '"',

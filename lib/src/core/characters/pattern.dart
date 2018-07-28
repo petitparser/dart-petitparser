@@ -11,17 +11,16 @@ import 'package:petitparser/src/core/predicates/any.dart';
 
 /// Returns a parser that accepts the given character class pattern.
 Parser pattern(String element, [String message]) {
-  return new CharacterParser(_patternParser.parse(element).value,
+  return CharacterParser(_patternParser.parse(element).value,
       message ?? '[${toReadableString(element)}] expected');
 }
 
 Parser _createPatternParser() {
   var single = any().map((String element) {
-    return new RangeCharPredicate(toCharCode(element), toCharCode(element));
+    return RangeCharPredicate(toCharCode(element), toCharCode(element));
   });
   var range = any().seq(char('-')).seq(any()).map((List elements) {
-    return new RangeCharPredicate(
-        toCharCode(elements[0]), toCharCode(elements[2]));
+    return RangeCharPredicate(toCharCode(elements[0]), toCharCode(elements[2]));
   });
   var positive = range.or(single).plus().map((List predicates) {
     return optimizedRanges(predicates.cast<RangeCharPredicate>());
@@ -29,7 +28,7 @@ Parser _createPatternParser() {
   return char('^').optional().seq(positive).map((List predicates) {
     return predicates[0] == null
         ? predicates[1]
-        : new NotCharacterPredicate(predicates[1]);
+        : NotCharacterPredicate(predicates[1]);
   });
 }
 

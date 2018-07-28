@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 
 import '../example/smalltalk/smalltalk.dart';
 
-var definition = new SmalltalkGrammarDefinition();
-var grammar = new SmalltalkGrammar();
+var definition = SmalltalkGrammarDefinition();
+var grammar = SmalltalkGrammar();
 
 dynamic validate(String source, Function production) {
   var parser = definition.build(start: production).end();

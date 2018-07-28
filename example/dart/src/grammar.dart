@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// Dart grammar.
 class DartGrammar extends GrammarParser {
-  DartGrammar() : super(new DartGrammarDefinition());
+  DartGrammar() : super(DartGrammarDefinition());
 }
 
 /// Dart grammar definition.
@@ -16,7 +16,7 @@ class DartGrammarDefinition extends GrammarDefinition {
       input = ref(input);
     }
     if (input is! Parser || input is TrimmingParser || input is TokenParser) {
-      throw new ArgumentError('Invalid token parser: $input');
+      throw ArgumentError('Invalid token parser: $input');
     }
     return input.token().trim(ref(HIDDEN_STUFF));
   }

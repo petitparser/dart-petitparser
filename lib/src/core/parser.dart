@@ -45,7 +45,7 @@ abstract class Parser {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Result.position] is `0` and [Failure.message] is
   /// ['letter expected'].
-  Result parse(String input) => parseOn(new Context(input, 0));
+  Result parse(String input) => parseOn(Context(input, 0));
 
   /// Tests if the [input] can be successfully parsed.
   ///
@@ -87,7 +87,7 @@ abstract class Parser {
   /// For example, the parser `letter().optional()` accepts a letter as input
   /// and returns that letter. When given something else the parser succeeds as
   /// well, does not consume anything and returns `null`.
-  Parser optional([otherwise]) => new OptionalParser(this, otherwise);
+  Parser optional([otherwise]) => OptionalParser(this, otherwise);
 
   /// Returns a parser that accepts the receiver zero or more times. The
   /// resulting parser returns a list of the parse results of the receiver.
@@ -139,21 +139,21 @@ abstract class Parser {
   /// For example, the parser `letter().repeat(2, 4)` accepts a sequence of
   /// two, three, or four letters and returns the accepted letters as a list.
   Parser repeat(int min, int max) {
-    return new PossessiveRepeatingParser(this, min, max);
+    return PossessiveRepeatingParser(this, min, max);
   }
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a greedy non-blind implementation of
   /// the [Parser.repeat] operator. The [limit] is not consumed.
   Parser repeatGreedy(Parser limit, int min, int max) {
-    return new GreedyRepeatingParser(this, limit, min, max);
+    return GreedyRepeatingParser(this, limit, min, max);
   }
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a lazy non-blind implementation of
   /// the [Parser.repeat] operator. The [limit] is not consumed.
   Parser repeatLazy(Parser limit, int min, int max) {
-    return new LazyRepeatingParser(this, limit, min, max);
+    return LazyRepeatingParser(this, limit, min, max);
   }
 
   /// Returns a parser that accepts the receiver exactly [count] times. The
@@ -172,7 +172,7 @@ abstract class Parser {
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `['a', '1', 'b']`.
-  Parser seq(Parser other) => new SequenceParser([this, other]);
+  Parser seq(Parser other) => SequenceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [Parser.seq] for details.
@@ -188,7 +188,7 @@ abstract class Parser {
   /// `char('a')` will never be activated, because the input is always consumed
   /// `letter()`. This can be problematic if the author intended to attach a
   /// production action to `char('a')`.
-  Parser or(Parser other) => new ChoiceParser([this, other]);
+  Parser or(Parser other) => ChoiceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [Parser.or] for details.
@@ -201,7 +201,7 @@ abstract class Parser {
   /// identifiers that start with an underscore character. Since the predicate
   /// does not consume accepted input, the parser `identifier` is given the
   /// ability to process the complete identifier.
-  Parser and() => new AndParser(this);
+  Parser and() => AndParser(this);
 
   /// Returns a parser (logical not-predicate) that succeeds whenever the
   /// receiver fails, but never consumes input.
@@ -211,7 +211,7 @@ abstract class Parser {
   /// `char('_')` accepts the input, the negation and subsequently the
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
-  Parser not([String message]) => new NotParser(this, message);
+  Parser not([String message]) => NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
   /// receiver.
@@ -227,7 +227,7 @@ abstract class Parser {
   /// For example, the parser `letter().plus().flatten()` returns `'abc'`
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
-  Parser flatten() => new FlattenParser(this);
+  Parser flatten() => FlattenParser(this);
 
   /// Returns a parser that returns a [Token]. The token carries the parsed
   /// value of the receiver [Token.value], as well as the consumed input
@@ -236,7 +236,7 @@ abstract class Parser {
   ///
   /// For example, the parser `letter().plus().token()` returns the token
   /// `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.
-  Parser token() => new TokenParser(this);
+  Parser token() => TokenParser(this);
 
   /// Returns a parser that consumes input before and after the receiver,
   /// discards the excess input and only returns returns the result of the
@@ -247,7 +247,7 @@ abstract class Parser {
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
   Parser trim([Parser left, Parser right]) {
-    return new TrimmingParser(this, left ??= whitespace(), right ??= left);
+    return TrimmingParser(this, left ??= whitespace(), right ??= left);
   }
 
   /// Returns a parser that succeeds only if the receiver consumes the complete
@@ -257,7 +257,7 @@ abstract class Parser {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   Parser end([String message = 'end of input expected']) {
-    return new EndOfInputParser(this, message);
+    return EndOfInputParser(this, message);
   }
 
   /// Returns a parser that points to the receiver, but can be changed to point
@@ -266,7 +266,7 @@ abstract class Parser {
   /// For example, the parser `letter().settable()` behaves exactly the same
   /// as `letter()`, but it can be replaced with another parser using
   /// [SettableParser.set].
-  SettableParser settable() => new SettableParser(this);
+  SettableParser settable() => SettableParser(this);
 
   /// Returns a parser that evaluates a [function] as the production action
   /// on success of the receiver.
@@ -274,7 +274,7 @@ abstract class Parser {
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fail, the
   /// production action is not executed and the failure is passed on.
-  Parser map(Function function) => new ActionParser(this, function);
+  Parser map(Function function) => ActionParser(this, function);
 
   /// Returns a parser that transform a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
@@ -317,9 +317,9 @@ abstract class Parser {
   /// that consumes input like `'1-2-3'` and returns a list of the elements and
   /// separators: `['1', '-', '2', '-', '3']`.
   Parser separatedBy(Parser separator,
-      {bool includeSeparators: true, bool optionalSeparatorAtEnd: false}) {
-    var repeater = new SequenceParser([separator, this]).star();
-    var parser = new SequenceParser(optionalSeparatorAtEnd
+      {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
+    var repeater = SequenceParser([separator, this]).star();
+    var parser = SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional(separator)]
         : [this, repeater]);
     return parser.map((List list) {
@@ -351,7 +351,7 @@ abstract class Parser {
   /// refer to other parsers. This code is supposed to be overridden by parsers
   /// that add other state.
   bool isEqualTo(Parser other, [Set<Parser> seen]) {
-    seen ??= new Set();
+    seen ??= Set();
     if (this == other || seen.contains(this)) {
       return true;
     }

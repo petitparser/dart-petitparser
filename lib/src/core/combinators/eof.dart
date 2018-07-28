@@ -24,7 +24,7 @@ class EndOfInputParser extends DelegateParser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new EndOfInputParser(delegate, _message);
+  Parser copy() => EndOfInputParser(delegate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

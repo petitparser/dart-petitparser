@@ -9,14 +9,14 @@ final identifier = letter() & word().star();
 main() {
   group('continuation', () {
     test('delegation', () {
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         return continuation(context);
       });
       expect(parser.parse('1').isSuccess, isTrue);
       expect(parser.parse('a').isSuccess, isFalse);
     });
     test('divertion', () {
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         return letter().parseOn(context);
       });
       expect(parser.parse('1').isSuccess, isFalse);
@@ -25,7 +25,7 @@ main() {
     test('resume', () {
       var continuations = <ContinuationCallback>[];
       var contexts = <Context>[];
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         continuations.add(continuation);
         contexts.add(context);
         // we have to return something for now
@@ -42,21 +42,21 @@ main() {
       expect(continuations[1](contexts[1]).isSuccess, isFalse);
     });
     test('success', () {
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         return context.success('Always succeed');
       });
       expect(parser.parse('1').isSuccess, isTrue);
       expect(parser.parse('a').isSuccess, isTrue);
     });
     test('failure', () {
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         return context.failure('Always fail');
       });
       expect(parser.parse('1').isSuccess, isFalse);
       expect(parser.parse('a').isSuccess, isFalse);
     });
     test('copy', () {
-      var parser = new ContinuationParser(digit(), (continuation, context) {
+      var parser = ContinuationParser(digit(), (continuation, context) {
         return continuation(context);
       });
       var copy = parser.copy();

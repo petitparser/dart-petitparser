@@ -5,7 +5,7 @@ import 'dart:html';
 import '../lisp/lisp.dart';
 
 void inspect(Element element, Environment environment) {
-  var buffer = new StringBuffer();
+  var buffer = StringBuffer();
   while (environment != null) {
     buffer.write('<ul>');
     for (var symbol in environment.keys) {
@@ -19,8 +19,8 @@ void inspect(Element element, Environment environment) {
 }
 
 void main() {
-  final root = new NativeEnvironment();
-  final standard = new StandardEnvironment(root);
+  final root = NativeEnvironment();
+  final standard = StandardEnvironment(root);
   final environment = standard.create();
 
   final TextAreaElement input = querySelector('#input');

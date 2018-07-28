@@ -8,6 +8,6 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts none of the specified characters.
 Parser noneOf(String chars, [String message]) {
-  return new CharacterParser(new NotCharacterPredicate(optimizedString(chars)),
+  return CharacterParser(NotCharacterPredicate(optimizedString(chars)),
       message ?? 'none of "${toReadableString(chars)}" expected');
 }

@@ -275,7 +275,7 @@ main() {
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
     });
     test('repeat() unbounded', () {
-      var input = new List.filled(100000, 'a');
+      var input = List.filled(100000, 'a');
       var parser = char('a').repeat(2, unbounded);
       expectSuccess(parser, input.join(), input);
     });
@@ -311,8 +311,8 @@ main() {
       expectFailure(parser, 'abcde123', 2, 'digit expected');
     });
     test('repeatGreedy() unbounded', () {
-      var inputLetter = new List.filled(100000, 'a');
-      var inputDigit = new List.filled(100000, '1');
+      var inputLetter = List.filled(100000, 'a');
+      var inputDigit = List.filled(100000, '1');
       var parser = word().repeatGreedy(digit(), 2, unbounded);
       expectSuccess(
           parser, '${inputLetter.join()}1', inputLetter, inputLetter.length);
@@ -347,7 +347,7 @@ main() {
       expectFailure(parser, 'abcde123', 4, 'digit expected');
     });
     test('repeatLazy() unbounded', () {
-      var input = new List.filled(100000, 'a');
+      var input = List.filled(100000, 'a');
       var parser = word().repeatLazy(digit(), 2, unbounded);
       expectSuccess(parser, '${input.join()}1111', input, input.length);
     });
@@ -721,7 +721,7 @@ main() {
       expectFailure(parser, '');
     });
     test('whitespace() unicode', () {
-      var string = new String.fromCharCodes([
+      var string = String.fromCharCodes([
         9,
         10,
         11,
@@ -801,13 +801,13 @@ main() {
     var parser =
         any().map((String value) => value.codeUnitAt(0)).token().star();
     var buffer = '1\r12\r\n123\n1234';
-    var result = new List<Token>.from(parser.parse(buffer).value);
+    var result = List<Token>.from(parser.parse(buffer).value);
     test('value', () {
       var expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
       expect(result.map((token) => token.value), expected);
     });
     test('buffer', () {
-      var expected = new List.filled(buffer.length, buffer);
+      var expected = List.filled(buffer.length, buffer);
       expect(result.map((token) => token.buffer), expected);
     });
     test('start', () {
@@ -819,7 +819,7 @@ main() {
       expect(result.map((token) => token.stop), expected);
     });
     test('length', () {
-      var expected = new List.filled(buffer.length, 1);
+      var expected = List.filled(buffer.length, 1);
       expect(result.map((token) => token.length), expected);
     });
     test('line', () {
@@ -850,7 +850,7 @@ main() {
       expect(result.map((token) => token.input), expected);
     });
     test('unique', () {
-      expect(new Set.from(result).length, result.length);
+      expect(Set.from(result).length, result.length);
     });
     test('equals', () {
       for (var i = 0; i < result.length; i++) {
@@ -864,7 +864,7 @@ main() {
   });
   group('context', () {
     var buffer = 'a\nc';
-    var context = new Context(buffer, 0);
+    var context = Context(buffer, 0);
     test('context', () {
       expect(context.buffer, buffer);
       expect(context.position, 0);
@@ -1074,7 +1074,7 @@ main() {
     test('and()', () => verify(digit().and()));
     test('char()', () => verify(char('a')));
     test('digit()', () => verify(digit()));
-    test('delegate()', () => verify(new DelegateParser(any())));
+    test('delegate()', () => verify(DelegateParser(any())));
     test('end()', () => verify(digit().end()));
     test('epsilon()', () => verify(epsilon()));
     test('failure()', () => verify(failure()));
@@ -1115,10 +1115,10 @@ main() {
     });
   });
   group('definition', () {
-    var grammarDefinition = new ListGrammarDefinition();
-    var parserDefinition = new ListParserDefinition();
-    var tokenDefinition = new TokenizedListGrammarDefinition();
-    var buggedDefinition = new BuggedGrammarDefinition();
+    var grammarDefinition = ListGrammarDefinition();
+    var parserDefinition = ListParserDefinition();
+    var tokenDefinition = TokenizedListGrammarDefinition();
+    var buggedDefinition = BuggedGrammarDefinition();
 
     test('reference without parameters', () {
       var firstReference = grammarDefinition.ref(grammarDefinition.start);
@@ -1211,7 +1211,7 @@ main() {
           isTrue);
     });
     test('lambda example', () {
-      var definition = new LambdaGrammarDefinition();
+      var definition = LambdaGrammarDefinition();
       var parser = definition.build();
       expect(parser.accept('x'), isTrue);
       expect(parser.accept('xy'), isTrue);
@@ -1224,7 +1224,7 @@ main() {
       expect(parser.accept('((x y) z)'), isTrue);
     });
     test('expression example', () {
-      var definition = new ExpressionGrammarDefinition();
+      var definition = ExpressionGrammarDefinition();
       var parser = definition.build();
       expect(parser.accept('1'), isTrue);
       expect(parser.accept('12'), isTrue);
@@ -1245,10 +1245,10 @@ main() {
     });
   });
   group('expression', () {
-    Parser build({bool attachAction: true}) {
+    Parser build({bool attachAction = true}) {
       var action = attachAction ? (func) => func : (func) => null;
       var root = failure().settable();
-      var builder = new ExpressionBuilder();
+      var builder = ExpressionBuilder();
       builder.group()
         ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
         ..primitive(

@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 /// For example, `any()` succeeds and consumes any given letter. It only
 /// fails for an empty input.
 Parser any([String message = 'input expected']) {
-  return new AnyParser(message);
+  return AnyParser(message);
 }
 
 /// A parser that accepts any input element.
@@ -28,7 +28,7 @@ class AnyParser extends Parser {
   }
 
   @override
-  Parser copy() => new AnyParser(_message);
+  Parser copy() => AnyParser(_message);
 
   @override
   bool hasEqualProperties(Parser other) {

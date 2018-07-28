@@ -25,5 +25,5 @@ class SettableParser extends DelegateParser {
   void set(Parser parser) => replace(children[0], parser);
 
   @override
-  Parser copy() => new SettableParser(delegate);
+  Parser copy() => SettableParser(delegate);
 }

@@ -11,7 +11,7 @@ typedef bool Predicate(input);
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
 Parser predicate(int length, Predicate predicate, String message) {
-  return new PredicateParser(length, predicate, message);
+  return PredicateParser(length, predicate, message);
 }
 
 /// A parser for a literal satisfying a predicate.
@@ -39,7 +39,7 @@ class PredicateParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new PredicateParser(_length, _predicate, _message);
+  Parser copy() => PredicateParser(_length, _predicate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

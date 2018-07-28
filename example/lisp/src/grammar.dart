@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// LISP grammar.
 class LispGrammar extends GrammarParser {
-  LispGrammar() : super(new LispGrammarDefinition());
+  LispGrammar() : super(LispGrammarDefinition());
 }
 
 /// LISP grammar definition.

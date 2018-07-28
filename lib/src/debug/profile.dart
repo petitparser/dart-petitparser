@@ -27,10 +27,10 @@ Parser profile(Parser root, [OutputHandler output = print]) {
   Map<Parser, int> count = {};
   Map<Parser, Stopwatch> watch = {};
   List<Parser> parsers = [];
-  return new ContinuationParser(
+  return ContinuationParser(
       transformParser(root, (parser) {
         parsers.add(parser);
-        return new ContinuationParser(parser, (continuation, context) {
+        return ContinuationParser(parser, (continuation, context) {
           count[parser]++;
           watch[parser].start();
           var result = continuation(context);
@@ -40,7 +40,7 @@ Parser profile(Parser root, [OutputHandler output = print]) {
       }), (continuation, context) {
     for (var parser in parsers) {
       count[parser] = 0;
-      watch[parser] = new Stopwatch();
+      watch[parser] = Stopwatch();
     }
     var result = continuation(context);
     for (var parser in parsers) {

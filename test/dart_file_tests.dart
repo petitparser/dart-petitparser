@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 import '../example/dart/dart.dart';
 
-final grammar = new DartGrammar();
+final grammar = DartGrammar();
 
 void generateTests(String title, Directory root) {
   group(title, () {

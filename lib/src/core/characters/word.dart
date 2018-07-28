@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any word character.
 Parser word([String message = 'letter or digit expected']) {
-  return new CharacterParser(const _WordCharPredicate(), message);
+  return CharacterParser(const _WordCharPredicate(), message);
 }
 
 class _WordCharPredicate implements CharacterPredicate {

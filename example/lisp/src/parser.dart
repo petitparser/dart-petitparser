@@ -7,28 +7,27 @@ import 'grammar.dart';
 import 'name.dart';
 
 /// The standard lisp parser definition.
-final lispParser = new LispParser();
+final lispParser = LispParser();
 
 /// LISP parser.
 class LispParser extends GrammarParser {
-  LispParser() : super(new LispParserDefinition());
+  LispParser() : super(LispParserDefinition());
 }
 
 /// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {
   list() => super.list().map((each) => each[1]);
 
-  cell() => super.cell().map((each) => new Cons(each[0], each[1]));
+  cell() => super.cell().map((each) => Cons(each[0], each[1]));
   empty() => super.empty().map((each) => null);
 
-  string() => super
-      .string()
-      .map((each) => new String.fromCharCodes(each[1].cast<int>()));
+  string() =>
+      super.string().map((each) => String.fromCharCodes(each[1].cast<int>()));
   characterEscape() =>
       super.characterEscape().map((each) => each[1].codeUnitAt(0));
   characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
 
-  symbol() => super.symbol().map((each) => new Name(each));
+  symbol() => super.symbol().map((each) => Name(each));
   number() => super.number().map((each) {
         var floating = double.parse(each);
         var integral = floating.toInt();
@@ -39,6 +38,5 @@ class LispParserDefinition extends LispGrammarDefinition {
         }
       });
 
-  quote() =>
-      super.quote().map((each) => new Cons((_, Cons args) => args, each[1]));
+  quote() => super.quote().map((each) => Cons((_, Cons args) => args, each[1]));
 }

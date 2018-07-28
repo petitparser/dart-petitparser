@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any letter character.
 Parser letter([String message = 'letter expected']) {
-  return new CharacterParser(const LetterCharPredicate(), message);
+  return CharacterParser(const LetterCharPredicate(), message);
 }
 
 class LetterCharPredicate implements CharacterPredicate {

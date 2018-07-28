@@ -4,13 +4,13 @@ import 'package:test/test.dart';
 
 import '../example/lisp/lisp.dart';
 
-const isName = const TypeMatcher<Name>();
-const isString = const TypeMatcher<String>();
-const isCons = const TypeMatcher<Cons>();
+const isName = TypeMatcher<Name>();
+const isString = TypeMatcher<String>();
+const isCons = TypeMatcher<Cons>();
 
 void main() {
-  var native = new NativeEnvironment();
-  var standard = new StandardEnvironment(native);
+  var native = NativeEnvironment();
+  var standard = StandardEnvironment(native);
 
   dynamic exec(String value, [Environment env]) {
     return evalString(lispParser, env ?? standard.create(), value);
@@ -18,16 +18,16 @@ void main() {
 
   group('Cell', () {
     test('Name', () {
-      var cell1 = new Name('foo');
-      var cell2 = new Name('foo');
-      var cell3 = new Name('bar');
+      var cell1 = Name('foo');
+      var cell2 = Name('foo');
+      var cell3 = Name('bar');
       expect(cell1, cell2);
       expect(cell1, same(cell2));
       expect(cell1, isNot(cell3));
       expect(cell1, isNot(same(cell3)));
     });
     test('Cons', () {
-      var cell = new Cons(1, 2);
+      var cell = Cons(1, 2);
       expect(cell.car, 1);
       expect(cell.head, 1);
       expect(cell.cdr, 2);
@@ -37,7 +37,7 @@ void main() {
       expect(cell.head, 3);
       expect(cell.cdr, 2);
       expect(() => cell.tail, throwsStateError);
-      cell.cdr = new Cons(4, 5);
+      cell.cdr = Cons(4, 5);
       expect(cell.car, 3);
       expect(cell.head, 3);
       expect(cell.tail.car, 4);
@@ -62,7 +62,7 @@ void main() {
     });
   });
   group('Grammar', () {
-    var grammar = new LispGrammar();
+    var grammar = LispGrammar();
     test('Name', () {
       var result = grammar.parse('foo').value;
       expect(result, ['foo']);
@@ -176,7 +176,7 @@ void main() {
     });
   });
   group('Parser', () {
-    var definition = new LispParserDefinition();
+    var definition = LispParserDefinition();
     var atom = definition.build(start: definition.atom);
     test('Name', () {
       var cell = atom.parse('foo').value;
@@ -279,13 +279,13 @@ void main() {
     });
     test('Quote', () {
       expect(exec('(quote)'), null);
-      expect(exec('(quote 1)'), new Cons(1, null));
-      expect(exec('(quote + 1)'), new Cons(new Name('+'), new Cons(1, null)));
+      expect(exec('(quote 1)'), Cons(1, null));
+      expect(exec('(quote + 1)'), Cons(Name('+'), Cons(1, null)));
     });
     test('Quote (syntax)', () {
       expect(exec('\'()'), null);
-      expect(exec('\'(1)'), new Cons(1, null));
-      expect(exec('\'(+ 1)'), new Cons(new Name('+'), new Cons(1, null)));
+      expect(exec('\'(1)'), Cons(1, null));
+      expect(exec('\'(+ 1)'), Cons(Name('+'), Cons(1, null)));
     });
     test('Eval', () {
       expect(exec('(eval (quote + 1 2))'), 3);
@@ -302,7 +302,7 @@ void main() {
       expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
     });
     group('Print', () {
-      var buffer = new StringBuffer();
+      var buffer = StringBuffer();
       setUp(() {
         printer = buffer.write;
       });
@@ -325,14 +325,14 @@ void main() {
     });
     test('Set!', () {
       var env = standard.create();
-      env.define(new Name('a'), null);
+      env.define(Name('a'), null);
       expect(exec('(set! a 1)', env), 1);
       expect(exec('(set! a (+ 1 2))', env), 3);
       expect(exec('(set! a (+ 1 2)) (+ a 1)', env), 4);
     });
     test('Set! (undefined)', () {
       expect(() => exec('(set! a 1)'), throwsArgumentError);
-      expect(() => standard[new Name('a')], throwsArgumentError);
+      expect(() => standard[Name('a')], throwsArgumentError);
     });
     test('If', () {
       expect(exec('(if true)'), isNull);
@@ -348,9 +348,9 @@ void main() {
     });
     test('While', () {
       var env = standard.create();
-      env.define(new Name('a'), 0);
+      env.define(Name('a'), 0);
       exec('(while (< a 3) (set! a (+ a 1)))', env);
-      expect(env[new Name('a')], 3);
+      expect(env[Name('a')], 3);
     });
     test('True', () {
       expect(exec('true'), isTrue);
@@ -377,11 +377,11 @@ void main() {
     });
     test('And (lazyness)', () {
       var env = standard.create();
-      env.define(new Name('a'), null);
+      env.define(Name('a'), null);
       exec('(and false (set! a true))', env);
-      expect(env[new Name('a')], isNull);
+      expect(env[Name('a')], isNull);
       exec('(and true (set! a true))', env);
-      expect(env[new Name('a')], isTrue);
+      expect(env[Name('a')], isTrue);
     });
     test('Or', () {
       expect(exec('(or)'), isFalse);
@@ -402,11 +402,11 @@ void main() {
     });
     test('Or (lazyness)', () {
       var env = standard.create();
-      env.define(new Name('a'), null);
+      env.define(Name('a'), null);
       exec('(or true (set! a true))', env);
-      expect(env[new Name('a')], isNull);
+      expect(env[Name('a')], isNull);
       exec('(or false (set! a true))', env);
-      expect(env[new Name('a')], isTrue);
+      expect(env[Name('a')], isTrue);
     });
     test('Not', () {
       expect(exec('(not true)'), isFalse);
@@ -488,12 +488,12 @@ void main() {
       expect(exec('(>= "b" "a")'), isTrue);
     });
     test('Cons', () {
-      expect(exec('(cons 1 2)'), new Cons(1, 2));
-      expect(exec('(cons 1 null)'), new Cons(1, null));
-      expect(exec('(cons null 2)'), new Cons(null, 2));
-      expect(exec('(cons null null)'), new Cons(null, null));
-      expect(exec('(cons 1 (cons 2 (cons 3 null)))'),
-          new Cons(1, new Cons(2, new Cons(3))));
+      expect(exec('(cons 1 2)'), Cons(1, 2));
+      expect(exec('(cons 1 null)'), Cons(1, null));
+      expect(exec('(cons null 2)'), Cons(null, 2));
+      expect(exec('(cons null null)'), Cons(null, null));
+      expect(
+          exec('(cons 1 (cons 2 (cons 3 null)))'), Cons(1, Cons(2, Cons(3))));
     });
     test('Car', () {
       expect(exec('(car null)'), isNull);
@@ -501,7 +501,7 @@ void main() {
     });
     test('Car!', () {
       expect(exec('(car! null 3)'), isNull);
-      expect(exec('(car! (cons 1 2) 3)'), new Cons(3, 2));
+      expect(exec('(car! (cons 1 2) 3)'), Cons(3, 2));
     });
     test('Cdr', () {
       expect(exec('(cdr null)'), isNull);
@@ -509,7 +509,7 @@ void main() {
     });
     test('Cdr!', () {
       expect(exec('(cdr! null 3)'), isNull);
-      expect(exec('(cdr! (cons 1 2) 3)'), new Cons(1, 3));
+      expect(exec('(cdr! (cons 1 2) 3)'), Cons(1, 3));
     });
   });
   group('Library', () {

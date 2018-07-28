@@ -12,11 +12,11 @@ abstract class RepeatingParser extends DelegateParser {
 
   RepeatingParser(Parser parser, this.min, this.max) : super(parser) {
     if (min < 0) {
-      throw new ArgumentError(
+      throw ArgumentError(
           'Minimum repetitions must be positive, but got $min.');
     }
     if (max != unbounded && max < min) {
-      throw new ArgumentError(
+      throw ArgumentError(
           'Maximum repetitions must be larger than $min, but got $max.');
     }
   }

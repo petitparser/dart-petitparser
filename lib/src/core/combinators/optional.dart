@@ -22,7 +22,7 @@ class OptionalParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new OptionalParser(delegate, _otherwise);
+  Parser copy() => OptionalParser(delegate, _otherwise);
 
   @override
   bool hasEqualProperties(Parser other) {

@@ -12,7 +12,7 @@ class Failure extends Result {
   bool get isFailure => true;
 
   @override
-  get value => throw new ParserError(this);
+  get value => throw ParserError(this);
 
   @override
   final String message;

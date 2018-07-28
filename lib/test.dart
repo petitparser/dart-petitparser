@@ -24,7 +24,7 @@ Matcher accept(Parser parser) {
 /// Returns a matcher that succeeds if the [parser] succeeds and accepts the
 /// provided [matcher].
 Matcher parse(Parser parser, matcher, [int position = -1]) {
-  return new _Parse(parser, wrapMatcher(matcher), position);
+  return _Parse(parser, wrapMatcher(matcher), position);
 }
 
 class _Parse extends Matcher {
@@ -68,7 +68,7 @@ class _Parse extends Matcher {
       case 'matcher':
         description.add(' which parse result ');
         var result = matchState['result'] as Result;
-        var subDescription = new StringDescription();
+        var subDescription = StringDescription();
         matcher.describeMismatch(
             result.value, subDescription, matchState['state'], verbose);
         if (subDescription.length > 0) {
@@ -87,6 +87,6 @@ class _Parse extends Matcher {
             .add(position.toString());
         return description;
     }
-    throw new Exception('Internal matcher error');
+    throw Exception('Internal matcher error');
   }
 }

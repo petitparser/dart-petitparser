@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import '../example/dart/dart.dart';
 
 void main() {
-  final grammar = new DartGrammarDefinition();
+  final grammar = DartGrammarDefinition();
   group('directives', () {
     final directives = grammar.build(start: grammar.start).end();
     test('hashbang', () {

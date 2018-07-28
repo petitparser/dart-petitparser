@@ -43,6 +43,6 @@ class JsonParserDefinition extends JsonGrammarDefinition {
       super.characterEscape().map((each) => jsonEscapeChars[each[1]]);
   characterUnicode() => super.characterUnicode().map((each) {
         var charCode = int.parse(each[1].join(), radix: 16);
-        return new String.fromCharCode(charCode);
+        return String.fromCharCode(charCode);
       });
 }

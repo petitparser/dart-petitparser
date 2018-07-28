@@ -7,13 +7,12 @@ import 'package:petitparser/src/core/characters/ranges.dart';
 
 CharacterPredicate optimizedString(String string) {
   return optimizedRanges(
-      string.codeUnits.map((value) => new RangeCharPredicate(value, value)));
+      string.codeUnits.map((value) => RangeCharPredicate(value, value)));
 }
 
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 1. sort the ranges
-  List<RangeCharPredicate> sortedRanges =
-      new List.from(ranges, growable: false);
+  List<RangeCharPredicate> sortedRanges = List.from(ranges, growable: false);
   sortedRanges.sort((first, second) {
     return first.start != second.start
         ? first.start - second.start
@@ -29,7 +28,7 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
       var lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
         var characterRange =
-            new RangeCharPredicate(lastRange.start, thisRange.stop);
+            RangeCharPredicate(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
         mergedRanges.add(thisRange);
@@ -40,10 +39,10 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 3. build the best resulting predicates
   if (mergedRanges.length == 1) {
     return mergedRanges[0].start == mergedRanges[0].stop
-        ? new SingleCharPredicate(mergedRanges[0].start)
+        ? SingleCharPredicate(mergedRanges[0].start)
         : mergedRanges[0];
   } else {
-    return new RangesCharPredicate(
+    return RangesCharPredicate(
         mergedRanges.length,
         mergedRanges.map((range) => range.start).toList(growable: false),
         mergedRanges.map((range) => range.stop).toList(growable: false));

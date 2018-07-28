@@ -21,7 +21,7 @@ class Cons {
     } else if (cdr == null) {
       return null;
     } else {
-      throw new StateError('${toString()} does not have a tail.');
+      throw StateError('${toString()} does not have a tail.');
     }
   }
 
@@ -35,7 +35,7 @@ class Cons {
 
   @override
   String toString() {
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     buffer.write('(');
     var current = this;
     while (true) {

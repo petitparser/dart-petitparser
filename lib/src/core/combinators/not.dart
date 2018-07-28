@@ -26,7 +26,7 @@ class NotParser extends DelegateParser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => new NotParser(delegate, _message);
+  Parser copy() => NotParser(delegate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

@@ -69,15 +69,15 @@ abstract class GrammarDefinition {
     var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
-    return new Reference(function, arguments);
+    return Reference(function, arguments);
   }
 
   /// Builds a composite parser from this definition.
   ///
   /// The optional [start] reference specifies a different starting production into
   /// the grammar. The optional [arguments] list parametrizes the called production.
-  Parser build({Function start, List arguments: const []}) {
-    return _resolve(new Reference(start ?? this.start, arguments));
+  Parser build({Function start, List arguments = const []}) {
+    return _resolve(Reference(start ?? this.start, arguments));
   }
 
   /// Internal helper to resolve a complete parser graph.
@@ -92,7 +92,7 @@ abstract class GrammarDefinition {
         while (parser is Reference) {
           var otherReference = parser as Reference;
           if (references.contains(otherReference)) {
-            throw new StateError('Recursive references detected: $references');
+            throw StateError('Recursive references detected: $references');
           }
           references.add(otherReference);
           parser = otherReference.resolve();
@@ -105,7 +105,7 @@ abstract class GrammarDefinition {
     }
 
     var todo = [_dereference(reference)];
-    var seen = new Set.from(todo);
+    var seen = Set.from(todo);
 
     while (todo.isNotEmpty) {
       var parent = todo.removeLast();

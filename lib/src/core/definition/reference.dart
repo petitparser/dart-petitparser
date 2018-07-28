@@ -42,9 +42,9 @@ class Reference extends Parser {
   int get hashCode => function.hashCode;
 
   @override
-  Parser copy() => throw new UnsupportedError('References cannot be copied.');
+  Parser copy() => throw UnsupportedError('References cannot be copied.');
 
   @override
   Result parseOn(Context context) =>
-      throw new UnsupportedError('References cannot be parsed.');
+      throw UnsupportedError('References cannot be parsed.');
 }

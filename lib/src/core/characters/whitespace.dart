@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any whitespace character.
 Parser whitespace([String message = 'whitespace expected']) {
-  return new CharacterParser(const WhitespaceCharPredicate(), message);
+  return CharacterParser(const WhitespaceCharPredicate(), message);
 }
 
 class WhitespaceCharPredicate implements CharacterPredicate {

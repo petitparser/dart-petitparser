@@ -7,7 +7,7 @@ class Name {
 
   /// Factory for new symbol cells.
   factory Name(String name) {
-    return _interned.putIfAbsent(name, () => new Name._internal(name));
+    return _interned.putIfAbsent(name, () => Name._internal(name));
   }
 
   /// The name of the symbol.

@@ -22,5 +22,5 @@ class FlattenParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new FlattenParser(delegate);
+  Parser copy() => FlattenParser(delegate);
 }

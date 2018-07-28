@@ -8,43 +8,43 @@ import 'name.dart';
 class NativeEnvironment extends Environment {
   NativeEnvironment([Environment owner]) : super(owner) {
     // basic functions
-    define(new Name('define'), _define);
-    define(new Name('lambda'), _lambda);
-    define(new Name('quote'), _quote);
-    define(new Name('eval'), _eval);
-    define(new Name('apply'), _apply);
-    define(new Name('let'), _let);
-    define(new Name('set!'), _set);
-    define(new Name('print'), _print);
+    define(Name('define'), _define);
+    define(Name('lambda'), _lambda);
+    define(Name('quote'), _quote);
+    define(Name('eval'), _eval);
+    define(Name('apply'), _apply);
+    define(Name('let'), _let);
+    define(Name('set!'), _set);
+    define(Name('print'), _print);
 
     // control structures
-    define(new Name('if'), _if);
-    define(new Name('while'), _while);
-    define(new Name('and'), _and);
-    define(new Name('or'), _or);
-    define(new Name('not'), _not);
+    define(Name('if'), _if);
+    define(Name('while'), _while);
+    define(Name('and'), _and);
+    define(Name('or'), _or);
+    define(Name('not'), _not);
 
     // arithmetic operators
-    define(new Name('+'), _plus);
-    define(new Name('-'), _minus);
-    define(new Name('*'), _multiply);
-    define(new Name('/'), _divide);
-    define(new Name('%'), _modulo);
+    define(Name('+'), _plus);
+    define(Name('-'), _minus);
+    define(Name('*'), _multiply);
+    define(Name('/'), _divide);
+    define(Name('%'), _modulo);
 
     // arithmetic comparators
-    define(new Name('<'), _smaller);
-    define(new Name('<='), _smallerOrEqual);
-    define(new Name('='), _equal);
-    define(new Name('!='), _notEqual);
-    define(new Name('>'), _larger);
-    define(new Name('>='), _largerOrEqual);
+    define(Name('<'), _smaller);
+    define(Name('<='), _smallerOrEqual);
+    define(Name('='), _equal);
+    define(Name('!='), _notEqual);
+    define(Name('>'), _larger);
+    define(Name('>='), _largerOrEqual);
 
     // list operators
-    define(new Name('cons'), _cons);
-    define(new Name('car'), _car);
-    define(new Name('car!'), _carSet);
-    define(new Name('cdr'), _cdr);
-    define(new Name('cdr!'), _cdrSet);
+    define(Name('cons'), _cons);
+    define(Name('car'), _car);
+    define(Name('car!'), _carSet);
+    define(Name('cdr'), _cdr);
+    define(Name('cdr!'), _cdrSet);
   }
 
   static _define(Environment env, Cons args) {
@@ -53,11 +53,10 @@ class NativeEnvironment extends Environment {
     } else if (args.head is Cons) {
       Cons head = args.head;
       if (head.head is Name) {
-        return env.define(
-            head.head, _lambda(env, new Cons(head.tail, args.tail)));
+        return env.define(head.head, _lambda(env, Cons(head.tail, args.tail)));
       }
     } else {
-      throw new ArgumentError('Invalid define: $args');
+      throw ArgumentError('Invalid define: $args');
     }
   }
 
@@ -104,7 +103,7 @@ class NativeEnvironment extends Environment {
   }
 
   static _print(Environment env, Cons args) {
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     while (args != null) {
       buffer.write(eval(env, args.head));
       args = args.tail;
@@ -239,7 +238,7 @@ class NativeEnvironment extends Environment {
   }
 
   static _cons(Environment env, Cons args) {
-    return new Cons(eval(env, args.head), eval(env, args.tail.head));
+    return Cons(eval(env, args.head), eval(env, args.tail.head));
   }
 
   static _car(Environment env, Cons args) {

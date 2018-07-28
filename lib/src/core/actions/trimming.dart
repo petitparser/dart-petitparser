@@ -31,7 +31,7 @@ class TrimmingParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new TrimmingParser(delegate, _left, _right);
+  Parser copy() => TrimmingParser(delegate, _left, _right);
 
   @override
   List<Parser> get children => [delegate, _left, _right];

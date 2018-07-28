@@ -22,16 +22,14 @@ class ExpressionGroup {
   /// parsed `operator` and `value`.
   void prefix(Parser parser, [Function action]) {
     action ??= (operator, value) => [operator, value];
-    _prefix
-        .add(parser.map((operator) => new ExpressionResult(operator, action)));
+    _prefix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
 
   Parser _buildPrefix(Parser inner) {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([_buildChoice(_prefix).star(), inner])
-          .map((tuple) {
+      return SequenceParser([_buildChoice(_prefix).star(), inner]).map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           return result.action(result.operator, value);
         });
@@ -45,15 +43,14 @@ class ExpressionGroup {
   /// parsed `value` and `operator`.
   void postfix(Parser parser, [Function action]) {
     action ??= (value, operator) => [value, operator];
-    _postfix
-        .add(parser.map((operator) => new ExpressionResult(operator, action)));
+    _postfix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
 
   Parser _buildPostfix(Parser inner) {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return new SequenceParser([inner, _buildChoice(_postfix).star()])
+      return SequenceParser([inner, _buildChoice(_postfix).star()])
           .map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           return result.action(value, result.operator);
@@ -68,8 +65,7 @@ class ExpressionGroup {
   /// the parsed `left` term, `operator`, and `right` term.
   void right(Parser parser, [Function action]) {
     action ??= (left, operator, right) => [left, operator, right];
-    _right
-        .add(parser.map((operator) => new ExpressionResult(operator, action)));
+    _right.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
 
   Parser _buildRight(Parser inner) {
@@ -93,7 +89,7 @@ class ExpressionGroup {
   /// the parsed `left` term, `operator`, and `right` term.
   void left(Parser parser, [Function action]) {
     action ??= (left, operator, right) => [left, operator, right];
-    _left.add(parser.map((operator) => new ExpressionResult(operator, action)));
+    _left.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
 
   Parser _buildLeft(Parser inner) {
@@ -120,7 +116,7 @@ class ExpressionGroup {
     } else if (parsers.length == 1) {
       return parsers.first;
     } else {
-      return new ChoiceParser(parsers);
+      return ChoiceParser(parsers);
     }
   }
 

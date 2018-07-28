@@ -32,7 +32,7 @@ import 'package:petitparser/src/reflection/transform.dart';
 Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
-    return new ContinuationParser(each, (continuation, context) {
+    return ContinuationParser(each, (continuation, context) {
       output('${repeat(level, '  ')}$each');
       level++;
       var result = continuation(context);

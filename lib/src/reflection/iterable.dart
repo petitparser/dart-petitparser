@@ -14,7 +14,7 @@ import 'package:petitparser/src/core/parser.dart';
 ///       print(each);
 ///     });
 ///
-Iterable<Parser> allParser(Parser root) => new ParserIterable(root);
+Iterable<Parser> allParser(Parser root) => ParserIterable(root);
 
 class ParserIterable extends IterableBase<Parser> {
   final Parser root;
@@ -22,7 +22,7 @@ class ParserIterable extends IterableBase<Parser> {
   ParserIterable(this.root);
 
   @override
-  Iterator<Parser> get iterator => new ParserIterator([root]);
+  Iterator<Parser> get iterator => ParserIterator([root]);
 }
 
 class ParserIterator implements Iterator<Parser> {
@@ -30,8 +30,8 @@ class ParserIterator implements Iterator<Parser> {
   final Set<Parser> seen;
 
   ParserIterator(Iterable<Parser> roots)
-      : todo = new List.from(roots),
-        seen = new Set.from(roots);
+      : todo = List.from(roots),
+        seen = Set.from(roots);
 
   @override
   Parser current;

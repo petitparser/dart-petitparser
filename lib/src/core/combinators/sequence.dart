@@ -8,7 +8,7 @@ import 'package:petitparser/src/core/parser.dart';
 /// A parser that parses a sequence of parsers.
 class SequenceParser extends ListParser {
   factory SequenceParser(Iterable<Parser> children) {
-    return new SequenceParser._(new List.from(children, growable: false));
+    return SequenceParser._(List.from(children, growable: false));
   }
 
   SequenceParser._(List<Parser> children) : super(children);
@@ -16,7 +16,7 @@ class SequenceParser extends ListParser {
   @override
   Result parseOn(Context context) {
     var current = context;
-    var elements = new List(children.length);
+    var elements = List(children.length);
     for (var i = 0; i < children.length; i++) {
       var result = children[i].parseOn(current);
       if (result.isFailure) {
@@ -30,11 +30,11 @@ class SequenceParser extends ListParser {
 
   @override
   Parser seq(Parser other) {
-    return new SequenceParser([]
+    return SequenceParser([]
       ..addAll(children)
       ..add(other));
   }
 
   @override
-  Parser copy() => new SequenceParser(children);
+  Parser copy() => SequenceParser(children);
 }

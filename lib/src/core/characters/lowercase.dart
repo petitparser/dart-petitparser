@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any lowercase character.
 Parser lowercase([String message = 'lowercase letter expected']) {
-  return new CharacterParser(const LowercaseCharPredicate(), message);
+  return CharacterParser(const LowercaseCharPredicate(), message);
 }
 
 class LowercaseCharPredicate implements CharacterPredicate {

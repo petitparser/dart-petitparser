@@ -10,7 +10,7 @@ double benchmark(Function function,
     [int warmUp = 1000, int milliseconds = 2500]) {
   var count = 0;
   var elapsed = 0;
-  var watch = new Stopwatch();
+  var watch = Stopwatch();
   while (warmUp-- > 0) {
     function();
   }
@@ -34,7 +34,7 @@ Function charTest(List<String> inputs, Parser parser) {
 }
 
 final List<String> characters =
-    new List.generate(256, (value) => new String.fromCharCode(value));
+    List.generate(256, (value) => String.fromCharCode(value));
 
 // String tests
 
@@ -48,7 +48,7 @@ final string = characters.join();
 
 // JSON tests
 
-final json = new JsonParser();
+final json = JsonParser();
 
 const jsonEvent =
     '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '
@@ -95,8 +95,8 @@ final Map<String, Function> benchmarks = {
   'plusLazy()': stringTest(string, any().plusLazy(failure())),
   'plusGreedy()': stringTest(string, any().plusGreedy(failure())),
   'or()': stringTest(string, failure().or(any()).star()),
-  'seq()': stringTest(
-      string, new SequenceParser(new List.filled(string.length, any()))),
+  'seq()':
+      stringTest(string, SequenceParser(List.filled(string.length, any()))),
 
   // json tests
   'JSON.decode()': () => convert.json.decode(jsonEvent),

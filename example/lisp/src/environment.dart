@@ -14,7 +14,7 @@ class Environment {
   Environment([this._owner]) : _bindings = {};
 
   /// Constructor for a nested environment.
-  Environment create() => new Environment(this);
+  Environment create() => Environment(this);
 
   /// Return the binding for [key].
   Object operator [](Name key) {
@@ -50,6 +50,5 @@ class Environment {
   Environment get owner => _owner;
 
   /// Called when a missing binding is accessed.
-  _invalidBinding(Name key) =>
-      throw new ArgumentError('Unknown binding for $key');
+  _invalidBinding(Name key) => throw ArgumentError('Unknown binding for $key');
 }

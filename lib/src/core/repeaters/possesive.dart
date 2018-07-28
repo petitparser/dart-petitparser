@@ -36,5 +36,5 @@ class PossessiveRepeatingParser extends RepeatingParser {
   }
 
   @override
-  Parser copy() => new PossessiveRepeatingParser(delegate, min, max);
+  Parser copy() => PossessiveRepeatingParser(delegate, min, max);
 }

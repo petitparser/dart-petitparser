@@ -8,7 +8,7 @@ double benchmark(Function function,
     [int warmUp = 1000, int milliseconds = 5000]) {
   var count = 0;
   var elapsed = 0;
-  var watch = new Stopwatch();
+  var watch = Stopwatch();
   while (warmUp-- > 0) {
     function();
   }
@@ -32,7 +32,7 @@ const jsonEvent =
     '33554432, "RESIZE": 67108864, "FORWARD": 134217728, "HELP": 268435456, "BACK": 536870912, '
     '"TEXT": 1073741824, "ALT_MASK": 1, "CONTROL_MASK": 2, "SHIFT_MASK": 4, "META_MASK": 8}';
 
-final JsonParser json = new JsonParser();
+final JsonParser json = JsonParser();
 
 dynamic native(String input) => convert.json.decode(input);
 dynamic custom(String input) => json.parse(input).value;

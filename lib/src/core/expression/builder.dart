@@ -56,7 +56,7 @@ class ExpressionBuilder {
 
   /// Creates a new group of operators that share the same priority.
   ExpressionGroup group() {
-    var group = new ExpressionGroup();
+    var group = ExpressionGroup();
     _groups.add(group);
     return group;
   }

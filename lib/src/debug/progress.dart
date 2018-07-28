@@ -27,7 +27,7 @@ import 'package:petitparser/src/reflection/transform.dart';
 /// be reordered to such expensive parses.
 Parser progress(Parser parser, [OutputHandler output = print]) {
   return transformParser(parser, (each) {
-    return new ContinuationParser(each, (continuation, context) {
+    return ContinuationParser(each, (continuation, context) {
       output('${repeat(1 + context.position, '*')} $each');
       return continuation(context);
     });

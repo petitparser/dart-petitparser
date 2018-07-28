@@ -11,7 +11,7 @@ void main() {
       var state = {};
       expect(matcher.matches('a', state), isTrue);
       expect(state, isEmpty);
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describe(description);
       expect(description.toString(),
           '"Instance of \'CharacterParser\'["a" expected]" accepts input');
@@ -21,7 +21,7 @@ void main() {
       var state = {};
       expect(matcher.matches('b', state), isFalse);
       expect(state, isNot(isEmpty));
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describeMismatch('b', description, state, false);
       expect(description.toString(),
           '"Instance of \'CharacterParser\'["a" expected]" produces "Failure[1:1]: "a" expected" which is not accepted');
@@ -33,7 +33,7 @@ void main() {
       var state = {};
       expect(matcher.matches('a', state), isTrue);
       expect(state, isEmpty);
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describe(description);
       expect(
           description.toString(),
@@ -45,7 +45,7 @@ void main() {
       var state = {};
       expect(matcher.matches('b', state), isFalse);
       expect(state, isNot(isEmpty));
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describeMismatch('b', description, state, false);
       expect(
           description.toString(),
@@ -57,7 +57,7 @@ void main() {
       var state = {};
       expect(matcher.matches('a', state), isFalse);
       expect(state, isNot(isEmpty));
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describeMismatch('a', description, state, false);
       expect(
           description.toString(),
@@ -70,7 +70,7 @@ void main() {
       var state = {};
       expect(matcher.matches('a', state), isFalse);
       expect(state, isNot(isEmpty));
-      var description = new StringDescription();
+      var description = StringDescription();
       matcher.describeMismatch('a', description, state, false);
       expect(
           description.toString(),

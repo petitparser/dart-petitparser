@@ -23,7 +23,7 @@ class ActionParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => new ActionParser(delegate, _function);
+  Parser copy() => ActionParser(delegate, _function);
 
   @override
   bool hasEqualProperties(Parser other) {

@@ -5,8 +5,8 @@ import 'package:test/test.dart';
 import '../example/json/json.dart';
 
 void main() {
-  var grammar = new JsonGrammar();
-  var parser = new JsonParser();
+  var grammar = JsonGrammar();
+  var parser = JsonParser();
   group('arrays', () {
     test('empty', () {
       expect(parser.parse('[]').value, []);

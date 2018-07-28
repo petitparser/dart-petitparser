@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// Smalltalk grammar.
 class SmalltalkGrammar extends GrammarParser {
-  SmalltalkGrammar() : super(new SmalltalkGrammarDefinition());
+  SmalltalkGrammar() : super(SmalltalkGrammarDefinition());
 }
 
 /// Smalltalk grammar definition.
@@ -17,7 +17,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
     } else if (input is Parser) {
       return input.token().trim(ref(spacer));
     } else {
-      throw new ArgumentError('Invalid token parser: $input');
+      throw ArgumentError('Invalid token parser: $input');
     }
   }
 

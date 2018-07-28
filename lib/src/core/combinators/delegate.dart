@@ -28,5 +28,5 @@ class DelegateParser extends Parser {
   }
 
   @override
-  Parser copy() => new DelegateParser(delegate);
+  Parser copy() => DelegateParser(delegate);
 }

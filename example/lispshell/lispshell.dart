@@ -48,7 +48,7 @@ void main(List<String> arguments) {
         exit(1);
       }
     } else {
-      var file = new File(option);
+      var file = File(option);
       if (file.existsSync()) {
         files.add(file);
       } else {
@@ -59,19 +59,19 @@ void main(List<String> arguments) {
   }
 
   // evaluation context
-  Environment environment = new NativeEnvironment();
+  Environment environment = NativeEnvironment();
 
   // add additional primitives
-  environment.define(new Name('exit'), (Environment env, Cons args) {
+  environment.define(Name('exit'), (Environment env, Cons args) {
     exit(args == null ? 0 : args.head);
   });
-  environment.define(new Name('sleep'), (Environment env, Cons args) {
-    sleep(new Duration(milliseconds: args.head));
+  environment.define(Name('sleep'), (Environment env, Cons args) {
+    sleep(Duration(milliseconds: args.head));
   });
 
   // process standard library
   if (standardLibrary) {
-    environment = new StandardEnvironment(environment);
+    environment = StandardEnvironment(environment);
   }
 
   // create empty context

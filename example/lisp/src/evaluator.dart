@@ -31,7 +31,7 @@ Object evalList(Environment env, Cons expr) {
 /// The arguments evaluation function.
 Object evalArguments(Environment env, Cons args) {
   if (args is Cons) {
-    return new Cons(eval(env, args.head), evalArguments(env, args.tail));
+    return Cons(eval(env, args.head), evalArguments(env, args.tail));
   } else {
     return null;
   }
