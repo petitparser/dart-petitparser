@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.0
+
+* Drop Dart 1.0 compatibility.
+
 ## 1.7.6
 
 * More Dart 2 strong mode fixes.
