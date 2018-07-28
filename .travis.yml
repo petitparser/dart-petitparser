@@ -1,18 +1,25 @@
 language: dart
+dart: dev
+
+jobs:
+  include:
+  - stage: analyze
+    script: dartanalyzer --fatal-warnings .
+  - stage: analyze
+    script: dartfmt --dry-run --set-exit-if-changed .
+  - stage: build
+    script: pub run build_runner build test
+  - stage: test
+    script: pub run build_runner test -- --platform vm
+  - stage: test
+    script: pub run build_runner test -- --platform chrome
+stages:
+- analyze
+- build
+- test
+
 sudo: required
-dart:
-  - stable
-  - dev
-dart_task:
-  - test: --platform vm
-  - test: --platform chrome
-  - dartanalyzer
-  - dartfmt
-matrix:
-  allow_failures:
-  - dart: dev
 cache:
   directories:
-    - $HOME/.pub-cache
-script:
-  - ./tool/travis.sh
+  - $HOME/.pub-cache
+  - .dart_tool/build
