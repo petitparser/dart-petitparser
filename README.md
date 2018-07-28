@@ -13,7 +13,7 @@ Grammars for programming languages are traditionally specified statically. They 
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/petitparser/dart-petitparser). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/petitparser+dart).
 
-Up-to-date [class documentation](http://www.dartdocs.org/documentation/petitparser/latest/index.html) is created with every release.
+The package is hosted on [dart packages](https://pub.dartlang.org/packages/petitparser). Up-to-date [class documentation](https://pub.dartlang.org/documentation/petitparser/latest/) is created with every release.
 
 
 Tutorial
@@ -21,7 +21,7 @@ Tutorial
 
 ### Installation
 
-Follow the _Installing_ instructions on https://pub.dartlang.org/packages/petitparser.
+Follow the installation instructions on [dart packages](https://pub.dartlang.org/packages/petitparser#-installing-tab-).
 
 Import the package into your Dart code using:
 
