@@ -5,12 +5,14 @@ library petitparser.test.dart_file_test;
 
 import 'dart:io';
 
-import 'package:petitparser/test.dart';
 import 'package:test/test.dart';
+import 'package:petitparser/petitparser.dart';
 
 import '../example/dart/dart.dart';
 
 final grammar = DartGrammar();
+
+accept(Parser parser) => (String input) => parser.parse(input).isSuccess;
 
 void generateTests(String title, Directory root) {
   group(title, () {

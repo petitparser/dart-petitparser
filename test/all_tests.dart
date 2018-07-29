@@ -9,7 +9,6 @@ import 'lisp_test.dart' as lisp_test;
 import 'petitparser_test.dart' as core_test;
 import 'reflection_test.dart' as reflection_test;
 import 'smalltalk_test.dart' as smalltalk_test;
-import 'test_test.dart' as test_test;
 
 void main() {
   group('PetitParser', core_test.main);
@@ -19,5 +18,4 @@ void main() {
   group('Lisp', lisp_test.main);
   group('Reflection', reflection_test.main);
   group('Smalltalk', smalltalk_test.main);
-  group('Test', test_test.main);
 }

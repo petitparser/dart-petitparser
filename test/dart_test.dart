@@ -1,9 +1,11 @@
 library petitparser.test.dart_test;
 
-import 'package:petitparser/test.dart';
 import 'package:test/test.dart';
+import 'package:petitparser/petitparser.dart';
 
 import '../example/dart/dart.dart';
+
+accept(Parser parser) => (String input) => parser.parse(input).isSuccess;
 
 void main() {
   final grammar = DartGrammarDefinition();
