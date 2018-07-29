@@ -11,19 +11,19 @@ class JsonGrammar extends GrammarParser {
 class JsonGrammarDefinition extends GrammarDefinition {
   const JsonGrammarDefinition();
 
-  start() => ref(value).end();
-  token(Parser p) => p.flatten().trim();
+  Parser start() => ref(value).end();
+  Parser token(Parser parser) => parser.flatten().trim();
 
-  array() =>
+  Parser array() =>
       ref(token, char('[')) & ref(elements).optional() & ref(token, char(']'));
-  elements() =>
+  Parser elements() =>
       ref(value).separatedBy(ref(token, char(',')), includeSeparators: false);
-  members() =>
+  Parser members() =>
       ref(pair).separatedBy(ref(token, char(',')), includeSeparators: false);
-  object() =>
+  Parser object() =>
       ref(token, char('{')) & ref(members).optional() & ref(token, char('}'));
-  pair() => ref(stringToken) & ref(token, char(':')) & ref(value);
-  value() =>
+  Parser pair() => ref(stringToken) & ref(token, char(':')) & ref(value);
+  Parser value() =>
       ref(stringToken) |
       ref(numberToken) |
       ref(object) |
@@ -32,18 +32,18 @@ class JsonGrammarDefinition extends GrammarDefinition {
       ref(falseToken) |
       ref(nullToken);
 
-  trueToken() => ref(token, string('true'));
-  falseToken() => ref(token, string('false'));
-  nullToken() => ref(token, string('null'));
-  stringToken() => ref(token, ref(stringPrimitive));
-  numberToken() => ref(token, ref(numberPrimitive));
+  Parser trueToken() => ref(token, string('true'));
+  Parser falseToken() => ref(token, string('false'));
+  Parser nullToken() => ref(token, string('null'));
+  Parser stringToken() => ref(token, ref(stringPrimitive));
+  Parser numberToken() => ref(token, ref(numberPrimitive));
 
-  characterPrimitive() =>
+  Parser characterPrimitive() =>
       ref(characterNormal) | ref(characterEscape) | ref(characterUnicode);
-  characterNormal() => pattern('^"\\');
-  characterEscape() => char('\\') & pattern(jsonEscapeChars.keys.join());
-  characterUnicode() => string('\\u') & pattern('0-9A-Fa-f').times(4);
-  numberPrimitive() =>
+  Parser characterNormal() => pattern('^"\\');
+  Parser characterEscape() => char('\\') & pattern(jsonEscapeChars.keys.join());
+  Parser characterUnicode() => string('\\u') & pattern('0-9A-Fa-f').times(4);
+  Parser numberPrimitive() =>
       char('-').optional() &
       char('0').or(digit().plus()) &
       char('.').seq(digit().plus()).optional() &
@@ -51,7 +51,8 @@ class JsonGrammarDefinition extends GrammarDefinition {
           .seq(pattern('-+').optional())
           .seq(digit().plus())
           .optional();
-  stringPrimitive() => char('"') & ref(characterPrimitive).star() & char('"');
+  Parser stringPrimitive() =>
+      char('"') & ref(characterPrimitive).star() & char('"');
 }
 
 const jsonEscapeChars = {

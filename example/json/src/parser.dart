@@ -13,8 +13,8 @@ class JsonParser extends GrammarParser {
 class JsonParserDefinition extends JsonGrammarDefinition {
   const JsonParserDefinition();
 
-  array() => super.array().map((each) => each[1] ?? []);
-  object() => super.object().map((each) {
+  Parser array() => super.array().map((each) => each[1] ?? []);
+  Parser object() => super.object().map((each) {
         var result = {};
         if (each[1] != null) {
           for (var element in each[1]) {
@@ -24,11 +24,11 @@ class JsonParserDefinition extends JsonGrammarDefinition {
         return result;
       });
 
-  trueToken() => super.trueToken().map((each) => true);
-  falseToken() => super.falseToken().map((each) => false);
-  nullToken() => super.nullToken().map((each) => null);
-  stringToken() => ref(stringPrimitive).trim();
-  numberToken() => super.numberToken().map((each) {
+  Parser trueToken() => super.trueToken().map((each) => true);
+  Parser falseToken() => super.falseToken().map((each) => false);
+  Parser nullToken() => super.nullToken().map((each) => null);
+  Parser stringToken() => ref(stringPrimitive).trim();
+  Parser numberToken() => super.numberToken().map((each) {
         var floating = double.parse(each);
         var integral = floating.toInt();
         if (floating == integral && each.indexOf('.') == -1) {
@@ -38,10 +38,11 @@ class JsonParserDefinition extends JsonGrammarDefinition {
         }
       });
 
-  stringPrimitive() => super.stringPrimitive().map((each) => each[1].join());
-  characterEscape() =>
+  Parser stringPrimitive() =>
+      super.stringPrimitive().map((each) => each[1].join());
+  Parser characterEscape() =>
       super.characterEscape().map((each) => jsonEscapeChars[each[1]]);
-  characterUnicode() => super.characterUnicode().map((each) {
+  Parser characterUnicode() => super.characterUnicode().map((each) {
         var charCode = int.parse(each[1].join(), radix: 16);
         return String.fromCharCode(charCode);
       });
