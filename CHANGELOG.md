@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.0
+
+* Make parsers fully typed, where it makes sense. In most cases this should have
+  no effect on existing code, but sometimes can point out actual bugs.
+
 ## 1.8.0
 
 * Drop Dart 1.0 compatibility.

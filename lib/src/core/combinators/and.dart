@@ -7,11 +7,11 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// The and-predicate, a parser that succeeds whenever its delegate does, but
 /// does not consume the input stream [Parr 1994, 1995].
-class AndParser extends DelegateParser {
+class AndParser<T> extends DelegateParser<T> {
   AndParser(Parser delegate) : super(delegate);
 
   @override
-  Result parseOn(Context context) {
+  Result<T> parseOn(Context context) {
     var result = delegate.parseOn(context);
     if (result.isSuccess) {
       return context.success(result.value);
@@ -21,5 +21,5 @@ class AndParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => AndParser(delegate);
+  Parser<T> copy() => AndParser(delegate);
 }

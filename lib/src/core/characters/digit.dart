@@ -5,7 +5,7 @@ import 'package:petitparser/src/core/characters/predicate.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any digit character.
-Parser digit([String message = 'digit expected']) {
+Parser<String> digit([String message = 'digit expected']) {
   return CharacterParser(const DigitCharPredicate(), message);
 }
 

@@ -9,6 +9,10 @@ import 'package:petitparser/src/core/parser.dart';
 /// and the start and stop position in the input buffer. It provides many
 /// convenience methods to access the state of the token.
 class Token<T> {
+  /// Constructs a token from the parsed value, the input buffer, and the
+  /// start and stop position in the input buffer.
+  const Token(this.value, this.buffer, this.start, this.stop);
+
   /// The parsed value of the token.
   final T value;
 
@@ -20,10 +24,6 @@ class Token<T> {
 
   /// The stop position of the token in the buffer.
   final int stop;
-
-  /// Constructs a token from the parsed value, the input buffer, and the
-  /// start and stop position in the input buffer.
-  const Token(this.value, this.buffer, this.start, this.stop);
 
   /// The consumed input of the token.
   String get input => buffer.substring(start, stop);

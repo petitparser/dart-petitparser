@@ -5,7 +5,7 @@ import 'package:petitparser/src/core/characters/predicate.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any uppercase character.
-Parser uppercase([String message = 'uppercase letter expected']) {
+Parser<String> uppercase([String message = 'uppercase letter expected']) {
   return CharacterParser(const UppercaseCharPredicate(), message);
 }
 

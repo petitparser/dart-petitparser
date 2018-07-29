@@ -16,7 +16,7 @@ Parser pattern(String element, [String message]) {
 }
 
 Parser _createPatternParser() {
-  var single = any().map((String element) {
+  var single = any().map((element) {
     return RangeCharPredicate(toCharCode(element), toCharCode(element));
   });
   var range = any().seq(char('-')).seq(any()).map((List elements) {

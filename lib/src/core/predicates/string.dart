@@ -7,7 +7,7 @@ import 'package:petitparser/src/core/predicates/predicate.dart';
 ///
 /// For example, `string('foo')` succeeds and consumes the input string
 /// `'foo'`. Fails for any other input.
-Parser string(String element, [String message]) {
+Parser<String> string(String element, [String message]) {
   return predicate(element.length, (each) => element == each,
       message ?? '$element expected');
 }
@@ -16,10 +16,8 @@ Parser string(String element, [String message]) {
 ///
 /// For example, `stringIgnoreCase('foo')` succeeds and consumes the input
 /// string `'Foo'` or `'FOO'`. Fails for any other input.
-Parser stringIgnoreCase(String element, [String message]) {
+Parser<String> stringIgnoreCase(String element, [String message]) {
   final lowerElement = element.toLowerCase();
-  return predicate(
-      element.length,
-      (each) => lowerElement == (each as String).toLowerCase(),
+  return predicate(element.length, (each) => lowerElement == each.toLowerCase(),
       message ?? '$element expected');
 }

@@ -7,7 +7,7 @@ import 'package:petitparser/src/core/repeaters/repeating.dart';
 /// its delegate and that requires the input to be completed with a specified parser
 /// 'limit'. Subclasses provide repeating behavior as typically seen in regular
 /// expression implementations (non-blind).
-abstract class LimitedRepeatingParser extends RepeatingParser {
+abstract class LimitedRepeatingParser<T> extends RepeatingParser<T> {
   Parser limit;
 
   LimitedRepeatingParser(Parser delegate, this.limit, int min, int max)

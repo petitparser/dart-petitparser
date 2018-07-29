@@ -6,15 +6,13 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that delegates to another one. Normally users do not need to
 /// directly use a delegate parser.
-class DelegateParser extends Parser {
+class DelegateParser<R> extends Parser<R> {
   Parser delegate;
 
   DelegateParser(this.delegate);
 
   @override
-  Result parseOn(Context context) {
-    return delegate.parseOn(context);
-  }
+  Result<R> parseOn(Context context) => delegate.parseOn(context);
 
   @override
   List<Parser> get children => [delegate];
@@ -28,5 +26,5 @@ class DelegateParser extends Parser {
   }
 
   @override
-  Parser copy() => DelegateParser(delegate);
+  Parser<R> copy() => DelegateParser<R>(delegate);
 }

@@ -7,21 +7,21 @@ import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/token.dart';
 
 /// A parser that answers a token of the result its delegate parses.
-class TokenParser extends DelegateParser {
+class TokenParser<T> extends DelegateParser<Token<T>> {
   TokenParser(Parser delegate) : super(delegate);
 
   @override
-  Result parseOn(Context context) {
+  Result<Token<T>> parseOn(Context context) {
     var result = delegate.parseOn(context);
     if (result.isSuccess) {
-      var token = Token(
+      var token = Token<T>(
           result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
-      return result;
+      return result.failure(result.message);
     }
   }
 
   @override
-  Parser copy() => TokenParser(delegate);
+  Parser<Token<T>> copy() => TokenParser(delegate);
 }

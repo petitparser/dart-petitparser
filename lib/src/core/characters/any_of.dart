@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/characters/parser.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that accepts any of the specified characters.
-Parser anyOf(String chars, [String message]) {
+Parser<String> anyOf(String chars, [String message]) {
   return CharacterParser(optimizedString(chars),
       message ?? 'any of "${toReadableString(chars)}" expected');
 }

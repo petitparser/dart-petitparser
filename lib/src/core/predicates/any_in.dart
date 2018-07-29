@@ -7,7 +7,7 @@ import 'package:petitparser/src/core/predicates/predicate.dart';
 ///
 /// For example, `anyIn('ab')` succeeds and consumes either the letter
 /// `'a'` or the letter `'b'`. For any other input the parser fails.
-Parser anyIn(elements, [String message]) {
-  return predicate(1, (each) => elements.indexOf(each) >= 0,
+Parser<String> anyIn(String elements, [String message]) {
+  return predicate(1, (each) => elements.contains(each),
       message ?? 'any of $elements expected');
 }

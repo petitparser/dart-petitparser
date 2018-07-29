@@ -6,11 +6,11 @@ import 'package:petitparser/src/core/repeaters/unbounded.dart';
 
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances of
 /// its delegate.
-abstract class RepeatingParser extends DelegateParser {
+abstract class RepeatingParser<T> extends DelegateParser<List<T>> {
   final int min;
   final int max;
 
-  RepeatingParser(Parser parser, this.min, this.max) : super(parser) {
+  RepeatingParser(Parser<T> parser, this.min, this.max) : super(parser) {
     if (min < 0) {
       throw ArgumentError(
           'Minimum repetitions must be positive, but got $min.');

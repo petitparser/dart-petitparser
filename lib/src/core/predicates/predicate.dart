@@ -6,16 +6,16 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A generic predicate function returning `true` or `false` for a given
 /// [input] argument.
-typedef bool Predicate(input);
+typedef bool Predicate(String input);
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
-Parser predicate(int length, Predicate predicate, String message) {
+Parser<String> predicate(int length, Predicate predicate, String message) {
   return PredicateParser(length, predicate, message);
 }
 
 /// A parser for a literal satisfying a predicate.
-class PredicateParser extends Parser {
+class PredicateParser extends Parser<String> {
   final int _length;
   final Predicate _predicate;
   final String _message;
@@ -23,9 +23,9 @@ class PredicateParser extends Parser {
   PredicateParser(this._length, this._predicate, this._message);
 
   @override
-  Result parseOn(Context context) {
-    final start = context.position;
-    final stop = start + _length;
+  Result<String> parseOn(Context context) {
+    var start = context.position;
+    var stop = start + _length;
     if (stop <= context.buffer.length) {
       var result = context.buffer.substring(start, stop);
       if (_predicate(result)) {
@@ -39,7 +39,7 @@ class PredicateParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => PredicateParser(_length, _predicate, _message);
+  Parser<String> copy() => PredicateParser(_length, _predicate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

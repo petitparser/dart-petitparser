@@ -3,7 +3,7 @@ library petitparser.core.contexts.success;
 import 'package:petitparser/src/core/contexts/result.dart';
 
 /// An immutable parse result in case of a successful parse.
-class Success extends Result {
+class Success<R> extends Result<R> {
   const Success(String buffer, int position, this.value)
       : super(buffer, position);
 
@@ -11,7 +11,7 @@ class Success extends Result {
   bool get isSuccess => true;
 
   @override
-  final value;
+  final R value;
 
   @override
   String get message => null;

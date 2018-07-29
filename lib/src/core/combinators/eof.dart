@@ -6,13 +6,13 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that succeeds only at the end of the input.
-class EndOfInputParser extends DelegateParser {
+class EndOfInputParser<T> extends DelegateParser<T> {
   final String _message;
 
   EndOfInputParser(Parser delegate, this._message) : super(delegate);
 
   @override
-  Result parseOn(Context context) {
+  Result<T> parseOn(Context context) {
     var result = delegate.parseOn(context);
     if (result.isFailure || result.position == result.buffer.length) {
       return result;
@@ -24,7 +24,7 @@ class EndOfInputParser extends DelegateParser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => EndOfInputParser(delegate, _message);
+  Parser<T> copy() => EndOfInputParser(delegate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

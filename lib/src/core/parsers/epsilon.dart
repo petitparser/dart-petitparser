@@ -11,16 +11,16 @@ import 'package:petitparser/src/core/parser.dart';
 Parser epsilon([result]) => EpsilonParser(result);
 
 /// A parser that consumes nothing and succeeds.
-class EpsilonParser extends Parser {
-  final _result;
+class EpsilonParser<T> extends Parser<T> {
+  final T _result;
 
   EpsilonParser(this._result);
 
   @override
-  Result parseOn(Context context) => context.success(_result);
+  Result<T> parseOn(Context context) => context.success(_result);
 
   @override
-  Parser copy() => EpsilonParser(_result);
+  Parser<T> copy() => EpsilonParser(_result);
 
   @override
   bool hasEqualProperties(Parser other) {

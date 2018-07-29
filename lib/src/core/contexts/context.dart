@@ -16,14 +16,12 @@ class Context {
   final int position;
 
   /// Returns a result indicating a parse success.
-  Result success(result, [int position]) {
-    return Success(buffer, position ?? this.position, result);
-  }
+  Result<R> success<R>(R result, [int position]) =>
+      Success<R>(buffer, position ?? this.position, result);
 
   /// Returns a result indicating a parse failure.
-  Result failure(String message, [int position]) {
-    return Failure(buffer, position ?? this.position, message);
-  }
+  Result<R> failure<R>(String message, [int position]) =>
+      Failure<R>(buffer, position ?? this.position, message);
 
   /// Returns a human readable string of the current context.
   @override

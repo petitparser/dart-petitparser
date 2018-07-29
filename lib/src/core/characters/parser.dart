@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Parser class for individual character classes.
-class CharacterParser extends Parser {
+class CharacterParser extends Parser<String> {
   final CharacterPredicate _predicate;
 
   final String _message;
@@ -14,7 +14,7 @@ class CharacterParser extends Parser {
   CharacterParser(this._predicate, this._message);
 
   @override
-  Result parseOn(Context context) {
+  Result<String> parseOn(Context context) {
     var buffer = context.buffer;
     var position = context.position;
     if (position < buffer.length &&
@@ -28,7 +28,7 @@ class CharacterParser extends Parser {
   String toString() => '${super.toString()}[$_message]';
 
   @override
-  Parser copy() => CharacterParser(_predicate, _message);
+  Parser<String> copy() => CharacterParser(_predicate, _message);
 
   @override
   bool hasEqualProperties(Parser other) {

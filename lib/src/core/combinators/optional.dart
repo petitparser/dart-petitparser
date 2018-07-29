@@ -6,13 +6,13 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that optionally parsers its delegate, or answers nil.
-class OptionalParser extends DelegateParser {
+class OptionalParser<T> extends DelegateParser<T> {
   final _otherwise;
 
-  OptionalParser(Parser delegate, this._otherwise) : super(delegate);
+  OptionalParser(Parser<T> delegate, this._otherwise) : super(delegate);
 
   @override
-  Result parseOn(Context context) {
+  Result<T> parseOn(Context context) {
     var result = delegate.parseOn(context);
     if (result.isSuccess) {
       return result;
@@ -22,7 +22,7 @@ class OptionalParser extends DelegateParser {
   }
 
   @override
-  Parser copy() => OptionalParser(delegate, _otherwise);
+  Parser<T> copy() => OptionalParser(delegate, _otherwise);
 
   @override
   bool hasEqualProperties(Parser other) {
