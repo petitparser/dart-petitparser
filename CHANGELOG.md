@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.9.0
+## 2.0.0
 
 * Make parsers fully typed, where it makes sense. In most cases this should have
-  no effect on existing code, but sometimes can point out actual bugs.
+  no effect on existing code, but sometimes can point out actual bugs. In rare
+  cases, it might be useful to insert `cast<R>` or `castList<R>`.
 
 ## 1.8.0
 

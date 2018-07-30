@@ -268,10 +268,10 @@ abstract class Parser<T> {
   Parser<R> map<R>(ActionCallback<T, R> callback) =>
       ActionParser<T, R>(this, callback);
 
-  /// Returns a parser that casts itself to a `Parser<R>`.
+  /// Returns a parser that casts itself to `Parser<R>`.
   Parser<R> cast<R>() => CastParser<R>(this);
 
-  /// Returns a parser that casts itself to a `Parser<List<R>>`.
+  /// Returns a parser that casts itself to `Parser<List<R>>`.
   Parser<List<R>> castList<R>() => CastListParser<R>(this);
 
   /// Returns a parser that transform a successful parse result by returning
@@ -316,10 +316,9 @@ abstract class Parser<T> {
   /// separators: `['1', '-', '2', '-', '3']`.
   Parser<List> separatedBy(Parser separator,
       {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
-    var sentinel = const Object();
     var repeater = SequenceParser([separator, this]).star();
     var parser = SequenceParser(optionalSeparatorAtEnd
-        ? [this, repeater, separator.optional(sentinel)]
+        ? [this, repeater, separator.optional()]
         : [this, repeater]);
     return parser.map((List list) {
       var result = [];
@@ -330,9 +329,7 @@ abstract class Parser<T> {
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators &&
-          optionalSeparatorAtEnd &&
-          !identical(list[2], sentinel)) {
+      if (includeSeparators && optionalSeparatorAtEnd && list[2] != null) {
         result.add(list[2]);
       }
       return result;
