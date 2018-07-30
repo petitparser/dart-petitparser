@@ -257,7 +257,7 @@ abstract class Parser<T> {
   /// For example, the parser `letter().settable()` behaves exactly the same
   /// as `letter()`, but it can be replaced with another parser using
   /// [SettableParser.set].
-  SettableParser settable() => SettableParser(this);
+  SettableParser<T> settable() => SettableParser<T>(this);
 
   /// Returns a parser that evaluates a [callback] as the production action
   /// on success of the receiver.
