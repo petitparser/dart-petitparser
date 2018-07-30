@@ -28,7 +28,7 @@ class CharacterParser extends Parser<String> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  Parser<String> copy() => CharacterParser(predicate, message);
+  CharacterParser copy() => CharacterParser(predicate, message);
 
   @override
   bool hasEqualProperties(CharacterParser other) =>

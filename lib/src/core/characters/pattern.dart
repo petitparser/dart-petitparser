@@ -4,32 +4,32 @@ import 'package:petitparser/src/core/characters/char.dart';
 import 'package:petitparser/src/core/characters/code.dart';
 import 'package:petitparser/src/core/characters/not.dart';
 import 'package:petitparser/src/core/characters/optimize.dart';
+import 'package:petitparser/src/core/characters/predicate.dart';
 import 'package:petitparser/src/core/characters/parser.dart';
 import 'package:petitparser/src/core/characters/range.dart';
 import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/predicates/any.dart';
 
 /// Returns a parser that accepts the given character class pattern.
-Parser pattern(String element, [String message]) {
-  return CharacterParser(_patternParser.parse(element).value,
+Parser<String> pattern(String element, [String message]) {
+  return CharacterParser(pattern_.parse(element).value,
       message ?? '[${toReadableString(element)}] expected');
 }
 
-Parser _createPatternParser() {
-  var single = any().map((element) {
-    return RangeCharPredicate(toCharCode(element), toCharCode(element));
-  });
-  var range = any().seq(char('-')).seq(any()).map((List elements) {
-    return RangeCharPredicate(toCharCode(elements[0]), toCharCode(elements[2]));
-  });
-  var positive = range.or(single).plus().map((List predicates) {
-    return optimizedRanges(predicates.cast<RangeCharPredicate>());
-  });
-  return char('^').optional().seq(positive).map((List predicates) {
-    return predicates[0] == null
-        ? predicates[1]
-        : NotCharacterPredicate(predicates[1]);
-  });
-}
+/// Parser that reads a single character.
+final single_ = any().map(
+    (element) => RangeCharPredicate(toCharCode(element), toCharCode(element)));
 
-final _patternParser = _createPatternParser();
+/// Parser that reads a character range.
+final range_ = any().seq(char('-')).seq(any()).map((List elements) =>
+    RangeCharPredicate(toCharCode(elements[0]), toCharCode(elements[2])));
+
+/// Parser that reads a sequence of single characters or ranges.
+final sequence_ = range_.or(single_).plus().map((List predicates) =>
+    optimizedRanges(predicates.cast<RangeCharPredicate>()));
+
+/// Parser that reads a possibly negated sequecne of predicates.
+final pattern_ = char('^').optional().seq(sequence_).map((List predicates) =>
+    predicates[0] == null
+        ? predicates[1]
+        : NotCharacterPredicate(predicates[1]));
