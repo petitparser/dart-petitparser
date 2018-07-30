@@ -5,8 +5,8 @@ library petitparser.test.dart_file_test;
 
 import 'dart:io';
 
-import 'package:test/test.dart';
 import 'package:petitparser/petitparser.dart';
+import 'package:test/test.dart';
 
 import '../example/dart/dart.dart';
 

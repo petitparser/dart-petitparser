@@ -11,7 +11,8 @@ void expectSuccess(Parser parser, String input, expected, [int position]) {
   expect(result.position, position ?? input.length);
 }
 
-void expectFailure(Parser parser, String input, [int position = 0, String message]) {
+void expectFailure(Parser parser, String input,
+    [int position = 0, String message]) {
   var result = parser.parse(input);
   expect(result.isFailure, isTrue);
   expect(result.isSuccess, isFalse);
@@ -1102,9 +1103,9 @@ main() {
       var b = digit().map((a) => '42');
       expect(a.isEqualTo(b), isFalse);
     });
-    test('map() compare (same signature)', () {
+    test('map() compare (different code)', () {
       var a = digit().map((a) => 42);
-      var b = digit().map((a) => 42);
+      var b = digit().map((a) => 43);
       expect(a.isEqualTo(b), isFalse);
     });
   });
