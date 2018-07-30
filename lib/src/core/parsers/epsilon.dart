@@ -20,7 +20,7 @@ class EpsilonParser<T> extends Parser<T> {
   Result<T> parseOn(Context context) => context.success(result);
 
   @override
-  Parser<T> copy() => EpsilonParser(result);
+  EpsilonParser<T> copy() => EpsilonParser<T>(result);
 
   @override
   bool hasEqualProperties(EpsilonParser<T> other) =>
