@@ -12,18 +12,18 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///
 ///     var p = undefined();
 ///     p.set(char('a').seq(p).or(char('b')));
-SettableParser undefined([String message = 'undefined parser']) {
-  return failure(message).settable();
+SettableParser<T> undefined<T>([String message = 'undefined parser']) {
+  return failure<T>(message).settable();
 }
 
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
-class SettableParser extends DelegateParser {
-  SettableParser(Parser delegate) : super(delegate);
+class SettableParser<T> extends DelegateParser<T> {
+  SettableParser(Parser<T> delegate) : super(delegate);
 
   /// Sets the receiver to delegate to [parser].
-  void set(Parser parser) => replace(children[0], parser);
+  void set(Parser<T> parser) => replace(children[0], parser);
 
   @override
-  SettableParser copy() => SettableParser(delegate);
+  SettableParser<T> copy() => SettableParser<T>(delegate);
 }

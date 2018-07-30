@@ -73,7 +73,7 @@ main() {
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Success[1:2]: a',
-        '  Instance of \'PossessiveRepeatingParser\'[0..*]',
+        '  Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
         '    Instance of \'CharacterParser\'[letter or digit expected]',
         '    Failure[1:2]: letter or digit expected',
         '  Success[1:2]: []',
@@ -145,7 +145,7 @@ main() {
       expect(lines, [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]',
-        '** Instance of \'PossessiveRepeatingParser\'[0..*]',
+        '** Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
         '** Instance of \'CharacterParser\'[letter or digit expected]',
         '*** Instance of \'CharacterParser\'[letter or digit expected]',
         '**** Instance of \'CharacterParser\'[letter or digit expected]',
