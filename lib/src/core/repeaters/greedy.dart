@@ -51,5 +51,6 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
-  GreedyRepeatingParser<T> copy() => GreedyRepeatingParser<T>(delegate, limit, min, max);
+  GreedyRepeatingParser<T> copy() =>
+      GreedyRepeatingParser<T>(delegate, limit, min, max);
 }

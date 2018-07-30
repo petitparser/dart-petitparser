@@ -24,9 +24,9 @@ class FailureParser<T> extends Parser<T> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  FailureParser<T>  copy() => FailureParser<T>(message);
+  FailureParser<T> copy() => FailureParser<T>(message);
 
   @override
-  bool hasEqualProperties(FailureParser<T>  other) =>
+  bool hasEqualProperties(FailureParser<T> other) =>
       super.hasEqualProperties(other) && message == other.message;
 }
