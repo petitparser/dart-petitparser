@@ -29,12 +29,10 @@ class SequenceParser extends ListParser<List> {
   }
 
   @override
-  Parser<List> seq(Parser other) {
-    return SequenceParser([]
-      ..addAll(children)
-      ..add(other));
-  }
+  Parser<List> seq(Parser other) => SequenceParser([]
+    ..addAll(children)
+    ..add(other));
 
   @override
-  Parser copy() => SequenceParser(children);
+  SequenceParser copy() => SequenceParser(children);
 }

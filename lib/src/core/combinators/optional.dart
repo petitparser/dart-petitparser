@@ -7,9 +7,9 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that optionally parsers its delegate, or answers nil.
 class OptionalParser<T> extends DelegateParser<T> {
-  final _otherwise;
+  final otherwise;
 
-  OptionalParser(Parser<T> delegate, this._otherwise) : super(delegate);
+  OptionalParser(Parser<T> delegate, this.otherwise) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
@@ -17,17 +17,14 @@ class OptionalParser<T> extends DelegateParser<T> {
     if (result.isSuccess) {
       return result;
     } else {
-      return context.success(_otherwise);
+      return context.success(otherwise);
     }
   }
 
   @override
-  Parser<T> copy() => OptionalParser(delegate, _otherwise);
+  OptionalParser<T> copy() => OptionalParser<T>(delegate, otherwise);
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is OptionalParser &&
-        super.hasEqualProperties(other) &&
-        _otherwise == other._otherwise;
-  }
+  bool hasEqualProperties(OptionalParser<T> other) =>
+      super.hasEqualProperties(other) && otherwise == other.otherwise;
 }

@@ -26,12 +26,10 @@ class ChoiceParser extends ListParser {
   }
 
   @override
-  Parser or(Parser other) {
-    return ChoiceParser([]
-      ..addAll(children)
-      ..add(other));
-  }
+  Parser or(Parser other) => ChoiceParser([]
+    ..addAll(children)
+    ..add(other));
 
   @override
-  Parser copy() => ChoiceParser(children);
+  ChoiceParser copy() => ChoiceParser(children);
 }

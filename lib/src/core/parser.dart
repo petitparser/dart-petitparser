@@ -59,14 +59,9 @@ abstract class Parser<T> {
   /// For example, `letter().plus().matches('abc de')` results in the list
   /// `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
-  Iterable<T> matches(String input) {
+  List<T> matches(String input) {
     var list = <T>[];
-    and()
-        .map((each) => list.add(each))
-        .seq(any())
-        .or(any())
-        .star()
-        .parse(input);
+    and().map(list.add).seq(any()).or(any()).star().parse(input);
     return list;
   }
 
@@ -75,9 +70,9 @@ abstract class Parser<T> {
   /// For example, `letter().plus().matchesSkipping('abc de')` results in the
   /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
   /// overlapping parse results.
-  Iterable<T> matchesSkipping(String input) {
+  List<T> matchesSkipping(String input) {
     var list = <T>[];
-    map((each) => list.add(each)).or(any()).star().parse(input);
+    map(list.add).or(any()).star().parse(input);
     return list;
   }
 
@@ -273,8 +268,11 @@ abstract class Parser<T> {
   Parser<R> map<R>(ActionCallback<T, R> callback) =>
       ActionParser<T, R>(this, callback);
 
-  /// Returns a parser that casts the result of this parser to another type.
-  Parser<R> cast<R>() => CastParser<T, R>(this);
+  /// Returns a parser that casts itself to a `Parser<R>`.
+  Parser<R> cast<R>() => CastParser<R>(this);
+
+  /// Returns a parser that casts itself to a `Parser<List<R>>`.
+  Parser<List<R>> castList<R>() => CastListParser<R>(this);
 
   /// Returns a parser that transform a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
@@ -283,7 +281,7 @@ abstract class Parser<T> {
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
   Parser<R> pick<R>(int index) {
-    return cast<List<R>>().map((list) {
+    return castList<R>().map<R>((list) {
       return list[index < 0 ? list.length + index : index];
     });
   }
@@ -296,7 +294,7 @@ abstract class Parser<T> {
   /// first and last letter parsed. For the input `'abc'` it returns
   /// `['a', 'c']`.
   Parser<List<R>> permute<R>(List<int> indexes) {
-    return cast<List<R>>().map((list) {
+    return castList<R>().map<List<R>>((list) {
       return indexes.map((index) {
         return list[index < 0 ? list.length + index : index];
       }).toList(growable: false);
@@ -316,11 +314,12 @@ abstract class Parser<T> {
   /// For example, the parser `digit().separatedBy(char('-'))` returns a parser
   /// that consumes input like `'1-2-3'` and returns a list of the elements and
   /// separators: `['1', '-', '2', '-', '3']`.
-  Parser separatedBy(Parser separator,
+  Parser<List> separatedBy(Parser separator,
       {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
+    var sentinel = const Object();
     var repeater = SequenceParser([separator, this]).star();
     var parser = SequenceParser(optionalSeparatorAtEnd
-        ? [this, repeater, separator.optional(separator)]
+        ? [this, repeater, separator.optional(sentinel)]
         : [this, repeater]);
     return parser.map((List list) {
       var result = [];
@@ -333,7 +332,7 @@ abstract class Parser<T> {
       }
       if (includeSeparators &&
           optionalSeparatorAtEnd &&
-          !identical(list[2], separator)) {
+          !identical(list[2], sentinel)) {
         result.add(list[2]);
       }
       return result;
@@ -342,8 +341,8 @@ abstract class Parser<T> {
 
   /// Returns a shallow copy of the receiver.
   ///
-  /// Override this method in all subclasses.
-  Parser copy();
+  /// Override this method in all subclasses, return its own type.
+  Parser<T> copy();
 
   /// Recursively tests for structural equality of two parsers.
   ///
@@ -365,7 +364,7 @@ abstract class Parser<T> {
   /// called directly, instead use [Parser#equals].
   ///
   /// Override this method in all subclasses that add new state.
-  bool hasEqualProperties(Parser other) => true;
+  bool hasEqualProperties(covariant Parser<T> other) => true;
 
   /// Compare the children of two parsers. Normally this method should not be
   /// called directly, instead use [Parser#equals].

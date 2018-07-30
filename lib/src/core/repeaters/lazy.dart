@@ -43,5 +43,5 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
-  Parser<List<T>> copy() => LazyRepeatingParser(delegate, limit, min, max);
+  LazyRepeatingParser<T> copy() => LazyRepeatingParser<T>(delegate, limit, min, max);
 }

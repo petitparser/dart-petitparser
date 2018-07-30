@@ -8,16 +8,16 @@ import 'package:petitparser/src/core/parser.dart';
 /// A parser that silently consumes input of another parser around
 /// its delegate.
 class TrimmingParser<T> extends DelegateParser<T> {
-  Parser _left;
-  Parser _right;
+  Parser left;
+  Parser right;
 
-  TrimmingParser(Parser<T> delegate, this._left, this._right) : super(delegate);
+  TrimmingParser(Parser<T> delegate, this.left, this.right) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
     var current = context;
     do {
-      current = _left.parseOn(current);
+      current = left.parseOn(current);
     } while ((current as Result).isSuccess);
     var result = delegate.parseOn(current);
     if (result.isFailure) {
@@ -25,25 +25,25 @@ class TrimmingParser<T> extends DelegateParser<T> {
     }
     current = result;
     do {
-      current = _right.parseOn(current);
+      current = right.parseOn(current);
     } while ((current as Result).isSuccess);
     return current.success(result.value);
   }
 
   @override
-  Parser<T> copy() => TrimmingParser(delegate, _left, _right);
+  TrimmingParser<T> copy() => TrimmingParser<T>(delegate, left, right);
 
   @override
-  List<Parser> get children => [delegate, _left, _right];
+  List<Parser> get children => [delegate, left, right];
 
   @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (_left == source) {
-      _left = target;
+    if (left == source) {
+      left = target;
     }
-    if (_right == source) {
-      _right = target;
+    if (right == source) {
+      right = target;
     }
   }
 }

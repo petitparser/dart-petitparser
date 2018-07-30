@@ -1,11 +1,9 @@
 library petitparser.test.core_test;
 
-import 'dart:math' as math;
-
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-void expectSuccess(Parser parser, input, expected, [int position]) {
+void expectSuccess(Parser parser, String input, expected, [int position]) {
   var result = parser.parse(input);
   expect(result.isSuccess, isTrue);
   expect(result.isFailure, isFalse);
@@ -13,7 +11,7 @@ void expectSuccess(Parser parser, input, expected, [int position]) {
   expect(result.position, position ?? input.length);
 }
 
-void expectFailure(Parser parser, input, [int position = 0, String message]) {
+void expectFailure(Parser parser, String input, [int position = 0, String message]) {
   var result = parser.parse(input);
   expect(result.isFailure, isTrue);
   expect(result.isSuccess, isFalse);
@@ -1098,6 +1096,17 @@ main() {
     test('token()', () => verify(digit().token()));
     test('trim()', () => verify(digit().trim(char('a'), char('b'))));
     test('undefined()', () => verify(undefined()));
+
+    test('map() compare (different signature)', () {
+      var a = digit().map((a) => 42);
+      var b = digit().map((a) => '42');
+      expect(a.isEqualTo(b), isFalse);
+    });
+    test('map() compare (same signature)', () {
+      var a = digit().map((a) => 42);
+      var b = digit().map((a) => 42);
+      expect(a.isEqualTo(b), isFalse);
+    });
   });
   group('regressions', () {
     test('flatten().trim()', () {

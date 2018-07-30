@@ -14,9 +14,9 @@ Parser<String> any([String message = 'input expected']) {
 
 /// A parser that accepts any input element.
 class AnyParser extends Parser<String> {
-  final String _message;
+  final String message;
 
-  AnyParser(this._message);
+  AnyParser(this.message);
 
   @override
   Result<String> parseOn(Context context) {
@@ -24,16 +24,13 @@ class AnyParser extends Parser<String> {
     var buffer = context.buffer;
     return position < buffer.length
         ? context.success(buffer[position], position + 1)
-        : context.failure(_message);
+        : context.failure(message);
   }
 
   @override
-  Parser<String> copy() => AnyParser(_message);
+  AnyParser copy() => AnyParser(message);
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is AnyParser &&
-        super.hasEqualProperties(other) &&
-        _message == other._message;
-  }
+  bool hasEqualProperties(AnyParser other) =>
+      super.hasEqualProperties(other) && message == other.message;
 }

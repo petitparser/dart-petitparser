@@ -21,5 +21,5 @@ class AndParser<T> extends DelegateParser<T> {
   }
 
   @override
-  Parser<T> copy() => AndParser(delegate);
+  AndParser<T> copy() => AndParser<T>(delegate);
 }

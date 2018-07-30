@@ -26,5 +26,5 @@ class DelegateParser<R> extends Parser<R> {
   }
 
   @override
-  Parser<R> copy() => DelegateParser<R>(delegate);
+  DelegateParser<R> copy() => DelegateParser<R>(delegate);
 }

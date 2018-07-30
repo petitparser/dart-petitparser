@@ -13,23 +13,20 @@ Parser<T> failure<T>([String message = 'unable to parse']) {
 
 /// A parser that consumes nothing and fails.
 class FailureParser<T> extends Parser<T> {
-  final String _message;
+  final String message;
 
-  FailureParser(this._message);
-
-  @override
-  Result<T> parseOn(Context context) => context.failure(_message);
+  FailureParser(this.message);
 
   @override
-  String toString() => '${super.toString()}[$_message]';
+  Result<T> parseOn(Context context) => context.failure(message);
 
   @override
-  Parser<T> copy() => FailureParser<T>(_message);
+  String toString() => '${super.toString()}[$message]';
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is FailureParser &&
-        super.hasEqualProperties(other) &&
-        _message == other._message;
-  }
+  FailureParser<T>  copy() => FailureParser<T>(message);
+
+  @override
+  bool hasEqualProperties(FailureParser<T>  other) =>
+      super.hasEqualProperties(other) && message == other.message;
 }

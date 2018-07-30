@@ -26,10 +26,6 @@ abstract class RepeatingParser<T> extends DelegateParser<List<T>> {
       '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is RepeatingParser &&
-        super.hasEqualProperties(other) &&
-        min == other.min &&
-        max == other.max;
-  }
+  bool hasEqualProperties(RepeatingParser<T> other) =>
+      super.hasEqualProperties(other) && min == other.min && max == other.max;
 }

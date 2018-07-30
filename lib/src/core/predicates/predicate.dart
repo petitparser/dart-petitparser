@@ -16,37 +16,40 @@ Parser<String> predicate(int length, Predicate predicate, String message) {
 
 /// A parser for a literal satisfying a predicate.
 class PredicateParser extends Parser<String> {
-  final int _length;
-  final Predicate _predicate;
-  final String _message;
+  /// The length of the input to read.
+  final int length;
 
-  PredicateParser(this._length, this._predicate, this._message);
+  /// The predicate function testing the input.
+  final Predicate predicate;
+
+  /// The failure message in case of a miss-match.
+  final String message;
+
+  PredicateParser(this.length, this.predicate, this.message);
 
   @override
   Result<String> parseOn(Context context) {
     var start = context.position;
-    var stop = start + _length;
+    var stop = start + length;
     if (stop <= context.buffer.length) {
       var result = context.buffer.substring(start, stop);
-      if (_predicate(result)) {
+      if (predicate(result)) {
         return context.success(result, stop);
       }
     }
-    return context.failure(_message);
+    return context.failure(message);
   }
 
   @override
-  String toString() => '${super.toString()}[$_message]';
+  String toString() => '${super.toString()}[$message]';
 
   @override
-  Parser<String> copy() => PredicateParser(_length, _predicate, _message);
+  PredicateParser copy() => PredicateParser(length, predicate, message);
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is PredicateParser &&
-        super.hasEqualProperties(other) &&
-        _length == other._length &&
-        _predicate == other._predicate &&
-        _message == other._message;
-  }
+  bool hasEqualProperties(PredicateParser other) =>
+      super.hasEqualProperties(other) &&
+      length == other.length &&
+      predicate == other.predicate &&
+      message == other.message;
 }

@@ -12,20 +12,17 @@ Parser epsilon([result]) => EpsilonParser(result);
 
 /// A parser that consumes nothing and succeeds.
 class EpsilonParser<T> extends Parser<T> {
-  final T _result;
+  final T result;
 
-  EpsilonParser(this._result);
-
-  @override
-  Result<T> parseOn(Context context) => context.success(_result);
+  EpsilonParser(this.result);
 
   @override
-  Parser<T> copy() => EpsilonParser(_result);
+  Result<T> parseOn(Context context) => context.success(result);
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is EpsilonParser &&
-        super.hasEqualProperties(other) &&
-        _result == other._result;
-  }
+  Parser<T> copy() => EpsilonParser(result);
+
+  @override
+  bool hasEqualProperties(EpsilonParser<T> other) =>
+      super.hasEqualProperties(other) && result == other.result;
 }

@@ -17,7 +17,7 @@ class ActionParser<T, R> extends DelegateParser<R> {
 
   @override
   Result<R> parseOn(Context context) {
-    var result = delegate.parseOn(context);
+    Result<T> result = delegate.parseOn(context);
     if (result.isSuccess) {
       return result.success(callback(result.value));
     } else {
@@ -26,12 +26,9 @@ class ActionParser<T, R> extends DelegateParser<R> {
   }
 
   @override
-  Parser<R> copy() => ActionParser<T, R>(delegate, callback);
+  ActionParser<T, R> copy() => ActionParser<T, R>(delegate, callback);
 
   @override
-  bool hasEqualProperties(Parser other) {
-    return other is ActionParser &&
-        super.hasEqualProperties(other) &&
-        callback == other.callback;
-  }
+  bool hasEqualProperties(ActionParser<T, R> other) =>
+      super.hasEqualProperties(other) && callback == other.callback;
 }
