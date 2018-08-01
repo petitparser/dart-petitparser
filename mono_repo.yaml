@@ -1,0 +1,5 @@
+# Created by mono_repo
+example:
+  published: false
+petitparser:
+  published: true

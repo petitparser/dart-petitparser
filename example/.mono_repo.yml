@@ -1,0 +1,17 @@
+# See https://github.com/dart-lang/mono_repo for details
+dart:
+- dev
+
+stages:
+- analyze:
+  - command: dartanalyzer --fatal-warnings .
+  - command: dartfmt --dry-run --set-exit-if-changed .
+- build:
+  - command: pub run build_runner build test
+- unit_test:
+  - command: pub run build_runner test -- --platform vm
+  - command: pub run build_runner test -- --platform chrome
+
+cache:
+  directories:
+  - .dart_tool/build
