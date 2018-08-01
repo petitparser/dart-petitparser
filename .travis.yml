@@ -14,17 +14,17 @@ jobs:
       env: PKG="example"
       dart: dev
     - stage: build
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner build test"
+      name: "SDK: dev - DIR: example - TASKS: pub run build_runner build"
       script: ./tool/travis.sh command_2
       env: PKG="example"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test -- --platform vm"
+      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test"
       script: ./tool/travis.sh command_3
       env: PKG="example"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test -- --platform chrome"
+      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test -- -p chrome"
       script: ./tool/travis.sh command_4
       env: PKG="example"
       dart: dev
@@ -39,17 +39,17 @@ jobs:
       env: PKG="petitparser"
       dart: dev
     - stage: build
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner build test"
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner build"
       script: ./tool/travis.sh command_2
       env: PKG="petitparser"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test -- --platform vm"
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test"
       script: ./tool/travis.sh command_3
       env: PKG="petitparser"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test -- --platform chrome"
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test -- -p chrome"
       script: ./tool/travis.sh command_4
       env: PKG="petitparser"
       dart: dev

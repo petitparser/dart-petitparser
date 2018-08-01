@@ -4,13 +4,13 @@ dart:
 
 stages:
 - analyze:
-  - command: dartanalyzer --fatal-warnings .
-  - command: dartfmt --dry-run --set-exit-if-changed .
+  - command: "dartanalyzer --fatal-warnings ."
+  - command: "dartfmt --dry-run --set-exit-if-changed ."
 - build:
-  - command: pub run build_runner build test
+  - command: "pub run build_runner build"
 - unit_test:
-  - command: pub run build_runner test -- --platform vm
-  - command: pub run build_runner test -- --platform chrome
+  - command: "pub run build_runner test"
+  - command: "pub run build_runner test -- -p chrome"
 
 cache:
   directories:

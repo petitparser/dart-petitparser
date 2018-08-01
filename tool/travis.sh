@@ -31,18 +31,18 @@ while (( "$#" )); do
     ;;
   command_2) echo
     echo -e '\033[1mTASK: command_2\033[22m'
-    echo -e 'pub run build_runner build test'
-    pub run build_runner build test || EXIT_CODE=$?
+    echo -e 'pub run build_runner build'
+    pub run build_runner build || EXIT_CODE=$?
     ;;
   command_3) echo
     echo -e '\033[1mTASK: command_3\033[22m'
-    echo -e 'pub run build_runner test -- --platform vm'
-    pub run build_runner test -- --platform vm || EXIT_CODE=$?
+    echo -e 'pub run build_runner test'
+    pub run build_runner test || EXIT_CODE=$?
     ;;
   command_4) echo
     echo -e '\033[1mTASK: command_4\033[22m'
-    echo -e 'pub run build_runner test -- --platform chrome'
-    pub run build_runner test -- --platform chrome || EXIT_CODE=$?
+    echo -e 'pub run build_runner test -- -p chrome'
+    pub run build_runner test -- -p chrome || EXIT_CODE=$?
     ;;
   *) echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
     EXIT_CODE=1
