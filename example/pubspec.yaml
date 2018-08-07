@@ -5,7 +5,7 @@ homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that illustrate the PetitParser framework.
 
 environment:
-  sdk: '>=2.0.0-dev.69.0 <3.0.0'
+  sdk: ^2.0.0
 dependencies:
   petitparser:
     path: ../petitparser
