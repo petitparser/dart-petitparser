@@ -1,6 +1,5 @@
 # Created with https://github.com/dart-lang/mono_repo
 language: dart
-sudo: required
 
 jobs:
   include:
@@ -14,19 +13,14 @@ jobs:
       script: ./tool/travis.sh command_1
       env: PKG="example"
       dart: dev
-    - stage: build
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner build"
+    - stage: unit_test
+      name: "SDK: dev - DIR: example - TASKS: pub run test --platform vm"
       script: ./tool/travis.sh command_2
       env: PKG="example"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test"
+      name: "SDK: dev - DIR: example - TASKS: pub run test --platform chrome"
       script: ./tool/travis.sh command_3
-      env: PKG="example"
-      dart: dev
-    - stage: unit_test
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test -- -p chrome"
-      script: ./tool/travis.sh command_4
       env: PKG="example"
       dart: dev
     - stage: analyze
@@ -39,33 +33,30 @@ jobs:
       script: ./tool/travis.sh command_1
       env: PKG="petitparser"
       dart: dev
-    - stage: build
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner build"
+    - stage: unit_test
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run test --platform vm"
       script: ./tool/travis.sh command_2
       env: PKG="petitparser"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test"
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run test --platform chrome"
       script: ./tool/travis.sh command_3
-      env: PKG="petitparser"
-      dart: dev
-    - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run build_runner test -- -p chrome"
-      script: ./tool/travis.sh command_4
       env: PKG="petitparser"
       dart: dev
 
 stages:
   - analyze
-  - build
   - unit_test
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
-  only: [master]
+  only:
+    - master
 
 cache:
   directories:
-    - $HOME/.pub-cache
+    - "$HOME/.pub-cache"
+    - "example/$HOME/.pub-cache"
     - example/.dart_tool/build
+    - "petitparser/$HOME/.pub-cache"
     - petitparser/.dart_tool/build

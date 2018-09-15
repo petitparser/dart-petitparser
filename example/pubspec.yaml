@@ -2,15 +2,13 @@ name: example
 
 author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/petitparser/dart-petitparser
-description: A collection of example parsers, applications, and benchmarks that illustrate the PetitParser framework.
+description: A collection of example parsers, applications, and benchmarks that
+  illustrate the PetitParser framework.
 
 environment:
-  sdk: '>=2.0.0-dev.61.0 <3.0.0'
+  sdk: '>=2.0.0 <3.0.0'
 dependencies:
   petitparser:
     path: ../petitparser
 dev_dependencies:
-  build_runner: ^0.9.0
-  build_test: ^0.10.0
-  build_web_compilers: ^0.4.0
   test: ^1.3.0
