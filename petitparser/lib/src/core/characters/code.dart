@@ -5,7 +5,7 @@ int toCharCode(Object element) {
   if (element is num) {
     return element.round();
   }
-  var value = element.toString();
+  final value = element.toString();
   if (value.length != 1) {
     throw ArgumentError('"$value" is not a character');
   }
@@ -21,7 +21,7 @@ String toReadableString(Object element) {
     }
     return buffer.toString();
   }
-  var code = toCharCode(element);
+  final code = toCharCode(element);
   switch (code) {
     case 0x08:
       return '\\b'; // backspace

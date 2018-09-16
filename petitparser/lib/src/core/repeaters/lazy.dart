@@ -15,9 +15,9 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   @override
   Result<List<T>> parseOn(Context context) {
     var current = context;
-    var elements = <T>[];
+    final elements = <T>[];
     while (elements.length < min) {
-      var result = delegate.parseOn(current);
+      final result = delegate.parseOn(current);
       if (result.isFailure) {
         return result.failure(result.message);
       }
@@ -25,14 +25,14 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
       current = result;
     }
     for (;;) {
-      var limiter = limit.parseOn(current);
+      final limiter = limit.parseOn(current);
       if (limiter.isSuccess) {
         return current.success(elements);
       } else {
         if (max != unbounded && elements.length >= max) {
           return limiter.failure(limiter.message);
         }
-        var result = delegate.parseOn(current);
+        final result = delegate.parseOn(current);
         if (result.isFailure) {
           return limiter.failure(limiter.message);
         }

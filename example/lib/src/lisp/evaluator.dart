@@ -9,7 +9,7 @@ import 'name.dart';
 /// The evaluation function.
 Object eval(Environment env, Object expr) {
   if (expr is Cons) {
-    Function function = eval(env, expr.head);
+    final function = eval(env, expr.head) as Function;
     return function(env, expr.tail);
   } else if (expr is Name) {
     return env[expr];

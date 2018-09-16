@@ -35,7 +35,7 @@ Parser trace(Parser parser, [OutputHandler output = print]) {
     return ContinuationParser(each, (continuation, context) {
       output('${repeat(level, '  ')}$each');
       level++;
-      var result = continuation(context);
+      final result = continuation(context);
       level--;
       output('${repeat(level, '  ')}$result');
       return result;

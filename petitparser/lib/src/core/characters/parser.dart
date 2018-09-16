@@ -15,8 +15,8 @@ class CharacterParser extends Parser<String> {
 
   @override
   Result<String> parseOn(Context context) {
-    var buffer = context.buffer;
-    var position = context.position;
+    final buffer = context.buffer;
+    final position = context.position;
     if (position < buffer.length &&
         predicate.test(buffer.codeUnitAt(position))) {
       return context.success(buffer[position], position + 1);

@@ -66,7 +66,7 @@ abstract class GrammarDefinition {
   ///
   /// The optional arguments parametrize the called production.
   Parser ref(Function function, [arg1, arg2, arg3, arg4, arg5, arg6]) {
-    var arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
+    final arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
     return Reference(function, arguments);
@@ -87,10 +87,10 @@ abstract class GrammarDefinition {
     Parser _dereference(Reference reference) {
       var parser = mapping[reference];
       if (parser == null) {
-        var references = [reference];
+        final references = [reference];
         parser = reference.resolve();
         while (parser is Reference) {
-          var otherReference = parser as Reference;
+          final otherReference = parser as Reference;
           if (references.contains(otherReference)) {
             throw StateError('Recursive references detected: $references');
           }
@@ -104,14 +104,14 @@ abstract class GrammarDefinition {
       return parser;
     }
 
-    var todo = [_dereference(reference)];
-    var seen = Set.from(todo);
+    final todo = [_dereference(reference)];
+    final seen = Set.from(todo);
 
     while (todo.isNotEmpty) {
-      var parent = todo.removeLast();
+      final parent = todo.removeLast();
       for (var child in parent.children) {
         if (child is Reference) {
-          var referenced = _dereference(child);
+          final referenced = _dereference(child);
           parent.replace(child, referenced);
           child = referenced;
         }

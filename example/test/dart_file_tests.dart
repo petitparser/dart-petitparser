@@ -15,7 +15,7 @@ accept(Parser parser) => (String input) => parser.parse(input).isSuccess;
 
 void generateTests(String title, Directory root) {
   group(title, () {
-    var files = root
+    final files = root
         .listSync(recursive: true)
         .where((file) => file is File && file.path.endsWith('.dart'))
         .map((file) => file as File);

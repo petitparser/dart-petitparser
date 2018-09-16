@@ -72,7 +72,7 @@ class Token<T> {
 
   /// Returns a human readable string representing the [position] index in a [buffer].
   static String positionString(String buffer, int position) {
-    var lineAndColumn = lineAndColumnOf(buffer, position);
+    final lineAndColumn = lineAndColumnOf(buffer, position);
     return '${lineAndColumn[0]}:${lineAndColumn[1]}';
   }
 }

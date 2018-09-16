@@ -35,7 +35,7 @@ class Cons {
 
   @override
   String toString() {
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write('(');
     var current = this;
     while (true) {

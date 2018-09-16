@@ -15,7 +15,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
 
   Parser array() => super.array().map((each) => each[1] ?? []);
   Parser object() => super.object().map((each) {
-        var result = {};
+    final result = {};
         if (each[1] != null) {
           for (var element in each[1]) {
             result[element[0]] = element[2];
@@ -29,8 +29,8 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   Parser nullToken() => super.nullToken().map((each) => null);
   Parser stringToken() => ref(stringPrimitive).trim();
   Parser numberToken() => super.numberToken().map((each) {
-        var floating = double.parse(each);
-        var integral = floating.toInt();
+        final floating = double.parse(each);
+        final integral = floating.toInt();
         if (floating == integral && each.indexOf('.') == -1) {
           return integral;
         } else {
@@ -43,7 +43,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   Parser characterEscape() =>
       super.characterEscape().map((each) => jsonEscapeChars[each[1]]);
   Parser characterUnicode() => super.characterUnicode().map((each) {
-        var charCode = int.parse(each[1].join(), radix: 16);
+    final charCode = int.parse(each[1].join(), radix: 16);
         return String.fromCharCode(charCode);
       });
 }

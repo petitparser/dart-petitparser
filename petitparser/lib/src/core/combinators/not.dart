@@ -14,7 +14,7 @@ class NotParser extends DelegateParser<Null> {
 
   @override
   Result<Null> parseOn(Context context) {
-    var result = delegate.parseOn(context);
+    final result = delegate.parseOn(context);
     if (result.isFailure) {
       return context.success(null);
     } else {

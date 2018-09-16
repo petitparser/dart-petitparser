@@ -17,7 +17,7 @@ class ActionParser<T, R> extends DelegateParser<R> {
 
   @override
   Result<R> parseOn(Context context) {
-    Result<T> result = delegate.parseOn(context);
+    final result = delegate.parseOn(context);
     if (result.isSuccess) {
       return result.success(callback(result.value));
     } else {

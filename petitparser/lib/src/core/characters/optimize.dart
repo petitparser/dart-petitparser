@@ -27,9 +27,9 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
     if (mergedRanges.isEmpty) {
       mergedRanges.add(thisRange);
     } else {
-      var lastRange = mergedRanges.last;
+      final lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        var characterRange =
+        final characterRange =
             RangeCharPredicate(lastRange.start, thisRange.stop);
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {

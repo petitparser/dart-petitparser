@@ -19,7 +19,7 @@ class TrimmingParser<T> extends DelegateParser<T> {
     do {
       current = left.parseOn(current);
     } while ((current as Result).isSuccess);
-    var result = delegate.parseOn(current);
+    final result = delegate.parseOn(current);
     if (result.isFailure) {
       return result;
     }

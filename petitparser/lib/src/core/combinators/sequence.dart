@@ -16,9 +16,9 @@ class SequenceParser extends ListParser<List> {
   @override
   Result<List> parseOn(Context context) {
     var current = context;
-    var elements = List(children.length);
+    final elements = List(children.length);
     for (var i = 0; i < children.length; i++) {
-      var result = children[i].parseOn(current);
+      final result = children[i].parseOn(current);
       if (result.isFailure) {
         return result.failure(result.message);
       }

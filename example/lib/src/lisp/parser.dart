@@ -29,8 +29,8 @@ class LispParserDefinition extends LispGrammarDefinition {
 
   symbol() => super.symbol().map((each) => Name(each));
   number() => super.number().map((each) {
-        var floating = double.parse(each);
-        var integral = floating.toInt();
+        final floating = double.parse(each);
+        final integral = floating.toInt();
         if (floating == integral && each.indexOf('.') == -1) {
           return integral;
         } else {

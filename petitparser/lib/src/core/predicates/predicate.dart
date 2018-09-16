@@ -29,10 +29,10 @@ class PredicateParser extends Parser<String> {
 
   @override
   Result<String> parseOn(Context context) {
-    var start = context.position;
-    var stop = start + length;
+    final start = context.position;
+    final stop = start + length;
     if (stop <= context.buffer.length) {
-      var result = context.buffer.substring(start, stop);
+      final result = context.buffer.substring(start, stop);
       if (predicate(result)) {
         return context.success(result, stop);
       }

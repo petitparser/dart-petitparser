@@ -20,7 +20,7 @@ Parser transformParser(Parser parser, TransformationHandler handler) {
   final seen = Set.from<Parser>(mapping.values);
   final todo = List.from<Parser>(mapping.values);
   while (todo.isNotEmpty) {
-    var parent = todo.removeLast();
+    final parent = todo.removeLast();
     for (var child in parent.children) {
       if (mapping.containsKey(child)) {
         parent.replace(child, mapping[child]);

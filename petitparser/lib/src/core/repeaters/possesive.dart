@@ -15,9 +15,9 @@ class PossessiveRepeatingParser<T> extends RepeatingParser<T> {
   @override
   Result<List<T>> parseOn(Context context) {
     var current = context;
-    var elements = <T>[];
+    final elements = <T>[];
     while (elements.length < min) {
-      var result = delegate.parseOn(current);
+      final result = delegate.parseOn(current);
       if (result.isFailure) {
         return result.failure(result.message);
       }
@@ -25,7 +25,7 @@ class PossessiveRepeatingParser<T> extends RepeatingParser<T> {
       current = result;
     }
     while (max == unbounded || elements.length < max) {
-      var result = delegate.parseOn(current);
+      final result = delegate.parseOn(current);
       if (result.isFailure) {
         return current.success(elements);
       }

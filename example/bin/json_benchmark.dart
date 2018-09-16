@@ -8,7 +8,7 @@ double benchmark(Function function,
     [int warmUp = 1000, int milliseconds = 5000]) {
   var count = 0;
   var elapsed = 0;
-  var watch = Stopwatch();
+  final watch = Stopwatch();
   while (warmUp-- > 0) {
     function();
   }
@@ -34,12 +34,12 @@ const jsonEvent =
 
 final JsonParser json = JsonParser();
 
-dynamic native(String input) => convert.json.decode(input);
-dynamic custom(String input) => json.parse(input).value;
+Object native(String input) => convert.json.decode(input);
+Object custom(String input) => json.parse(input).value;
 
 void main() {
-  Map nativeResult = native(jsonEvent);
-  Map customResult = custom(jsonEvent);
+  final nativeResult = native(jsonEvent);
+  final customResult = custom(jsonEvent);
 
   if (nativeResult.toString() != customResult.toString()) {
     print('Results not matching!');
@@ -48,9 +48,9 @@ void main() {
     return;
   }
 
-  var nativeTime = benchmark(() => native(jsonEvent));
-  var customTime = benchmark(() => custom(jsonEvent));
-  var ratio = customTime / nativeTime;
+  final nativeTime = benchmark(() => native(jsonEvent));
+  final customTime = benchmark(() => custom(jsonEvent));
+  final ratio = customTime / nativeTime;
 
   print('Slowdown: ${ratio.toStringAsFixed(1)}');
   print('Native: ${nativeTime.toStringAsFixed(6)}');

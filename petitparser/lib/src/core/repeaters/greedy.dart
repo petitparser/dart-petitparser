@@ -16,9 +16,9 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   @override
   Result<List<T>> parseOn(Context context) {
     var current = context;
-    var elements = <T>[];
+    final elements = <T>[];
     while (elements.length < min) {
-      var result = delegate.parseOn(current);
+      final result = delegate.parseOn(current);
       if (result.isFailure) {
         return result.failure(result.message);
       }
@@ -27,7 +27,7 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
     }
     final contexts = <Context>[current];
     while (max == unbounded || elements.length < max) {
-      var result = delegate.parseOn(current);
+      final result = delegate.parseOn(current);
       if (result.isFailure) {
         break;
       }
@@ -35,7 +35,7 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
       contexts.add(current = result);
     }
     for (;;) {
-      var limiter = limit.parseOn(contexts.last);
+      final limiter = limit.parseOn(contexts.last);
       if (limiter.isSuccess) {
         return contexts.last.success(elements);
       }

@@ -10,7 +10,7 @@ double benchmark(Function function,
     [int warmUp = 1000, int milliseconds = 2500]) {
   var count = 0;
   var elapsed = 0;
-  var watch = Stopwatch();
+  final watch = Stopwatch();
   while (warmUp-- > 0) {
     function();
   }

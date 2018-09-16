@@ -14,8 +14,8 @@ class RangesCharPredicate implements CharacterPredicate {
     var min = 0;
     var max = length;
     while (min < max) {
-      var mid = min + ((max - min) >> 1);
-      var comp = starts[mid] - value;
+      final mid = min + ((max - min) >> 1);
+      final comp = starts[mid] - value;
       if (comp == 0) {
         return true;
       } else if (comp < 0) {

@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:example/lisp.dart';
 
 void inspect(Element element, Environment environment) {
-  var buffer = StringBuffer();
+  final buffer = StringBuffer();
   while (environment != null) {
     buffer.write('<ul>');
     for (var symbol in environment.keys) {

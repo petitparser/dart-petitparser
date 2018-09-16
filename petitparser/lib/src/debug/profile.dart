@@ -33,7 +33,7 @@ Parser profile(Parser root, [OutputHandler output = print]) {
         return ContinuationParser(parser, (continuation, context) {
           count[parser]++;
           watch[parser].start();
-          var result = continuation(context);
+          final result = continuation(context);
           watch[parser].stop();
           return result;
         });
@@ -42,7 +42,7 @@ Parser profile(Parser root, [OutputHandler output = print]) {
       count[parser] = 0;
       watch[parser] = Stopwatch();
     }
-    var result = continuation(context);
+    final result = continuation(context);
     for (var parser in parsers) {
       output('${count[parser]}\t'
           '${watch[parser].elapsedMicroseconds}\t'

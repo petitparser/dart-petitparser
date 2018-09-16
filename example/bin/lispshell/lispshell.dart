@@ -28,7 +28,7 @@ void main(List<String> arguments) {
   // default options
   var standardLibrary = true;
   var interactiveMode = false;
-  var files = <File>[];
+  final files = <File>[];
 
   // parse arguments
   for (var option in arguments) {
@@ -47,7 +47,7 @@ void main(List<String> arguments) {
         exit(1);
       }
     } else {
-      var file = File(option);
+      final file = File(option);
       if (file.existsSync()) {
         files.add(file);
       } else {
@@ -83,7 +83,7 @@ void main(List<String> arguments) {
 
   // process console input
   if (interactiveMode || files.isEmpty) {
-    var input =
+    final input =
         stdin.transform(systemEncoding.decoder).transform(const LineSplitter());
     evalInteractive(lispParser, environment, input, stdout, stderr);
   }

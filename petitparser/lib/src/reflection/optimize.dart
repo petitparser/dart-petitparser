@@ -18,7 +18,7 @@ Parser removeSettables(Parser parser) {
 Parser removeDuplicates(Parser parser) {
   final uniques = Set<Parser>();
   return transformParser(parser, (source) {
-    var target = uniques.firstWhere((each) {
+    final target = uniques.firstWhere((each) {
       return source != each && source.isEqualTo(each);
     }, orElse: () => null);
     if (target == null) {

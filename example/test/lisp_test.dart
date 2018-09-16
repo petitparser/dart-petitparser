@@ -8,8 +8,8 @@ const isString = TypeMatcher<String>();
 const isCons = TypeMatcher<Cons>();
 
 void main() {
-  var native = NativeEnvironment();
-  var standard = StandardEnvironment(native);
+  final native = NativeEnvironment();
+  final standard = StandardEnvironment(native);
 
   dynamic exec(String value, [Environment env]) {
     return evalString(lispParser, env ?? standard.create(), value);
@@ -17,16 +17,16 @@ void main() {
 
   group('Cell', () {
     test('Name', () {
-      var cell1 = Name('foo');
-      var cell2 = Name('foo');
-      var cell3 = Name('bar');
+      final cell1 = Name('foo');
+      final cell2 = Name('foo');
+      final cell3 = Name('bar');
       expect(cell1, cell2);
       expect(cell1, same(cell2));
       expect(cell1, isNot(cell3));
       expect(cell1, isNot(same(cell3)));
     });
     test('Cons', () {
-      var cell = Cons(1, 2);
+      final cell = Cons(1, 2);
       expect(cell.car, 1);
       expect(cell.head, 1);
       expect(cell.cdr, 2);
@@ -48,34 +48,34 @@ void main() {
     });
   });
   group('Environment', () {
-    var env = standard.create();
+    final env = standard.create();
     test('Standard', () {
       expect(env.owner, isNotNull);
       expect(env.keys, isEmpty);
       expect(env.owner.keys, isNot(isEmpty));
     });
     test('Create', () {
-      var sub = env.create();
+      final sub = env.create();
       expect(sub.owner, same(env));
       expect(sub.keys, isEmpty);
     });
   });
   group('Grammar', () {
-    var grammar = LispGrammar();
+    final grammar = LispGrammar();
     test('Name', () {
-      var result = grammar.parse('foo').value;
+      final result = grammar.parse('foo').value;
       expect(result, ['foo']);
     });
     test('Name for operator', () {
-      var result = grammar.parse('+').value;
+      final result = grammar.parse('+').value;
       expect(result, ['+']);
     });
     test('Name for special', () {
-      var result = grammar.parse('set!').value;
+      final result = grammar.parse('set!').value;
       expect(result, ['set!']);
     });
     test('String', () {
-      var result = grammar.parse('"foo"').value;
+      final result = grammar.parse('"foo"').value;
       expect(result, [
         [
           '"',
@@ -85,7 +85,7 @@ void main() {
       ]);
     });
     test('String with escape', () {
-      var result = grammar.parse('"\\""').value;
+      final result = grammar.parse('"\\""').value;
       expect(result, [
         [
           '"',
@@ -97,45 +97,45 @@ void main() {
       ]);
     });
     test('Number integer', () {
-      var result = grammar.parse('123').value;
+      final result = grammar.parse('123').value;
       expect(result, ['123']);
     });
     test('Number negative integer', () {
-      var result = grammar.parse('-123').value;
+      final result = grammar.parse('-123').value;
       expect(result, ['-123']);
     });
     test('Number positive integer', () {
-      var result = grammar.parse('+123').value;
+      final result = grammar.parse('+123').value;
       expect(result, ['+123']);
     });
     test('Number floating', () {
-      var result = grammar.parse('123.45').value;
+      final result = grammar.parse('123.45').value;
       expect(result, ['123.45']);
     });
     test('Number floating exponential', () {
-      var result = grammar.parse('1.23e4').value;
+      final result = grammar.parse('1.23e4').value;
       expect(result, ['1.23e4']);
     });
     test('List empty', () {
-      var result = grammar.parse('()').value;
+      final result = grammar.parse('()').value;
       expect(result, [
         ['(', [], ')']
       ]);
     });
     test('List empty []', () {
-      var result = grammar.parse('[]').value;
+      final result = grammar.parse('[]').value;
       expect(result, [
         ['[', [], ']']
       ]);
     });
     test('List empty {}', () {
-      var result = grammar.parse('{}').value;
+      final result = grammar.parse('{}').value;
       expect(result, [
         ['{', [], '}']
       ]);
     });
     test('List one element', () {
-      var result = grammar.parse('(1)').value;
+      final result = grammar.parse('(1)').value;
       expect(result, [
         [
           '(',
@@ -145,7 +145,7 @@ void main() {
       ]);
     });
     test('List two elements', () {
-      var result = grammar.parse('(1 2)').value;
+      final result = grammar.parse('(1 2)').value;
       expect(result, [
         [
           '(',
@@ -158,7 +158,7 @@ void main() {
       ]);
     });
     test('List three elements', () {
-      var result = grammar.parse('(+ 1 2)').value;
+      final result = grammar.parse('(+ 1 2)').value;
       expect(result, [
         [
           '(',
@@ -175,72 +175,72 @@ void main() {
     });
   });
   group('Parser', () {
-    var definition = LispParserDefinition();
-    var atom = definition.build(start: definition.atom);
+    final definition = LispParserDefinition();
+    final atom = definition.build(start: definition.atom);
     test('Name', () {
-      var cell = atom.parse('foo').value;
+      final cell = atom.parse('foo').value;
       expect(cell, isName);
       expect(cell.toString(), 'foo');
     });
     test('Name for operator', () {
-      var cell = atom.parse('+').value;
+      final cell = atom.parse('+').value;
       expect(cell, isName);
       expect(cell.toString(), '+');
     });
     test('Name for special', () {
-      var cell = atom.parse('set!').value;
+      final cell = atom.parse('set!').value;
       expect(cell, isName);
       expect(cell.toString(), 'set!');
     });
     test('String', () {
-      var cell = atom.parse('"foo"').value;
+      final cell = atom.parse('"foo"').value;
       expect(cell, isString);
       expect(cell, 'foo');
     });
     test('String with escape', () {
-      var cell = atom.parse('"\\""').value;
+      final cell = atom.parse('"\\""').value;
       expect(cell, '"');
     });
     test('Number integer', () {
-      var cell = atom.parse('123').value;
+      final cell = atom.parse('123').value;
       expect(cell, 123);
     });
     test('Number negative integer', () {
-      var cell = atom.parse('-123').value;
+      final cell = atom.parse('-123').value;
       expect(cell, -123);
     });
     test('Number positive integer', () {
-      var cell = atom.parse('+123').value;
+      final cell = atom.parse('+123').value;
       expect(cell, 123);
     });
     test('Number floating', () {
-      var cell = atom.parse('123.45').value;
+      final cell = atom.parse('123.45').value;
       expect(cell, 123.45);
     });
     test('Number floating exponential', () {
-      var cell = atom.parse('1.23e4').value;
+      final cell = atom.parse('1.23e4').value;
       expect(cell, 1.23e4);
     });
     test('List empty', () {
-      var cell = atom.parse('()').value;
+      final cell = atom.parse('()').value;
       expect(cell, isNull);
     });
     test('List empty []', () {
-      var cell = atom.parse('[ ]').value;
+      final cell = atom.parse('[ ]').value;
       expect(cell, isNull);
     });
     test('List empty {}', () {
-      var cell = atom.parse('{   }').value;
+      final cell = atom.parse('{   }').value;
       expect(cell, isNull);
     });
     test('List one element', () {
-      var cell = atom.parse('(1)').value;
+      final cell = atom.parse('(1)').value;
       expect(cell, isCons);
       expect(cell.head, 1);
       expect(cell.tail, isNull);
     });
     test('List two elements', () {
-      var cell = atom.parse('(1 2)').value;
+      final cell = atom.parse('(1 2)').value;
       expect(cell, isCons);
       expect(cell.head, 1);
       expect(cell.tail, isCons);
@@ -248,7 +248,7 @@ void main() {
       expect(cell.tail.tail, isNull);
     });
     test('List three elements', () {
-      var cell = atom.parse('(+ 1 2)').value;
+      final cell = atom.parse('(+ 1 2)').value;
       expect(cell, isCons);
       expect(cell.head, isName);
       expect(cell.head.toString(), '+');
@@ -301,7 +301,7 @@ void main() {
       expect(exec('(let ((a 1) (b 2)) (+ a b) 4)'), 4);
     });
     group('Print', () {
-      var buffer = StringBuffer();
+      final buffer = StringBuffer();
       setUp(() {
         printer = buffer.write;
       });
@@ -323,7 +323,7 @@ void main() {
       });
     });
     test('Set!', () {
-      var env = standard.create();
+      final env = standard.create();
       env.define(Name('a'), null);
       expect(exec('(set! a 1)', env), 1);
       expect(exec('(set! a (+ 1 2))', env), 3);
@@ -346,7 +346,7 @@ void main() {
       expect(exec('(if (= 1 2) 3 4)'), 4);
     });
     test('While', () {
-      var env = standard.create();
+      final env = standard.create();
       env.define(Name('a'), 0);
       exec('(while (< a 3) (set! a (+ a 1)))', env);
       expect(env[Name('a')], 3);
@@ -375,7 +375,7 @@ void main() {
       expect(exec('(and false false false)'), isFalse);
     });
     test('And (lazyness)', () {
-      var env = standard.create();
+      final env = standard.create();
       env.define(Name('a'), null);
       exec('(and false (set! a true))', env);
       expect(env[Name('a')], isNull);
@@ -400,7 +400,7 @@ void main() {
       expect(exec('(or false false false)'), isFalse);
     });
     test('Or (lazyness)', () {
-      var env = standard.create();
+      final env = standard.create();
       env.define(Name('a'), null);
       exec('(or true (set! a true))', env);
       expect(env[Name('a')], isNull);
@@ -567,7 +567,7 @@ void main() {
   });
   group('Examples', () {
     test('Fibonacci', () {
-      var env = standard.create();
+      final env = standard.create();
       exec(
           '(define (fib n)'
           '  (if (<= n 1)'
@@ -582,7 +582,7 @@ void main() {
       expect(exec('(fib 5)', env), 8);
     });
     test('Closure', () {
-      var env = standard.create();
+      final env = standard.create();
       exec(
           '(define (mul n)'
           '  (lambda (x) (* n x)))',
@@ -592,7 +592,7 @@ void main() {
       expect(exec('((mul 4) 5)', env), 20);
     });
     test('Object', () {
-      var env = standard.create();
+      final env = standard.create();
       exec(
           '(define (counter start)'
           '  (let ((count start))'

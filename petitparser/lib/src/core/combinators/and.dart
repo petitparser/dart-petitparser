@@ -12,7 +12,7 @@ class AndParser<T> extends DelegateParser<T> {
 
   @override
   Result<T> parseOn(Context context) {
-    var result = delegate.parseOn(context);
+    final result = delegate.parseOn(context);
     if (result.isSuccess) {
       return context.success(result.value);
     } else {

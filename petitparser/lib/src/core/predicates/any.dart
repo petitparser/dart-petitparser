@@ -20,8 +20,8 @@ class AnyParser extends Parser<String> {
 
   @override
   Result<String> parseOn(Context context) {
-    var position = context.position;
-    var buffer = context.buffer;
+    final position = context.position;
+    final buffer = context.buffer;
     return position < buffer.length
         ? context.success(buffer[position], position + 1)
         : context.failure(message);

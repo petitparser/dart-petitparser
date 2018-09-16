@@ -7,8 +7,8 @@ var definition = SmalltalkGrammarDefinition();
 var grammar = SmalltalkGrammar();
 
 dynamic validate(String source, Function production) {
-  var parser = definition.build(start: production).end();
-  var result = parser.parse(source);
+  final parser = definition.build(start: production).end();
+  final result = parser.parse(source);
   return result.value;
 }
 

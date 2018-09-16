@@ -60,7 +60,7 @@ abstract class Parser<T> {
   /// `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
   List<T> matches(String input) {
-    var list = <T>[];
+    final list = <T>[];
     and().map(list.add).seq(any()).or(any()).star().parse(input);
     return list;
   }
@@ -71,7 +71,7 @@ abstract class Parser<T> {
   /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [Parser.matches] to retrieve
   /// overlapping parse results.
   List<T> matchesSkipping(String input) {
-    var list = <T>[];
+    final list = <T>[];
     map(list.add).or(any()).star().parse(input);
     return list;
   }
@@ -316,12 +316,12 @@ abstract class Parser<T> {
   /// separators: `['1', '-', '2', '-', '3']`.
   Parser<List> separatedBy(Parser separator,
       {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
-    var repeater = SequenceParser([separator, this]).star();
-    var parser = SequenceParser(optionalSeparatorAtEnd
+    final repeater = SequenceParser([separator, this]).star();
+    final parser = SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional()]
         : [this, repeater]);
     return parser.map((List list) {
-      var result = [];
+      final result = [];
       result.add(list[0]);
       for (var tuple in list[1]) {
         if (includeSeparators) {
@@ -369,7 +369,7 @@ abstract class Parser<T> {
   /// Normally this method does not need to be overridden, as this method works
   /// generically on the returned [Parser#children].
   bool hasEqualChildren(Parser other, Set<Parser> seen) {
-    var thisChildren = children, otherChildren = other.children;
+    final thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
     }

@@ -65,7 +65,7 @@ linter:
     - prefer_contains
 #    - prefer_expression_function_bodies
     - prefer_final_fields
-#    - prefer_final_locals
+    - prefer_final_locals
     - prefer_foreach
     - prefer_function_declarations_over_variables
     - prefer_initializing_formals

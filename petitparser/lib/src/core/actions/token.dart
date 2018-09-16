@@ -12,9 +12,9 @@ class TokenParser<T> extends DelegateParser<Token<T>> {
 
   @override
   Result<Token<T>> parseOn(Context context) {
-    var result = delegate.parseOn(context);
+    final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      var token = Token<T>(
+      final token = Token<T>(
           result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
