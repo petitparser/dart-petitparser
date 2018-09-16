@@ -15,7 +15,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
 
   Parser array() => super.array().map((each) => each[1] ?? []);
   Parser object() => super.object().map((each) {
-    final result = {};
+        final result = {};
         if (each[1] != null) {
           for (var element in each[1]) {
             result[element[0]] = element[2];
@@ -43,7 +43,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   Parser characterEscape() =>
       super.characterEscape().map((each) => jsonEscapeChars[each[1]]);
   Parser characterUnicode() => super.characterUnicode().map((each) {
-    final charCode = int.parse(each[1].join(), radix: 16);
+        final charCode = int.parse(each[1].join(), radix: 16);
         return String.fromCharCode(charCode);
       });
 }

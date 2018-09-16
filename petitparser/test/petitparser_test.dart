@@ -1142,14 +1142,18 @@ main() {
       expect(firstReference == secondReference, isFalse);
     });
     test('reference with same parameters', () {
-      final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-      final secondReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+      final firstReference =
+          grammarDefinition.ref(grammarDefinition.start, 'a');
+      final secondReference =
+          grammarDefinition.ref(grammarDefinition.start, 'a');
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isTrue);
     });
     test('reference with different parameters', () {
-      final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-      final secondReference = grammarDefinition.ref(grammarDefinition.start, 'b');
+      final firstReference =
+          grammarDefinition.ref(grammarDefinition.start, 'a');
+      final secondReference =
+          grammarDefinition.ref(grammarDefinition.start, 'b');
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isFalse);
     });

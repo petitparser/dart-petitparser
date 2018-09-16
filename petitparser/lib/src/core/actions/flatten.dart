@@ -14,7 +14,8 @@ class FlattenParser extends DelegateParser<String> {
   Result<String> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      final output = context.buffer.substring(context.position, result.position);
+      final output =
+          context.buffer.substring(context.position, result.position);
       return result.success(output);
     } else {
       return result.failure(result.message);
