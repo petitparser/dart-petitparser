@@ -1,5 +1,7 @@
 # Created with https://github.com/dart-lang/mono_repo
 language: dart
+
+# Custom configuration
 sudo: required
 
 jobs:
