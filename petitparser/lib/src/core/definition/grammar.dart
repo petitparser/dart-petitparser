@@ -82,7 +82,7 @@ abstract class GrammarDefinition {
 
   /// Internal helper to resolve a complete parser graph.
   Parser _resolve(Reference reference) {
-    Map<Reference, Parser> mapping = {};
+    final mapping = <Reference, Parser>{};
 
     Parser _dereference(Reference reference) {
       var parser = mapping[reference];

@@ -34,7 +34,7 @@ void main() {
   };
   querySelector('#evaluate').onClick.listen((event) {
     transcript.innerHtml = '';
-    Object result = evalString(lispParser, environment, input.value);
+    final result = evalString(lispParser, environment, input.value);
     output.value = result.toString();
     inspect(inspector, environment);
   });

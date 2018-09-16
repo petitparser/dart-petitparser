@@ -11,7 +11,7 @@ class CastParser<R> extends DelegateParser<R> {
 
   @override
   Result<R> parseOn(Context context) {
-    Result result = delegate.parseOn(context);
+    final result = delegate.parseOn(context);
     if (result.isSuccess) {
       return result.success(result.value as R);
     } else {
@@ -29,7 +29,7 @@ class CastListParser<R> extends DelegateParser<List<R>> {
 
   @override
   Result<List<R>> parseOn(Context context) {
-    Result<List> result = delegate.parseOn(context);
+    final result = delegate.parseOn(context) as Result<List>;
     if (result.isSuccess) {
       return result.success(result.value.cast<R>());
     } else {

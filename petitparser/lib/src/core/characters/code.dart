@@ -15,7 +15,7 @@ int toCharCode(Object element) {
 /// Converts a character to a readable string.
 String toReadableString(Object element) {
   if (element is String && element.length > 1) {
-    StringBuffer buffer = StringBuffer();
+    final buffer = StringBuffer();
     for (var i = 0; i < element.length; i++) {
       buffer.write(toReadableString(element[i]));
     }

@@ -62,7 +62,7 @@ class NativeEnvironment extends Environment {
 
   static _lambda(Environment lambdaEnv, Cons lambdaArgs) {
     return (Environment evalEnv, Cons evalArgs) {
-      Environment inner = lambdaEnv.create();
+      final inner = lambdaEnv.create();
       Cons names = lambdaArgs.head;
       Cons values = evalArguments(evalEnv, evalArgs);
       while (names != null && values != null) {
@@ -88,7 +88,7 @@ class NativeEnvironment extends Environment {
   }
 
   static _let(Environment env, Cons args) {
-    Environment inner = env.create();
+    final inner = env.create();
     Cons binding = args.head;
     while (binding is Cons) {
       Cons definition = binding.head;

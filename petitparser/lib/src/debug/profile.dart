@@ -24,9 +24,9 @@ import 'package:petitparser/src/reflection/transform.dart';
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser profile(Parser root, [OutputHandler output = print]) {
-  Map<Parser, int> count = {};
-  Map<Parser, Stopwatch> watch = {};
-  List<Parser> parsers = [];
+  final count = <Parser, int>{};
+  final watch = <Parser, Stopwatch>{};
+  final parsers = <Parser>[];
   return ContinuationParser(
       transformParser(root, (parser) {
         parsers.add(parser);

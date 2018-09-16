@@ -1,7 +1,3 @@
-analyzer:
-  strong-mode:
-    implicit-casts: true
-    implicit-dynamic: true
 linter:
   rules:
 #    - always_declare_return_types
@@ -50,7 +46,7 @@ linter:
     - no_adjacent_strings_in_list
     - no_duplicate_case_values
 #    - non_constant_identifier_names
-#    - omit_local_variable_types
+    - omit_local_variable_types
 #    - one_member_abstracts
     - only_throw_errors
     - overridden_fields
