@@ -1,5 +1,6 @@
 library petitparser.core.expression.group;
 
+import 'package:petitparser/src/core/actions/action.dart';
 import 'package:petitparser/src/core/combinators/choice.dart';
 import 'package:petitparser/src/core/combinators/sequence.dart';
 import 'package:petitparser/src/core/expression/result.dart';
@@ -8,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
   /// Defines a new primitive or literal [parser]. Evaluates the optional [action].
-  void primitive(Parser parser, [Function action]) {
+  void primitive<T, R>(Parser<T> parser, [ActionCallback<T, R> action]) {
     _primitives.add(action != null ? parser.map(action) : parser);
   }
 

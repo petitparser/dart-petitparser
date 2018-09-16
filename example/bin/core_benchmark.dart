@@ -2,9 +2,8 @@ library petitparser.example.core_benchmark;
 
 import 'dart:convert' as convert;
 
-import 'package:petitparser/petitparser.dart';
-
 import 'package:example/json.dart';
+import 'package:petitparser/petitparser.dart';
 
 double benchmark(Function function,
     [int warmUp = 1000, int milliseconds = 2500]) {
