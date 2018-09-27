@@ -1,7 +1,7 @@
 PetitParser Examples
 ====================
 
-This package contains a colleciton of parsers to illustrate the use of [PetitParser](https://pub.dartlang.org/packages/petitparser). A tutorial and full documentation is contained in the [packages description](https://pub.dartlang.org/packages/petitparser) and [API documentation](https://pub.dartlang.org/documentation/petitparser/latest/).
+This package contains examples to illustrate the use of [PetitParser](https://github.com/petitparser/dart-petitparser). A tutorial and full documentation is contained in the [package description](https://pub.dartlang.org/packages/petitparser) and [API documentation](https://pub.dartlang.org/documentation/petitparser/latest/).
 
 ### Dart
 
