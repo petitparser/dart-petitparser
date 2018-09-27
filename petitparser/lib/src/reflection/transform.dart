@@ -13,12 +13,12 @@ typedef Parser TransformationHandler(Parser parser);
 /// input grammar; then the resulting grammar is traversed until all references
 /// to old parsers are replaced with the transformed ones.
 Parser transformParser(Parser parser, TransformationHandler handler) {
-  final mapping = Map.identity<Parser, Parser>();
+  final mapping = Map<Parser, Parser>.identity();
   for (var each in allParser(parser)) {
     mapping[each] = handler(each.copy());
   }
-  final seen = Set.from<Parser>(mapping.values);
-  final todo = List.from<Parser>(mapping.values);
+  final seen = Set.of(mapping.values);
+  final todo = List.of(mapping.values);
   while (todo.isNotEmpty) {
     final parent = todo.removeLast();
     for (var child in parent.children) {

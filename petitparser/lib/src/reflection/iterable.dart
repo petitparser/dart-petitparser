@@ -30,8 +30,8 @@ class ParserIterator implements Iterator<Parser> {
   final Set<Parser> seen;
 
   ParserIterator(Iterable<Parser> roots)
-      : todo = List.from(roots),
-        seen = Set.from(roots);
+      : todo = List.of(roots),
+        seen = Set.of(roots);
 
   @override
   Parser current;

@@ -105,7 +105,7 @@ abstract class GrammarDefinition {
     }
 
     final todo = [_dereference(reference)];
-    final seen = Set.from(todo);
+    final seen = Set.of(todo);
 
     while (todo.isNotEmpty) {
       final parent = todo.removeLast();

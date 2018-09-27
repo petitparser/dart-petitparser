@@ -850,7 +850,7 @@ main() {
       expect(result.map((token) => token.input), expected);
     });
     test('unique', () {
-      expect(Set.from(result).length, result.length);
+      expect(Set.of(result).length, result.length);
     });
     test('equals', () {
       for (var i = 0; i < result.length; i++) {

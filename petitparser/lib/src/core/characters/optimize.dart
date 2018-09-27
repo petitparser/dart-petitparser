@@ -14,7 +14,7 @@ CharacterPredicate optimizedString(String string) {
 /// Creates an optimized predicate from a list of range predicates.
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 1. sort the ranges
-  final sortedRanges = List.from<RangeCharPredicate>(ranges, growable: false);
+  final sortedRanges = List.of(ranges, growable: false);
   sortedRanges.sort((first, second) {
     return first.start != second.start
         ? first.start - second.start
