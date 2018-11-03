@@ -960,6 +960,10 @@ main() {
         .seq(string('*/').neg().star())
         .seq(string('*/'))
         .flatten();
+    final multiline = string('"""')
+        .seq((string(r'\"""') | any()).starLazy(string('"""')))
+        .seq(string('"""'))
+        .flatten();
     test('valid identifier', () {
       expectSuccess(identifier, 'a', 'a');
       expectSuccess(identifier, 'a1', 'a1');
@@ -1042,6 +1046,10 @@ main() {
     test('javadoc', () {
       expectSuccess(javadoc, '/** foo */', '/** foo */');
       expectSuccess(javadoc, '/** * * */', '/** * * */');
+    });
+    test('multiline', () {
+      expectSuccess(multiline, r'"""abc"""', r'"""abc"""');
+      expectSuccess(multiline, r'"""abc\"""def"""', r'"""abc\"""def"""');
     });
   });
   group('copying, matching, replacing', () {
