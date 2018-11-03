@@ -960,10 +960,10 @@ main() {
         .seq(string('*/').neg().star())
         .seq(string('*/'))
         .flatten();
-    final multiline = string('"""')
-        .seq((string(r'\"""') | any()).starLazy(string('"""')))
+    final multiLine = string('"""')
+        .seq((string(r'\"""') | any()).starLazy(string('"""')).flatten())
         .seq(string('"""'))
-        .flatten();
+        .pick(1);
     test('valid identifier', () {
       expectSuccess(identifier, 'a', 'a');
       expectSuccess(identifier, 'a1', 'a1');
@@ -1048,8 +1048,9 @@ main() {
       expectSuccess(javadoc, '/** * * */', '/** * * */');
     });
     test('multiline', () {
-      expectSuccess(multiline, r'"""abc"""', r'"""abc"""');
-      expectSuccess(multiline, r'"""abc\"""def"""', r'"""abc\"""def"""');
+      expectSuccess(multiLine, r'"""abc"""', r'abc');
+      expectSuccess(multiLine, r'"""abc\n"""', r'abc\n');
+      expectSuccess(multiLine, r'"""abc\"""def"""', r'abc\"""def');
     });
   });
   group('copying, matching, replacing', () {
