@@ -5,22 +5,31 @@ import 'dart:math' as math;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-void expectSuccess(Parser parser, String input, expected, [int position]) {
+void expectSuccess(Parser parser, String input, Object expected,
+    [int position]) {
   final result = parser.parse(input);
-  expect(result.isSuccess, isTrue);
-  expect(result.isFailure, isFalse);
-  expect(result.value, expected);
-  expect(result.position, position ?? input.length);
+  expect(result.isSuccess, isTrue,
+      reason: 'Expected Result.isSuccess to be true.');
+  expect(result.isFailure, isFalse,
+      reason: 'Expected Result.isFailure to be false.');
+  expect(result.value, expected,
+      reason: 'Expected Result.value to match $expected.');
+  expect(result.position, position ?? input.length,
+      reason: 'Expected Result.position to match ${position ?? input.length}.');
 }
 
 void expectFailure(Parser parser, String input,
     [int position = 0, String message]) {
   final result = parser.parse(input);
-  expect(result.isFailure, isTrue);
-  expect(result.isSuccess, isFalse);
-  expect(result.position, position);
+  expect(result.isFailure, isTrue,
+      reason: 'Expected Result.isFailure to be true.');
+  expect(result.isSuccess, isFalse,
+      reason: 'Expected Result.isSuccess to be false.');
+  expect(result.position, position,
+      reason: 'Expected Result.position to match $position.');
   if (message != null) {
-    expect(result.message, message);
+    expect(result.message, message,
+        reason: 'Expected Result.message to match $message.');
   }
 }
 
@@ -156,7 +165,7 @@ main() {
       expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
     });
     test('map()', () {
-      final parser = digit().map((String each) {
+      final parser = digit().map((each) {
         return each.codeUnitAt(0) - '0'.codeUnitAt(0);
       });
       expectSuccess(parser, '1', 1);
@@ -799,8 +808,8 @@ main() {
     });
   });
   group('token', () {
+    const buffer = '1\r12\r\n123\n1234';
     final parser = any().map((value) => value.codeUnitAt(0)).token().star();
-    final buffer = '1\r12\r\n123\n1234';
     final result = parser.parse(buffer).value;
     test('value', () {
       final expected = [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52];
@@ -863,8 +872,8 @@ main() {
     });
   });
   group('context', () {
-    final buffer = 'a\nc';
-    final context = Context(buffer, 0);
+    const buffer = 'a\nc';
+    const context = Context(buffer, 0);
     test('context', () {
       expect(context.buffer, buffer);
       expect(context.position, 0);
@@ -1299,7 +1308,7 @@ main() {
       return root.end();
     }
 
-    final epsilon = 1e-5;
+    const epsilon = 1e-5;
     final parser = build(attachAction: false);
     final evaluator = build(attachAction: true);
     test('number', () {

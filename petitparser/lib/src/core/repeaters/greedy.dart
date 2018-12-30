@@ -6,9 +6,9 @@ import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/repeaters/limited.dart';
 import 'package:petitparser/src/core/repeaters/unbounded.dart';
 
-/// A greedy repeating parser, commonly seen in regular expression implementations. It
-/// aggressively consumes as much input as possible and then backtracks to meet the
-/// 'limit' condition.
+/// A greedy repeating parser, commonly seen in regular expression
+/// implementations. It aggressively consumes as much input as possible and then
+/// backtracks to meet the 'limit' condition.
 class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   GreedyRepeatingParser(Parser<T> parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);

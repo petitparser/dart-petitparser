@@ -9,21 +9,22 @@ import 'package:petitparser/src/debug/progress.dart';
 import 'package:petitparser/src/debug/trace.dart';
 
 /// Callback function for the [ContinuationHandler].
-typedef Result<T> ContinuationCallback<T>(Context context);
+typedef ContinuationCallback<T> = Result<T> Function(Context context);
 
 /// Handler function for the [ContinuationParser].
-typedef Result<T> ContinuationHandler<T>(
+typedef ContinuationHandler<T> = Result<T> Function(
     ContinuationCallback<T> continuation, Context context);
 
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.
 ///
-/// Handlers are not required to call the continuation, but can completely ignore
-/// it, call it multiple times, and/or store it away for later use. Similarly
-/// handlers can modify the current context and/or modify the returned result.
+/// Handlers are not required to call the continuation, but can completely
+/// ignore it, call it multiple times, and/or store it away for later use.
+/// Similarly handlers can modify the current context and/or modify the returned
+/// result.
 ///
-/// The following example shows a simple wrapper. Messages are printed before and
-/// after the `digit()` parser is activated:
+/// The following example shows a simple wrapper. Messages are printed before
+/// and after the `digit()` parser is activated:
 ///
 ///     var wrapped = digit();
 ///     var parser = new ContinuationParser(wrapped, (continuation, context) {

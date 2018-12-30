@@ -19,9 +19,9 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///         .seq(char('.').seq(digit().plus()).optional())
 ///         .flatten().trim().map((a) => double.parse(a)));
 ///
-/// Then come the normal arithmetic operators. Note, that the action blocks receive
-/// both, the terms and the parsed operator in the order they appear in the parsed
-/// input.
+/// Then come the normal arithmetic operators. Note, that the action blocks
+/// receive both, the terms and the parsed operator in the order they appear in
+/// the parsed input.
 ///
 ///     // negation is a prefix operator
 ///     builder.group()

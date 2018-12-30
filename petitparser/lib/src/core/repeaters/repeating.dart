@@ -4,8 +4,8 @@ import 'package:petitparser/src/core/combinators/delegate.dart';
 import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/repeaters/unbounded.dart';
 
-/// An abstract parser that repeatedly parses between 'min' and 'max' instances of
-/// its delegate.
+/// An abstract parser that repeatedly parses between 'min' and 'max' instances
+/// of its delegate.
 abstract class RepeatingParser<T> extends DelegateParser<List<T>> {
   final int min;
   final int max;

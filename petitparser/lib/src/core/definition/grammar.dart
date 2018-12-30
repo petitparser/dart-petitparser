@@ -21,9 +21,9 @@ import 'package:petitparser/src/core/parser.dart';
 ///       element() => digit().plus().flatten();
 ///     }
 ///
-/// Since this is plain Dart code, common refactorings such as renaming a production
-/// updates all references correctly. Also code navigation and code completion
-/// works as expected.
+/// Since this is plain Dart code, common refactorings such as renaming a
+/// production updates all references correctly. Also code navigation and code
+/// completion works as expected.
 ///
 /// To attach custom production actions you might want to further subclass your
 /// grammar definition and override overriding the necessary productions defined
@@ -33,8 +33,9 @@ import 'package:petitparser/src/core/parser.dart';
 ///       element() => super.element().map((value) => int.parse(value));
 ///     }
 ///
-/// Note that productions can be parametrized. Define such productions with positional
-/// arguments and reference to multiple instances by passing the arguments to [ref].
+/// Note that productions can be parametrized. Define such productions with
+/// positional arguments and reference to multiple instances by passing the
+/// arguments to [ref].
 ///
 /// Consider extending the above grammar with a parametrized token production:
 ///
@@ -46,10 +47,11 @@ import 'package:petitparser/src/core/parser.dart';
 ///       token(p)  => p.token().trim();
 ///     }
 ///
-/// To get a runnable parser call the [build] method on the definition. It resolves
-/// recursive references and returns an efficient parser that can be further composed.
-/// The optional `start` reference specifies a different starting production into the
-/// grammar. The optional `arguments` parametrize the start production.
+/// To get a runnable parser call the [build] method on the definition. It
+/// resolves recursive references and returns an efficient parser that can be
+/// further composed. The optional `start` reference specifies a different
+/// starting production into the grammar. The optional `arguments` parametrize
+/// the start production.
 ///
 ///     let parser = new ListParserDefinition().build();
 ///
@@ -74,8 +76,9 @@ abstract class GrammarDefinition {
 
   /// Builds a composite parser from this definition.
   ///
-  /// The optional [start] reference specifies a different starting production into
-  /// the grammar. The optional [arguments] list parametrizes the called production.
+  /// The optional [start] reference specifies a different starting production
+  /// into the grammar. The optional [arguments] list parametrizes the called
+  /// production.
   Parser build({Function start, List arguments = const []}) {
     return _resolve(Reference(start ?? this.start, arguments));
   }
@@ -90,7 +93,7 @@ abstract class GrammarDefinition {
         final references = [reference];
         parser = reference.resolve();
         while (parser is Reference) {
-          final otherReference = parser as Reference;
+          final Reference otherReference = parser;
           if (references.contains(otherReference)) {
             throw StateError('Recursive references detected: $references');
           }

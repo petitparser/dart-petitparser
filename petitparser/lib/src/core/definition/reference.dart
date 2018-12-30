@@ -13,7 +13,7 @@ class Reference extends Parser {
   Parser resolve() => Function.apply(function, arguments);
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Reference) {
       if (other.function != function ||
           other.arguments.length != arguments.length) {

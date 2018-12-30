@@ -6,8 +6,9 @@ import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/repeaters/limited.dart';
 import 'package:petitparser/src/core/repeaters/unbounded.dart';
 
-/// A lazy repeating parser, commonly seen in regular expression implementations. It
-/// limits its consumption to meet the 'limit' condition as early as possible.
+/// A lazy repeating parser, commonly seen in regular expression
+/// implementations. It limits its consumption to meet the 'limit' condition as
+/// early as possible.
 class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   LazyRepeatingParser(Parser<T> parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);

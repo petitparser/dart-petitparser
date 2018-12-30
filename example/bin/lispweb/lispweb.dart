@@ -28,7 +28,7 @@ void main() {
   final DivElement transcript = querySelector('#transcript');
   final DivElement inspector = querySelector('#inspector');
 
-  printer = (Object object) {
+  printer = (object) {
     transcript.appendText(object.toString());
     transcript.append(document.createElement('br'));
   };

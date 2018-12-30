@@ -41,7 +41,7 @@ class Token<T> {
   String toString() => 'Token[${positionString(buffer, start)}]: $value';
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is Token &&
         value == other.value &&
         start == other.start &&
@@ -70,7 +70,8 @@ class Token<T> {
     return [line, position - offset + 1];
   }
 
-  /// Returns a human readable string representing the [position] index in a [buffer].
+  /// Returns a human readable string representing the [position] index in a
+  /// [buffer].
   static String positionString(String buffer, int position) {
     final lineAndColumn = lineAndColumnOf(buffer, position);
     return '${lineAndColumn[0]}:${lineAndColumn[1]}';

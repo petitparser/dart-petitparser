@@ -11,7 +11,7 @@ import 'package:petitparser/petitparser.dart';
 void evalInteractive(Parser parser, Environment env, Stream<String> input,
     IOSink output, IOSink error) {
   output.write('>> ');
-  input.listen((String line) {
+  input.listen((line) {
     try {
       output.writeln('=> ${evalString(parser, env, line)}');
     } on ParserError catch (exception) {
@@ -61,12 +61,17 @@ void main(List<String> arguments) {
   Environment environment = NativeEnvironment();
 
   // add additional primitives
-  environment.define(Name('exit'), (Environment env, Cons args) {
+  void _exit(Environment env, Cons args) {
     exit(args == null ? 0 : args.head);
-  });
-  environment.define(Name('sleep'), (Environment env, Cons args) {
+  }
+
+  environment.define(Name('exit'), _exit);
+
+  void _sleep(Environment env, Cons args) {
     sleep(Duration(milliseconds: args.head));
-  });
+  }
+
+  environment.define(Name('sleep'), _sleep);
 
   // process standard library
   if (standardLibrary) {

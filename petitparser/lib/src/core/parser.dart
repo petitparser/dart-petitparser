@@ -145,14 +145,15 @@ abstract class Parser<T> {
       PossessiveRepeatingParser<T>(this, min, max);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
-  /// times until it reaches a [limit]. This is a greedy non-blind implementation of
-  /// the [Parser.repeat] operator. The [limit] is not consumed.
+  /// times until it reaches a [limit]. This is a greedy non-blind
+  /// implementation of the [Parser.repeat] operator. The [limit] is not
+  /// consumed.
   Parser<List<T>> repeatGreedy(Parser limit, int min, int max) =>
       GreedyRepeatingParser<T>(this, limit, min, max);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
-  /// times until it reaches a [limit]. This is a lazy non-blind implementation of
-  /// the [Parser.repeat] operator. The [limit] is not consumed.
+  /// times until it reaches a [limit]. This is a lazy non-blind implementation
+  /// of the [Parser.repeat] operator. The [limit] is not consumed.
   Parser<List<T>> repeatLazy(Parser limit, int min, int max) =>
       LazyRepeatingParser<T>(this, limit, min, max);
 
@@ -204,7 +205,7 @@ abstract class Parser<T> {
   /// `char('_')` accepts the input, the negation and subsequently the
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
-  Parser<Null> not([String message]) => NotParser(this, message);
+  Parser<void> not([String message]) => NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
   /// receiver.
@@ -320,7 +321,7 @@ abstract class Parser<T> {
     final parser = SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional()]
         : [this, repeater]);
-    return parser.map((List list) {
+    return parser.map((list) {
       final result = [];
       result.add(list[0]);
       for (var tuple in list[1]) {

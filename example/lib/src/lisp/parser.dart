@@ -7,7 +7,7 @@ import 'grammar.dart';
 import 'name.dart';
 
 /// The standard lisp parser definition.
-final lispParser = LispParser();
+final LispParser lispParser = LispParser();
 
 /// LISP parser.
 class LispParser extends GrammarParser {
@@ -38,5 +38,5 @@ class LispParserDefinition extends LispGrammarDefinition {
         }
       });
 
-  quote() => super.quote().map((each) => Cons((_, Cons args) => args, each[1]));
+  quote() => super.quote().map((each) => Cons((_, args) => args, each[1]));
 }

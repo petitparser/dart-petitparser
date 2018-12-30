@@ -3,9 +3,9 @@ library petitparser.example.test.lisp_test;
 import 'package:example/lisp.dart';
 import 'package:test/test.dart';
 
-const isName = TypeMatcher<Name>();
-const isString = TypeMatcher<String>();
-const isCons = TypeMatcher<Cons>();
+const Matcher isName = TypeMatcher<Name>();
+const Matcher isString = TypeMatcher<String>();
+const Matcher isCons = TypeMatcher<Cons>();
 
 void main() {
   final native = NativeEnvironment();

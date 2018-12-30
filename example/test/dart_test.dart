@@ -4,7 +4,7 @@ import 'package:example/dart.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-accept(Parser parser) => (String input) => parser.parse(input).isSuccess;
+Function accept(Parser parser) => (input) => parser.parse(input).isSuccess;
 
 void main() {
   final grammar = DartGrammarDefinition();

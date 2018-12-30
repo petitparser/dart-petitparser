@@ -4,7 +4,7 @@ import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/reflection/iterable.dart';
 
 /// A function transforming one parser to another one.
-typedef Parser TransformationHandler(Parser parser);
+typedef TransformationHandler = Parser Function(Parser parser);
 
 /// Transforms all parsers reachable from [parser] with the given [handler].
 /// The identity function returns a copy of the the incoming parser.

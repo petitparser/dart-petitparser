@@ -12,7 +12,7 @@ class StandardEnvironment extends Environment {
   }
 
   /// A simple standard library, should be moved to external file.
-  static final String _standardLibrary = """
+  static const String _standardLibrary = """
 ; null functions
 (define null '())
 (define (null? x) (= '() x))

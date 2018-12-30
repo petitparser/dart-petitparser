@@ -1,6 +1,6 @@
 library petitparser.debug.output;
 
-typedef void OutputHandler(Object object);
+typedef OutputHandler = void Function(Object object);
 
 String repeat(int count, String value) {
   final result = StringBuffer();

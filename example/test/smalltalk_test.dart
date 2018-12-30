@@ -3,8 +3,8 @@ library petitparser.example.test.smalltalk_test;
 import 'package:example/smalltalk.dart';
 import 'package:test/test.dart';
 
-var definition = SmalltalkGrammarDefinition();
-var grammar = SmalltalkGrammar();
+final SmalltalkGrammarDefinition definition = SmalltalkGrammarDefinition();
+final SmalltalkGrammar grammar = SmalltalkGrammar();
 
 dynamic validate(String source, Function production) {
   final parser = definition.build(start: production).end();

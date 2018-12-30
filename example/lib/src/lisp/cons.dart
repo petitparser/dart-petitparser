@@ -26,7 +26,7 @@ class Cons {
   }
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is Cons && car == other.car && cdr == other.cdr;
   }
 
@@ -38,7 +38,7 @@ class Cons {
     final buffer = StringBuffer();
     buffer.write('(');
     var current = this;
-    while (true) {
+    for (;;) {
       buffer.write(current.car);
       if (current.cdr is Cons) {
         current = current.cdr;

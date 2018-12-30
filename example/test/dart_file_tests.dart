@@ -9,16 +9,16 @@ import 'package:example/dart.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-final grammar = DartGrammar();
+final DartGrammar grammar = DartGrammar();
 
-accept(Parser parser) => (String input) => parser.parse(input).isSuccess;
+Function accept(Parser parser) => (input) => parser.parse(input).isSuccess;
 
 void generateTests(String title, Directory root) {
   group(title, () {
     final files = root
         .listSync(recursive: true)
         .where((file) => file is File && file.path.endsWith('.dart'))
-        .map((file) => file as File);
+        .cast<File>();
     for (var file in files) {
       test(file.path.substring(root.path.length + 1), () {
         expect(file.readAsStringSync(), accept(grammar));

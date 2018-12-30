@@ -7,7 +7,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that optionally parsers its delegate, or answers nil.
 class OptionalParser<T> extends DelegateParser<T> {
-  final otherwise;
+  final T otherwise;
 
   OptionalParser(Parser<T> delegate, this.otherwise) : super(delegate);
 

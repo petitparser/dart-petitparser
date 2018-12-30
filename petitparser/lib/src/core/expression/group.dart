@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 class ExpressionGroup {
   /// Defines a new primitive or literal [parser]. Evaluates the optional
   /// [action].
-  void primitive<T>(Parser<T> parser, [Object action(T value)]) {
+  void primitive<T>(Parser<T> parser, [Object Function(T value) action]) {
     _primitives.add(action != null ? parser.map(action) : parser);
   }
 
@@ -21,7 +21,8 @@ class ExpressionGroup {
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
-  void prefix<T>(Parser<T> parser, [Object action(T operator, Object value)]) {
+  void prefix<T>(Parser<T> parser,
+      [Object Function(T operator, Object value) action]) {
     action ??= (operator, value) => [operator, value];
     _prefix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -32,7 +33,7 @@ class ExpressionGroup {
     } else {
       return SequenceParser([_buildChoice(_prefix).star(), inner]).map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
-          final expressionResult = result as ExpressionResult;
+          final ExpressionResult expressionResult = result;
           return expressionResult.action(expressionResult.operator, value);
         });
       });
@@ -43,7 +44,8 @@ class ExpressionGroup {
 
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
-  void postfix<T>(Parser<T> parser, [Object action(Object value, T operator)]) {
+  void postfix<T>(Parser<T> parser,
+      [Object Function(Object value, T operator) action]) {
     action ??= (value, operator) => [value, operator];
     _postfix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -55,7 +57,7 @@ class ExpressionGroup {
       return SequenceParser([inner, _buildChoice(_postfix).star()])
           .map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
-          final expressionResult = result as ExpressionResult;
+          final ExpressionResult expressionResult = result;
           return expressionResult.action(value, expressionResult.operator);
         });
       });
@@ -67,7 +69,7 @@ class ExpressionGroup {
   /// Adds a right-associative operator [parser]. Evaluates the optional
   /// [action] with the parsed `left` term, `operator`, and `right` term.
   void right<T>(Parser<T> parser,
-      [Object action(Object left, T operator, Object right)]) {
+      [Object Function(Object left, T operator, Object right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _right.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -79,7 +81,7 @@ class ExpressionGroup {
       return inner.separatedBy(_buildChoice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
-          final expressionResult = sequence[i] as ExpressionResult;
+          final ExpressionResult expressionResult = sequence[i];
           result = expressionResult.action(
               sequence[i - 1], expressionResult.operator, result);
         }
@@ -93,7 +95,7 @@ class ExpressionGroup {
   /// Adds a left-associative operator [parser]. Evaluates the optional [action]
   /// with the parsed `left` term, `operator`, and `right` term.
   void left<T>(Parser<T> parser,
-      [Object action(Object left, T operator, Object right)]) {
+      [Object Function(Object left, T operator, Object right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -105,7 +107,7 @@ class ExpressionGroup {
       return inner.separatedBy(_buildChoice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
-          final expressionResult = sequence[i] as ExpressionResult;
+          final ExpressionResult expressionResult = sequence[i];
           result = expressionResult.action(
               result, expressionResult.operator, sequence[i + 1]);
         }

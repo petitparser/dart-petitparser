@@ -4,7 +4,7 @@ import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-final identifier = letter() & word().star();
+final Parser identifier = letter() & word().star();
 
 main() {
   group('continuation', () {

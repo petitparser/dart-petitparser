@@ -107,7 +107,8 @@ void main() {
     });
     test('loop (existing)', () {
       final input = failure().settable().settable().settable();
-      (input.children.single.children.single as SettableParser).set(input);
+      final SettableParser settable = input.children.single.children.single;
+      settable.set(input);
       final output = transformParser(input, (parser) {
         return parser;
       });
@@ -126,7 +127,8 @@ void main() {
       final source = lowercase();
       final input = source;
       final target = failure().settable().settable().settable();
-      (target.children.single.children.single as SettableParser).set(target);
+      final SettableParser settable = target.children.single.children.single;
+      settable.set(target);
       final output = transformParser(input, (parser) {
         return source.isEqualTo(parser) ? target : parser;
       });

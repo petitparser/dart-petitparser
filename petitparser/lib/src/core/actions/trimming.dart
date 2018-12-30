@@ -15,19 +15,21 @@ class TrimmingParser<T> extends DelegateParser<T> {
 
   @override
   Result<T> parseOn(Context context) {
-    var current = context;
-    do {
-      current = left.parseOn(current);
-    } while ((current as Result).isSuccess);
-    final result = delegate.parseOn(current);
+    final before = trimmer_(left, context);
+    final result = delegate.parseOn(before);
     if (result.isFailure) {
       return result;
     }
-    current = result;
-    do {
-      current = right.parseOn(current);
-    } while ((current as Result).isSuccess);
-    return current.success(result.value);
+    final after = trimmer_(right, result);
+    return after.success(result.value);
+  }
+
+  Result trimmer_(Parser parser, Context context) {
+    var result = parser.parseOn(context);
+    while (result.isSuccess) {
+      result = parser.parseOn(result);
+    }
+    return result;
   }
 
   @override

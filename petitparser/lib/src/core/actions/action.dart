@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Typed action callback.
-typedef R ActionCallback<T, R>(T value);
+typedef ActionCallback<T, R> = R Function(T value);
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.

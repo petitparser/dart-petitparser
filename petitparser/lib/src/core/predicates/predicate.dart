@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A generic predicate function returning `true` or `false` for a given
 /// [input] argument.
-typedef bool Predicate(String input);
+typedef Predicate = bool Function(String input);
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].

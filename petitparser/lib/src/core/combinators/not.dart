@@ -7,13 +7,13 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].
-class NotParser extends DelegateParser<Null> {
+class NotParser extends DelegateParser<void> {
   final String message;
 
   NotParser(Parser delegate, this.message) : super(delegate);
 
   @override
-  Result<Null> parseOn(Context context) {
+  Result<void> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isFailure) {
       return context.success(null);
