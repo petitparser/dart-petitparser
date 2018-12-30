@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+* Rename ParserError to ParserException, and make it an Exception
+
 ## 2.0.0
 
 * Make parsers fully typed, where it makes sense. 

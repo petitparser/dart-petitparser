@@ -14,9 +14,9 @@ void evalInteractive(Parser parser, Environment env, Stream<String> input,
   input.listen((line) {
     try {
       output.writeln('=> ${evalString(parser, env, line)}');
-    } on ParserError catch (exception) {
+    } on ParserException catch (exception) {
       error.writeln('Parser error: ${exception.toString()}');
-    } on Error catch (exception) {
+    } on Exception catch (exception) {
       error.writeln(exception.toString());
     }
     output.write('>> ');

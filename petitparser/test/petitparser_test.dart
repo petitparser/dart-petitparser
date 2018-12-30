@@ -906,7 +906,7 @@ main() {
       try {
         failure.value;
         fail('Expected ParserError to be thrown');
-      } on ParserError catch (error) {
+      } on ParserException catch (error) {
         expect(error.failure, same(failure));
         expect(error.toString(), 'error at 1:1');
       }
@@ -922,7 +922,7 @@ main() {
       try {
         failure.value;
         fail('Expected ParserError to be thrown');
-      } on ParserError catch (error) {
+      } on ParserException catch (error) {
         expect(error.failure, same(failure));
         expect(error.toString(), 'error at 2:1');
       }
