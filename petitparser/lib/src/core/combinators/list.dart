@@ -4,7 +4,8 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Abstract parser that parses a list of things in some way.
 abstract class ListParser<T> extends Parser<T> {
-  ListParser(this.children);
+  ListParser(Iterable<Parser> children)
+      : children = List.of(children, growable: false);
 
   @override
   final List<Parser> children;

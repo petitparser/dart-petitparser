@@ -7,11 +7,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// A parser that parses a sequence of parsers.
 class SequenceParser extends ListParser<List> {
-  factory SequenceParser(Iterable<Parser> children) {
-    return SequenceParser._(List.of(children, growable: false));
-  }
-
-  SequenceParser._(List<Parser> children) : super(children);
+  SequenceParser(Iterable<Parser> children) : super(children);
 
   @override
   Result<List> parseOn(Context context) {
