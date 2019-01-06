@@ -8,7 +8,6 @@ import 'package:petitparser/src/core/actions/trimming.dart';
 import 'package:petitparser/src/core/characters/whitespace.dart';
 import 'package:petitparser/src/core/combinators/and.dart';
 import 'package:petitparser/src/core/combinators/choice.dart';
-import 'package:petitparser/src/core/combinators/eof.dart';
 import 'package:petitparser/src/core/combinators/not.dart';
 import 'package:petitparser/src/core/combinators/optional.dart';
 import 'package:petitparser/src/core/combinators/sequence.dart';
@@ -16,6 +15,7 @@ import 'package:petitparser/src/core/contexts/context.dart';
 import 'package:petitparser/src/core/contexts/failure.dart';
 import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/contexts/success.dart';
+import 'package:petitparser/src/core/parsers/eof.dart';
 import 'package:petitparser/src/core/parsers/settable.dart';
 import 'package:petitparser/src/core/predicates/any.dart';
 import 'package:petitparser/src/core/repeaters/greedy.dart';
@@ -250,7 +250,7 @@ abstract class Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   Parser<T> end([String message = 'end of input expected']) =>
-      EndOfInputParser(this, message);
+      SequenceParser([this, endOfInput(message)]).pick(0);
 
   /// Returns a parser that points to the receiver, but can be changed to point
   /// to something else at a later point in time.
