@@ -539,6 +539,16 @@ main() {
       expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
+    test('cast()', () {
+      final parser = digit().map(int.parse).cast<num>();
+      expectSuccess(parser, '1', 1);
+      expectFailure(parser, 'a', 0, 'digit expected');
+    });
+    test('castList()', () {
+      final parser = digit().map(int.parse).repeat(3).castList<num>();
+      expectSuccess(parser, '123', <num>[1, 2, 3]);
+      expectFailure(parser, 'abc', 0, 'digit expected');
+    });
   });
   group('characters', () {
     test('anyOf()', () {
@@ -1138,6 +1148,8 @@ main() {
 
     test('and()', () => verify(any().and()));
     test('any()', () => verify(any()));
+    test('cast()', () => verify(any().cast()));
+    test('castList()', () => verify(any().castList()));
     test('char()', () => verify(char('a')));
     test('delegate()', () => verify(DelegateParser(any())));
     test('digit()', () => verify(digit()));
