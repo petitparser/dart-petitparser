@@ -294,6 +294,13 @@ main() {
       expectSuccess(parser, 'aaa', ['a', 'a', 'a']);
       expectSuccess(parser, 'aaaa', ['a', 'a', 'a'], 3);
     });
+    test('repeat() exact', () {
+      final parser = char('a').repeat(2);
+      expectFailure(parser, '', 0, '"a" expected');
+      expectFailure(parser, 'a', 1, '"a" expected');
+      expectSuccess(parser, 'aa', ['a', 'a']);
+      expectSuccess(parser, 'aaa', ['a', 'a'], 2);
+    });
     test('repeat() unbounded', () {
       final input = List.filled(100000, 'a');
       final parser = char('a').repeat(2, unbounded);

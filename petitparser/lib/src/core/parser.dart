@@ -143,8 +143,8 @@ abstract class Parser<T> {
   ///
   /// For example, the parser `letter().repeat(2, 4)` accepts a sequence of
   /// two, three, or four letters and returns the accepted letters as a list.
-  Parser<List<T>> repeat(int min, int max) =>
-      PossessiveRepeatingParser<T>(this, min, max);
+  Parser<List<T>> repeat(int min, [int max]) =>
+      PossessiveRepeatingParser<T>(this, min, max ?? min);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a greedy non-blind
