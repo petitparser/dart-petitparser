@@ -10,7 +10,9 @@ import 'package:petitparser/src/core/parser.dart';
 class NotParser extends DelegateParser<void> {
   final String message;
 
-  NotParser(Parser delegate, this.message) : super(delegate);
+  NotParser(Parser delegate, this.message)
+      : assert(message != null),
+        super(delegate);
 
   @override
   Result<void> parseOn(Context context) {

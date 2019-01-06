@@ -11,7 +11,8 @@ abstract class LimitedRepeatingParser<T> extends RepeatingParser<T> {
   Parser limit;
 
   LimitedRepeatingParser(Parser delegate, this.limit, int min, int max)
-      : super(delegate, min, max);
+      : assert(limit != null),
+        super(delegate, min, max);
 
   @override
   List<Parser> get children => [delegate, limit];

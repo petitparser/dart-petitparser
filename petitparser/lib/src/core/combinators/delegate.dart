@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 class DelegateParser<R> extends Parser<R> {
   Parser delegate;
 
-  DelegateParser(this.delegate);
+  DelegateParser(this.delegate) : assert(delegate != null);
 
   @override
   Result<R> parseOn(Context context) => delegate.parseOn(context);

@@ -25,7 +25,10 @@ class PredicateParser extends Parser<String> {
   /// The failure message in case of a miss-match.
   final String message;
 
-  PredicateParser(this.length, this.predicate, this.message);
+  PredicateParser(this.length, this.predicate, this.message)
+      : assert(length > 0),
+        assert(predicate != null),
+        assert(message != null);
 
   @override
   Result<String> parseOn(Context context) {

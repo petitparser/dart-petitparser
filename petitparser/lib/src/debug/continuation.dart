@@ -38,7 +38,9 @@ typedef ContinuationHandler<T> = Result<T> Function(
 class ContinuationParser<T> extends DelegateParser<T> {
   final ContinuationHandler<T> handler;
 
-  ContinuationParser(Parser<T> delegate, this.handler) : super(delegate);
+  ContinuationParser(Parser<T> delegate, this.handler)
+      : assert(handler != null),
+        super(delegate);
 
   @override
   Result<T> parseOn(Context context) => handler(super.parseOn, context);

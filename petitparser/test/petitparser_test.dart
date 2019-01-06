@@ -1063,14 +1063,21 @@ main() {
     });
   });
   group('copying, matching, replacing', () {
+    final immutableParsers = Set.of([PositionParser]);
     void verify(Parser parser) {
       final copy = parser.copy();
-      // check copying
-      expect(copy, isNot(same(parser)));
-      expect(copy.toString(), parser.toString());
-      expect(copy.runtimeType, parser.runtimeType);
-      expect(copy.children,
-          pairwiseCompare(parser.children, identical, 'same children'));
+      if (immutableParsers.contains(copy.runtimeType)) {
+        // check immutable
+        expect(copy, same(parser));
+        expect(parser.children, isEmpty);
+      } else {
+        // check copying
+        expect(copy, isNot(same(parser)));
+        expect(copy.toString(), parser.toString());
+        expect(copy.runtimeType, parser.runtimeType);
+        expect(copy.children,
+            pairwiseCompare(parser.children, identical, 'same children'));
+      }
       // check equality
       expect(copy.isEqualTo(copy), isTrue);
       expect(parser.isEqualTo(parser), isTrue);
@@ -1093,7 +1100,7 @@ main() {
     test('char()', () => verify(char('a')));
     test('digit()', () => verify(digit()));
     test('delegate()', () => verify(DelegateParser(any())));
-    test('end()', () => verify(digit().end()));
+    test('endOfInput()', () => verify(endOfInput()));
     test('epsilon()', () => verify(epsilon()));
     test('failure()', () => verify(failure()));
     test('flatten()', () => verify(digit().flatten()));
@@ -1104,6 +1111,7 @@ main() {
     test('plus()', () => verify(digit().plus()));
     test('plusGreedy()', () => verify(digit().plusGreedy(word())));
     test('plusLazy()', () => verify(digit().plusLazy(word())));
+    test('position()', () => verify(const PositionParser()));
     test('repeat()', () => verify(digit().repeat(2, 3)));
     test('repeatGreedy()', () => verify(digit().repeatGreedy(word(), 2, 3)));
     test('repeatLazy()', () => verify(digit().repeatLazy(word(), 2, 3)));

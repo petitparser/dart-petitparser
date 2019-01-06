@@ -7,7 +7,10 @@ class RangesCharPredicate implements CharacterPredicate {
   final List<int> starts;
   final List<int> stops;
 
-  const RangesCharPredicate(this.length, this.starts, this.stops);
+  const RangesCharPredicate(this.length, this.starts, this.stops)
+      : assert(length != null),
+        assert(starts != null),
+        assert(stops != null);
 
   @override
   bool test(int value) {

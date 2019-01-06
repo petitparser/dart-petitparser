@@ -8,7 +8,9 @@ class Reference extends Parser {
   final Function function;
   final List arguments;
 
-  Reference(this.function, this.arguments);
+  Reference(this.function, this.arguments)
+      : assert(function != null),
+        assert(arguments != null);
 
   Parser resolve() => Function.apply(function, arguments);
 

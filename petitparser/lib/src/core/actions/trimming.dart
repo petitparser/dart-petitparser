@@ -11,7 +11,10 @@ class TrimmingParser<T> extends DelegateParser<T> {
   Parser left;
   Parser right;
 
-  TrimmingParser(Parser<T> delegate, this.left, this.right) : super(delegate);
+  TrimmingParser(Parser<T> delegate, this.left, this.right)
+      : assert(left != null),
+        assert(right != null),
+        super(delegate);
 
   @override
   Result<T> parseOn(Context context) {

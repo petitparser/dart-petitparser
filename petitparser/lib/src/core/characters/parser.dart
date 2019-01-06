@@ -11,7 +11,9 @@ class CharacterParser extends Parser<String> {
 
   final String message;
 
-  CharacterParser(this.predicate, this.message);
+  CharacterParser(this.predicate, this.message)
+      : assert(predicate != null),
+        assert(message != null);
 
   @override
   Result<String> parseOn(Context context) {

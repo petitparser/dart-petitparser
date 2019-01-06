@@ -207,7 +207,8 @@ abstract class Parser<T> {
   /// `char('_')` accepts the input, the negation and subsequently the
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
-  Parser<void> not([String message]) => NotParser(this, message);
+  Parser<void> not([String message = 'success not expected']) =>
+      NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
   /// receiver.
@@ -215,7 +216,8 @@ abstract class Parser<T> {
   /// For example, the parser `letter().neg()` accepts any input but a letter.
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
-  Parser<String> neg([String message]) => not(message).seq(any()).pick(1);
+  Parser<String> neg([String message = 'input not expected']) =>
+      not(message).seq(any()).pick(1);
 
   /// Returns a parser that discards the result of the receiver, and returns
   /// a sub-string of the consumed range in the string/list being parsed.

@@ -13,7 +13,9 @@ typedef ActionCallback<T, R> = R Function(T value);
 class ActionParser<T, R> extends DelegateParser<R> {
   final ActionCallback<T, R> callback;
 
-  ActionParser(Parser<T> delegate, this.callback) : super(delegate);
+  ActionParser(Parser<T> delegate, this.callback)
+      : assert(callback != null),
+        super(delegate);
 
   @override
   Result<R> parseOn(Context context) {

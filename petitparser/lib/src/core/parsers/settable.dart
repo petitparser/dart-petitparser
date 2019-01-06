@@ -12,9 +12,8 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///
 ///     var p = undefined();
 ///     p.set(char('a').seq(p).or(char('b')));
-SettableParser<T> undefined<T>([String message = 'undefined parser']) {
-  return failure<T>(message).settable();
-}
+SettableParser<T> undefined<T>([String message = 'undefined parser']) =>
+    failure<T>(message).settable();
 
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
