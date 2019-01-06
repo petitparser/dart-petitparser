@@ -124,6 +124,16 @@ main() {
       expectFailure(parser, 'd');
       expectFailure(parser, '');
     });
+    test('or() empty', () {
+      expect(() => ChoiceParser([]), throwsArgumentError);
+    });
+    test('position()', () {
+      final parser = (any().star() & position()).pick(-1);
+      expectSuccess(parser, '', 0);
+      expectSuccess(parser, 'a', 1);
+      expectSuccess(parser, 'aa', 2);
+      expectSuccess(parser, 'aaa', 3);
+    });
     test('end()', () {
       final parser = char('a').end();
       expectFailure(parser, '', 0, '"a" expected');

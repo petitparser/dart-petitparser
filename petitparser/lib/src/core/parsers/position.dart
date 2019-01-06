@@ -4,7 +4,10 @@ import 'package:petitparser/src/core/contexts/context.dart';
 import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
-/// A parser that succeeds at the end of input.
+/// Returns a parser that reports the current input position.
+Parser position() => const PositionParser();
+
+/// A parser that reports the current input position.
 class PositionParser extends Parser<int> {
   const PositionParser();
 
