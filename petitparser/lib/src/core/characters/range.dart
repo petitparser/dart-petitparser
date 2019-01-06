@@ -28,4 +28,8 @@ class RangeCharPredicate implements CharacterPredicate {
 
   @override
   bool test(int value) => start <= value && value <= stop;
+
+  @override
+  bool isEqualTo(CharacterPredicate other) =>
+      other is RangeCharPredicate && other.start == start && other.stop == stop;
 }

@@ -29,4 +29,11 @@ class RangesCharPredicate implements CharacterPredicate {
     }
     return 0 < min && value <= stops[min - 1];
   }
+
+  @override
+  bool isEqualTo(CharacterPredicate other) =>
+      other is RangesCharPredicate &&
+      other.length == length &&
+      other.starts == starts &&
+      other.stops == stops;
 }

@@ -35,6 +35,6 @@ class CharacterParser extends Parser<String> {
   @override
   bool hasEqualProperties(CharacterParser other) =>
       super.hasEqualProperties(other) &&
-      predicate == other.predicate &&
+      predicate.isEqualTo(other.predicate) &&
       message == other.message;
 }

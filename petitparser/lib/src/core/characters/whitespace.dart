@@ -54,4 +54,7 @@ class WhitespaceCharPredicate implements CharacterPredicate {
       }
     }
   }
+
+  @override
+  bool isEqualTo(CharacterPredicate other) => other is WhitespaceCharPredicate;
 }

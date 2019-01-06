@@ -14,4 +14,7 @@ class UppercaseCharPredicate implements CharacterPredicate {
 
   @override
   bool test(int value) => 65 <= value && value <= 90;
+
+  @override
+  bool isEqualTo(CharacterPredicate other) => other is UppercaseCharPredicate;
 }

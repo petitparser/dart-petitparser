@@ -9,9 +9,12 @@ Parser<String> digit([String message = 'digit expected']) {
   return CharacterParser(const DigitCharPredicate(), message);
 }
 
-class DigitCharPredicate implements CharacterPredicate {
+class DigitCharPredicate extends CharacterPredicate {
   const DigitCharPredicate();
 
   @override
   bool test(int value) => 48 <= value && value <= 57;
+
+  @override
+  bool isEqualTo(CharacterPredicate other) => other is DigitCharPredicate;
 }

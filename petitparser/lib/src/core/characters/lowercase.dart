@@ -9,9 +9,12 @@ Parser<String> lowercase([String message = 'lowercase letter expected']) {
   return CharacterParser(const LowercaseCharPredicate(), message);
 }
 
-class LowercaseCharPredicate implements CharacterPredicate {
+class LowercaseCharPredicate extends CharacterPredicate {
   const LowercaseCharPredicate();
 
   @override
   bool test(int value) => 97 <= value && value <= 122;
+
+  @override
+  bool isEqualTo(CharacterPredicate other) => other is LowercaseCharPredicate;
 }
