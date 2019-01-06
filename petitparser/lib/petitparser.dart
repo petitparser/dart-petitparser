@@ -37,6 +37,7 @@ export 'package:petitparser/src/core/parser.dart';
 export 'package:petitparser/src/core/parsers/eof.dart';
 export 'package:petitparser/src/core/parsers/epsilon.dart';
 export 'package:petitparser/src/core/parsers/failure.dart';
+export 'package:petitparser/src/core/parsers/position.dart';
 export 'package:petitparser/src/core/parsers/settable.dart';
 export 'package:petitparser/src/core/predicates/any.dart';
 export 'package:petitparser/src/core/predicates/any_in.dart';

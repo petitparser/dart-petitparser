@@ -26,6 +26,8 @@ import 'package:petitparser/src/core/token.dart';
 
 /// Abstract base class of all parsers.
 abstract class Parser<T> {
+  const Parser();
+
   /// Primitive method doing the actual parsing.
   ///
   /// The method is overridden in concrete subclasses to implement the
