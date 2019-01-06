@@ -17,4 +17,7 @@ abstract class Result<R> extends Context {
 
   /// Returns the parse message of the current context.
   String get message;
+
+  /// Transform the result with a [callback].
+  Result<T> map<T>(T Function(R element) callback);
 }

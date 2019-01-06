@@ -18,5 +18,8 @@ class Failure<R> extends Result<R> {
   final String message;
 
   @override
+  Result<T> map<T>(T Function(R element) callback) => failure(message);
+
+  @override
   String toString() => 'Failure[${toPositionString()}]: $message';
 }

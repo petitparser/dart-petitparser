@@ -17,5 +17,8 @@ class Success<R> extends Result<R> {
   String get message => null;
 
   @override
+  Result<T> map<T>(T Function(R element) callback) => success(callback(value));
+
+  @override
   String toString() => 'Success[${toPositionString()}]: $value';
 }
