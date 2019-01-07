@@ -1,4 +1,4 @@
-# Created with https://github.com/dart-lang/mono_repo
+# Created with package:mono_repo v1.2.1
 language: dart
 
 # Custom configuration
