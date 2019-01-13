@@ -39,6 +39,21 @@ while (( "$#" )); do
     echo -e 'pub run test --platform chrome'
     pub run test --platform chrome || EXIT_CODE=$?
     ;;
+  command_4) echo
+    echo -e '\033[1mTASK: command_4\033[22m'
+    echo -e 'pub run test test/all_test.dart --platform vm'
+    pub run test test/all_test.dart --platform vm || EXIT_CODE=$?
+    ;;
+  command_5) echo
+    echo -e '\033[1mTASK: command_5\033[22m'
+    echo -e 'pub run test test/all_test.dart --platform chrome'
+    pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
+    ;;
+  command_6) echo
+    echo -e '\033[1mTASK: command_6\033[22m'
+    echo -e 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
+    pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
+    ;;
   *) echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
     EXIT_CODE=1
     ;;

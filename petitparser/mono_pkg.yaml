@@ -7,8 +7,10 @@ stages:
       - command: "dartanalyzer --fatal-warnings ."
       - command: "dartfmt --dry-run --set-exit-if-changed ."
   - unit_test:
-      - command: "pub run test --platform vm"
-      - command: "pub run test --platform chrome"
+      - command: "pub run test test/all_test.dart --platform vm"
+      - command: "pub run test test/all_test.dart --platform chrome"
+  - coverage:
+      - command: "pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
 
 cache:
   directories:

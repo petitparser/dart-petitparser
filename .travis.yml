@@ -37,19 +37,25 @@ jobs:
       env: PKG="petitparser"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run test --platform vm"
-      script: ./tool/travis.sh command_2
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run test test/all_test.dart --platform vm"
+      script: ./tool/travis.sh command_4
       env: PKG="petitparser"
       dart: dev
     - stage: unit_test
-      name: "SDK: dev - DIR: petitparser - TASKS: pub run test --platform chrome"
-      script: ./tool/travis.sh command_3
+      name: "SDK: dev - DIR: petitparser - TASKS: pub run test test/all_test.dart --platform chrome"
+      script: ./tool/travis.sh command_5
+      env: PKG="petitparser"
+      dart: dev
+    - stage: coverage
+      name: "SDK: dev - DIR: petitparser - TASKS: pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
+      script: ./tool/travis.sh command_6
       env: PKG="petitparser"
       dart: dev
 
 stages:
   - analyze
   - unit_test
+  - coverage
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
