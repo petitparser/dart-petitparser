@@ -9,6 +9,7 @@ void main(List<String> arguments) {
   final prod = undefined();
   final prim = undefined();
   final start = term.end();
+
   term.set(prod
       .seq(char('+').trim())
       .seq(term)
@@ -25,5 +26,6 @@ void main(List<String> arguments) {
       .seq(char(')'.trim()))
       .map((values) => values[1])
       .or(number));
+
   print(start.parse(arguments.join(' ')).value);
 }
