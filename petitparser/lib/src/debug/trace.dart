@@ -33,11 +33,11 @@ Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
     return ContinuationParser(each, (continuation, context) {
-      output('${repeat(level, '  ')}$each');
+      output('${'  ' * level}$each');
       level++;
       final result = continuation(context);
       level--;
-      output('${repeat(level, '  ')}$result');
+      output('${'  ' * level}$result');
       return result;
     });
   });
