@@ -276,12 +276,14 @@ abstract class Parser<T> {
   /// Returns a parser that casts itself to `Parser<R>`.
   Parser<R> cast<R>() => CastParser<R>(this);
 
-  /// Returns a parser that casts itself to `Parser<List<R>>`.
+  /// Returns a parser that casts itself to `Parser<List<R>>`. Assumes this
+  /// parser to be of type `Parser<List>`.
   Parser<List<R>> castList<R>() => CastListParser<R>(this);
 
   /// Returns a parser that transform a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
-  /// the elements from the back of the list.
+  /// the elements from the back of the list. Assumes this parser to be of type
+  /// `Parser<List<R>>`.
   ///
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
@@ -293,7 +295,8 @@ abstract class Parser<T> {
 
   /// Returns a parser that transforms a successful parse result by returning
   /// the permuted elements at [indexes] of a list. Negative indexes can be
-  /// used to access the elements from the back of the list.
+  /// used to access the elements from the back of the list. Assumes this parser
+  /// to be of type `Parser<List<R>>`.
   ///
   /// For example, the parser `letter().star().permute([0, -1])` returns the
   /// first and last letter parsed. For the input `'abc'` it returns
@@ -309,7 +312,8 @@ abstract class Parser<T> {
   /// Returns a parser that consumes the receiver one or more times separated
   /// by the [separator] parser. The resulting parser returns a flat list of
   /// the parse results of the receiver interleaved with the parse result of the
-  /// separator parser.
+  /// separator parser. The type parameter `R` defines the type of the returned
+  /// list.
   ///
   /// If the optional argument [includeSeparators] is set to `false`, then the
   /// separators are not included in the parse result. If the optional argument
@@ -319,14 +323,14 @@ abstract class Parser<T> {
   /// For example, the parser `digit().separatedBy(char('-'))` returns a parser
   /// that consumes input like `'1-2-3'` and returns a list of the elements and
   /// separators: `['1', '-', '2', '-', '3']`.
-  Parser<List> separatedBy(Parser separator,
+  Parser<List<R>> separatedBy<R>(Parser separator,
       {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
     final repeater = SequenceParser([separator, this]).star();
     final parser = SequenceParser(optionalSeparatorAtEnd
         ? [this, repeater, separator.optional()]
         : [this, repeater]);
     return parser.map((list) {
-      final result = [];
+      final result = <R>[];
       result.add(list[0]);
       for (var tuple in list[1]) {
         if (includeSeparators) {
