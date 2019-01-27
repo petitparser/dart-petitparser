@@ -102,30 +102,78 @@ main() {
       expectFailure(parser, 'b', 0, '"a" expected');
       expectFailure(parser, '');
     });
-    test('or() operator', () {
-      final parser = char('a') | char('b');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectFailure(parser, 'c');
-      expectFailure(parser, '');
-    });
-    test('or() of two', () {
-      final parser = char('a').or(char('b'));
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectFailure(parser, 'c');
-      expectFailure(parser, '');
-    });
-    test('or() of three', () {
-      final parser = char('a').or(char('b')).or(char('c'));
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectFailure(parser, 'd');
-      expectFailure(parser, '');
-    });
-    test('or() empty', () {
-      expect(() => ChoiceParser([]), throwsArgumentError);
+    group('or()', () {
+      test('operator', () {
+        final parser = char('a') | char('b');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectFailure(parser, 'c');
+        expectFailure(parser, '');
+      });
+      test('two', () {
+        final parser = char('a').or(char('b'));
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectFailure(parser, 'c');
+        expectFailure(parser, '');
+      });
+      test('first failure', () {
+        final parser = char('a').or(char('b')).or(char('c')).withFirstFailure();
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '"a" expected');
+        expectFailure(parser, '');
+      });
+      test('first failure (configured on the way)', () {
+        final parser = char('a').or(char('b')).withFirstFailure().or(char('c'));
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '"a" expected');
+        expectFailure(parser, '');
+      });
+      test('last failure', () {
+        final parser = char('a').or(char('b')).or(char('c')).withLastFailure();
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '"c" expected');
+        expectFailure(parser, '');
+      });
+      test('last failure (configured on the way)', () {
+        final parser = char('a').or(char('b')).withLastFailure().or(char('c'));
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '"c" expected');
+        expectFailure(parser, '');
+      });
+      test('custom failure', () {
+        final parser = char('a')
+            .or(char('b'))
+            .or(char('c'))
+            .withCustomFailure('a-c expected');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, 'a-c expected');
+        expectFailure(parser, '');
+      });
+      test('custom failure (configured on the way)', () {
+        final parser = char('a')
+            .or(char('b'))
+            .withCustomFailure('a-c expected')
+            .or(char('c'));
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, 'a-c expected');
+        expectFailure(parser, '');
+      });
+      test('empty', () {
+        expect(() => ChoiceParser([]), throwsArgumentError);
+      });
     });
     test('position()', () {
       final parser = (any().star() & position()).pick(-1);
@@ -1170,6 +1218,9 @@ main() {
     test('not()', () => verify(any().not()));
     test('optional()', () => verify(any().optional()));
     test('or()', () => verify(any().or(word())));
+    test('or() first', () => verify(any().or(word()).withFirstFailure()));
+    test('or() last', () => verify(any().or(word()).withLastFailure()));
+    test('or() cust', () => verify(any().or(word()).withCustomFailure('abc')));
     test('pattern()', () => verify(pattern('^a-cz')));
     test('plus()', () => verify(any().plus()));
     test('plusGreedy()', () => verify(any().plusGreedy(word())));

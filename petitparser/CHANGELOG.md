@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+* Add the possibility to configure the error reporting of `ChoiceParser` with `withFirstFailure()`, `withLastFailure()` (default), and `withCustomFailure(String)`. This makes error reporting much more strait-forward and can also have some performance benefits.
+
 ## 2.1.0
 
 * Rename ParserError to ParserException, and make it an Exception.

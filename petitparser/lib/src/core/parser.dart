@@ -184,11 +184,11 @@ abstract class Parser<T> {
   /// `char('a')` will never be activated, because the input is always consumed
   /// `letter()`. This can be problematic if the author intended to attach a
   /// production action to `char('a')`.
-  Parser or(Parser other) => ChoiceParser([this, other]);
+  ChoiceParser or(Parser other) => ChoiceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [Parser.or] for details.
-  Parser operator |(Parser other) => or(other);
+  ChoiceParser operator |(Parser other) => or(other);
 
   /// Returns a parser (logical and-predicate) that succeeds whenever the
   /// receiver does, but never consumes input.
