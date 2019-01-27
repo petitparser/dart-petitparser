@@ -3,4 +3,4 @@
 /// It was automatically exported from PetitParser for Smalltalk.
 library petitparser.example.smalltalk;
 
-export 'src/smalltalk/grammar.dart';
+export 'package:example/src/smalltalk/grammar.dart';

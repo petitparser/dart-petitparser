@@ -1,9 +1,9 @@
 library petitparser.example.lisp.native;
 
-import 'cons.dart';
-import 'environment.dart';
-import 'evaluator.dart';
-import 'name.dart';
+import 'package:example/src/lisp/cons.dart';
+import 'package:example/src/lisp/environment.dart';
+import 'package:example/src/lisp/evaluator.dart';
+import 'package:example/src/lisp/name.dart';
 
 class NativeEnvironment extends Environment {
   NativeEnvironment([Environment owner]) : super(owner) {
