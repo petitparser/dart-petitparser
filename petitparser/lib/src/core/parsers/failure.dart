@@ -21,6 +21,9 @@ class FailureParser<T> extends Parser<T> {
   Result<T> parseOn(Context context) => context.failure(message);
 
   @override
+  int fastParseOn(String buffer, int position) => -position - 1;
+
+  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

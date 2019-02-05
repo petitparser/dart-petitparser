@@ -26,6 +26,18 @@ class ChoiceParser extends ListParser {
   }
 
   @override
+  int fastParseOn(String buffer, int position) {
+    int result;
+    for (var parser in children) {
+      result = parser.fastParseOn(buffer, position);
+      if (result >= 0) {
+        return result;
+      }
+    }
+    return result;
+  }
+
+  @override
   Parser or(Parser other) => ChoiceParser([]
     ..addAll(children)
     ..add(other));

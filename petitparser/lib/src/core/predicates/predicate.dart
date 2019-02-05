@@ -44,6 +44,14 @@ class PredicateParser extends Parser<String> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) {
+    final stop = position + length;
+    return stop <= buffer.length && predicate(buffer.substring(position, stop))
+        ? stop
+        : -position - 1;
+  }
+
+  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

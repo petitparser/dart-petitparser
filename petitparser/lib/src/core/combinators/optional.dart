@@ -22,6 +22,12 @@ class OptionalParser<T> extends DelegateParser<T> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) {
+    final result = delegate.fastParseOn(buffer, position);
+    return result < 0 ? position : result;
+  }
+
+  @override
   OptionalParser<T> copy() => OptionalParser<T>(delegate, otherwise);
 
   @override

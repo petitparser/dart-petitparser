@@ -14,8 +14,8 @@ class PossessiveRepeatingParser<T> extends RepeatingParser<T> {
 
   @override
   Result<List<T>> parseOn(Context context) {
-    var current = context;
     final elements = <T>[];
+    var current = context;
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -33,6 +33,29 @@ class PossessiveRepeatingParser<T> extends RepeatingParser<T> {
       current = result;
     }
     return current.success(elements);
+  }
+
+  @override
+  int fastParseOn(String buffer, int position) {
+    var count = 0;
+    var current = position;
+    while (count < min) {
+      final result = delegate.fastParseOn(buffer, current);
+      if (result < 0) {
+        return result;
+      }
+      count++;
+      current = result;
+    }
+    while (max == unbounded || count < max) {
+      final result = delegate.fastParseOn(buffer, current);
+      if (result < 0) {
+        return current;
+      }
+      count++;
+      current = result;
+    }
+    return current;
   }
 
   @override

@@ -23,5 +23,9 @@ class FlattenParser extends DelegateParser<String> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
+
+  @override
   FlattenParser copy() => FlattenParser(delegate);
 }

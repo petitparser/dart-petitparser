@@ -20,6 +20,9 @@ class EpsilonParser<T> extends Parser<T> {
   Result<T> parseOn(Context context) => context.success(result);
 
   @override
+  int fastParseOn(String buffer, int position) => position;
+
+  @override
   EpsilonParser<T> copy() => EpsilonParser<T>(result);
 
   @override

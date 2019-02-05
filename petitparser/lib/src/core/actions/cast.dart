@@ -20,6 +20,10 @@ class CastParser<R> extends DelegateParser<R> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
+
+  @override
   CastParser<R> copy() => CastParser<R>(delegate);
 }
 
@@ -36,6 +40,10 @@ class CastListParser<R> extends DelegateParser<List<R>> {
       return result.failure(result.message);
     }
   }
+
+  @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
 
   @override
   CastListParser<R> copy() => CastListParser<R>(delegate);

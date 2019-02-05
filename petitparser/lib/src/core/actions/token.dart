@@ -23,5 +23,9 @@ class TokenParser<T> extends DelegateParser<Token<T>> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
+
+  @override
   TokenParser<T> copy() => TokenParser<T>(delegate);
 }

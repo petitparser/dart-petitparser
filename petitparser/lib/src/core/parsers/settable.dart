@@ -24,5 +24,9 @@ class SettableParser<T> extends DelegateParser<T> {
   void set(Parser<T> parser) => replace(children[0], parser);
 
   @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
+
+  @override
   SettableParser<T> copy() => SettableParser<T>(delegate);
 }

@@ -36,6 +36,24 @@ abstract class Parser<T> {
   /// [Failure] context.
   Result<T> parseOn(Context context);
 
+  /// Primitive method doing the actual parsing.
+  ///
+  /// This method is a optimized version of [Parser.parseOn(Context)] that is
+  /// getting its speed advantage by avoiding any unnecessary memory
+  /// allocations.
+  ///
+  /// The method is overridden in most concrete subclasses to implement the
+  /// optimized logic. As an input the method takes a [buffer] and the current
+  /// [position] in that buffer. It returns a new (positive) position in case
+  /// of a parse success, and a (negative) position in case of a failure.
+  ///
+  /// Subclasses don't necessarily have to override this method, since it is
+  /// emulated using its slower brother.
+  int fastParseOn(String buffer, int position) {
+    final result = parseOn(Context(buffer, position));
+    return result.isSuccess ? result.position : -result.position - 1;
+  }
+
   /// Returns the parse result of the [input].
   ///
   /// The implementation creates a default parse context on the input and calls
@@ -54,7 +72,7 @@ abstract class Parser<T> {
   ///
   /// For example, `letter().plus().accept('abc')` returns `true`, and
   /// `letter().plus().accept('123')` returns `false`.
-  bool accept(String input) => parse(input).isSuccess;
+  bool accept(String input) => fastParseOn(input, 0) >= 0;
 
   /// Returns a list of all successful overlapping parses of the [input].
   ///
@@ -63,7 +81,12 @@ abstract class Parser<T> {
   /// [Parser.matchesSkipping] to retrieve non-overlapping parse results.
   List<T> matches(String input) {
     final list = <T>[];
-    and().map(list.add).seq(any()).or(any()).star().parse(input);
+    and()
+        .map(list.add, hasSideEffects: true)
+        .seq(any())
+        .or(any())
+        .star()
+        .fastParseOn(input, 0);
     return list;
   }
 
@@ -74,7 +97,7 @@ abstract class Parser<T> {
   /// overlapping parse results.
   List<T> matchesSkipping(String input) {
     final list = <T>[];
-    map(list.add).or(any()).star().parse(input);
+    map(list.add, hasSideEffects: true).or(any()).star().fastParseOn(input, 0);
     return list;
   }
 
@@ -264,14 +287,15 @@ abstract class Parser<T> {
   /// [SettableParser.set].
   SettableParser<T> settable() => SettableParser<T>(this);
 
-  /// Returns a parser that evaluates a [callback] as the production action
-  /// on success of the receiver.
+  /// Returns a parser that evaluates a [callback] as the (side-effect free)
+  /// production action on success of the receiver.
   ///
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fail, the
   /// production action is not executed and the failure is passed on.
-  Parser<R> map<R>(ActionCallback<T, R> callback) =>
-      ActionParser<T, R>(this, callback);
+  Parser<R> map<R>(ActionCallback<T, R> callback,
+          {bool hasSideEffects: false}) =>
+      ActionParser<T, R>(this, callback, hasSideEffects);
 
   /// Returns a parser that casts itself to `Parser<R>`.
   Parser<R> cast<R>() => CastParser<R>(this);
