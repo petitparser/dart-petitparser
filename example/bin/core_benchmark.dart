@@ -25,9 +25,19 @@ double benchmark(Function function,
 // Character tests
 
 Function charTest(List<String> inputs, Parser parser) {
-  return () {
-    for (var i = 0; i < inputs.length; i++) {
-      parser.parse(inputs[i]);
+  return (fast) {
+    if (fast) {
+      return () {
+        for (var i = 0; i < inputs.length; i++) {
+          parser.accept(inputs[i]);
+        }
+      };
+    } else {
+      return () {
+        for (var i = 0; i < inputs.length; i++) {
+          parser.parse(inputs[i]);
+        }
+      };
     }
   };
 }
@@ -37,9 +47,17 @@ final List<String> characters =
 
 // String tests
 
-Function stringTest(String input, Parser parser) {
-  return () {
-    parser.parse(input);
+Function stringTest(String input, Parser parser, {bool fast: false}) {
+  return (fast) {
+    if (fast) {
+      return () {
+        parser.accept(input);
+      };
+    } else {
+      return () {
+        parser.parse(input);
+      };
+    }
   };
 }
 
@@ -72,6 +90,7 @@ final Map<String, Function> benchmarks = {
   "anyOf('uncopyrightable')": charTest(characters, anyOf('uncopyrightable')),
   "char('a')": charTest(characters, char('a')),
   'digit()': charTest(characters, digit()),
+  'failure()': charTest(characters, failure()),
   'letter()': charTest(characters, letter()),
   'lowercase()': charTest(characters, lowercase()),
   "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
@@ -91,23 +110,50 @@ final Map<String, Function> benchmarks = {
   'word()': charTest(characters, word()),
 
   // combinator tests
+  'optional()': charTest(characters, any().optional()),
+  'and()': charTest(characters, any().and()),
+  'not()': charTest(characters, any().not()),
+  'neg()': charTest(characters, any().neg()),
+  'flatten()': charTest(characters, any().flatten()),
+  'token()': charTest(characters, any().token()),
+  'trim()': charTest(characters, any().trim()),
+  'end()': charTest(characters, any().end()),
+  'set()': charTest(characters, any().settable()),
+  'map()': charTest(characters, any().map((_) => null)),
+  'cast()': charTest(characters, any().cast()),
+  'castList()': charTest(characters, any().star().castList()),
+  'pick()': charTest(characters, any().star().pick(0)),
+  'permute()': charTest(characters, any().star().permute([0])),
+  'or()': charTest(characters, failure().or(any()).star()),
+
+  // repeater tests
   'star()': stringTest(string, any().star()),
-  'starLazy()': stringTest(string, any().starLazy(failure())),
   'starGreedy()': stringTest(string, any().starGreedy(failure())),
+  'starLazy()': stringTest(string, any().starLazy(failure())),
   'plus()': stringTest(string, any().plus()),
-  'plusLazy()': stringTest(string, any().plusLazy(failure())),
   'plusGreedy()': stringTest(string, any().plusGreedy(failure())),
-  'or()': stringTest(string, failure().or(any()).star()),
-  'seq()':
-      stringTest(string, SequenceParser(List.filled(string.length, any()))),
+  'plusLazy()': stringTest(string, any().plusLazy(failure())),
+  'times()': stringTest(string, any().times(string.length)),
+  'seq()': stringTest(
+    string,
+    SequenceParser(List.filled(string.length, any())),
+  ),
 
   // json tests
-  'JSON.decode()': () => convert.json.decode(jsonEvent),
-  'JsonParser()': () => json.parse(jsonEvent).value
+  'JSON.decode()': (fast) => () => convert.json.decode(jsonEvent),
+  'JsonParser()': (fast) {
+    if (fast) {
+      return () => json.accept(jsonEvent);
+    } else {
+      return () => json.parse(jsonEvent).value;
+    }
+  }
 };
 
 void main() {
   for (var name in benchmarks.keys) {
-    print('$name\t${benchmark(benchmarks[name])}');
+    print('$name\t'
+        '${benchmark(benchmarks[name](false))}\t'
+        '${benchmark(benchmarks[name](true))}');
   }
 }

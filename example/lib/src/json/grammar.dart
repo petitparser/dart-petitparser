@@ -12,17 +12,37 @@ class JsonGrammarDefinition extends GrammarDefinition {
   const JsonGrammarDefinition();
 
   Parser start() => ref(value).end();
-  Parser token(Parser parser) => parser.flatten().trim();
+  Parser token(Object source, [String name]) {
+    Parser parser;
+    String expected;
+    if (source is String) {
+      if (source.length == 1) {
+        parser = char(source);
+      } else {
+        parser = string(source);
+      }
+      expected = name ?? source;
+    } else if (source is Parser) {
+      parser = source;
+      expected = name;
+    } else {
+      throw ArgumentError('Unknow token type: $source.');
+    }
+    if (expected == null) {
+      throw ArgumentError('Missing token name: $source');
+    }
+    return parser.flatten(expected).trim();
+  }
 
   Parser array() =>
-      ref(token, char('[')) & ref(elements).optional() & ref(token, char(']'));
+      ref(token, '[') & ref(elements).optional() & ref(token, ']');
   Parser elements() =>
-      ref(value).separatedBy(ref(token, char(',')), includeSeparators: false);
+      ref(value).separatedBy(ref(token, ','), includeSeparators: false);
   Parser members() =>
-      ref(pair).separatedBy(ref(token, char(',')), includeSeparators: false);
+      ref(pair).separatedBy(ref(token, ','), includeSeparators: false);
   Parser object() =>
-      ref(token, char('{')) & ref(members).optional() & ref(token, char('}'));
-  Parser pair() => ref(stringToken) & ref(token, char(':')) & ref(value);
+      ref(token, '{') & ref(members).optional() & ref(token, '}');
+  Parser pair() => ref(stringToken) & ref(token, ':') & ref(value);
   Parser value() =>
       ref(stringToken) |
       ref(numberToken) |
@@ -32,11 +52,11 @@ class JsonGrammarDefinition extends GrammarDefinition {
       ref(falseToken) |
       ref(nullToken);
 
-  Parser trueToken() => ref(token, string('true'));
-  Parser falseToken() => ref(token, string('false'));
-  Parser nullToken() => ref(token, string('null'));
-  Parser stringToken() => ref(token, ref(stringPrimitive));
-  Parser numberToken() => ref(token, ref(numberPrimitive));
+  Parser trueToken() => ref(token, 'true');
+  Parser falseToken() => ref(token, 'false');
+  Parser nullToken() => ref(token, 'null');
+  Parser stringToken() => ref(token, ref(stringPrimitive), 'string');
+  Parser numberToken() => ref(token, ref(numberPrimitive), 'number');
 
   Parser characterPrimitive() =>
       ref(characterNormal) | ref(characterEscape) | ref(characterUnicode);

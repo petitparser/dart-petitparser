@@ -14,8 +14,9 @@ class ActionParser<T, R> extends DelegateParser<R> {
   final ActionCallback<T, R> callback;
   final bool hasSideEffects;
 
-  ActionParser(Parser<T> delegate, this.callback, [this.hasSideEffects = true])
+  ActionParser(Parser<T> delegate, this.callback, [this.hasSideEffects = false])
       : assert(callback != null),
+        assert(hasSideEffects != null),
         super(delegate);
 
   @override
@@ -30,6 +31,7 @@ class ActionParser<T, R> extends DelegateParser<R> {
 
   @override
   int fastParseOn(String buffer, int position) {
+    // If we have side-effects, we evaluate the callback anyway.
     return hasSideEffects
         ? super.fastParseOn(buffer, position)
         : delegate.fastParseOn(buffer, position);

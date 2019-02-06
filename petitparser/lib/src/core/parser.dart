@@ -51,7 +51,7 @@ abstract class Parser<T> {
   /// emulated using its slower brother.
   int fastParseOn(String buffer, int position) {
     final result = parseOn(Context(buffer, position));
-    return result.isSuccess ? result.position : -result.position - 1;
+    return result.isSuccess ? result.position : -1;
   }
 
   /// Returns the parse result of the [input].
@@ -245,10 +245,14 @@ abstract class Parser<T> {
   /// Returns a parser that discards the result of the receiver, and returns
   /// a sub-string of the consumed range in the string/list being parsed.
   ///
+  /// If a [message] is provided, the flatten parser can switch to a fast mode
+  /// where error tracking within the receiver is suppressed and in case of a
+  /// problem [message] is reported instead.
+  ///
   /// For example, the parser `letter().plus().flatten()` returns `'abc'`
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
-  Parser<String> flatten() => FlattenParser(this);
+  Parser<String> flatten([String message]) => FlattenParser(this, message);
 
   /// Returns a parser that returns a [Token]. The token carries the parsed
   /// value of the receiver [Token.value], as well as the consumed input
@@ -287,14 +291,18 @@ abstract class Parser<T> {
   /// [SettableParser.set].
   SettableParser<T> settable() => SettableParser<T>(this);
 
-  /// Returns a parser that evaluates a [callback] as the (side-effect free)
-  /// production action on success of the receiver.
+  /// Returns a parser that evaluates a [callback] as the production action
+  /// on success of the receiver.
+  ///
+  /// By default we assume the block is side-effect free, so unless
+  /// [hasSideEffects] its execution might be skipped if there are nobody
+  /// depends on the result.
   ///
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fail, the
   /// production action is not executed and the failure is passed on.
   Parser<R> map<R>(ActionCallback<T, R> callback,
-          {bool hasSideEffects: false}) =>
+          {bool hasSideEffects = false}) =>
       ActionParser<T, R>(this, callback, hasSideEffects);
 
   /// Returns a parser that casts itself to `Parser<R>`.
