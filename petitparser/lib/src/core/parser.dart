@@ -51,7 +51,7 @@ abstract class Parser<T> {
   /// emulated using its slower brother.
   int fastParseOn(String buffer, int position) {
     final result = parseOn(Context(buffer, position));
-    return result.isSuccess ? result.position : -1;
+    return result.isSuccess ? result.position : -result.position - 1;
   }
 
   /// Returns the parse result of the [input].
