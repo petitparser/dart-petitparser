@@ -10,7 +10,7 @@ import 'package:petitparser/src/reflection/transform.dart';
 ///
 /// For example, the snippet
 ///
-///     var parser = letter() & word().star();
+///     final parser = letter() & word().star();
 ///     progress(parser).parse('f123');
 ///
 /// produces the following output:

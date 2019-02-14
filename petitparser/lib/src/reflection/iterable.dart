@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 /// For example, the following code prints the two parsers of the
 /// defined grammar:
 ///
-///     var parser = range('0', '9').star();
+///     final parser = range('0', '9').star();
 ///     allParser(parser).forEach((each) {
 ///       print(each);
 ///     });

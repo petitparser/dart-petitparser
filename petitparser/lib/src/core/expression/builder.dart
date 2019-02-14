@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///
 /// The following code creates the empty expression builder:
 ///
-///     var builder = new ExpressionBuilder();
+///     final builder = new ExpressionBuilder();
 ///
 /// Then we define the operator-groups in descending precedence. The highest
 /// precedence have the literal numbers themselves:
@@ -41,7 +41,7 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///
 /// Finally we can build the parser:
 ///
-///     var parser = builder.build();
+///     final parser = builder.build();
 ///
 /// After executing the above code we get an efficient parser that correctly
 /// evaluates expressions like:

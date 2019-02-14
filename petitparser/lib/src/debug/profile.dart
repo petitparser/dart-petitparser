@@ -10,7 +10,7 @@ import 'package:petitparser/src/reflection/transform.dart';
 ///
 /// For example, the snippet
 ///
-///     var parser = letter() & word().star();
+///     final parser = letter() & word().star();
 ///     profile(parser).parse('f1234567890');
 ///
 /// produces the following output:

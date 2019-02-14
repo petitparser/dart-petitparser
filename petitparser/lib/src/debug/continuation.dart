@@ -26,10 +26,10 @@ typedef ContinuationHandler<T> = Result<T> Function(
 /// The following example shows a simple wrapper. Messages are printed before
 /// and after the `digit()` parser is activated:
 ///
-///     var wrapped = digit();
-///     var parser = new ContinuationParser(wrapped, (continuation, context) {
+///     final wrapped = digit();
+///     final parser = new ContinuationParser(wrapped, (continuation, context) {
 ///       print('Parser will be activated, the context is $context.');
-///       var result = continuation(context);
+///       final result = continuation(context);
 ///       print('Parser was activated, the result is $result.');
 ///       return result;
 ///     });

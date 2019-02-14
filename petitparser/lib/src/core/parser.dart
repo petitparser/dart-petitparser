@@ -409,8 +409,8 @@ abstract class Parser<T> {
   /// parser that accepts a digit. The resulting `example` parser accepts one
   /// or more digits.
   ///
-  ///     var letter = letter();
-  ///     var example = letter.plus();
+  ///     final letter = letter();
+  ///     final example = letter.plus();
   ///     example.replace(letter, digit());
   void replace(Parser source, Parser target) {
     // no children, nothing to do

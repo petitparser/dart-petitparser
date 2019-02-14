@@ -101,7 +101,7 @@ PetitParser provide a large set of ready-made parser that you can compose to con
 So instead of using the letter and digit predicate, we could have written our identifier parser like this:
 
 ```dart
-var id = letter() & word().star();
+final id = letter() & word().star();
 ```
 
 The next set of parsers are used to combine other parsers together:
@@ -126,13 +126,13 @@ To attach an action or transformation to a parser we can use the following metho
 To return a string of the parsed identifier, we can modify our parser like this:
 
 ```dart
-var id = (letter() & word().star()).flatten();
+final id = (letter() & word().star()).flatten();
 ```
 
 To conveniently find all matches in a given input string you can use `Parser.matchesSkipping`:
 
 ```dart
-var matches = id.matchesSkipping('foo 123 bar4');
+final matches = id.matchesSkipping('foo 123 bar4');
 print(matches);                     // ['foo', 'bar4']
 ```
 
@@ -140,20 +140,18 @@ These are the basic elements to build parsers. There are a few more well documen
 
 ### Writing a More Complicated Grammar
 
-Now we are able to write a more complicated grammar for evaluating simple
-arithmetic expressions. Within a file we start with the grammar for a
-number (actually an integer):
+Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for a number (actually an integer):
 
 ```dart
-var number = digit().plus().flatten().trim().map(int.parse);
+final number = digit().plus().flatten().trim().map(int.parse);
 ```
 
 Then we define the productions for addition and multiplication in order of precedence. Note that we instantiate the productions with undefined parsers upfront, because they recursively refer to each other. Later on we can resolve this recursion by setting their reference:
 
 ```dart
-var term = undefined();
-var prod = undefined();
-var prim = undefined();
+final term = undefined();
+final prod = undefined();
+final prim = undefined();
 
 term.set(prod.seq(char('+').trim()).seq(term).map((values) {
   return values[0] + values[2];
@@ -169,18 +167,71 @@ prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
 To make sure that our parser consumes all input we wrap it with the `end()` parser into the start production:
 
 ```dart
-var start = term.end();
+final parser = term.end();
 ```
 
 That's it, now we can test our parser and evaluator:
 
 ```dart
-print(start.parse('1 + 2 * 3').value);        // 7
-print(start.parse('(1 + 2) * 3').value);      // 9
+parser.parse('1 + 2 * 3');     // 7
+parser.parse('(1 + 2) * 3');   // 9
 ```
 
-As an exercise we could extend the parser to also accept negative numbers and floating point numbers, not only integers. Furthermore it would be useful to support subtraction and division as well. All these features can be added with a few lines of PetitParser code.
+### Using the Expression Builder
 
+Writing such expression parsers is pretty common and can be quite tricky to get right. To simplify things, PetitParser comes with a builder that can help you to define such grammars easily. It supports the definition of operator precedence; and prefix, postfix, left- and right-associative operators.
+
+The following code creates the empty expression builder:
+
+```dart
+final builder = new ExpressionBuilder();
+```
+
+Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we floating point numbers, not just integers:
+
+```dart
+builder.group()
+  ..primitive(digit().plus()
+    .seq(char('.').seq(digit().plus()).optional())
+    .flatten().trim().map((a) => num.tryParse(a)));
+```
+
+Then come the normal arithmetic operators. Note, that the action blocks receive both, the terms and the parsed operator in the order they appear in the parsed input:
+
+```dart
+// negation is a prefix operator
+builder.group()
+  ..prefix(char('-').trim(), (op, a) => -a);
+
+// power is right-associative
+builder.group()
+  ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
+
+// multiplication and addition are left-associative
+builder.group()
+  ..left(char('*').trim(), (a, op, b) => a * b)
+  ..left(char('/').trim(), (a, op, b) => a / b);
+builder.group()
+  ..left(char('+').trim(), (a, op, b) => a + b)
+  ..left(char('-').trim(), (a, op, b) => a - b);
+```
+
+Finally we can build the parser:
+
+```dart
+final parser = builder.build().end();
+```
+
+After executing the above code we get an efficient parser that correctly
+evaluates expressions like:
+
+```dart
+parser.parse('-8');      // -8
+parser.parse('1+2*3');   // 7
+parser.parse('1*2+3');   // 5
+parser.parse('8/4/2');   // 2
+parser.parse('2^2^3');   // 256
+```
 
 Misc
 ----
@@ -196,7 +247,7 @@ The package comes with a large collection of example grammars and language exper
 - `example/bin/lispweb` contains a web based lisp interpreter.
 - `example/lib/smalltalk` contains a complete Smalltalk grammar.
 
-Furthermore, there are various open source projects using PetitParser:
+Furthermore, there are numerous open source projects using PetitParser:
 
 - [Badger](https://github.com/badger-lang/badger) is an experimental programming language.
 - [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
