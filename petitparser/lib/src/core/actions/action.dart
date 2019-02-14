@@ -31,7 +31,7 @@ class ActionParser<T, R> extends DelegateParser<R> {
 
   @override
   int fastParseOn(String buffer, int position) {
-    // If we have side-effects, we evaluate the callback anyway.
+    // If we know to have side-effects, we have to fall back to the slow mode.
     return hasSideEffects
         ? super.fastParseOn(buffer, position)
         : delegate.fastParseOn(buffer, position);
