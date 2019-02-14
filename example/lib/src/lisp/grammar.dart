@@ -30,7 +30,7 @@ class LispGrammarDefinition extends GrammarDefinition {
   cell() => ref(atom) & ref(cells);
   empty() => ref(space).star();
 
-  number() => ref(number_).flatten();
+  number() => ref(number_).flatten('Number expected');
   number_() =>
       anyIn('-+').optional() &
       char('0').or(digit().plus()) &
@@ -42,7 +42,7 @@ class LispGrammarDefinition extends GrammarDefinition {
   characterEscape() => char('\\') & any();
   characterRaw() => pattern('^"');
 
-  symbol() => ref(symbol_).flatten();
+  symbol() => ref(symbol_).flatten('Symbol expected');
   symbol_() =>
       pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-') &
       pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star();

@@ -47,7 +47,7 @@ final List<String> characters =
 
 // String tests
 
-Function stringTest(String input, Parser parser, {bool fast: false}) {
+Function stringTest(String input, Parser parser, {bool fast = false}) {
   return (fast) {
     if (fast) {
       return () {
