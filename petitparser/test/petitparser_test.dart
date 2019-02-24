@@ -33,7 +33,7 @@ void expectFailure(Parser parser, String input,
     expect(result.message, message,
         reason: 'Expected Result.message to match $message.');
   }
-  expect(parser.fastParseOn(input, 0), -result.position - 1,
+  expect(-parser.fastParseOn(input, 0) - 1, position,
       reason: 'Expected fast parsed result to fail in same position.');
 }
 
@@ -155,10 +155,21 @@ main() {
       expectFailure(parser, 'a', 0, 'failure');
     });
     test('flatten()', () {
-      final parser = digit().plus().flatten();
-      expectFailure(parser, '');
-      expectFailure(parser, 'a');
-      expectSuccess(parser, '1', '1');
+      final parser = digit().repeat(2, unbounded).flatten();
+      expectFailure(parser, '', 0, 'digit expected');
+      expectFailure(parser, 'a', 0, 'digit expected');
+      expectFailure(parser, '1', 1, 'digit expected');
+      expectFailure(parser, '1a', 1, 'digit expected');
+      expectSuccess(parser, '12', '12');
+      expectSuccess(parser, '123', '123');
+      expectSuccess(parser, '1234', '1234');
+    });
+    test('flatten()', () {
+      final parser = digit().repeat(2, unbounded).flatten('gimme a number');
+      expectFailure(parser, '', 0, 'gimme a number');
+      expectFailure(parser, 'a', 0, 'gimme a number');
+      expectFailure(parser, '1', 0, 'gimme a number');
+      expectFailure(parser, '1a', 0, 'gimme a number');
       expectSuccess(parser, '12', '12');
       expectSuccess(parser, '123', '123');
       expectSuccess(parser, '1234', '1234');
