@@ -6,8 +6,9 @@ description: A collection of example parsers, applications, and benchmarks that
   illustrate the PetitParser framework.
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.2.0 <3.0.0'
 dependencies:
+  collection: ^1.14.0
   petitparser:
     path: ../petitparser
 dev_dependencies:

@@ -356,7 +356,7 @@ abstract class Parser<T> {
   /// refer to other parsers. This code is supposed to be overridden by parsers
   /// that add other state.
   bool isEqualTo(Parser other, [Set<Parser> seen]) {
-    seen ??= Set();
+    seen ??= {};
     if (this == other || seen.contains(this)) {
       return true;
     }

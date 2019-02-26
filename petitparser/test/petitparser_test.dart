@@ -1121,7 +1121,7 @@ main() {
     });
   });
   group('copying, matching, replacing', () {
-    final immutableParsers = Set.of([PositionParser]);
+    final immutableParsers = {PositionParser};
     void verify(Parser parser) {
       final copy = parser.copy();
       if (immutableParsers.contains(copy.runtimeType)) {

@@ -16,7 +16,7 @@ Parser removeSettables(Parser parser) {
 
 /// Returns a copy of [parser] with all duplicates parsers collapsed.
 Parser removeDuplicates(Parser parser) {
-  final uniques = Set<Parser>();
+  final uniques = <Parser>{};
   return transformParser(parser, (source) {
     final target = uniques.firstWhere((each) {
       return source != each && source.isEqualTo(each);

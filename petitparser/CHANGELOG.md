@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+* Dart 2.2 compatibility and requirement.
+
 ## 2.1.0
 
 * Rename ParserError to ParserException, and make it an Exception.
