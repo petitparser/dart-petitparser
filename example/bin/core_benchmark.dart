@@ -1,26 +1,9 @@
 library petitparser.example.core_benchmark;
 
-import 'dart:convert' as convert;
-
 import 'package:example/json.dart';
 import 'package:petitparser/petitparser.dart';
 
-double benchmark(Function function,
-    [int warmUp = 1000, int milliseconds = 2500]) {
-  var count = 0;
-  var elapsed = 0;
-  final watch = Stopwatch();
-  while (warmUp-- > 0) {
-    function();
-  }
-  watch.start();
-  while (elapsed < milliseconds) {
-    function();
-    elapsed = watch.elapsedMilliseconds;
-    count++;
-  }
-  return elapsed / count;
-}
+import 'benchmark.dart';
 
 // Character tests
 
@@ -50,13 +33,9 @@ final List<String> characters =
 Function stringTest(String input, Parser parser, {bool fast = false}) {
   return (fast) {
     if (fast) {
-      return () {
-        parser.accept(input);
-      };
+      return () => parser.accept(input);
     } else {
-      return () {
-        parser.parse(input);
-      };
+      return () => parser.parse(input).isSuccess;
     }
   };
 }
@@ -139,21 +118,25 @@ final Map<String, Function> benchmarks = {
     SequenceParser(List.filled(string.length, any())),
   ),
 
-  // json tests
-  'JSON.decode()': (fast) => () => convert.json.decode(jsonEvent),
+  // composite
   'JsonParser()': (fast) {
     if (fast) {
-      return () => json.accept(jsonEvent);
+      return () => json.fastParseOn(jsonEvent, 0);
     } else {
-      return () => json.parse(jsonEvent).value;
+      return () => json.parse(jsonEvent);
     }
-  }
+  },
 };
 
 void main() {
+  print('Name\tFull\tFast\tSpeedup');
   for (var name in benchmarks.keys) {
+    final fullTime = benchmark(benchmarks[name](false));
+    final fastTime = benchmark(benchmarks[name](true));
+    final ratio = fullTime / fastTime;
     print('$name\t'
-        '${benchmark(benchmarks[name](false))}\t'
-        '${benchmark(benchmarks[name](true))}');
+        '${fullTime.toStringAsFixed(6)}\t'
+        '${fastTime.toStringAsFixed(6)}\t'
+        '${ratio.toStringAsFixed(1)}');
   }
 }

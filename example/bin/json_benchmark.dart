@@ -4,22 +4,7 @@ import 'dart:convert' as convert;
 
 import 'package:example/json.dart';
 
-double benchmark(Function function,
-    [int warmUp = 1000, int milliseconds = 5000]) {
-  var count = 0;
-  var elapsed = 0;
-  final watch = Stopwatch();
-  while (warmUp-- > 0) {
-    function();
-  }
-  watch.start();
-  while (elapsed < milliseconds) {
-    function();
-    elapsed = watch.elapsedMilliseconds;
-    count++;
-  }
-  return elapsed / count;
-}
+import 'benchmark.dart';
 
 const String jsonEvent = '''
 {"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, 
@@ -46,16 +31,16 @@ void main() {
 
   if (nativeResult.toString() != customResult.toString()) {
     print('Results not matching!');
-    print('  Native: $nativeResult');
-    print('  Custom: $customResult');
+    print(' - native: $nativeResult');
+    print(' - parser: $customResult');
     return;
   }
 
   final nativeTime = benchmark(() => native(jsonEvent));
-  final customTime = benchmark(() => custom(jsonEvent));
-  final ratio = customTime / nativeTime;
+  final parserTime = benchmark(() => custom(jsonEvent));
+  final ratio = parserTime / nativeTime;
 
   print('Slowdown: ${ratio.toStringAsFixed(1)}');
-  print('Native: ${nativeTime.toStringAsFixed(6)}');
-  print('Custom: ${customTime.toStringAsFixed(6)}');
+  print(' - native: ${nativeTime.toStringAsFixed(6)}');
+  print(' - parser: ${parserTime.toStringAsFixed(6)}');
 }
