@@ -17,6 +17,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/contexts/success.dart';
 import 'package:petitparser/src/core/parsers/eof.dart';
 import 'package:petitparser/src/core/parsers/settable.dart';
+import 'package:petitparser/src/core/pattern.dart';
 import 'package:petitparser/src/core/predicates/any.dart';
 import 'package:petitparser/src/core/repeaters/greedy.dart';
 import 'package:petitparser/src/core/repeaters/lazy.dart';
@@ -25,7 +26,7 @@ import 'package:petitparser/src/core/repeaters/unbounded.dart';
 import 'package:petitparser/src/core/token.dart';
 
 /// Abstract base class of all parsers.
-abstract class Parser<T> {
+abstract class Parser<T> implements Pattern {
   const Parser();
 
   /// Primitive method doing the actual parsing.
@@ -67,6 +68,44 @@ abstract class Parser<T> {
   /// [Failure], where [Result.position] is `0` and [Failure.message] is
   /// ['letter expected'].
   Result<T> parse(String input) => parseOn(Context(input, 0));
+
+  /// Matches this parser against [string] repeatedly.
+  ///
+  /// If [start] is provided, matching will start at that index. The returned
+  /// iterable lazily computes all the non-overlapping matches of the parser on
+  /// the string, ordered by start index.
+  ///
+  /// If the pattern matches the empty string at some point, the next match is
+  /// found by starting at the previous match's end plus one.
+  @override
+  Iterable<Match> allMatches(String string, [int start = 0]) sync* {
+    while (start <= string.length) {
+      final match = matchAsPrefix(string, start);
+      if (match == null) {
+        start++;
+      } else {
+        yield match;
+        if (start == match.end) {
+          start++;
+        } else {
+          start = match.end;
+        }
+      }
+    }
+  }
+
+  /// Match this pattern against the start of [string].
+  ///
+  /// If [start] is provided, this parser is tested against the string at the
+  /// [start] position. That is, a [Match] is returned if the pattern can match
+  /// a part of the string starting from position [start].
+  ///
+  /// Returns `null` if the pattern doesn't match.
+  @override
+  Match matchAsPrefix(String string, [int start = 0]) {
+    final end = fastParseOn(string, start);
+    return end < 0 ? null : ParserMatch(this, string, start, end);
+  }
 
   /// Tests if the [input] can be successfully parsed.
   ///
