@@ -27,7 +27,7 @@ class NotParser extends DelegateParser<void> {
   @override
   int fastParseOn(String buffer, int position) {
     final result = delegate.fastParseOn(buffer, position);
-    return result < 0 ? position : -position - 1;
+    return result < 0 ? position : -1;
   }
 
   @override

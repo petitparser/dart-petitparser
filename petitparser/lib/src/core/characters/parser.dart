@@ -30,7 +30,7 @@ class CharacterParser extends Parser<String> {
   int fastParseOn(String buffer, int position) =>
       position < buffer.length && predicate.test(buffer.codeUnitAt(position))
           ? position + 1
-          : -position - 1;
+          : -1;
 
   @override
   String toString() => '${super.toString()}[$message]';

@@ -48,7 +48,7 @@ class PredicateParser extends Parser<String> {
     final stop = position + length;
     return stop <= buffer.length && predicate(buffer.substring(position, stop))
         ? stop
-        : -position - 1;
+        : -1;
   }
 
   @override

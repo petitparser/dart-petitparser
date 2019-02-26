@@ -17,7 +17,7 @@ void expectSuccess(Parser parser, String input, Object expected,
   expect(result.position, position ?? input.length,
       reason: 'Expected Result.position to match ${position ?? input.length}.');
   expect(parser.fastParseOn(input, 0), result.position,
-      reason: 'Expected fast parsed result to succeed in same position.');
+      reason: 'Expected fast parsed result to succeed at same position.');
 }
 
 void expectFailure(Parser parser, String input,
@@ -33,8 +33,8 @@ void expectFailure(Parser parser, String input,
     expect(result.message, message,
         reason: 'Expected Result.message to match $message.');
   }
-  expect(-parser.fastParseOn(input, 0) - 1, position,
-      reason: 'Expected fast parsed result to fail in same position.');
+  expect(parser.fastParseOn(input, 0), -1,
+      reason: 'Expected fast parse to fail.');
 }
 
 class ListGrammarDefinition extends GrammarDefinition {

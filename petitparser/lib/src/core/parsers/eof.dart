@@ -21,7 +21,7 @@ class EndOfInputParser extends Parser<void> {
 
   @override
   int fastParseOn(String buffer, int position) =>
-      position < buffer.length ? -position - 1 : position;
+      position < buffer.length ? -1 : position;
 
   @override
   String toString() => '${super.toString()}[$message]';

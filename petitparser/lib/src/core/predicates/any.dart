@@ -29,7 +29,7 @@ class AnyParser extends Parser<String> {
 
   @override
   int fastParseOn(String buffer, int position) =>
-      position < buffer.length ? position + 1 : -position - 1;
+      position < buffer.length ? position + 1 : -1;
 
   @override
   AnyParser copy() => AnyParser(message);

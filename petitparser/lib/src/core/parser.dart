@@ -38,20 +38,20 @@ abstract class Parser<T> {
 
   /// Primitive method doing the actual parsing.
   ///
-  /// This method is a optimized version of [Parser.parseOn(Context)] that is
+  /// This method is an optimized version of [Parser.parseOn(Context)] that is
   /// getting its speed advantage by avoiding any unnecessary memory
   /// allocations.
   ///
   /// The method is overridden in most concrete subclasses to implement the
   /// optimized logic. As an input the method takes a [buffer] and the current
   /// [position] in that buffer. It returns a new (positive) position in case
-  /// of a parse success, and a (negative) position in case of a failure.
+  /// of a successful parse, or `-1` in case of a failure.
   ///
   /// Subclasses don't necessarily have to override this method, since it is
   /// emulated using its slower brother.
   int fastParseOn(String buffer, int position) {
     final result = parseOn(Context(buffer, position));
-    return result.isSuccess ? result.position : -result.position - 1;
+    return result.isSuccess ? result.position : -1;
   }
 
   /// Returns the parse result of the [input].
