@@ -1086,6 +1086,8 @@ main() {
       });
       test('replaceAll()', () {
         expect(input.replaceAll(pattern, '!'), 'a!3b!');
+      }, onPlatform: {
+        'js': const Skip('String.replaceAll(Pattern) UNIMPLEMENTED')
       });
       test('replaceAllMapped()', () {
         expect(input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
