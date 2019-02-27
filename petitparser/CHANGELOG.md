@@ -3,6 +3,9 @@
 ## 2.2.0
 
 * Dart 2.2 compatibility and requirement.
+* Parser implements the `Pattern` interface.
+* Add an example of the expression builder to the tutorial.
+* Introduce a fast-parse mode that avoids unnecessary memory allocations during parsing.
 
 ## 2.1.0
 
