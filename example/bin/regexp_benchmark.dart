@@ -21,9 +21,7 @@ void compare(String regExp, Parser parser, String input) {
       .toList();
 
   if (!equality.equals(nativeResult, parserResult)) {
-    print('$regExp: ERROR');
-    print(' - native: $nativeResult');
-    print(' - parser: $parserResult');
+    print('$regExp\tERROR');
     return;
   }
 
@@ -35,13 +33,14 @@ void compare(String regExp, Parser parser, String input) {
       .allMatches(input)
       .map((matcher) => matcher.group(0))
       .toList());
-  final ratio = parserTime / nativeTime;
-  print('$regExp: ${ratio.toStringAsFixed(1)} slowdown');
-  print(' - native: ${nativeTime.toStringAsFixed(6)}ms');
-  print(' - parser: ${parserTime.toStringAsFixed(6)}ms');
+  print('$regExp\t'
+      '${nativeTime.toStringAsFixed(6)}\t'
+      '${parserTime.toStringAsFixed(6)}\t'
+      '${(100 * nativeTime / parserTime).round() - 100}%');
 }
 
 void main() {
+  print('Expression\tNative\tParser\tChange');
   compare(r'[0-9]', digit(),
       '!1!12!123!1234!12345!123456!1234567!12345678!123456789!');
   compare(r'[^0-9]', digit().not() & any(),

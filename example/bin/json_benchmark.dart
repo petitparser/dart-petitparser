@@ -19,28 +19,41 @@ const String jsonEvent = '''
 "TEXT": 1073741824, "ALT_MASK": 1, "CONTROL_MASK": 2, "SHIFT_MASK": 4, 
 "META_MASK": 8}
 ''';
+const String jsonNested = '''{"items":{"item":[{"id": "0001","type": "donut",
+"name": "Cake","ppu": 0.55,"batters":{"batter":[{ "id": "1001", "type": 
+"Regular" },{ "id": "1002", "type": "Chocolate" },{ "id": "1003", "type": 
+"Blueberry" },{ "id": "1004", "type": "Devil's Food" }]},"topping":[{ "id": 
+"5001", "type": "None" },{ "id": "5002", "type": "Glazed" },{ "id": "5005", 
+"type": "Sugar" },{ "id": "5007", "type": "Powdered Sugar" },{ "id": "5006", 
+"type": "Chocolate with Sprinkles" },{ "id": "5003", "type": "Chocolate" },
+{ "id": "5004", "type": "Maple" }]}]}}''';
 
 final JsonParser json = JsonParser();
 
 Object native(String input) => convert.json.decode(input);
 Object custom(String input) => json.parse(input).value;
 
-void main() {
-  final nativeResult = native(jsonEvent);
-  final customResult = custom(jsonEvent);
+void compare(String name, String input) {
+  final nativeResult = native(input);
+  final customResult = custom(input);
 
   if (nativeResult.toString() != customResult.toString()) {
-    print('Results not matching!');
-    print(' - native: $nativeResult');
-    print(' - parser: $customResult');
+    print('$name\nERROR');
     return;
   }
 
-  final nativeTime = benchmark(() => native(jsonEvent));
-  final parserTime = benchmark(() => custom(jsonEvent));
-  final ratio = parserTime / nativeTime;
+  final nativeTime = benchmark(() => native(input));
+  final customTime = benchmark(() => custom(input));
+  print('$name\t'
+      '${nativeTime.toStringAsFixed(6)}\t'
+      '${customTime.toStringAsFixed(6)}\t'
+      '${(100 * nativeTime / customTime).round() - 100}%');
+}
 
-  print('Slowdown: ${ratio.toStringAsFixed(1)}');
-  print(' - native: ${nativeTime.toStringAsFixed(6)}');
-  print(' - parser: ${parserTime.toStringAsFixed(6)}');
+void main() {
+  print('Name\tNative\tParser\tChange');
+  compare('Object', '{"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7}');
+  compare('Array', '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]');
+  compare('Event', jsonEvent);
+  compare('Nested', jsonNested);
 }

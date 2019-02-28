@@ -129,14 +129,13 @@ final Map<String, Function> benchmarks = {
 };
 
 void main() {
-  print('Name\tFull\tFast\tSpeedup');
+  print('Name\tparseOn\tfastParseOn\tChange');
   for (var name in benchmarks.keys) {
-    final fullTime = benchmark(benchmarks[name](false));
-    final fastTime = benchmark(benchmarks[name](true));
-    final ratio = fullTime / fastTime;
+    final parseOnTime = benchmark(benchmarks[name](false));
+    final fastParseOnTime = benchmark(benchmarks[name](true));
     print('$name\t'
-        '${fullTime.toStringAsFixed(6)}\t'
-        '${fastTime.toStringAsFixed(6)}\t'
-        '${ratio.toStringAsFixed(1)}');
+        '${parseOnTime.toStringAsFixed(6)}\t'
+        '${fastParseOnTime.toStringAsFixed(6)}\t'
+        '${(100 * parseOnTime / fastParseOnTime).round() - 100}%');
   }
 }
