@@ -15,8 +15,8 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
 
   @override
   Result<List<T>> parseOn(Context context) {
-    final elements = <T>[];
     var current = context;
+    final elements = <T>[];
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -50,10 +50,10 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) {
-        return result;
+        return -1;
       }
-      count++;
       current = result;
+      count++;
     }
     for (;;) {
       final limiter = limit.fastParseOn(buffer, current);
@@ -61,14 +61,14 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
         return current;
       } else {
         if (max != unbounded && count >= max) {
-          return limiter;
+          return -1;
         }
         final result = delegate.fastParseOn(buffer, current);
-        if (result <= 0) {
-          return limiter;
+        if (result < 0) {
+          return -1;
         }
-        count++;
         current = result;
+        count++;
       }
     }
   }

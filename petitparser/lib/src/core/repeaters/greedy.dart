@@ -51,6 +51,43 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
+  int fastParseOn(String buffer, int position) {
+    var count = 0;
+    var current = position;
+    while (count < min) {
+      final result = delegate.fastParseOn(buffer, current);
+      if (result < 0) {
+        return -1;
+      }
+      current = result;
+      count++;
+    }
+    final positions = <int>[current];
+    while (max == unbounded || count < max) {
+      final result = delegate.fastParseOn(buffer, current);
+      if (result < 0) {
+        break;
+      }
+      positions.add(current = result);
+      count++;
+    }
+    for (;;) {
+      final limiter = limit.fastParseOn(buffer, positions.last);
+      if (limiter >= 0) {
+        return positions.last;
+      }
+      if (count == 0) {
+        return -1;
+      }
+      positions.removeLast();
+      count--;
+      if (positions.isEmpty) {
+        return -1;
+      }
+    }
+  }
+
+  @override
   GreedyRepeatingParser<T> copy() =>
       GreedyRepeatingParser<T>(delegate, limit, min, max);
 }

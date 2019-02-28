@@ -42,18 +42,18 @@ class PossessiveRepeatingParser<T> extends RepeatingParser<T> {
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) {
-        return result;
+        return -1;
       }
-      count++;
       current = result;
+      count++;
     }
     while (max == unbounded || count < max) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) {
         return current;
       }
-      count++;
       current = result;
+      count++;
     }
     return current;
   }

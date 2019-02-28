@@ -23,7 +23,7 @@ class AndParser<T> extends DelegateParser<T> {
   @override
   int fastParseOn(String buffer, int position) {
     final result = delegate.fastParseOn(buffer, position);
-    return result < 0 ? result : position;
+    return result < 0 ? -1 : position;
   }
 
   @override

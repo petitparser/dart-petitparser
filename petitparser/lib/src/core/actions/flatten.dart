@@ -35,8 +35,7 @@ class FlattenParser extends DelegateParser<String> {
 
   @override
   int fastParseOn(String buffer, int position) {
-    final result = delegate.fastParseOn(buffer, position);
-    return message == null || result >= 0 ? result : -1;
+    return delegate.fastParseOn(buffer, position);
   }
 
   @override

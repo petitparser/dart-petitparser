@@ -19,20 +19,30 @@ class TrimmingParser<T> extends DelegateParser<T> {
   @override
   Result<T> parseOn(Context context) {
     final buffer = context.buffer;
+
+    // Trim the left part:
     final before = trim_(left, buffer, context.position);
-    final result = delegate.parseOn(
-        before == context.position ? context : Context(buffer, before));
+    if (before != context.position) {
+      context = Context(buffer, before);
+    }
+
+    // Consume the delegate:
+    final result = delegate.parseOn(context);
     if (result.isFailure) {
       return result;
     }
+
+    // Trim the right part:
     final after = trim_(right, buffer, result.position);
-    return result.success(result.value, after);
+    return after == result.position
+        ? result
+        : result.success(result.value, after);
   }
 
   @override
   int fastParseOn(String buffer, int position) {
     final result = delegate.fastParseOn(buffer, trim_(left, buffer, position));
-    return result < 0 ? result : trim_(right, buffer, result);
+    return result < 0 ? -1 : trim_(right, buffer, result);
   }
 
   int trim_(Parser parser, String buffer, int position) {
