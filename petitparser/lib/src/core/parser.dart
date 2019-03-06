@@ -333,9 +333,9 @@ abstract class Parser<T> implements Pattern {
   /// Returns a parser that evaluates a [callback] as the production action
   /// on success of the receiver.
   ///
-  /// By default we assume the block is side-effect free, so unless
-  /// [hasSideEffects] its execution might be skipped if there are nobody
-  /// depends on the result.
+  /// By default we assume the [callback] to be side-effect free. Unless
+  /// [hasSideEffects] is set to `true`, the execution might be skipped if there
+  /// are no direct dependencies.
   ///
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fail, the
