@@ -244,9 +244,8 @@ The package comes with a large collection of example grammars and language exper
 
 - `example/lib/dart` contains an experimental Dart grammar.
 - `example/lib/json` contains a complete JSON grammar and parser.
-- `example/lib/lisp` contains a complete Lisp grammar, parser and evaluator:
-- `example/bin/lisphell` contains a command line lisp interpreter.
-- `example/bin/lispweb` contains a web based lisp interpreter.
+- `example/lib/lisp` contains a complete LISP grammar, parser and evaluator.
+- `example/lib/prolog` contains a basic Prolog grammar, parser and evaluator.
 - `example/lib/smalltalk` contains a complete Smalltalk grammar.
 
 Furthermore, there are numerous open source projects using PetitParser:
