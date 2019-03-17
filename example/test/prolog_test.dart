@@ -22,7 +22,7 @@ void main() {
       ancestor(X, Y) :- parent_child(X, Y).
       ancestor(X, Y) :- parent_child(X, Z), ancestor(Z, Y).
     ''');
-    test('eric is son of thorne', () async {
+    test('eric son of thorne', () async {
       final query = Term.parse('father_child(eric, thorne)');
       expect(
           db.query(query),
@@ -40,6 +40,16 @@ void main() {
             Term.parse('mother_child(stephanie, felicia)'),
           ]));
     });
+    test('fathers and children', () async {
+      final query = Term.parse('father_child(X, Y)');
+      expect(
+          db.query(query),
+          emitsInOrder([
+            Term.parse('father_child(massimo, ridge)'),
+            Term.parse('father_child(eric, thorne)'),
+            Term.parse('father_child(thorne, alexandria)'),
+          ]));
+    });
     test('parents of thorne', () async {
       final query = Term.parse('parent_child(X, thorne)');
       expect(
@@ -47,6 +57,19 @@ void main() {
           emitsInOrder([
             Term.parse('parent_child(eric, thorne)'),
             Term.parse('parent_child(stephanie, thorne)'),
+          ]));
+    });
+    test('parents and children', () async {
+      final query = Term.parse('parent_child(X, Y)');
+      expect(
+          db.query(query),
+          emitsInOrder([
+            Term.parse('parent_child(massimo, ridge)'),
+            Term.parse('parent_child(eric, thorne)'),
+            Term.parse('parent_child(thorne, alexandria)'),
+            Term.parse('parent_child(stephanie, thorne)'),
+            Term.parse('parent_child(stephanie, kristen)'),
+            Term.parse('parent_child(stephanie, felicia)'),
           ]));
     });
     test('siblings of felicia', () async {
@@ -120,7 +143,11 @@ void main() {
     ''');
     test('Who Owns the Fish?', () {
       final query = Term.parse('solution(FishOwner)');
-      expect(db.query(query), emitsInOrder(['FishOwner = german']));
+      expect(
+          db.query(query),
+          emitsInOrder([
+            Term.parse('solution(german)'),
+          ]));
     });
   });
 }

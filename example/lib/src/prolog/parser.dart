@@ -16,17 +16,20 @@ final Parser<Term> termParser = definition_.build(start: definition_.term);
 
 /// LISP parser definition.
 class PrologParserDefinition extends PrologGrammarDefinition {
+  final Map<String, Variable> scope = {};
+
   Parser<List<Rule>> rules() => super.rules().castList();
 
   Parser<Rule> rule() => super.rule().map((each) {
+        scope.clear();
         final Term head = each[0];
         final List rest = each[1];
         if (rest == null) {
-          return Rule(head, const Value('true'));
+          return Rule(head, Value('true'));
         }
         final List terms = rest[1];
         if (terms.isEmpty) {
-          return Rule(head, const Value('true'));
+          return Rule(head, Value('true'));
         } else if (terms.length == 1) {
           return Rule(head, terms[0]);
         } else {
@@ -54,6 +57,14 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         return Term(name.toString(), terms.cast());
       });
 
-  Parser<Variable> variable() => super.variable().map((name) => Variable(name));
+  Parser<Variable> variable() => super.variable().map((name) {
+        if (name == '_') {
+          return Variable('_');
+        }
+        if (scope.containsKey(name)) {
+          return scope[name];
+        }
+        return scope[name] = Variable(name);
+      });
   Parser<Value> value() => super.value().map((name) => Value(name));
 }

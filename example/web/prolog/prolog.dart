@@ -10,7 +10,7 @@ final askElement = querySelector('#ask');
 final answersElement = querySelector('#answers');
 
 void main() {
-  askElement.onClick.listen((event) {
+  askElement.onClick.listen((event) async {
     answersElement.innerHtml = '';
 
     Database db;
@@ -31,7 +31,11 @@ void main() {
       return;
     }
 
-    db.query(query).forEach((item) => appendMessage(item.toString()));
+    await db.query(query).forEach((item) => appendMessage(item.toString()));
+
+    if (answersElement.innerHtml.isEmpty) {
+      appendMessage('No');
+    }
   });
 }
 
