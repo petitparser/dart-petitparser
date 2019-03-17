@@ -58,11 +58,13 @@ class Rule {
   Stream<Node> query(Database database, Term goal) async* {
     final match = head.match(goal);
     if (match != null) {
-      final subsHead = head.subs(match);
-      final subsBody = body.subs(match);
-      yield* body
-          .query(database)
-          .map((item) => subsHead.subs(subsBody.match(item)));
+      final headSubs = head.substitute(match);
+      final bodySubs = body.substitute(match);
+      if (bodySubs is Term) {
+        yield* bodySubs
+            .query(database)
+            .map((item) => headSubs.substitute(bodySubs.match(item)));
+      }
     }
   }
 
@@ -75,7 +77,7 @@ abstract class Node {
 
   Map<Variable, Node> match(Node other);
 
-  Node subs(Map<Variable, Node> bindings);
+  Node substitute(Map<Variable, Node> bindings);
 }
 
 class Variable extends Node {
@@ -93,10 +95,10 @@ class Variable extends Node {
   }
 
   @override
-  Node subs(Map<Variable, Node> bindings) {
+  Node substitute(Map<Variable, Node> bindings) {
     final value = bindings[this];
     if (value != null) {
-      return value.subs(bindings);
+      return value.substitute(bindings);
     }
     return this;
   }
@@ -141,8 +143,8 @@ class Term extends Node {
   }
 
   @override
-  Node subs(Map<Variable, Node> bindings) =>
-      Term(name, args.map((arg) => arg.subs(bindings)));
+  Node substitute(Map<Variable, Node> bindings) =>
+      Term(name, args.map((arg) => arg.substitute(bindings)));
 
   @override
   bool operator ==(Object other) =>
@@ -164,7 +166,7 @@ class Value extends Term {
   Stream<Node> query(Database database) => Stream.fromIterable([this]);
 
   @override
-  Node subs(Map<Variable, Node> bindings) => this;
+  Node substitute(Map<Variable, Node> bindings) => this;
 
   @override
   bool operator ==(Object other) => other is Value && name == other.name;
@@ -187,14 +189,14 @@ class Conjunction extends Term {
     Stream<Node> solutions(int index, Map<Variable, Node> bindings) async* {
       if (index < args.length) {
         final arg = args[index];
-        yield* database.query(arg.subs(bindings)).asyncExpand((item) {
+        yield* database.query(arg.substitute(bindings)).asyncExpand((item) {
           final unified = mergeBindings(arg.match(item), bindings);
           return unified == null
               ? const Stream.empty()
               : solutions(index + 1, unified);
         });
       } else {
-        yield subs(bindings);
+        yield substitute(bindings);
       }
     }
 
@@ -202,8 +204,8 @@ class Conjunction extends Term {
   }
 
   @override
-  Node subs(Map<Variable, Node> bindings) {
-    return Conjunction(args.map((arg) => arg.subs(bindings)));
+  Node substitute(Map<Variable, Node> bindings) {
+    return Conjunction(args.map((arg) => arg.substitute(bindings)));
   }
 
   @override
