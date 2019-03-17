@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Prolog Interpreter</title>
+  <link rel="stylesheet"
+        href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+  <style>
+    textarea { width: 100%; height: 200px; }
+    input[type=text] { width: 90% }
+    #rules, #query, #answers { font-family: monospace; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Prolog Interpreter</h1>
+
+  <h2>Rules</h2>
+  <textarea id="rules"></textarea>
+
+  <h2>Query</h2>
+  <input type="text" id="query">
+  <input type="submit" id="ask" value="Ask">
+
+  <h2>Answers</h2>
+  <ul id="answers"></ul>
+
+  <script src="prolog.dart.js"></script>
+</body>
+</html>

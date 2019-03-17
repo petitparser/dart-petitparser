@@ -3,6 +3,13 @@ PetitParser Examples
 
 This package contains examples to illustrate the use of [PetitParser](https://github.com/petitparser/dart-petitparser). A tutorial and full documentation is contained in the [package description](https://pub.dartlang.org/packages/petitparser) and [API documentation](https://pub.dartlang.org/documentation/petitparser/latest/).
 
+To run the web examples execute the following commands from the command line and navigate to http://localhost:8080/:
+
+```bash
+pub global activate webdev
+webdev serve
+```
+
 ### Dart
 
 This example contains the grammar of the Dart programming language. This is based on an early Dart 1.0 grammar specification and unfortunately does not support all valid Dart programs yet.

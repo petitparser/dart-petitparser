@@ -1,4 +1,4 @@
-library petitparser.example.lispshell;
+library petitparser.example.bin.lisp;
 
 import 'dart:async';
 import 'dart:convert';
