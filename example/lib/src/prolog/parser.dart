@@ -4,29 +4,29 @@ import 'package:example/src/prolog/evaluator.dart';
 import 'package:example/src/prolog/grammar.dart';
 import 'package:petitparser/petitparser.dart';
 
-/// The standard prolog parser defintion.
+/// The standard prolog parser definition.
 final PrologParserDefinition definition_ = PrologParserDefinition();
 
 /// The standard prolog parser to read rules.
-final Parser<Database> rulesParser =
+final Parser<List<Rule>> rulesParser =
     definition_.build(start: definition_.rules);
 
 /// The standard prolog parser to read queries.
-final Parser<Term> queryParser = definition_.build(start: definition_.term);
+final Parser<Term> termParser = definition_.build(start: definition_.term);
 
 /// LISP parser definition.
 class PrologParserDefinition extends PrologGrammarDefinition {
-  Parser<Database> rules() => super.rules().map((rules) => Database(rules));
+  Parser<List<Rule>> rules() => super.rules().castList();
 
   Parser<Rule> rule() => super.rule().map((each) {
         final Term head = each[0];
         final List rest = each[1];
         if (rest == null) {
-          return Rule(head, True());
+          return Rule(head, const Value('true'));
         }
-        final List<Term> terms = rest[1];
+        final List terms = rest[1];
         if (terms.isEmpty) {
-          return Rule(head, True());
+          return Rule(head, const Value('true'));
         } else if (terms.length == 1) {
           return Rule(head, terms[0]);
         } else {
@@ -35,14 +35,25 @@ class PrologParserDefinition extends PrologGrammarDefinition {
       });
 
   Parser<Term> term() => super.term().map((each) {
-        final String name = each[0];
+        final Node name = each[0];
         final List rest = each[1];
         if (rest == null) {
-          return Term(name, []);
+          return Term(name.toString(), []);
         }
-        final List<Term> terms = rest[1];
-        return Term(name, terms.cast());
+        final List terms = rest[1];
+        return Term(name.toString(), terms.cast());
       });
 
-  Parser<Variable> atom() => super.atom().map((value) => Variable(value));
+  Parser<Node> parameter() => super.term().map((each) {
+        final Node name = each[0];
+        final List rest = each[1];
+        if (rest == null) {
+          return name;
+        }
+        final List terms = rest[1];
+        return Term(name.toString(), terms.cast());
+      });
+
+  Parser<Variable> variable() => super.variable().map((name) => Variable(name));
+  Parser<Value> value() => super.value().map((name) => Value(name));
 }

@@ -15,14 +15,14 @@ void main() {
 
     Database db;
     try {
-      db = rulesParser.parse(rulesElement.value).value;
+      db = Database.parse(rulesElement.value);
     } on Object catch (error) {
       appendMessage('Error parsing rules: $error', isError: true);
     }
 
     Term query;
     try {
-      query = queryParser.parse(queryElement.value).value;
+      query = Term.parse(queryElement.value);
     } on Object catch (error) {
       appendMessage('Error parsing query: $error', isError: true);
     }

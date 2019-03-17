@@ -14,16 +14,26 @@ class PrologGrammarDefinition extends GrammarDefinition {
   Parser rules() => ref(rule).star();
   Parser rule() =>
       ref(term) &
-      (ref(DEFINITION) & ref(term).separatedBy(ref(COMMA))).optional() &
-      char(TERMINATOR);
+      (ref(DEFINITION) &
+              ref(term).separatedBy(ref(COMMA), includeSeparators: false))
+          .optional() &
+      ref(TERMINATOR);
   Parser term() =>
-      ref(name) &
-      (ref(OPEN_PAREN) & ref(term).separatedBy(ref(COMMA)) & ref(CLOSE_PAREN))
+      ref(atom) &
+      (ref(OPEN_PAREN) &
+              ref(parameter).separatedBy(ref(COMMA), includeSeparators: false) &
+              ref(CLOSE_PAREN))
           .optional();
-  Parser atom() => ref(name) | ref(number);
+  Parser parameter() =>
+      ref(atom) &
+      (ref(OPEN_PAREN) &
+              ref(parameter).separatedBy(ref(COMMA), includeSeparators: false) &
+              ref(CLOSE_PAREN))
+          .optional();
+  Parser atom() => ref(variable) | ref(value);
 
-  Parser name() => ref(NAME);
-  Parser number() => ref(NUMBER);
+  Parser variable() => ref(VARIABLE);
+  Parser value() => ref(VALUE);
 
   Parser space() => whitespace() | ref(commentSingle) | ref(commentMulti);
   Parser commentSingle() => char('%') & Token.newlineParser().neg().star();
@@ -42,10 +52,16 @@ class PrologGrammarDefinition extends GrammarDefinition {
     }
   }
 
-  Parser NAME() => ref(token, pattern('A-Za-z_') & pattern('A-Za-z0-9_').star(),
-      'Name expected');
-  Parser NUMBER() =>
-      ref(token, pattern('+-').optional() & pattern('0-9').plus());
+  Parser VARIABLE() => ref(
+        token,
+        pattern('A-Z_') & pattern('A-Za-z0-9_').star(),
+        'Variable expected',
+      );
+  Parser VALUE() => ref(
+        token,
+        pattern('a-z') & pattern('A-Za-z0-9_').star(),
+        'Value expected',
+      );
   Parser OPEN_PAREN() => ref(token, '(');
   Parser CLOSE_PAREN() => ref(token, ')');
   Parser COMMA() => ref(token, ',');

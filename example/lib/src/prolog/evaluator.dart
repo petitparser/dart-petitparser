@@ -1,6 +1,10 @@
 library petitparser.example.prolog.evaluator;
 
 import 'package:more/iterable.dart';
+import 'package:example/src/prolog/parser.dart';
+import 'package:collection/collection.dart';
+
+const argumentEquality = ListEquality();
 
 Map<Variable, Node> mergeBindings(
   Map<Variable, Node> first,
@@ -27,18 +31,15 @@ Map<Variable, Node> mergeBindings(
   return result;
 }
 
-abstract class Node {
-  Map<Variable, Node> match(Node other);
-
-  Node subs(Map<Variable, Node> bindings);
-}
-
 class Database {
   final List<Rule> rules;
 
+  factory Database.parse(String rules) =>
+      Database(rulesParser.parse(rules).value);
+
   Database(Iterable<Rule> rules) : rules = List.of(rules, growable: false);
 
-  Stream<Node> query(Node goal) async* {
+  Stream<Node> query(Term goal) async* {
     for (final rule in rules) {
       yield* rule.query(this, goal);
     }
@@ -54,7 +55,7 @@ class Rule {
 
   Rule(this.head, this.body);
 
-  Stream<Node> query(Database database, Node goal) async* {
+  Stream<Node> query(Database database, Term goal) async* {
     final match = head.match(goal);
     if (match != null) {
       final subsHead = head.subs(match);
@@ -69,10 +70,18 @@ class Rule {
   String toString() => '$head :- $body.';
 }
 
+abstract class Node {
+  const Node();
+
+  Map<Variable, Node> match(Node other);
+
+  Node subs(Map<Variable, Node> bindings);
+}
+
 class Variable extends Node {
   final String name;
 
-  Variable(this.name);
+  const Variable(this.name);
 
   @override
   Map<Variable, Node> match(Node other) {
@@ -106,7 +115,14 @@ class Term extends Node {
   final String name;
   final List<Node> args;
 
-  Term(this.name, Iterable<Node> args) : args = List.of(args, growable: false);
+  factory Term.parse(String rules) => termParser.parse(rules).value;
+
+  factory Term(String name, Iterable<Node> list) =>
+      Term._(name, list.toList(growable: false));
+
+  const Term._(this.name, this.args);
+
+  Stream<Node> query(Database database) => database.query(this);
 
   @override
   Map<Variable, Node> match(Node other) {
@@ -119,31 +135,71 @@ class Term extends Node {
       }
       return zip([args, other.args])
           .map((arg) => arg[0].match(arg[1]))
-          .fold({}, mergeBindings);
+          .fold(<Variable, Node>{}, mergeBindings);
     }
     return other.match(this);
   }
 
   @override
-  Node subs(Map<Variable, Node> bindings) {
-    return Term(name, args.map((arg) => arg.subs(bindings)));
-  }
+  Node subs(Map<Variable, Node> bindings) =>
+      Term(name, args.map((arg) => arg.subs(bindings)));
 
-  Stream<Node> query(Database database) => database.query(this);
+  @override
+  bool operator ==(Object other) =>
+      other is Term &&
+      name == other.name &&
+      argumentEquality.equals(args, other.args);
+
+  @override
+  int get hashCode => name.hashCode ^ argumentEquality.hash(args);
 
   @override
   String toString() => args.isEmpty ? '$name' : '$name(${args.join(', ')})';
 }
 
-class True extends Term {
-  True() : super('true', []);
+class Value extends Term {
+  const Value(String name) : super._(name, const []);
 
   @override
   Stream<Node> query(Database database) => Stream.fromIterable([this]);
+
+  @override
+  Node subs(Map<Variable, Node> bindings) => this;
+
+  @override
+  bool operator ==(Object other) => other is Value && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() => name;
 }
 
 class Conjunction extends Term {
-  Conjunction(Iterable<Node> args) : super('', args);
+  factory Conjunction(Iterable<Node> list) =>
+      Conjunction._(list.toList(growable: false));
+
+  const Conjunction._(List<Node> args) : super._('', args);
+
+  @override
+  Stream<Node> query(Database database) async* {
+    Stream<Node> solutions(int index, Map<Variable, Node> bindings) async* {
+      if (index < args.length) {
+        final arg = args[index];
+        yield* database.query(arg.subs(bindings)).asyncExpand((item) {
+          final unified = mergeBindings(arg.match(item), bindings);
+          return unified == null
+              ? const Stream.empty()
+              : solutions(index + 1, unified);
+        });
+      } else {
+        yield subs(bindings);
+      }
+    }
+
+    yield* solutions(0, {});
+  }
 
   @override
   Node subs(Map<Variable, Node> bindings) {
@@ -151,23 +207,11 @@ class Conjunction extends Term {
   }
 
   @override
-  Stream<Node> query(Database database) async* {
-    Stream<Node> solutions(int index, Map<Variable, Node> bindings) async* {
-      final arg = args[index];
-      if (arg != null) {
-        yield subs(bindings);
-      } else {
-        yield* database.query(arg.subs(bindings)).asyncExpand((item) {
-          final unified = mergeBindings(arg.match(item), bindings);
-          return unified == null
-              ? const Stream.empty()
-              : solutions(index + 1, unified);
-        });
-      }
-    }
+  bool operator ==(Object other) =>
+      other is Conjunction && argumentEquality.equals(args, other.args);
 
-    yield* solutions(0, {});
-  }
+  @override
+  int get hashCode => argumentEquality.hash(args);
 
   @override
   String toString() => args.join(', ');
