@@ -1,4 +1,4 @@
-library petitparser.example.test.lisp_test;
+library petitparser.example.test.prolog_test;
 
 import 'package:example/prolog.dart';
 import 'package:test/test.dart';
