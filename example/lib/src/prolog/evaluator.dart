@@ -6,6 +6,8 @@ import 'package:more/iterable.dart';
 
 const argumentEquality = ListEquality();
 
+Map<Variable, Node> newBindings() => Map<Variable, Node>.identity();
+
 Map<Variable, Node> mergeBindings(
   Map<Variable, Node> first,
   Map<Variable, Node> second,
@@ -13,7 +15,7 @@ Map<Variable, Node> mergeBindings(
   if (first == null || second == null) {
     return null;
   }
-  final result = Map<Variable, Node>.identity();
+  final result = newBindings();
   result.addAll(first);
   for (final key in second.keys) {
     final value = second[key];
@@ -33,23 +35,19 @@ Map<Variable, Node> mergeBindings(
 }
 
 class Database {
-  final List<Rule> rules = [];
-  final Map<String, List<Rule>> terms = {};
+  final Map<String, List<Rule>> rules = {};
 
   factory Database.parse(String rules) =>
       Database(rulesParser.parse(rules).value);
 
   Database(Iterable<Rule> rules) {
-    rules.forEach(add);
-  }
-
-  add(Rule rule) {
-    rules.add(rule);
-    terms.putIfAbsent(rule.head.name, () => []).add(rule);
+    for (final rule in rules) {
+      this.rules.putIfAbsent(rule.head.name, () => []).add(rule);
+    }
   }
 
   Stream<Node> query(Term goal) async* {
-    final candidates = terms[goal.name];
+    final candidates = rules[goal.name];
     if (candidates != null) {
       for (final rule in candidates) {
         yield* rule.query(this, goal);
@@ -58,7 +56,8 @@ class Database {
   }
 
   @override
-  String toString() => rules.join('\n');
+  String toString() =>
+      rules.values.map((rules) => rules.join('\n')).join('\n\n');
 }
 
 class Rule {
@@ -71,7 +70,7 @@ class Rule {
     final match = head.match(goal);
     if (match != null) {
       final newHead = head.substitute(match);
-      final Term newBody = body.substitute(match);
+      final newBody = body.substitute(match);
       await for (final item in newBody.query(database)) {
         yield newHead.substitute(newBody.match(item));
       }
@@ -97,7 +96,7 @@ class Variable extends Node {
 
   @override
   Map<Variable, Node> match(Node other) {
-    final bindings = Map<Variable, Node>.identity();
+    final bindings = newBindings();
     if (this != other) {
       bindings[this] = other;
     }
@@ -149,13 +148,13 @@ class Term extends Node {
       }
       return zip([arguments, other.arguments])
           .map((arg) => arg[0].match(arg[1]))
-          .fold(Map<Variable, Node>.identity(), mergeBindings);
+          .fold(newBindings(), mergeBindings);
     }
     return other.match(this);
   }
 
   @override
-  Node substitute(Map<Variable, Node> bindings) =>
+  Term substitute(Map<Variable, Node> bindings) =>
       Term(name, arguments.map((arg) => arg.substitute(bindings)));
 
   @override
@@ -181,7 +180,7 @@ class Value extends Term {
   }
 
   @override
-  Node substitute(Map<Variable, Node> bindings) => this;
+  Value substitute(Map<Variable, Node> bindings) => this;
 
   @override
   bool operator ==(Object other) => other is Value && name == other.name;
@@ -216,11 +215,11 @@ class Conjunction extends Term {
       }
     }
 
-    yield* solutions(0, Map<Variable, Node>.identity());
+    yield* solutions(0, newBindings());
   }
 
   @override
-  Node substitute(Map<Variable, Node> bindings) =>
+  Conjunction substitute(Map<Variable, Node> bindings) =>
       Conjunction(arguments.map((arg) => arg.substitute(bindings)));
 
   @override
