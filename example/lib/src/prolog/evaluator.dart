@@ -33,16 +33,27 @@ Map<Variable, Node> mergeBindings(
 }
 
 class Database {
-  final List<Rule> rules;
+  final List<Rule> rules = [];
+  final Map<String, List<Rule>> terms = {};
 
   factory Database.parse(String rules) =>
       Database(rulesParser.parse(rules).value);
 
-  Database(Iterable<Rule> rules) : rules = List.of(rules, growable: false);
+  Database(Iterable<Rule> rules) {
+    rules.forEach(add);
+  }
+
+  add(Rule rule) {
+    rules.add(rule);
+    terms.putIfAbsent(rule.head.name, () => []).add(rule);
+  }
 
   Stream<Node> query(Term goal) async* {
-    for (final rule in rules) {
-      yield* rule.query(this, goal);
+    final candidates = terms[goal.name];
+    if (candidates != null) {
+      for (final rule in candidates) {
+        yield* rule.query(this, goal);
+      }
     }
   }
 
@@ -51,7 +62,7 @@ class Database {
 }
 
 class Rule {
-  final Node head;
+  final Term head;
   final Term body;
 
   Rule(this.head, this.body);
