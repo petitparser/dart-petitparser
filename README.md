@@ -189,7 +189,7 @@ The following code creates the empty expression builder:
 final builder = new ExpressionBuilder();
 ```
 
-Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we floating point numbers, not just integers:
+Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating point numbers, not just integers:
 
 ```dart
 builder.group()
@@ -231,7 +231,7 @@ evaluates expressions like:
 parser.parse('-8');      // -8
 parser.parse('1+2*3');   // 7
 parser.parse('1*2+3');   // 5
-parser.parse('8/4/2');   // 2
+parser.parse('8/4/2');   // 1
 parser.parse('2^2^3');   // 256
 ```
 
