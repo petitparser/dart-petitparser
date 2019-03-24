@@ -23,7 +23,7 @@ void main(List<String> arguments) {
   prim.set(char('(')
       .trim()
       .seq(term)
-      .seq(char(')'.trim()))
+      .seq(char(')').trim())
       .map((values) => values[1])
       .or(number));
 
