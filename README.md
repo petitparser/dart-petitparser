@@ -161,7 +161,7 @@ term.set(prod.seq(char('+').trim()).seq(term).map((values) {
 prod.set(prim.seq(char('*').trim()).seq(prod).map((values) {
   return values[0] * values[2];
 }).or(prim));
-prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
+prim.set(char('(').trim().seq(term).seq(char(')').trim()).map((values) {
   return values[1];
 }).or(number));
 ```
