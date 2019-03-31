@@ -163,11 +163,23 @@ abstract class Parser<T> implements Pattern {
   /// Returns a parser that parses the receiver zero or more times until it
   /// reaches a [limit]. This is a greedy non-blind implementation of the
   /// [Parser.star] operator. The [limit] is not consumed.
+  ///
+  /// For example, the parser `char('{') & any().starGreedy(char('}')) &
+  /// char('}')` consumes the complete input `'{abc}def}'` of `'{abc}def}'`.
+  ///
+  /// See [Parser.starLazy] for the lazy, more efficient, and generally
+  /// preferred variation of this combinator.
   Parser<List<T>> starGreedy(Parser limit) => repeatGreedy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver zero or more times until it
   /// reaches a [limit]. This is a lazy non-blind implementation of the
   /// [Parser.star] operator. The [limit] is not consumed.
+  ///
+  /// For example, the parser `char('{') & any().starLazy(char('}')) &
+  /// char('}')` only consumes the part `'{abc}'` of `'{abc}def}'`.
+  ///
+  /// See [Parser.starGreedy] for the greedy and less efficient variation of
+  /// this combinator.
   Parser<List<T>> starLazy(Parser limit) => repeatLazy(limit, 0, unbounded);
 
   /// Returns a parser that accepts the receiver one or more times. The
@@ -183,11 +195,23 @@ abstract class Parser<T> implements Pattern {
   /// Returns a parser that parses the receiver one or more times until it
   /// reaches [limit]. This is a greedy non-blind implementation of the
   /// [Parser.plus] operator. The [limit] is not consumed.
+  ///
+  /// For example, the parser `char('{') & any().plusGreedy(char('}')) &
+  /// char('}')` consumes the complete input `'{abc}def}'` of `'{abc}def}'`.
+  ///
+  /// See [Parser.plusLazy] for the lazy, more efficient, and generally
+  /// preferred variation of this combinator.
   Parser<List<T>> plusGreedy(Parser limit) => repeatGreedy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
   /// reaches a [limit]. This is a lazy non-blind implementation of the
   /// [Parser.plus] operator. The [limit] is not consumed.
+  ///
+  /// For example, the parser `char('{') & any().plusLazy(char('}')) &
+  /// char('}')` only consumes the part `'{abc}'` of `'{abc}def}'`.
+  ///
+  /// See [Parser.plusGreedy] for the greedy and less efficient variation of
+  /// this combinator.
   Parser<List<T>> plusLazy(Parser limit) => repeatLazy(limit, 1, unbounded);
 
   /// Returns a parser that accepts the receiver exactly [count] times. The
@@ -212,12 +236,18 @@ abstract class Parser<T> implements Pattern {
   /// times until it reaches a [limit]. This is a greedy non-blind
   /// implementation of the [Parser.repeat] operator. The [limit] is not
   /// consumed.
+  ///
+  /// This is the more generic variation of the [Parser.starGreedy] and
+  /// [Parser.plusGreedy] combinators.
   Parser<List<T>> repeatGreedy(Parser limit, int min, int max) =>
       GreedyRepeatingParser<T>(this, limit, min, max);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a lazy non-blind implementation
   /// of the [Parser.repeat] operator. The [limit] is not consumed.
+  ///
+  /// This is the more generic variation of the [Parser.starLazy] and
+  /// [Parser.plusLazy] combinators.
   Parser<List<T>> repeatLazy(Parser limit, int min, int max) =>
       LazyRepeatingParser<T>(this, limit, min, max);
 
