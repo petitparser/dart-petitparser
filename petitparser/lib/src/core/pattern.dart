@@ -24,7 +24,7 @@ class ParserMatch extends Match {
 
   @override
   List<String> groups(List<int> groupIndices) =>
-      groupIndices.map((index) => group(index)).toList(growable: false);
+      groupIndices.map(group).toList(growable: false);
 
   @override
   int get groupCount => 1;
