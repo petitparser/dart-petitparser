@@ -38,67 +38,78 @@ void expectFailure(Parser parser, String input,
 }
 
 class ListGrammarDefinition extends GrammarDefinition {
-  start() => ref(list).end();
-  list() => ref(element) & char(',') & ref(list) | ref(element);
-  element() => digit().plus().flatten();
+  Parser start() => ref(list).end();
+  Parser list() => ref(element) & char(',') & ref(list) | ref(element);
+  Parser element() => digit().plus().flatten();
 }
 
 class ListParserDefinition extends ListGrammarDefinition {
-  element() => super.element().map(int.parse);
+  Parser element() => super.element().map((value) => int.parse(value));
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
-  start() => ref(list).end();
-  list() => ref(element) & ref(token, char(',')) & ref(list) | ref(element);
-  element() => ref(token, digit().plus());
-  token(p) => p.flatten().trim();
+  Parser start() => ref(list).end();
+  Parser list() =>
+      ref(element) & ref(token, char(',')) & ref(list) | ref(element);
+  Parser element() => ref(token, digit().plus());
+  Parser token(Parser parser) => parser.flatten().trim();
 }
 
 class BuggedGrammarDefinition extends GrammarDefinition {
-  start() => epsilon();
+  Parser start() => epsilon();
 
-  directRecursion1() => ref(directRecursion1);
+  Parser directRecursion1() => ref(directRecursion1);
 
-  indirectRecursion1() => ref(indirectRecursion2);
-  indirectRecursion2() => ref(indirectRecursion3);
-  indirectRecursion3() => ref(indirectRecursion1);
+  Parser indirectRecursion1() => ref(indirectRecursion2);
+  Parser indirectRecursion2() => ref(indirectRecursion3);
+  Parser indirectRecursion3() => ref(indirectRecursion1);
 
-  delegation1() => ref(delegation2);
-  delegation2() => ref(delegation3);
-  delegation3() => epsilon();
+  Parser delegation1() => ref(delegation2);
+  Parser delegation2() => ref(delegation3);
+  Parser delegation3() => epsilon();
 }
 
 class LambdaGrammarDefinition extends GrammarDefinition {
-  start() => ref(expression).end();
-  expression() => ref(variable) | ref(abstraction) | ref(application);
+  Parser start() => ref(expression).end();
+  Parser expression() => ref(variable) | ref(abstraction) | ref(application);
 
-  variable() => (letter() & word().star()).flatten().trim();
-  abstraction() => token('\\') & ref(variable) & token('.') & ref(expression);
-  application() => token('(') & ref(expression) & ref(expression) & token(')');
+  Parser variable() => (letter() & word().star()).flatten().trim();
+  Parser abstraction() =>
+      token('\\') & ref(variable) & token('.') & ref(expression);
+  Parser application() =>
+      token('(') & ref(expression) & ref(expression) & token(')');
 
-  token(value) => char(value).trim();
+  Parser token(String value) => char(value).trim();
 }
 
 class ExpressionGrammarDefinition extends GrammarDefinition {
-  start() => ref(terms).end();
-  terms() => ref(addition) | ref(factors);
+  Parser start() => ref(terms).end();
+  Parser terms() => ref(addition) | ref(factors);
 
-  addition() => ref(factors).separatedBy(token(char('+') | char('-')));
-  factors() => ref(multiplication) | ref(power);
+  Parser addition() => ref(factors).separatedBy(token(char('+') | char('-')));
+  Parser factors() => ref(multiplication) | ref(power);
 
-  multiplication() => ref(power).separatedBy(token(char('*') | char('/')));
-  power() => ref(primary).separatedBy(char('^').trim());
+  Parser multiplication() =>
+      ref(power).separatedBy(token(char('*') | char('/')));
+  Parser power() => ref(primary).separatedBy(char('^').trim());
 
-  primary() => ref(number) | ref(parentheses);
-  number() => token(char('-').optional() &
+  Parser primary() => ref(number) | ref(parentheses);
+  Parser number() => token(char('-').optional() &
       digit().plus() &
       (char('.') & digit().plus()).optional());
 
-  parentheses() => token('(') & ref(terms) & token(')');
-  token(value) => value is String ? char(value).trim() : value.flatten().trim();
+  Parser parentheses() => token('(') & ref(terms) & token(')');
+  Parser token(Object value) {
+    if (value is String) {
+      return char(value).trim();
+    } else if (value is Parser) {
+      return value.flatten().trim();
+    }
+    throw ArgumentError.value(value, 'unable to parse');
+  }
 }
 
-main() {
+void main() {
   group('parsers', () {
     test('and()', () {
       final parser = char('a').and();

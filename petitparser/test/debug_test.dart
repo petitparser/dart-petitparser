@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 final Parser identifier = letter() & word().star();
 
-main() {
+void main() {
   group('continuation', () {
     test('delegation', () {
       final parser = ContinuationParser(digit(), (continuation, context) {

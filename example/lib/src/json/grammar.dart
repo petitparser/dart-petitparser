@@ -75,7 +75,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
       char('"') & ref(characterPrimitive).star() & char('"');
 }
 
-const jsonEscapeChars = {
+const Map<String, String> jsonEscapeChars = {
   '\\': '\\',
   '/': '/',
   '"': '"',

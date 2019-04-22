@@ -8,7 +8,7 @@ import 'lisp_test.dart' as lisp_test;
 import 'prolog_test.dart' as prolog_test;
 import 'smalltalk_test.dart' as smalltalk_test;
 
-main() {
+void main() {
   group('dart', dart_test.main);
   group('json', json_test.main);
   group('lisp', lisp_test.main);

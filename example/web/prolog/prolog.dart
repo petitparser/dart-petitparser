@@ -6,8 +6,8 @@ import 'package:example/prolog.dart';
 
 final TextAreaElement rulesElement = querySelector('#rules');
 final TextInputElement queryElement = querySelector('#query');
-final askElement = querySelector('#ask');
-final answersElement = querySelector('#answers');
+final SubmitButtonInputElement askElement = querySelector('#ask');
+final UListElement answersElement = querySelector('#answers');
 
 void main() {
   askElement.onClick.listen((event) async {

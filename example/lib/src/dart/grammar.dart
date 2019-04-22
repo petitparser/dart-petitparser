@@ -9,16 +9,15 @@ class DartGrammar extends GrammarParser {
 
 /// Dart grammar definition.
 class DartGrammarDefinition extends GrammarDefinition {
-  Parser token(input) {
-    if (input is String) {
-      input = input.length == 1 ? char(input) : string(input);
+  Parser token(Object input) {
+    if (input is Parser) {
+      return input.token().trim(ref(HIDDEN_STUFF));
+    } else if (input is String) {
+      return token(input.length == 1 ? char(input) : string(input));
     } else if (input is Function) {
-      input = ref(input);
+      return token(ref(input));
     }
-    if (input is! Parser || input is TrimmingParser || input is TokenParser) {
-      throw ArgumentError('Invalid token parser: $input');
-    }
-    return input.token().trim(ref(HIDDEN_STUFF));
+    throw ArgumentError.value(input, 'invalid token parser');
   }
 
   // Copyright (c) 2011, the Dart project authors. Please see the AUTHORS file
@@ -28,74 +27,74 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Keyword definitions.
   // -----------------------------------------------------------------
-  BREAK() => ref(token, 'break');
-  CASE() => ref(token, 'case');
-  CATCH() => ref(token, 'catch');
-  CONST() => ref(token, 'const');
-  CONTINUE() => ref(token, 'continue');
-  DEFAULT() => ref(token, 'default');
-  DO() => ref(token, 'do');
-  ELSE() => ref(token, 'else');
-  FALSE() => ref(token, 'false');
-  FINAL() => ref(token, 'final');
-  FINALLY() => ref(token, 'finally');
-  FOR() => ref(token, 'for');
-  IF() => ref(token, 'if');
-  IN() => ref(token, 'in');
-  NEW() => ref(token, 'new');
-  NULL() => ref(token, 'null');
-  RETURN() => ref(token, 'return');
-  SUPER() => ref(token, 'super');
-  SWITCH() => ref(token, 'switch');
-  THIS() => ref(token, 'this');
-  THROW() => ref(token, 'throw');
-  TRUE() => ref(token, 'true');
-  TRY() => ref(token, 'try');
-  VAR() => ref(token, 'var');
-  VOID() => ref(token, 'void');
-  WHILE() => ref(token, 'while');
+  Parser BREAK() => ref(token, 'break');
+  Parser CASE() => ref(token, 'case');
+  Parser CATCH() => ref(token, 'catch');
+  Parser CONST() => ref(token, 'const');
+  Parser CONTINUE() => ref(token, 'continue');
+  Parser DEFAULT() => ref(token, 'default');
+  Parser DO() => ref(token, 'do');
+  Parser ELSE() => ref(token, 'else');
+  Parser FALSE() => ref(token, 'false');
+  Parser FINAL() => ref(token, 'final');
+  Parser FINALLY() => ref(token, 'finally');
+  Parser FOR() => ref(token, 'for');
+  Parser IF() => ref(token, 'if');
+  Parser IN() => ref(token, 'in');
+  Parser NEW() => ref(token, 'new');
+  Parser NULL() => ref(token, 'null');
+  Parser RETURN() => ref(token, 'return');
+  Parser SUPER() => ref(token, 'super');
+  Parser SWITCH() => ref(token, 'switch');
+  Parser THIS() => ref(token, 'this');
+  Parser THROW() => ref(token, 'throw');
+  Parser TRUE() => ref(token, 'true');
+  Parser TRY() => ref(token, 'try');
+  Parser VAR() => ref(token, 'var');
+  Parser VOID() => ref(token, 'void');
+  Parser WHILE() => ref(token, 'while');
 
   // Pseudo-keywords that should also be valid identifiers.
-  ABSTRACT() => ref(token, 'abstract');
-  AS() => ref(token, 'as');
-  ASSERT() => ref(token, 'assert');
-  CLASS() => ref(token, 'class');
-  DEFERRED() => ref(token, 'deferred');
-  EXPORT() => ref(token, 'export');
-  EXTENDS() => ref(token, 'extends');
-  FACTORY() => ref(token, 'factory');
-  GET() => ref(token, 'get');
-  HIDE() => ref(token, 'hide');
-  IMPLEMENTS() => ref(token, 'implements');
-  IMPORT() => ref(token, 'import');
-  IS() => ref(token, 'is');
-  LIBRARY() => ref(token, 'library');
-  NATIVE() => ref(token, 'native');
-  NEGATE() => ref(token, 'negate');
-  OF() => ref(token, 'of');
-  OPERATOR() => ref(token, 'operator');
-  PART() => ref(token, 'part');
-  SET() => ref(token, 'set');
-  SHOW() => ref(token, 'show');
-  STATIC() => ref(token, 'static');
-  TYPEDEF() => ref(token, 'typedef');
+  Parser ABSTRACT() => ref(token, 'abstract');
+  Parser AS() => ref(token, 'as');
+  Parser ASSERT() => ref(token, 'assert');
+  Parser CLASS() => ref(token, 'class');
+  Parser DEFERRED() => ref(token, 'deferred');
+  Parser EXPORT() => ref(token, 'export');
+  Parser EXTENDS() => ref(token, 'extends');
+  Parser FACTORY() => ref(token, 'factory');
+  Parser GET() => ref(token, 'get');
+  Parser HIDE() => ref(token, 'hide');
+  Parser IMPLEMENTS() => ref(token, 'implements');
+  Parser IMPORT() => ref(token, 'import');
+  Parser IS() => ref(token, 'is');
+  Parser LIBRARY() => ref(token, 'library');
+  Parser NATIVE() => ref(token, 'native');
+  Parser NEGATE() => ref(token, 'negate');
+  Parser OF() => ref(token, 'of');
+  Parser OPERATOR() => ref(token, 'operator');
+  Parser PART() => ref(token, 'part');
+  Parser SET() => ref(token, 'set');
+  Parser SHOW() => ref(token, 'show');
+  Parser STATIC() => ref(token, 'static');
+  Parser TYPEDEF() => ref(token, 'typedef');
 
   // -----------------------------------------------------------------
   // Grammar productions.
   // -----------------------------------------------------------------
-  start() => ref(compilationUnit).end();
+  Parser start() => ref(compilationUnit).end();
 
-  compilationUnit() =>
+  Parser compilationUnit() =>
       ref(HASHBANG).optional() &
       ref(libraryDirective).optional() &
       ref(importDirective).star() &
       ref(topLevelDefinition).star();
 
-  libraryDirective() =>
+  Parser libraryDirective() =>
       ref(LIBRARY) & ref(qualified) & ref(token, ';') |
       ref(PART) & ref(OF) & ref(qualified) & ref(token, ';');
 
-  importDirective() =>
+  Parser importDirective() =>
       ref(IMPORT) &
           ref(SINGLE_LINE_STRING) &
           ref(DEFERRED).optional() &
@@ -112,7 +111,7 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(token, ';') |
       ref(PART) & ref(SINGLE_LINE_STRING) & ref(token, ';');
 
-  topLevelDefinition() =>
+  Parser topLevelDefinition() =>
       ref(classDefinition) |
       ref(functionTypeAlias) |
       ref(functionDeclaration) & ref(functionBodyOrNative) |
@@ -131,7 +130,7 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(token, ';') |
       ref(constInitializedVariableDeclaration) & ref(token, ';');
 
-  classDefinition() =>
+  Parser classDefinition() =>
       ref(ABSTRACT).optional() &
           ref(CLASS) &
           ref(identifier) &
@@ -152,35 +151,36 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(classMemberDefinition).star() &
           ref(token, '}');
 
-  typeParameter() => ref(identifier) & (ref(EXTENDS) & ref(type)).optional();
+  Parser typeParameter() =>
+      ref(identifier) & (ref(EXTENDS) & ref(type)).optional();
 
-  typeParameters() =>
+  Parser typeParameters() =>
       ref(token, '<') &
       ref(typeParameter) &
       (ref(token, ',') & ref(typeParameter)).star() &
       ref(token, '>');
 
-  superclass() => ref(EXTENDS) & ref(type);
+  Parser superclass() => ref(EXTENDS) & ref(type);
 
-  interfaces() => ref(IMPLEMENTS) & ref(typeList);
+  Parser interfaces() => ref(IMPLEMENTS) & ref(typeList);
 
   // This rule is organized in a way that may not be most readable, but
   // gives the best error messages.
-  classMemberDefinition() =>
+  Parser classMemberDefinition() =>
       ref(declaration) & ref(token, ';') |
       ref(constructorDeclaration) & ref(token, ';') |
       ref(methodDeclaration) & ref(functionBodyOrNative) |
       ref(CONST) & ref(factoryConstructorDeclaration) & ref(functionNative);
 
-  functionBodyOrNative() =>
+  Parser functionBodyOrNative() =>
       ref(NATIVE) & ref(functionBody) | ref(functionNative) | ref(functionBody);
 
-  functionNative() =>
+  Parser functionNative() =>
       ref(NATIVE) & ref(token, STRING).optional() & ref(token, ';');
 
   // A method, operator, or constructor (which all should be followed by
   // a block of code).
-  methodDeclaration() =>
+  Parser methodDeclaration() =>
       ref(factoryConstructorDeclaration) |
       ref(STATIC) & ref(functionDeclaration) |
       ref(specialSignatureDefinition) |
@@ -189,7 +189,7 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   // An abstract method/operator, a field, or const constructor (which
   // all should be followed by a semicolon).
-  declaration() =>
+  Parser declaration() =>
       ref(functionDeclaration) & ref(redirection) |
       ref(namedConstructorDeclaration) & ref(redirection) |
       ref(ABSTRACT) & ref(specialSignatureDefinition) |
@@ -200,50 +200,50 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(staticFinalDeclarationList) |
       ref(STATIC).optional() & ref(constInitializedVariableDeclaration);
 
-  initializers() =>
+  Parser initializers() =>
       ref(token, ':') &
       ref(superCallOrFieldInitializer) &
       (ref(token, ',') & ref(superCallOrFieldInitializer)).star();
 
-  redirection() =>
+  Parser redirection() =>
       ref(token, ':') &
       ref(THIS) &
       (ref(token, '.') & ref(identifier)).optional() &
       ref(arguments);
 
-  fieldInitializer() =>
+  Parser fieldInitializer() =>
       (ref(THIS) & ref(token, '.')).optional() &
       ref(identifier) &
       ref(token, '=') &
       ref(conditionalExpression);
 
-  superCallOrFieldInitializer() =>
+  Parser superCallOrFieldInitializer() =>
       ref(SUPER) & ref(arguments) |
       ref(SUPER) & ref(token, '.') & ref(identifier) & ref(arguments) |
       ref(fieldInitializer);
 
-  staticFinalDeclarationList() =>
+  Parser staticFinalDeclarationList() =>
       ref(staticFinalDeclaration) &
       (ref(token, ',') & ref(staticFinalDeclaration)).star();
 
-  staticFinalDeclaration() =>
+  Parser staticFinalDeclaration() =>
       ref(identifier) & ref(token, '=') & ref(constantExpression);
 
-  functionTypeAlias() =>
+  Parser functionTypeAlias() =>
       ref(TYPEDEF) &
       ref(functionPrefix) &
       ref(typeParameters).optional() &
       ref(formalParameterList) &
       ref(token, ';');
 
-  factoryConstructorDeclaration() =>
+  Parser factoryConstructorDeclaration() =>
       ref(FACTORY) &
       ref(qualified) &
       ref(typeParameters).optional() &
       (ref(token, '.') & ref(identifier)).optional() &
       ref(formalParameterList);
 
-  constructorDeclaration() =>
+  Parser constructorDeclaration() =>
       ref(CONST).optional() &
           ref(identifier) &
           ref(formalParameterList) &
@@ -252,16 +252,16 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(namedConstructorDeclaration) &
           (ref(redirection) | ref(initializers)).optional();
 
-  namedConstructorDeclaration() =>
+  Parser namedConstructorDeclaration() =>
       ref(identifier) &
       ref(token, '.') &
       ref(identifier) &
       ref(formalParameterList);
 
-  constantConstructorDeclaration() =>
+  Parser constantConstructorDeclaration() =>
       ref(CONST) & ref(qualified) & ref(formalParameterList);
 
-  specialSignatureDefinition() =>
+  Parser specialSignatureDefinition() =>
       ref(STATIC).optional() &
           ref(returnType).optional() &
           ref(getOrSet) &
@@ -272,9 +272,9 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(userDefinableOperator) &
           ref(formalParameterList);
 
-  getOrSet() => ref(GET) | ref(SET);
+  Parser getOrSet() => ref(GET) | ref(SET);
 
-  userDefinableOperator() =>
+  Parser userDefinableOperator() =>
       ref(multiplicativeOperator) |
       ref(additiveOperator) |
       ref(shiftOperator) |
@@ -288,16 +288,16 @@ class DartGrammarDefinition extends GrammarDefinition {
       ref(token, '[') & ref(token, ']') |
       ref(token, '[') & ref(token, ']') & ref(token, '=');
 
-  prefixOperator() => ref(additiveOperator) | ref(negateOperator);
+  Parser prefixOperator() => ref(additiveOperator) | ref(negateOperator);
 
-  postfixOperator() => ref(incrementOperator);
+  Parser postfixOperator() => ref(incrementOperator);
 
-  negateOperator() => ref(token, '!') | ref(token, '~');
+  Parser negateOperator() => ref(token, '!') | ref(token, '~');
 
-  multiplicativeOperator() =>
+  Parser multiplicativeOperator() =>
       ref(token, '*') | ref(token, '/') | ref(token, '%') | ref(token, '~/');
 
-  assignmentOperator() =>
+  Parser assignmentOperator() =>
       ref(token, '=') |
       ref(token, '*=') |
       ref(token, '/=') |
@@ -312,24 +312,26 @@ class DartGrammarDefinition extends GrammarDefinition {
       ref(token, '^=') |
       ref(token, '|=');
 
-  additiveOperator() => ref(token, '+') | ref(token, '-');
+  Parser additiveOperator() => ref(token, '+') | ref(token, '-');
 
-  incrementOperator() => ref(token, '++') | ref(token, '--');
+  Parser incrementOperator() => ref(token, '++') | ref(token, '--');
 
-  shiftOperator() => ref(token, '<<') | ref(token, '>>>') | ref(token, '>>');
+  Parser shiftOperator() =>
+      ref(token, '<<') | ref(token, '>>>') | ref(token, '>>');
 
-  relationalOperator() =>
+  Parser relationalOperator() =>
       ref(token, '>=') | ref(token, '>') | ref(token, '<=') | ref(token, '<');
 
-  equalityOperator() =>
+  Parser equalityOperator() =>
       ref(token, '===') |
       ref(token, '!==') |
       ref(token, '==') |
       ref(token, '!=');
 
-  bitwiseOperator() => ref(token, '&') | ref(token, '^') | ref(token, '|');
+  Parser bitwiseOperator() =>
+      ref(token, '&') | ref(token, '^') | ref(token, '|');
 
-  formalParameterList() =>
+  Parser formalParameterList() =>
       ref(token, '(') &
           ref(optionalFormalParameters).optional() &
           ref(token, ')') |
@@ -341,70 +343,72 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(normalFormalParameterTail).optional() &
           ref(token, ')');
 
-  normalFormalParameterTail() =>
+  Parser normalFormalParameterTail() =>
       ref(token, ',') & ref(optionalFormalParameters) |
       ref(token, ',') & ref(namedFormalParameters) |
       ref(token, ',') &
           ref(normalFormalParameter) &
           ref(normalFormalParameterTail).optional();
 
-  normalFormalParameter() =>
+  Parser normalFormalParameter() =>
       ref(fieldFormalParameter) |
       ref(functionDeclaration) |
       ref(simpleFormalParameter);
 
-  simpleFormalParameter() => ref(declaredIdentifier) | ref(identifier);
+  Parser simpleFormalParameter() => ref(declaredIdentifier) | ref(identifier);
 
-  fieldFormalParameter() => ref(THIS) & ref(token, '.') & ref(identifier);
+  Parser fieldFormalParameter() =>
+      ref(THIS) & ref(token, '.') & ref(identifier);
 
-  optionalFormalParameters() =>
+  Parser optionalFormalParameters() =>
       ref(token, '[') &
       ref(defaultFormalParameter) &
       (ref(token, ',') & ref(defaultFormalParameter)).star() &
       ref(token, ']');
 
-  namedFormalParameters() =>
+  Parser namedFormalParameters() =>
       ref(token, '{') &
       ref(namedFormatParameter) &
       (ref(token, ',') & ref(namedFormatParameter)).star() &
       ref(token, '}');
 
-  namedFormatParameter() =>
+  Parser namedFormatParameter() =>
       ref(normalFormalParameter) &
       (ref(token, ':') & ref(constantExpression)).optional();
 
-  defaultFormalParameter() =>
+  Parser defaultFormalParameter() =>
       ref(normalFormalParameter) &
       (ref(token, '=') & ref(constantExpression)).optional();
 
-  returnType() => ref(VOID) | ref(type);
+  Parser returnType() => ref(VOID) | ref(type);
 
   // We have to introduce a separate rule for 'declared' identifiers to
   // allow ANTLR to decide if the first identifier we encounter after
   // final is a type or an identifier. Before this change, we used the
   // production 'finalVarOrType identifier' in numerous places.
-  declaredIdentifier() =>
+  Parser declaredIdentifier() =>
       ref(FINAL) & ref(type).optional() & ref(identifier) |
       ref(VAR) & ref(identifier) |
       ref(type) & ref(identifier);
 
-  identifier() => ref(token, ref(IDENTIFIER));
+  Parser identifier() => ref(token, ref(IDENTIFIER));
 
-  qualified() => ref(identifier) & (ref(token, '.') & ref(identifier)).star();
+  Parser qualified() =>
+      ref(identifier) & (ref(token, '.') & ref(identifier)).star();
 
-  type() => ref(qualified) & ref(typeArguments).optional();
+  Parser type() => ref(qualified) & ref(typeArguments).optional();
 
-  typeArguments() => ref(token, '<') & ref(typeList) & ref(token, '>');
+  Parser typeArguments() => ref(token, '<') & ref(typeList) & ref(token, '>');
 
-  typeList() => ref(type) & (ref(token, ',') & ref(type)).star();
+  Parser typeList() => ref(type) & (ref(token, ',') & ref(type)).star();
 
-  block() => ref(token, '{') & ref(statements) & ref(token, '}');
+  Parser block() => ref(token, '{') & ref(statements) & ref(token, '}');
 
-  statements() => ref(statement).star();
+  Parser statements() => ref(statement).star();
 
-  statement() => ref(label).star() & ref(nonLabelledStatement);
+  Parser statement() => ref(label).star() & ref(nonLabelledStatement);
 
-  nonLabelledStatement() =>
+  Parser nonLabelledStatement() =>
       ref(block) |
       ref(initializedVariableDeclaration) & ref(token, ';') |
       ref(iterationStatement) |
@@ -422,9 +426,9 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(token, ';') |
       ref(functionDeclaration) & ref(functionBody);
 
-  label() => ref(identifier) & ref(token, ':');
+  Parser label() => ref(identifier) & ref(token, ':');
 
-  iterationStatement() =>
+  Parser iterationStatement() =>
       ref(WHILE) &
           ref(token, '(') &
           ref(expression) &
@@ -443,7 +447,7 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(token, ')') &
           ref(statement);
 
-  forLoopParts() =>
+  Parser forLoopParts() =>
       ref(forInitializerStatement) &
           ref(expression).optional() &
           ref(token, ';') &
@@ -451,11 +455,11 @@ class DartGrammarDefinition extends GrammarDefinition {
       ref(declaredIdentifier) & ref(IN) & ref(expression) |
       ref(identifier) & ref(IN) & ref(expression);
 
-  forInitializerStatement() =>
+  Parser forInitializerStatement() =>
       ref(initializedVariableDeclaration) & ref(token, ';') |
       ref(expression).optional() & ref(token, ';');
 
-  selectionStatement() =>
+  Parser selectionStatement() =>
       ref(IF) &
           ref(token, '(') &
           ref(expression) &
@@ -471,20 +475,20 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(defaultCase).optional() &
           ref(token, '}');
 
-  switchCase() =>
+  Parser switchCase() =>
       ref(label).optional() &
       (ref(CASE) & ref(expression) & ref(token, ':')).plus() &
       ref(statements);
 
-  defaultCase() =>
+  Parser defaultCase() =>
       ref(label).optional() & ref(DEFAULT) & ref(token, ':') & ref(statements);
 
-  tryStatement() =>
+  Parser tryStatement() =>
       ref(TRY) &
       ref(block) &
       (ref(catchPart).plus() & ref(finallyPart).optional() | ref(finallyPart));
 
-  catchPart() =>
+  Parser catchPart() =>
       ref(CATCH) &
       ref(token, '(') &
       ref(declaredIdentifier) &
@@ -492,131 +496,131 @@ class DartGrammarDefinition extends GrammarDefinition {
       ref(token, ')') &
       ref(block);
 
-  finallyPart() => ref(FINALLY) & ref(block);
+  Parser finallyPart() => ref(FINALLY) & ref(block);
 
-  variableDeclaration() =>
+  Parser variableDeclaration() =>
       ref(declaredIdentifier) & (ref(token, ',') & ref(identifier)).star();
 
-  initializedVariableDeclaration() =>
+  Parser initializedVariableDeclaration() =>
       ref(declaredIdentifier) &
       (ref(token, '=') & ref(expression)).optional() &
       (ref(token, ',') & ref(initializedIdentifier)).star();
 
-  initializedIdentifierList() =>
+  Parser initializedIdentifierList() =>
       ref(initializedIdentifier) &
       (ref(token, ',') & ref(initializedIdentifier)).star();
 
-  initializedIdentifier() =>
+  Parser initializedIdentifier() =>
       ref(identifier) & (ref(token, '=') & ref(expression)).optional();
 
-  constInitializedVariableDeclaration() =>
+  Parser constInitializedVariableDeclaration() =>
       ref(declaredIdentifier) &
       (ref(token, '=') & ref(constantExpression)).optional() &
       (ref(token, ',') & ref(constInitializedIdentifier)).star();
 
-  constInitializedIdentifier() =>
+  Parser constInitializedIdentifier() =>
       ref(identifier) & (ref(token, '=') & ref(constantExpression)).optional();
 
   // The constant expression production is used to mark certain expressions
   // as only being allowed to hold a compile-time constant. The grammar cannot
   // express these restrictions (yet), so this will have to be enforced by a
   // separate analysis phase.
-  constantExpression() => ref(expression);
+  Parser constantExpression() => ref(expression);
 
-  expression() =>
+  Parser expression() =>
       ref(assignableExpression) & ref(assignmentOperator) & ref(expression) |
       ref(conditionalExpression);
 
-  expressionList() => ref(expression).separatedBy(ref(token, ','));
+  Parser expressionList() => ref(expression).separatedBy(ref(token, ','));
 
-  arguments() =>
+  Parser arguments() =>
       ref(token, '(') & ref(argumentList).optional() & ref(token, ')');
 
-  argumentList() => ref(argumentElement).separatedBy(ref(token, ','));
+  Parser argumentList() => ref(argumentElement).separatedBy(ref(token, ','));
 
-  argumentElement() => ref(label) & ref(expression) | ref(expression);
+  Parser argumentElement() => ref(label) & ref(expression) | ref(expression);
 
-  assignableExpression() =>
+  Parser assignableExpression() =>
       ref(primary) & (ref(arguments).star() & ref(assignableSelector)).plus() |
       ref(SUPER) & ref(assignableSelector) |
       ref(identifier);
 
-  conditionalExpression() =>
+  Parser conditionalExpression() =>
       ref(logicalOrExpression) &
       (ref(token, '?') & ref(expression) & ref(token, ':') & ref(expression))
           .optional();
 
-  logicalOrExpression() =>
+  Parser logicalOrExpression() =>
       ref(logicalAndExpression) &
       (ref(token, '||') & ref(logicalAndExpression)).star();
 
-  logicalAndExpression() =>
+  Parser logicalAndExpression() =>
       ref(bitwiseOrExpression) &
       (ref(token, '&&') & ref(bitwiseOrExpression)).star();
 
-  bitwiseOrExpression() =>
+  Parser bitwiseOrExpression() =>
       ref(bitwiseXorExpression) &
           (ref(token, '|') & ref(bitwiseXorExpression)).star() |
       ref(SUPER) & (ref(token, '|') & ref(bitwiseXorExpression)).plus();
 
-  bitwiseXorExpression() =>
+  Parser bitwiseXorExpression() =>
       ref(bitwiseAndExpression) &
           (ref(token, '^') & ref(bitwiseAndExpression)).star() |
       ref(SUPER) & (ref(token, '^') & ref(bitwiseAndExpression)).plus();
 
-  bitwiseAndExpression() =>
+  Parser bitwiseAndExpression() =>
       ref(equalityExpression) &
           (ref(token, '&') & ref(equalityExpression)).star() |
       ref(SUPER) & (ref(token, '&') & ref(equalityExpression)).plus();
 
-  equalityExpression() =>
+  Parser equalityExpression() =>
       ref(relationalExpression) &
           (ref(equalityOperator) & ref(relationalExpression)).optional() |
       ref(SUPER) & ref(equalityOperator) & ref(relationalExpression);
 
-  relationalExpression() =>
+  Parser relationalExpression() =>
       ref(shiftExpression) &
           (ref(isOperator) & ref(type) |
                   ref(relationalOperator) & ref(shiftExpression))
               .optional() |
       ref(SUPER) & ref(relationalOperator) & ref(shiftExpression);
 
-  isOperator() => ref(IS) & ref(token, '!').optional();
+  Parser isOperator() => ref(IS) & ref(token, '!').optional();
 
-  shiftExpression() =>
+  Parser shiftExpression() =>
       ref(additiveExpression) &
           (ref(shiftOperator) & ref(additiveExpression)).star() |
       ref(SUPER) & (ref(shiftOperator) & ref(additiveExpression)).plus();
 
-  additiveExpression() =>
+  Parser additiveExpression() =>
       ref(multiplicativeExpression) &
           (ref(additiveOperator) & ref(multiplicativeExpression)).star() |
       ref(SUPER) &
           (ref(additiveOperator) & ref(multiplicativeExpression)).plus();
 
-  multiplicativeExpression() =>
+  Parser multiplicativeExpression() =>
       ref(unaryExpression) &
           (ref(multiplicativeOperator) & ref(unaryExpression)).star() |
       ref(SUPER) & (ref(multiplicativeOperator) & ref(unaryExpression)).plus();
 
-  unaryExpression() =>
+  Parser unaryExpression() =>
       ref(postfixExpression) |
       ref(prefixOperator) & ref(unaryExpression) |
       ref(negateOperator) & ref(SUPER) |
       ref(token, '-') & ref(SUPER) |
       ref(incrementOperator) & ref(assignableExpression);
 
-  postfixExpression() =>
+  Parser postfixExpression() =>
       ref(assignableExpression) & ref(postfixOperator) |
       ref(primary) & ref(selector).star();
 
-  selector() => ref(assignableSelector) | ref(arguments);
+  Parser selector() => ref(assignableSelector) | ref(arguments);
 
-  assignableSelector() =>
+  Parser assignableSelector() =>
       ref(token, '[') & ref(expression) & ref(token, ']') |
       ref(token, '.') & ref(identifier);
 
-  primary() =>
+  Parser primary() =>
       ref(THIS) |
       ref(SUPER) & ref(assignableSelector) |
       ref(CONST).optional() &
@@ -631,10 +635,10 @@ class DartGrammarDefinition extends GrammarDefinition {
       ref(literal) |
       ref(identifier);
 
-  expressionInParentheses() =>
+  Parser expressionInParentheses() =>
       ref(token, '(') & ref(expression) & ref(token, ')');
 
-  literal() => ref(
+  Parser literal() => ref(
       token,
       ref(NULL) |
           ref(TRUE) |
@@ -643,14 +647,14 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(NUMBER) |
           ref(STRING));
 
-  compoundLiteral() => ref(listLiteral) | ref(mapLiteral);
+  Parser compoundLiteral() => ref(listLiteral) | ref(mapLiteral);
 
-  listLiteral() =>
+  Parser listLiteral() =>
       ref(token, '[') &
       (ref(expressionList) & ref(token, ',').optional()).optional() &
       ref(token, ']');
 
-  mapLiteral() =>
+  Parser mapLiteral() =>
       ref(token, '{') &
       (ref(mapLiteralEntry) &
               (ref(token, ',') & ref(mapLiteralEntry)).star() &
@@ -658,35 +662,37 @@ class DartGrammarDefinition extends GrammarDefinition {
           .optional() &
       ref(token, '}');
 
-  mapLiteralEntry() => ref(token, STRING) & ref(token, ':') & ref(expression);
+  Parser mapLiteralEntry() =>
+      ref(token, STRING) & ref(token, ':') & ref(expression);
 
-  functionExpression() =>
+  Parser functionExpression() =>
       ref(returnType).optional() &
       ref(identifier).optional() &
       ref(formalParameterList) &
       ref(functionExpressionBody);
 
-  functionDeclaration() =>
+  Parser functionDeclaration() =>
       ref(returnType) & ref(identifier) & ref(formalParameterList) |
       ref(identifier) & ref(formalParameterList);
 
-  functionPrefix() => ref(returnType).optional() & ref(identifier);
+  Parser functionPrefix() => ref(returnType).optional() & ref(identifier);
 
-  functionBody() =>
+  Parser functionBody() =>
       ref(token, '=>') & ref(expression) & ref(token, ';') | ref(block);
 
-  functionExpressionBody() => ref(token, '=>') & ref(expression) | ref(block);
+  Parser functionExpressionBody() =>
+      ref(token, '=>') & ref(expression) | ref(block);
 
   // -----------------------------------------------------------------
   // Lexical tokens.
   // -----------------------------------------------------------------
-  IDENTIFIER() => ref(IDENTIFIER_START) & ref(IDENTIFIER_PART).star();
+  Parser IDENTIFIER() => ref(IDENTIFIER_START) & ref(IDENTIFIER_PART).star();
 
-  HEX_NUMBER() =>
+  Parser HEX_NUMBER() =>
       string('0x') & ref(HEX_DIGIT).plus() |
       string('0X') & ref(HEX_DIGIT).plus();
 
-  NUMBER() =>
+  Parser NUMBER() =>
       ref(DIGIT).plus() &
           ref(NUMBER_OPT_FRACTIONAL_PART) &
           ref(EXPONENT).optional() &
@@ -696,63 +702,67 @@ class DartGrammarDefinition extends GrammarDefinition {
           ref(EXPONENT).optional() &
           ref(NUMBER_OPT_ILLEGAL_END);
 
-  NUMBER_OPT_FRACTIONAL_PART() => char('.') & ref(DIGIT).plus() | epsilon();
+  Parser NUMBER_OPT_FRACTIONAL_PART() =>
+      char('.') & ref(DIGIT).plus() | epsilon();
 
-  NUMBER_OPT_ILLEGAL_END() => epsilon();
+  Parser NUMBER_OPT_ILLEGAL_END() => epsilon();
 //        ref(IDENTIFIER_START).end()
 //      | epsilon()
 //      ;
 
-  HEX_DIGIT() => pattern('0-9a-fA-F');
+  Parser HEX_DIGIT() => pattern('0-9a-fA-F');
 
-  IDENTIFIER_START() => ref(IDENTIFIER_START_NO_DOLLAR) | char('\$');
+  Parser IDENTIFIER_START() => ref(IDENTIFIER_START_NO_DOLLAR) | char('\$');
 
-  IDENTIFIER_START_NO_DOLLAR() => ref(LETTER) | char('_');
+  Parser IDENTIFIER_START_NO_DOLLAR() => ref(LETTER) | char('_');
 
-  IDENTIFIER_PART() => ref(IDENTIFIER_START) | ref(DIGIT);
+  Parser IDENTIFIER_PART() => ref(IDENTIFIER_START) | ref(DIGIT);
 
-  LETTER() => letter();
+  Parser LETTER() => letter();
 
-  DIGIT() => digit();
+  Parser DIGIT() => digit();
 
-  EXPONENT() => pattern('eE') & pattern('+-').optional() & ref(DIGIT).plus();
+  Parser EXPONENT() =>
+      pattern('eE') & pattern('+-').optional() & ref(DIGIT).plus();
 
-  STRING() =>
+  Parser STRING() =>
       char('@').optional() & ref(MULTI_LINE_STRING) | ref(SINGLE_LINE_STRING);
 
-  MULTI_LINE_STRING() =>
+  Parser MULTI_LINE_STRING() =>
       string('"""') & any().starLazy(string('"""')) & string('"""') |
       string("'''") & any().starLazy(string("'''")) & string("'''");
 
-  SINGLE_LINE_STRING() =>
+  Parser SINGLE_LINE_STRING() =>
       char('"') & ref(STRING_CONTENT_DQ).star() & char('"') |
       char("'") & ref(STRING_CONTENT_SQ).star() & char("'") |
       string('@"') & pattern('^"\n\r').star() & char('"') |
       string("@'") & pattern("^'\n\r").star() & char("'");
 
-  STRING_CONTENT_DQ() => pattern('^\\"\n\r') | char('\\') & pattern('\n\r');
+  Parser STRING_CONTENT_DQ() =>
+      pattern('^\\"\n\r') | char('\\') & pattern('\n\r');
 
-  STRING_CONTENT_SQ() => pattern("^\\'\n\r") | char('\\') & pattern('\n\r');
+  Parser STRING_CONTENT_SQ() =>
+      pattern("^\\'\n\r") | char('\\') & pattern('\n\r');
 
-  NEWLINE() => pattern('\n\r');
+  Parser NEWLINE() => pattern('\n\r');
 
-  HASHBANG() =>
+  Parser HASHBANG() =>
       string('#!') & pattern('^\n\r').star() & ref(NEWLINE).optional();
 
   // -----------------------------------------------------------------
   // Whitespace and comments.
   // -----------------------------------------------------------------
-  HIDDEN() => ref(HIDDEN_STUFF).plus();
+  Parser HIDDEN() => ref(HIDDEN_STUFF).plus();
 
-  HIDDEN_STUFF() =>
+  Parser HIDDEN_STUFF() =>
       ref(WHITESPACE) | ref(SINGLE_LINE_COMMENT) | ref(MULTI_LINE_COMMENT);
 
-  WHITESPACE() => whitespace();
+  Parser WHITESPACE() => whitespace();
 
-  SINGLE_LINE_COMMENT() =>
+  Parser SINGLE_LINE_COMMENT() =>
       string('//') & ref(NEWLINE).neg().star() & ref(NEWLINE).optional();
 
-  MULTI_LINE_COMMENT() =>
+  Parser MULTI_LINE_COMMENT() =>
       string('/*') &
       (ref(MULTI_LINE_COMMENT) | string('*/').neg()).star() &
       string('*/');

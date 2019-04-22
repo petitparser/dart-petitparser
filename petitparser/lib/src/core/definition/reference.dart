@@ -6,7 +6,7 @@ import 'package:petitparser/src/core/parser.dart';
 
 class Reference extends Parser {
   final Function function;
-  final List arguments;
+  final List<Object> arguments;
 
   Reference(this.function, this.arguments)
       : assert(function != null),

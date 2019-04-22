@@ -15,19 +15,20 @@ class LispParser extends GrammarParser {
 
 /// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {
-  list() => super.list().map((each) => each[1]);
+  Parser list() => super.list().map((each) => each[1]);
 
-  cell() => super.cell().map((each) => Cons(each[0], each[1]));
-  empty() => super.empty().map((each) => null);
+  Parser cell() => super.cell().map((each) => Cons(each[0], each[1]));
+  Parser empty() => super.empty().map((each) => null);
 
-  string() =>
+  Parser string() =>
       super.string().map((each) => String.fromCharCodes(each[1].cast<int>()));
-  characterEscape() =>
+  Parser characterEscape() =>
       super.characterEscape().map((each) => each[1].codeUnitAt(0));
-  characterRaw() => super.characterRaw().map((each) => each.codeUnitAt(0));
+  Parser characterRaw() =>
+      super.characterRaw().map((each) => each.codeUnitAt(0));
 
-  symbol() => super.symbol().map((each) => Name(each));
-  number() => super.number().map((each) {
+  Parser symbol() => super.symbol().map((each) => Name(each));
+  Parser number() => super.number().map((each) {
         final floating = double.parse(each);
         final integral = floating.toInt();
         if (floating == integral && each.indexOf('.') == -1) {
@@ -37,5 +38,6 @@ class LispParserDefinition extends LispGrammarDefinition {
         }
       });
 
-  quote() => super.quote().map((each) => Cons((_, args) => args, each[1]));
+  Parser quote() =>
+      super.quote().map((each) => Cons((_, args) => args, each[1]));
 }

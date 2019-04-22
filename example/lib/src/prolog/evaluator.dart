@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:example/src/prolog/parser.dart';
 import 'package:more/iterable.dart';
 
-const argumentEquality = ListEquality();
+const Equality<List<Node>> argumentEquality = ListEquality();
 
 Map<Variable, Node> newBindings() => Map<Variable, Node>.identity();
 

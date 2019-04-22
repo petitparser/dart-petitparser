@@ -67,7 +67,13 @@ abstract class GrammarDefinition {
   /// Returns a parser reference to a production defined by a [function].
   ///
   /// The optional arguments parametrize the called production.
-  Parser ref(Function function, [arg1, arg2, arg3, arg4, arg5, arg6]) {
+  Parser ref(Function function,
+      [Object arg1,
+      Object arg2,
+      Object arg3,
+      Object arg4,
+      Object arg5,
+      Object arg6]) {
     final arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
         .takeWhile((each) => each != null)
         .toList(growable: false);
