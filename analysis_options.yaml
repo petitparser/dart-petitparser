@@ -1,3 +1,5 @@
+# http://dart-lang.github.io/linter/lints/
+# https://github.com/dart-lang/linter/blob/master/example/all.yaml
 linter:
   rules:
     # - always_declare_return_types
@@ -46,6 +48,7 @@ linter:
     - constant_identifier_names
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
+    - diagnostic_describe_all_properties
     - directives_ordering
     - empty_catches
     - empty_constructor_bodies
@@ -67,7 +70,7 @@ linter:
     # - non_constant_identifier_names
     - null_closures
     - omit_local_variable_types
-    # - one_member_abstracts
+    - one_member_abstracts
     - only_throw_errors
     - overridden_fields
     - package_api_docs
@@ -76,6 +79,7 @@ linter:
     # - parameter_assignments
     - prefer_adjacent_string_concatenation
     - prefer_asserts_in_initializer_lists
+    - prefer_asserts_with_message
     - prefer_collection_literals
     - prefer_conditional_assignment
     - prefer_const_constructors
@@ -87,20 +91,27 @@ linter:
     - prefer_equal_for_default_values
     # - prefer_expression_function_bodies
     - prefer_final_fields
+    - prefer_final_in_for_each
     - prefer_final_locals
+    - prefer_for_elements_to_map_fromIterable
     - prefer_foreach
     - prefer_function_declarations_over_variables
     - prefer_generic_function_type_aliases
+    - prefer_if_elements_to_conditional_expressions
     - prefer_initializing_formals
-    # - prefer_int_literals
+    - prefer_inlined_adds
+    - prefer_int_literals
     - prefer_interpolation_to_compose_strings
     - prefer_is_empty
     - prefer_is_not_empty
     - prefer_iterable_whereType
-    # - prefer_mixin (enable for Dart 2.1)
+    - prefer_mixin
+    - prefer_null_aware_operators
     - prefer_single_quotes
+    - prefer_spread_collections
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
+    - provide_deprecation_message
     # - public_member_api_docs
     - recursive_getters
     - slash_for_doc_comments
@@ -109,7 +120,7 @@ linter:
     # - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
-    # - type_annotate_public_apis
+    - type_annotate_public_apis
     - type_init_formals
     - unawaited_futures
     - unnecessary_await_in_return
@@ -125,6 +136,7 @@ linter:
     - unnecessary_statements
     - unnecessary_this
     - unrelated_type_equality_checks
+    - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
     - use_rethrow_when_possible
     - use_setters_to_change_properties

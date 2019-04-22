@@ -11,7 +11,7 @@ class NotParser extends DelegateParser<void> {
   final String message;
 
   NotParser(Parser delegate, this.message)
-      : assert(message != null),
+      : assert(message != null, 'message must not be null'),
         super(delegate);
 
   @override

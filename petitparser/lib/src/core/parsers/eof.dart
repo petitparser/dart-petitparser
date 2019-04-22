@@ -12,7 +12,8 @@ Parser endOfInput([String message = 'end of input expected']) =>
 class EndOfInputParser extends Parser<void> {
   final String message;
 
-  EndOfInputParser(this.message) : assert(message != null);
+  EndOfInputParser(this.message)
+      : assert(message != null, 'message must not be null');
 
   @override
   Result parseOn(Context context) => context.position < context.buffer.length

@@ -39,7 +39,7 @@ class ContinuationParser<T> extends DelegateParser<T> {
   final ContinuationHandler<T> handler;
 
   ContinuationParser(Parser<T> delegate, this.handler)
-      : assert(handler != null),
+      : assert(handler != null, 'handle must not be null'),
         super(delegate);
 
   @override

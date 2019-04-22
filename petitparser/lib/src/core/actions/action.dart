@@ -15,8 +15,8 @@ class ActionParser<T, R> extends DelegateParser<R> {
   final bool hasSideEffects;
 
   ActionParser(Parser<T> delegate, this.callback, [this.hasSideEffects = false])
-      : assert(callback != null),
-        assert(hasSideEffects != null),
+      : assert(callback != null, 'callback must not be null'),
+        assert(hasSideEffects != null, 'hasSideEffects must not be null'),
         super(delegate);
 
   @override

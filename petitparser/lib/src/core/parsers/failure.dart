@@ -15,7 +15,8 @@ Parser<T> failure<T>([String message = 'unable to parse']) {
 class FailureParser<T> extends Parser<T> {
   final String message;
 
-  FailureParser(this.message) : assert(message != null);
+  FailureParser(this.message)
+      : assert(message != null, 'message must not be null');
 
   @override
   Result<T> parseOn(Context context) => context.failure(message);

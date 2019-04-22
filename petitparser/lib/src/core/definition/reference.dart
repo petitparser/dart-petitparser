@@ -9,8 +9,8 @@ class Reference extends Parser {
   final List<Object> arguments;
 
   Reference(this.function, this.arguments)
-      : assert(function != null),
-        assert(arguments != null);
+      : assert(function != null, 'function must not be null'),
+        assert(arguments != null, 'arguments must not be null');
 
   Parser resolve() => Function.apply(function, arguments);
 

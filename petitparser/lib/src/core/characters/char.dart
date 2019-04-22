@@ -14,7 +14,8 @@ Parser<String> char(Object char, [String message]) {
 class SingleCharPredicate extends CharacterPredicate {
   final int value;
 
-  const SingleCharPredicate(this.value) : assert(value != null);
+  const SingleCharPredicate(this.value)
+      : assert(value != null, 'value must not be null');
 
   @override
   bool test(int value) => identical(this.value, value);

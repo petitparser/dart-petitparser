@@ -6,7 +6,8 @@ import 'package:petitparser/src/core/characters/predicate.dart';
 class NotCharacterPredicate extends CharacterPredicate {
   final CharacterPredicate predicate;
 
-  const NotCharacterPredicate(this.predicate) : assert(predicate != null);
+  const NotCharacterPredicate(this.predicate)
+      : assert(predicate != null, 'predicate must not be null');
 
   @override
   bool test(int value) => !predicate.test(value);

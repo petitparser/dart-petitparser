@@ -11,8 +11,8 @@ abstract class RepeatingParser<T> extends DelegateParser<List<T>> {
   final int max;
 
   RepeatingParser(Parser<T> parser, this.min, this.max)
-      : assert(min != null),
-        assert(max != null),
+      : assert(min != null, 'min must not be null'),
+        assert(max != null, 'max must not be null'),
         super(parser) {
     if (min < 0) {
       throw ArgumentError(
