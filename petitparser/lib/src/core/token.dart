@@ -60,7 +60,7 @@ class Token<T> {
   /// Converts the [position] index in a [buffer] to a line and column tuple.
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
-    for (var token in newlineParser().token().matchesSkipping(buffer)) {
+    for (final token in newlineParser().token().matchesSkipping(buffer)) {
       if (position < token.stop) {
         return [line, position - offset + 1];
       }

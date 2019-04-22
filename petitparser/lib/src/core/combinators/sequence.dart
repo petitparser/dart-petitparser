@@ -26,7 +26,7 @@ class SequenceParser extends ListParser<List> {
 
   @override
   int fastParseOn(String buffer, int position) {
-    for (var parser in children) {
+    for (final parser in children) {
       position = parser.fastParseOn(buffer, position);
       if (position < 0) {
         return position;

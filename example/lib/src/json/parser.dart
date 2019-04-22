@@ -16,7 +16,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   Parser object() => super.object().map((each) {
         final result = {};
         if (each[1] != null) {
-          for (var element in each[1]) {
+          for (final element in each[1]) {
             result[element[0]] = element[2];
           }
         }

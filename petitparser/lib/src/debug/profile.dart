@@ -38,12 +38,12 @@ Parser profile(Parser root, [OutputHandler output = print]) {
           return result;
         });
       }), (continuation, context) {
-    for (var parser in parsers) {
+    for (final parser in parsers) {
       count[parser] = 0;
       watch[parser] = Stopwatch();
     }
     final result = continuation(context);
-    for (var parser in parsers) {
+    for (final parser in parsers) {
       output('${count[parser]}\t'
           '${watch[parser].elapsedMicroseconds}\t'
           '$parser');

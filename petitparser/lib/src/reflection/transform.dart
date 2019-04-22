@@ -14,14 +14,14 @@ typedef TransformationHandler = Parser Function(Parser parser);
 /// to old parsers are replaced with the transformed ones.
 Parser transformParser(Parser parser, TransformationHandler handler) {
   final mapping = Map<Parser, Parser>.identity();
-  for (var each in allParser(parser)) {
+  for (final each in allParser(parser)) {
     mapping[each] = handler(each.copy());
   }
   final seen = Set.of(mapping.values);
   final todo = List.of(mapping.values);
   while (todo.isNotEmpty) {
     final parent = todo.removeLast();
-    for (var child in parent.children) {
+    for (final child in parent.children) {
       if (mapping.containsKey(child)) {
         parent.replace(child, mapping[child]);
       } else if (!seen.contains(child)) {

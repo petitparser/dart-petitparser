@@ -433,7 +433,7 @@ abstract class Parser<T> implements Pattern {
     return parser.map((list) {
       final result = <R>[];
       result.add(list[0]);
-      for (var tuple in list[1]) {
+      for (final tuple in list[1]) {
         if (includeSeparators) {
           result.add(tuple[0]);
         }

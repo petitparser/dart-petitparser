@@ -100,7 +100,7 @@ abstract class GrammarDefinition {
           references.add(otherReference);
           parser = otherReference.resolve();
         }
-        for (var otherReference in references) {
+        for (final otherReference in references) {
           mapping[otherReference] = parser;
         }
       }

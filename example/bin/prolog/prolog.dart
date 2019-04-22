@@ -9,7 +9,7 @@ import 'package:example/prolog.dart';
 void main(List<String> arguments) {
   // parse arguments
   final rules = StringBuffer();
-  for (var option in arguments) {
+  for (final option in arguments) {
     if (option.startsWith('-')) {
       if (option == '-?') {
         print('${Platform.executable} prolog.dart rules...');

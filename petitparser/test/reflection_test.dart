@@ -116,10 +116,10 @@ void main() {
       expect(input.isEqualTo(output), isTrue);
       final inputs = allParser(input).toSet();
       final outputs = allParser(output).toSet();
-      for (var input in inputs) {
+      for (final input in inputs) {
         expect(outputs.contains(input), isFalse);
       }
-      for (var output in outputs) {
+      for (final output in outputs) {
         expect(inputs.contains(output), isFalse);
       }
     });

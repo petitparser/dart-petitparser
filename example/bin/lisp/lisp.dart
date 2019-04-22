@@ -31,7 +31,7 @@ void main(List<String> arguments) {
   final files = <File>[];
 
   // parse arguments
-  for (var option in arguments) {
+  for (final option in arguments) {
     if (option.startsWith('-') && files.isEmpty) {
       if (option == '-n') {
         standardLibrary = false;
@@ -82,7 +82,7 @@ void main(List<String> arguments) {
   environment = environment.create();
 
   // process files given as argument
-  for (var file in files) {
+  for (final file in files) {
     evalString(lispParser, environment, file.readAsStringSync());
   }
 

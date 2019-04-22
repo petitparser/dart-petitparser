@@ -39,7 +39,7 @@ Object evalArguments(Environment env, Cons args) {
 /// Reads and evaluates a [script].
 Object evalString(Parser parser, Environment env, String script) {
   Object result;
-  for (var cell in parser.parse(script).value) {
+  for (final cell in parser.parse(script).value) {
     result = eval(env, cell);
   }
   return result;

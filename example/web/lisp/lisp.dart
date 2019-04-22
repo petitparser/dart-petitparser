@@ -5,9 +5,9 @@ import 'dart:html';
 import 'package:example/lisp.dart';
 
 final TextAreaElement input = querySelector('#input');
-final output = querySelector('#output');
-final console = querySelector('#console');
-final environment = querySelector('#environment');
+final DivElement output = querySelector('#output');
+final DivElement console = querySelector('#console');
+final DivElement environment = querySelector('#environment');
 
 void main() {
   final root = NativeEnvironment();

@@ -5,7 +5,7 @@ import 'package:petitparser/petitparser.dart';
 
 import 'benchmark.dart';
 
-const equality = ListEquality();
+const Equality equality = ListEquality();
 
 void compare(String regExp, Parser parser, String input) {
   final nativePattern = RegExp(regExp);

@@ -130,7 +130,7 @@ final Map<String, Function> benchmarks = {
 
 void main() {
   print('Name\tparseOn\tfastParseOn\tChange');
-  for (var name in benchmarks.keys) {
+  for (final name in benchmarks.keys) {
     final parseOnTime = benchmark(benchmarks[name](false));
     final fastParseOnTime = benchmark(benchmarks[name](true));
     print('$name\t'
