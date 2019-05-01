@@ -7,6 +7,10 @@ import 'package:petitparser/src/core/parser.dart';
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
+  final Parser _loopback;
+
+  ExpressionGroup(this._loopback);
+
   /// Defines a new primitive or literal [parser]. Evaluates the optional
   /// [action].
   void primitive<V>(Parser<V> parser, [Object Function(V value) action]) {
@@ -18,6 +22,22 @@ class ExpressionGroup {
   }
 
   final List<Parser> _primitives = [];
+
+  /// Defines a new wrapper using [left] and [right] parsers, that are typically
+  /// used for parenthesis. Evaluates the optional [action] with the parsed
+  /// `left` delimiter, the `value` and `right` delimiter.
+  void wrapper<O, V>(Parser<O> left, Parser<O> right,
+      [Object Function(O left, V value, O right) action]) {
+    action ??= (left, value, right) => [left, value, right];
+    _primitives.add(SequenceParser([left, _loopback, right])
+        .map((value) => action(value[0], value[1], value[2])));
+  }
+
+  Parser _buildWrapper(Parser inner) {
+    return _buildChoice(_wrappers, inner);
+  }
+
+  final List<Parser> _wrappers = [];
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
@@ -131,7 +151,7 @@ class ExpressionGroup {
 
   // helper to build the group of parsers
   Parser build(Parser inner) {
-    return _buildLeft(
-        _buildRight(_buildPostfix(_buildPrefix(_buildPrimitive(inner)))));
+    return _buildLeft(_buildRight(
+        _buildPostfix(_buildPrefix(_buildWrapper(_buildPrimitive(inner))))));
   }
 }

@@ -1503,18 +1503,17 @@ void main() {
   group('expression', () {
     Parser build({bool attachAction = true}) {
       final action = attachAction ? (func) => func : (func) => null;
-      final root = failure().settable();
       final builder = ExpressionBuilder();
       builder.group()
-        ..primitive(char('(').trim().seq(root).seq(char(')').trim()).pick(1))
         ..primitive(
-          digit()
-              .plus()
-              .seq(char('.').seq(digit().plus()).optional())
-              .flatten()
-              .trim(),
-          action(double.parse),
-        );
+            digit()
+                .plus()
+                .seq(char('.').seq(digit().plus()).optional())
+                .flatten()
+                .trim(),
+            action(double.parse))
+        ..wrapper(
+            char('(').trim(), char(')').trim(), (left, value, right) => value);
       builder.group()..prefix(char('-').trim(), action((op, a) => -a));
       builder.group()
         ..postfix(string('++').trim(), action((a, op) => ++a))
@@ -1527,8 +1526,7 @@ void main() {
       builder.group()
         ..left(char('+').trim(), action((a, op, b) => a + b))
         ..left(char('-').trim(), action((a, op, b) => a - b));
-      root.set(builder.build());
-      return root.end();
+      return builder.build().end();
     }
 
     const epsilon = 1e-5;

@@ -3,6 +3,7 @@ library petitparser.core.expression.builder;
 import 'package:petitparser/src/core/expression/group.dart';
 import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/parsers/failure.dart';
+import 'package:petitparser/src/core/parsers/settable.dart';
 
 /// A builder that allows the simple definition of expression grammars with
 /// prefix, postfix, and left- and right-associative infix operators.
@@ -18,6 +19,12 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///       ..primitive(digit().plus()
 ///         .seq(char('.').seq(digit().plus()).optional())
 ///         .flatten().trim().map((a) => double.parse(a)));
+///
+/// If we want to support parenthesis we can add a wrapper:
+///
+///     build.group()
+///       ..wrapper(char('(').trim(), char(')').trim(),
+///           (left, value, right) => value);
 ///
 /// Then come the normal arithmetic operators. Note, that the action blocks
 /// receive both, the terms and the parsed operator in the order they appear in
@@ -53,17 +60,22 @@ import 'package:petitparser/src/core/parsers/failure.dart';
 ///     parser.parse('2^2^3');   // 256
 class ExpressionBuilder {
   final List<ExpressionGroup> _groups = [];
+  final SettableParser _loopback = undefined();
 
   /// Creates a new group of operators that share the same priority.
   ExpressionGroup group() {
-    final group = ExpressionGroup();
+    final group = ExpressionGroup(_loopback);
     _groups.add(group);
     return group;
   }
 
   /// Builds the expression parser.
-  Parser build() => _groups.fold(
-        failure('Highest priority group should define a primitive parser.'),
-        (a, b) => b.build(a),
-      );
+  Parser build() {
+    final parser = _groups.fold(
+      failure('Highest priority group should define a primitive parser.'),
+      (a, b) => b.build(a),
+    );
+    _loopback.set(parser);
+    return parser;
+  }
 }
