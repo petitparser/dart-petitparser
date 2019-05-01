@@ -4,6 +4,24 @@ import 'package:example/prolog.dart';
 import 'package:test/test.dart';
 
 void main() {
+  group('database', () {
+    test('toString', () {
+      final db = Database.parse('''
+      foo(bar, zork).
+      bok(X, Y) :- foo(X, Y), foo(Y, X).
+      ''');
+      expect(
+          db.toString(),
+          'foo(bar, zork) :- true.\n\n'
+          'bok(X, Y) :- foo(X, Y), foo(Y, X).');
+    });
+  });
+  group('term', () {
+    test('toString', () {
+      final query = Term.parse('foo(bar, zork)');
+      expect(query.toString(), 'foo(bar, zork)');
+    });
+  });
   group('Forrester family', () {
     final db = Database.parse('''
       father_child(massimo, ridge).

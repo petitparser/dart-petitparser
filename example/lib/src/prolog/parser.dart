@@ -47,7 +47,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         return Term(name.toString(), terms.cast());
       });
 
-  Parser<Node> parameter() => super.term().map((each) {
+  Parser<Node> parameter() => super.parameter().map((each) {
         final Node name = each[0];
         final List rest = each[1];
         if (rest == null) {
