@@ -1512,8 +1512,10 @@ void main() {
                 .flatten()
                 .trim(),
             action(double.parse))
-        ..wrapper(
-            char('(').trim(), char(')').trim(), (left, value, right) => value);
+        ..wrapper(char('(').trim(), char(')').trim(),
+            action((left, value, right) => value))
+        ..wrapper(string('sqrt(').trim(), char(')').trim(),
+            action((left, value, right) => math.sqrt(value)));
       builder.group()..prefix(char('-').trim(), action((op, a) => -a));
       builder.group()
         ..postfix(string('++').trim(), action((a, op) => ++a))
@@ -1653,6 +1655,88 @@ void main() {
       expect(evaluator.parse('(2 + 3) * 4').value, closeTo(20, epsilon));
       expect(evaluator.parse('6 / (2 + 4)').value, closeTo(1, epsilon));
       expect(evaluator.parse('(2 + 6) / 2').value, closeTo(4, epsilon));
+    });
+    test('parens', () {
+      expect(parser.parse('(1)').value, ['(', '1', ')']);
+      expect(parser.parse('(1 + 2)').value, [
+        '(',
+        ['1', '+', '2'],
+        ')'
+      ]);
+      expect(parser.parse('((1))').value, [
+        '(',
+        ['(', '1', ')'],
+        ')'
+      ]);
+      expect(parser.parse('((1 + 2))').value, [
+        '(',
+        [
+          '(',
+          ['1', '+', '2'],
+          ')'
+        ],
+        ')'
+      ]);
+      expect(parser.parse('2 * (3 + 4)').value, [
+        '2',
+        '*',
+        [
+          '(',
+          ['3', '+', '4'],
+          ')'
+        ]
+      ]);
+      expect(parser.parse('(2 + 3) * 4').value, [
+        [
+          '(',
+          ['2', '+', '3'],
+          ')'
+        ],
+        '*',
+        '4'
+      ]);
+      expect(parser.parse('6 / (2 + 4)').value, [
+        '6',
+        '/',
+        [
+          '(',
+          ['2', '+', '4'],
+          ')'
+        ]
+      ]);
+      expect(parser.parse('(2 + 6) / 2').value, [
+        [
+          '(',
+          ['2', '+', '6'],
+          ')'
+        ],
+        '/',
+        '2'
+      ]);
+    });
+    test('sqrt', () {
+      expect(evaluator.parse('sqrt(4)').value, closeTo(2, epsilon));
+      expect(evaluator.parse('sqrt(1 + 3)').value, closeTo(2, epsilon));
+      expect(evaluator.parse('1 + sqrt(16)').value, closeTo(5, epsilon));
+      expect(evaluator.parse('sqrt(sqrt(16))').value, closeTo(2, epsilon));
+    });
+    test('sqrt parse', () {
+      expect(parser.parse('sqrt(4)').value, ['sqrt(', '4', ')']);
+      expect(parser.parse('sqrt(1 + 3)').value, [
+        'sqrt(',
+        ['1', '+', '3'],
+        ')'
+      ]);
+      expect(parser.parse('1 + sqrt(16)').value, [
+        '1',
+        '+',
+        ['sqrt(', '16', ')']
+      ]);
+      expect(parser.parse('sqrt(sqrt(16))').value, [
+        'sqrt(',
+        ['sqrt(', '16', ')'],
+        ')'
+      ]);
     });
     test('priority', () {
       expect(evaluator.parse('2 * 3 + 4').value, closeTo(10, epsilon));

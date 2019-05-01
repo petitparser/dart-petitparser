@@ -29,12 +29,12 @@ class ExpressionGroup {
   void wrapper<O, V>(Parser<O> left, Parser<O> right,
       [Object Function(O left, V value, O right) action]) {
     action ??= (left, value, right) => [left, value, right];
-    _primitives.add(SequenceParser([left, _loopback, right])
+    _wrappers.add(SequenceParser([left, _loopback, right])
         .map((value) => action(value[0], value[1], value[2])));
   }
 
   Parser _buildWrapper(Parser inner) {
-    return _buildChoice(_wrappers, inner);
+    return _buildChoice([..._wrappers, inner], inner);
   }
 
   final List<Parser> _wrappers = [];
