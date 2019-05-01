@@ -2,6 +2,7 @@
 library petitparser.example.calc;
 
 import 'dart:math';
+
 import 'package:petitparser/petitparser.dart';
 
 Parser buildParser() {
@@ -14,7 +15,9 @@ Parser buildParser() {
                 .optional())
         .flatten('number expected')
         .trim()
-        .map(num.tryParse));
+        .map(num.tryParse))
+    ..wrapper(
+        char('(').trim(), char(')').trim(), (left, value, right) => value);
   builder.group()..prefix(char('-').trim(), (op, a) => -a);
   builder.group()..right(char('^').trim(), (a, op, b) => pow(a, b));
   builder.group()

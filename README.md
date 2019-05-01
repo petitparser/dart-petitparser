@@ -189,13 +189,14 @@ The following code creates the empty expression builder:
 final builder = new ExpressionBuilder();
 ```
 
-Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating point numbers, not just integers:
+Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating point numbers, not just integers. In the same group we add support for parenthesis:
 
 ```dart
 builder.group()
   ..primitive(digit().plus()
     .seq(char('.').seq(digit().plus()).optional())
-    .flatten().trim().map((a) => num.tryParse(a)));
+    .flatten().trim().map((a) => num.tryParse(a)))
+  ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 ```
 
 Then come the normal arithmetic operators. Note, that the action blocks receive both, the terms and the parsed operator in the order they appear in the parsed input:
