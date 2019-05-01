@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.0
+
+* Dart 2.3 compatibility and requirement.
+* The expression builder supports building expression with parens.
+* Improved the documentation on greedy and lazy parsers.
+* Add a prolog parser and interpreter example.
+
 ## 2.2.0
 
 * Dart 2.2 compatibility and requirement.
