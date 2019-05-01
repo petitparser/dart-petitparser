@@ -9,7 +9,7 @@ import 'package:petitparser/src/core/parser.dart';
 class ExpressionGroup {
   /// Defines a new primitive or literal [parser]. Evaluates the optional
   /// [action].
-  void primitive<T>(Parser<T> parser, [Object Function(T value) action]) {
+  void primitive<V>(Parser<V> parser, [Object Function(V value) action]) {
     _primitives.add(action != null ? parser.map(action) : parser);
   }
 
@@ -21,8 +21,8 @@ class ExpressionGroup {
 
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
-  void prefix<T>(Parser<T> parser,
-      [Object Function(T operator, Object value) action]) {
+  void prefix<O, V>(Parser<O> parser,
+      [Object Function(O operator, V value) action]) {
     action ??= (operator, value) => [operator, value];
     _prefix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -44,8 +44,8 @@ class ExpressionGroup {
 
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
-  void postfix<T>(Parser<T> parser,
-      [Object Function(Object value, T operator) action]) {
+  void postfix<O, V>(Parser<O> parser,
+      [Object Function(V value, O operator) action]) {
     action ??= (value, operator) => [value, operator];
     _postfix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -68,8 +68,8 @@ class ExpressionGroup {
 
   /// Adds a right-associative operator [parser]. Evaluates the optional
   /// [action] with the parsed `left` term, `operator`, and `right` term.
-  void right<T>(Parser<T> parser,
-      [Object Function(Object left, T operator, Object right) action]) {
+  void right<O, V>(Parser<O> parser,
+      [Object Function(V left, O operator, V right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _right.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -94,8 +94,8 @@ class ExpressionGroup {
 
   /// Adds a left-associative operator [parser]. Evaluates the optional [action]
   /// with the parsed `left` term, `operator`, and `right` term.
-  void left<T>(Parser<T> parser,
-      [Object Function(Object left, T operator, Object right) action]) {
+  void left<O, V>(Parser<O> parser,
+      [Object Function(V left, O operator, V right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
