@@ -1,31 +1,39 @@
 /// Calculator from the tutorial.
 library petitparser.example.calc;
 
+import 'dart:math';
 import 'package:petitparser/petitparser.dart';
 
+Parser buildParser() {
+  final builder = ExpressionBuilder();
+  builder.group()
+    ..primitive((pattern('+-').optional() &
+            digit().plus() &
+            (char('.') & digit().plus()).optional() &
+            (pattern('eE') & pattern('+-').optional() & digit().plus())
+                .optional())
+        .flatten('number expected')
+        .trim()
+        .map(num.tryParse));
+  builder.group()..prefix(char('-').trim(), (op, a) => -a);
+  builder.group()..right(char('^').trim(), (a, op, b) => pow(a, b));
+  builder.group()
+    ..left(char('*').trim(), (a, op, b) => a * b)
+    ..left(char('/').trim(), (a, op, b) => a / b);
+  builder.group()
+    ..left(char('+').trim(), (a, op, b) => a + b)
+    ..left(char('-').trim(), (a, op, b) => a - b);
+  return builder.build().end();
+}
+
 void main(List<String> arguments) {
-  final number = digit().plus().flatten().trim().map(int.parse);
-  final term = undefined();
-  final prod = undefined();
-  final prim = undefined();
-  final start = term.end();
-
-  term.set(prod
-      .seq(char('+').trim())
-      .seq(term)
-      .map((values) => values[0] + values[2])
-      .or(prod));
-  prod.set(prim
-      .seq(char('*').trim())
-      .seq(prod)
-      .map((values) => values[0] * values[2])
-      .or(prim));
-  prim.set(char('(')
-      .trim()
-      .seq(term)
-      .seq(char(')').trim())
-      .map((values) => values[1])
-      .or(number));
-
-  print(start.parse(arguments.join(' ')).value);
+  final parser = buildParser();
+  final input = arguments.join(' ');
+  final result = parser.parse(input);
+  if (result.isSuccess) {
+    print(' = ${result.value}');
+  } else {
+    print(input);
+    print('${' ' * (result.position - 1)}^-- ${result.message}');
+  }
 }
