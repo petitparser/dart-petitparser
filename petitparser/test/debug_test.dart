@@ -63,6 +63,18 @@ void main() {
       expect(copy.parse('1').isSuccess, isTrue);
       expect(copy.parse('a').isSuccess, isFalse);
     });
+    test('equal', () {
+      final parser = ContinuationParser(digit(), (continuation, context) {
+        return continuation(context);
+      });
+      final copy = parser.copy();
+      final other = ContinuationParser(word(), (continuation, context) {
+        return continuation(context);
+      });
+      expect(parser.isEqualTo(parser), isTrue);
+      expect(parser.isEqualTo(copy), isTrue);
+      expect(parser.isEqualTo(other), isFalse);
+    });
   });
   group('trace', () {
     test('success', () {

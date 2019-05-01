@@ -1423,6 +1423,15 @@ void main() {
         [2, ',', 3]
       ]);
     });
+    test('parser wrapped', () {
+      final parser = GrammarParser(parserDefinition);
+      expectSuccess(parser, '1,2', [1, ',', 2]);
+      expectSuccess(parser, '1,2,3', [
+        1,
+        ',',
+        [2, ',', 3]
+      ]);
+    });
     test('token', () {
       final parser = tokenDefinition.build();
       expectSuccess(parser, '1, 2', ['1', ',', '2']);
