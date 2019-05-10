@@ -9,7 +9,7 @@ environment:
   sdk: '>=2.3.0 <3.0.0'
 dependencies:
   collection: ^1.14.0
-  more: ^1.16.0
+  more: ^1.17.0
   petitparser:
     path: ../petitparser
 dev_dependencies:

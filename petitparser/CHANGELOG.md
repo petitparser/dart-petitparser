@@ -6,6 +6,7 @@
 * The expression builder supports building expression with parens.
 * Improved the documentation on greedy and lazy parsers.
 * Add a prolog parser and interpreter example.
+* Numerous optimizations and improvements.
 
 ## 2.2.0
 
