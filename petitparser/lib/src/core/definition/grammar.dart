@@ -1,5 +1,6 @@
 library petitparser.core.definition.grammar;
 
+import 'package:meta/meta.dart';
 import 'package:petitparser/src/core/definition/reference.dart';
 import 'package:petitparser/src/core/parser.dart';
 
@@ -58,6 +59,7 @@ import 'package:petitparser/src/core/parser.dart';
 ///     parser.parse('1');          // [1]
 ///     parser.parse('1,2,3');      // [1, 2, 3]
 ///
+@optionalTypeArgs
 abstract class GrammarDefinition {
   const GrammarDefinition();
 

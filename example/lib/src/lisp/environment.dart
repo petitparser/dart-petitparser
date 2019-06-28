@@ -23,7 +23,8 @@ class Environment {
     } else if (_owner != null) {
       return _owner[key];
     } else {
-      return _invalidBinding(key);
+      _invalidBinding(key);
+      return null;
     }
   }
 
@@ -50,5 +51,6 @@ class Environment {
   Environment get owner => _owner;
 
   /// Called when a missing binding is accessed.
-  _invalidBinding(Name key) => throw ArgumentError('Unknown binding for $key');
+  void _invalidBinding(Name key) =>
+      throw ArgumentError('Unknown binding for $key');
 }

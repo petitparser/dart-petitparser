@@ -1335,7 +1335,8 @@ void main() {
       expectSuccess(parser, '  ab1  ', '  ab1  ');
     });
     group('separatedBy()', () {
-      testWith(String name, Parser<List<T>> Function<T>(Parser<T>) builder) {
+      void testWith(
+          String name, Parser<List<T>> Function<T>(Parser<T>) builder) {
         test(name, () {
           final string = letter();
           final stringList = builder(string);
