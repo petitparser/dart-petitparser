@@ -1,5 +1,6 @@
 library petitparser.core.parser;
 
+import 'package:meta/meta.dart';
 import 'package:petitparser/src/core/actions/action.dart';
 import 'package:petitparser/src/core/actions/cast.dart';
 import 'package:petitparser/src/core/actions/flatten.dart';
@@ -26,6 +27,7 @@ import 'package:petitparser/src/core/repeaters/unbounded.dart';
 import 'package:petitparser/src/core/token.dart';
 
 /// Abstract base class of all parsers.
+@optionalTypeArgs
 abstract class Parser<T> implements Pattern {
   const Parser();
 
@@ -219,7 +221,7 @@ abstract class Parser<T> implements Pattern {
   ///
   /// For example, the parser `letter().times(2)` accepts two letters and
   /// returns a list of the two parsed letters.
-  Parser times(int count) => repeat(count, count);
+  Parser<List<T>> times(int count) => repeat(count, count);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
   /// The resulting parser returns a list of the parse results of the receiver.
@@ -254,7 +256,7 @@ abstract class Parser<T> implements Pattern {
   /// Returns a parser that accepts the receiver followed by [other]. The
   /// resulting parser returns a list of the parse result of the receiver
   /// followed by the parse result of [other]. Calling this method on an
-  /// existing sequence code not nest this sequence into a new one, but
+  /// existing sequence code does not nest this sequence into a new one, but
   /// instead augments the existing sequence with [other].
   ///
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
@@ -334,7 +336,7 @@ abstract class Parser<T> implements Pattern {
 
   /// Returns a parser that consumes input before and after the receiver,
   /// discards the excess input and only returns returns the result of the
-  /// receiver. The optional argument is a parser that consumes the excess
+  /// receiver. The optional arguments are parsers that consume the excess
   /// input. By default `whitespace()` is used. Up to two arguments can be
   /// provided to have different parsers on the [left] and [right] side.
   ///
@@ -368,7 +370,7 @@ abstract class Parser<T> implements Pattern {
   /// are no direct dependencies.
   ///
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
-  /// the number `1` for the input string `'1'`. If the delegate fail, the
+  /// the number `1` for the input string `'1'`. If the delegate fails, the
   /// production action is not executed and the failure is passed on.
   Parser<R> map<R>(ActionCallback<T, R> callback,
           {bool hasSideEffects = false}) =>
@@ -381,7 +383,7 @@ abstract class Parser<T> implements Pattern {
   /// parser to be of type `Parser<List>`.
   Parser<List<R>> castList<R>() => CastListParser<R>(this);
 
-  /// Returns a parser that transform a successful parse result by returning
+  /// Returns a parser that transforms a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
   /// the elements from the back of the list. Assumes this parser to be of type
   /// `Parser<List<R>>`.

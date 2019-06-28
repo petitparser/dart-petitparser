@@ -5,7 +5,7 @@ import 'package:petitparser/src/core/contexts/result.dart';
 import 'package:petitparser/src/core/parser.dart';
 
 /// Returns a parser that succeeds at the end of input.
-Parser endOfInput([String message = 'end of input expected']) =>
+Parser<void> endOfInput([String message = 'end of input expected']) =>
     EndOfInputParser(message);
 
 /// A parser that succeeds at the end of input.
