@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0
+
+* Dart 2.4 compatibility and requirement.
+* More tight typing, more strict linter rules.
+* Documentation improvements.
+
 ## 2.3.0
 
 * Dart 2.3 compatibility and requirement.
