@@ -10,7 +10,17 @@ import 'package:petitparser/src/core/characters/range.dart';
 import 'package:petitparser/src/core/parser.dart';
 import 'package:petitparser/src/core/predicates/any.dart';
 
-/// Returns a parser that accepts the given character class pattern.
+/// Returns a parser that accepts a single character of a given character set
+/// provided as a string.
+///
+/// Characters match themselves. A dash `-` between two characters matches the
+/// range of those characters. A caret `^` at the beginning negates the pattern.
+///
+/// For example, the parser `pattern('aou')` accepts the character 'a', 'o', or
+/// 'u', and fails for any other input. The parser `pattern('1-3')` accepts
+/// either '1', '2', or '3'; and fails for any other character. The parser
+/// `pattern('^aou') accepts any character, but fails for the characters 'a',
+/// 'o', or 'u'.
 Parser<String> pattern(String element, [String message]) {
   return CharacterParser(pattern_.parse(element).value,
       message ?? '[${toReadableString(element)}] expected');
@@ -34,7 +44,7 @@ final Parser<RangeCharPredicate> range_ =
 final Parser<CharacterPredicate> sequence_ = range_.or(single_).plus().map(
     (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
 
-/// Parser that reads a possibly negated sequecne of predicates.
+/// Parser that reads a possibly negated sequence of predicates.
 final Parser<CharacterPredicate> pattern_ = char('^')
     .optional()
     .seq(sequence_)
