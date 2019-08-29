@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0
+
+* Made ParserError a FormatException to follow typical Dart exception style. 
+
 ## 2.4.0
 
 * Dart 2.4 compatibility and requirement.

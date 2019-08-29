@@ -985,6 +985,9 @@ void main() {
         fail('Expected ParserError to be thrown');
       } on ParserException catch (error) {
         expect(error.failure, same(failure));
+        expect(error.message, 'error');
+        expect(error.offset, 0);
+        expect(error.source, buffer);
         expect(error.toString(), 'error at 1:1');
       }
       expect(failure.message, 'error');
@@ -1001,6 +1004,9 @@ void main() {
         fail('Expected ParserError to be thrown');
       } on ParserException catch (error) {
         expect(error.failure, same(failure));
+        expect(error.message, 'error');
+        expect(error.offset, 2);
+        expect(error.source, buffer);
         expect(error.toString(), 'error at 2:1');
       }
       expect(failure.message, 'error');
@@ -1019,6 +1025,9 @@ void main() {
         fail('Expected ParserError to be thrown');
       } on ParserException catch (error) {
         expect(error.failure, same(failure));
+        expect(error.message, 'error');
+        expect(error.offset, 2);
+        expect(error.source, buffer);
         expect(error.toString(), 'error at 2:1');
       }
       expect(failure.message, 'error');
