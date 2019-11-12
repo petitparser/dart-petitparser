@@ -1,12 +1,12 @@
 library petitparser.debug.continuation;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/debug/profile.dart';
-import 'package:petitparser/src/debug/progress.dart';
-import 'package:petitparser/src/debug/trace.dart';
+import '../core/combinators/delegate.dart';
+import '../core/contexts/context.dart';
+import '../core/contexts/result.dart';
+import '../core/parser.dart';
+import 'profile.dart';
+import 'progress.dart';
+import 'trace.dart';
 
 /// Callback function for the [ContinuationHandler].
 typedef ContinuationCallback<T> = Result<T> Function(Context context);

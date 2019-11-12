@@ -1,9 +1,9 @@
 library petitparser.core.expression.group;
 
-import 'package:petitparser/src/core/combinators/choice.dart';
-import 'package:petitparser/src/core/combinators/sequence.dart';
-import 'package:petitparser/src/core/expression/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../combinators/choice.dart';
+import '../combinators/sequence.dart';
+import '../parser.dart';
+import 'result.dart';
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {

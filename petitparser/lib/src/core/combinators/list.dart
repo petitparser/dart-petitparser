@@ -1,6 +1,6 @@
 library petitparser.core.combinators.list;
 
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
 
 /// Abstract parser that parses a list of things in some way.
 abstract class ListParser<T> extends Parser<T> {

@@ -1,10 +1,10 @@
 library petitparser.core.repeaters.possessive;
 
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/repeaters/repeating.dart';
-import 'package:petitparser/src/core/repeaters/unbounded.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import 'repeating.dart';
+import 'unbounded.dart';
 
 /// A greedy parser that repeatedly parses between 'min' and 'max' instances of
 /// its delegate.

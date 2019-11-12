@@ -1,9 +1,9 @@
 library petitparser.core.contexts.context;
 
-import 'package:petitparser/src/core/contexts/failure.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/contexts/success.dart';
-import 'package:petitparser/src/core/token.dart';
+import '../token.dart';
+import 'failure.dart';
+import 'result.dart';
+import 'success.dart';
 
 /// An immutable parse context.
 class Context {

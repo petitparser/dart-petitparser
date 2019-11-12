@@ -1,30 +1,31 @@
 library petitparser.core.parser;
 
 import 'package:meta/meta.dart';
-import 'package:petitparser/src/core/actions/action.dart';
-import 'package:petitparser/src/core/actions/cast.dart';
-import 'package:petitparser/src/core/actions/flatten.dart';
-import 'package:petitparser/src/core/actions/token.dart';
-import 'package:petitparser/src/core/actions/trimming.dart';
-import 'package:petitparser/src/core/characters/whitespace.dart';
-import 'package:petitparser/src/core/combinators/and.dart';
-import 'package:petitparser/src/core/combinators/choice.dart';
-import 'package:petitparser/src/core/combinators/not.dart';
-import 'package:petitparser/src/core/combinators/optional.dart';
-import 'package:petitparser/src/core/combinators/sequence.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/failure.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/contexts/success.dart';
-import 'package:petitparser/src/core/parsers/eof.dart';
-import 'package:petitparser/src/core/parsers/settable.dart';
-import 'package:petitparser/src/core/pattern.dart';
-import 'package:petitparser/src/core/predicates/any.dart';
-import 'package:petitparser/src/core/repeaters/greedy.dart';
-import 'package:petitparser/src/core/repeaters/lazy.dart';
-import 'package:petitparser/src/core/repeaters/possesive.dart';
-import 'package:petitparser/src/core/repeaters/unbounded.dart';
-import 'package:petitparser/src/core/token.dart';
+
+import 'actions/action.dart';
+import 'actions/cast.dart';
+import 'actions/flatten.dart';
+import 'actions/token.dart';
+import 'actions/trimming.dart';
+import 'characters/whitespace.dart';
+import 'combinators/and.dart';
+import 'combinators/choice.dart';
+import 'combinators/not.dart';
+import 'combinators/optional.dart';
+import 'combinators/sequence.dart';
+import 'contexts/context.dart';
+import 'contexts/failure.dart';
+import 'contexts/result.dart';
+import 'contexts/success.dart';
+import 'parsers/eof.dart';
+import 'parsers/settable.dart';
+import 'pattern.dart';
+import 'predicates/any.dart';
+import 'repeaters/greedy.dart';
+import 'repeaters/lazy.dart';
+import 'repeaters/possesive.dart';
+import 'repeaters/unbounded.dart';
+import 'token.dart';
 
 /// Abstract base class of all parsers.
 @optionalTypeArgs

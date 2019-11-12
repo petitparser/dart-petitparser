@@ -1,8 +1,8 @@
 library petitparser.core.characters.whitespace;
 
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any whitespace character.
 Parser<String> whitespace([String message = 'whitespace expected']) {

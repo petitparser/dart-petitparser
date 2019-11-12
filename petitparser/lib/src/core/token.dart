@@ -1,13 +1,16 @@
 library petitparser.core.token;
 
-import 'package:petitparser/src/core/characters/char.dart';
-import 'package:petitparser/src/core/parser.dart';
+import 'package:meta/meta.dart';
+
+import 'characters/char.dart';
+import 'parser.dart';
 
 /// A token represents a parsed part of the input stream.
 ///
 /// The token holds the resulting value of the input, the input buffer,
 /// and the start and stop position in the input buffer. It provides many
 /// convenience methods to access the state of the token.
+@immutable
 class Token<T> {
   /// Constructs a token from the parsed value, the input buffer, and the
   /// start and stop position in the input buffer.

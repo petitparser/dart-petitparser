@@ -1,14 +1,14 @@
 library petitparser.core.characters.pattern;
 
-import 'package:petitparser/src/core/characters/char.dart';
-import 'package:petitparser/src/core/characters/code.dart';
-import 'package:petitparser/src/core/characters/not.dart';
-import 'package:petitparser/src/core/characters/optimize.dart';
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/characters/range.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/predicates/any.dart';
+import '../parser.dart';
+import '../predicates/any.dart';
+import 'char.dart';
+import 'code.dart';
+import 'not.dart';
+import 'optimize.dart';
+import 'parser.dart';
+import 'predicate.dart';
+import 'range.dart';
 
 /// Returns a parser that accepts a single character of a given character set
 /// provided as a string.

@@ -1,8 +1,9 @@
 library petitparser.example.prolog.parser;
 
-import 'package:example/src/prolog/evaluator.dart';
-import 'package:example/src/prolog/grammar.dart';
 import 'package:petitparser/petitparser.dart';
+
+import 'evaluator.dart';
+import 'grammar.dart';
 
 /// The standard prolog parser definition.
 final PrologParserDefinition definition_ = PrologParserDefinition();
@@ -25,11 +26,11 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         final Term head = each[0];
         final List rest = each[1];
         if (rest == null) {
-          return Rule(head, Value('true'));
+          return Rule(head, const Value('true'));
         }
         final List terms = rest[1];
         if (terms.isEmpty) {
-          return Rule(head, Value('true'));
+          return Rule(head, const Value('true'));
         } else if (terms.length == 1) {
           return Rule(head, terms[0]);
         } else {
@@ -41,7 +42,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         final Node name = each[0];
         final List rest = each[1];
         if (rest == null) {
-          return Term(name.toString(), []);
+          return Term(name.toString(), const []);
         }
         final List terms = rest[1];
         return Term(name.toString(), terms.cast());
@@ -59,12 +60,13 @@ class PrologParserDefinition extends PrologGrammarDefinition {
 
   Parser<Variable> variable() => super.variable().map((name) {
         if (name == '_') {
-          return Variable('_');
+          return const Variable('_');
         }
         if (scope.containsKey(name)) {
           return scope[name];
         }
         return scope[name] = Variable(name);
       });
+
   Parser<Value> value() => super.value().map((name) => Value(name));
 }

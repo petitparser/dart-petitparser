@@ -1,9 +1,10 @@
 library petitparser.example.lisp.evaluator;
 
-import 'package:example/src/lisp/cons.dart';
-import 'package:example/src/lisp/environment.dart';
-import 'package:example/src/lisp/name.dart';
 import 'package:petitparser/petitparser.dart';
+
+import 'cons.dart';
+import 'environment.dart';
+import 'name.dart';
 
 /// The evaluation function.
 Object eval(Environment env, Object expr) {

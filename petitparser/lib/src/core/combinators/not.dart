@@ -1,9 +1,9 @@
 library petitparser.core.combinators.not;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import 'delegate.dart';
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].

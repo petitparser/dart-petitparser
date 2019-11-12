@@ -1,7 +1,7 @@
 library petitparser.core.predicates.any_in;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/predicates/predicate.dart';
+import '../parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any of the [elements].
 ///

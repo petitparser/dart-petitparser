@@ -1,8 +1,8 @@
 library petitparser.core.combinators.delegate;
 
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
 
 /// A parser that delegates to another one. Normally users do not need to
 /// directly use a delegate parser.

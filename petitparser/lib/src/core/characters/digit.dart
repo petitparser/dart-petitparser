@@ -1,8 +1,8 @@
 library petitparser.core.characters.digit;
 
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any digit character.
 Parser<String> digit([String message = 'digit expected']) {

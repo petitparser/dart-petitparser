@@ -1,7 +1,7 @@
 library petitparser.core.predicates.string;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/predicates/predicate.dart';
+import '../parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts the string [element].
 ///

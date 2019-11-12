@@ -1,9 +1,10 @@
 library petitparser.example.lisp.parser;
 
-import 'package:example/src/lisp/cons.dart';
-import 'package:example/src/lisp/grammar.dart';
-import 'package:example/src/lisp/name.dart';
 import 'package:petitparser/petitparser.dart';
+
+import 'cons.dart';
+import 'grammar.dart';
+import 'name.dart';
 
 /// The standard lisp parser definition.
 final LispParser lispParser = LispParser();

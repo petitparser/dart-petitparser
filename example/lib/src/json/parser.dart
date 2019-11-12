@@ -1,7 +1,8 @@
 library petitparser.example.json.parser;
 
-import 'package:example/src/json/grammar.dart';
 import 'package:petitparser/petitparser.dart';
+
+import 'grammar.dart';
 
 /// JSON parser.
 class JsonParser extends GrammarParser {

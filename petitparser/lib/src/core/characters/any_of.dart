@@ -1,9 +1,9 @@
 library petitparser.core.characters.any_of;
 
-import 'package:petitparser/src/core/characters/code.dart';
-import 'package:petitparser/src/core/characters/optimize.dart';
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'code.dart';
+import 'optimize.dart';
+import 'parser.dart';
 
 /// Returns a parser that accepts any of the specified characters.
 Parser<String> anyOf(String chars, [String message]) {

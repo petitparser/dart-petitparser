@@ -1,9 +1,9 @@
 library petitparser.debug.profile;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/debug/continuation.dart';
-import 'package:petitparser/src/debug/output.dart';
-import 'package:petitparser/src/reflection/transform.dart';
+import '../core/parser.dart';
+import '../reflection/transform.dart';
+import 'continuation.dart';
+import 'output.dart';
 
 /// Returns a transformed [Parser] that when being used measures
 /// the activation count and total time of each parser.

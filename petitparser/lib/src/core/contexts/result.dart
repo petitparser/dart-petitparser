@@ -1,6 +1,6 @@
 library petitparser.core.contexts.result;
 
-import 'package:petitparser/src/core/contexts/context.dart';
+import 'context.dart';
 
 /// An immutable parse result.
 abstract class Result<R> extends Context {

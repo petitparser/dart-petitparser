@@ -1,8 +1,8 @@
 library petitparser.core.characters.word;
 
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any word character.
 Parser<String> word([String message = 'letter or digit expected']) {

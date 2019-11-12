@@ -1,9 +1,9 @@
 library petitparser.core.combinators.choice;
 
-import 'package:petitparser/src/core/combinators/list.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import 'list.dart';
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser extends ListParser {

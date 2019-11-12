@@ -1,10 +1,10 @@
 library petitparser.core.repeaters.greedy;
 
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/repeaters/limited.dart';
-import 'package:petitparser/src/core/repeaters/unbounded.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import 'limited.dart';
+import 'unbounded.dart';
 
 /// A greedy repeating parser, commonly seen in regular expression
 /// implementations. It aggressively consumes as much input as possible and then

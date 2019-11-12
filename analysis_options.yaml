@@ -16,6 +16,7 @@ linter:
     - avoid_classes_with_only_static_members
     - avoid_double_and_int_checks
     - avoid_empty_else
+    # - avoid_equals_and_hash_code_on_mutable_classes
     - avoid_field_initializers_in_const_classes
     - avoid_function_literals_in_foreach_calls
     - avoid_implementing_value_types
@@ -23,6 +24,7 @@ linter:
     - avoid_js_rounded_ints
     - avoid_null_checks_in_equality_operators
     # - avoid_positional_boolean_parameters
+    # - avoid_print
     - avoid_private_typedef_functions
     - avoid_relative_lib_imports
     - avoid_renaming_method_parameters
@@ -37,9 +39,12 @@ linter:
     - avoid_slow_async_io
     - avoid_types_as_parameter_names
     - avoid_types_on_closure_parameters
+    - avoid_unnecessary_containers
     - avoid_unused_constructor_parameters
     - avoid_void_async
+    - avoid_web_libraries_in_flutter
     - await_only_futures
+    - camel_case_extensions
     - camel_case_types
     - cancel_subscriptions
     # - cascade_invocations
@@ -88,6 +93,7 @@ linter:
     - prefer_const_literals_to_create_immutables
     - prefer_constructors_over_static_methods
     - prefer_contains
+    # - prefer_double_quotes
     - prefer_equal_for_default_values
     # - prefer_expression_function_bodies
     - prefer_final_fields
@@ -97,19 +103,20 @@ linter:
     - prefer_foreach
     - prefer_function_declarations_over_variables
     - prefer_generic_function_type_aliases
-    - prefer_if_null_operators
     - prefer_if_elements_to_conditional_expressions
+    - prefer_if_null_operators
     - prefer_initializing_formals
     - prefer_inlined_adds
     - prefer_int_literals
     - prefer_interpolation_to_compose_strings
     - prefer_is_empty
     - prefer_is_not_empty
+    - prefer_is_not_operator
     - prefer_iterable_whereType
     - prefer_mixin
     - prefer_null_aware_operators
+    - prefer_relative_imports
     - prefer_single_quotes
-    # - prefer_double_quotes
     - prefer_spread_collections
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
@@ -138,8 +145,8 @@ linter:
     - unnecessary_parenthesis
     - unnecessary_statements
     - unnecessary_this
-    - unsafe_html
     - unrelated_type_equality_checks
+    - unsafe_html
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
     - use_rethrow_when_possible

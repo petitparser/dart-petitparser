@@ -1,14 +1,17 @@
 library petitparser.core.definition.reference;
 
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import 'package:meta/meta.dart';
 
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+
+@immutable
 class Reference extends Parser {
   final Function function;
   final List<Object> arguments;
 
-  Reference(this.function, this.arguments)
+  const Reference(this.function, this.arguments)
       : assert(function != null, 'function must not be null'),
         assert(arguments != null, 'arguments must not be null');
 

@@ -1,7 +1,7 @@
 library petitparser.core.contexts.failure;
 
-import 'package:petitparser/src/core/contexts/exception.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
+import 'exception.dart';
+import 'result.dart';
 
 /// An immutable parse result in case of a failed parse.
 class Failure<R> extends Result<R> {

@@ -1,8 +1,8 @@
 library petitparser.example.lisp.standard;
 
-import 'package:example/src/lisp/environment.dart';
-import 'package:example/src/lisp/evaluator.dart';
-import 'package:example/src/lisp/parser.dart';
+import 'environment.dart';
+import 'evaluator.dart';
+import 'parser.dart';
 
 /// The standard library.
 class StandardEnvironment extends Environment {

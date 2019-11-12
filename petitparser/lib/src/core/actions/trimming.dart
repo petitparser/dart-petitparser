@@ -1,9 +1,9 @@
 library petitparser.core.actions.trimming;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../combinators/delegate.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
 
 /// A parser that silently consumes input of another parser around
 /// its delegate.

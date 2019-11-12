@@ -1,9 +1,9 @@
 library petitparser.core.characters.optimize;
 
-import 'package:petitparser/src/core/characters/char.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/characters/range.dart';
-import 'package:petitparser/src/core/characters/ranges.dart';
+import 'char.dart';
+import 'predicate.dart';
+import 'range.dart';
+import 'ranges.dart';
 
 /// Creates an optimized character from a string.
 CharacterPredicate optimizedString(String string) {

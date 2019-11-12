@@ -1,6 +1,6 @@
 library petitparser.core.contexts.success;
 
-import 'package:petitparser/src/core/contexts/result.dart';
+import 'result.dart';
 
 /// An immutable parse result in case of a successful parse.
 class Success<R> extends Result<R> {

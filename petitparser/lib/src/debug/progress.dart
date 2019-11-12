@@ -1,9 +1,9 @@
 library petitparser.debug.progress;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/debug/continuation.dart';
-import 'package:petitparser/src/debug/output.dart';
-import 'package:petitparser/src/reflection/transform.dart';
+import '../core/parser.dart';
+import '../reflection/transform.dart';
+import 'continuation.dart';
+import 'output.dart';
 
 /// Returns a transformed [parser] that when being used to read input
 /// visually prints its progress while progressing.

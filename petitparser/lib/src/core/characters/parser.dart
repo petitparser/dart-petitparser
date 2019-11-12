@@ -1,9 +1,9 @@
 library petitparser.core.characters.parser;
 
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import 'predicate.dart';
 
 /// Parser class for individual character classes.
 class CharacterParser extends Parser<String> {

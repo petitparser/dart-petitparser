@@ -1,10 +1,10 @@
 library petitparser.core.characters.none_of;
 
-import 'package:petitparser/src/core/characters/code.dart';
-import 'package:petitparser/src/core/characters/not.dart';
-import 'package:petitparser/src/core/characters/optimize.dart';
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'code.dart';
+import 'not.dart';
+import 'optimize.dart';
+import 'parser.dart';
 
 /// Returns a parser that accepts none of the specified characters.
 Parser<String> noneOf(String chars, [String message]) {

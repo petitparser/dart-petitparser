@@ -1,8 +1,8 @@
 library petitparser.core.parsers.eof;
 
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
 
 /// Returns a parser that succeeds at the end of input.
 Parser<void> endOfInput([String message = 'end of input expected']) =>

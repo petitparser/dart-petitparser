@@ -1,6 +1,6 @@
 library petitparser.example.lisp.environment;
 
-import 'package:example/src/lisp/name.dart';
+import 'name.dart';
 
 /// Environment of bindings.
 class Environment {

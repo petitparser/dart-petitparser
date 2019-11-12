@@ -1,6 +1,6 @@
 library petitparser.core.characters.not;
 
-import 'package:petitparser/src/core/characters/predicate.dart';
+import 'predicate.dart';
 
 /// Negates the result of a character predicate.
 class NotCharacterPredicate extends CharacterPredicate {

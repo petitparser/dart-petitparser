@@ -1,9 +1,9 @@
 library petitparser.core.expression.builder;
 
-import 'package:petitparser/src/core/expression/group.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/parsers/failure.dart';
-import 'package:petitparser/src/core/parsers/settable.dart';
+import '../parser.dart';
+import '../parsers/failure.dart';
+import '../parsers/settable.dart';
+import 'group.dart';
 
 /// A builder that allows the simple definition of expression grammars with
 /// prefix, postfix, and left- and right-associative infix operators.

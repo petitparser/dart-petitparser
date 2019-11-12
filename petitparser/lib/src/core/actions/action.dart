@@ -1,9 +1,9 @@
 library petitparser.core.actions.action;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../combinators/delegate.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
 
 /// Typed action callback.
 typedef ActionCallback<T, R> = R Function(T value);

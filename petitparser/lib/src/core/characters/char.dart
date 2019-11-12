@@ -1,9 +1,9 @@
 library petitparser.core.characters.char;
 
-import 'package:petitparser/src/core/characters/code.dart';
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'code.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts a specific character only.
 Parser<String> char(Object char, [String message]) {

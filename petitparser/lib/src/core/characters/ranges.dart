@@ -1,6 +1,6 @@
 library petitparser.core.characters.ranges;
 
-import 'package:petitparser/src/core/characters/predicate.dart';
+import 'predicate.dart';
 
 class RangesCharPredicate implements CharacterPredicate {
   final int length;

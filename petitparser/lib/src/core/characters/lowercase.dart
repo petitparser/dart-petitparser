@@ -1,8 +1,8 @@
 library petitparser.core.characters.lowercase;
 
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any lowercase character.
 Parser<String> lowercase([String message = 'lowercase letter expected']) {

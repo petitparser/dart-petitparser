@@ -1,8 +1,8 @@
 library petitparser.core.parsers.settable;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/parsers/failure.dart';
+import '../combinators/delegate.dart';
+import '../parser.dart';
+import 'failure.dart';
 
 /// Returns a parser that is not defined, but that can be set at a later
 /// point in time.

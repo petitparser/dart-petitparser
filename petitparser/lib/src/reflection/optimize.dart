@@ -1,8 +1,8 @@
 library petitparser.reflection.optimize;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/parsers/settable.dart';
-import 'package:petitparser/src/reflection/transform.dart';
+import '../core/parser.dart';
+import '../core/parsers/settable.dart';
+import 'transform.dart';
 
 /// Returns a copy of [parser] with all settable parsers removed.
 Parser removeSettables(Parser parser) {

@@ -1,8 +1,10 @@
 library petitparser.example.prolog.evaluator;
 
 import 'package:collection/collection.dart';
-import 'package:example/src/prolog/parser.dart';
+import 'package:meta/meta.dart';
 import 'package:more/iterable.dart';
+
+import 'parser.dart';
 
 const Equality<List<Node>> argumentEquality = ListEquality();
 
@@ -34,6 +36,7 @@ Map<Variable, Node> mergeBindings(
   return result;
 }
 
+@immutable
 class Database {
   final Map<String, List<Rule>> rules = {};
 
@@ -60,11 +63,12 @@ class Database {
       rules.values.map((rules) => rules.join('\n')).join('\n\n');
 }
 
+@immutable
 class Rule {
   final Term head;
   final Term body;
 
-  Rule(this.head, this.body);
+  const Rule(this.head, this.body);
 
   Stream<Node> query(Database database, Term goal) async* {
     final match = head.match(goal);
@@ -81,18 +85,20 @@ class Rule {
   String toString() => '$head :- $body.';
 }
 
+@immutable
 abstract class Node {
-  Node();
+  const Node();
 
   Map<Variable, Node> match(Node other);
 
   Node substitute(Map<Variable, Node> bindings);
 }
 
+@immutable
 class Variable extends Node {
   final String name;
 
-  Variable(this.name);
+  const Variable(this.name);
 
   @override
   Map<Variable, Node> match(Node other) {
@@ -122,6 +128,7 @@ class Variable extends Node {
   String toString() => name;
 }
 
+@immutable
 class Term extends Node {
   final String name;
   final List<Node> arguments;
@@ -131,7 +138,7 @@ class Term extends Node {
   factory Term(String name, Iterable<Node> list) =>
       Term._(name, list.toList(growable: false));
 
-  Term._(this.name, this.arguments);
+  const Term._(this.name, this.arguments);
 
   Stream<Node> query(Database database) async* {
     yield* database.query(this);
@@ -171,8 +178,9 @@ class Term extends Node {
       arguments.isEmpty ? '$name' : '$name(${arguments.join(', ')})';
 }
 
+@immutable
 class Value extends Term {
-  Value(String name) : super._(name, const []);
+  const Value(String name) : super._(name, const []);
 
   @override
   Stream<Node> query(Database database) async* {
@@ -192,11 +200,12 @@ class Value extends Term {
   String toString() => name;
 }
 
+@immutable
 class Conjunction extends Term {
   factory Conjunction(Iterable<Node> list) =>
       Conjunction._(list.toList(growable: false));
 
-  Conjunction._(List<Node> args) : super._(',', args);
+  const Conjunction._(List<Node> args) : super._(',', args);
 
   @override
   Stream<Node> query(Database database) async* {

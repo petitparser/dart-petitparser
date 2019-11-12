@@ -1,9 +1,9 @@
 library petitparser.core.characters.range;
 
-import 'package:petitparser/src/core/characters/code.dart';
-import 'package:petitparser/src/core/characters/parser.dart';
-import 'package:petitparser/src/core/characters/predicate.dart';
-import 'package:petitparser/src/core/parser.dart';
+import '../parser.dart';
+import 'code.dart';
+import 'parser.dart';
+import 'predicate.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].

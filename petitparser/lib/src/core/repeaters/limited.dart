@@ -1,7 +1,7 @@
 library petitparser.core.repeaters.limited;
 
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/repeaters/repeating.dart';
+import '../parser.dart';
+import 'repeating.dart';
 
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances
 /// of its delegate and that requires the input to be completed with a specified

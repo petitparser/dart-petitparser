@@ -1,10 +1,10 @@
 library petitparser.core.actions.token;
 
-import 'package:petitparser/src/core/combinators/delegate.dart';
-import 'package:petitparser/src/core/contexts/context.dart';
-import 'package:petitparser/src/core/contexts/result.dart';
-import 'package:petitparser/src/core/parser.dart';
-import 'package:petitparser/src/core/token.dart';
+import '../combinators/delegate.dart';
+import '../contexts/context.dart';
+import '../contexts/result.dart';
+import '../parser.dart';
+import '../token.dart';
 
 /// A parser that answers a token of the result its delegate parses.
 class TokenParser<T> extends DelegateParser<Token<T>> {
