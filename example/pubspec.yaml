@@ -10,10 +10,10 @@ environment:
 dependencies:
   collection: ^1.14.0
   meta: ^1.1.0
-  more: ^1.17.0
+  more: ^1.18.0
   petitparser:
     path: ../petitparser
 dev_dependencies:
-  test: ^1.6.0
-  build_runner: ^1.6.0
-  build_web_compilers: ^2.1.0
+  test: ^1.9.0
+  build_runner: ^1.7.0
+  build_web_compilers: ^2.7.0
