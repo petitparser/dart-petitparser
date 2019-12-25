@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.0
+
+* Dart 2.6 compatibility and requirement (extension methods).
+* Restructure the internal code to be more modular:
+    * The `Parser` class now only includes a few core methods.
+    * Parsers and their operators have been moved to 'parsers' package.
+    * Matchers have been moved to `matchers` and `pattern` package.
+    * Expression builder and grammar builders have been moved to `builders` package.
+* Breaking changes:
+    * `Parser` is no longer a `Pattern`, but can be converted to one with `toPattern`.
+
 ## 2.5.0
 
 * Made ParserError a FormatException to follow typical Dart exception style. 

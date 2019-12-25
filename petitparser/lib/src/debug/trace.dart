@@ -1,8 +1,8 @@
 library petitparser.debug.trace;
 
 import '../core/parser.dart';
+import '../parsers/actions/continuation.dart';
 import '../reflection/transform.dart';
-import 'continuation.dart';
 import 'output.dart';
 
 /// Returns a transformed [parser] that when being used to read input prints a
@@ -32,7 +32,7 @@ import 'output.dart';
 Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
-    return ContinuationParser(each, (continuation, context) {
+    return each.callCC((continuation, context) {
       output('${'  ' * level}$each');
       level++;
       final result = continuation(context);

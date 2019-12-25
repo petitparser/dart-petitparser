@@ -1,8 +1,8 @@
 library petitparser.debug.profile;
 
 import '../core/parser.dart';
+import '../parsers/actions/continuation.dart';
 import '../reflection/transform.dart';
-import 'continuation.dart';
 import 'output.dart';
 
 /// Returns a transformed [Parser] that when being used measures
@@ -27,17 +27,16 @@ Parser profile(Parser root, [OutputHandler output = print]) {
   final count = <Parser, int>{};
   final watch = <Parser, Stopwatch>{};
   final parsers = <Parser>[];
-  return ContinuationParser(
-      transformParser(root, (parser) {
-        parsers.add(parser);
-        return ContinuationParser(parser, (continuation, context) {
-          count[parser]++;
-          watch[parser].start();
-          final result = continuation(context);
-          watch[parser].stop();
-          return result;
-        });
-      }), (continuation, context) {
+  return transformParser(root, (parser) {
+    parsers.add(parser);
+    return parser.callCC((continuation, context) {
+      count[parser]++;
+      watch[parser].start();
+      final result = continuation(context);
+      watch[parser].stop();
+      return result;
+    });
+  }).callCC((continuation, context) {
     for (final parser in parsers) {
       count[parser] = 0;
       watch[parser] = Stopwatch();

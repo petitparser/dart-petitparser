@@ -14,7 +14,7 @@ void compare(String regExp, Parser parser, String input) {
       .map((matcher) => matcher.group(0))
       .toList();
 
-  final parserPattern = parser;
+  final parserPattern = parser.toPattern();
   final parserResult = parserPattern
       .allMatches(input)
       .map((matcher) => matcher.group(0))

@@ -32,10 +32,10 @@ class LispGrammarDefinition extends GrammarDefinition {
 
   Parser number() => ref(number_).flatten('Number expected');
   Parser number_() =>
-      anyIn('-+').optional() &
+      anyOf('-+').optional() &
       char('0').or(digit().plus()) &
       char('.').seq(digit().plus()).optional() &
-      anyIn('eE').seq(anyIn('-+').optional()).seq(digit().plus()).optional();
+      anyOf('eE').seq(anyOf('-+').optional()).seq(digit().plus()).optional();
 
   Parser string() => ref(bracket, '""', ref(character).star());
   Parser character() => ref(characterEscape) | ref(characterRaw);

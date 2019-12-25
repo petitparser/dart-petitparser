@@ -1,0 +1,21 @@
+library petitparser.matchers.matches_skipping;
+
+import '../core/parser.dart';
+import '../parsers/actions/map.dart';
+import '../parsers/combinators/choice.dart';
+import '../parsers/predicates/any.dart';
+import '../parsers/repeaters/possesive.dart';
+import 'matches.dart';
+
+extension MatchesSkippingParser<T> on Parser<T> {
+  /// Returns a list of all successful non-overlapping parses of the input.
+  ///
+  /// For example, `letter().plus().matchesSkipping('abc de')` results in the
+  /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [matches] to retrieve
+  /// overlapping parse results.
+  List<T> matchesSkipping(String input) {
+    final list = <T>[];
+    map(list.add, hasSideEffects: true).or(any()).star().fastParseOn(input, 0);
+    return list;
+  }
+}

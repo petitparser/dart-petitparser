@@ -846,13 +846,6 @@ void main() {
       expectSuccess(parser, 'b', 'b');
       expectFailure(parser, '', 0, 'input expected');
     });
-    test('anyIn()', () {
-      final parser = anyIn('ab');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectFailure(parser, 'c');
-      expectFailure(parser, '');
-    });
     test('string()', () {
       final parser = string('foo');
       expectSuccess(parser, 'foo', 'foo');
@@ -1057,7 +1050,7 @@ void main() {
     });
     group('pattern', () {
       const input = 'a123b45';
-      final pattern = digit().seq(digit());
+      final pattern = digit().seq(digit()).toPattern();
       test('allMatches()', () {
         final matches = pattern.allMatches(input);
         expect(matches.map((matcher) => matcher.pattern), [pattern, pattern]);
@@ -1073,7 +1066,7 @@ void main() {
         ]);
       });
       test('allMatches() (empty match)', () {
-        final pattern = digit().star();
+        final pattern = digit().star().toPattern();
         final matches = pattern.allMatches(input);
         expect(matches.map((matcher) => matcher[0]), ['', '123', '', '45', '']);
       });

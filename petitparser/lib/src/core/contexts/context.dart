@@ -1,11 +1,14 @@
 library petitparser.core.contexts.context;
 
+import 'package:meta/meta.dart';
+
 import '../token.dart';
 import 'failure.dart';
 import 'result.dart';
 import 'success.dart';
 
 /// An immutable parse context.
+@immutable
 class Context {
   const Context(this.buffer, this.position);
 
