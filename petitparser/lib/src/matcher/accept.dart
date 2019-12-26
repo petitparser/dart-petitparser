@@ -1,4 +1,4 @@
-library petitparser.matchers.accept;
+library petitparser.matcher.accept;
 
 import '../core/parser.dart';
 

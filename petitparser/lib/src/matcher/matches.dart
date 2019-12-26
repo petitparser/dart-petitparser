@@ -1,4 +1,4 @@
-library petitparser.matchers.matches;
+library petitparser.matcher.matches;
 
 import '../core/parser.dart';
 import '../parsers/actions/map.dart';

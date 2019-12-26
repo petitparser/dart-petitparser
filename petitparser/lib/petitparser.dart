@@ -5,5 +5,5 @@ library petitparser;
 export 'core.dart';
 export 'definition.dart';
 export 'expression.dart';
-export 'matchers.dart';
+export 'matcher.dart';
 export 'parsers.dart';

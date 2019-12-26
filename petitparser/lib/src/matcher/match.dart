@@ -1,4 +1,4 @@
-library petitparser.matchers.match;
+library petitparser.matcher.match;
 
 import 'package:meta/meta.dart';
 
