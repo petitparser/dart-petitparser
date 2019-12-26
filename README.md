@@ -265,9 +265,11 @@ PetitParser was originally implemented in [Smalltalk](http://scg.unibe.ch/resear
 
 ### Ports
 
+- [Dart](https://github.com/petitparser/dart-petitparser)
 - [Java](https://github.com/petitparser/java-petitparser)
 - [PHP](https://github.com/mindplay-dk/petitparserphp)
 - [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser)
+- [Swift](https://github.com/philipparndt/swift-petitparser)
 - [TypeScript](https://github.com/mindplay-dk/petitparser-ts)
 
 ### License
