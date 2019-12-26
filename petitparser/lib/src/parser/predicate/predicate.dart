@@ -1,7 +1,7 @@
 library petitparser.parser.predicate.predicate;
 
-import '../../core/contexts/context.dart';
-import '../../core/contexts/result.dart';
+import '../../context/context.dart';
+import '../../context/result.dart';
 import '../../core/parser.dart';
 
 /// A generic predicate function returning `true` or `false` for a given

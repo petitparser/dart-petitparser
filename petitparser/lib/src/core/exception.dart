@@ -1,6 +1,6 @@
 library petitparser.core.contexts.exception;
 
-import 'failure.dart';
+import '../context/failure.dart';
 
 /// An exception raised in case of a parse error.
 class ParserException implements FormatException {

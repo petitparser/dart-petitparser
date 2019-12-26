@@ -1,7 +1,7 @@
 library petitparser.parser.combinator.sequence;
 
-import '../../core/contexts/context.dart';
-import '../../core/contexts/result.dart';
+import '../../context/context.dart';
+import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'list.dart';
 

@@ -1,4 +1,4 @@
-library petitparser.core.contexts.success;
+library petitparser.context.success;
 
 import 'result.dart';
 

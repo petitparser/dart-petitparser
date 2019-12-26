@@ -1,8 +1,8 @@
-library petitparser.core.contexts.context;
+library petitparser.context.context;
 
 import 'package:meta/meta.dart';
 
-import '../token.dart';
+import '../core/token.dart';
 import 'failure.dart';
 import 'result.dart';
 import 'success.dart';

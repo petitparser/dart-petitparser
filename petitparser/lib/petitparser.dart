@@ -2,6 +2,7 @@
 /// combinator framework.
 library petitparser;
 
+export 'context.dart';
 export 'core.dart';
 export 'definition.dart';
 export 'expression.dart';

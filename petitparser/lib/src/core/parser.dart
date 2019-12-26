@@ -2,10 +2,10 @@ library petitparser.core.parser;
 
 import 'package:meta/meta.dart';
 
-import 'contexts/context.dart';
-import 'contexts/failure.dart';
-import 'contexts/result.dart';
-import 'contexts/success.dart';
+import '../context/context.dart';
+import '../context/failure.dart';
+import '../context/result.dart';
+import '../context/success.dart';
 
 /// Abstract base class of all parsers.
 @optionalTypeArgs
