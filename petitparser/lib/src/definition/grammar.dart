@@ -1,8 +1,8 @@
-library petitparser.builders.definition.grammar;
+library petitparser.definition.grammar;
 
 import 'package:meta/meta.dart';
 
-import '../../core/parser.dart';
+import '../core/parser.dart';
 import 'reference.dart';
 
 /// Helper to conveniently define and build complex, recursive grammars using

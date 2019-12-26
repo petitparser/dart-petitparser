@@ -1,10 +1,10 @@
-library petitparser.builders.definition.reference;
+library petitparser.definition.reference;
 
 import 'package:meta/meta.dart';
 
-import '../../core/contexts/context.dart';
-import '../../core/contexts/result.dart';
-import '../../core/parser.dart';
+import '../core/contexts/context.dart';
+import '../core/contexts/result.dart';
+import '../core/parser.dart';
 
 @immutable
 class Reference extends Parser {
