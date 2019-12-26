@@ -1,8 +1,8 @@
 library petitparser.expression.builder;
 
 import '../core/parser.dart';
-import '../parsers/combinators/settable.dart';
-import '../parsers/misc/failure.dart';
+import '../parser/combinator/settable.dart';
+import '../parser/misc/failure.dart';
 import 'group.dart';
 
 /// A builder that allows the simple definition of expression grammars with

@@ -1,11 +1,11 @@
 library petitparser.expression.group;
 
 import '../core/parser.dart';
-import '../parsers/actions/map.dart';
-import '../parsers/combinators/choice.dart';
-import '../parsers/combinators/sequence.dart';
-import '../parsers/repeaters/possesive.dart';
-import '../parsers/repeaters/separated_by.dart';
+import '../parser/action/map.dart';
+import '../parser/combinator/choice.dart';
+import '../parser/combinator/sequence.dart';
+import '../parser/repeater/possesive.dart';
+import '../parser/repeater/separated_by.dart';
 import 'result.dart';
 
 /// Models a group of operators of the same precedence.

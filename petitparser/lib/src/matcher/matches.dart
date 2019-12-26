@@ -1,12 +1,12 @@
 library petitparser.matcher.matches;
 
 import '../core/parser.dart';
-import '../parsers/actions/map.dart';
-import '../parsers/combinators/and.dart';
-import '../parsers/combinators/choice.dart';
-import '../parsers/combinators/sequence.dart';
-import '../parsers/predicates/any.dart';
-import '../parsers/repeaters/possesive.dart';
+import '../parser/action/map.dart';
+import '../parser/combinator/and.dart';
+import '../parser/combinator/choice.dart';
+import '../parser/combinator/sequence.dart';
+import '../parser/predicate/any.dart';
+import '../parser/repeater/possesive.dart';
 import 'matches_skipping.dart';
 
 extension MatchesParser<T> on Parser<T> {

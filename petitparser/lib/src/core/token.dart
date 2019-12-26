@@ -3,11 +3,11 @@ library petitparser.core.token;
 import 'package:meta/meta.dart';
 
 import '../matcher/matches_skipping.dart';
-import '../parsers/actions/token.dart';
-import '../parsers/characters/char.dart';
-import '../parsers/combinators/choice.dart';
-import '../parsers/combinators/optional.dart';
-import '../parsers/combinators/sequence.dart';
+import '../parser/action/token.dart';
+import '../parser/character/char.dart';
+import '../parser/combinator/choice.dart';
+import '../parser/combinator/optional.dart';
+import '../parser/combinator/sequence.dart';
 import 'parser.dart';
 
 /// A token represents a parsed part of the input stream.

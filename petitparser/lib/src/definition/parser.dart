@@ -1,6 +1,6 @@
 library petitparser.definition.parser;
 
-import '../parsers/combinators/delegate.dart';
+import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 
 /// A helper to build a parser from a {@link GrammarDefinition}.

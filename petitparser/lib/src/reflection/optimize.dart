@@ -1,7 +1,7 @@
 library petitparser.reflection.optimize;
 
 import '../core/parser.dart';
-import '../parsers/combinators/settable.dart';
+import '../parser/combinator/settable.dart';
 import 'transform.dart';
 
 /// Returns a copy of [parser] with all settable parsers removed.

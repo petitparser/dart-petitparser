@@ -6,4 +6,4 @@ export 'core.dart';
 export 'definition.dart';
 export 'expression.dart';
 export 'matcher.dart';
-export 'parsers.dart';
+export 'parser.dart';

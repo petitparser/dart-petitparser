@@ -1,10 +1,10 @@
 library petitparser.matcher.matches_skipping;
 
 import '../core/parser.dart';
-import '../parsers/actions/map.dart';
-import '../parsers/combinators/choice.dart';
-import '../parsers/predicates/any.dart';
-import '../parsers/repeaters/possesive.dart';
+import '../parser/action/map.dart';
+import '../parser/combinator/choice.dart';
+import '../parser/predicate/any.dart';
+import '../parser/repeater/possesive.dart';
 import 'matches.dart';
 
 extension MatchesSkippingParser<T> on Parser<T> {
