@@ -344,249 +344,293 @@ void main() {
     });
   });
   group('character', () {
-    expectCommon(char('a'));
-    test('anyOf', () {
+    group('anyOf', () {
       final parser = anyOf('uncopyrightable');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'g', 'g');
-      expectSuccess(parser, 'h', 'h');
-      expectSuccess(parser, 'i', 'i');
-      expectSuccess(parser, 'o', 'o');
-      expectSuccess(parser, 'p', 'p');
-      expectSuccess(parser, 'r', 'r');
-      expectSuccess(parser, 't', 't');
-      expectSuccess(parser, 'y', 'y');
-      expectFailure(parser, 'x', 0, 'any of "uncopyrightable" expected');
-    });
-    test('noneOf', () {
-      final parser = noneOf('uncopyrightable');
-      expectSuccess(parser, 'x', 'x');
-      expectFailure(parser, 'c', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'g', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'h', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'i', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'o', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'p', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'r', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 't', 0, 'none of "uncopyrightable" expected');
-      expectFailure(parser, 'y', 0, 'none of "uncopyrightable" expected');
-    });
-    test('char with number', () {
-      final parser = char(97, 'lowercase a');
-      expectSuccess(parser, 'a', 'a');
-      expectFailure(parser, 'b', 0, 'lowercase a');
-      expectFailure(parser, '');
-    });
-    test('char invalid', () {
-      expect(() => char('ab'), throwsArgumentError);
-    });
-    final specialChars = {
-      '\\x00': '\x00',
-      '\\b': '\b',
-      '\\t': '\t',
-      '\\n': '\n',
-      '\\v': '\v',
-      '\\f': '\f',
-      '\\r': '\r',
-      '\\"': '\"',
-      '\\\'': '\'',
-      '\\\\': '\\',
-      '☠': '\u2620',
-      ' ': ' ',
-    };
-    specialChars.forEach((key, value) {
-      test('char("$key")', () {
-        final parser = char(value);
-        expectSuccess(parser, value, value);
-        expectFailure(parser, 'a', 0, '"$key" expected');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'g', 'g');
+        expectSuccess(parser, 'h', 'h');
+        expectSuccess(parser, 'i', 'i');
+        expectSuccess(parser, 'o', 'o');
+        expectSuccess(parser, 'p', 'p');
+        expectSuccess(parser, 'r', 'r');
+        expectSuccess(parser, 't', 't');
+        expectSuccess(parser, 'y', 'y');
+        expectFailure(parser, 'x', 0, 'any of "uncopyrightable" expected');
       });
     });
-    test('digit', () {
+    group('noneOf', () {
+      final parser = noneOf('uncopyrightable');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'x', 'x');
+        expectFailure(parser, 'c', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'g', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'h', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'i', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'o', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'p', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'r', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 't', 0, 'none of "uncopyrightable" expected');
+        expectFailure(parser, 'y', 0, 'none of "uncopyrightable" expected');
+      });
+    });
+    group('char', () {
+      expectCommon(char('a'));
+      test('with string', () {
+        final parser = char('a');
+        expectSuccess(parser, 'a', 'a');
+        expectFailure(parser, 'b', 0, '"a" expected');
+        expectFailure(parser, '', 0, '"a" expected');
+      });
+      test('with number', () {
+        final parser = char(97);
+        expectSuccess(parser, 'a', 'a');
+        expectFailure(parser, 'b', 0, '"a" expected');
+        expectFailure(parser, '', 0, '"a" expected');
+      });
+      test('with message', () {
+        final parser = char('a', 'lowercase a');
+        expectSuccess(parser, 'a', 'a');
+        expectFailure(parser, 'b', 0, 'lowercase a');
+        expectFailure(parser, '', 0, 'lowercase a');
+      });
+      test('char invalid', () {
+        expect(() => char('ab'), throwsArgumentError);
+      });
+      <String, String>{
+        '\\x00': '\x00',
+        '\\b': '\b',
+        '\\t': '\t',
+        '\\n': '\n',
+        '\\v': '\v',
+        '\\f': '\f',
+        '\\r': '\r',
+        '\\"': '\"',
+        '\\\'': '\'',
+        '\\\\': '\\',
+        '☠': '\u2620',
+        ' ': ' ',
+      }.forEach((key, value) {
+        test('char("$key")', () {
+          final parser = char(value);
+          expectSuccess(parser, value, value);
+          expectFailure(parser, 'a', 0, '"$key" expected');
+        });
+      });
+    });
+    group('digit', () {
       final parser = digit();
-      expectSuccess(parser, '1', '1');
-      expectSuccess(parser, '9', '9');
-      expectFailure(parser, 'a', 0, 'digit expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, '1', '1');
+        expectSuccess(parser, '9', '9');
+        expectFailure(parser, 'a', 0, 'digit expected');
+        expectFailure(parser, '');
+      });
     });
-    test('letter', () {
+    group('letter', () {
       final parser = letter();
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'X', 'X');
-      expectFailure(parser, '0', 0, 'letter expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'X', 'X');
+        expectFailure(parser, '0', 0, 'letter expected');
+        expectFailure(parser, '');
+      });
     });
-    test('lowercase', () {
+    group('lowercase', () {
       final parser = lowercase();
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'z', 'z');
-      expectFailure(parser, 'A', 0, 'lowercase letter expected');
-      expectFailure(parser, '0', 0, 'lowercase letter expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'z', 'z');
+        expectFailure(parser, 'A', 0, 'lowercase letter expected');
+        expectFailure(parser, '0', 0, 'lowercase letter expected');
+        expectFailure(parser, '');
+      });
     });
-    test('pattern with single', () {
-      final parser = pattern('abc');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectFailure(parser, 'd', 0, '[abc] expected');
-      expectFailure(parser, '');
+    group('pattern', () {
+      expectCommon(pattern('^ad-f'));
+      test('with single', () {
+        final parser = pattern('abc');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '[abc] expected');
+        expectFailure(parser, '');
+      });
+      test('with range', () {
+        final parser = pattern('a-c');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectFailure(parser, 'd', 0, '[a-c] expected');
+        expectFailure(parser, '');
+      });
+      test('with overlapping range', () {
+        final parser = pattern('b-da-c');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectFailure(parser, 'e', 0, '[b-da-c] expected');
+        expectFailure(parser, '', 0, '[b-da-c] expected');
+      });
+      test('with adjacent range', () {
+        final parser = pattern('c-ea-c');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectSuccess(parser, 'e', 'e');
+        expectFailure(parser, 'f', 0, '[c-ea-c] expected');
+        expectFailure(parser, '', 0, '[c-ea-c] expected');
+      });
+      test('with prefix range', () {
+        final parser = pattern('a-ea-c');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectSuccess(parser, 'e', 'e');
+        expectFailure(parser, 'f', 0, '[a-ea-c] expected');
+        expectFailure(parser, '', 0, '[a-ea-c] expected');
+      });
+      test('with postfix range', () {
+        final parser = pattern('a-ec-e');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectSuccess(parser, 'e', 'e');
+        expectFailure(parser, 'f', 0, '[a-ec-e] expected');
+        expectFailure(parser, '', 0, '[a-ec-e] expected');
+      });
+      test('with repeated range', () {
+        final parser = pattern('a-ea-e');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectSuccess(parser, 'e', 'e');
+        expectFailure(parser, 'f', 0, '[a-ea-e] expected');
+        expectFailure(parser, '', 0, '[a-ea-e] expected');
+      });
+      test('with composed range', () {
+        final parser = pattern('ac-df-');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'd', 'd');
+        expectSuccess(parser, 'f', 'f');
+        expectSuccess(parser, '-', '-');
+        expectFailure(parser, 'b', 0, '[ac-df-] expected');
+        expectFailure(parser, 'e', 0, '[ac-df-] expected');
+        expectFailure(parser, 'g', 0, '[ac-df-] expected');
+        expectFailure(parser, '');
+      });
+      test('with negated single', () {
+        final parser = pattern('^a');
+        expectSuccess(parser, 'b', 'b');
+        expectFailure(parser, 'a', 0, '[^a] expected');
+        expectFailure(parser, '');
+      });
+      test('with negated range', () {
+        final parser = pattern('^a-c');
+        expectSuccess(parser, 'd', 'd');
+        expectFailure(parser, 'a', 0, '[^a-c] expected');
+        expectFailure(parser, 'b', 0, '[^a-c] expected');
+        expectFailure(parser, 'c', 0, '[^a-c] expected');
+        expectFailure(parser, '');
+      });
+      test('with error', () {
+        expect(() => pattern('c-a'), throwsArgumentError);
+      });
     });
-    test('pattern with range', () {
-      final parser = pattern('a-c');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectFailure(parser, 'd', 0, '[a-c] expected');
-      expectFailure(parser, '');
-    });
-    test('pattern with overlapping range', () {
-      final parser = pattern('b-da-c');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectFailure(parser, 'e', 0, '[b-da-c] expected');
-      expectFailure(parser, '', 0, '[b-da-c] expected');
-    });
-    test('pattern with adjacent range', () {
-      final parser = pattern('c-ea-c');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectSuccess(parser, 'e', 'e');
-      expectFailure(parser, 'f', 0, '[c-ea-c] expected');
-      expectFailure(parser, '', 0, '[c-ea-c] expected');
-    });
-    test('pattern with prefix range', () {
-      final parser = pattern('a-ea-c');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectSuccess(parser, 'e', 'e');
-      expectFailure(parser, 'f', 0, '[a-ea-c] expected');
-      expectFailure(parser, '', 0, '[a-ea-c] expected');
-    });
-    test('pattern with postfix range', () {
-      final parser = pattern('a-ec-e');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectSuccess(parser, 'e', 'e');
-      expectFailure(parser, 'f', 0, '[a-ec-e] expected');
-      expectFailure(parser, '', 0, '[a-ec-e] expected');
-    });
-    test('pattern with repeated range', () {
-      final parser = pattern('a-ea-e');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'b', 'b');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectSuccess(parser, 'e', 'e');
-      expectFailure(parser, 'f', 0, '[a-ea-e] expected');
-      expectFailure(parser, '', 0, '[a-ea-e] expected');
-    });
-    test('pattern with composed range', () {
-      final parser = pattern('ac-df-');
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'c', 'c');
-      expectSuccess(parser, 'd', 'd');
-      expectSuccess(parser, 'f', 'f');
-      expectSuccess(parser, '-', '-');
-      expectFailure(parser, 'b', 0, '[ac-df-] expected');
-      expectFailure(parser, 'e', 0, '[ac-df-] expected');
-      expectFailure(parser, 'g', 0, '[ac-df-] expected');
-      expectFailure(parser, '');
-    });
-    test('pattern with negated single', () {
-      final parser = pattern('^a');
-      expectSuccess(parser, 'b', 'b');
-      expectFailure(parser, 'a', 0, '[^a] expected');
-      expectFailure(parser, '');
-    });
-    test('pattern with negated range', () {
-      final parser = pattern('^a-c');
-      expectSuccess(parser, 'd', 'd');
-      expectFailure(parser, 'a', 0, '[^a-c] expected');
-      expectFailure(parser, 'b', 0, '[^a-c] expected');
-      expectFailure(parser, 'c', 0, '[^a-c] expected');
-      expectFailure(parser, '');
-    });
-    test('pattern with error', () {
-      expect(() => pattern('c-a'), throwsArgumentError);
-    });
-    test('range', () {
+    group('range', () {
       final parser = range('e', 'o');
-      expectSuccess(parser, 'e', 'e');
-      expectSuccess(parser, 'i', 'i');
-      expectSuccess(parser, 'o', 'o');
-      expectFailure(parser, 'p', 0, 'e..o expected');
-      expectFailure(parser, 'd', 0, 'e..o expected');
-      expectFailure(parser, '');
-      expect(() => range('o', 'e'), throwsArgumentError);
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'e', 'e');
+        expectSuccess(parser, 'i', 'i');
+        expectSuccess(parser, 'o', 'o');
+        expectFailure(parser, 'p', 0, 'e..o expected');
+        expectFailure(parser, 'd', 0, 'e..o expected');
+        expectFailure(parser, '');
+      });
+      test('invalid', () {
+        expect(() => range('o', 'e'), throwsArgumentError);
+      });
     });
-    test('uppercase', () {
+    group('uppercase', () {
       final parser = uppercase();
-      expectSuccess(parser, 'A', 'A');
-      expectSuccess(parser, 'Z', 'Z');
-      expectFailure(parser, 'a', 0, 'uppercase letter expected');
-      expectFailure(parser, '0', 0, 'uppercase letter expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'A', 'A');
+        expectSuccess(parser, 'Z', 'Z');
+        expectFailure(parser, 'a', 0, 'uppercase letter expected');
+        expectFailure(parser, '0', 0, 'uppercase letter expected');
+        expectFailure(parser, '');
+      });
     });
-    test('whitespace', () {
+    group('whitespace', () {
       final parser = whitespace();
-      expectSuccess(parser, ' ', ' ');
-      expectSuccess(parser, '\t', '\t');
-      expectSuccess(parser, '\r', '\r');
-      expectSuccess(parser, '\f', '\f');
-      expectFailure(parser, 'z', 0, 'whitespace expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, ' ', ' ');
+        expectSuccess(parser, '\t', '\t');
+        expectSuccess(parser, '\r', '\r');
+        expectSuccess(parser, '\f', '\f');
+        expectFailure(parser, 'z', 0, 'whitespace expected');
+        expectFailure(parser, '');
+      });
+      test('unicode', () {
+        final string = String.fromCharCodes([
+          9,
+          10,
+          11,
+          12,
+          13,
+          32,
+          133,
+          160,
+          5760,
+          8192,
+          8193,
+          8194,
+          8195,
+          8196,
+          8197,
+          8198,
+          8199,
+          8200,
+          8201,
+          8202,
+          8232,
+          8233,
+          8239,
+          8287,
+          12288,
+          65279
+        ]);
+        expectSuccess(parser.star().flatten(), string, string);
+      });
     });
-    test('whitespace unicode', () {
-      final string = String.fromCharCodes([
-        9,
-        10,
-        11,
-        12,
-        13,
-        32,
-        133,
-        160,
-        5760,
-        8192,
-        8193,
-        8194,
-        8195,
-        8196,
-        8197,
-        8198,
-        8199,
-        8200,
-        8201,
-        8202,
-        8232,
-        8233,
-        8239,
-        8287,
-        12288,
-        65279
-      ]);
-      final parser = whitespace().star().flatten().end();
-      expectSuccess(parser, string, string);
-    });
-    test('word', () {
+    group('word', () {
       final parser = word();
-      expectSuccess(parser, 'a', 'a');
-      expectSuccess(parser, 'z', 'z');
-      expectSuccess(parser, 'A', 'A');
-      expectSuccess(parser, 'Z', 'Z');
-      expectSuccess(parser, '0', '0');
-      expectSuccess(parser, '9', '9');
-      expectSuccess(parser, '_', '_');
-      expectFailure(parser, '-', 0, 'letter or digit expected');
-      expectFailure(parser, '');
+      expectCommon(parser);
+      test('default', () {
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'z', 'z');
+        expectSuccess(parser, 'A', 'A');
+        expectSuccess(parser, 'Z', 'Z');
+        expectSuccess(parser, '0', '0');
+        expectSuccess(parser, '9', '9');
+        expectSuccess(parser, '_', '_');
+        expectFailure(parser, '-', 0, 'letter or digit expected');
+        expectFailure(parser, '');
+      });
     });
   });
   group('combinator', () {
