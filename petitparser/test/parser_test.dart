@@ -830,6 +830,32 @@ void main() {
         expectFailure(parser, 'fo');
         expectFailure(parser, 'Foo');
       });
+      test('convert empty', () {
+        final parser = ''.toParser();
+        expectSuccess(parser, '', '');
+      });
+      test('convert single char', () {
+        final parser = 'a'.toParser();
+        expectSuccess(parser, 'a', 'a');
+        expectFailure(parser, 'A');
+      });
+      test('convert single char (case-insensitive)', () {
+        final parser = 'a'.toParser(caseInsensitive: true);
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'A', 'A');
+        expectFailure(parser, 'b');
+      });
+      test('convert multiple chars', () {
+        final parser = 'foo'.toParser();
+        expectSuccess(parser, 'foo', 'foo');
+        expectFailure(parser, 'Foo');
+      });
+      test('convert multiple chars (case-insensitive)', () {
+        final parser = 'foo'.toParser(caseInsensitive: true);
+        expectSuccess(parser, 'foo', 'foo');
+        expectSuccess(parser, 'Foo', 'Foo');
+        expectFailure(parser, 'bar');
+      });
     });
     group('stringIgnoreCase', () {
       expectCommon(stringIgnoreCase('foo'));
