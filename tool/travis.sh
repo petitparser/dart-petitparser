@@ -1,65 +1,95 @@
 #!/bin/bash
-# Created with package:mono_repo v1.2.1
+# Created with package:mono_repo v2.3.0
 
-if [ -z "$PKG" ]; then
-  echo -e '\033[31mPKG environment variable must be set!\033[0m'
+# Support built in commands on windows out of the box.
+function pub {
+       if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+        command pub.bat "$@"
+    else
+        command pub "$@"
+    fi
+}
+function dartfmt {
+       if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+        command dartfmt.bat "$@"
+    else
+        command dartfmt "$@"
+    fi
+}
+function dartanalyzer {
+       if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+        command dartanalyzer.bat "$@"
+    else
+        command dartanalyzer "$@"
+    fi
+}
+
+if [[ -z ${PKGS} ]]; then
+  echo -e '\033[31mPKGS environment variable must be set!\033[0m'
   exit 1
 fi
 
-if [ "$#" == "0" ]; then
+if [[ "$#" == "0" ]]; then
   echo -e '\033[31mAt least one task argument must be provided!\033[0m'
   exit 1
 fi
 
-pushd $PKG
-pub upgrade || exit $?
-
 EXIT_CODE=0
 
-while (( "$#" )); do
-  TASK=$1
-  case $TASK in
-  command_0) echo
-    echo -e '\033[1mTASK: command_0\033[22m'
-    echo -e 'dartanalyzer --fatal-warnings .'
-    dartanalyzer --fatal-warnings . || EXIT_CODE=$?
-    ;;
-  command_1) echo
-    echo -e '\033[1mTASK: command_1\033[22m'
-    echo -e 'dartfmt --dry-run --set-exit-if-changed .'
-    dartfmt --dry-run --set-exit-if-changed . || EXIT_CODE=$?
-    ;;
-  command_2) echo
-    echo -e '\033[1mTASK: command_2\033[22m'
-    echo -e 'pub run test --platform vm'
-    pub run test --platform vm || EXIT_CODE=$?
-    ;;
-  command_3) echo
-    echo -e '\033[1mTASK: command_3\033[22m'
-    echo -e 'pub run test --platform chrome'
-    pub run test --platform chrome || EXIT_CODE=$?
-    ;;
-  command_4) echo
-    echo -e '\033[1mTASK: command_4\033[22m'
-    echo -e 'pub run test test/all_test.dart --platform vm'
-    pub run test test/all_test.dart --platform vm || EXIT_CODE=$?
-    ;;
-  command_5) echo
-    echo -e '\033[1mTASK: command_5\033[22m'
-    echo -e 'pub run test test/all_test.dart --platform chrome'
-    pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
-    ;;
-  command_6) echo
-    echo -e '\033[1mTASK: command_6\033[22m'
-    echo -e 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
-    pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
-    ;;
-  *) echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
-    EXIT_CODE=1
-    ;;
-  esac
+for PKG in ${PKGS}; do
+  echo -e "\033[1mPKG: ${PKG}\033[22m"
+  pushd "${PKG}" || exit $?
 
-  shift
+  PUB_EXIT_CODE=0
+  pub upgrade --no-precompile || PUB_EXIT_CODE=$?
+
+  if [[ ${PUB_EXIT_CODE} -ne 0 ]]; then
+    EXIT_CODE=1
+    echo -e '\033[31mpub upgrade failed\033[0m'
+    popd
+    continue
+  fi
+
+  for TASK in "$@"; do
+    echo
+    echo -e "\033[1mPKG: ${PKG}; TASK: ${TASK}\033[22m"
+    case ${TASK} in
+    command_0)
+      echo 'dartanalyzer --fatal-warnings .'
+      dartanalyzer --fatal-warnings . || EXIT_CODE=$?
+      ;;
+    command_1)
+      echo 'dartfmt --dry-run --set-exit-if-changed .'
+      dartfmt --dry-run --set-exit-if-changed . || EXIT_CODE=$?
+      ;;
+    command_2)
+      echo 'pub run test --platform vm'
+      pub run test --platform vm || EXIT_CODE=$?
+      ;;
+    command_3)
+      echo 'pub run test --platform chrome'
+      pub run test --platform chrome || EXIT_CODE=$?
+      ;;
+    command_4)
+      echo 'pub run test test/all_test.dart --platform vm'
+      pub run test test/all_test.dart --platform vm || EXIT_CODE=$?
+      ;;
+    command_5)
+      echo 'pub run test test/all_test.dart --platform chrome'
+      pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
+      ;;
+    command_6)
+      echo 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
+      pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
+      ;;
+    *)
+      echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
+      EXIT_CODE=1
+      ;;
+    esac
+  done
+
+  popd
 done
 
-exit $EXIT_CODE
+exit ${EXIT_CODE}
