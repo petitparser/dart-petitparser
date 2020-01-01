@@ -3,18 +3,23 @@
 ## 3.0.0
 
 * Dart 2.7 compatibility and requirement (extension methods).
+* New features:
+    * `String.toParser()` enables creating efficient string and character parsers more easily.
+    * `Iterable.toChoiceParser()` and `Iterable.toSequenceParser()` enables creating parsers from collections more easily.
+    * `Parser.callCC(Function)` enables capturing a parse continuation more easily.
 * Restructure the internal code to be more modular:
     * The `Parser` class now only defines a few core methods, everything else is an extension method.
-    * Parsers have been moved to 'parser' package.
-    * Matchers have been moved to the 'matcher' package.
-    * The expression builder has been moved to the 'expression' package.
-    * The grammar builder has been moved to the 'definition' package.
+    * As long as you continue to import `package:petitparser/petitparser.dart` none of the changes should affect existing code.
+    * Parser implementations have been moved to `package:petitparser/parser.dart`.
+    * Helpers to parse and extract data has been moved to `package:petitparser/matcher.dart`.
+    * The expression builder has been moved to `package:petitparser/expression.dart`.
+    * The grammar builder has been moved to`package:petitparser/definition.dart`.
 * Breaking changes:
     * `Parser` is no longer a `Pattern`, but can be converted to one with `toPattern`.
 
 ## 2.5.0
 
-* Made ParserError a FormatException to follow typical Dart exception style. 
+* Made `ParserError` a `FormatException` to follow typical Dart exception style. 
 
 ## 2.4.0
 

@@ -252,15 +252,16 @@ The package comes with a large collection of example grammars and language exper
 - `example/lib/prolog` contains a basic Prolog grammar, parser and evaluator.
 - `example/lib/smalltalk` contains a complete Smalltalk grammar.
 
-Furthermore, there are numerous open source projects using PetitParser:
+Furthermore, there are [numerous open source projects](https://pub.dev/packages?q=dependency:petitparser) using PetitParser:
 
-- [Badger](https://github.com/badger-lang/badger) is an experimental programming language.
-- [dart-xml](https://github.com/renggli/dart-xml) is a lightweight library for parsing, traversing, and querying XML documents.
-- [InQlik](https://github.com/inqlik/inqlik_cli) is a parser for QlikView load script files.
-- [intl](https://github.com/dart-lang/intl) provides internationalization and localization support to Dart.
-- [PowerConfig](https://github.com/kaendfinger/powerconfig.dart) is a power config implementation.
-- [RythmDart](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
-- [SharkDart](https://github.com/freewind/SharkDart) is a small template engine.
+- [badger](https://github.com/badger-lang/badger) is an experimental programming language.
+- [expression_language](https://pub.dev/packages/expression_language) is a library for parsing and evaluating expressions.
+- [intl_translation](https://pub.dev/packages/intl_translation) provides internationalization and localization support to Dart.
+- [pem](https://pub.dev/packages/pem) encodes and decodes textual cryptographic keys.
+- [powerconfig](https://github.com/kaendfinger/powerconfig.dart) is a power config implementation.
+- [query](https://pub.dev/packages/query) implements search queries with support for boolean groups, field scopes, ranges, etc.
+- [rythm](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
+- [xml](https://pub.dev/packages/xml) is a lightweight library for parsing, traversing, and querying XML documents.
 
 ### History
 
