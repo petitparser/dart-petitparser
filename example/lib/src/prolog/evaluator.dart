@@ -153,7 +153,8 @@ class Term extends Node {
       if (arguments.length != other.arguments.length) {
         return null;
       }
-      return zip([arguments, other.arguments])
+      return [arguments, other.arguments]
+          .zip()
           .map((arg) => arg[0].match(arg[1]))
           .fold(newBindings(), mergeBindings);
     }

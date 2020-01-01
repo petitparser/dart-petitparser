@@ -10,7 +10,7 @@ environment:
 dependencies:
   collection: ^1.14.0
   meta: ^1.1.0
-  more: ^1.18.0
+  more: ^2.2.0
   petitparser:
     path: ../petitparser
 dev_dependencies:
