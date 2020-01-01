@@ -11,6 +11,7 @@ import 'matcher_test.dart' as matcher_test;
 import 'parser_test.dart' as parser_test;
 import 'reflection_test.dart' as reflection_test;
 import 'regression_test.dart' as regression_test;
+import 'tutorial_test.dart' as tutorial_test;
 
 void main() {
   group('context', context_test.main);
@@ -22,5 +23,5 @@ void main() {
   group('parser', parser_test.main);
   group('reflection', reflection_test.main);
   group('regression', regression_test.main);
-  group('regression', regression_test.main);
+  group('tutorial', tutorial_test.main);
 }

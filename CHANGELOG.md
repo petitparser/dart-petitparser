@@ -2,12 +2,12 @@
 
 ## 3.0.0
 
-* Dart 2.6 compatibility and requirement (extension methods).
+* Dart 2.7 compatibility and requirement (extension methods).
 * Restructure the internal code to be more modular:
-    * The `Parser` class now only defines a few core methods, everything is an extension method defined separately.
+    * The `Parser` class now only defines a few core methods, everything else is an extension method.
     * Parsers have been moved to 'parser' package.
     * Matchers have been moved to the 'matcher' package.
-    * The expression build has been moved to the 'expression' package.
+    * The expression builder has been moved to the 'expression' package.
     * The grammar builder has been moved to the 'definition' package.
 * Breaking changes:
     * `Parser` is no longer a `Pattern`, but can be converted to one with `toPattern`.

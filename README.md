@@ -19,7 +19,7 @@ The package is hosted on [dart packages](https://pub.dartlang.org/packages/petit
 Tutorial
 --------
 
-Below are step by step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator) are included in the [example repository](https://github.com/petitparser/dart-petitparser/tree/master/example).
+Below are step by step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser/tree/master/example).
 
 ### Installation
 
@@ -36,22 +36,22 @@ import 'package:petitparser/petitparser.dart';
 Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits is defined as follows:
 
 ```dart
-Parser id = letter() & (letter() | digit()).star();
+final id = letter() & (letter() | digit()).star();
 ```
 
 If you look at the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
 
-- Sequence: This parser accepts a sequence of parsers.
-  - Predicate: This parser accepts a single letter.
-  - Repeater: This parser accepts zero or more times another parser.
-    - Choice: This parser accepts a single word character.
-      - Predicate: This parser accepts a single letter.
-      - Predicate: This parser accepts a single digit.
+- SequenceParser: This parser accepts a sequence of parsers.
+  - CharacterParser: This parser accepts a single letter.
+  - PossessiveRepeatingParser: This parser accepts zero or more times another parser.
+    - ChoiceParser: This parser accepts a single word character.
+      - CharacterParser: This parser accepts a single letter.
+      - CharacterParser: This parser accepts a single digit.
 
 The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls:
 
 ```dart
-Parser id = letter().seq(letter().or(digit()).star());
+final id = letter().seq(letter().or(digit()).star());
 ```
 
 ### Parsing Some Input
@@ -59,8 +59,8 @@ Parser id = letter().seq(letter().or(digit()).star());
 To actually parse a `String` (or `List`) we can use the method `Parser.parse`:
 
 ```dart
-Result id1 = id.parse('yeah');
-Result id2 = id.parse('f12');
+final id1 = id.parse('yeah');
+final id2 = id.parse('f12');
 ```
 
 The method `Parser.parse` returns a parse `Result`, which is either an instance of `Success` or `Failure`. In both examples above we are successful and can retrieve the parse result using `Success.value`:
@@ -75,7 +75,7 @@ While it seems odd to get these nested arrays with characters as a return value,
 If we try to parse something invalid we get an instance of `Failure` as an answer and we can retrieve a descriptive error message using `Failure.message`:
 
 ```dart
-Result id3 = id.parse('123');
+final id3 = id.parse('123');
 print(id3.message);                 // 'letter expected'
 print(id3.position);                // 0
 ```
@@ -161,7 +161,7 @@ term.set(prod.seq(char('+').trim()).seq(term).map((values) {
 prod.set(prim.seq(char('*').trim()).seq(prod).map((values) {
   return values[0] * values[2];
 }).or(prim));
-prim.set(char('(').trim().seq(term).seq(char(')').trim()).map((values) {
+prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
   return values[1];
 }).or(number));
 ```
@@ -186,16 +186,19 @@ Writing such expression parsers is pretty common and can be quite tricky to get 
 The following code creates the empty expression builder:
 
 ```dart
-final builder = new ExpressionBuilder();
+final builder = ExpressionBuilder();
 ```
 
 Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating point numbers, not just integers. In the same group we add support for parenthesis:
 
 ```dart
 builder.group()
-  ..primitive(digit().plus()
-    .seq(char('.').seq(digit().plus()).optional())
-    .flatten().trim().map((a) => num.tryParse(a)))
+  ..primitive(digit()
+      .plus()
+      .seq(char('.').seq(digit().plus()).optional())
+      .flatten()
+      .trim()
+      .map((a) => num.tryParse(a)))
   ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 ```
 
