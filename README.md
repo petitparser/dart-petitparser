@@ -1,7 +1,7 @@
 PetitParser for Dart
 ====================
 
-[![Pub Package](https://img.shields.io/pub/v/petitparser.svg)](https://pub.dartlang.org/packages/petitparser)
+[![Pub Package](https://img.shields.io/pub/v/petitparser.svg)](https://pub.dev/packages/petitparser)
 [![Build Status](https://travis-ci.org/petitparser/dart-petitparser.svg)](https://travis-ci.org/petitparser/dart-petitparser)
 [![Coverage Status](https://coveralls.io/repos/petitparser/dart-petitparser/badge.svg)](https://coveralls.io/r/petitparser/dart-petitparser)
 [![GitHub Issues](https://img.shields.io/github/issues/petitparser/dart-petitparser.svg)](https://github.com/petitparser/dart-petitparser/issues)
@@ -13,7 +13,7 @@ Grammars for programming languages are traditionally specified statically. They 
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/petitparser/dart-petitparser). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](http://stackoverflow.com/questions/tagged/petitparser+dart).
 
-The package is hosted on [dart packages](https://pub.dartlang.org/packages/petitparser). Up-to-date [API documentation](https://pub.dartlang.org/documentation/petitparser/latest/) is created with every release.
+The package is hosted on [dart packages](https://pub.dev/packages/petitparser). Up-to-date [API documentation](https://pub.dev/documentation/petitparser/latest/) is created with every release.
 
 
 Tutorial
@@ -23,7 +23,7 @@ Below are step by step instructions of how to write your first parser. More elab
 
 ### Installation
 
-Follow the installation instructions on [dart packages](https://pub.dartlang.org/packages/petitparser#-installing-tab-).
+Follow the installation instructions on [dart packages](https://pub.dev/packages/petitparser#-installing-tab-).
 
 Import the package into your Dart code using:
 
