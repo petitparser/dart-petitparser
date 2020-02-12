@@ -16,6 +16,8 @@
     * The grammar builder has been moved to`package:petitparser/definition.dart`.
 * Breaking changes:
     * `Parser` is no longer a `Pattern`, but can be converted to one with `toPattern`.
+    * `anyIn` has been removed in favor of the already existing and equivalent `anyOf` parser.
+    * `pick` and `permute` are defined on `Parser<List>`, thus they won't be available on the more generic `Parser<dynamic>` any longer. Prefix the operators with a `castList` operator.
 
 ## 2.5.0
 
