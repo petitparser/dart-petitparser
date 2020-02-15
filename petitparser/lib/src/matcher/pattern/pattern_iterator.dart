@@ -2,9 +2,10 @@ library petitparser.matcher.pattern_iterator;
 
 import '../../core/parser.dart';
 import 'parser_match.dart';
+import 'parser_pattern.dart';
 
-class PatternIterator extends Iterator<Match> {
-  final Pattern pattern;
+class PatternIterator extends Iterator<ParserMatch> {
+  final ParserPattern pattern;
   final Parser parser;
   final String input;
   int start;
@@ -12,7 +13,7 @@ class PatternIterator extends Iterator<Match> {
   PatternIterator(this.pattern, this.parser, this.input, this.start);
 
   @override
-  Match current;
+  ParserMatch current;
 
   @override
   bool moveNext() {

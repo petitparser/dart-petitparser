@@ -21,8 +21,8 @@ class ParserPattern implements Pattern {
   /// If the pattern matches the empty string at some point, the next match is
   /// found by starting at the previous match's end plus one.
   @override
-  Iterable<Match> allMatches(String string, [int start = 0]) =>
-      PatternIterable(this, parser, string, start);
+  Iterable<ParserMatch> allMatches(String string, [int start = 0]) =>
+      PatternIterable(this, string, start);
 
   /// Match this pattern against the start of [string].
   ///
@@ -32,7 +32,7 @@ class ParserPattern implements Pattern {
   ///
   /// Returns `null` if the pattern doesn't match.
   @override
-  Match matchAsPrefix(String string, [int start = 0]) {
+  ParserMatch matchAsPrefix(String string, [int start = 0]) {
     final end = parser.fastParseOn(string, start);
     return end < 0 ? null : ParserMatch(this, string, start, end);
   }

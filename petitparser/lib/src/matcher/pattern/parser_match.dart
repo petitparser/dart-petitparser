@@ -2,10 +2,12 @@ library petitparser.matcher.parser_match;
 
 import 'package:meta/meta.dart';
 
+import 'parser_pattern.dart';
+
 @immutable
 class ParserMatch implements Match {
   @override
-  final Pattern pattern;
+  final ParserPattern pattern;
 
   @override
   final String input;
