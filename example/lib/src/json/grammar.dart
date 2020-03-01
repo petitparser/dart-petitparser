@@ -13,25 +13,14 @@ class JsonGrammarDefinition extends GrammarDefinition {
 
   Parser start() => ref(value).end();
   Parser token(Object source, [String name]) {
-    Parser parser;
-    String expected;
     if (source is String) {
-      if (source.length == 1) {
-        parser = char(source);
-      } else {
-        parser = string(source);
-      }
-      expected = name ?? source;
+      return source.toParser(message: 'Expected ${name ?? source}').trim();
     } else if (source is Parser) {
-      parser = source;
-      expected = name;
+      ArgumentError.checkNotNull(name, 'name');
+      return source.flatten('Expected $name').trim();
     } else {
       throw ArgumentError('Unknow token type: $source.');
     }
-    if (expected == null) {
-      throw ArgumentError('Missing token name: $source');
-    }
-    return parser.flatten(expected).trim();
   }
 
   Parser array() =>

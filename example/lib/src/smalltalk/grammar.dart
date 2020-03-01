@@ -15,7 +15,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
     if (input is Parser) {
       return input.token().trim(ref(spacer));
     } else if (input is String) {
-      return token(input.length == 1 ? char(input) : string(input));
+      return token(input.toParser());
     }
     throw ArgumentError.value(input, 'invalid token parser');
   }

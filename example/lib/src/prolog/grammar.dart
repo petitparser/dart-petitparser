@@ -43,10 +43,9 @@ class PrologGrammarDefinition extends GrammarDefinition {
     if (parser is Parser) {
       return parser.flatten(message).trim(ref(space));
     } else if (parser is String) {
-      return token(
-        parser.length == 1 ? char(parser) : string(parser),
-        message ?? '$parser expected',
-      );
+      return parser
+          .toParser(message: message ?? '$parser expected')
+          .trim(ref(space));
     } else {
       throw ArgumentError.value(parser, 'parser', 'Invalid parser type');
     }

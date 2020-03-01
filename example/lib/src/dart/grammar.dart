@@ -13,7 +13,7 @@ class DartGrammarDefinition extends GrammarDefinition {
     if (input is Parser) {
       return input.token().trim(ref(HIDDEN_STUFF));
     } else if (input is String) {
-      return token(input.length == 1 ? char(input) : string(input));
+      return token(input.toParser());
     } else if (input is Function) {
       return token(ref(input));
     }
