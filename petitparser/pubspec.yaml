@@ -1,7 +1,6 @@
 name: petitparser
 version: 3.0.2
 
-author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/petitparser/dart-petitparser
 description: A dynamic parser framework to build efficient grammars and parsers
   quickly.

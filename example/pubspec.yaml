@@ -1,6 +1,5 @@
 name: example
 
-author: Lukas Renggli <renggli@gmail.com>
 homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that
   illustrate the PetitParser framework.
