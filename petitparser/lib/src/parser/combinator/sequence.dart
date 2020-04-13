@@ -50,8 +50,8 @@ class SequenceParser extends ListParser<List> {
 
   @override
   int fastParseOn(String buffer, int position) {
-    for (final parser in children) {
-      position = parser.fastParseOn(buffer, position);
+    for (var i = 0; i < children.length; i++) {
+      position = children[i].fastParseOn(buffer, position);
       if (position < 0) {
         return position;
       }

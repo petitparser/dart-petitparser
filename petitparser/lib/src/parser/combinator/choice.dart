@@ -53,8 +53,8 @@ class ChoiceParser extends ListParser {
   @override
   int fastParseOn(String buffer, int position) {
     var result = -1;
-    for (final parser in children) {
-      result = parser.fastParseOn(buffer, position);
+    for (var i = 0; i < children.length; i++) {
+      result = children[i].fastParseOn(buffer, position);
       if (result >= 0) {
         return result;
       }
