@@ -111,6 +111,9 @@ void main() {
   test('testStatements8', () {
     return validate('.1', definition.sequence);
   });
+  test('testStatements9', () {
+    return validate('a := 1. b := 2', definition.sequence);
+  });
   test('testTemporaries1', () {
     return validate('| a |', definition.sequence);
   });

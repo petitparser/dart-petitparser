@@ -70,7 +70,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       ref(token, '(').seq(ref(arrayItem).star()).seq(ref(token, ')'));
   Parser assignment() => ref(variable).seq(ref(assignmentToken));
   Parser assignmentToken() => ref(token, ':=');
-  Parser binary() => pattern('!%&*+,-/<=>?@\\|~').plus();
+  Parser binary() => pattern('!%&*+,/<=>?@\\|~-').plus();
   Parser binaryExpression() =>
       ref(unaryExpression).seq(ref(binaryMessage).star());
   Parser binaryMessage() => ref(binaryToken).seq(ref(unaryExpression));
