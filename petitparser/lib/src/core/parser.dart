@@ -22,9 +22,8 @@ abstract class Parser<T> {
 
   /// Primitive method doing the actual parsing.
   ///
-  /// This method is an optimized version of [Parser.parseOn(Context)] that is
-  /// getting its speed advantage by avoiding any unnecessary memory
-  /// allocations.
+  /// This method is an optimized version of [Parser.parseOn] that is getting
+  /// its speed advantage by avoiding any unnecessary memory allocations.
   ///
   /// The method is overridden in most concrete subclasses to implement the
   /// optimized logic. As an input the method takes a [buffer] and the current
@@ -73,18 +72,18 @@ abstract class Parser<T> {
         hasEqualChildren(other, seen);
   }
 
-  /// Compare the properties of two parsers. Normally this method should not be
-  /// called directly, instead use [Parser#equals].
+  /// Compare the properties of two parsers.
   ///
   /// Override this method in all subclasses that add new state.
+  @protected
   bool hasEqualProperties(covariant Parser<T> other) => true;
 
-  /// Compare the children of two parsers. Normally this method should not be
-  /// called directly, instead use [Parser#equals].
+  /// Compare the children of two parsers.
   ///
   /// Normally this method does not need to be overridden, as this method works
-  /// generically on the returned [Parser#children].
-  bool hasEqualChildren(Parser other, Set<Parser> seen) {
+  /// generically on the returned [Parser.children].
+  @protected
+  bool hasEqualChildren(covariant Parser<T> other, Set<Parser> seen) {
     final thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;
