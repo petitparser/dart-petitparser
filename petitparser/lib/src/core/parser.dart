@@ -58,9 +58,10 @@ abstract class Parser<T> {
 
   /// Recursively tests for structural equality of two parsers.
   ///
-  /// The code can automatically deals with recursive parsers and parsers that
-  /// refer to other parsers. This code is supposed to be overridden by parsers
-  /// that add other state.
+  /// The code automatically deals with recursive parsers and parsers that
+  /// refer to other parsers. Do not override this method, instead customize
+  /// [Parser.hasEqualProperties] and [Parser.hasEqualChildren].
+  @nonVirtual
   bool isEqualTo(Parser other, [Set<Parser> seen]) {
     seen ??= {};
     if (this == other || seen.contains(this)) {
@@ -76,6 +77,7 @@ abstract class Parser<T> {
   ///
   /// Override this method in all subclasses that add new state.
   @protected
+  @mustCallSuper
   bool hasEqualProperties(covariant Parser<T> other) => true;
 
   /// Compare the children of two parsers.
@@ -83,6 +85,7 @@ abstract class Parser<T> {
   /// Normally this method does not need to be overridden, as this method works
   /// generically on the returned [Parser.children].
   @protected
+  @mustCallSuper
   bool hasEqualChildren(covariant Parser<T> other, Set<Parser> seen) {
     final thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
