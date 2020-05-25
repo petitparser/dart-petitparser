@@ -17,8 +17,8 @@ Parser transformParser(Parser parser, TransformationHandler handler) {
   for (final each in allParser(parser)) {
     mapping[each] = handler(each.copy());
   }
-  final seen = Set.of(mapping.values);
-  final todo = List.of(mapping.values);
+  final todo = [...mapping.values];
+  final seen = {...mapping.values};
   while (todo.isNotEmpty) {
     final parent = todo.removeLast();
     for (final child in parent.children) {

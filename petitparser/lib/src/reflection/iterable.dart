@@ -14,7 +14,7 @@ import '../core/parser.dart';
 ///
 Iterable<Parser> allParser(Parser root) sync* {
   final todo = [root];
-  final seen = Set.of(todo);
+  final seen = {root};
   while (todo.isNotEmpty) {
     final current = todo.removeLast();
     yield current;

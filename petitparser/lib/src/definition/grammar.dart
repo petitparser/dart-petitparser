@@ -99,7 +99,7 @@ abstract class GrammarDefinition {
     Parser _dereference(Reference reference) {
       var parser = mapping[reference];
       if (parser == null) {
-        final references = [reference];
+        final references = {reference};
         parser = reference.resolve();
         while (parser is Reference) {
           final Reference otherReference = parser;
@@ -117,7 +117,7 @@ abstract class GrammarDefinition {
     }
 
     final todo = [_dereference(reference)];
-    final seen = Set.of(todo);
+    final seen = {...todo};
 
     while (todo.isNotEmpty) {
       final parent = todo.removeLast();
