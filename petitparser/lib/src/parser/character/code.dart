@@ -13,15 +13,14 @@ int toCharCode(Object element) {
 }
 
 /// Converts a character to a readable string.
-String toReadableString(Object element) {
-  if (element is String && element.length > 1) {
-    final buffer = StringBuffer();
-    for (var i = 0; i < element.length; i++) {
-      buffer.write(toReadableString(element[i]));
-    }
-    return buffer.toString();
-  }
-  final code = toCharCode(element);
+String toReadableString(Object element) => element is String
+    ? _toFormattedString(element)
+    : _toFormattedChar(toCharCode(element));
+
+String _toFormattedString(String input) =>
+    input.codeUnits.map(_toFormattedChar).join();
+
+String _toFormattedChar(int code) {
   switch (code) {
     case 0x08:
       return '\\b'; // backspace
