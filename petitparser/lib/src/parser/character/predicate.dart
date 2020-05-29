@@ -1,6 +1,9 @@
 library petitparser.parser.character.predicate;
 
+import 'package:meta/meta.dart';
+
 /// Abstract character predicate class.
+@immutable
 abstract class CharacterPredicate {
   const CharacterPredicate();
 

@@ -547,6 +547,37 @@ void main() {
       test('with error', () {
         expect(() => pattern('c-a'), throwsArgumentError);
       });
+      group('large ranges', () {
+        final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
+        expectCommon(parser);
+        test('mathematical symbols', () {
+          expectSuccess(parser, '∉', '∉');
+          expectSuccess(parser, '⟃', '⟃');
+          expectSuccess(parser, '⦻', '⦻');
+          expectFailure(parser, 'a', 0,
+              '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected');
+          expectFailure(parser, '');
+        });
+      });
+      group('without anything', () {
+        final parser = pattern('');
+        expectCommon(parser);
+        test('test', () {
+          for (var i = 0; i <= 0xffff; i++) {
+            expectFailure(parser, String.fromCharCode(i), 0, '[] expected');
+          }
+        });
+      });
+      group('with everything', () {
+        final parser = pattern('\x00-\uffff');
+        expectCommon(parser);
+        test('test', () {
+          for (var i = 0; i <= 0xffff; i++) {
+            final character = String.fromCharCode(i);
+            expectSuccess(parser, character, character);
+          }
+        });
+      });
     });
     group('range', () {
       final parser = range('e', 'o');

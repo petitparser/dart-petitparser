@@ -46,7 +46,7 @@ final Parser<RangeCharPredicate> range_ =
         ));
 
 /// Parser that reads a sequence of single characters or ranges.
-final Parser<CharacterPredicate> sequence_ = range_.or(single_).plus().map(
+final Parser<CharacterPredicate> sequence_ = range_.or(single_).star().map(
     (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
 
 /// Parser that reads a possibly negated sequence of predicates.
