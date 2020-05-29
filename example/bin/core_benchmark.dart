@@ -26,7 +26,7 @@ Function charTest(List<String> inputs, Parser parser) {
 }
 
 final List<String> characters =
-    List.generate(256, (value) => String.fromCharCode(value));
+    List.generate(0xff, (value) => String.fromCharCode(value));
 
 // String tests
 
@@ -134,8 +134,8 @@ void main() {
     final parseOnTime = benchmark(benchmarks[name](false));
     final fastParseOnTime = benchmark(benchmarks[name](true));
     print('$name\t'
-        '${parseOnTime.toStringAsFixed(6)}\t'
-        '${fastParseOnTime.toStringAsFixed(6)}\t'
-        '${(100 * parseOnTime / fastParseOnTime).round() - 100}%');
+        '${parseOnTime.toStringAsFixed(3)}\t'
+        '${fastParseOnTime.toStringAsFixed(3)}\t'
+        '${percentChange(parseOnTime, fastParseOnTime).round()}%');
   }
 }

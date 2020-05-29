@@ -34,9 +34,9 @@ void compare(String regExp, Parser parser, String input) {
       .map((matcher) => matcher.group(0))
       .toList());
   print('$regExp\t'
-      '${nativeTime.toStringAsFixed(6)}\t'
-      '${parserTime.toStringAsFixed(6)}\t'
-      '${(100 * nativeTime / parserTime).round() - 100}%');
+      '${nativeTime.toStringAsFixed(3)}\t'
+      '${parserTime.toStringAsFixed(3)}\t'
+      '${percentChange(nativeTime, parserTime).round()}%');
 }
 
 void main() {

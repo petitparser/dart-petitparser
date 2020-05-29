@@ -31,23 +31,23 @@ const String jsonNested = '''{"items":{"item":[{"id": "0001","type": "donut",
 final JsonParser json = JsonParser();
 
 Object native(String input) => convert.json.decode(input);
-Object custom(String input) => json.parse(input).value;
+Object parser(String input) => json.parse(input).value;
 
 void compare(String name, String input) {
   final nativeResult = native(input);
-  final customResult = custom(input);
+  final parserResult = parser(input);
 
-  if (nativeResult.toString() != customResult.toString()) {
+  if (nativeResult.toString() != parserResult.toString()) {
     print('$name\nERROR');
     return;
   }
 
   final nativeTime = benchmark(() => native(input));
-  final customTime = benchmark(() => custom(input));
+  final parserTime = benchmark(() => parser(input));
   print('$name\t'
-      '${nativeTime.toStringAsFixed(6)}\t'
-      '${customTime.toStringAsFixed(6)}\t'
-      '${(100 * nativeTime / customTime).round() - 100}%');
+      '${nativeTime.toStringAsFixed(3)}\t'
+      '${parserTime.toStringAsFixed(3)}\t'
+      '${percentChange(nativeTime, parserTime).round()}%');
 }
 
 void main() {
