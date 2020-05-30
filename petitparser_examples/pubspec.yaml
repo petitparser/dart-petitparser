@@ -1,5 +1,5 @@
 name: petitparser_examples
-version: 3.0.3
+version: 3.0.4
 
 homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that
