@@ -1,6 +1,6 @@
 library petitparser.example.core_benchmark;
 
-import 'package:example/json.dart';
+import 'package:petitparser_examples/json.dart';
 import 'package:petitparser/petitparser.dart';
 
 import 'benchmark.dart';

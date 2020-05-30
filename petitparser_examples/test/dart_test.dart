@@ -1,6 +1,6 @@
 library petitparser.example.test.dart_test;
 
-import 'package:example/dart.dart';
+import 'package:petitparser_examples/dart.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 

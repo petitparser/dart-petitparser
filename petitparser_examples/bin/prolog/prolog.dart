@@ -3,7 +3,7 @@ library petitparser.example.bin.prolog;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:example/prolog.dart';
+import 'package:petitparser_examples/prolog.dart';
 
 /// Entry point for the command line interpreter.
 void main(List<String> arguments) {

@@ -1,6 +1,6 @@
 library petitparser.example.test.smalltalk_test;
 
-import 'package:example/smalltalk.dart';
+import 'package:petitparser_examples/smalltalk.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 

@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:example/lisp.dart';
+import 'package:petitparser_examples/lisp.dart';
 import 'package:petitparser/petitparser.dart';
 
 /// Read, evaluate, print loop.

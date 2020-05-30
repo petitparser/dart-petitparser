@@ -4,4 +4,4 @@
 /// Unfortunately, it is unable to parse all valid Dart programs yet.
 library petitparser.example.dart;
 
-export 'package:example/src/dart/grammar.dart';
+export 'package:petitparser_examples/src/dart/grammar.dart';

@@ -1,6 +1,6 @@
 library petitparser.example.test.lisp_test;
 
-import 'package:example/lisp.dart';
+import 'package:petitparser_examples/lisp.dart';
 import 'package:test/test.dart';
 
 const Matcher isName = TypeMatcher<Name>();

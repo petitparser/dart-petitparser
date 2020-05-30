@@ -1,6 +1,6 @@
 library petitparser.example.test.prolog_test;
 
-import 'package:example/prolog.dart';
+import 'package:petitparser_examples/prolog.dart';
 import 'package:test/test.dart';
 
 void main() {

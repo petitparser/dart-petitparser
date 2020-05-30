@@ -2,7 +2,7 @@ library petitparser.example.web.lisp;
 
 import 'dart:html';
 
-import 'package:example/lisp.dart';
+import 'package:petitparser_examples/lisp.dart';
 
 final TextAreaElement input = querySelector('#input');
 final ParagraphElement output = querySelector('#output');
