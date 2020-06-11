@@ -5,7 +5,6 @@ import 'constant.dart';
 import 'lookup.dart';
 import 'predicate.dart';
 import 'range.dart';
-import 'ranges.dart';
 
 /// Creates an optimized character from a string.
 CharacterPredicate optimizedString(String string) {
@@ -40,7 +39,7 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
     }
   }
 
-  // 3. Build the best resulting predicates:
+  // 3. Build the best resulting predicate:
   final matchingCount = mergedRanges.fold(
       0, (current, range) => current + (range.stop - range.start + 1));
   if (matchingCount == 0) {
@@ -52,18 +51,6 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
         ? SingleCharPredicate(mergedRanges[0].start)
         : mergedRanges[0];
   } else {
-    final rangesSize = 2 * mergedRanges.length;
-    final rangesPredicate = RangesCharPredicate(
-        mergedRanges.length,
-        mergedRanges.map((range) => range.start).toList(growable: false),
-        mergedRanges.map((range) => range.stop).toList(growable: false));
-    // Arbitrary trade-off: Do not create lookup tables larger than 0xff
-    // elements, unless the range tables are larger.
-    final lookupSize = mergedRanges.last.stop - mergedRanges.first.start;
-    if (lookupSize <= 0xff || lookupSize <= rangesSize) {
-      return LookupCharPredicate(
-          mergedRanges.first.start, mergedRanges.last.stop, rangesPredicate);
-    }
-    return rangesPredicate;
+    return LookupCharPredicate(mergedRanges);
   }
 }
