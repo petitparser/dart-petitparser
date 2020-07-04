@@ -155,15 +155,18 @@ final term = undefined();
 final prod = undefined();
 final prim = undefined();
 
-term.set(prod.seq(char('+').trim()).seq(term).map((values) {
-  return values[0] + values[2];
-}).or(prod));
-prod.set(prim.seq(char('*').trim()).seq(prod).map((values) {
-  return values[0] * values[2];
-}).or(prim));
-prim.set(char('(').trim().seq(term).seq(char(')'.trim())).map((values) {
-  return values[1];
-}).or(number));
+final add = (prod & char('+').trim() & term)
+    .map((values) => values[0] + values[2]);
+term.set(add.or(prod));
+
+final mul = (prim & char('*').trim() & prod)
+    .map((values) => values[0] * values[2]);
+prod.set(mul.or(prim));
+
+final parens = (char('(').trim() & term & char(')').trim())
+    .map((values) => values[1]);
+final number = digit().plus().flatten().trim().map(int.parse);
+prim.set(parens.or(number));
 ```
 
 To make sure that our parser consumes all input we wrap it with the `end()` parser into the start production:
