@@ -4,7 +4,7 @@ import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';
 import '../parser/predicate/any.dart';
-import '../parser/repeater/possesive.dart';
+import '../parser/repeater/possessive.dart';
 import 'matches.dart';
 
 extension MatchesSkippingParser<T> on Parser<T> {

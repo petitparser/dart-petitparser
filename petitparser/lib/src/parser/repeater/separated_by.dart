@@ -4,7 +4,7 @@ import '../../core/parser.dart';
 import '../action/map.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
-import '../repeater/possesive.dart';
+import '../repeater/possessive.dart';
 
 extension SeparatedBy<T> on Parser<T> {
   /// Returns a parser that consumes the receiver one or more times separated

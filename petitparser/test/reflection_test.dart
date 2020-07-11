@@ -138,17 +138,17 @@ void main() {
     });
   });
   group('optimize', () {
-    test('remove setables', () {
+    test('remove settables', () {
       final input = lowercase().settable();
       final output = removeSettables(input);
       expect(output.isEqualTo(lowercase()), isTrue);
     });
-    test('remove nested setables', () {
+    test('remove nested settables', () {
       final input = lowercase().settable().star();
       final output = removeSettables(input);
       expect(output.isEqualTo(lowercase().star()), isTrue);
     });
-    test('remove double setables', () {
+    test('remove double settables', () {
       final input = lowercase().settable().settable();
       final output = removeSettables(input);
       expect(output.isEqualTo(lowercase()), isTrue);

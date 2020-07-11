@@ -19,7 +19,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
       ArgumentError.checkNotNull(name, 'name');
       return source.flatten('Expected $name').trim();
     } else {
-      throw ArgumentError('Unknow token type: $source.');
+      throw ArgumentError('Unknown token type: $source.');
     }
   }
 

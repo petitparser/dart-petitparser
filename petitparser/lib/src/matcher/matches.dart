@@ -6,7 +6,7 @@ import '../parser/combinator/and.dart';
 import '../parser/combinator/choice.dart';
 import '../parser/combinator/sequence.dart';
 import '../parser/predicate/any.dart';
-import '../parser/repeater/possesive.dart';
+import '../parser/repeater/possessive.dart';
 import 'matches_skipping.dart';
 
 extension MatchesParser<T> on Parser<T> {

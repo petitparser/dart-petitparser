@@ -3,7 +3,7 @@ library petitparser.test.parser_test;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-import 'testutils.dart';
+import 'test_utils.dart';
 
 void expectCommon(Parser parser, {bool immutable = false}) {
   test('copy', () {
@@ -71,7 +71,7 @@ void main() {
         expectSuccess(parser, '1', '1');
         expectFailure(parser, 'a', 0, 'digit expected');
       });
-      test('divertion', () {
+      test('diversion', () {
         final parser = digit()
             .callCC((continuation, context) => letter().parseOn(context));
         expectSuccess(parser, 'a', 'a');
@@ -1084,7 +1084,7 @@ void main() {
         final parser = char('a').repeat(2, unbounded);
         expectSuccess(parser, input.join(), input);
       });
-      test('repeat errorous', () {
+      test('repeat erroneous', () {
         expect(() => char('a').repeat(-1, 1), throwsArgumentError);
         expect(() => char('a').repeat(2, 1), throwsArgumentError);
       });

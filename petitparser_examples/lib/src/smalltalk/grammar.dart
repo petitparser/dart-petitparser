@@ -20,7 +20,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       ArgumentError.checkNotNull(message, 'message');
       return source.flatten('Expected $message').trim(ref(spacer));
     } else {
-      throw ArgumentError('Unknow token type: $source.');
+      throw ArgumentError('Unknown token type: $source.');
     }
   }
 

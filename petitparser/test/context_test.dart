@@ -31,7 +31,7 @@ void main() {
     expect(success.isFailure, isFalse);
     expect(success.toString(), 'Success[2:1]: result');
   });
-  test('sucess with mapping', () {
+  test('success with mapping', () {
     final success = context.success('result', 2).map((value) {
       expect(value, 'result');
       return 123;

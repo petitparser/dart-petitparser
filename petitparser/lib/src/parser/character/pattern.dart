@@ -6,7 +6,7 @@ import '../combinator/choice.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
 import '../predicate/any.dart';
-import '../repeater/possesive.dart';
+import '../repeater/possessive.dart';
 import 'char.dart';
 import 'code.dart';
 import 'not.dart';

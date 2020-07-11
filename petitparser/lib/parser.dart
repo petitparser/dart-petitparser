@@ -41,7 +41,7 @@ export 'src/parser/predicate/string.dart';
 export 'src/parser/repeater/greedy.dart';
 export 'src/parser/repeater/lazy.dart';
 export 'src/parser/repeater/limited.dart';
-export 'src/parser/repeater/possesive.dart';
+export 'src/parser/repeater/possessive.dart';
 export 'src/parser/repeater/repeating.dart';
 export 'src/parser/repeater/separated_by.dart';
 export 'src/parser/repeater/unbounded.dart';

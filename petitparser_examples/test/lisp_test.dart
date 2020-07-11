@@ -341,7 +341,7 @@ void main() {
       expect(exec('(if true 1 2)'), 1);
       expect(exec('(if false 1 2)'), 2);
     });
-    test('If (lazyness)', () {
+    test('If (laziness)', () {
       expect(exec('(if (= 1 1) 3 4)'), 3);
       expect(exec('(if (= 1 2) 3 4)'), 4);
     });
@@ -374,7 +374,7 @@ void main() {
       expect(exec('(and false false true)'), isFalse);
       expect(exec('(and false false false)'), isFalse);
     });
-    test('And (lazyness)', () {
+    test('And (laziness)', () {
       final env = standard.create();
       env.define(Name('a'), null);
       exec('(and false (set! a true))', env);
@@ -399,7 +399,7 @@ void main() {
       expect(exec('(or false false true)'), isTrue);
       expect(exec('(or false false false)'), isFalse);
     });
-    test('Or (lazyness)', () {
+    test('Or (laziness)', () {
       final env = standard.create();
       env.define(Name('a'), null);
       exec('(or true (set! a true))', env);

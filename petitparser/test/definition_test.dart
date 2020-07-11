@@ -3,7 +3,7 @@ library petitparser.test.definition_test;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'testutils.dart';
+import 'test_utils.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
   Parser start() => ref(list).end();

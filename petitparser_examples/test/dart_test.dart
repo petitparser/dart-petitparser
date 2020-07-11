@@ -285,13 +285,13 @@ void main() {
     test('assert', () {
       expect('assert(a);', accept(statement));
     });
-    test('invokation', () {
+    test('invocation', () {
       expect('a();', accept(statement));
       expect('a(b);', accept(statement));
       expect('a(b, c);', accept(statement));
       expect('a(b, c, d);', accept(statement));
     });
-    test('invokation (named)', () {
+    test('invocation (named)', () {
       expect('a(b: c);', accept(statement));
       expect('a(b: c, d: e);', accept(statement));
       expect('a(b: c, d: e, f: g);', accept(statement));
@@ -488,7 +488,7 @@ void main() {
       expect("'missing quote", isNot(accept(parser)));
     });
   });
-  group('offical', () {
+  group('official', () {
     test('identifier', () {
       final parser = grammar.build(start: grammar.identifier).end();
       expect('foo', accept(parser));

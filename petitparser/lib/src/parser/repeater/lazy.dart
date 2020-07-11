@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'greedy.dart';
 import 'limited.dart';
-import 'possesive.dart';
+import 'possessive.dart';
 import 'unbounded.dart';
 
 extension LazyRepeatingParserExtension<T> on Parser<T> {

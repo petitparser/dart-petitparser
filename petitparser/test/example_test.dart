@@ -3,7 +3,7 @@ library petitparser.test.example_test;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'testutils.dart';
+import 'test_utils.dart';
 
 void main() {
   final identifier = letter().seq(word().star()).flatten();
