@@ -32,7 +32,7 @@
 ## 2.3.0
 
 * Dart 2.3 compatibility and requirement.
-* The expression builder supports building expression with parens.
+* The expression builder supports building expression with parenthesis.
 * Improved the documentation on greedy and lazy parsers.
 * Add a prolog parser and interpreter example.
 * Numerous optimizations and improvements.
@@ -150,7 +150,7 @@
 * Cleanup dependencies:
   * browser is now `>=0.10.0 <0.11.0`.
   * unittest is now `>=0.11.0 <0.12.0`.
-  * Remove explicit dependency on matcher.
+  * Remove explicit dependency on matcher package.
 * Make the JSON parser twice as fast.
 * Reformat tests.
 

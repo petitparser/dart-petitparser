@@ -33,7 +33,7 @@ import 'package:petitparser/petitparser.dart';
 
 ### Writing a Simple Grammar
 
-Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits is defined as follows:
+Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits are defined as follows:
 
 ```dart
 final id = letter() & (letter() | digit()).star();
@@ -63,16 +63,16 @@ final id1 = id.parse('yeah');
 final id2 = id.parse('f12');
 ```
 
-The method `Parser.parse` returns a parse `Result`, which is either an instance of `Success` or `Failure`. In both examples above we are successful and can retrieve the parse result using `Success.value`:
+The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples above we are successful and can retrieve the resulting value using `Success.value`:
 
 ```dart
 print(id1.value);                   // ['y', ['e', 'a', 'h']]
 print(id2.value);                   // ['f', ['1', '2']]
 ```
 
-While it seems odd to get these nested arrays with characters as a return value, this is the default decomposition of the input into a parse tree. We'll see in a while how that can be customized.
+While it seems odd to get these nested arrays with characters as a return value, this is the default decomposition of the input into a parse-tree. We'll see in a while how that can be customized.
 
-If we try to parse something invalid we get an instance of `Failure` as an answer and we can retrieve a descriptive error message using `Failure.message`:
+If we try to parse something invalid we get an instance of `Failure` and we can retrieve a descriptive error message using `Failure.message`:
 
 ```dart
 final id3 = id.parse('123');
@@ -80,7 +80,7 @@ print(id3.message);                 // 'letter expected'
 print(id3.position);                // 0
 ```
 
-Trying to retrieve the parse result by calling `Failure.value` would throw the exception `ParserError`. `Context.isSuccess` and `Context.isFailure` can be used to decide if the parse was successful.
+Trying to retrieve result by calling `Failure.value` would throw the exception `ParserError`. `Context.isSuccess` and `Context.isFailure` can be used to decide if the parsing was successful.
 
 If you are only interested if a given string matches or not you can use the helper method `Parser.accept`:
 
@@ -91,7 +91,7 @@ print(id.accept('123'));            // false
 
 ### Different Kinds of Parsers
 
-PetitParser provide a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. The terminal parsers are the most simple ones. We've already seen a few of those:
+PetitParser provide a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. The terminal parsers are simplest. We've already seen a few of those:
 
 - `char('a')` parses the character *a*.
 - `string('abc')` parses the string *abc*.
@@ -169,7 +169,7 @@ final number = digit().plus().flatten().trim().map(int.parse);
 prim.set(parens.or(number));
 ```
 
-To make sure that our parser consumes all input we wrap it with the `end()` parser into the start production:
+To make sure our parser consumes all input we wrap it with the `end()` parser into the start production:
 
 ```dart
 final parser = term.end();
@@ -192,7 +192,7 @@ The following code creates the empty expression builder:
 final builder = ExpressionBuilder();
 ```
 
-Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating point numbers, not just integers. In the same group we add support for parenthesis:
+Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating-point numbers, not just integers. In the same group we add support for the parenthesis:
 
 ```dart
 builder.group()
@@ -225,7 +225,7 @@ builder.group()
   ..left(char('-').trim(), (a, op, b) => a - b);
 ```
 
-Finally we can build the parser:
+Finally, we can build the parser:
 
 ```dart
 final parser = builder.build().end();
