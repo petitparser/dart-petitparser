@@ -14,7 +14,7 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   Parser<T> end([String message = 'end of input expected']) =>
-      SequenceParser([this, endOfInput(message)]).pick(0);
+      SequenceParser([this, endOfInput(message)]).pick<T>(0);
 }
 
 /// Returns a parser that succeeds at the end of input.

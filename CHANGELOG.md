@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Fix missing type information on `eof` and `failure` parser.
+
 ## 3.0.0
 
 * Dart 2.7 compatibility and requirement (extension methods).
