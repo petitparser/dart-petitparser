@@ -1,5 +1,6 @@
 library petitparser.example.test.prolog_test;
 
+import 'package:petitparser/petitparser.dart';
 import 'package:petitparser_examples/prolog.dart';
 import 'package:test/test.dart';
 
@@ -15,11 +16,25 @@ void main() {
           'foo(bar, zork) :- true.\n\n'
           'bok(X, Y) :- foo(X, Y), foo(Y, X).');
     });
+    test('parse error', () {
+      expect(
+          () => Database.parse('1'),
+          throwsA(isA<ParserException>()
+              .having((e) => e.message, 'message', 'end of input expected')
+              .having((e) => e.offset, 'offset', 0)));
+    });
   });
   group('term', () {
     test('toString', () {
       final query = Term.parse('foo(bar, zork)');
       expect(query.toString(), 'foo(bar, zork)');
+    });
+    test('parse error', () {
+      expect(
+          () => Term.parse('1'),
+          throwsA(isA<ParserException>()
+              .having((e) => e.message, 'message', 'Value expected')
+              .having((e) => e.offset, 'offset', 0)));
     });
   });
   group('Forrester family', () {
@@ -48,7 +63,7 @@ void main() {
             Term.parse('father_child(eric, thorne)'),
           ]));
     });
-    test('children of sephanie', () async {
+    test('children of stephanie', () async {
       final query = Term.parse('mother_child(stephanie, X)');
       expect(
           db.query(query),
