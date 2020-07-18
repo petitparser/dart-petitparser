@@ -1,4 +1,4 @@
-/// This package contains a complete implementation of [JSON](http://json.org/).
+/// This package contains a complete implementation of [JSON](https://json.org/).
 ///
 /// [JsonParser] creates a nested Dart objects from a given JSON string. For
 /// example the following code prints `{a: 1, b: [2, 3.4], c: false}`:

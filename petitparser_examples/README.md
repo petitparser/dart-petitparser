@@ -16,7 +16,7 @@ This example contains the grammar of the Dart programming language. This is base
 
 ### JSON
 
-This example contains a complete implementation of [JSON](http://json.org/). It is a simple grammar that can be used for benchmarking with the native implementation.
+This example contains a complete implementation of [JSON](https://json.org/). It is a simple grammar that can be used for benchmarking with the native implementation.
 
 ### Lisp
 

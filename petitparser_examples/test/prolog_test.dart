@@ -127,7 +127,7 @@ void main() {
     });
   });
   group('Einstein\'s Problem', () {
-    // http://mathforum.org/library/drmath/view/60971.html
+    // https://mathforum.org/library/drmath/view/60971.html
     final db = Database.parse('''
       exists(A, list(A, _, _, _, _)).
       exists(A, list(_, A, _, _, _)).
