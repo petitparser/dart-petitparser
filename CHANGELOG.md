@@ -3,6 +3,8 @@
 ## 3.1.0
 
 * Fix missing type information on `eof` and `failure` parser.
+* Optimize character predicates by using lookup tables.
+* Improvements to documentation and examples.
 
 ## 3.0.0
 
