@@ -1,5 +1,3 @@
-library petitparser.parser.character.code;
-
 /// Converts an object to a character code.
 int toCharCode(Object element) {
   if (element is num) {

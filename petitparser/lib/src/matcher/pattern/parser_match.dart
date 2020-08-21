@@ -1,5 +1,3 @@
-library petitparser.matcher.parser_match;
-
 import 'package:meta/meta.dart';
 
 import 'parser_pattern.dart';

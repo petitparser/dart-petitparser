@@ -1,5 +1,3 @@
-library petitparser.example.bin.prolog;
-
 import 'dart:convert';
 import 'dart:io';
 

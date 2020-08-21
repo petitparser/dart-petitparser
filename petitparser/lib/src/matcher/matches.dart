@@ -1,5 +1,3 @@
-library petitparser.matcher.matches;
-
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/and.dart';

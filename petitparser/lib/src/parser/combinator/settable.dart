@@ -1,5 +1,3 @@
-library petitparser.parser.combinator.settable;
-
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import '../misc/failure.dart';

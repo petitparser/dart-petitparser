@@ -1,5 +1,3 @@
-library petitparser.reflection.transform;
-
 import '../core/parser.dart';
 import 'iterable.dart';
 

@@ -1,5 +1,3 @@
-library petitparser.example.prolog.grammar;
-
 import 'package:petitparser/petitparser.dart';
 
 /// Prolog grammar.

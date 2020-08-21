@@ -1,5 +1,3 @@
-library petitparser.context.context;
-
 import 'package:meta/meta.dart';
 
 import '../core/token.dart';

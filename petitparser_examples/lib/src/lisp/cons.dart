@@ -1,5 +1,3 @@
-library petitparser.example.lisp.cons;
-
 /// The basic data structure of LISP.
 class Cons {
   /// The first object.

@@ -1,5 +1,3 @@
-library petitparser.reflection.optimize;
-
 import '../core/parser.dart';
 import '../parser/combinator/settable.dart';
 import 'transform.dart';

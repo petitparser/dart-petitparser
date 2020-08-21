@@ -1,5 +1,3 @@
-library petitparser.parser.character.pattern;
-
 import '../../core/parser.dart';
 import '../action/map.dart';
 import '../combinator/choice.dart';

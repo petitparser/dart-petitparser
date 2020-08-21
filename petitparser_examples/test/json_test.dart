@@ -1,5 +1,3 @@
-library petitparser.example.test.json_test;
-
 import 'package:petitparser_examples/json.dart';
 import 'package:test/test.dart';
 

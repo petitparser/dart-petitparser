@@ -1,5 +1,3 @@
-library petitparser.example.prolog.parser;
-
 import 'package:petitparser/petitparser.dart';
 
 import 'evaluator.dart';

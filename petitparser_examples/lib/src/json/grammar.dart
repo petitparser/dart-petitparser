@@ -1,5 +1,3 @@
-library petitparser.example.json.grammar;
-
 import 'package:petitparser/petitparser.dart';
 
 /// JSON grammar.

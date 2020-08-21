@@ -1,5 +1,3 @@
-library petitparser.parser.character.parser;
-
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';

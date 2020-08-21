@@ -1,5 +1,3 @@
-library petitparser.reflection.iterable;
-
 import '../core/parser.dart';
 
 /// Returns a lazy iterable over all parsers reachable from a [root].

@@ -1,5 +1,3 @@
-library petitparser.example.web.lisp;
-
 import 'dart:html';
 
 import 'package:petitparser_examples/lisp.dart';

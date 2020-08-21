@@ -1,5 +1,3 @@
-library petitparser.context.result;
-
 import 'context.dart';
 
 /// An immutable parse result.

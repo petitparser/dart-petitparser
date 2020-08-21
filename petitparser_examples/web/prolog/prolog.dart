@@ -1,5 +1,3 @@
-library petitparser.example.web.prolog;
-
 import 'dart:html';
 
 import 'package:petitparser_examples/prolog.dart';

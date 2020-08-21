@@ -1,5 +1,3 @@
-library petitparser.test.debug_test;
-
 import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';

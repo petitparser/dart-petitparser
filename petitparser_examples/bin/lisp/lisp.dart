@@ -1,5 +1,3 @@
-library petitparser.example.bin.lisp;
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';

@@ -1,5 +1,3 @@
-library petitparser.parser.character.any_of;
-
 import '../../core/parser.dart';
 import 'code.dart';
 import 'optimize.dart';

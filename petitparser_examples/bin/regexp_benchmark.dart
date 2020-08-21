@@ -1,5 +1,3 @@
-library petitparser.example.regexp_benchmark;
-
 import 'package:collection/collection.dart';
 import 'package:petitparser/petitparser.dart';
 

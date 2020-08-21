@@ -9,8 +9,6 @@
 ///
 /// The grammar definition [JsonGrammar] can be subclassed to construct other
 /// objects.
-library petitparser.example.json;
-
 import 'src/json/grammar.dart';
 import 'src/json/parser.dart';
 

@@ -1,5 +1,3 @@
-library petitparser.example.lisp.parser;
-
 import 'package:petitparser/petitparser.dart';
 
 import 'cons.dart';

@@ -1,5 +1,3 @@
-library petitparser.matcher.matches_skipping;
-
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';

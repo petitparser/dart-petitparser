@@ -1,5 +1,3 @@
-library petitparser.definition.grammar;
-
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';

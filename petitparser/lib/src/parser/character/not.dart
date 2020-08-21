@@ -1,5 +1,3 @@
-library petitparser.parser.character.not;
-
 import 'predicate.dart';
 
 /// Negates the result of a character predicate.

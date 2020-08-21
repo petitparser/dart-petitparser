@@ -1,5 +1,3 @@
-library petitparser.parser.character.digit;
-
 import '../../core/parser.dart';
 import 'parser.dart';
 import 'predicate.dart';

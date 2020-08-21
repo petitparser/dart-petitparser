@@ -1,6 +1,4 @@
 /// This package contains the standard parser implementations.
-library petitparser.parser;
-
 export 'src/parser/action/cast.dart';
 export 'src/parser/action/cast_list.dart';
 export 'src/parser/action/continuation.dart';

@@ -1,5 +1,3 @@
-library petitparser.definition.parser;
-
 import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 

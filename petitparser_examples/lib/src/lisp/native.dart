@@ -1,5 +1,3 @@
-library petitparser.example.lisp.native;
-
 import 'cons.dart';
 import 'environment.dart';
 import 'evaluator.dart';

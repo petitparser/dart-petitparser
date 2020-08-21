@@ -1,5 +1,3 @@
-library petitparser.debug.profile;
-
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';

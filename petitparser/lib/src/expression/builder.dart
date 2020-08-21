@@ -1,5 +1,3 @@
-library petitparser.expression.builder;
-
 import '../core/parser.dart';
 import '../parser/combinator/settable.dart';
 import '../parser/misc/failure.dart';

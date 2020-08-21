@@ -1,5 +1,3 @@
-library petitparser.example.prolog.evaluator;
-
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:more/iterable.dart';

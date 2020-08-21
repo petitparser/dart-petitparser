@@ -1,5 +1,3 @@
-library petitparser.matcher.accept;
-
 import '../core/parser.dart';
 
 extension AcceptParser<T> on Parser<T> {

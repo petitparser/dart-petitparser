@@ -1,5 +1,3 @@
-library petitparser.parser.character.lookup;
-
 import 'dart:typed_data';
 
 import 'predicate.dart';

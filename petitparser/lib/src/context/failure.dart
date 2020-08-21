@@ -1,5 +1,3 @@
-library petitparser.context.failure;
-
 import '../core/exception.dart';
 import 'result.dart';
 

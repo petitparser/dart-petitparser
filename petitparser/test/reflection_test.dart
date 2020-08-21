@@ -1,5 +1,3 @@
-library petitparser.test.reflection_test;
-
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';

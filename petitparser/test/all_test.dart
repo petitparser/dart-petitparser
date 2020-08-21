@@ -1,5 +1,3 @@
-library petitparser.test.all_test;
-
 import 'package:test/test.dart';
 
 import 'context_test.dart' as context_test;

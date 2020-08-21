@@ -1,5 +1,3 @@
-library petitparser.example.lisp.name;
-
 /// An unique symbolic name.
 class Name {
   /// The interned symbols.

@@ -1,5 +1,3 @@
-library petitparser.example.smalltalk.grammar;
-
 import 'package:petitparser/petitparser.dart';
 
 /// Smalltalk grammar.

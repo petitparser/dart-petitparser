@@ -1,5 +1,3 @@
-library petitparser.context.success;
-
 import 'result.dart';
 
 /// An immutable parse result in case of a successful parse.

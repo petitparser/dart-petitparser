@@ -1,5 +1,3 @@
-library petitparser.parser.repeater.separated_by;
-
 import '../../core/parser.dart';
 import '../action/map.dart';
 import '../combinator/optional.dart';

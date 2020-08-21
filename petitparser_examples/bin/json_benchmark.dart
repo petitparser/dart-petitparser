@@ -1,5 +1,3 @@
-library petitparser.example.json_benchmark;
-
 import 'dart:convert' as convert;
 
 import 'package:petitparser_examples/json.dart';

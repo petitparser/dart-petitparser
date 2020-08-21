@@ -1,5 +1,3 @@
-library petitparser.example.benchmark;
-
 /// Measures the time it takes to run [function] in microseconds.
 ///
 /// It does so in two steps:

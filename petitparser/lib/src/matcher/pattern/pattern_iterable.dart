@@ -1,5 +1,3 @@
-library petitparser.matcher.pattern_iterable;
-
 import 'dart:collection';
 
 import 'package:meta/meta.dart';

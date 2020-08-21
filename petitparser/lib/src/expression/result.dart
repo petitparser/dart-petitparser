@@ -1,5 +1,3 @@
-library petitparser.expression.result;
-
 // Helper class to associate operators and actions.
 class ExpressionResult {
   final Object operator;

@@ -1,5 +1,3 @@
-library petitparser.test.expression_test;
-
 import 'dart:math' as math;
 
 import 'package:petitparser/petitparser.dart';

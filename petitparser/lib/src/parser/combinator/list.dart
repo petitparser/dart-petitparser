@@ -1,5 +1,3 @@
-library petitparser.parser.combinator.list;
-
 import '../../core/parser.dart';
 
 /// Abstract parser that parses a list of things in some way.

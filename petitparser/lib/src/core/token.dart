@@ -1,5 +1,3 @@
-library petitparser.core.token;
-
 import 'package:meta/meta.dart';
 
 import '../matcher/matches_skipping.dart';

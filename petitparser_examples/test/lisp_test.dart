@@ -1,5 +1,3 @@
-library petitparser.example.test.lisp_test;
-
 import 'package:petitparser_examples/lisp.dart';
 import 'package:test/test.dart';
 

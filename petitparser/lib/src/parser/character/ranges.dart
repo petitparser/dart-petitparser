@@ -1,5 +1,3 @@
-library petitparser.parser.character.ranges;
-
 import 'predicate.dart';
 
 class RangesCharPredicate implements CharacterPredicate {

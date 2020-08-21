@@ -1,5 +1,3 @@
-library petitparser.parser.character.optimize;
-
 import 'char.dart';
 import 'constant.dart';
 import 'lookup.dart';

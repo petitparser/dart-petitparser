@@ -1,5 +1,3 @@
-library petitparser.test.tutorial_test;
-
 import 'dart:math' as math;
 
 import 'package:petitparser/petitparser.dart';

@@ -1,5 +1,3 @@
-library petitparser.parser.character.constant;
-
 import 'predicate.dart';
 
 class ConstantCharPredicate extends CharacterPredicate {

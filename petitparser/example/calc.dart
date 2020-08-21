@@ -1,6 +1,4 @@
 /// Calculator from the tutorial.
-library petitparser.example.calc;
-
 import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';

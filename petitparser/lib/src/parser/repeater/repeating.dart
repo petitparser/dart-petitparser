@@ -1,5 +1,3 @@
-library petitparser.parser.repeater.repeating;
-
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import 'unbounded.dart';

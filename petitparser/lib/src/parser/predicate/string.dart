@@ -1,5 +1,3 @@
-library petitparser.parser.predicate.string;
-
 import '../../core/parser.dart';
 import '../character/any_of.dart';
 import '../character/char.dart';

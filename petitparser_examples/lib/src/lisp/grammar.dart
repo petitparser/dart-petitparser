@@ -1,5 +1,3 @@
-library petitparser.example.lisp.grammar;
-
 import 'package:petitparser/petitparser.dart';
 
 /// LISP grammar.

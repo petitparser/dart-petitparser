@@ -1,5 +1,3 @@
-library petitparser.parser.character.none_of;
-
 import '../../core/parser.dart';
 import 'code.dart';
 import 'not.dart';

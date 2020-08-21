@@ -1,5 +1,3 @@
-library petitparser.definition.reference;
-
 import 'package:meta/meta.dart';
 
 import '../context/context.dart';

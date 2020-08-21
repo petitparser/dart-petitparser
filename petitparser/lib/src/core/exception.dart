@@ -1,5 +1,3 @@
-library petitparser.core.contexts.exception;
-
 import '../context/failure.dart';
 
 /// An exception raised in case of a parse error.

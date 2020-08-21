@@ -1,5 +1,3 @@
-library petitparser.core.parser;
-
 import 'package:meta/meta.dart';
 
 import '../context/context.dart';

@@ -1,5 +1,3 @@
-library petitparser.parser.character.range;
-
 import '../../core/parser.dart';
 import 'code.dart';
 import 'parser.dart';

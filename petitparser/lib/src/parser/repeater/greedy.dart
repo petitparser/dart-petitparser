@@ -1,5 +1,3 @@
-library petitparser.parser.repeater.greedy;
-
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';

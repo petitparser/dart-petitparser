@@ -2,8 +2,6 @@
 ///
 /// The code is reasonably complete to run and evaluate reasonably complex
 /// programs from the console or the web browser.
-library petitparser.example.lisp;
-
 export 'package:petitparser_examples/src/lisp/cons.dart';
 export 'package:petitparser_examples/src/lisp/environment.dart';
 export 'package:petitparser_examples/src/lisp/evaluator.dart';
