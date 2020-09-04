@@ -1,9 +1,6 @@
 # Created with package:mono_repo v2.3.0
 language: dart
 
-# Custom configuration
-sudo: required
-
 jobs:
   include:
     - stage: analyze

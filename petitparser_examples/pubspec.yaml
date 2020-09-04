@@ -9,13 +9,13 @@ environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
   collection: ^1.14.0
-  meta: ^1.1.0
-  more: ^2.2.0
-  petitparser: ^3.0.0
+  meta: ^1.2.0
+  more: ^2.7.0
+  petitparser: ^3.1.0
 dependency_overrides:
   petitparser:
     path: ../petitparser
 dev_dependencies:
-  test: ^1.9.0
-  build_runner: ^1.7.0
-  build_web_compilers: ^2.7.0
+  test: ^1.15.0
+  build_runner: ^1.10.0
+  build_web_compilers: ^2.11.0
