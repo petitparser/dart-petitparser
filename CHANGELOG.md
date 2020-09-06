@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.0
+
+* Dart 2.9 compatibility and requirement (null-safety).
+* `Success.message` throws an `UnsuppotedError` exception, instead of returning `null`.
+* `Parser.delegate()` has been removed, use `Parser.settable()` as a similar replacement.
+* `Parser.optional()` is now returning `Parser<T?>`, to provide a non-null default value use `Parser.optionalWith(T value)`.
+* `Parser.not()` is now returning `Parser<Failure<T>>`, instead of returning `void`.
+* `Parser.pick()` and `Parser.permute()` do no longer take a type argument for casting, instead combine with `Parser.cast<T>()` and `Parser.castList<T>()` to achieve the same behavior.
+* `epsilon()` is now returning `Parser<void>`, to provide a non-null default value use `epsilonWith(T value)`.
+* `GrammarDefinition.ref` is deprecated, instead use the provided `ref0`, `ref1`, `ref2`, ... to resolve references with the specified number of arguments.
+
 ## 3.1.0
 
 * Fix missing type information on `eof` and `failure` parser.

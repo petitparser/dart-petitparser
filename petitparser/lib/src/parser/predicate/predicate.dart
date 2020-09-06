@@ -24,9 +24,7 @@ class PredicateParser extends Parser<String> {
   final String message;
 
   PredicateParser(this.length, this.predicate, this.message)
-      : assert(length > 0, 'length must be positive'),
-        assert(predicate != null, 'predicate must not be null'),
-        assert(message != null, 'message must not be null');
+      : assert(length > 0, 'length must be positive');
 
   @override
   Result<String> parseOn(Context context) {

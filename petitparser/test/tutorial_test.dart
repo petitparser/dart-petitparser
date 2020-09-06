@@ -75,16 +75,17 @@ void main() {
           .map((a) => num.tryParse(a)))
       ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
     // negation is a prefix operator
-    builder.group()..prefix(char('-').trim(), (op, a) => -a);
+    builder.group()..prefix<String, int>(char('-').trim(), (op, a) => -a);
     // power is right-associative
-    builder.group()..right(char('^').trim(), (a, op, b) => math.pow(a, b));
+    builder.group()
+      ..right<String, int>(char('^').trim(), (a, op, b) => math.pow(a, b));
     // multiplication and addition are left-associative
     builder.group()
-      ..left(char('*').trim(), (a, op, b) => a * b)
-      ..left(char('/').trim(), (a, op, b) => a / b);
+      ..left<String, int>(char('*').trim(), (a, op, b) => a * b)
+      ..left<String, int>(char('/').trim(), (a, op, b) => a / b);
     builder.group()
-      ..left(char('+').trim(), (a, op, b) => a + b)
-      ..left(char('-').trim(), (a, op, b) => a - b);
+      ..left<String, int>(char('+').trim(), (a, op, b) => a + b)
+      ..left<String, int>(char('-').trim(), (a, op, b) => a - b);
     final parser = builder.build().end();
     expect(parser.parse('-8').value, -8);
     expect(parser.parse('1+2*3').value, 7);

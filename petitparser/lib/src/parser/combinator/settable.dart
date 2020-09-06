@@ -1,3 +1,5 @@
+import '../../context/context.dart';
+import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import '../misc/failure.dart';
@@ -25,11 +27,14 @@ SettableParser<T> undefined<T>([String message = 'undefined parser']) =>
 
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
-class SettableParser<T> extends DelegateParser<T> {
+class SettableParser<T> extends DelegateParser<T, T> {
   SettableParser(Parser<T> delegate) : super(delegate);
 
   /// Sets the receiver to delegate to [parser].
   void set(Parser<T> parser) => replace(children[0], parser);
+
+  @override
+  Result<T> parseOn(Context context) => delegate.parseOn(context);
 
   @override
   int fastParseOn(String buffer, int position) =>

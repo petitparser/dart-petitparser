@@ -3,7 +3,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension PermuteParserExtension on Parser<List> {
+extension PermuteParserExtension<T> on Parser<List<T>> {
   /// Returns a parser that transforms a successful parse result by returning
   /// the permuted elements at [indexes] of a list. Negative indexes can be
   /// used to access the elements from the back of the list.
@@ -11,30 +11,24 @@ extension PermuteParserExtension on Parser<List> {
   /// For example, the parser `letter().star().permute([0, -1])` returns the
   /// first and last letter parsed. For the input `'abc'` it returns
   /// `['a', 'c']`.
-  Parser<List<T>> permute<T>(List<int> indexes) =>
-      PermuteParser<T>(this, indexes);
+  Parser<List<T>> permute(List<int> indexes) => PermuteParser<T>(this, indexes);
 }
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class PermuteParser<T> extends DelegateParser<List<T>> {
+class PermuteParser<T> extends DelegateParser<List<T>, List<T>> {
   final List<int> indexes;
 
-  PermuteParser(Parser<List<T>> delegate, this.indexes)
-      : assert(indexes != null, 'indexes must not be null'),
-        super(delegate);
+  PermuteParser(Parser<List<T>> delegate, this.indexes) : super(delegate);
 
   @override
   Result<List<T>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      final input = result.value;
-      final output = List(indexes.length);
-      for (var i = 0; i < indexes.length; i++) {
-        final index = indexes[i];
-        output[i] = input[index < 0 ? input.length + index : index];
-      }
-      return result.success(output);
+      final value = result.value;
+      return result.success(indexes
+          .map((index) => value[index < 0 ? value.length + index : index])
+          .toList(growable: false));
     } else {
       return result.failure(result.message);
     }

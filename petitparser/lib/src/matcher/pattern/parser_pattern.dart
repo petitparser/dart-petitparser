@@ -30,7 +30,7 @@ class ParserPattern implements Pattern {
   ///
   /// Returns `null` if the pattern doesn't match.
   @override
-  ParserMatch matchAsPrefix(String string, [int start = 0]) {
+  ParserMatch? matchAsPrefix(String string, [int start = 0]) {
     final end = parser.fastParseOn(string, start);
     return end < 0 ? null : ParserMatch(this, string, start, end);
   }

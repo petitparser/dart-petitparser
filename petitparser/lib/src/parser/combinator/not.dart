@@ -1,21 +1,23 @@
 import '../../context/context.dart';
+import '../../context/failure.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../action/cast.dart';
 import '../action/pick.dart';
 import '../combinator/sequence.dart';
 import '../predicate/any.dart';
 import 'delegate.dart';
 
 extension NotParserExtension<T> on Parser<T> {
-  /// Returns a parser (logical not-predicate) that succeeds whenever the
-  /// receiver fails, but never consumes input.
+  /// Returns a parser (logical not-predicate) that succeeds with the [Failure]
+  /// whenever the receiver fails, but never consumes input.
   ///
   /// For example, the parser `char('_').not().seq(identifier)` accepts
   /// identifiers that do not start with an underscore character. If the parser
   /// `char('_')` accepts the input, the negation and subsequently the
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
-  Parser<void> not([String message = 'success not expected']) =>
+  Parser<Failure<T>> not([String message = 'success not expected']) =>
       NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
@@ -25,23 +27,21 @@ extension NotParserExtension<T> on Parser<T> {
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
   Parser<String> neg([String message = 'input not expected']) =>
-      not(message).seq(any()).pick(1);
+      [not(message), any()].toSequenceParser().pick(1).cast<String>();
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].
-class NotParser extends DelegateParser<void> {
+class NotParser<T> extends DelegateParser<T, Failure<T>> {
   final String message;
 
-  NotParser(Parser delegate, this.message)
-      : assert(message != null, 'message must not be null'),
-        super(delegate);
+  NotParser(Parser<T> delegate, this.message) : super(delegate);
 
   @override
-  Result<void> parseOn(Context context) {
+  Result<Failure<T>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isFailure) {
-      return context.success(null);
+      return context.success(result as Failure<T>);
     } else {
       return context.failure(message);
     }
@@ -57,9 +57,9 @@ class NotParser extends DelegateParser<void> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  NotParser copy() => NotParser(delegate, message);
+  NotParser<T> copy() => NotParser<T>(delegate, message);
 
   @override
-  bool hasEqualProperties(NotParser other) =>
+  bool hasEqualProperties(NotParser<T> other) =>
       super.hasEqualProperties(other) && message == other.message;
 }

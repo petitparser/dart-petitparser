@@ -69,7 +69,7 @@ class ExpressionBuilder {
 
   /// Builds the expression parser.
   Parser build() {
-    final parser = _groups.fold(
+    final parser = _groups.fold<Parser>(
       failure('Highest priority group should define a primitive parser.'),
       (a, b) => b.build(a),
     );

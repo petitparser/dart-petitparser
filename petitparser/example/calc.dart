@@ -16,14 +16,15 @@ Parser buildParser() {
         .map(num.tryParse))
     ..wrapper(
         char('(').trim(), char(')').trim(), (left, value, right) => value);
-  builder.group()..prefix(char('-').trim(), (op, a) => -a);
-  builder.group()..right(char('^').trim(), (a, op, b) => pow(a, b));
+  builder.group()..prefix<String, int>(char('-').trim(), (op, a) => -a);
   builder.group()
-    ..left(char('*').trim(), (a, op, b) => a * b)
-    ..left(char('/').trim(), (a, op, b) => a / b);
+    ..right<String, int>(char('^').trim(), (a, op, b) => pow(a, b));
   builder.group()
-    ..left(char('+').trim(), (a, op, b) => a + b)
-    ..left(char('-').trim(), (a, op, b) => a - b);
+    ..left<String, int>(char('*').trim(), (a, op, b) => a * b)
+    ..left<String, int>(char('/').trim(), (a, op, b) => a / b);
+  builder.group()
+    ..left<String, int>(char('+').trim(), (a, op, b) => a + b)
+    ..left<String, int>(char('-').trim(), (a, op, b) => a - b);
   return builder.build().end();
 }
 

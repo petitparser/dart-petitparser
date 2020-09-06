@@ -1,6 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../action/cast.dart';
 import '../action/pick.dart';
 import '../combinator/sequence.dart';
 
@@ -12,7 +13,7 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   Parser<T> end([String message = 'end of input expected']) =>
-      SequenceParser([this, endOfInput(message)]).pick<T>(0);
+      [this, endOfInput(message)].toSequenceParser().pick(0).cast<T>();
 }
 
 /// Returns a parser that succeeds at the end of input.
@@ -23,8 +24,7 @@ Parser<void> endOfInput([String message = 'end of input expected']) =>
 class EndOfInputParser extends Parser<void> {
   final String message;
 
-  EndOfInputParser(this.message)
-      : assert(message != null, 'message must not be null');
+  EndOfInputParser(this.message);
 
   @override
   Result parseOn(Context context) => context.position < context.buffer.length

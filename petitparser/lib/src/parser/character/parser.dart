@@ -9,9 +9,7 @@ class CharacterParser extends Parser<String> {
 
   final String message;
 
-  CharacterParser(this.predicate, this.message)
-      : assert(predicate != null, 'predicate must not be null'),
-        assert(message != null, 'message must not be null');
+  CharacterParser(this.predicate, this.message);
 
   @override
   Result<String> parseOn(Context context) {

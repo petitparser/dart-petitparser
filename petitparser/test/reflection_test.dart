@@ -45,17 +45,6 @@ void main() {
       final parsers = allParser(parser1).toList();
       expect(parsers, [parser1, parser2, parser3]);
     });
-    test('basic', () {
-      final lower = lowercase();
-      final iterator = allParser(lower).iterator;
-      expect(iterator.current, isNull);
-      expect(iterator.moveNext(), isTrue);
-      expect(iterator.current, lower);
-      expect(iterator.current, lower);
-      expect(iterator.moveNext(), isFalse);
-      expect(iterator.current, isNull);
-      expect(iterator.moveNext(), isFalse);
-    });
   });
   group('transform', () {
     test('copy', () {
@@ -104,15 +93,15 @@ void main() {
       expect(output.children.first, output.children.last);
     });
     test('loop (existing)', () {
-      final input = failure().settable().settable().settable();
-      final SettableParser settable = input.children.single.children.single;
-      settable.set(input);
-      final output = transformParser(input, (parser) {
+      final inner = failure().settable();
+      final outer = inner.settable().settable();
+      inner.set(outer);
+      final output = transformParser(outer, (parser) {
         return parser;
       });
-      expect(input, isNot(output));
-      expect(input.isEqualTo(output), isTrue);
-      final inputs = allParser(input).toSet();
+      expect(outer, isNot(output));
+      expect(outer.isEqualTo(output), isTrue);
+      final inputs = allParser(outer).toSet();
       final outputs = allParser(output).toSet();
       for (final input in inputs) {
         expect(outputs.contains(input), isFalse);
@@ -124,15 +113,15 @@ void main() {
     test('loop (new)', () {
       final source = lowercase();
       final input = source;
-      final target = failure().settable().settable().settable();
-      final SettableParser settable = target.children.single.children.single;
-      settable.set(target);
+      final inner = failure().settable();
+      final outer = inner.settable().settable();
+      inner.set(outer);
       final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
+        return source.isEqualTo(parser) ? outer : parser;
       });
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
-      expect(output.isEqualTo(target), isTrue);
+      expect(output.isEqualTo(outer), isTrue);
     });
   });
   group('optimize', () {

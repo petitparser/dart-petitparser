@@ -21,12 +21,12 @@ Parser transformParser(Parser parser, TransformationHandler handler) {
     final parent = todo.removeLast();
     for (final child in parent.children) {
       if (mapping.containsKey(child)) {
-        parent.replace(child, mapping[child]);
+        parent.replace(child, mapping[child]!);
       } else if (!seen.contains(child)) {
         seen.add(child);
         todo.add(child);
       }
     }
   }
-  return mapping[parser];
+  return mapping[parser]!;
 }

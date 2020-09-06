@@ -14,9 +14,9 @@ extension ChoiceParserExtension<T> on Parser<T> {
   /// `char('a')` will never be activated, because the input is always consumed
   /// `letter()`. This can be problematic if the author intended to attach a
   /// production action to `char('a')`.
-  Parser or(Parser other) => this is ChoiceParser
-      ? ChoiceParser([...children, other])
-      : ChoiceParser([this, other]);
+  Parser<dynamic> or(Parser<dynamic> other) => this is ChoiceParser
+      ? ChoiceParser<dynamic>([...children, other])
+      : ChoiceParser<dynamic>([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [or] for details.
@@ -25,27 +25,27 @@ extension ChoiceParserExtension<T> on Parser<T> {
 
 extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  Parser toChoiceParser() => ChoiceParser(this);
+  Parser toChoiceParser() => ChoiceParser<T>(this);
 }
 
 /// A parser that uses the first parser that succeeds.
-class ChoiceParser extends ListParser {
-  ChoiceParser(Iterable<Parser> children) : super(children) {
+class ChoiceParser<T> extends ListParser<T, T> {
+  ChoiceParser(Iterable<Parser<T>> children) : super(children) {
     if (children.isEmpty) {
       throw ArgumentError('Choice parser cannot be empty.');
     }
   }
 
   @override
-  Result parseOn(Context context) {
-    Result result;
+  Result<T> parseOn(Context context) {
+    Result<T>? result;
     for (var i = 0; i < children.length; i++) {
       result = children[i].parseOn(context);
       if (result.isSuccess) {
         return result;
       }
     }
-    return result;
+    return result!;
   }
 
   @override
@@ -61,5 +61,5 @@ class ChoiceParser extends ListParser {
   }
 
   @override
-  ChoiceParser copy() => ChoiceParser(children);
+  ChoiceParser<T> copy() => ChoiceParser<T>(children);
 }

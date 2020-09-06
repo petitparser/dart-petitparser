@@ -16,14 +16,11 @@ Parser removeSettables(Parser parser) {
 Parser removeDuplicates(Parser parser) {
   final uniques = <Parser>{};
   return transformParser(parser, (source) {
-    final target = uniques.firstWhere((each) {
+    return uniques.firstWhere((each) {
       return source != each && source.isEqualTo(each);
-    }, orElse: () => null);
-    if (target == null) {
+    }, orElse: () {
       uniques.add(source);
       return source;
-    } else {
-      return target;
-    }
+    });
   });
 }

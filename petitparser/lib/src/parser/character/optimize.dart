@@ -38,7 +38,7 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   }
 
   // 3. Build the best resulting predicate:
-  final matchingCount = mergedRanges.fold(
+  final matchingCount = mergedRanges.fold<int>(
       0, (current, range) => current + (range.stop - range.start + 1));
   if (matchingCount == 0) {
     return const ConstantCharPredicate(false);

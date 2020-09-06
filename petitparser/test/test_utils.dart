@@ -1,9 +1,15 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-void expectSuccess(Parser parser, String input, Object expected,
-    [int position]) {
+const isSuccess = TypeMatcher<Success>();
+const isFailure = TypeMatcher<Failure>();
+
+const isParserException = TypeMatcher<ParserException>();
+
+void expectSuccess(Parser parser, String input, dynamic expected,
+    [int? position]) {
   final result = parser.parse(input);
+  expect(result, isSuccess);
   expect(result.isSuccess, isTrue,
       reason: 'Expected Result.isSuccess to be true.');
   expect(result.isFailure, isFalse,
@@ -19,8 +25,9 @@ void expectSuccess(Parser parser, String input, Object expected,
 }
 
 void expectFailure(Parser parser, String input,
-    [int position = 0, String message]) {
+    [int position = 0, String? message]) {
   final result = parser.parse(input);
+  expect(result, isFailure);
   expect(result.isFailure, isTrue,
       reason: 'Expected Result.isFailure to be true.');
   expect(result.isSuccess, isFalse,
@@ -35,11 +42,8 @@ void expectFailure(Parser parser, String input,
       reason: 'Expected fast parse to fail.');
   expect(parser.accept(input), isFalse,
       reason: 'Expected input to be rejected.');
-  try {
-    result.value;
-  } on ParserException catch (exception) {
-    expect(exception.failure, result, reason: 'Expected exception to match.');
-    return;
-  }
-  fail('Result#value did not throw a ParserException.');
+  expect(
+      () => result.value,
+      throwsA(isParserException.having(
+          (exception) => exception.failure, 'failure', result)));
 }

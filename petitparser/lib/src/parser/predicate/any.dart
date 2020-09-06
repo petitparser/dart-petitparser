@@ -14,7 +14,7 @@ Parser<String> any([String message = 'input expected']) {
 class AnyParser extends Parser<String> {
   final String message;
 
-  AnyParser(this.message) : assert(message != null, 'message must not be null');
+  AnyParser(this.message);
 
   @override
   Result<String> parseOn(Context context) {

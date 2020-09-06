@@ -24,9 +24,28 @@ import 'range.dart';
 /// either '1', '2', or '3'; and fails for any other character. The parser
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
-Parser<String> pattern(String element, [String message]) {
+Parser<String> pattern(String element, [String? message]) {
   return CharacterParser(pattern_.parse(element).value,
       message ?? '[${toReadableString(element)}] expected');
+}
+
+/// Returns a parser that accepts a single character of a given case-insensitive
+/// character set provided as a string.
+///
+/// Characters match themselves. A dash `-` between two characters matches the
+/// range of those characters. A caret `^` at the beginning negates the pattern.
+///
+/// For example, the parser `patternIgnoreCase('aoU')` accepts the character
+/// 'a', 'o', 'u' and 'A', 'O', 'U', and fails for any other input. The parser
+/// `patternIgnoreCase('a-c')` accepts 'a', 'b', 'c' and 'A', 'B', 'C'; and
+/// fails for any other character. The parser `patternIgnoreCase('^A') accepts
+/// any character, but fails for the characters 'a' or 'A'.
+Parser<String> patternIgnoreCase(String element, [String? message]) {
+  final isNegated = element.startsWith('^');
+  final value = isNegated ? element.substring(1) : element;
+  return pattern(
+      '${isNegated ? '^' : ''}${value.toLowerCase()}${value.toUpperCase()}',
+      message);
 }
 
 /// Parser that reads a single character.

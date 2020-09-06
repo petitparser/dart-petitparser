@@ -12,7 +12,8 @@ class Success<R> extends Result<R> {
   final R value;
 
   @override
-  String get message => null;
+  String get message =>
+      throw UnsupportedError('Successful parse results do not have a message.');
 
   @override
   Result<T> map<T>(T Function(R element) callback) => success(callback(value));

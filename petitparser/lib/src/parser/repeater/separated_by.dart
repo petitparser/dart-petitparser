@@ -21,10 +21,11 @@ extension SeparatedBy<T> on Parser<T> {
   /// separators: `['1', '-', '2', '-', '3']`.
   Parser<List<R>> separatedBy<R>(Parser separator,
       {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
-    final repeater = SequenceParser([separator, this]).star();
-    final parser = SequenceParser(optionalSeparatorAtEnd
-        ? [this, repeater, separator.optional()]
-        : [this, repeater]);
+    final parser = [
+      this,
+      [separator, this].toSequenceParser().star(),
+      if (optionalSeparatorAtEnd) separator.optional(),
+    ].toSequenceParser();
     return parser.map((list) {
       final result = <R>[];
       result.add(list[0]);

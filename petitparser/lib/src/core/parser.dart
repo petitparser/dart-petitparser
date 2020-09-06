@@ -8,7 +8,7 @@ import '../context/success.dart';
 /// Abstract base class of all parsers.
 @optionalTypeArgs
 abstract class Parser<T> {
-  const Parser();
+  Parser();
 
   /// Primitive method doing the actual parsing.
   ///
@@ -60,7 +60,7 @@ abstract class Parser<T> {
   /// refer to other parsers. Do not override this method, instead customize
   /// [Parser.hasEqualProperties] and [Parser.hasEqualChildren].
   @nonVirtual
-  bool isEqualTo(Parser other, [Set<Parser> seen]) {
+  bool isEqualTo(Parser other, [Set<Parser>? seen]) {
     seen ??= {};
     if (this == other || seen.contains(this)) {
       return true;
@@ -76,7 +76,7 @@ abstract class Parser<T> {
   /// Override this method in all subclasses that add new state.
   @protected
   @mustCallSuper
-  bool hasEqualProperties(covariant Parser<T> other) => true;
+  bool hasEqualProperties(covariant Parser other) => true;
 
   /// Compare the children of two parsers.
   ///
@@ -84,7 +84,7 @@ abstract class Parser<T> {
   /// generically on the returned [Parser.children].
   @protected
   @mustCallSuper
-  bool hasEqualChildren(covariant Parser<T> other, Set<Parser> seen) {
+  bool hasEqualChildren(covariant Parser other, Set<Parser> seen) {
     final thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
       return false;

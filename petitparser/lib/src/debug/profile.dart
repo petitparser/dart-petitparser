@@ -22,29 +22,32 @@ import 'output.dart';
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser profile(Parser root, [OutputHandler output = print]) {
-  final count = <Parser, int>{};
-  final watch = <Parser, Stopwatch>{};
-  final parsers = <Parser>[];
+  final frames = <FrameProfile>[];
   return transformParser(root, (parser) {
-    parsers.add(parser);
+    final frame = FrameProfile(parser);
+    frames.add(frame);
     return parser.callCC((continuation, context) {
-      count[parser]++;
-      watch[parser].start();
+      frame.count++;
+      frame.watch.start();
       final result = continuation(context);
-      watch[parser].stop();
+      frame.watch.stop();
       return result;
     });
   }).callCC((continuation, context) {
-    for (final parser in parsers) {
-      count[parser] = 0;
-      watch[parser] = Stopwatch();
-    }
     final result = continuation(context);
-    for (final parser in parsers) {
-      output('${count[parser]}\t'
-          '${watch[parser].elapsedMicroseconds}\t'
-          '$parser');
+    for (final frame in frames) {
+      output('${frame.count}\t'
+          '${frame.watch.elapsedMicroseconds}\t'
+          '$frame.parser');
     }
     return result;
   });
+}
+
+class FrameProfile {
+  int count = 0;
+  final watch = Stopwatch();
+  final Parser parser;
+
+  FrameProfile(this.parser);
 }

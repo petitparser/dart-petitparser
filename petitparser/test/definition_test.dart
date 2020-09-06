@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 import 'test_utils.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
-  Parser start() => ref(list).end();
-  Parser list() => ref(element) & char(',') & ref(list) | ref(element);
+  Parser start() => ref0(list).end();
+  Parser list() => ref0(element) & char(',') & ref0(list) | ref0(element);
   Parser element() => digit().plus().flatten();
 }
 
@@ -14,57 +14,69 @@ class ListParserDefinition extends ListGrammarDefinition {
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
-  Parser start() => ref(list).end();
+  Parser start() => ref0(list).end();
   Parser list() =>
-      ref(element) & ref(token, char(',')) & ref(list) | ref(element);
-  Parser element() => ref(token, digit().plus());
+      ref0(element) & ref1(token, char(',')) & ref0(list) | ref0(element);
+  Parser element() => ref1(token, digit().plus());
   Parser token(Parser parser) => parser.flatten().trim();
+}
+
+class ReferencesGrammarDefinition extends GrammarDefinition {
+  Parser start() => ref0(f0);
+  Parser f0() => ref1(f1, 1);
+  Parser f1(int a1) => ref2(f2, a1, 2);
+  Parser f2(int a1, int a2) => ref3(f3, a1, a2, 3);
+  Parser f3(int a1, int a2, int a3) => [
+        a1.toString().toParser(),
+        a2.toString().toParser(),
+        a3.toString().toParser(),
+      ].toSequenceParser();
 }
 
 class BuggedGrammarDefinition extends GrammarDefinition {
   Parser start() => epsilon();
 
-  Parser directRecursion1() => ref(directRecursion1);
+  Parser directRecursion1() => ref0(directRecursion1);
 
-  Parser indirectRecursion1() => ref(indirectRecursion2);
-  Parser indirectRecursion2() => ref(indirectRecursion3);
-  Parser indirectRecursion3() => ref(indirectRecursion1);
+  Parser indirectRecursion1() => ref0(indirectRecursion2);
+  Parser indirectRecursion2() => ref0(indirectRecursion3);
+  Parser indirectRecursion3() => ref0(indirectRecursion1);
 
-  Parser delegation1() => ref(delegation2);
-  Parser delegation2() => ref(delegation3);
+  Parser delegation1() => ref0(delegation2);
+  Parser delegation2() => ref0(delegation3);
   Parser delegation3() => epsilon();
 }
 
 class LambdaGrammarDefinition extends GrammarDefinition {
-  Parser start() => ref(expression).end();
-  Parser expression() => ref(variable) | ref(abstraction) | ref(application);
+  Parser start() => ref0(expression).end();
+  Parser expression() => ref0(variable) | ref0(abstraction) | ref0(application);
 
   Parser variable() => (letter() & word().star()).flatten().trim();
   Parser abstraction() =>
-      token('\\') & ref(variable) & token('.') & ref(expression);
+      token('\\') & ref0(variable) & token('.') & ref0(expression);
   Parser application() =>
-      token('(') & ref(expression) & ref(expression) & token(')');
+      token('(') & ref0(expression) & ref0(expression) & token(')');
 
   Parser token(String value) => char(value).trim();
 }
 
 class ExpressionGrammarDefinition extends GrammarDefinition {
-  Parser start() => ref(terms).end();
-  Parser terms() => ref(addition) | ref(factors);
+  Parser start() => ref0(terms).end();
+  Parser terms() => ref0(addition) | ref0(factors);
 
-  Parser addition() => ref(factors).separatedBy(token(char('+') | char('-')));
-  Parser factors() => ref(multiplication) | ref(power);
+  Parser addition() => ref0(factors).separatedBy(token(char('+') | char('-')));
+  Parser factors() => ref0(multiplication) | ref0(power);
 
   Parser multiplication() =>
-      ref(power).separatedBy(token(char('*') | char('/')));
-  Parser power() => ref(primary).separatedBy(char('^').trim());
+      ref0(power).separatedBy(token(char('*') | char('/')));
+  Parser power() => ref0(primary).separatedBy(char('^').trim());
 
-  Parser primary() => ref(number) | ref(parentheses);
+  Parser primary() => ref0(number) | ref0(parentheses);
   Parser number() => token(char('-').optional() &
       digit().plus() &
       (char('.') & digit().plus()).optional());
 
-  Parser parentheses() => token('(') & ref(terms) & token(')');
+  Parser parentheses() => token('(') & ref0(terms) & token(')');
   Parser token(Object value) {
     if (value is String) {
       return char(value).trim();
@@ -79,34 +91,41 @@ void main() {
   final grammarDefinition = ListGrammarDefinition();
   final parserDefinition = ListParserDefinition();
   final tokenDefinition = TokenizedListGrammarDefinition();
+  final referenceDefinition = ReferencesGrammarDefinition();
   final buggedDefinition = BuggedGrammarDefinition();
 
   test('reference without parameters', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start);
-    final secondReference = grammarDefinition.ref(grammarDefinition.start);
+    final firstReference = grammarDefinition.ref0(grammarDefinition.start);
+    final secondReference = grammarDefinition.ref0(grammarDefinition.start);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isTrue);
   });
   test('reference with different production', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start);
-    final secondReference = grammarDefinition.ref(grammarDefinition.element);
+    final firstReference = grammarDefinition.ref0(grammarDefinition.start);
+    final secondReference = grammarDefinition.ref0(grammarDefinition.element);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isFalse);
   });
   test('reference with same parameters', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-    final secondReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+    final firstReference = referenceDefinition.ref1(referenceDefinition.f1, 42);
+    final secondReference =
+        referenceDefinition.ref1(referenceDefinition.f1, 42);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isTrue);
   });
   test('reference with different parameters', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-    final secondReference = grammarDefinition.ref(grammarDefinition.start, 'b');
+    final firstReference = referenceDefinition.ref1(referenceDefinition.f1, 42);
+    final secondReference =
+        referenceDefinition.ref1(referenceDefinition.f1, 43);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isFalse);
   });
+  test('reference with multiple arguments', () {
+    final parser = referenceDefinition.build();
+    expectSuccess(parser, '123', ['1', '2', '3']);
+  });
   test('reference unsupported methods', () {
-    final reference = grammarDefinition.ref(grammarDefinition.start);
+    final reference = grammarDefinition.ref0(grammarDefinition.start);
     expect(() => reference.copy(), throwsUnsupportedError);
     expect(() => reference.parse(''), throwsUnsupportedError);
   });

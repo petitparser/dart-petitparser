@@ -45,7 +45,7 @@ void main() {
     test('matchAsPrefix()', () {
       final match1 = pattern.matchAsPrefix(input, 0);
       expect(match1, isNull);
-      final match2 = pattern.matchAsPrefix(input, 2);
+      final match2 = pattern.matchAsPrefix(input, 2)!;
       expect(match2.pattern, pattern);
       expect(match2.input, input);
       expect(match2.start, 2);

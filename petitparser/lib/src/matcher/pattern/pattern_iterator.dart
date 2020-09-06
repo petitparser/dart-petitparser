@@ -11,7 +11,7 @@ class PatternIterator extends Iterator<ParserMatch> {
   PatternIterator(this.pattern, this.parser, this.input, this.start);
 
   @override
-  ParserMatch current;
+  late ParserMatch current;
 
   @override
   bool moveNext() {
@@ -29,7 +29,6 @@ class PatternIterator extends Iterator<ParserMatch> {
         return true;
       }
     }
-    current = null;
     return false;
   }
 }

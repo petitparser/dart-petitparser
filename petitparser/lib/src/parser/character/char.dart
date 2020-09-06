@@ -4,7 +4,7 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts a specific character only.
-Parser<String> char(Object char, [String message]) {
+Parser<String> char(Object char, [String? message]) {
   return CharacterParser(SingleCharPredicate(toCharCode(char)),
       message ?? '"${toReadableString(char)}" expected');
 }
@@ -12,8 +12,7 @@ Parser<String> char(Object char, [String message]) {
 class SingleCharPredicate extends CharacterPredicate {
   final int value;
 
-  const SingleCharPredicate(this.value)
-      : assert(value != null, 'value must not be null');
+  const SingleCharPredicate(this.value);
 
   @override
   bool test(int value) => identical(this.value, value);

@@ -1,1 +1,1 @@
-typedef OutputHandler = void Function(Object object);
+typedef OutputHandler = void Function(Object? object);

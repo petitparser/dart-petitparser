@@ -6,7 +6,10 @@ import '../../core/parser.dart';
 ///
 /// For example, `char('a').or(epsilon())` is equivalent to
 /// `char('a').optional()`.
-Parser<T> epsilon<T>([T result]) => EpsilonParser<T>(result);
+Parser<void> epsilon() => epsilonWith<void>(null);
+
+/// Returns a parser that consumes nothing and succeeds with [result].
+Parser<T> epsilonWith<T>(T result) => EpsilonParser<T>(result);
 
 /// A parser that consumes nothing and succeeds.
 class EpsilonParser<T> extends Parser<T> {

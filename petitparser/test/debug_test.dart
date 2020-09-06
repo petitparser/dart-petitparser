@@ -7,7 +7,7 @@ final Parser identifier = letter() & word().star();
 void main() {
   group('trace', () {
     test('success', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(trace(identifier, lines.add).parse('a').isSuccess, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -21,7 +21,7 @@ void main() {
       ]);
     });
     test('failure', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(trace(identifier, lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
         'Instance of \'SequenceParser\'',
@@ -33,10 +33,11 @@ void main() {
   });
   group('profile', () {
     test('success', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(profile(identifier, lines.add).parse('ab123').isSuccess, isTrue);
       expect(lines, hasLength(4));
-      final splitLines = lines.map((row) => row.split('\t'));
+      final splitLines =
+          lines.whereType<String>().map((row) => row.split('\t'));
       final counts = splitLines.map((row) => int.parse(row[0]));
       final times = splitLines.map((row) => int.parse(row[1]));
       final names = splitLines.map((row) => row[2]);
@@ -50,10 +51,11 @@ void main() {
           isTrue);
     });
     test('failure', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(profile(identifier, lines.add).parse('1').isFailure, isTrue);
       expect(lines, hasLength(4));
-      final splitLines = lines.map((row) => row.split('\t'));
+      final splitLines =
+          lines.whereType<String>().map((row) => row.split('\t'));
       final counts = splitLines.map((row) => int.parse(row[0]));
       final times = splitLines.map((row) => int.parse(row[1]));
       final names = splitLines.map((row) => row[2]);
@@ -69,7 +71,7 @@ void main() {
   });
   group('progress', () {
     test('success', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(progress(identifier, lines.add).parse('ab123').isSuccess, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',
@@ -83,7 +85,7 @@ void main() {
       ]);
     });
     test('failure', () {
-      final lines = <String>[];
+      final lines = <Object?>[];
       expect(progress(identifier, lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
         '* Instance of \'SequenceParser\'',

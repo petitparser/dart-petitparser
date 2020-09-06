@@ -5,7 +5,7 @@ import 'predicate.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
-Parser<String> range(Object start, Object stop, [String message]) {
+Parser<String> range(Object start, Object stop, [String? message]) {
   return CharacterParser(
       RangeCharPredicate(toCharCode(start), toCharCode(stop)),
       message ??
@@ -16,9 +16,7 @@ class RangeCharPredicate implements CharacterPredicate {
   final int start;
   final int stop;
 
-  RangeCharPredicate(this.start, this.stop)
-      : assert(start != null, 'start must not be null'),
-        assert(stop != null, 'stop must not be null') {
+  RangeCharPredicate(this.start, this.stop) {
     if (start > stop) {
       throw ArgumentError('Invalid range: $start-$stop');
     }

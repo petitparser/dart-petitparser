@@ -23,14 +23,12 @@ extension MapParserExtension<T> on Parser<T> {
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class MapParser<T, R> extends DelegateParser<R> {
+class MapParser<T, R> extends DelegateParser<T, R> {
   final MapCallback<T, R> callback;
   final bool hasSideEffects;
 
   MapParser(Parser<T> delegate, this.callback, [this.hasSideEffects = false])
-      : assert(callback != null, 'callback must not be null'),
-        assert(hasSideEffects != null, 'hasSideEffects must not be null'),
-        super(delegate);
+      : super(delegate);
 
   @override
   Result<R> parseOn(Context context) {

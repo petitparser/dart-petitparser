@@ -28,7 +28,9 @@ void expectCommon(Parser parser, {bool immutable = false}) {
     final copy = parser.copy();
     final replaced = <Parser>[];
     for (var i = 0; i < copy.children.length; i++) {
-      final source = copy.children[i], target = any();
+      final source = copy.children[i];
+      final target = source.copy();
+      expect(source, isNot(same(target)));
       copy.replace(source, target);
       expect(copy.children[i], same(target));
       replaced.add(target);
@@ -53,7 +55,7 @@ void main() {
       });
     });
     group('castList', () {
-      expectCommon(any().castList());
+      expectCommon(any().star().castList());
       test('default', () {
         final parser = digit().map(int.parse).repeat(3).castList<num>();
         expectSuccess(parser, '123', <num>[1, 2, 3]);
@@ -704,16 +706,7 @@ void main() {
         expectFailure(parser, '');
       });
       test('empty', () {
-        expect(() => ChoiceParser([]), throwsArgumentError);
-      });
-    });
-    group('delegate', () {
-      expectCommon(any().delegate());
-      test('default', () {
-        final parser = char('a').delegate();
-        expectSuccess(parser, 'a', 'a');
-        expectFailure(parser, 'b');
-        expectFailure(parser, '');
+        expect(() => <Parser>[].toChoiceParser(), throwsArgumentError);
       });
     });
     group('not', () {
@@ -721,8 +714,18 @@ void main() {
       test('default', () {
         final parser = char('a').not('not "a" expected');
         expectFailure(parser, 'a', 0, 'not "a" expected');
-        expectSuccess(parser, 'b', null, 0);
-        expectSuccess(parser, '', null);
+        expectSuccess(
+            parser,
+            'b',
+            isFailure.having(
+                (failure) => failure.message, 'message', '"a" expected'),
+            0);
+        expectSuccess(
+            parser,
+            '',
+            isFailure.having(
+                (failure) => failure.message, 'message', '"a" expected'),
+            0);
       });
       test('neg', () {
         final parser = digit().neg('no digit expected');
@@ -742,7 +745,7 @@ void main() {
         expectSuccess(parser, '', null);
       });
       test('with default', () {
-        final parser = char('a').optional('0');
+        final parser = char('a').optionalWith('0');
         expectSuccess(parser, 'a', 'a');
         expectSuccess(parser, 'b', '0', 0);
         expectSuccess(parser, '', '0');
