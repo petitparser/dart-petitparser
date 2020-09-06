@@ -51,14 +51,14 @@ void main() {
     final prim = undefined();
     final add =
         (prod & char('+').trim() & term).map((values) => values[0] + values[2]);
-    term.set(add.or(prod));
+    term.set(add | prod);
     final mul =
         (prim & char('*').trim() & prod).map((values) => values[0] * values[2]);
-    prod.set(mul.or(prim));
+    prod.set(mul | prim);
     final parens =
         (char('(').trim() & term & char(')').trim()).map((values) => values[1]);
     final number = digit().plus().flatten().trim().map(int.parse);
-    prim.set(parens.or(number));
+    prim.set(parens | number);
     final parser = term.end();
     expect(parser.parse('1 + 2 + 3').value, 6);
     expect(parser.parse('1 + 2 * 3').value, 7);
@@ -73,19 +73,20 @@ void main() {
           .flatten()
           .trim()
           .map((a) => num.tryParse(a)))
-      ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
+      ..wrapper(
+          char('(').trim(), char(')').trim(), (String l, num a, String r) => a);
     // negation is a prefix operator
-    builder.group()..prefix<String, int>(char('-').trim(), (op, a) => -a);
+    builder.group()..prefix(char('-').trim(), (String op, num a) => -a);
     // power is right-associative
     builder.group()
-      ..right<String, int>(char('^').trim(), (a, op, b) => math.pow(a, b));
+      ..right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
     // multiplication and addition are left-associative
     builder.group()
-      ..left<String, int>(char('*').trim(), (a, op, b) => a * b)
-      ..left<String, int>(char('/').trim(), (a, op, b) => a / b);
+      ..left(char('*').trim(), (num a, String op, num b) => a * b)
+      ..left(char('/').trim(), (num a, String op, num b) => a / b);
     builder.group()
-      ..left<String, int>(char('+').trim(), (a, op, b) => a + b)
-      ..left<String, int>(char('-').trim(), (a, op, b) => a - b);
+      ..left(char('+').trim(), (num a, String op, num b) => a + b)
+      ..left(char('-').trim(), (num a, String op, num b) => a - b);
     final parser = builder.build().end();
     expect(parser.parse('-8').value, -8);
     expect(parser.parse('1+2*3').value, 7);

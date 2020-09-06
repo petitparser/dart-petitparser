@@ -157,16 +157,16 @@ final prim = undefined();
 
 final add = (prod & char('+').trim() & term)
     .map((values) => values[0] + values[2]);
-term.set(add.or(prod));
+term.set(add | prod);
 
 final mul = (prim & char('*').trim() & prod)
     .map((values) => values[0] * values[2]);
-prod.set(mul.or(prim));
+prod.set(mul | prim);
 
 final parens = (char('(').trim() & term & char(')').trim())
     .map((values) => values[1]);
 final number = digit().plus().flatten().trim().map(int.parse);
-prim.set(parens.or(number));
+prim.set(parens | number);
 ```
 
 To make sure our parser consumes all input we wrap it with the `end()` parser into the start production:
@@ -202,7 +202,7 @@ builder.group()
       .flatten()
       .trim()
       .map((a) => num.tryParse(a)))
-  ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
+  ..wrapper(char('(').trim(), char(')').trim(), (String l, num a, String r) => a);
 ```
 
 Then come the normal arithmetic operators. Note, that the action blocks receive both, the terms and the parsed operator in the order they appear in the parsed input:
@@ -210,19 +210,19 @@ Then come the normal arithmetic operators. Note, that the action blocks receive 
 ```dart
 // negation is a prefix operator
 builder.group()
-  ..prefix(char('-').trim(), (op, a) => -a);
+  ..prefix(char('-').trim(), (String op, num a) => -a);
 
 // power is right-associative
 builder.group()
-  ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
+  ..right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
 
 // multiplication and addition are left-associative
 builder.group()
-  ..left(char('*').trim(), (a, op, b) => a * b)
-  ..left(char('/').trim(), (a, op, b) => a / b);
+  ..left(char('*').trim(), (num a, String op, num b) => a * b)
+  ..left(char('/').trim(), (num a, String op, num b) => a / b);
 builder.group()
-  ..left(char('+').trim(), (a, op, b) => a + b)
-  ..left(char('-').trim(), (a, op, b) => a - b);
+  ..left(char('+').trim(), (num a, String op, num b) => a + b)
+  ..left(char('-').trim(), (num a, String op, num b) => a - b);
 ```
 
 Finally, we can build the parser:
