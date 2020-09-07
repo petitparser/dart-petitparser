@@ -14,17 +14,16 @@ Parser buildParser() {
         .flatten('number expected')
         .trim()
         .map(num.tryParse))
-    ..wrapper<String, num>(
+    ..wrapper(
         char('(').trim(), char(')').trim(), (left, value, right) => value);
-  builder.group()..prefix<String, num>(char('-').trim(), (op, a) => -a);
+  builder.group()..prefix(char('-').trim(), (op, num a) => -a);
+  builder.group()..right(char('^').trim(), (num a, op, num b) => pow(a, b));
   builder.group()
-    ..right<String, num>(char('^').trim(), (a, op, b) => pow(a, b));
+    ..left(char('*').trim(), (num a, op, num b) => a * b)
+    ..left(char('/').trim(), (num a, op, num b) => a / b);
   builder.group()
-    ..left<String, num>(char('*').trim(), (a, op, b) => a * b)
-    ..left<String, num>(char('/').trim(), (a, op, b) => a / b);
-  builder.group()
-    ..left<String, num>(char('+').trim(), (a, op, b) => a + b)
-    ..left<String, num>(char('-').trim(), (a, op, b) => a - b);
+    ..left(char('+').trim(), (num a, op, num b) => a + b)
+    ..left(char('-').trim(), (num a, op, num b) => a - b);
   return builder.build().end();
 }
 
