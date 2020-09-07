@@ -58,7 +58,7 @@ class ExpressionGroup {
           .map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           final ExpressionResult expressionResult = result;
-          return expressionResult.callback(expressionResult.operator, value);
+          return expressionResult.action(expressionResult.operator, value);
         });
       });
     }
@@ -84,7 +84,7 @@ class ExpressionGroup {
           .map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           final ExpressionResult expressionResult = result;
-          return expressionResult.callback(value, expressionResult.operator);
+          return expressionResult.action(value, expressionResult.operator);
         });
       });
     }
@@ -109,7 +109,7 @@ class ExpressionGroup {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
           final ExpressionResult expressionResult = sequence[i];
-          result = expressionResult.callback(
+          result = expressionResult.action(
               sequence[i - 1], expressionResult.operator, result);
         }
         return result;
@@ -136,7 +136,7 @@ class ExpressionGroup {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
           final ExpressionResult expressionResult = sequence[i];
-          result = expressionResult.callback(
+          result = expressionResult.action(
               result, expressionResult.operator, sequence[i + 1]);
         }
         return result;

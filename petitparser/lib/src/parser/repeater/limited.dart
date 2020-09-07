@@ -8,7 +8,7 @@ import 'repeating.dart';
 abstract class LimitedRepeatingParser<T> extends RepeatingParser<T> {
   Parser limit;
 
-  LimitedRepeatingParser(Parser delegate, this.limit, int min, int max)
+  LimitedRepeatingParser(Parser<T> delegate, this.limit, int min, int max)
       : super(delegate, min, max);
 
   @override

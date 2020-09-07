@@ -27,7 +27,7 @@ class MapParser<T, R> extends DelegateParser<R> {
   final MapCallback<T, R> callback;
   final bool hasSideEffects;
 
-  MapParser(Parser delegate, this.callback, [this.hasSideEffects = false])
+  MapParser(Parser<T> delegate, this.callback, [this.hasSideEffects = false])
       : super(delegate);
 
   @override
@@ -49,7 +49,8 @@ class MapParser<T, R> extends DelegateParser<R> {
   }
 
   @override
-  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);
+  MapParser<T, R> copy() =>
+      MapParser<T, R>(delegate as Parser<T>, callback, hasSideEffects);
 
   @override
   bool hasEqualProperties(MapParser<T, R> other) =>

@@ -30,7 +30,7 @@ extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<T> extends ListParser<T> {
-  ChoiceParser(Iterable<Parser> children) : super(children) {
+  ChoiceParser(Iterable<Parser<T>> children) : super(children) {
     if (children.isEmpty) {
       throw ArgumentError('Choice parser cannot be empty.');
     }
@@ -61,5 +61,5 @@ class ChoiceParser<T> extends ListParser<T> {
   }
 
   @override
-  ChoiceParser<T> copy() => ChoiceParser<T>(children);
+  ChoiceParser<T> copy() => ChoiceParser<T>(children as List<Parser<T>>);
 }

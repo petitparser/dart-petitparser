@@ -35,7 +35,7 @@ extension NotParserExtension<T> on Parser<T> {
 class NotParser<T> extends DelegateParser<Failure<T>> {
   final String message;
 
-  NotParser(Parser delegate, this.message) : super(delegate);
+  NotParser(Parser<T> delegate, this.message) : super(delegate);
 
   @override
   Result<Failure<T>> parseOn(Context context) {
@@ -57,7 +57,7 @@ class NotParser<T> extends DelegateParser<Failure<T>> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  NotParser<T> copy() => NotParser<T>(delegate, message);
+  NotParser<T> copy() => NotParser<T>(delegate as Parser<T>, message);
 
   @override
   bool hasEqualProperties(NotParser<T> other) =>

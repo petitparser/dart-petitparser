@@ -29,7 +29,7 @@ extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
 
 /// A parser that parses a sequence of parsers.
 class SequenceParser<T> extends ListParser<List<T>> {
-  SequenceParser(Iterable<Parser> children) : super(children);
+  SequenceParser(Iterable<Parser<T>> children) : super(children);
 
   @override
   Result<List<T>> parseOn(Context context) {
@@ -58,5 +58,5 @@ class SequenceParser<T> extends ListParser<List<T>> {
   }
 
   @override
-  SequenceParser<T> copy() => SequenceParser<T>(children);
+  SequenceParser<T> copy() => SequenceParser<T>(children as List<Parser<T>>);
 }

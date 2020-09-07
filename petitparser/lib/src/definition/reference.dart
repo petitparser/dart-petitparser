@@ -5,13 +5,13 @@ import '../context/result.dart';
 import '../core/parser.dart';
 
 @immutable
-class Reference<T> extends Parser<T> {
+class Reference extends Parser {
   final Function function;
-  final List<dynamic> arguments;
+  final List<Object> arguments;
 
   Reference(this.function, this.arguments);
 
-  Parser<T> resolve() => Function.apply(function, arguments);
+  Parser resolve() => Function.apply(function, arguments);
 
   @override
   bool operator ==(Object other) {
@@ -40,12 +40,16 @@ class Reference<T> extends Parser<T> {
   }
 
   @override
+  Result parseOn(Context context) =>
+      throw UnsupportedError('References cannot be parsed.');
+
+  @override
+  int fastParseOn(String buffer, int position) =>
+      throw UnsupportedError('References cannot be parsed.');
+
+  @override
   int get hashCode => function.hashCode;
 
   @override
-  Reference<T> copy() => throw UnsupportedError('References cannot be copied.');
-
-  @override
-  Result<T> parseOn(Context context) =>
-      throw UnsupportedError('References cannot be parsed.');
+  Reference copy() => throw UnsupportedError('References cannot be copied.');
 }

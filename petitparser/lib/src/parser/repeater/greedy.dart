@@ -43,7 +43,7 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
 /// implementations. It aggressively consumes as much input as possible and then
 /// backtracks to meet the 'limit' condition.
 class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
-  GreedyRepeatingParser(Parser parser, Parser limit, int min, int max)
+  GreedyRepeatingParser(Parser<T> parser, Parser limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
@@ -122,5 +122,5 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
 
   @override
   GreedyRepeatingParser<T> copy() =>
-      GreedyRepeatingParser<T>(delegate, limit, min, max);
+      GreedyRepeatingParser<T>(delegate as Parser<T>, limit, min, max);
 }

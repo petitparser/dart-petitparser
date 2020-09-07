@@ -28,7 +28,7 @@ SettableParser<T> undefined<T>([String message = 'undefined parser']) =>
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
 class SettableParser<T> extends DelegateParser<T> {
-  SettableParser(Parser delegate) : super(delegate);
+  SettableParser(Parser<T> delegate) : super(delegate);
 
   /// Sets the receiver to delegate to [parser].
   void set(Parser<T> parser) => replace(children[0], parser);
@@ -41,5 +41,5 @@ class SettableParser<T> extends DelegateParser<T> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  SettableParser<T> copy() => SettableParser<T>(delegate);
+  SettableParser<T> copy() => SettableParser<T>(delegate as Parser<T>);
 }

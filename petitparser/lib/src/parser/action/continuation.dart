@@ -37,7 +37,7 @@ extension ContinuationParserExtension<T> on Parser<T> {
 class ContinuationParser<T> extends DelegateParser<T> {
   final ContinuationHandler<T> handler;
 
-  ContinuationParser(Parser delegate, this.handler) : super(delegate);
+  ContinuationParser(Parser<T> delegate, this.handler) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) => handler(_parseDelegateOn, context);
@@ -46,7 +46,8 @@ class ContinuationParser<T> extends DelegateParser<T> {
       delegate.parseOn(context) as Result<T>;
 
   @override
-  ContinuationParser<T> copy() => ContinuationParser<T>(delegate, handler);
+  ContinuationParser<T> copy() =>
+      ContinuationParser<T>(delegate as Parser<T>, handler);
 
   @override
   bool hasEqualProperties(ContinuationParser<T> other) =>

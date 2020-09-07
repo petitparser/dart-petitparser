@@ -23,7 +23,7 @@ class TrimmingParser<T> extends DelegateParser<T> {
   Parser left;
   Parser right;
 
-  TrimmingParser(Parser delegate, this.left, this.right) : super(delegate);
+  TrimmingParser(Parser<T> delegate, this.left, this.right) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
@@ -65,7 +65,8 @@ class TrimmingParser<T> extends DelegateParser<T> {
   }
 
   @override
-  TrimmingParser<T> copy() => TrimmingParser<T>(delegate, left, right);
+  TrimmingParser<T> copy() =>
+      TrimmingParser<T>(delegate as Parser<T>, left, right);
 
   @override
   List<Parser> get children => [delegate, left, right];
