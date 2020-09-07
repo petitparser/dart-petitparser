@@ -55,32 +55,20 @@ for PKG in ${PKGS}; do
     echo -e "\033[1mPKG: ${PKG}; TASK: ${TASK}\033[22m"
     case ${TASK} in
     command_0)
-      echo 'dartanalyzer --fatal-warnings .'
-      dartanalyzer --fatal-warnings . || EXIT_CODE=$?
+      echo 'dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos .'
+      dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos . || EXIT_CODE=$?
       ;;
     command_1)
       echo 'dartfmt --dry-run --set-exit-if-changed .'
       dartfmt --dry-run --set-exit-if-changed . || EXIT_CODE=$?
       ;;
     command_2)
-      echo 'pub run test test/all_test.dart --platform vm'
-      pub run test test/all_test.dart --platform vm || EXIT_CODE=$?
+      echo 'pub run --enable-experiment=non-nullable test --platform vm'
+      pub run --enable-experiment=non-nullable test --platform vm || EXIT_CODE=$?
       ;;
     command_3)
-      echo 'pub run test test/all_test.dart --platform chrome'
-      pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
-      ;;
-    command_4)
-      echo 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
-      pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
-      ;;
-    command_5)
-      echo 'pub run test --platform vm'
-      pub run test --platform vm || EXIT_CODE=$?
-      ;;
-    command_6)
-      echo 'pub run test --platform chrome'
-      pub run test --platform chrome || EXIT_CODE=$?
+      echo 'pub run --enable-experiment=non-nullable test --platform chrome'
+      pub run --enable-experiment=non-nullable test --platform chrome || EXIT_CODE=$?
       ;;
     *)
       echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"

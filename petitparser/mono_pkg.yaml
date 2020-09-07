@@ -1,16 +1,16 @@
 # See https://github.com/dart-lang/mono_repo for details
 dart:
-  - stable
+  - dev
 
 stages:
   - analyze:
-      - command: "dartanalyzer --fatal-warnings ."
+      - command: "dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos ."
       - command: "dartfmt --dry-run --set-exit-if-changed ."
   - unit_test:
-      - command: "pub run test test/all_test.dart --platform vm"
-      - command: "pub run test test/all_test.dart --platform chrome"
-  - coverage:
-      - command: "pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
+      - command: "pub run --enable-experiment=non-nullable test --platform vm"
+      - command: "pub run --enable-experiment=non-nullable test --platform chrome"
+#  - coverage:
+#      - command: "pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
 
 cache:
   directories:
