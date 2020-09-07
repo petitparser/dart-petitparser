@@ -15,17 +15,18 @@ extension PickParserExtension<T> on Parser<List<T>> {
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class PickParser<T> extends DelegateParser<List<T>, T> {
+class PickParser<T> extends DelegateParser<T> {
   final int index;
 
-  PickParser(Parser<List<T>> delegate, this.index) : super(delegate);
+  PickParser(Parser delegate, this.index) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
       final value = result.value;
-      return result.success(value[index < 0 ? value.length + index : index]);
+      final picked = value[index < 0 ? value.length + index : index];
+      return result.success(picked);
     } else {
       return result.failure(result.message);
     }

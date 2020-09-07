@@ -16,8 +16,8 @@ extension TokenParserExtension<T> on Parser<T> {
 }
 
 /// A parser that answers a token of the result its delegate parses.
-class TokenParser<T> extends DelegateParser<T, Token<T>> {
-  TokenParser(Parser<T> delegate) : super(delegate);
+class TokenParser<T> extends DelegateParser<Token<T>> {
+  TokenParser(Parser delegate) : super(delegate);
 
   @override
   Result<Token<T>> parseOn(Context context) {

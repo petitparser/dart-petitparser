@@ -10,7 +10,7 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().optional()` accepts a letter as input
   /// and returns that letter. When given something else the parser succeeds as
   /// well, does not consume anything and returns `null`.
-  Parser<T?> optional() => OptionalParser<T, T?>(this, null);
+  Parser<T?> optional() => OptionalParser<T?>(this, null);
 
   /// Returns new parser that accepts the receiver, if possible. The resulting
   /// parser returns the result of the receiver, or [value] if not applicable.
@@ -18,20 +18,20 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().optionalWith('!')` accepts a letter as
   /// input and returns that letter. When given something else the parser
   /// succeeds as well, does not consume anything and returns `'!'`.
-  Parser<T> optionalWith(T value) => OptionalParser<T, T>(this, value);
+  Parser<T> optionalWith(T value) => OptionalParser<T>(this, value);
 }
 
 /// A parser that optionally parsers its delegate, or answers null.
-class OptionalParser<T, R> extends DelegateParser<T, R> {
-  final R otherwise;
+class OptionalParser<T> extends DelegateParser<T> {
+  final T otherwise;
 
-  OptionalParser(Parser<T> delegate, this.otherwise) : super(delegate);
+  OptionalParser(Parser delegate, this.otherwise) : super(delegate);
 
   @override
-  Result<R> parseOn(Context context) {
+  Result<T> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return result as Result<R>;
+      return result as Result<T>;
     } else {
       return context.success(otherwise);
     }
@@ -44,5 +44,5 @@ class OptionalParser<T, R> extends DelegateParser<T, R> {
   }
 
   @override
-  OptionalParser<T, R> copy() => OptionalParser<T, R>(delegate, otherwise);
+  OptionalParser<T> copy() => OptionalParser<T>(delegate, otherwise);
 }

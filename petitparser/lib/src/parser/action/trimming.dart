@@ -19,11 +19,11 @@ extension TrimmingParserExtension<T> on Parser<T> {
 
 /// A parser that silently consumes input of another parser around
 /// its delegate.
-class TrimmingParser<T> extends DelegateParser<T, T> {
+class TrimmingParser<T> extends DelegateParser<T> {
   Parser left;
   Parser right;
 
-  TrimmingParser(Parser<T> delegate, this.left, this.right) : super(delegate);
+  TrimmingParser(Parser delegate, this.left, this.right) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
@@ -36,7 +36,7 @@ class TrimmingParser<T> extends DelegateParser<T, T> {
     }
 
     // Consume the delegate:
-    final result = delegate.parseOn(context);
+    final result = delegate.parseOn(context) as Result<T>;
     if (result.isFailure) {
       return result;
     }

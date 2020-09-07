@@ -3,7 +3,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'list.dart';
 
-extension SequenceParserExtension<T> on Parser<T> {
+extension SequenceParserExtension on Parser {
   /// Returns a parser that accepts the receiver followed by [other]. The
   /// resulting parser returns a list of the parse result of the receiver
   /// followed by the parse result of [other]. Calling this method on an
@@ -13,13 +13,13 @@ extension SequenceParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `['a', '1', 'b']`.
-  Parser<List<dynamic>> seq(Parser other) => this is SequenceParser
-      ? SequenceParser<dynamic>([...children, other])
-      : SequenceParser<dynamic>([this, other]);
+  Parser<List> seq(Parser other) => this is SequenceParser
+      ? SequenceParser([...children, other])
+      : SequenceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [seq] for details.
-  Parser<List<dynamic>> operator &(Parser other) => seq(other);
+  Parser<List> operator &(Parser other) => seq(other);
 }
 
 extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
@@ -28,8 +28,8 @@ extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
 }
 
 /// A parser that parses a sequence of parsers.
-class SequenceParser<T> extends ListParser<T, List<T>> {
-  SequenceParser(Iterable<Parser<T>> children) : super(children);
+class SequenceParser<T> extends ListParser<List<T>> {
+  SequenceParser(Iterable<Parser> children) : super(children);
 
   @override
   Result<List<T>> parseOn(Context context) {

@@ -19,8 +19,8 @@ extension FlattenParserExtension<T> on Parser<T> {
 
 /// A parser that answers a substring of the range its delegate
 /// parses.
-class FlattenParser<T> extends DelegateParser<T, String> {
-  FlattenParser(Parser<T> delegate, [this.message]) : super(delegate);
+class FlattenParser<T> extends DelegateParser<String> {
+  FlattenParser(Parser delegate, [this.message]) : super(delegate);
 
   final String? message;
 

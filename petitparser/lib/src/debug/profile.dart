@@ -38,7 +38,7 @@ Parser profile(Parser root, [OutputHandler output = print]) {
     for (final frame in frames) {
       output('${frame.count}\t'
           '${frame.watch.elapsedMicroseconds}\t'
-          '$frame.parser');
+          '${frame.parser}');
     }
     return result;
   });

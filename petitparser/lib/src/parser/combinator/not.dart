@@ -32,10 +32,10 @@ extension NotParserExtension<T> on Parser<T> {
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].
-class NotParser<T> extends DelegateParser<T, Failure<T>> {
+class NotParser<T> extends DelegateParser<Failure<T>> {
   final String message;
 
-  NotParser(Parser<T> delegate, this.message) : super(delegate);
+  NotParser(Parser delegate, this.message) : super(delegate);
 
   @override
   Result<Failure<T>> parseOn(Context context) {

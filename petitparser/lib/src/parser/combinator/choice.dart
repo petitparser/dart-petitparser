@@ -3,7 +3,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'list.dart';
 
-extension ChoiceParserExtension<T> on Parser<T> {
+extension ChoiceParserExtension on Parser {
   /// Returns a parser that accepts the receiver or [other]. The resulting
   /// parser returns the parse result of the receiver, if the receiver fails
   /// it returns the parse result of [other] (exclusive ordered choice).
@@ -14,9 +14,9 @@ extension ChoiceParserExtension<T> on Parser<T> {
   /// `char('a')` will never be activated, because the input is always consumed
   /// `letter()`. This can be problematic if the author intended to attach a
   /// production action to `char('a')`.
-  Parser<dynamic> or(Parser<dynamic> other) => this is ChoiceParser
-      ? ChoiceParser<dynamic>([...children, other])
-      : ChoiceParser<dynamic>([this, other]);
+  Parser or(Parser other) => this is ChoiceParser
+      ? ChoiceParser([...children, other])
+      : ChoiceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [or] for details.
@@ -29,8 +29,8 @@ extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
 }
 
 /// A parser that uses the first parser that succeeds.
-class ChoiceParser<T> extends ListParser<T, T> {
-  ChoiceParser(Iterable<Parser<T>> children) : super(children) {
+class ChoiceParser<T> extends ListParser<T> {
+  ChoiceParser(Iterable<Parser> children) : super(children) {
     if (children.isEmpty) {
       throw ArgumentError('Choice parser cannot be empty.');
     }
@@ -38,14 +38,14 @@ class ChoiceParser<T> extends ListParser<T, T> {
 
   @override
   Result<T> parseOn(Context context) {
-    Result<T>? result;
+    Result? result;
     for (var i = 0; i < children.length; i++) {
       result = children[i].parseOn(context);
       if (result.isSuccess) {
-        return result;
+        return result as Result<T>;
       }
     }
-    return result!;
+    return result as Result<T>;
   }
 
   @override

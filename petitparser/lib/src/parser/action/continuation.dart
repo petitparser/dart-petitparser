@@ -34,13 +34,16 @@ extension ContinuationParserExtension<T> on Parser<T> {
 
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.
-class ContinuationParser<T> extends DelegateParser<T, T> {
+class ContinuationParser<T> extends DelegateParser<T> {
   final ContinuationHandler<T> handler;
 
-  ContinuationParser(Parser<T> delegate, this.handler) : super(delegate);
+  ContinuationParser(Parser delegate, this.handler) : super(delegate);
 
   @override
-  Result<T> parseOn(Context context) => handler(delegate.parseOn, context);
+  Result<T> parseOn(Context context) => handler(_parseDelegateOn, context);
+
+  Result<T> _parseDelegateOn(Context context) =>
+      delegate.parseOn(context) as Result<T>;
 
   @override
   ContinuationParser<T> copy() => ContinuationParser<T>(delegate, handler);

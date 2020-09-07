@@ -1,8 +1,8 @@
 import '../../core/parser.dart';
 
 /// An abstract parser that delegates to another one.
-abstract class DelegateParser<T, R> extends Parser<R> {
-  Parser<T> delegate;
+abstract class DelegateParser<T> extends Parser<T> {
+  Parser delegate;
 
   DelegateParser(this.delegate);
 
@@ -13,7 +13,7 @@ abstract class DelegateParser<T, R> extends Parser<R> {
   void replace(Parser source, Parser target) {
     super.replace(source, target);
     if (delegate == source) {
-      delegate = target as Parser<T>;
+      delegate = target;
     }
   }
 }
