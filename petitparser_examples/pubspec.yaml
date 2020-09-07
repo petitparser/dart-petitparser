@@ -8,14 +8,14 @@ description: A collection of example parsers, applications, and benchmarks that
 environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
-  collection: ^1.14.0
-  meta: ^1.2.0
-  more: ^2.7.0
-  petitparser: ^3.1.0
+  collection: ^1.15.0-nullsafety
+  meta: ^1.3.0-nullsafety
+  more: ^2.8.0-nullsafety
+  petitparser: ^4.0.0-nullsafety
 dependency_overrides:
   petitparser:
     path: ../petitparser
 dev_dependencies:
-  test: ^1.15.0
+  test: ^1.16.0-nullsafety
   build_runner: ^1.10.0
   build_web_compilers: ^2.11.0
