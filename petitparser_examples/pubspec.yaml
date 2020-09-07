@@ -1,5 +1,5 @@
 name: petitparser_examples
-version: 3.1.0
+version: 4.0.0-nullsafety
 
 homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that
