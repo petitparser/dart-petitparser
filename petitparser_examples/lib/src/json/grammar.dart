@@ -10,7 +10,7 @@ class JsonGrammarDefinition extends GrammarDefinition {
   const JsonGrammarDefinition();
 
   Parser start() => ref(value).end();
-  Parser token(Object source, [String name]) {
+  Parser token(Object source, [String? name]) {
     if (source is String) {
       return source.toParser(message: 'Expected ${name ?? source}').trim();
     } else if (source is Parser) {

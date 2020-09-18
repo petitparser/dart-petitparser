@@ -128,10 +128,10 @@ final Map<String, Function> benchmarks = {
 
 void main() {
   print('Name\tparseOn\tfastParseOn\tChange');
-  for (final name in benchmarks.keys) {
-    final parseOnTime = benchmark(benchmarks[name](false));
-    final fastParseOnTime = benchmark(benchmarks[name](true));
-    print('$name\t'
+  for (final entry in benchmarks.entries) {
+    final parseOnTime = benchmark(entry.value(false));
+    final fastParseOnTime = benchmark(entry.value(true));
+    print('${entry.key}\t'
         '${parseOnTime.toStringAsFixed(3)}\t'
         '${fastParseOnTime.toStringAsFixed(3)}\t'
         '${percentChange(parseOnTime, fastParseOnTime).round()}%');
