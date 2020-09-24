@@ -2,7 +2,7 @@ import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
-import 'output.dart';
+import 'consumer.dart';
 
 /// Returns a transformed [parser] that when being used to read input prints a
 /// trace of all activated parsers and their respective parse results.

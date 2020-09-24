@@ -1,7 +1,7 @@
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
-import 'output.dart';
+import 'consumer.dart';
 
 /// Returns a transformed [Parser] that when being used measures
 /// the activation count and total time of each parser.
