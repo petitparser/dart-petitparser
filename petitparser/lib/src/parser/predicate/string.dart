@@ -1,12 +1,17 @@
 import '../../core/parser.dart';
 import '../character/any_of.dart';
 import '../character/char.dart';
+import '../character/pattern.dart';
 import '../misc/epsilon.dart';
 import 'predicate.dart';
 
 extension PredicateStringExtension on String {
   /// Converts this string to a corresponding parser.
-  Parser<String> toParser({bool caseInsensitive = false, String message}) {
+  Parser<String> toParser({
+    bool isPattern = false,
+    bool caseInsensitive = false,
+    String message,
+  }) {
     if (isEmpty) {
       return epsilon(this);
     } else if (length == 1) {
@@ -14,9 +19,15 @@ extension PredicateStringExtension on String {
           ? anyOf('${toLowerCase()}${toUpperCase()}', message)
           : char(this, message);
     } else {
-      return caseInsensitive
-          ? stringIgnoreCase(this, message)
-          : string(this, message);
+      if (isPattern) {
+        return caseInsensitive
+            ? patternIgnoreCase(this, message)
+            : pattern(this, message);
+      } else {
+        return caseInsensitive
+            ? stringIgnoreCase(this, message)
+            : string(this, message);
+      }
     }
   }
 }

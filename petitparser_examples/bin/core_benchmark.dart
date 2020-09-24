@@ -113,7 +113,7 @@ final Map<String, Function> benchmarks = {
   'times()': stringTest(string, any().times(string.length)),
   'seq()': stringTest(
     string,
-    SequenceParser(List.filled(string.length, any())),
+    List.filled(string.length, any()).toSequenceParser(),
   ),
 
   // composite

@@ -30,7 +30,8 @@ class ExpressionGroup {
   void wrapper<O, V>(Parser<O> left, Parser<O> right,
       [Object Function(O left, V value, O right) action]) {
     action ??= (left, value, right) => [left, value, right];
-    _wrappers.add(SequenceParser([left, _loopback, right])
+    _wrappers.add([left, _loopback, right]
+        .toSequenceParser()
         .map((value) => action(value[0], value[1], value[2])));
   }
 
@@ -52,7 +53,9 @@ class ExpressionGroup {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return SequenceParser([_buildChoice(_prefix).star(), inner]).map((tuple) {
+      return [_buildChoice(_prefix).star(), inner]
+          .toSequenceParser()
+          .map((tuple) {
         return tuple.first.reversed.fold(tuple.last, (value, result) {
           final ExpressionResult expressionResult = result;
           return expressionResult.action(expressionResult.operator, value);
@@ -75,7 +78,8 @@ class ExpressionGroup {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return SequenceParser([inner, _buildChoice(_postfix).star()])
+      return [inner, _buildChoice(_postfix).star()]
+          .toSequenceParser()
           .map((tuple) {
         return tuple.last.fold(tuple.first, (value, result) {
           final ExpressionResult expressionResult = result;
