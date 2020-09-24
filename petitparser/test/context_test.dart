@@ -14,7 +14,7 @@ void main() {
     expect(success.buffer, buffer);
     expect(success.position, 0);
     expect(success.value, 'result');
-    expect(success.message, isNull);
+    expect(() => success.message, throwsUnsupportedError);
     expect(success.isSuccess, isTrue);
     expect(success.isFailure, isFalse);
     expect(success.toString(), 'Success[1:1]: result');
@@ -24,7 +24,7 @@ void main() {
     expect(success.buffer, buffer);
     expect(success.position, 2);
     expect(success.value, 'result');
-    expect(success.message, isNull);
+    expect(() => success.message, throwsUnsupportedError);
     expect(success.isSuccess, isTrue);
     expect(success.isFailure, isFalse);
     expect(success.toString(), 'Success[2:1]: result');
@@ -37,7 +37,7 @@ void main() {
     expect(success.buffer, buffer);
     expect(success.position, 2);
     expect(success.value, 123);
-    expect(success.message, isNull);
+    expect(() => success.message, throwsUnsupportedError);
     expect(success.isSuccess, isTrue);
     expect(success.isFailure, isFalse);
     expect(success.toString(), 'Success[2:1]: 123');

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.0
+
+* Dart 2.9 compatibility and requirement (in preparation for null-safety).
+* `Success.message` throws an `UnsupportedError`, instead of returning `null`.
+
 ## 3.1.0
 
 * Fix missing type information on `eof` and `failure` parser.

@@ -1,12 +1,12 @@
 name: petitparser
-version: 3.1.0
+version: 3.2.0
 
 homepage: https://github.com/petitparser/dart-petitparser
 description: A dynamic parser framework to build efficient grammars and parsers
   quickly.
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.9.0 <3.0.0'
 dependencies:
   meta: ^1.2.0
 dev_dependencies:
