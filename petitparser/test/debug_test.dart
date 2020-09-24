@@ -7,9 +7,14 @@ final Parser identifier = letter() & word().star();
 void main() {
   group('trace', () {
     test('success', () {
-      final lines = <String>[];
-      expect(trace(identifier, lines.add).parse('a').isSuccess, isTrue);
-      expect(lines, [
+      final frames = <TraceFrame>[];
+      final result = trace(identifier, frames.add).parse('a');
+      expect(result.isSuccess, isTrue);
+      expect(frames.first.level, 0);
+      expect(frames.first.result, isNull);
+      expect(frames.last.level, 0);
+      expect(frames.last.result, isA<Success>());
+      expect(frames.map((frame) => frame.toString()), [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Success[1:2]: a',
@@ -21,9 +26,14 @@ void main() {
       ]);
     });
     test('failure', () {
-      final lines = <String>[];
-      expect(trace(identifier, lines.add).parse('1').isFailure, isTrue);
-      expect(lines, [
+      final frames = <TraceFrame>[];
+      final result = trace(identifier, frames.add).parse('1');
+      expect(result.isFailure, isTrue);
+      expect(frames.first.level, 0);
+      expect(frames.first.result, isNull);
+      expect(frames.last.level, 0);
+      expect(frames.last.result, isA<Failure>());
+      expect(frames.map((frame) => frame.toString()), [
         'Instance of \'SequenceParser\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Failure[1:1]: letter expected',
@@ -33,15 +43,15 @@ void main() {
   });
   group('profile', () {
     test('success', () {
-      final lines = <String>[];
-      expect(profile(identifier, lines.add).parse('ab123').isSuccess, isTrue);
-      expect(lines, hasLength(4));
-      final splitLines = lines.map((row) => row.split('\t'));
-      final counts = splitLines.map((row) => int.parse(row[0]));
-      final times = splitLines.map((row) => int.parse(row[1]));
-      final names = splitLines.map((row) => row[2]);
-      expect(counts.every((cell) => cell >= 0), isTrue);
-      expect(times.every((cell) => cell >= 0), isTrue);
+      final frames = <ProfileFrame>[];
+      final result = profile(identifier, frames.add).parse('ab123');
+      expect(result.isSuccess, isTrue);
+      expect(frames, hasLength(4));
+      final counts = frames.map((frame) => frame.count);
+      final times = frames.map((frame) => frame.elapsed.inMicroseconds);
+      final names = frames.map((frame) => frame.parser.toString());
+      expect(counts, everyElement(isNonNegative));
+      expect(times, everyElement(isNonNegative));
       expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
@@ -50,15 +60,15 @@ void main() {
           isTrue);
     });
     test('failure', () {
-      final lines = <String>[];
-      expect(profile(identifier, lines.add).parse('1').isFailure, isTrue);
-      expect(lines, hasLength(4));
-      final splitLines = lines.map((row) => row.split('\t'));
-      final counts = splitLines.map((row) => int.parse(row[0]));
-      final times = splitLines.map((row) => int.parse(row[1]));
-      final names = splitLines.map((row) => row[2]);
-      expect(counts.every((cell) => cell >= 0), isTrue);
-      expect(times.every((cell) => cell >= 0), isTrue);
+      final frames = <ProfileFrame>[];
+      final result = profile(identifier, frames.add).parse('1');
+      expect(result.isFailure, isTrue);
+      expect(frames, hasLength(4));
+      final counts = frames.map((frame) => frame.count);
+      final times = frames.map((frame) => frame.elapsed.inMicroseconds);
+      final names = frames.map((frame) => frame.parser.toString());
+      expect(counts, everyElement(isNonNegative));
+      expect(times, everyElement(isNonNegative));
       expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
       expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
@@ -69,9 +79,10 @@ void main() {
   });
   group('progress', () {
     test('success', () {
-      final lines = <String>[];
-      expect(progress(identifier, lines.add).parse('ab123').isSuccess, isTrue);
-      expect(lines, [
+      final frames = <ProgressFrame>[];
+      final result = progress(identifier, frames.add).parse('ab123');
+      expect(result.isSuccess, isTrue);
+      expect(frames.map((frame) => frame.toString()), [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]',
         '** Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
@@ -83,9 +94,10 @@ void main() {
       ]);
     });
     test('failure', () {
-      final lines = <String>[];
-      expect(progress(identifier, lines.add).parse('1').isFailure, isTrue);
-      expect(lines, [
+      final frames = <ProgressFrame>[];
+      final result = progress(identifier, frames.add).parse('1');
+      expect(result.isFailure, isTrue);
+      expect(frames.map((frame) => frame.toString()), [
         '* Instance of \'SequenceParser\'',
         '* Instance of \'CharacterParser\'[letter expected]'
       ]);

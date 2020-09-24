@@ -1,1 +1,1 @@
-typedef OutputHandler = void Function(Object object);
+typedef Consumer<T> = void Function(T value);

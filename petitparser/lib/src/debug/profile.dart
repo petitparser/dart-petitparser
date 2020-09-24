@@ -21,30 +21,41 @@ import 'output.dart';
 /// The first number refers to the number of activations of each parser, and
 /// the second number is the microseconds spent in this parser and all its
 /// children.
-Parser profile(Parser root, [OutputHandler output = print]) {
-  final count = <Parser, int>{};
-  final watch = <Parser, Stopwatch>{};
-  final parsers = <Parser>[];
+Parser profile(Parser root, [Consumer<ProfileFrame> output = print]) {
+  final frames = <_ProfileFrame>[];
   return transformParser(root, (parser) {
-    parsers.add(parser);
+    final frame = _ProfileFrame(parser);
+    frames.add(frame);
     return parser.callCC((continuation, context) {
-      count[parser]++;
-      watch[parser].start();
+      frame.count++;
+      frame.watch.start();
       final result = continuation(context);
-      watch[parser].stop();
+      frame.watch.stop();
       return result;
     });
   }).callCC((continuation, context) {
-    for (final parser in parsers) {
-      count[parser] = 0;
-      watch[parser] = Stopwatch();
-    }
     final result = continuation(context);
-    for (final parser in parsers) {
-      output('${count[parser]}\t'
-          '${watch[parser].elapsedMicroseconds}\t'
-          '$parser');
-    }
+    frames.forEach(output);
     return result;
   });
+}
+
+abstract class ProfileFrame {
+  int get count;
+  Duration get elapsed;
+  Parser get parser;
+}
+
+class _ProfileFrame implements ProfileFrame {
+  int count = 0;
+  final watch = Stopwatch();
+  final Parser parser;
+
+  @override
+  Duration get elapsed => watch.elapsed;
+
+  _ProfileFrame(this.parser);
+
+  @override
+  String toString() => '$count\t${elapsed.inMicroseconds}\t$parser';
 }

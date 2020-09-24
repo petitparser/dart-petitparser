@@ -23,11 +23,21 @@ import 'output.dart';
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
 /// be reordered to such expensive parses.
-Parser progress(Parser parser, [OutputHandler output = print]) {
+Parser progress(Parser parser, [Consumer<ProgressFrame> output = print]) {
   return transformParser(parser, (each) {
     return each.callCC((continuation, context) {
-      output('${'*' * (1 + context.position)} $each');
+      output(ProgressFrame(context.position, each));
       return continuation(context);
     });
   });
+}
+
+class ProgressFrame {
+  final int position;
+  final Parser parser;
+
+  ProgressFrame(this.position, this.parser);
+
+  @override
+  String toString() => '${'*' * (1 + position)} $parser';
 }

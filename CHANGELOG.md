@@ -4,6 +4,7 @@
 
 * Dart 2.9 compatibility and requirement (in preparation for null-safety).
 * `Success.message` throws an `UnsupportedError`, instead of returning `null`.
+* Make debug tools to produce frame objects with accessors instead of strings.
 
 ## 3.1.0
 

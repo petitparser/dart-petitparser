@@ -1,3 +1,4 @@
+import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
@@ -27,16 +28,27 @@ import 'output.dart';
 /// Indentation signifies the activation of a parser object. Reverse indentation
 /// signifies the returning of a parse result either with a success or failure
 /// context.
-Parser trace(Parser parser, [OutputHandler output = print]) {
+Parser trace(Parser parser, [Consumer<TraceFrame> output = print]) {
   var level = 0;
   return transformParser(parser, (each) {
     return each.callCC((continuation, context) {
-      output('${'  ' * level}$each');
+      output(TraceFrame(level, each));
       level++;
       final result = continuation(context);
       level--;
-      output('${'  ' * level}$result');
+      output(TraceFrame(level, each, result));
       return result;
     });
   });
+}
+
+class TraceFrame {
+  final int level;
+  final Parser parser;
+  final Result result;
+
+  TraceFrame(this.level, this.parser, [this.result]);
+
+  @override
+  String toString() => '${'  ' * level}${result ?? parser}';
 }
