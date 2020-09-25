@@ -707,22 +707,23 @@ void main() {
         expect(() => ChoiceParser([]), throwsArgumentError);
       });
     });
-    group('delegate', () {
-      expectCommon(any().delegate());
-      test('default', () {
-        final parser = char('a').delegate();
-        expectSuccess(parser, 'a', 'a');
-        expectFailure(parser, 'b');
-        expectFailure(parser, '');
-      });
-    });
     group('not', () {
       expectCommon(any().not());
       test('default', () {
         final parser = char('a').not('not "a" expected');
         expectFailure(parser, 'a', 0, 'not "a" expected');
-        expectSuccess(parser, 'b', null, 0);
-        expectSuccess(parser, '', null);
+        expectSuccess(
+            parser,
+            'b',
+            isFailure.having(
+                (failure) => failure.message, 'message', '"a" expected'),
+            0);
+        expectSuccess(
+            parser,
+            '',
+            isFailure.having(
+                (failure) => failure.message, 'message', '"a" expected'),
+            0);
       });
       test('neg', () {
         final parser = digit().neg('no digit expected');

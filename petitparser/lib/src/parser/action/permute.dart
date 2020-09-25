@@ -29,11 +29,10 @@ class PermuteParser<T> extends DelegateParser<List<T>> {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
       final input = result.value;
-      final output = List(indexes.length);
-      for (var i = 0; i < indexes.length; i++) {
+      final output = List.generate(indexes.length, (i) {
         final index = indexes[i];
-        output[i] = input[index < 0 ? input.length + index : index];
-      }
+        return input[index < 0 ? input.length + index : index];
+      });
       return result.success(output);
     } else {
       return result.failure(result.message);

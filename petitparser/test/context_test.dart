@@ -1,6 +1,8 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+import 'test_utils.dart';
+
 void main() {
   const buffer = 'a\nc';
   const context = Context(buffer, 0);
@@ -46,16 +48,14 @@ void main() {
     final failure = context.failure('error');
     expect(failure.buffer, buffer);
     expect(failure.position, 0);
-    try {
-      failure.value;
-      fail('Expected ParserError to be thrown');
-    } on ParserException catch (error) {
-      expect(error.failure, same(failure));
-      expect(error.message, 'error');
-      expect(error.offset, 0);
-      expect(error.source, buffer);
-      expect(error.toString(), 'error at 1:1');
-    }
+    expect(
+        () => failure.value,
+        throwsA(isParserException
+            .having((error) => error.failure, 'failure', same(failure))
+            .having((error) => error.message, 'message', 'error')
+            .having((error) => error.offset, 'offset', 0)
+            .having((error) => error.source, 'source', same(buffer))
+            .having((error) => error.toString(), 'toString', 'error at 1:1')));
     expect(failure.message, 'error');
     expect(failure.isSuccess, isFalse);
     expect(failure.isFailure, isTrue);
@@ -65,16 +65,14 @@ void main() {
     final failure = context.failure('error', 2);
     expect(failure.buffer, buffer);
     expect(failure.position, 2);
-    try {
-      failure.value;
-      fail('Expected ParserError to be thrown');
-    } on ParserException catch (error) {
-      expect(error.failure, same(failure));
-      expect(error.message, 'error');
-      expect(error.offset, 2);
-      expect(error.source, buffer);
-      expect(error.toString(), 'error at 2:1');
-    }
+    expect(
+        () => failure.value,
+        throwsA(isParserException
+            .having((error) => error.failure, 'failure', same(failure))
+            .having((error) => error.message, 'message', 'error')
+            .having((error) => error.offset, 'offset', 2)
+            .having((error) => error.source, 'source', same(buffer))
+            .having((error) => error.toString(), 'toString', 'error at 2:1')));
     expect(failure.message, 'error');
     expect(failure.isSuccess, isFalse);
     expect(failure.isFailure, isTrue);
@@ -86,16 +84,14 @@ void main() {
         .map((value) => fail('Not expected to be called'));
     expect(failure.buffer, buffer);
     expect(failure.position, 2);
-    try {
-      failure.value;
-      fail('Expected ParserError to be thrown');
-    } on ParserException catch (error) {
-      expect(error.failure, same(failure));
-      expect(error.message, 'error');
-      expect(error.offset, 2);
-      expect(error.source, buffer);
-      expect(error.toString(), 'error at 2:1');
-    }
+    expect(
+        () => failure.value,
+        throwsA(isParserException
+            .having((error) => error.failure, 'failure', same(failure))
+            .having((error) => error.message, 'message', 'error')
+            .having((error) => error.offset, 'offset', 2)
+            .having((error) => error.source, 'source', same(buffer))
+            .having((error) => error.toString(), 'toString', 'error at 2:1')));
     expect(failure.message, 'error');
     expect(failure.isSuccess, isFalse);
     expect(failure.isFailure, isTrue);

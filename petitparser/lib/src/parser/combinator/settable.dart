@@ -1,3 +1,5 @@
+import '../../context/context.dart';
+import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import '../misc/failure.dart';
@@ -30,6 +32,9 @@ class SettableParser<T> extends DelegateParser<T> {
 
   /// Sets the receiver to delegate to [parser].
   void set(Parser<T> parser) => replace(children[0], parser);
+
+  @override
+  Result<T> parseOn(Context context) => delegate.parseOn(context);
 
   @override
   int fastParseOn(String buffer, int position) =>

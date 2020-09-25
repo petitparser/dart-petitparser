@@ -21,6 +21,18 @@ class TokenizedListGrammarDefinition extends GrammarDefinition {
   Parser token(Parser parser) => parser.flatten().trim();
 }
 
+class ReferencesGrammarDefinition extends GrammarDefinition {
+  Parser start() => ref(f0);
+  Parser f0() => ref(f1, 1);
+  Parser f1(int a1) => ref(f2, a1, 2);
+  Parser f2(int a1, int a2) => ref(f3, a1, a2, 3);
+  Parser f3(int a1, int a2, int a3) => [
+        a1.toString().toParser(),
+        a2.toString().toParser(),
+        a3.toString().toParser(),
+      ].toSequenceParser();
+}
+
 class BuggedGrammarDefinition extends GrammarDefinition {
   Parser start() => epsilon();
 
@@ -79,6 +91,7 @@ void main() {
   final grammarDefinition = ListGrammarDefinition();
   final parserDefinition = ListParserDefinition();
   final tokenDefinition = TokenizedListGrammarDefinition();
+  final referenceDefinition = ReferencesGrammarDefinition();
   final buggedDefinition = BuggedGrammarDefinition();
 
   test('reference without parameters', () {
@@ -94,16 +107,20 @@ void main() {
     expect(firstReference == secondReference, isFalse);
   });
   test('reference with same parameters', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-    final secondReference = grammarDefinition.ref(grammarDefinition.start, 'a');
+    final firstReference = referenceDefinition.ref(referenceDefinition.f1, 42);
+    final secondReference = referenceDefinition.ref(referenceDefinition.f1, 42);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isTrue);
   });
   test('reference with different parameters', () {
-    final firstReference = grammarDefinition.ref(grammarDefinition.start, 'a');
-    final secondReference = grammarDefinition.ref(grammarDefinition.start, 'b');
+    final firstReference = referenceDefinition.ref(referenceDefinition.f1, 42);
+    final secondReference = referenceDefinition.ref(referenceDefinition.f1, 43);
     expect(firstReference, isNot(same(secondReference)));
     expect(firstReference == secondReference, isFalse);
+  });
+  test('reference with multiple arguments', () {
+    final parser = referenceDefinition.build();
+    expectSuccess(parser, '123', ['1', '2', '3']);
   });
   test('reference unsupported methods', () {
     final reference = grammarDefinition.ref(grammarDefinition.start);

@@ -42,7 +42,7 @@ class ContinuationParser<T> extends DelegateParser<T> {
         super(delegate);
 
   @override
-  Result<T> parseOn(Context context) => handler(super.parseOn, context);
+  Result<T> parseOn(Context context) => handler(delegate.parseOn, context);
 
   @override
   ContinuationParser<T> copy() => ContinuationParser<T>(delegate, handler);
