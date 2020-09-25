@@ -49,14 +49,14 @@ void main() {
       expect(frames, hasLength(4));
       final counts = frames.map((frame) => frame.count);
       final times = frames.map((frame) => frame.elapsed.inMicroseconds);
-      final names = frames.map((frame) => frame.parser.toString());
+      final lines = frames.map((frame) => frame.toString());
       expect(counts, everyElement(isNonNegative));
       expect(times, everyElement(isNonNegative));
-      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
+      expect(lines.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
+      expect(lines.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
+      expect(lines.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
           isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
+      expect(lines.any((cell) => cell.indexOf('letter or digit expected') > 0),
           isTrue);
     });
     test('failure', () {
@@ -66,14 +66,14 @@ void main() {
       expect(frames, hasLength(4));
       final counts = frames.map((frame) => frame.count);
       final times = frames.map((frame) => frame.elapsed.inMicroseconds);
-      final names = frames.map((frame) => frame.parser.toString());
+      final lines = frames.map((frame) => frame.toString());
       expect(counts, everyElement(isNonNegative));
       expect(times, everyElement(isNonNegative));
-      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
+      expect(lines.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
+      expect(lines.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
+      expect(lines.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
           isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
+      expect(lines.any((cell) => cell.indexOf('letter or digit expected') > 0),
           isTrue);
     });
   });

@@ -577,6 +577,36 @@ void main() {
         });
       });
     });
+    group('patternIgnoreCase', () {
+      expectCommon(patternIgnoreCase('^ad-f'));
+      test('with single', () {
+        final parser = patternIgnoreCase('aB');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'A', 'A');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'B', 'B');
+        expectFailure(parser, 'c', 0, '[abAB] expected');
+        expectFailure(parser, '');
+      });
+      test('with range', () {
+        final parser = patternIgnoreCase('a-C');
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'A', 'A');
+        expectSuccess(parser, 'b', 'b');
+        expectSuccess(parser, 'B', 'B');
+        expectSuccess(parser, 'c', 'c');
+        expectSuccess(parser, 'C', 'C');
+        expectFailure(parser, 'd', 0, '[a-cA-C] expected');
+        expectFailure(parser, '');
+      });
+      test('with negated', () {
+        final parser = patternIgnoreCase('^a');
+        expectSuccess(parser, 'b', 'b');
+        expectFailure(parser, 'a', 0, '[^aA] expected');
+        expectFailure(parser, 'A', 0, '[^aA] expected');
+        expectFailure(parser, '');
+      });
+    });
     group('range', () {
       final parser = range('e', 'o');
       expectCommon(parser);
@@ -874,6 +904,18 @@ void main() {
         expectSuccess(parser, 'a', 'a');
         expectSuccess(parser, 'A', 'A');
         expectFailure(parser, 'b');
+      });
+      test('convert pattern', () {
+        final parser = 'a-c'.toParser(pattern: true);
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'b', 'b');
+        expectFailure(parser, 'B');
+      });
+      test('convert pattern (case-insensitive)', () {
+        final parser = 'a-c'.toParser(pattern: true, caseInsensitive: true);
+        expectSuccess(parser, 'a', 'a');
+        expectSuccess(parser, 'B', 'B');
+        expectFailure(parser, 'd');
       });
       test('convert multiple chars', () {
         final parser = 'foo'.toParser();
