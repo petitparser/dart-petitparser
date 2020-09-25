@@ -14,13 +14,11 @@ class ExpressionGroup {
 
   /// Defines a new primitive or literal [parser]. Evaluates the optional
   /// [action].
-  void primitive<V>(Parser<V> parser, [Object Function(V value) action]) {
+  void primitive<V>(Parser<V> parser, [dynamic Function(V value) action]) {
     _primitives.add(action != null ? parser.map(action) : parser);
   }
 
-  Parser _buildPrimitive(Parser inner) {
-    return _buildChoice(_primitives, inner);
-  }
+  Parser _buildPrimitive(Parser inner) => _buildChoice(_primitives, inner);
 
   final List<Parser> _primitives = [];
 
@@ -28,7 +26,7 @@ class ExpressionGroup {
   /// used for parenthesis. Evaluates the optional [action] with the parsed
   /// `left` delimiter, the `value` and `right` delimiter.
   void wrapper<O, V>(Parser<O> left, Parser<O> right,
-      [Object Function(O left, V value, O right) action]) {
+      [dynamic Function(O left, V value, O right) action]) {
     action ??= (left, value, right) => [left, value, right];
     _wrappers.add([left, _loopback, right]
         .toSequenceParser()
@@ -44,7 +42,7 @@ class ExpressionGroup {
   /// Adds a prefix operator [parser]. Evaluates the optional [action] with the
   /// parsed `operator` and `value`.
   void prefix<O, V>(Parser<O> parser,
-      [Object Function(O operator, V value) action]) {
+      [dynamic Function(O operator, V value) action]) {
     action ??= (operator, value) => [operator, value];
     _prefix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -69,7 +67,7 @@ class ExpressionGroup {
   /// Adds a postfix operator [parser]. Evaluates the optional [action] with the
   /// parsed `value` and `operator`.
   void postfix<O, V>(Parser<O> parser,
-      [Object Function(V value, O operator) action]) {
+      [dynamic Function(V value, O operator) action]) {
     action ??= (value, operator) => [value, operator];
     _postfix.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -94,7 +92,7 @@ class ExpressionGroup {
   /// Adds a right-associative operator [parser]. Evaluates the optional
   /// [action] with the parsed `left` term, `operator`, and `right` term.
   void right<O, V>(Parser<O> parser,
-      [Object Function(V left, O operator, V right) action]) {
+      [dynamic Function(V left, O operator, V right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _right.add(parser.map((operator) => ExpressionResult(operator, action)));
   }
@@ -120,7 +118,7 @@ class ExpressionGroup {
   /// Adds a left-associative operator [parser]. Evaluates the optional [action]
   /// with the parsed `left` term, `operator`, and `right` term.
   void left<O, V>(Parser<O> parser,
-      [Object Function(V left, O operator, V right) action]) {
+      [dynamic Function(V left, O operator, V right) action]) {
     action ??= (left, operator, right) => [left, operator, right];
     _left.add(parser.map((operator) => ExpressionResult(operator, action)));
   }

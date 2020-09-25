@@ -38,9 +38,7 @@ class Environment {
   }
 
   /// Defines a new binding from [key] to [value].
-  Object define(Name key, Object value) {
-    return _bindings[key] = value;
-  }
+  Object define(Name key, Object value) => _bindings[key] = value;
 
   /// Returns the keys of the bindings.
   Iterable<Name> get keys => _bindings.keys;

@@ -24,10 +24,9 @@ import 'range.dart';
 /// either '1', '2', or '3'; and fails for any other character. The parser
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
-Parser<String> pattern(String element, [String message]) {
-  return CharacterParser(pattern_.parse(element).value,
-      message ?? '[${toReadableString(element)}] expected');
-}
+Parser<String> pattern(String element, [String message]) => CharacterParser(
+    pattern_.parse(element).value,
+    message ?? '[${toReadableString(element)}] expected');
 
 /// Returns a parser that accepts a single character of a given case-insensitive
 /// character set provided as a string.

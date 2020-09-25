@@ -86,9 +86,8 @@ abstract class GrammarDefinition {
   /// The optional [start] reference specifies a different starting production
   /// into the grammar. The optional [arguments] list parametrizes the called
   /// production.
-  Parser<T> build<T>({Function start, List arguments = const []}) {
-    return _resolve(Reference(start ?? this.start, arguments));
-  }
+  Parser<T> build<T>({Function start, List arguments = const []}) =>
+      _resolve(Reference(start ?? this.start, arguments));
 
   /// Internal helper to resolve a complete parser graph.
   Parser _resolve(Reference reference) {

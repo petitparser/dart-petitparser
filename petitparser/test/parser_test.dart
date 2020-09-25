@@ -3,19 +3,14 @@ import 'package:test/test.dart' hide anyOf;
 
 import 'test_utils.dart';
 
-void expectCommon(Parser parser, {bool immutable = false}) {
+void expectCommon(Parser parser) {
   test('copy', () {
     final copy = parser.copy();
-    if (immutable) {
-      expect(copy, same(parser));
-      expect(parser.children, isEmpty);
-    } else {
-      expect(copy, isNot(same(parser)));
-      expect(copy.toString(), parser.toString());
-      expect(copy.runtimeType, parser.runtimeType);
-      expect(copy.children,
-          pairwiseCompare(parser.children, identical, 'same children'));
-    }
+    expect(copy, isNot(same(parser)));
+    expect(copy.toString(), parser.toString());
+    expect(copy.runtimeType, parser.runtimeType);
+    expect(copy.children,
+        pairwiseCompare(parser.children, identical, 'same children'));
   });
   test('isEqualTo', () {
     final copy = parser.copy();
@@ -860,7 +855,7 @@ void main() {
       });
     });
     group('position', () {
-      expectCommon(position(), immutable: true);
+      expectCommon(position());
       test('default', () {
         final parser = (any().star() & position()).pick(-1);
         expectSuccess(parser, '', 0);

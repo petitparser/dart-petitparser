@@ -5,12 +5,11 @@ import 'predicate.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
-Parser<String> range(Object start, Object stop, [String message]) {
-  return CharacterParser(
-      RangeCharPredicate(toCharCode(start), toCharCode(stop)),
-      message ??
-          '${toReadableString(start)}..${toReadableString(stop)} expected');
-}
+Parser<String> range(Object start, Object stop, [String message]) =>
+    CharacterParser(
+        RangeCharPredicate(toCharCode(start), toCharCode(stop)),
+        message ??
+            '${toReadableString(start)}..${toReadableString(stop)} expected');
 
 class RangeCharPredicate implements CharacterPredicate {
   final int start;

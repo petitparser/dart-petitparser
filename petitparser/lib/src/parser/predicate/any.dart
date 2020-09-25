@@ -6,9 +6,7 @@ import '../../core/parser.dart';
 ///
 /// For example, `any()` succeeds and consumes any given letter. It only
 /// fails for an empty input.
-Parser<String> any([String message = 'input expected']) {
-  return AnyParser(message);
-}
+Parser<String> any([String message = 'input expected']) => AnyParser(message);
 
 /// A parser that accepts any input element.
 class AnyParser extends Parser<String> {

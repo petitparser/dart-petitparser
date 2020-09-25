@@ -42,13 +42,11 @@ class MapParser<T, R> extends DelegateParser<R> {
     }
   }
 
+  // If we know to have side-effects, we have to fall back to the slow mode.
   @override
-  int fastParseOn(String buffer, int position) {
-    // If we know to have side-effects, we have to fall back to the slow mode.
-    return hasSideEffects
-        ? super.fastParseOn(buffer, position)
-        : delegate.fastParseOn(buffer, position);
-  }
+  int fastParseOn(String buffer, int position) => hasSideEffects
+      ? super.fastParseOn(buffer, position)
+      : delegate.fastParseOn(buffer, position);
 
   @override
   MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);

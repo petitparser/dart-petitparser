@@ -69,9 +69,8 @@ void main() {
       final source = lowercase();
       final input = source;
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
-      });
+      final output = transformParser(
+          input, (parser) => source.isEqualTo(parser) ? target : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input, source);
@@ -81,9 +80,8 @@ void main() {
       final source = lowercase();
       final input = source.settable();
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
-      });
+      final output = transformParser(
+          input, (parser) => source.isEqualTo(parser) ? target : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.children.single, source);
@@ -93,9 +91,8 @@ void main() {
       final source = lowercase();
       final input = source & source;
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
-      });
+      final output = transformParser(
+          input, (parser) => source.isEqualTo(parser) ? target : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.isEqualTo(source & source), isTrue);
@@ -107,9 +104,7 @@ void main() {
       final input = failure().settable().settable().settable();
       final SettableParser settable = input.children.single.children.single;
       settable.set(input);
-      final output = transformParser(input, (parser) {
-        return parser;
-      });
+      final output = transformParser(input, (parser) => parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isTrue);
       final inputs = allParser(input).toSet();
@@ -127,9 +122,8 @@ void main() {
       final target = failure().settable().settable().settable();
       final SettableParser settable = target.children.single.children.single;
       settable.set(target);
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
-      });
+      final output = transformParser(
+          input, (parser) => source.isEqualTo(parser) ? target : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(output.isEqualTo(target), isTrue);

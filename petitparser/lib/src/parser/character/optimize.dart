@@ -5,20 +5,16 @@ import 'predicate.dart';
 import 'range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string) {
-  return optimizedRanges(
-      string.codeUnits.map((value) => RangeCharPredicate(value, value)));
-}
+CharacterPredicate optimizedString(String string) => optimizedRanges(
+    string.codeUnits.map((value) => RangeCharPredicate(value, value)));
 
 /// Creates an optimized predicate from a list of range predicates.
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 1. Sort the ranges:
   final sortedRanges = List.of(ranges, growable: false);
-  sortedRanges.sort((first, second) {
-    return first.start != second.start
-        ? first.start - second.start
-        : first.stop - second.stop;
-  });
+  sortedRanges.sort((first, second) => first.start != second.start
+      ? first.start - second.start
+      : first.stop - second.stop);
 
   // 2. Merge adjacent or overlapping ranges:
   final mergedRanges = <RangeCharPredicate>[];

@@ -13,7 +13,7 @@ abstract class LimitedRepeatingParser<T> extends RepeatingParser<T> {
         super(delegate, min, max);
 
   @override
-  List<Parser> get children => [delegate, limit];
+  List<Parser> get children => [...super.children, limit];
 
   @override
   void replace(Parser source, Parser target) {

@@ -51,14 +51,14 @@ void main() {
     final prim = undefined();
     final add =
         (prod & char('+').trim() & term).map((values) => values[0] + values[2]);
-    term.set(add.or(prod));
+    term.set(add | prod);
     final mul =
         (prim & char('*').trim() & prod).map((values) => values[0] * values[2]);
-    prod.set(mul.or(prim));
+    prod.set(mul | prim);
     final parens =
         (char('(').trim() & term & char(')').trim()).map((values) => values[1]);
     final number = digit().plus().flatten().trim().map(int.parse);
-    prim.set(parens.or(number));
+    prim.set(parens | number);
     final parser = term.end();
     expect(parser.parse('1 + 2 + 3').value, 6);
     expect(parser.parse('1 + 2 * 3').value, 7);

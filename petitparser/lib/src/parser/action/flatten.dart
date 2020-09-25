@@ -46,9 +46,8 @@ class FlattenParser extends DelegateParser<String> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
-    return delegate.fastParseOn(buffer, position);
-  }
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
 
   @override
   bool hasEqualProperties(FlattenParser other) =>

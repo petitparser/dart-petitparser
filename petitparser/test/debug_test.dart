@@ -15,7 +15,7 @@ void main() {
       expect(frames.last.level, 0);
       expect(frames.last.result, isA<Success>());
       expect(frames.map((frame) => frame.toString()), [
-        'Instance of \'SequenceParser\'',
+        'Instance of \'SequenceParser<dynamic>\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Success[1:2]: a',
         '  Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
@@ -34,7 +34,7 @@ void main() {
       expect(frames.last.level, 0);
       expect(frames.last.result, isA<Failure>());
       expect(frames.map((frame) => frame.toString()), [
-        'Instance of \'SequenceParser\'',
+        'Instance of \'SequenceParser<dynamic>\'',
         '  Instance of \'CharacterParser\'[letter expected]',
         '  Failure[1:1]: letter expected',
         'Failure[1:1]: letter expected'
@@ -83,7 +83,7 @@ void main() {
       final result = progress(identifier, frames.add).parse('ab123');
       expect(result.isSuccess, isTrue);
       expect(frames.map((frame) => frame.toString()), [
-        '* Instance of \'SequenceParser\'',
+        '* Instance of \'SequenceParser<dynamic>\'',
         '* Instance of \'CharacterParser\'[letter expected]',
         '** Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
         '** Instance of \'CharacterParser\'[letter or digit expected]',
@@ -98,7 +98,7 @@ void main() {
       final result = progress(identifier, frames.add).parse('1');
       expect(result.isFailure, isTrue);
       expect(frames.map((frame) => frame.toString()), [
-        '* Instance of \'SequenceParser\'',
+        '* Instance of \'SequenceParser<dynamic>\'',
         '* Instance of \'CharacterParser\'[letter expected]'
       ]);
     });

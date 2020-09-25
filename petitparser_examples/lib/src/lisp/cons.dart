@@ -24,9 +24,8 @@ class Cons {
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is Cons && car == other.car && cdr == other.cdr;
-  }
+  bool operator ==(Object other) =>
+      other is Cons && car == other.car && cdr == other.cdr;
 
   @override
   int get hashCode => 31 * car.hashCode + cdr.hashCode;
