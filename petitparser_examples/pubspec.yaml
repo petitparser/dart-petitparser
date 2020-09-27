@@ -11,7 +11,7 @@ dependencies:
   collection: ^1.14.0
   meta: ^1.2.0
   more: ^2.7.0
-  petitparser: ^3.1.0
+  petitparser: ^3.2.0
 dependency_overrides:
   petitparser:
     path: ../petitparser

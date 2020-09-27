@@ -2,12 +2,12 @@
 
 ## 3.2.0
 
-* Dart 2.9 compatibility and requirement (in preparation for null-safety).
+* Dart 2.9 compatibility and requirement (in preparation of null-safety).
 * `Success.message` throws an `UnsupportedError`, instead of returning `null`.
-* Make debug tools to produce frame objects with accessors instead of strings.
 * `DelegateParser` has been made abstract to avoid a concrete class in-between abstract classes.
 * `Parser.delegate()` has been removed, use `Parser.settable()` as an equivalent replacement.
 * `Parser.not()` is now returning the failure `Parser<Failure<T>>` as success value, instead of `null`.
+* Make debug tools to produce frame objects with accessors instead of strings.
 
 ## 3.1.0
 
