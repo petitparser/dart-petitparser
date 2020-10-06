@@ -8,9 +8,9 @@ const Equality<List<Node>> argumentEquality = ListEquality();
 
 Map<Variable, Node> newBindings() => Map<Variable, Node>.identity();
 
-Map<Variable, Node> mergeBindings(
-  Map<Variable, Node> first,
-  Map<Variable, Node> second,
+Map<Variable, Node>? mergeBindings(
+  Map<Variable, Node>? first,
+  Map<Variable, Node>? second,
 ) {
   if (first == null || second == null) {
     return null;
@@ -18,7 +18,7 @@ Map<Variable, Node> mergeBindings(
   final result = newBindings();
   result.addAll(first);
   for (final key in second.keys) {
-    final value = second[key];
+    final value = second[key]!;
     final other = result[key];
     if (other != null) {
       final subs = other.match(value);
@@ -87,9 +87,9 @@ class Rule {
 abstract class Node {
   const Node();
 
-  Map<Variable, Node> match(Node other);
+  Map<Variable, Node>? match(Node other);
 
-  Node substitute(Map<Variable, Node> bindings);
+  Node substitute(Map<Variable, Node>? bindings);
 }
 
 @immutable
@@ -99,7 +99,7 @@ class Variable extends Node {
   const Variable(this.name);
 
   @override
-  Map<Variable, Node> match(Node other) {
+  Map<Variable, Node>? match(Node other) {
     final bindings = newBindings();
     if (this != other) {
       bindings[this] = other;
@@ -108,10 +108,12 @@ class Variable extends Node {
   }
 
   @override
-  Node substitute(Map<Variable, Node> bindings) {
-    final value = bindings[this];
-    if (value != null) {
-      return value.substitute(bindings);
+  Node substitute(Map<Variable, Node>? bindings) {
+    if (bindings != null) {
+      final value = bindings[this];
+      if (value != null) {
+        return value.substitute(bindings);
+      }
     }
     return this;
   }
@@ -143,7 +145,7 @@ class Term extends Node {
   }
 
   @override
-  Map<Variable, Node> match(Node other) {
+  Map<Variable, Node>? match(Node other) {
     if (other is Term) {
       if (name != other.name) {
         return null;
@@ -160,7 +162,7 @@ class Term extends Node {
   }
 
   @override
-  Term substitute(Map<Variable, Node> bindings) =>
+  Term substitute(Map<Variable, Node>? bindings) =>
       Term(name, arguments.map((arg) => arg.substitute(bindings)));
 
   @override
@@ -187,7 +189,7 @@ class Value extends Term {
   }
 
   @override
-  Value substitute(Map<Variable, Node> bindings) => this;
+  Value substitute(Map<Variable, Node>? bindings) => this;
 
   @override
   bool operator ==(Object other) => other is Value && name == other.name;
@@ -211,7 +213,7 @@ class Conjunction extends Term {
     Stream<Node> solutions(int index, Map<Variable, Node> bindings) async* {
       if (index < arguments.length) {
         final arg = arguments[index];
-        final subs = arg.substitute(bindings);
+        final subs = arg.substitute(bindings) as Term;
         await for (final item in database.query(subs)) {
           final unified = mergeBindings(arg.match(item), bindings);
           if (unified != null) {
@@ -227,7 +229,7 @@ class Conjunction extends Term {
   }
 
   @override
-  Conjunction substitute(Map<Variable, Node> bindings) =>
+  Conjunction substitute(Map<Variable, Node>? bindings) =>
       Conjunction(arguments.map((arg) => arg.substitute(bindings)));
 
   @override

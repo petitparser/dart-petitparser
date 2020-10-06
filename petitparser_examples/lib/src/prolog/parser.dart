@@ -22,8 +22,8 @@ class PrologParserDefinition extends PrologGrammarDefinition {
 
   Parser<Rule> rule() => super.rule().map((each) {
         scope.clear();
-        final Term head = each[0];
-        final List rest = each[1];
+        final head = each[0];
+        final rest = each[1];
         if (rest == null) {
           return Rule(head, const Value('true'));
         }
@@ -38,8 +38,8 @@ class PrologParserDefinition extends PrologGrammarDefinition {
       });
 
   Parser<Term> term() => super.term().map((each) {
-        final Node name = each[0];
-        final List rest = each[1];
+        final name = each[0];
+        final rest = each[1];
         if (rest == null) {
           return Term(name.toString(), const []);
         }
@@ -48,8 +48,8 @@ class PrologParserDefinition extends PrologGrammarDefinition {
       });
 
   Parser<Node> parameter() => super.parameter().map((each) {
-        final Node name = each[0];
-        final List rest = each[1];
+        final name = each[0];
+        final rest = each[1];
         if (rest == null) {
           return name;
         }
@@ -62,7 +62,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
           return const Variable('_');
         }
         if (scope.containsKey(name)) {
-          return scope[name];
+          return scope[name]!;
         }
         return scope[name] = Variable(name);
       });

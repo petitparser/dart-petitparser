@@ -12,5 +12,5 @@
 import 'src/json/grammar.dart';
 import 'src/json/parser.dart';
 
-export 'package:petitparser_examples/src/json/grammar.dart';
-export 'package:petitparser_examples/src/json/parser.dart';
+export 'src/json/grammar.dart';
+export 'src/json/parser.dart';

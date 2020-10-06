@@ -5,7 +5,7 @@ import 'environment.dart';
 import 'name.dart';
 
 /// The evaluation function.
-Object eval(Environment env, Object expr) {
+dynamic eval(Environment env, dynamic expr) {
   if (expr is Cons) {
     final Function function = eval(env, expr.head);
     return function(env, expr.tail);
@@ -17,8 +17,8 @@ Object eval(Environment env, Object expr) {
 }
 
 /// Evaluate a cons of instructions.
-Object evalList(Environment env, Cons expr) {
-  Object result;
+dynamic evalList(Environment env, dynamic expr) {
+  dynamic result;
   while (expr is Cons) {
     result = eval(env, expr.head);
     expr = expr.tail;
@@ -27,7 +27,7 @@ Object evalList(Environment env, Cons expr) {
 }
 
 /// The arguments evaluation function.
-Object evalArguments(Environment env, Cons args) {
+dynamic evalArguments(Environment env, dynamic args) {
   if (args is Cons) {
     return Cons(eval(env, args.head), evalArguments(env, args.tail));
   } else {
@@ -36,8 +36,8 @@ Object evalArguments(Environment env, Cons args) {
 }
 
 /// Reads and evaluates a [script].
-Object evalString(Parser parser, Environment env, String script) {
-  Object result;
+dynamic evalString(Parser parser, Environment env, String script) {
+  dynamic result;
   for (final cell in parser.parse(script).value) {
     result = eval(env, cell);
   }

@@ -2,25 +2,25 @@ import 'dart:html';
 
 import 'package:petitparser_examples/prolog.dart';
 
-final TextAreaElement rulesElement = querySelector('#rules');
-final TextInputElement queryElement = querySelector('#query');
-final SubmitButtonInputElement askElement = querySelector('#ask');
-final UListElement answersElement = querySelector('#answers');
+final rulesElement = querySelector('#rules') as TextAreaElement;
+final queryElement = querySelector('#query') as TextInputElement;
+final askElement = querySelector('#ask') as SubmitButtonInputElement;
+final answersElement = querySelector('#answers') as UListElement;
 
 void main() {
   askElement.onClick.listen((event) async {
     answersElement.innerHtml = '';
 
-    Database db;
+    Database? db;
     try {
-      db = Database.parse(rulesElement.value);
+      db = Database.parse(rulesElement.value ?? '');
     } on Object catch (error) {
       appendMessage('Error parsing rules: $error', isError: true);
     }
 
-    Term query;
+    Term? query;
     try {
-      query = Term.parse(queryElement.value);
+      query = Term.parse(queryElement.value ?? '');
     } on Object catch (error) {
       appendMessage('Error parsing query: $error', isError: true);
     }
@@ -29,9 +29,12 @@ void main() {
       return;
     }
 
-    await db.query(query).forEach((item) => appendMessage(item.toString()));
-
-    if (answersElement.innerHtml.isEmpty) {
+    var hasResult = false;
+    await db.query(query).forEach((item) {
+      appendMessage(item.toString());
+      hasResult = true;
+    });
+    if (!hasResult) {
       appendMessage('No');
     }
   });

@@ -2,11 +2,12 @@
 ///
 /// The code is reasonably complete to run and evaluate reasonably complex
 /// programs from the console or the web browser.
-export 'package:petitparser_examples/src/lisp/cons.dart';
-export 'package:petitparser_examples/src/lisp/environment.dart';
-export 'package:petitparser_examples/src/lisp/evaluator.dart';
-export 'package:petitparser_examples/src/lisp/grammar.dart';
-export 'package:petitparser_examples/src/lisp/name.dart';
-export 'package:petitparser_examples/src/lisp/native.dart';
-export 'package:petitparser_examples/src/lisp/parser.dart';
-export 'package:petitparser_examples/src/lisp/standard.dart';
+export 'src/lisp/cons.dart';
+export 'src/lisp/environment.dart';
+export 'src/lisp/evaluator.dart';
+export 'src/lisp/grammar.dart';
+export 'src/lisp/name.dart';
+export 'src/lisp/native.dart';
+export 'src/lisp/parser.dart';
+export 'src/lisp/standard.dart';
+export 'src/lisp/types.dart';

@@ -9,7 +9,7 @@ void main() {
   final native = NativeEnvironment();
   final standard = StandardEnvironment(native);
 
-  dynamic exec(String value, [Environment env]) {
+  dynamic exec(String value, [Environment? env]) {
     return evalString(lispParser, env ?? standard.create(), value);
   }
 
@@ -37,9 +37,9 @@ void main() {
       cell.cdr = Cons(4, 5);
       expect(cell.car, 3);
       expect(cell.head, 3);
-      expect(cell.tail.car, 4);
-      expect(cell.tail.head, 4);
-      expect(cell.tail.cdr, 5);
+      expect(cell.tail?.car, 4);
+      expect(cell.tail?.head, 4);
+      expect(cell.tail?.cdr, 5);
       expect(cell == cell, isTrue);
       expect(cell.hashCode, isNonZero);
       expect(cell.toString(), '(3 4 . 5)');
@@ -50,7 +50,7 @@ void main() {
     test('Standard', () {
       expect(env.owner, isNotNull);
       expect(env.keys, isEmpty);
-      expect(env.owner.keys, isNot(isEmpty));
+      expect(env.owner?.keys, isNot(isEmpty));
     });
     test('Create', () {
       final sub = env.create();

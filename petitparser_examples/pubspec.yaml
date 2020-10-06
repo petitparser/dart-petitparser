@@ -6,11 +6,11 @@ description: A collection of example parsers, applications, and benchmarks that
   illustrate the PetitParser framework.
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.10.0 <3.0.0'
 dependencies:
   collection: ^1.15.0-nullsafety
   meta: ^1.3.0-nullsafety
-  more: ^2.8.0-nullsafety
+  more: ^3.0.0-nullsafety
   petitparser: ^4.0.0-nullsafety
 dependency_overrides:
   petitparser:

@@ -59,17 +59,12 @@ void main(List<String> arguments) {
   Environment environment = NativeEnvironment();
 
   // add additional primitives
-  void _exit(Environment env, Cons args) {
-    exit(args == null ? 0 : args.head);
-  }
-
-  environment.define(Name('exit'), _exit);
-
-  void _sleep(Environment env, Cons args) {
-    sleep(Duration(milliseconds: args.head));
-  }
-
-  environment.define(Name('sleep'), _sleep);
+  environment.define(Name('exit'),
+      (Environment env, dynamic args) => exit(args == null ? 0 : args.head));
+  environment.define(
+      Name('sleep'),
+      (Environment env, dynamic args) =>
+          sleep(Duration(milliseconds: args.head)));
 
   // process standard library
   if (standardLibrary) {

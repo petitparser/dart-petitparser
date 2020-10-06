@@ -2,9 +2,10 @@ import 'cons.dart';
 import 'environment.dart';
 import 'evaluator.dart';
 import 'name.dart';
+import 'types.dart';
 
 class NativeEnvironment extends Environment {
-  NativeEnvironment([Environment owner]) : super(owner) {
+  NativeEnvironment([Environment? owner]) : super(owner) {
     // basic functions
     define(Name('define'), _define);
     define(Name('lambda'), _lambda);
@@ -45,7 +46,7 @@ class NativeEnvironment extends Environment {
     define(Name('cdr!'), _cdrSet);
   }
 
-  static Object _define(Environment env, Cons args) {
+  static dynamic _define(Environment env, dynamic args) {
     if (args.head is Name) {
       return env.define(args.head, evalList(env, args.tail));
     } else if (args.head is Cons) {
@@ -57,12 +58,11 @@ class NativeEnvironment extends Environment {
     throw ArgumentError('Invalid define: $args');
   }
 
-  static Function(Environment, Cons) _lambda(
-      Environment lambdaEnv, Cons lambdaArgs) {
+  static Lambda _lambda(Environment lambdaEnv, dynamic lambdaArgs) {
     return (evalEnv, evalArgs) {
       final inner = lambdaEnv.create();
-      Cons names = lambdaArgs.head;
-      Cons values = evalArguments(evalEnv, evalArgs);
+      var names = lambdaArgs.head;
+      var values = evalArguments(evalEnv, evalArgs);
       while (names != null && values != null) {
         inner.define(names.head, values.head);
         names = names.tail;
@@ -72,35 +72,39 @@ class NativeEnvironment extends Environment {
     };
   }
 
-  static Object _quote(Environment env, Cons args) {
+  static dynamic _quote(Environment env, dynamic args) {
     return args;
   }
 
-  static Object _eval(Environment env, Cons args) {
+  static dynamic _eval(Environment env, dynamic args) {
     return eval(env.create(), eval(env, args.head));
   }
 
-  static Object _apply(Environment env, Cons args) {
+  static dynamic _apply(Environment env, dynamic args) {
     final Function function = eval(env, args.head);
     return function(env.create(), args.tail);
   }
 
-  static Object _let(Environment env, Cons args) {
+  static dynamic _let(Environment env, dynamic args) {
     final inner = env.create();
-    Cons binding = args.head;
+    var binding = args.head;
     while (binding is Cons) {
-      final Cons definition = binding.head;
-      inner.define(definition.head, eval(env, definition.tail.head));
+      final definition = binding.head;
+      if (definition is Cons) {
+        inner.define(definition.head, eval(env, definition.tail?.head));
+      } else {
+        throw ArgumentError('Invalid let: $args');
+      }
       binding = binding.tail;
     }
     return evalList(inner, args.tail);
   }
 
-  static Object _set(Environment env, Cons args) {
+  static dynamic _set(Environment env, dynamic args) {
     return env[args.head] = eval(env, args.tail.head);
   }
 
-  static Object _print(Environment env, Cons args) {
+  static dynamic _print(Environment env, dynamic args) {
     final buffer = StringBuffer();
     while (args != null) {
       buffer.write(eval(env, args.head));
@@ -110,7 +114,7 @@ class NativeEnvironment extends Environment {
     return null;
   }
 
-  static Object _if(Environment env, Cons args) {
+  static dynamic _if(Environment env, dynamic args) {
     final condition = eval(env, args.head);
     if (condition) {
       if (args.tail != null) {
@@ -124,15 +128,15 @@ class NativeEnvironment extends Environment {
     return null;
   }
 
-  static Object _while(Environment env, Cons args) {
-    Object result;
+  static dynamic _while(Environment env, dynamic args) {
+    dynamic result;
     while (eval(env, args.head)) {
       result = evalList(env, args.tail);
     }
     return result;
   }
 
-  static Object _and(Environment env, Cons args) {
+  static dynamic _and(Environment env, dynamic args) {
     while (args != null) {
       if (!eval(env, args.head)) {
         return false;
@@ -142,7 +146,7 @@ class NativeEnvironment extends Environment {
     return true;
   }
 
-  static Object _or(Environment env, Cons args) {
+  static dynamic _or(Environment env, dynamic args) {
     while (args != null) {
       if (eval(env, args.head)) {
         return true;
@@ -152,11 +156,11 @@ class NativeEnvironment extends Environment {
     return false;
   }
 
-  static Object _not(Environment env, Cons args) {
+  static dynamic _not(Environment env, dynamic args) {
     return !eval(env, args.head);
   }
 
-  static Object _plus(Environment env, Cons args) {
+  static dynamic _plus(Environment env, dynamic args) {
     num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value += eval(env, args.head);
@@ -164,7 +168,7 @@ class NativeEnvironment extends Environment {
     return value;
   }
 
-  static Object _minus(Environment env, Cons args) {
+  static dynamic _minus(Environment env, dynamic args) {
     num value = eval(env, args.head);
     if (args.tail == null) {
       return -value;
@@ -175,7 +179,7 @@ class NativeEnvironment extends Environment {
     return value;
   }
 
-  static Object _multiply(Environment env, Cons args) {
+  static dynamic _multiply(Environment env, dynamic args) {
     num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value *= eval(env, args.head);
@@ -183,7 +187,7 @@ class NativeEnvironment extends Environment {
     return value;
   }
 
-  static Object _divide(Environment env, Cons args) {
+  static dynamic _divide(Environment env, dynamic args) {
     num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value /= eval(env, args.head);
@@ -191,7 +195,7 @@ class NativeEnvironment extends Environment {
     return value;
   }
 
-  static Object _modulo(Environment env, Cons args) {
+  static dynamic _modulo(Environment env, dynamic args) {
     num value = eval(env, args.head);
     for (args = args.tail; args != null; args = args.tail) {
       value %= eval(env, args.head);
@@ -199,54 +203,54 @@ class NativeEnvironment extends Environment {
     return value;
   }
 
-  static Object _smaller(Environment env, Cons args) {
+  static dynamic _smaller(Environment env, dynamic args) {
     final Comparable a = eval(env, args.head);
     final Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) < 0;
   }
 
-  static Object _smallerOrEqual(Environment env, Cons args) {
+  static dynamic _smallerOrEqual(Environment env, dynamic args) {
     final Comparable a = eval(env, args.head);
     final Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) <= 0;
   }
 
-  static Object _equal(Environment env, Cons args) {
+  static dynamic _equal(Environment env, dynamic args) {
     final a = eval(env, args.head);
     final b = eval(env, args.tail.head);
     return a == b;
   }
 
-  static Object _notEqual(Environment env, Cons args) {
+  static dynamic _notEqual(Environment env, dynamic args) {
     final a = eval(env, args.head);
     final b = eval(env, args.tail.head);
     return a != b;
   }
 
-  static Object _larger(Environment env, Cons args) {
+  static dynamic _larger(Environment env, dynamic args) {
     final Comparable a = eval(env, args.head);
     final Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) > 0;
   }
 
-  static Object _largerOrEqual(Environment env, Cons args) {
+  static dynamic _largerOrEqual(Environment env, dynamic args) {
     final Comparable a = eval(env, args.head);
     final Comparable b = eval(env, args.tail.head);
     return a.compareTo(b) >= 0;
   }
 
-  static Object _cons(Environment env, Cons args) {
+  static dynamic _cons(Environment env, dynamic args) {
     final head = eval(env, args.head);
     final tail = eval(env, args.tail.head);
     return Cons(head, tail);
   }
 
-  static Object _car(Environment env, Cons args) {
+  static dynamic _car(Environment env, dynamic args) {
     final cons = eval(env, args.head);
     return cons is Cons ? cons.head : null;
   }
 
-  static Object _carSet(Environment env, Cons args) {
+  static dynamic _carSet(Environment env, dynamic args) {
     final cons = eval(env, args.head);
     if (cons is Cons) {
       cons.car = eval(env, args.tail.head);
@@ -254,12 +258,12 @@ class NativeEnvironment extends Environment {
     return cons;
   }
 
-  static Object _cdr(Environment env, Cons args) {
+  static dynamic _cdr(Environment env, dynamic args) {
     final cons = eval(env, args.head);
     return cons is Cons ? cons.cdr : null;
   }
 
-  static Object _cdrSet(Environment env, Cons args) {
+  static dynamic _cdrSet(Environment env, dynamic args) {
     final cons = eval(env, args.head);
     if (cons is Cons) {
       cons.cdr = eval(env, args.tail.head);
@@ -267,9 +271,3 @@ class NativeEnvironment extends Environment {
     return cons;
   }
 }
-
-/// Type of printer function to output text on the console.
-typedef Printer = void Function(Object object);
-
-/// Default printer to output text on the console.
-Printer printer = print;

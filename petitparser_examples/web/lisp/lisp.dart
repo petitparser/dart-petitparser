@@ -2,10 +2,11 @@ import 'dart:html';
 
 import 'package:petitparser_examples/lisp.dart';
 
-final TextAreaElement input = querySelector('#input');
-final ParagraphElement output = querySelector('#output');
-final ParagraphElement console = querySelector('#console');
-final ParagraphElement environment = querySelector('#environment');
+final input = querySelector('#input') as TextAreaElement;
+final output = querySelector('#output') as ParagraphElement;
+final console = querySelector('#console') as ParagraphElement;
+final environment = querySelector('#environment') as ParagraphElement;
+final evaluate = querySelector('#evaluate') as SubmitButtonInputElement;
 
 void main() {
   final root = NativeEnvironment();
@@ -16,12 +17,12 @@ void main() {
     console.appendText(object.toString());
     console.append(document.createElement('br'));
   };
-  querySelector('#evaluate').onClick.listen((event) {
+  evaluate.onClick.listen((event) {
     output.innerHtml = 'Evaluating...';
     output.classes.clear();
     console.innerHtml = '';
     try {
-      final result = evalString(lispParser, user, input.value);
+      final result = evalString(lispParser, user, input.value ?? '');
       output.text = result.toString();
     } on Object catch (exception) {
       output.text = exception.toString();
@@ -32,7 +33,7 @@ void main() {
   inspect(environment, user);
 }
 
-void inspect(Element element, Environment environment) {
+void inspect(Element element, Environment? environment) {
   final buffer = StringBuffer();
   while (environment != null) {
     if (environment.keys.isNotEmpty) {

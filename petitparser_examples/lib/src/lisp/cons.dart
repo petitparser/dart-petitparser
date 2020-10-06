@@ -1,19 +1,19 @@
 /// The basic data structure of LISP.
 class Cons {
   /// The first object.
-  Object car;
+  dynamic car;
 
   /// The second object.
-  Object cdr;
+  dynamic cdr;
 
   /// Constructs a cons.
   Cons(this.car, [this.cdr]);
 
   /// The head of the cons.
-  Object get head => car;
+  dynamic get head => car;
 
   /// The tail of the cons, if applicable.
-  Cons get tail {
+  Cons? get tail {
     if (cdr is Cons) {
       return cdr;
     } else if (cdr == null) {

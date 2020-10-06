@@ -37,7 +37,7 @@ class PrologGrammarDefinition extends GrammarDefinition {
   Parser commentSingle() => char('%') & Token.newlineParser().neg().star();
   Parser commentMulti() => string('/*').starLazy(string('*/')) & string('*/');
 
-  Parser token(Object parser, [String message]) {
+  Parser token(Object parser, [String? message]) {
     if (parser is Parser) {
       return parser.flatten(message).trim(ref(space));
     } else if (parser is String) {

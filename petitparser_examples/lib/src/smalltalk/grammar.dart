@@ -9,7 +9,7 @@ class SmalltalkGrammar extends GrammarParser {
 class SmalltalkGrammarDefinition extends GrammarDefinition {
   // the original implementation used a handwritten parser to
   // build special token objects
-  Parser token(Object source, [String message]) {
+  Parser token(Object source, [String? message]) {
     if (source is String) {
       return source
           .toParser(message: 'Expected ${message ?? source}')
