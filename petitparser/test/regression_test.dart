@@ -47,4 +47,19 @@ void main() {
     testWith('with generic list cast to desired type', castList);
     testWith('with compiler inferring desired type', smartCompiler);
   });
+  test('parse padded and limited number', () {
+    final parser = digit().repeat(2).flatten().callCC((continuation, context) {
+      final result = continuation(context);
+      if (result.isSuccess && int.parse(result.value) > 31) {
+        return context.failure('00-31 expected');
+      } else {
+        return result;
+      }
+    });
+    expectSuccess(parser, '00', '00');
+    expectSuccess(parser, '24', '24');
+    expectSuccess(parser, '31', '31');
+    expectFailure(parser, '32', 0, '00-31 expected');
+    expectFailure(parser, '3', 1, 'digit expected');
+  });
 }
