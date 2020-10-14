@@ -25,7 +25,7 @@ extension ChoiceParserExtension on Parser {
 
 extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  Parser toChoiceParser() => ChoiceParser<T>(this);
+  Parser<T> toChoiceParser() => ChoiceParser<T>(this);
 }
 
 /// A parser that uses the first parser that succeeds.
