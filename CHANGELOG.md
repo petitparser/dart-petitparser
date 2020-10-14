@@ -3,7 +3,7 @@
 ## 4.0.0
 
 * Dart 2.10 requirement and null-safety.
-* `Success.message` throws an `UnsuppotedError` exception, instead of returning `null`.
+* `Success.message` throws an `UnsupportedError` exception, instead of returning `null`.
 * `DelegateParser` has been made abstract to avoid a concrete class in-between abstract classes.
 * `Parser.delegate()` has been removed, use `Parser.settable()` as an equivalent replacement.
 * `Parser.optional()` is now returning `Parser<T?>`, to provide a non-null default value use `Parser.optionalWith(T value)`.
