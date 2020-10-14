@@ -30,5 +30,5 @@ class ParserMatch implements Match {
       groupIndices.map(group).toList(growable: false);
 
   @override
-  int get groupCount => 1;
+  int get groupCount => 0;
 }

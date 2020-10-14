@@ -29,7 +29,7 @@ void main() {
       expect(matches.map((matcher) => matcher.input), [input, input]);
       expect(matches.map((matcher) => matcher.start), [1, 5]);
       expect(matches.map((matcher) => matcher.end), [3, 7]);
-      expect(matches.map((matcher) => matcher.groupCount), [1, 1]);
+      expect(matches.map((matcher) => matcher.groupCount), [0, 0]);
       expect(matches.map((matcher) => matcher[0]), ['12', '45']);
       expect(matches.map((matcher) => matcher.group(0)), ['12', '45']);
       expect(matches.map((matcher) => matcher.groups([0, 1])), [
@@ -50,25 +50,31 @@ void main() {
       expect(match2.input, input);
       expect(match2.start, 2);
       expect(match2.end, 4);
-      expect(match2.groupCount, 1);
+      expect(match2.groupCount, 0);
       expect(match2[0], '23');
       expect(match2.group(0), '23');
       expect(match2.groups([0, 1]), ['23', null]);
     });
     test('startsWith()', () {
       expect(input.startsWith(pattern), isFalse);
+      expect(input.startsWith(pattern, 0), isFalse);
       expect(input.startsWith(pattern, 1), isTrue);
       expect(input.startsWith(pattern, 2), isTrue);
       expect(input.startsWith(pattern, 3), isFalse);
     });
     test('indexOf()', () {
       expect(input.indexOf(pattern), 1);
+      expect(input.indexOf(pattern, 0), 1);
       expect(input.indexOf(pattern, 1), 1);
       expect(input.indexOf(pattern, 2), 2);
       expect(input.indexOf(pattern, 3), 5);
     });
     test('lastIndexOf()', () {
       expect(input.lastIndexOf(pattern), 5);
+      expect(input.lastIndexOf(pattern, 0), -1);
+      expect(input.lastIndexOf(pattern, 1), 1);
+      expect(input.lastIndexOf(pattern, 2), 2);
+      expect(input.lastIndexOf(pattern, 3), 2);
     });
     test('contains()', () {
       expect(input.contains(pattern), isTrue);
