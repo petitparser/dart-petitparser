@@ -13,7 +13,7 @@ class Context {
   /// The buffer we are working on.
   final String buffer;
 
-  /// The current position in the buffer.
+  /// The current position in the [buffer].
   final int position;
 
   /// Returns a result indicating a parse success.
@@ -24,10 +24,9 @@ class Context {
   Result<R> failure<R>(String message, [int? position]) =>
       Failure<R>(buffer, position ?? this.position, message);
 
-  /// Returns a human readable string of the current context.
+  /// Returns the current line:column position in the [buffer].
+  String toPositionString() => Token.positionString(buffer, position);
+
   @override
   String toString() => 'Context[${toPositionString()}]';
-
-  /// Returns the line:column if the input is a string, otherwise the position.
-  String toPositionString() => Token.positionString(buffer, position);
 }

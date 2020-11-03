@@ -1,3 +1,4 @@
+import '../core/exception.dart';
 import 'context.dart';
 
 /// An immutable parse result.
@@ -10,12 +11,14 @@ abstract class Result<R> extends Context {
   /// Returns `true` if this result indicates a parse failure.
   bool get isFailure => false;
 
-  /// Returns the parse result of the current context.
+  /// Returns the parsed value of this result, or throws a [ParserException]
+  /// if this is a parse failure.
   R get value;
 
-  /// Returns the parse message of the current context.
+  /// Returns the error message of this result, or throws an [UnsupportedError]
+  /// if this is a parse success.
   String get message;
 
-  /// Transform the result with a [callback].
+  /// Transforms the result with a [callback].
   Result<T> map<T>(T Function(R element) callback);
 }
