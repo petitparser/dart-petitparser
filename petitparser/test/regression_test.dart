@@ -113,4 +113,20 @@ void main() {
       expectFailure(date, 'Hello', 0, 'digit expected');
     });
   });
+  test('stackoverflow.com/questions/64670722', () {
+    final delimited = any().callCC((continuation, context) {
+      final delimiter = continuation(context).value.toParser();
+      final parser = [
+        delimiter,
+        delimiter.neg().star().flatten(),
+        delimiter,
+      ].toSequenceParser().pick<String>(1);
+      return parser.parseOn(context);
+    });
+    expectSuccess(delimited, '"hello"', 'hello');
+    expectSuccess(delimited, '/hello/', 'hello');
+    expectSuccess(delimited, ',hello,', 'hello');
+    expectSuccess(delimited, 'xhellox', 'hello');
+    expectFailure(delimited, 'abc', 3, '"a" expected');
+  });
 }
