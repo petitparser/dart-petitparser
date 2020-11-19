@@ -58,7 +58,7 @@ abstract class Parser<T> {
   ///
   /// The code automatically deals with recursive parsers and parsers that
   /// refer to other parsers. Do not override this method, instead customize
-  /// [Parser.hasEqualProperties] and [Parser.hasEqualChildren].
+  /// [Parser.hasEqualProperties] and [Parser.children].
   @nonVirtual
   bool isEqualTo(Parser other, [Set<Parser>? seen]) {
     seen ??= {};
@@ -105,6 +105,9 @@ abstract class Parser<T> {
   ///
   /// In contrast, `letter().or(digit()).children` returns a collection
   /// containing both the `letter()` and `digit()` parser.
+  ///
+  /// Override this method and [Parser.replace] in all subclasses that
+  /// reference other parsers.
   List<Parser> get children => const [];
 
   /// Changes the receiver by replacing [source] with [target]. Does nothing
@@ -119,6 +122,9 @@ abstract class Parser<T> {
   ///     final letter = letter();
   ///     final example = letter.plus();
   ///     example.replace(letter, digit());
+  ///
+  /// Override this method and [Parser.children] in all subclasses that
+  /// reference other parsers.
   void replace(Parser source, Parser target) {
     // no children, nothing to do
   }
