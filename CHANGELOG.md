@@ -9,7 +9,7 @@
 * `Parser.optional()` is now returning `Parser<T?>`, to provide a non-null default value use `Parser.optionalWith(T value)`.
 * `Parser.not()` is now returning the failure `Parser<Failure<T>>` as success value, instead of `null`.
 * `epsilon()` is now returning `Parser<void>`, to provide a non-null default value use `epsilonWith(T value)`.
-* Removed const constructor from `Parser` and `PositionParser`, as most parsers are inherently mutable and having some constant makes things inconsistent and more complicated than necessary.
+* Removed const constructor from `Parser` hierarchy, as most parsers are inherently mutable and having some constant makes things inconsistent and more complicated than necessary.
 
 ## 3.1.0
 
