@@ -4,7 +4,7 @@ dart:
 
 stages:
   - analyze:
-      - command: "dartanalyzer --fatal-warnings ."
+      - command: "dartanalyzer --fatal-infos ."
       - command: "dartfmt --dry-run --set-exit-if-changed ."
   - unit_test:
       - command: "pub run test test/all_test.dart --platform vm"
