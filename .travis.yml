@@ -1,60 +1,64 @@
-# Created with package:mono_repo v2.3.0
+# Created with package:mono_repo v3.0.0
 language: dart
 
 jobs:
   include:
     - stage: analyze
-      name: "SDK: dev; PKG: petitparser; TASKS: `dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos .`"
-      dart: dev
+      name: mono_repo self validate
       os: linux
-      env: PKGS="petitparser"
-      script: ./tool/travis.sh command_0
+      script: "pub global activate mono_repo 3.0.0 && pub global run mono_repo travis --validate"
     - stage: analyze
-      name: "SDK: dev; PKG: petitparser; TASKS: `dartfmt --dry-run --set-exit-if-changed .`"
+      name: "SDK: dev; PKGS: petitparser, petitparser_examples; TASKS: `dartanalyzer --fatal-infos .`"
       dart: dev
       os: linux
-      env: PKGS="petitparser"
-      script: ./tool/travis.sh command_1
+      env: PKGS="petitparser petitparser_examples"
+      script: tool/travis.sh command_0
     - stage: analyze
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `dartanalyzer --enable-experiment=non-nullable --fatal-warnings --fatal-infos .`"
+      name: "SDK: dev; PKGS: petitparser, petitparser_examples; TASKS: `dartfmt --dry-run --set-exit-if-changed .`"
       dart: dev
       os: linux
-      env: PKGS="petitparser_examples"
-      script: ./tool/travis.sh command_0
-    - stage: analyze
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `dartfmt --dry-run --set-exit-if-changed .`"
-      dart: dev
-      os: linux
-      env: PKGS="petitparser_examples"
-      script: ./tool/travis.sh command_1
+      env: PKGS="petitparser petitparser_examples"
+      script: tool/travis.sh command_1
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser; TASKS: `pub run --enable-experiment=non-nullable test --platform vm`"
+      name: "SDK: dev; PKG: petitparser; TASKS: `pub run test test/all_test.dart --platform vm`"
       dart: dev
       os: linux
       env: PKGS="petitparser"
-      script: ./tool/travis.sh command_2
+      script: tool/travis.sh command_2
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser; TASKS: `pub run --enable-experiment=non-nullable test --platform chrome`"
+      name: "SDK: dev; PKG: petitparser; TASKS: `pub run test test/all_test.dart --platform chrome`"
       dart: dev
       os: linux
       env: PKGS="petitparser"
-      script: ./tool/travis.sh command_3
+      script: tool/travis.sh command_3
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run --enable-experiment=non-nullable test --platform vm`"
+      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run test --platform vm`"
       dart: dev
       os: linux
       env: PKGS="petitparser_examples"
-      script: ./tool/travis.sh command_2
+      script: tool/travis.sh command_5
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run --enable-experiment=non-nullable test --platform chrome`"
+      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run test --platform chrome`"
       dart: dev
       os: linux
       env: PKGS="petitparser_examples"
-      script: ./tool/travis.sh command_3
+      script: tool/travis.sh command_6
+    - stage: coverage
+      name: "SDK: dev; PKG: petitparser; TASKS: `pub global activate dart_coveralls && dart_coveralls report test/all_test.dart`"
+      dart: dev
+      os: linux
+      env: PKGS="petitparser"
+      script: tool/travis.sh command_4
 
 stages:
   - analyze
   - unit_test
+  - coverage
+
+# Only building master means that we don't run two builds for each pull request.
+branches:
+  only:
+    - master
 
 cache:
   directories:
