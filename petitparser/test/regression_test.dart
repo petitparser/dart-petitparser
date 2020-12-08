@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
 import 'test_utils.dart';
+
+typedef Evaluator = num Function(num value);
 
 void main() {
   test('flatten().trim()', () {
@@ -128,5 +132,48 @@ void main() {
     expectSuccess(delimited, ',hello,', 'hello');
     expectSuccess(delimited, 'xhellox', 'hello');
     expectFailure(delimited, 'abc', 3, '"a" expected');
+  });
+  test('function evaluator', () {
+    final builder = ExpressionBuilder();
+    builder.group()
+      ..primitive(digit()
+          .plus()
+          .seq(char('.').seq(digit().plus()).optional())
+          .flatten()
+          .trim()
+          .map((a) {
+        final number = num.parse(a);
+        return (num value) => number;
+      }))
+      ..primitive(char('x').trim().map((_) => (num value) => value))
+      ..wrapper(char('(').trim(), char(')').trim(), (_, Evaluator a, __) => a);
+    // negation is a prefix operator
+    builder.group()
+      ..prefix(char('-').trim(), (_, Evaluator a) => (num value) => -a(value));
+    // power is right-associative
+    builder.group()
+      ..right(
+          char('^').trim(),
+          (Evaluator a, _, Evaluator b) =>
+              (num value) => pow(a(value), b(value)));
+    // multiplication and addition are left-associative
+    builder.group()
+      ..left(char('*').trim(),
+          (Evaluator a, _, Evaluator b) => (num value) => a(value) * b(value))
+      ..left(char('/').trim(),
+          (Evaluator a, _, Evaluator b) => (num value) => a(value) / b(value));
+    builder.group()
+      ..left(char('+').trim(),
+          (Evaluator a, _, Evaluator b) => (num value) => a(value) + b(value))
+      ..left(char('-').trim(),
+          (Evaluator a, _, Evaluator b) => (num value) => a(value) - b(value));
+    final parser = builder.build().end();
+
+    final expression = parser.parse('5 * x ^ 3 - 2').value;
+    expect(expression(-2), -42);
+    expect(expression(-1), -7);
+    expect(expression(0), -2);
+    expect(expression(1), 3);
+    expect(expression(2), 38);
   });
 }
