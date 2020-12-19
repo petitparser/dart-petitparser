@@ -19,7 +19,7 @@ The package is hosted on [dart packages](https://pub.dev/packages/petitparser). 
 Tutorial
 --------
 
-Below are step by step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser/tree/master/example).
+Below are step-by-step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser/tree/master/example).
 
 ### Installation
 
@@ -33,13 +33,13 @@ import 'package:petitparser/petitparser.dart';
 
 ### Writing a Simple Grammar
 
-Writing grammars with PetitParser is simple as writing Dart code. For example, to write a grammar that can parse identifiers that start with a letter followed by zero or more letter or digits are defined as follows:
+Writing grammars with PetitParser is as simple as writing Dart code. For example, the following code creates a parser that can read identifiers (a letter followed by zero or more letter or digits):
 
 ```dart
 final id = letter() & (letter() | digit()).star();
 ```
 
-If you look at the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
+If you inspect the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
 
 - SequenceParser: This parser accepts a sequence of parsers.
   - CharacterParser: This parser accepts a single letter.
@@ -48,26 +48,27 @@ If you look at the object `id` in the debugger, you'll notice that the code abov
       - CharacterParser: This parser accepts a single letter.
       - CharacterParser: This parser accepts a single digit.
 
-The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls:
+The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. Both of the parsers below are equivalent to the one above:
 
 ```dart
-final id = letter().seq(letter().or(digit()).star());
+final id1 = letter().seq(letter().or(digit()).star());
+final id2 = [letter(), [letter(), digit()].toChoiceParser()].toSequenceParser().star();
 ```
 
 ### Parsing Some Input
 
-To actually parse a `String` (or `List`) we can use the method `Parser.parse`:
+To actually consume an input string we use the method `Parser.parse`:
 
 ```dart
-final id1 = id.parse('yeah');
-final id2 = id.parse('f12');
+final result1 = id.parse('yeah');
+final result2 = id.parse('f12');
 ```
 
-The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples above we are successful and can retrieve the resulting value using `Success.value`:
+The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples  we are successful and can retrieve the resulting value using `Success.value`:
 
 ```dart
-print(id1.value);                   // ['y', ['e', 'a', 'h']]
-print(id2.value);                   // ['f', ['1', '2']]
+print(result1.value);                   // ['y', ['e', 'a', 'h']]
+print(result2.value);                   // ['f', ['1', '2']]
 ```
 
 While it seems odd to get these nested arrays with characters as a return value, this is the default decomposition of the input into a parse-tree. We'll see in a while how that can be customized.
@@ -75,26 +76,27 @@ While it seems odd to get these nested arrays with characters as a return value,
 If we try to parse something invalid we get an instance of `Failure` and we can retrieve a descriptive error message using `Failure.message`:
 
 ```dart
-final id3 = id.parse('123');
-print(id3.message);                 // 'letter expected'
-print(id3.position);                // 0
+final result3 = id.parse('123');
+print(result3.message);                 // 'letter expected'
+print(result3.position);                // 0
 ```
 
 Trying to retrieve result by calling `Failure.value` would throw the exception `ParserError`. `Context.isSuccess` and `Context.isFailure` can be used to decide if the parsing was successful.
 
-If you are only interested if a given string matches or not you can use the helper method `Parser.accept`:
+If you are only interested if a given string is valid you can use the helper method `Parser.accept`:
 
 ```dart
-print(id.accept('foo'));            // true
-print(id.accept('123'));            // false
+print(id.accept('foo'));                // true
+print(id.accept('123'));                // false
 ```
 
 ### Different Kinds of Parsers
 
-PetitParser provide a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. The terminal parsers are simplest. We've already seen a few of those:
+PetitParser provides a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. Terminal parsers are the simplest. We've already seen a few of those:
 
-- `char('a')` parses the character *a*.
-- `string('abc')` parses the string *abc*.
+- `char('a')` (or `'a'.toParser()`) parses the character *a*.
+- `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
+- `pattern('a-f')` (or `'abc'.toParser(isPattern: true)`) parsers any character between _a_ and _f_.
 - `any()` parses any character.
 - `digit()` parses any digit from *0* to *9*.
 - `letter()` parses any letter from *a* to *z* and *A* to *Z*.
@@ -108,8 +110,8 @@ final id = letter() & word().star();
 
 The next set of parsers are used to combine other parsers together:
 
-- `p1 & p2` and `p1.seq(p2)` parse *p1* followed by *p2* (sequence).
-- `p1 | p2` and `p1.or(p2)` parse *p1*, if that doesn't work parse *p2* (ordered choice).
+- `p1 & p2`, `p1.seq(p2)`, or `[p1, p2].toSequenceParser()` parse *p1* followed by *p2* (sequence).
+- `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice).
 - `p.star()` parses *p* zero or more times.
 - `p.plus()` parses *p* one or more times.
 - `p.optional()` parses *p*, if possible.
@@ -117,13 +119,14 @@ The next set of parsers are used to combine other parsers together:
 - `p.not()` parses *p* and succeed when p fails, but does not consume its input.
 - `p.end()` parses *p* and succeed at the end of the input.
 
-To attach an action or transformation to a parser we can use the following methods:
+The last type of parsers are actions or transformations we can use as follows:
 
-- `p.map((value) => ...)` performs the transformation given the function.
+- `p.map((value) => ...)` performs the transformation using the provided callback.
 - `p.pick(n)` returns the *n*-th element of the list *p* returns.
-- `p.flatten()` creates a string from the result of *p*.
+- `p.flatten()` creates a string from the consumed input of *p*.
 - `p.token()` creates a token from the result of *p*.
 - `p.trim()` trims whitespaces before and after *p*.
+- `p.cast<T>()` casts the result of *p* to the type `T`.
 
 To return a string of the parsed identifier, we can modify our parser like this:
 
@@ -135,7 +138,7 @@ To conveniently find all matches in a given input string you can use `Parser.mat
 
 ```dart
 final matches = id.matchesSkipping('foo 123 bar4');
-print(matches);                     // ['foo', 'bar4']
+print(matches);                         // ['foo', 'bar4']
 ```
 
 These are the basic elements to build parsers. There are a few more well documented and tested factory methods in the `Parser` class. If you want browse their documentation and tests.
@@ -178,8 +181,8 @@ final parser = term.end();
 That's it, now we can test our parser and evaluator:
 
 ```dart
-parser.parse('1 + 2 * 3');     // 7
-parser.parse('(1 + 2) * 3');   // 9
+parser.parse('1 + 2 * 3');              // 7
+parser.parse('(1 + 2) * 3');            // 9
 ```
 
 ### Using the Expression Builder
@@ -235,11 +238,11 @@ After executing the above code we get an efficient parser that correctly
 evaluates expressions like:
 
 ```dart
-parser.parse('-8');      // -8
-parser.parse('1+2*3');   // 7
-parser.parse('1*2+3');   // 5
-parser.parse('8/4/2');   // 1
-parser.parse('2^2^3');   // 256
+parser.parse('-8');                     // -8
+parser.parse('1+2*3');                  // 7
+parser.parse('1*2+3');                  // 5
+parser.parse('8/4/2');                  // 1
+parser.parse('2^2^3');                  // 256
 ```
 
 Misc
