@@ -22,8 +22,7 @@ Parser transformParser(Parser parser, TransformationHandler handler) {
     for (final child in parent.children) {
       if (mapping.containsKey(child)) {
         parent.replace(child, mapping[child]!);
-      } else if (!seen.contains(child)) {
-        seen.add(child);
+      } else if (seen.add(child)) {
         todo.add(child);
       }
     }
