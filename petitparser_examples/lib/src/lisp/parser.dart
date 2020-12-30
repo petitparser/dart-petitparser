@@ -27,15 +27,7 @@ class LispParserDefinition extends LispGrammarDefinition {
       super.characterRaw().map((each) => each.codeUnitAt(0));
 
   Parser symbol() => super.symbol().map((each) => Name(each));
-  Parser number() => super.number().map((each) {
-        final floating = double.parse(each);
-        final integral = floating.toInt();
-        if (floating == integral && each.indexOf('.') == -1) {
-          return integral;
-        } else {
-          return floating;
-        }
-      });
+  Parser number() => super.number().map((each) => num.parse(each));
 
   Parser quote() =>
       super.quote().map((each) => Cons((_, args) => args, each[1]));

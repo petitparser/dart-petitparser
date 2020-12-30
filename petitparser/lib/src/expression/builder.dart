@@ -16,7 +16,7 @@ import 'group.dart';
 ///     builder.group()
 ///       ..primitive(digit().plus()
 ///         .seq(char('.').seq(digit().plus()).optional())
-///         .flatten().trim().map((a) => double.parse(a)));
+///         .flatten().trim().map(num.parse));
 ///
 /// If we want to support parenthesis we can add a wrapper:
 ///

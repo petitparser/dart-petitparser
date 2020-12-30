@@ -44,7 +44,7 @@ void main() {
     group('cast', () {
       expectCommon(any().cast());
       test('default', () {
-        final parser = digit().map(int.parse).cast<num>();
+        final parser = digit().map(num.parse);
         expectSuccess(parser, '1', 1);
         expectFailure(parser, 'a', 0, 'digit expected');
       });

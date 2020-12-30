@@ -13,7 +13,7 @@ Parser build({bool attachAction = true}) {
             .seq(char('.').seq(digit().plus()).optional())
             .flatten()
             .trim(),
-        action(double.parse))
+        action(num.parse))
     ..wrapper(char('(').trim(), char(')').trim(),
         action((left, value, right) => value))
     ..wrapper(string('sqrt(').trim(), char(')').trim(),

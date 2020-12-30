@@ -26,15 +26,7 @@ class JsonParserDefinition extends JsonGrammarDefinition {
   Parser falseToken() => super.falseToken().map((each) => false);
   Parser nullToken() => super.nullToken().map((each) => null);
   Parser stringToken() => ref(stringPrimitive).trim();
-  Parser numberToken() => super.numberToken().map((each) {
-        final floating = double.parse(each);
-        final integral = floating.toInt();
-        if (floating == integral && each.indexOf('.') == -1) {
-          return integral;
-        } else {
-          return floating;
-        }
-      });
+  Parser numberToken() => super.numberToken().map((each) => num.parse(each));
 
   Parser stringPrimitive() =>
       super.stringPrimitive().map((each) => each[1].join());
