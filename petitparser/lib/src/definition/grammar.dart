@@ -124,8 +124,7 @@ abstract class GrammarDefinition {
           parent.replace(child, referenced);
           child = referenced;
         }
-        if (!seen.contains(child)) {
-          seen.add(child);
+        if (seen.add(child)) {
           todo.add(child);
         }
       }
