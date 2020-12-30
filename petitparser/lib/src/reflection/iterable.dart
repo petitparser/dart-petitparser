@@ -17,9 +17,8 @@ Iterable<Parser> allParser(Parser root) sync* {
     final current = todo.removeLast();
     yield current;
     for (final parser in current.children) {
-      if (!seen.contains(parser)) {
+      if (seen.add(parser)) {
         todo.add(parser);
-        seen.add(parser);
       }
     }
   }
