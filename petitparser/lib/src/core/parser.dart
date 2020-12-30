@@ -61,14 +61,14 @@ abstract class Parser<T> {
   /// [Parser.hasEqualProperties] and [Parser.children].
   @nonVirtual
   bool isEqualTo(Parser other, [Set<Parser>? seen]) {
-    seen ??= {};
-    if (this == other || seen.contains(this)) {
+    if (this == other) {
       return true;
     }
-    seen.add(this);
-    return runtimeType == other.runtimeType &&
-        hasEqualProperties(other) &&
-        hasEqualChildren(other, seen);
+    if (runtimeType != other.runtimeType || !hasEqualProperties(other)) {
+      return false;
+    }
+    seen ??= {};
+    return !seen.add(this) || hasEqualChildren(other, seen);
   }
 
   /// Compare the properties of two parsers.
