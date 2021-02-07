@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -49,12 +50,12 @@ class TrimmingParser<T> extends DelegateParser<T> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     final result = delegate.fastParseOn(buffer, trim_(left, buffer, position));
     return result < 0 ? -1 : trim_(right, buffer, result);
   }
 
-  int trim_(Parser parser, String buffer, int position) {
+  int trim_(Parser parser, Buffer buffer, int position) {
     for (;;) {
       final result = parser.fastParseOn(buffer, position);
       if (result < 0) {

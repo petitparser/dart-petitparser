@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -21,12 +22,12 @@ class AnyParser extends Parser<String> {
     final position = context.position;
     final buffer = context.buffer;
     return position < buffer.length
-        ? context.success(buffer[position], position + 1)
+        ? context.success(buffer.charAt(position), position + 1)
         : context.failure(message);
   }
 
   @override
-  int fastParseOn(String buffer, int position) =>
+  int fastParseOn(Buffer buffer, int position) =>
       position < buffer.length ? position + 1 : -1;
 
   @override

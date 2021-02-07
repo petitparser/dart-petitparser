@@ -1,3 +1,4 @@
+import '../../buffer.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';
@@ -11,9 +12,12 @@ extension MatchesSkippingParser<T> on Parser<T> {
   /// For example, `letter().plus().matchesSkipping('abc de')` results in the
   /// list `[['a', 'b', 'c'], ['d', 'e']]`. See [matches] to retrieve
   /// overlapping parse results.
-  List<T> matchesSkipping(String input) {
+  List<T> matchesSkipping(/*Buffer|String|Characters*/ dynamic input) {
     final list = <T>[];
-    map(list.add, hasSideEffects: true).or(any()).star().fastParseOn(input, 0);
+    map(list.add, hasSideEffects: true)
+        .or(any())
+        .star()
+        .fastParseOn(Buffer(input), 0);
     return list;
   }
 }

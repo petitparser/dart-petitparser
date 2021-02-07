@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -38,7 +39,7 @@ class OptionalParser<T> extends DelegateParser<T> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     final result = delegate.fastParseOn(buffer, position);
     return result < 0 ? position : result;
   }

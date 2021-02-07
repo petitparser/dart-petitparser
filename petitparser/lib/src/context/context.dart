@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../buffer.dart';
 import '../core/token.dart';
 import 'failure.dart';
 import 'result.dart';
@@ -11,7 +12,7 @@ class Context {
   const Context(this.buffer, this.position);
 
   /// The buffer we are working on.
-  final String buffer;
+  final Buffer buffer;
 
   /// The current position in the [buffer].
   final int position;

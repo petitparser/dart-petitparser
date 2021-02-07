@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -49,7 +50,7 @@ class ChoiceParser<T> extends ListParser<T> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     var result = -1;
     for (var i = 0; i < children.length; i++) {
       result = children[i].fastParseOn(buffer, position);

@@ -1,9 +1,10 @@
+import '../../buffer.dart';
 import '../core/exception.dart';
 import 'result.dart';
 
 /// An immutable parse result in case of a failed parse.
 class Failure<R> extends Result<R> {
-  const Failure(String buffer, int position, this.message)
+  const Failure(Buffer buffer, int position, this.message)
       : super(buffer, position);
 
   @override

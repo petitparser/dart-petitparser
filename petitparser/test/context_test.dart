@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 import 'test_utils.dart';
 
 void main() {
-  const buffer = 'a\nc';
-  const context = Context(buffer, 0);
+  final buffer = Buffer('a\nc');
+  final context = Context(buffer, 0);
   test('context', () {
     expect(context.buffer, buffer);
     expect(context.position, 0);

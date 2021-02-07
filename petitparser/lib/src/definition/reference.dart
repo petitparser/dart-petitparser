@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../buffer.dart';
 import '../context/context.dart';
 import '../context/result.dart';
 import '../core/parser.dart';
@@ -44,7 +45,7 @@ class Reference extends Parser {
       throw UnsupportedError('References cannot be parsed.');
 
   @override
-  int fastParseOn(String buffer, int position) =>
+  int fastParseOn(Buffer buffer, int position) =>
       throw UnsupportedError('References cannot be parsed.');
 
   @override

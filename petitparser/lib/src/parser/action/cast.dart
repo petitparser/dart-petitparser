@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -23,7 +24,7 @@ class CastParser<R> extends DelegateParser<R> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) =>
+  int fastParseOn(Buffer buffer, int position) =>
       delegate.fastParseOn(buffer, position);
 
   @override

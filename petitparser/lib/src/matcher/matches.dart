@@ -1,3 +1,4 @@
+import '../../buffer.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/and.dart';
@@ -13,14 +14,14 @@ extension MatchesParser<T> on Parser<T> {
   /// For example, `letter().plus().matches('abc de')` results in the list
   /// `[['a', 'b', 'c'], ['b', 'c'], ['c'], ['d', 'e'], ['e']]`. See
   /// [matchesSkipping] to retrieve non-overlapping parse results.
-  List<T> matches(String input) {
+  List<T> matches(/*Buffer|String|Characters*/ dynamic input) {
     final list = <T>[];
     and()
         .map(list.add, hasSideEffects: true)
         .seq(any())
         .or(any())
         .star()
-        .fastParseOn(input, 0);
+        .fastParseOn(Buffer(input), 0);
     return list;
   }
 }

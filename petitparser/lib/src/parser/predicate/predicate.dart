@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -8,9 +9,8 @@ typedef Predicate = bool Function(String input);
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
-Parser<String> predicate(int length, Predicate predicate, String message) {
-  return PredicateParser(length, predicate, message);
-}
+Parser<String> predicate(int length, Predicate predicate, String message) =>
+    PredicateParser(length, predicate, message);
 
 /// A parser for a literal satisfying a predicate.
 class PredicateParser extends Parser<String> {
@@ -28,10 +28,11 @@ class PredicateParser extends Parser<String> {
 
   @override
   Result<String> parseOn(Context context) {
+    final buffer = context.buffer;
     final start = context.position;
     final stop = start + length;
-    if (stop <= context.buffer.length) {
-      final result = context.buffer.substring(start, stop);
+    if (stop <= buffer.length) {
+      final result = buffer.substring(start, stop);
       if (predicate(result)) {
         return context.success(result, stop);
       }
@@ -40,7 +41,7 @@ class PredicateParser extends Parser<String> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     final stop = position + length;
     return stop <= buffer.length && predicate(buffer.substring(position, stop))
         ? stop

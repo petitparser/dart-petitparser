@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -13,7 +14,7 @@ class PositionParser extends Parser<int> {
   Result<int> parseOn(Context context) => context.success(context.position);
 
   @override
-  int fastParseOn(String buffer, int position) => position;
+  int fastParseOn(Buffer buffer, int position) => position;
 
   @override
   PositionParser copy() => PositionParser();

@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -33,7 +34,7 @@ class PickParser<T> extends DelegateParser<T> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) =>
+  int fastParseOn(Buffer buffer, int position) =>
       delegate.fastParseOn(buffer, position);
 
   @override

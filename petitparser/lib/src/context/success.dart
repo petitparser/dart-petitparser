@@ -1,8 +1,9 @@
+import '../../buffer.dart';
 import 'result.dart';
 
 /// An immutable parse result in case of a successful parse.
 class Success<R> extends Result<R> {
-  const Success(String buffer, int position, this.value)
+  const Success(Buffer buffer, int position, this.value)
       : super(buffer, position);
 
   @override

@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../../buffer.dart';
 import '../../core/parser.dart';
 import 'parser_match.dart';
 import 'pattern_iterable.dart';
@@ -31,7 +32,7 @@ class ParserPattern implements Pattern {
   /// Returns `null` if the pattern doesn't match.
   @override
   ParserMatch? matchAsPrefix(String string, [int start = 0]) {
-    final end = parser.fastParseOn(string, start);
+    final end = parser.fastParseOn(Buffer.fromString(string), start);
     return end < 0 ? null : ParserMatch(this, string, start, end);
   }
 }

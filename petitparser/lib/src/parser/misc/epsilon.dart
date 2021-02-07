@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -21,7 +22,7 @@ class EpsilonParser<T> extends Parser<T> {
   Result<T> parseOn(Context context) => context.success(result);
 
   @override
-  int fastParseOn(String buffer, int position) => position;
+  int fastParseOn(Buffer buffer, int position) => position;
 
   @override
   EpsilonParser<T> copy() => EpsilonParser<T>(result);

@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -47,7 +48,7 @@ class SequenceParser<T> extends ListParser<List<T>> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     for (var i = 0; i < children.length; i++) {
       position = children[i].fastParseOn(buffer, position);
       if (position < 0) {

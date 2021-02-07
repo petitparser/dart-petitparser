@@ -6,9 +6,10 @@ const isFailure = TypeMatcher<Failure>();
 
 const isParserException = TypeMatcher<ParserException>();
 
-void expectSuccess(Parser parser, String input, dynamic expected,
+void expectSuccess(Parser parser, dynamic input, dynamic expected,
     [int? position]) {
-  final result = parser.parse(input);
+  final buffer = Buffer(input);
+  final result = parser.parse(buffer);
   expect(result, isSuccess);
   expect(result.isSuccess, isTrue,
       reason: 'Expected Result.isSuccess to be true.');
@@ -16,17 +17,19 @@ void expectSuccess(Parser parser, String input, dynamic expected,
       reason: 'Expected Result.isFailure to be false.');
   expect(result.value, expected,
       reason: 'Expected Result.value to match $expected.');
-  expect(result.position, position ?? input.length,
-      reason: 'Expected Result.position to match ${position ?? input.length}.');
-  expect(parser.fastParseOn(input, 0), result.position,
+  expect(result.position, position ?? buffer.length,
+      reason:
+          'Expected Result.position to match ${position ?? buffer.length}.');
+  expect(parser.fastParseOn(buffer, 0), result.position,
       reason: 'Expected fast parsed result to succeed at same position.');
-  expect(parser.accept(input), isTrue,
+  expect(parser.accept(buffer), isTrue,
       reason: 'Expected input to be accepted.');
 }
 
-void expectFailure(Parser parser, String input,
+void expectFailure(Parser parser, dynamic input,
     [int position = 0, String? message]) {
-  final result = parser.parse(input);
+  final buffer = Buffer(input);
+  final result = parser.parse(buffer);
   expect(result, isFailure);
   expect(result.isFailure, isTrue,
       reason: 'Expected Result.isFailure to be true.');
@@ -38,9 +41,9 @@ void expectFailure(Parser parser, String input,
     expect(result.message, message,
         reason: 'Expected Result.message to match $message.');
   }
-  expect(parser.fastParseOn(input, 0), -1,
+  expect(parser.fastParseOn(buffer, 0), -1,
       reason: 'Expected fast parse to fail.');
-  expect(parser.accept(input), isFalse,
+  expect(parser.accept(buffer), isFalse,
       reason: 'Expected input to be rejected.');
   expect(
       () => result.value,

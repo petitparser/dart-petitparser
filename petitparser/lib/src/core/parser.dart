@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../buffer.dart';
 import '../context/context.dart';
 import '../context/failure.dart';
 import '../context/result.dart';
@@ -30,7 +31,7 @@ abstract class Parser<T> {
   ///
   /// Subclasses don't necessarily have to override this method, since it is
   /// emulated using its slower brother.
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     final result = parseOn(Context(buffer, position));
     return result.isSuccess ? result.position : -1;
   }
@@ -47,7 +48,9 @@ abstract class Parser<T> {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
-  Result<T> parse(String input) => parseOn(Context(input, 0));
+  @nonVirtual
+  Result<T> parse(/*Buffer|String|Characters*/ dynamic input) =>
+      parseOn(Context(Buffer(input), 0));
 
   /// Returns a shallow copy of the receiver.
   ///

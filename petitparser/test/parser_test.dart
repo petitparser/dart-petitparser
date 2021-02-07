@@ -201,9 +201,10 @@ void main() {
         final parser = digit().plus().token();
         expectFailure(parser, '');
         expectFailure(parser, 'a');
-        final token = parser.parse('123').value;
+        final buffer = Buffer('123');
+        final token = parser.parse(buffer).value;
         expect(token.value, ['1', '2', '3']);
-        expect(token.buffer, '123');
+        expect(token.buffer, buffer);
         expect(token.start, 0);
         expect(token.stop, 3);
         expect(token.input, '123');
@@ -212,7 +213,7 @@ void main() {
         expect(token.column, 1);
         expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
       });
-      const buffer = '1\r12\r\n123\n1234';
+      final buffer = Buffer('1\r12\r\n123\n1234');
       final parser = any().map((value) => value.codeUnitAt(0)).token().star();
       final result = parser.parse(buffer).value;
       test('value', () {

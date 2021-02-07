@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -77,7 +78,7 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     var count = 0;
     var current = position;
     while (count < min) {

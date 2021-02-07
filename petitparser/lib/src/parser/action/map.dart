@@ -1,3 +1,4 @@
+import '../../../buffer.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -41,7 +42,7 @@ class MapParser<T, R> extends DelegateParser<R> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
+  int fastParseOn(Buffer buffer, int position) {
     // If we know to have side-effects, we have to fall back to the slow mode.
     return hasSideEffects
         ? super.fastParseOn(buffer, position)

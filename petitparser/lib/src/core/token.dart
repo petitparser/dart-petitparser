@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../buffer.dart';
 import '../matcher/matches_skipping.dart';
 import '../parser/action/token.dart';
 import '../parser/character/char.dart';
@@ -23,7 +24,7 @@ class Token<T> {
   final T value;
 
   /// The parsed buffer of the token.
-  final String buffer;
+  final Buffer buffer;
 
   /// The start position of the token in the buffer.
   final int start;
@@ -64,7 +65,7 @@ class Token<T> {
       char('\n') | (char('\r') & char('\n').optional());
 
   /// Converts the [position] index in a [buffer] to a line and column tuple.
-  static List<int> lineAndColumnOf(String buffer, int position) {
+  static List<int> lineAndColumnOf(Buffer buffer, int position) {
     var line = 1, offset = 0;
     for (final token in newlineParser().token().matchesSkipping(buffer)) {
       if (position < token.stop) {
@@ -78,7 +79,7 @@ class Token<T> {
 
   /// Returns a human readable string representing the [position] index in a
   /// [buffer].
-  static String positionString(String buffer, int position) {
+  static String positionString(Buffer buffer, int position) {
     final lineAndColumn = lineAndColumnOf(buffer, position);
     return '${lineAndColumn[0]}:${lineAndColumn[1]}';
   }

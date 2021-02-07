@@ -1,46 +1,44 @@
+import 'package:characters/characters.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser_examples/json.dart';
 
 import 'benchmark.dart';
 
-// Character tests
+class Benchmark {
+  final String name;
+  final Parser parser;
+  final List<String> inputs;
 
-Function charTest(List<String> inputs, Parser parser) {
-  return (fast) {
-    if (fast) {
-      return () {
-        for (var i = 0; i < inputs.length; i++) {
-          parser.accept(inputs[i]);
+  Benchmark(this.name, this.parser, this.inputs);
+
+  double measure({bool isFast = false, bool isCharacters = false}) {
+    final buffers = isCharacters
+        ? inputs
+            .map((input) => Buffer.fromCharacters(input.characters))
+            .toList(growable: false)
+        : inputs
+            .map((input) => Buffer.fromString(input))
+            .toList(growable: false);
+    if (isFast) {
+      return benchmark(() {
+        for (var i = 0; i < buffers.length; i++) {
+          parser.accept(buffers[i]);
         }
-      };
+      });
     } else {
-      return () {
-        for (var i = 0; i < inputs.length; i++) {
-          parser.parse(inputs[i]);
+      return benchmark(() {
+        for (var i = 0; i < buffers.length; i++) {
+          parser.parse(buffers[i]);
         }
-      };
+      });
     }
-  };
+  }
 }
 
 final List<String> characters =
     List.generate(0xff, (value) => String.fromCharCode(value));
 
-// String tests
-
-Function stringTest(String input, Parser parser, {bool fast = false}) {
-  return (fast) {
-    if (fast) {
-      return () => parser.accept(input);
-    } else {
-      return () => parser.parse(input).isSuccess;
-    }
-  };
-}
-
 final String string = characters.join();
-
-// JSON tests
 
 final JsonParser json = JsonParser();
 
@@ -59,81 +57,90 @@ const String jsonEvent =
     '"TEXT": 1073741824, "ALT_MASK": 1, "CONTROL_MASK": 2, '
     '"SHIFT_MASK": 4, "META_MASK": 8}';
 
-// All benchmarks
-
-final Map<String, Function> benchmarks = {
+final List<Benchmark> benchmarks = [
   // char tests
-  'any()': charTest(characters, any()),
-  "anyOf('uncopyrightable')": charTest(characters, anyOf('uncopyrightable')),
-  "char('a')": charTest(characters, char('a')),
-  'digit()': charTest(characters, digit()),
-  'failure()': charTest(characters, failure()),
-  'letter()': charTest(characters, letter()),
-  'lowercase()': charTest(characters, lowercase()),
-  "noneOf('uncopyrightable')": charTest(characters, noneOf('uncopyrightable')),
-  "pattern('^a')": charTest(characters, pattern('^a')),
-  "pattern('^a-cx-zA-CX-Z1-37-9')":
-      charTest(characters, pattern('^a-cx-zA-CX-Z1-37-9')),
-  "pattern('^a-z')": charTest(characters, pattern('^a-z')),
-  "pattern('^acegik')": charTest(characters, pattern('^acegik')),
-  "pattern('a')": charTest(characters, pattern('a')),
-  "pattern('a-cx-zA-CX-Z1-37-9')":
-      charTest(characters, pattern('a-cx-zA-CX-Z1-37-9')),
-  "pattern('a-z')": charTest(characters, pattern('a-z')),
-  "pattern('acegik')": charTest(characters, pattern('acegik')),
-  "range('a', 'z')": charTest(characters, range('a', 'z')),
-  'uppercase()': charTest(characters, uppercase()),
-  'whitespace()': charTest(characters, whitespace()),
-  'word()': charTest(characters, word()),
+  Benchmark("anyOf('uncopyrightable')", anyOf('uncopyrightable'), characters),
+  Benchmark("char('a')", char('a'), characters),
+  Benchmark("noneOf('uncopyrightable')", noneOf('uncopyrightable'), characters),
+  Benchmark("pattern('^a')", pattern('^a'), characters),
+  Benchmark("pattern('^a-cx-zA-CX-Z1-37-9')", pattern('^a-cx-zA-CX-Z1-37-9'),
+      characters),
+  Benchmark("pattern('^a-z')", pattern('^a-z'), characters),
+  Benchmark("pattern('^acegik')", pattern('^acegik'), characters),
+  Benchmark("pattern('a')", pattern('a'), characters),
+  Benchmark("pattern('a-cx-zA-CX-Z1-37-9')", pattern('a-cx-zA-CX-Z1-37-9'),
+      characters),
+  Benchmark("pattern('a-z')", pattern('a-z'), characters),
+  Benchmark("pattern('acegik')", pattern('acegik'), characters),
+  Benchmark("range('a', 'z')", range('a', 'z'), characters),
+  Benchmark('any()', any(), characters),
+  Benchmark('digit()', digit(), characters),
+  Benchmark('failure()', failure(), characters),
+  Benchmark('letter()', letter(), characters),
+  Benchmark('lowercase()', lowercase(), characters),
+  Benchmark('uppercase()', uppercase(), characters),
+  Benchmark('whitespace()', whitespace(), characters),
+  Benchmark('word()', word(), characters),
 
   // combinator tests
-  'optional()': charTest(characters, any().optional()),
-  'and()': charTest(characters, any().and()),
-  'not()': charTest(characters, any().not()),
-  'neg()': charTest(characters, any().neg()),
-  'flatten()': charTest(characters, any().flatten()),
-  'token()': charTest(characters, any().token()),
-  'trim()': charTest(characters, any().trim()),
-  'end()': charTest(characters, any().end()),
-  'set()': charTest(characters, any().settable()),
-  'map()': charTest(characters, any().map((_) => null)),
-  'cast()': charTest(characters, any().cast()),
-  'castList()': charTest(characters, any().star().castList()),
-  'pick()': charTest(characters, any().star().pick(0)),
-  'permute()': charTest(characters, any().star().permute([0])),
-  'or()': charTest(characters, failure().or(any()).star()),
+  Benchmark('optional()', any().optional(), characters),
+  Benchmark('and()', any().and(), characters),
+  Benchmark('not()', any().not(), characters),
+  Benchmark('neg()', any().neg(), characters),
+  Benchmark('flatten()', any().flatten(), characters),
+  Benchmark('token()', any().token(), characters),
+  Benchmark('trim()', any().trim(), characters),
+  Benchmark('end()', any().end(), characters),
+  Benchmark('set()', any().settable(), characters),
+  Benchmark('map()', any().map((_) => null), characters),
+  Benchmark('cast()', any().cast(), characters),
+  Benchmark('castList()', any().star().castList(), characters),
+  Benchmark('pick()', any().star().pick(0), characters),
+  Benchmark('permute()', any().star().permute([0]), characters),
+  Benchmark('or()', failure().or(any()).star(), characters),
 
   // repeater tests
-  'star()': stringTest(string, any().star()),
-  'starGreedy()': stringTest(string, any().starGreedy(failure())),
-  'starLazy()': stringTest(string, any().starLazy(failure())),
-  'plus()': stringTest(string, any().plus()),
-  'plusGreedy()': stringTest(string, any().plusGreedy(failure())),
-  'plusLazy()': stringTest(string, any().plusLazy(failure())),
-  'times()': stringTest(string, any().times(string.length)),
-  'seq()': stringTest(
-    string,
-    List.filled(string.length, any()).toSequenceParser(),
-  ),
+  Benchmark('star()', any().star(), [string]),
+  Benchmark('starGreedy()', any().starGreedy(failure()), [string]),
+  Benchmark('starLazy()', any().starLazy(failure()), [string]),
+  Benchmark('plus()', any().plus(), [string]),
+  Benchmark('plusGreedy()', any().plusGreedy(failure()), [string]),
+  Benchmark('plusLazy()', any().plusLazy(failure()), [string]),
+  Benchmark('times()', any().times(string.length), [string]),
+  Benchmark(
+      'seq()', SequenceParser(List.filled(string.length, any())), [string]),
 
   // composite
-  'JsonParser()': (fast) {
-    if (fast) {
-      return () => json.fastParseOn(jsonEvent, 0);
-    } else {
-      return () => json.parse(jsonEvent);
-    }
-  },
-};
+  Benchmark('JsonParser()', json, [jsonEvent]),
+];
 
 void main() {
-  print('Name\tparseOn\tfastParseOn\tChange');
-  for (final entry in benchmarks.entries) {
-    final parseOnTime = benchmark(entry.value(false));
-    final fastParseOnTime = benchmark(entry.value(true));
-    print('${entry.key}\t'
-        '${parseOnTime.toStringAsFixed(3)}\t'
-        '${fastParseOnTime.toStringAsFixed(3)}\t'
-        '${percentChange(parseOnTime, fastParseOnTime).round()}%');
+  print([
+    'Name',
+    'Normal String',
+    'Fast String',
+    'Normal Characters',
+    'Fast Characters',
+    'Normal String -> Fast String %',
+    'Normal Characters -> Fast Characters %',
+    'Normal String -> Normal Characters %',
+    'Fast String -> Fast Characters %',
+  ].join('\t'));
+  for (final benchmark in benchmarks) {
+    final normalString = benchmark.measure(isFast: false, isCharacters: false);
+    final fastString = benchmark.measure(isFast: true, isCharacters: false);
+    final normalChars = benchmark.measure(isFast: false, isCharacters: true);
+    final fastChars = benchmark.measure(isFast: true, isCharacters: true);
+    print([
+      '${benchmark.name}',
+      '${normalString.toStringAsFixed(3)}',
+      '${fastString.toStringAsFixed(3)}',
+      '${normalChars.toStringAsFixed(3)}',
+      '${fastChars.toStringAsFixed(3)}',
+      '${percentChange(normalString, fastString).round()}%',
+      '${percentChange(normalChars, fastChars).round()}%',
+      '${percentChange(normalString, normalChars).round()}%',
+      '${percentChange(fastString, fastChars).round()}%',
+    ].join('\t'));
   }
 }
