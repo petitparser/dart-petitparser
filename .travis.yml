@@ -1,4 +1,4 @@
-# Created with package:mono_repo v3.0.0
+# Created with package:mono_repo v3.4.6
 language: dart
 
 jobs:
@@ -6,49 +6,49 @@ jobs:
     - stage: analyze
       name: mono_repo self validate
       os: linux
-      script: "pub global activate mono_repo 3.0.0 && pub global run mono_repo travis --validate"
+      script: "pub global activate mono_repo 3.4.6 && pub global run mono_repo generate --validate"
     - stage: analyze
-      name: "SDK: dev; PKGS: petitparser, petitparser_examples; TASKS: `dartanalyzer --fatal-infos .`"
+      name: "PKGS: petitparser, petitparser_examples; `dartanalyzer --fatal-infos .`"
       dart: dev
       os: linux
       env: PKGS="petitparser petitparser_examples"
-      script: tool/travis.sh command_0
+      script: tool/ci.sh command_0
     - stage: analyze
-      name: "SDK: dev; PKGS: petitparser, petitparser_examples; TASKS: `dartfmt --dry-run --set-exit-if-changed .`"
+      name: "PKGS: petitparser, petitparser_examples; `dartfmt --dry-run --set-exit-if-changed .`"
       dart: dev
       os: linux
       env: PKGS="petitparser petitparser_examples"
-      script: tool/travis.sh command_1
+      script: tool/ci.sh command_1
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser; TASKS: `pub run test test/all_test.dart --platform vm`"
+      name: "PKG: petitparser; `pub run test test/all_test.dart --platform vm`"
       dart: dev
       os: linux
       env: PKGS="petitparser"
-      script: tool/travis.sh command_2
+      script: tool/ci.sh command_2
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser; TASKS: `pub run test test/all_test.dart --platform chrome`"
+      name: "PKG: petitparser; `pub run test test/all_test.dart --platform chrome`"
       dart: dev
       os: linux
       env: PKGS="petitparser"
-      script: tool/travis.sh command_3
+      script: tool/ci.sh command_3
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run test --platform vm`"
+      name: "PKG: petitparser_examples; `pub run test --platform vm`"
       dart: dev
       os: linux
       env: PKGS="petitparser_examples"
-      script: tool/travis.sh command_5
+      script: tool/ci.sh command_5
     - stage: unit_test
-      name: "SDK: dev; PKG: petitparser_examples; TASKS: `pub run test --platform chrome`"
+      name: "PKG: petitparser_examples; `pub run test --platform chrome`"
       dart: dev
       os: linux
       env: PKGS="petitparser_examples"
-      script: tool/travis.sh command_6
+      script: tool/ci.sh command_6
     - stage: coverage
-      name: "SDK: dev; PKG: petitparser; TASKS: `pub global activate dart_coveralls && dart_coveralls report test/all_test.dart`"
+      name: "PKG: petitparser; `pub global activate dart_coveralls && dart_coveralls report test/all_test.dart`"
       dart: dev
       os: linux
       env: PKGS="petitparser"
-      script: tool/travis.sh command_4
+      script: tool/ci.sh command_4
 
 stages:
   - analyze
@@ -62,6 +62,6 @@ branches:
 
 cache:
   directories:
-    - "$HOME/.pub-cache"
+    - $HOME/.pub-cache
     - petitparser/.dart_tool/build
     - petitparser_examples/.dart_tool/build
