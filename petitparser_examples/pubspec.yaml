@@ -1,12 +1,12 @@
 name: petitparser_examples
-version: 4.0.1
+version: 4.0.2
 
 homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that
   illustrate the PetitParser framework.
 
 environment:
-  sdk: '>=2.12.0-259.12.beta <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 dependencies:
   collection: ^1.15.0
   meta: ^1.3.0
