@@ -28,4 +28,4 @@ This example contains a simple grammar and evaluator for Prolog programs. The co
 
 ### Smalltalk
 
-This example contains a complete implementation of the Smalltalk grammar. This is a verbatim export of a grammar that was originally developed for the PetitParser infrastructure in Smalltalk and that was the base of the [Helvetia Language Workbench](http://scg.unibe.ch/research/helvetia).
+This example contains a complete implementation of the Smalltalk grammar. This is a verbatim export of a grammar that was originally developed for the PetitParser infrastructure in Smalltalk and that was the base of the [Helvetia Language Workbench](https://www.lukas-renggli.ch/smalltalk/helvetia).

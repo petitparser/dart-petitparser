@@ -271,14 +271,14 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 
 ### History
 
-PetitParser was originally implemented in [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
+PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
 
 ### Implementations
 
 - [Dart](https://github.com/petitparser/dart-petitparser)
 - [Java](https://github.com/petitparser/java-petitparser)
 - [PHP](https://github.com/mindplay-dk/petitparserphp)
-- [Smalltalk](http://scg.unibe.ch/research/helvetia/petitparser)
+- [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser)
 - [Swift](https://github.com/philipparndt/swift-petitparser)
 - [TypeScript](https://github.com/mindplay-dk/petitparser-ts)
 
