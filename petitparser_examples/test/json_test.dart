@@ -184,4 +184,26 @@ void main() {
       expect(parser.parse(input).isSuccess, isTrue);
     });
   });
+  group('issues', () {
+    group('https://github.com/petitparser/dart-petitparser/issues/98', () {
+      test('expected some value', () {
+        const invalid = '';
+        final result = grammar.parse(invalid);
+        expect(result.isFailure, isTrue);
+        expect(result.position, 0);
+        expect(
+            result.message,
+            'Expected string OR Expected number OR Expected { OR '
+            'Expected [ OR Expected true OR Expected false OR '
+            'Expected null');
+      });
+      test('expected closing curly', () {
+        const invalid = '{"a": "bad "value" string"}';
+        final result = grammar.parse(invalid);
+        expect(result.isFailure, isTrue);
+        expect(result.position, 12);
+        expect(result.message, 'Expected }');
+      });
+    });
+  });
 }
