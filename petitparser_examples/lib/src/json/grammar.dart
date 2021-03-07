@@ -30,14 +30,15 @@ class JsonGrammarDefinition extends GrammarDefinition {
   Parser object() =>
       ref(token, '{') & ref(members).optional() & ref(token, '}');
   Parser pair() => ref(stringToken) & ref(token, ':') & ref(value);
-  Parser value() =>
-      ref(stringToken) |
-      ref(numberToken) |
-      ref(object) |
-      ref(array) |
-      ref(trueToken) |
-      ref(falseToken) |
-      ref(nullToken);
+  Parser value() => [
+        ref(stringToken),
+        ref(numberToken),
+        ref(object),
+        ref(array),
+        ref(trueToken),
+        ref(falseToken),
+        ref(nullToken),
+      ].toChoiceParser(failureStrategyFactory: farthestFailure());
 
   Parser trueToken() => ref(token, 'true');
   Parser falseToken() => ref(token, 'false');

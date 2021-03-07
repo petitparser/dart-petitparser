@@ -184,4 +184,13 @@ void main() {
       expect(parser.parse(input).isSuccess, isTrue);
     });
   });
+  group('issues', () {
+    test('https://github.com/petitparser/dart-petitparser/issues/98', () {
+      const invalid = '{"a": "bad "value" string"}';
+      final result = grammar.parse(invalid);
+      expect(result.isFailure, isTrue);
+      expect(result.position, 12);
+      expect(result.message, 'Expected }');
+    });
+  });
 }
