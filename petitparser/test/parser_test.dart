@@ -703,6 +703,61 @@ void main() {
       test('empty', () {
         expect(() => <Parser>[].toChoiceParser(), throwsArgumentError);
       });
+      group('strategy', () {
+        final parsers = [
+          anyOf('ab').plus() & anyOf('12').plus(),
+          anyOf('ac').plus() & anyOf('13').plus(),
+          anyOf('ad').plus() & anyOf('14').plus(),
+        ].map((parser) => parser.flatten());
+        test('first failure', () {
+          final parser =
+              parsers.toChoiceParser(failureStrategyFactory: firstFailure());
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ab" expected');
+          expectFailure(parser, 'a', 1, 'any of "12" expected');
+          expectFailure(parser, 'ab', 2, 'any of "12" expected');
+          expectFailure(parser, 'ac', 1, 'any of "12" expected');
+          expectFailure(parser, 'ad', 1, 'any of "12" expected');
+        });
+        test('last failure', () {
+          final parser =
+              parsers.toChoiceParser(failureStrategyFactory: lastFailure());
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ad" expected');
+          expectFailure(parser, 'a', 1, 'any of "14" expected');
+          expectFailure(parser, 'ab', 1, 'any of "14" expected');
+          expectFailure(parser, 'ac', 1, 'any of "14" expected');
+          expectFailure(parser, 'ad', 2, 'any of "14" expected');
+        });
+        test('nearest failure', () {
+          final parser =
+              parsers.toChoiceParser(failureStrategyFactory: nearestFailure());
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ab" expected');
+          expectFailure(parser, 'a', 1, 'any of "12" expected');
+          expectFailure(parser, 'ab', 1, 'any of "13" expected');
+          expectFailure(parser, 'ac', 1, 'any of "12" expected');
+          expectFailure(parser, 'ad', 1, 'any of "12" expected');
+        });
+        test('farthest failure', () {
+          final parser =
+              parsers.toChoiceParser(failureStrategyFactory: farthestFailure());
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ab" expected');
+          expectFailure(parser, 'a', 1, 'any of "12" expected');
+          expectFailure(parser, 'ab', 2, 'any of "12" expected');
+          expectFailure(parser, 'ac', 2, 'any of "13" expected');
+          expectFailure(parser, 'ad', 2, 'any of "14" expected');
+        });
+      });
     });
     group('not', () {
       expectCommon(any().not());

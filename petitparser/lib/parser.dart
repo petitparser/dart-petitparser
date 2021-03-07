@@ -23,6 +23,7 @@ export 'src/parser/character/whitespace.dart';
 export 'src/parser/character/word.dart';
 export 'src/parser/combinator/and.dart';
 export 'src/parser/combinator/choice.dart';
+export 'src/parser/combinator/choice_strategies.dart';
 export 'src/parser/combinator/delegate.dart';
 export 'src/parser/combinator/list.dart';
 export 'src/parser/combinator/not.dart';

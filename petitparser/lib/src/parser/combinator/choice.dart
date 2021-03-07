@@ -1,6 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import 'choice_strategies.dart';
 import 'list.dart';
 
 extension ChoiceParserExtension on Parser {
@@ -25,27 +26,37 @@ extension ChoiceParserExtension on Parser {
 
 extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  Parser<T> toChoiceParser() => ChoiceParser<T>(this);
+  Parser<T> toChoiceParser(
+          {FailureStrategyFactory<T>? failureStrategyFactory}) =>
+      ChoiceParser<T>(this, failureStrategyFactory: failureStrategyFactory);
 }
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<T> extends ListParser<T> {
-  ChoiceParser(Iterable<Parser<T>> children) : super(children) {
+  ChoiceParser(Iterable<Parser<T>> children,
+      {FailureStrategyFactory<T>? failureStrategyFactory})
+      : _failureStrategyFactory = failureStrategyFactory ?? lastFailure(),
+        super(children) {
     if (children.isEmpty) {
       throw ArgumentError('Choice parser cannot be empty.');
     }
   }
 
+  /// Factory that creates a failure resolution strategy.
+  final FailureStrategyFactory<T> _failureStrategyFactory;
+
   @override
   Result<T> parseOn(Context context) {
-    Result? result;
+    final failureStrategy = _failureStrategyFactory(this, context);
     for (var i = 0; i < children.length; i++) {
-      result = children[i].parseOn(context);
+      final parser = children[i] as Parser<T>;
+      final result = parser.parseOn(context);
       if (result.isSuccess) {
-        return result as Result<T>;
+        return result;
       }
+      failureStrategy.add(parser, result);
     }
-    return result as Result<T>;
+    return failureStrategy.failure;
   }
 
   @override
@@ -61,5 +72,6 @@ class ChoiceParser<T> extends ListParser<T> {
   }
 
   @override
-  ChoiceParser<T> copy() => ChoiceParser<T>(children as List<Parser<T>>);
+  ChoiceParser<T> copy() => ChoiceParser<T>(children as List<Parser<T>>,
+      failureStrategyFactory: _failureStrategyFactory);
 }
