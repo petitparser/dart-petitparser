@@ -12,26 +12,28 @@ class PrologGrammarDefinition extends GrammarDefinition {
   Parser<List> rules() => ref(rule).star();
   Parser rule() =>
       ref(term) &
-      (ref(DEFINITION) &
-              ref(term).separatedBy(ref(COMMA), includeSeparators: false))
+      (ref(definitionToken) &
+              ref(term).separatedBy(ref(commaToken), includeSeparators: false))
           .optional() &
-      ref(TERMINATOR);
+      ref(terminatorToken);
   Parser term() =>
       ref(atom) &
-      (ref(OPEN_PAREN) &
-              ref(parameter).separatedBy(ref(COMMA), includeSeparators: false) &
-              ref(CLOSE_PAREN))
+      (ref(openParenToken) &
+              ref(parameter)
+                  .separatedBy(ref(commaToken), includeSeparators: false) &
+              ref(closeParentToken))
           .optional();
   Parser parameter() =>
       ref(atom) &
-      (ref(OPEN_PAREN) &
-              ref(parameter).separatedBy(ref(COMMA), includeSeparators: false) &
-              ref(CLOSE_PAREN))
+      (ref(openParenToken) &
+              ref(parameter)
+                  .separatedBy(ref(commaToken), includeSeparators: false) &
+              ref(closeParentToken))
           .optional();
   Parser atom() => ref(variable) | ref(value);
 
-  Parser variable() => ref(VARIABLE);
-  Parser value() => ref(VALUE);
+  Parser variable() => ref(variableToken);
+  Parser value() => ref(valueToken);
 
   Parser space() => whitespace() | ref(commentSingle) | ref(commentMulti);
   Parser commentSingle() => char('%') & Token.newlineParser().neg().star();
@@ -49,19 +51,19 @@ class PrologGrammarDefinition extends GrammarDefinition {
     }
   }
 
-  Parser VARIABLE() => ref(
+  Parser variableToken() => ref(
         token,
         pattern('A-Z_') & pattern('A-Za-z0-9_').star(),
         'Variable expected',
       );
-  Parser VALUE() => ref(
+  Parser valueToken() => ref(
         token,
         pattern('a-z') & pattern('A-Za-z0-9_').star(),
         'Value expected',
       );
-  Parser OPEN_PAREN() => ref(token, '(');
-  Parser CLOSE_PAREN() => ref(token, ')');
-  Parser COMMA() => ref(token, ',');
-  Parser TERMINATOR() => ref(token, '.');
-  Parser DEFINITION() => ref(token, ':-');
+  Parser openParenToken() => ref(token, '(');
+  Parser closeParentToken() => ref(token, ')');
+  Parser commaToken() => ref(token, ',');
+  Parser terminatorToken() => ref(token, '.');
+  Parser definitionToken() => ref(token, ':-');
 }

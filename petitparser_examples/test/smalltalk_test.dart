@@ -13,7 +13,8 @@ dynamic validate(String source, Function production) {
 
 void main() {
   test('start', () {
-    return validate(r'''exampleWithNumber: x
+    return validate(r'''
+exampleWithNumber: x
 
   "A method that illustrates every part of Smalltalk method syntax
   except primitives. It has unary, binary, and keyword messages,

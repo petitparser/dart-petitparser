@@ -9,8 +9,8 @@ class LispGrammar extends GrammarParser {
 class LispGrammarDefinition extends GrammarDefinition {
   Parser start() => ref(atom).star().end();
 
-  Parser atom() => ref(atom_).trim(ref(space));
-  Parser atom_() =>
+  Parser atom() => ref(atomChoice).trim(ref(space));
+  Parser atomChoice() =>
       ref(list) |
       ref(number) |
       ref(string) |
@@ -28,8 +28,8 @@ class LispGrammarDefinition extends GrammarDefinition {
   Parser cell() => ref(atom) & ref(cells);
   Parser empty() => ref(space).star();
 
-  Parser number() => ref(number_).flatten('Number expected');
-  Parser number_() =>
+  Parser number() => ref(numberToken).flatten('Number expected');
+  Parser numberToken() =>
       anyOf('-+').optional() &
       char('0').or(digit().plus()) &
       char('.').seq(digit().plus()).optional() &
@@ -40,8 +40,8 @@ class LispGrammarDefinition extends GrammarDefinition {
   Parser characterEscape() => char('\\') & any();
   Parser characterRaw() => pattern('^"');
 
-  Parser symbol() => ref(symbol_).flatten('Symbol expected');
-  Parser symbol_() =>
+  Parser symbol() => ref(symbolToken).flatten('Symbol expected');
+  Parser symbolToken() =>
       pattern('a-zA-Z!#\$%&*/:<=>?@\\^_|~+-') &
       pattern('a-zA-Z0-9!#\$%&*/:<=>?@\\^_|~+-').star();
 

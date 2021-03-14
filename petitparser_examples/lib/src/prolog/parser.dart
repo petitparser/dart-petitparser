@@ -4,15 +4,15 @@ import 'evaluator.dart';
 import 'grammar.dart';
 
 /// The standard prolog parser definition.
-final PrologParserDefinition definition_ = PrologParserDefinition();
+final PrologParserDefinition _definition = PrologParserDefinition();
 
 /// The standard prolog parser to read rules.
 final Parser<List<Rule>> rulesParser =
-    definition_.build<List<Rule>>(start: definition_.rules).end();
+    _definition.build<List<Rule>>(start: _definition.rules).end();
 
 /// The standard prolog parser to read queries.
 final Parser<Term> termParser =
-    definition_.build<Term>(start: definition_.term).end();
+    _definition.build<Term>(start: _definition.term).end();
 
 /// LISP parser definition.
 class PrologParserDefinition extends PrologGrammarDefinition {

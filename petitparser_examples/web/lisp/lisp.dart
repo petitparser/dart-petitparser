@@ -2,11 +2,11 @@ import 'dart:html';
 
 import 'package:petitparser_examples/lisp.dart';
 
-final input = querySelector('#input') as TextAreaElement;
-final output = querySelector('#output') as ParagraphElement;
-final console = querySelector('#console') as ParagraphElement;
-final environment = querySelector('#environment') as ParagraphElement;
-final evaluate = querySelector('#evaluate') as SubmitButtonInputElement;
+final input = querySelector('#input')! as TextAreaElement;
+final output = querySelector('#output')! as ParagraphElement;
+final console = querySelector('#console')! as ParagraphElement;
+final environment = querySelector('#environment')! as ParagraphElement;
+final evaluate = querySelector('#evaluate')! as SubmitButtonInputElement;
 
 void main() {
   final root = NativeEnvironment();

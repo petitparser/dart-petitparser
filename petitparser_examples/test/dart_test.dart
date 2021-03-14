@@ -427,7 +427,7 @@ void main() {
     });
   });
   group('whitespace', () {
-    final whitespaces = grammar.build(start: grammar.HIDDEN).end();
+    final whitespaces = grammar.build(start: grammar.hiddenWhitespace).end();
     test('whitespace', () {
       expect(' ', accept(whitespaces));
       expect('\t', accept(whitespaces));
@@ -477,7 +477,7 @@ void main() {
     });
   });
   group('child parsers', () {
-    final parser = grammar.build(start: grammar.STRING).end();
+    final parser = grammar.build(start: grammar.stringLexicalToken).end();
     test('singleLineString', () {
       expect("'hi'", accept(parser));
       expect('"hi"', accept(parser));

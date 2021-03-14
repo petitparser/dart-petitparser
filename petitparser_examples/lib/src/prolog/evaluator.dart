@@ -176,7 +176,7 @@ class Term extends Node {
 
   @override
   String toString() =>
-      arguments.isEmpty ? '$name' : '$name(${arguments.join(', ')})';
+      arguments.isEmpty ? name : '$name(${arguments.join(', ')})';
 }
 
 @immutable

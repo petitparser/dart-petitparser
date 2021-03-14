@@ -159,12 +159,12 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
           .or(ref(periodToken).star()))
       .or(ref(answer).seq(ref(periodToken).star()))
       .or(ref(periodToken).star());
-  Parser string_() =>
+  Parser _string() =>
       char('\'').seq(string('\'\'').or(pattern('^\'')).star()).seq(char('\''));
   Parser stringLiteral() => ref(stringToken);
-  Parser stringToken() => ref(token, ref(string_), 'string');
+  Parser stringToken() => ref(token, ref(_string), 'string');
   Parser symbol() =>
-      ref(unary).or(ref(binary)).or(ref(multiword)).or(ref(string_));
+      ref(unary).or(ref(binary)).or(ref(multiword)).or(ref(_string));
   Parser symbolLiteral() =>
       ref(token, '#').plus().seq(ref(token, ref(symbol), 'symbol'));
   Parser symbolLiteralArray() => ref(token, ref(symbol), 'symbol');

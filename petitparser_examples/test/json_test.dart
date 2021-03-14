@@ -133,7 +133,7 @@ void main() {
     test('invalid string', () {
       expect(parser.parse('"').isFailure, isTrue);
       expect(parser.parse('"a').isFailure, isTrue);
-      expect(parser.parse('"a\\\"').isFailure, isTrue);
+      expect(parser.parse('"a\\"').isFailure, isTrue);
       expect(parser.parse('"\\u00"').isFailure, isTrue);
       expect(parser.parse('"\\u000X"').isFailure, isTrue);
     });

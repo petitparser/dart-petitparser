@@ -30,7 +30,7 @@ class TrimmingParser<T> extends DelegateParser<T> {
     final buffer = context.buffer;
 
     // Trim the left part:
-    final before = trim_(left, buffer, context.position);
+    final before = _trim(left, buffer, context.position);
     if (before != context.position) {
       context = Context(buffer, before);
     }
@@ -42,7 +42,7 @@ class TrimmingParser<T> extends DelegateParser<T> {
     }
 
     // Trim the right part:
-    final after = trim_(right, buffer, result.position);
+    final after = _trim(right, buffer, result.position);
     return after == result.position
         ? result
         : result.success(result.value, after);
@@ -50,11 +50,11 @@ class TrimmingParser<T> extends DelegateParser<T> {
 
   @override
   int fastParseOn(String buffer, int position) {
-    final result = delegate.fastParseOn(buffer, trim_(left, buffer, position));
-    return result < 0 ? -1 : trim_(right, buffer, result);
+    final result = delegate.fastParseOn(buffer, _trim(left, buffer, position));
+    return result < 0 ? -1 : _trim(right, buffer, result);
   }
 
-  int trim_(Parser parser, String buffer, int position) {
+  int _trim(Parser parser, String buffer, int position) {
     for (;;) {
       final result = parser.fastParseOn(buffer, position);
       if (result < 0) {

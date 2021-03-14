@@ -25,7 +25,7 @@ import 'range.dart';
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
 Parser<String> pattern(String element, [String? message]) {
-  return CharacterParser(pattern_.parse(element).value,
+  return CharacterParser(_pattern.parse(element).value,
       message ?? '[${toReadableString(element)}] expected');
 }
 
@@ -49,27 +49,27 @@ Parser<String> patternIgnoreCase(String element, [String? message]) {
 }
 
 /// Parser that reads a single character.
-final Parser<RangeCharPredicate> single_ =
+final Parser<RangeCharPredicate> _single =
     any().map((element) => RangeCharPredicate(
           toCharCode(element),
           toCharCode(element),
         ));
 
 /// Parser that reads a character range.
-final Parser<RangeCharPredicate> range_ =
+final Parser<RangeCharPredicate> _range =
     any().seq(char('-')).seq(any()).map((elements) => RangeCharPredicate(
           toCharCode(elements[0]),
           toCharCode(elements[2]),
         ));
 
 /// Parser that reads a sequence of single characters or ranges.
-final Parser<CharacterPredicate> sequence_ = range_.or(single_).star().map(
+final Parser<CharacterPredicate> _sequence = _range.or(_single).star().map(
     (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
 
 /// Parser that reads a possibly negated sequence of predicates.
-final Parser<CharacterPredicate> pattern_ = char('^')
+final Parser<CharacterPredicate> _pattern = char('^')
     .optional()
-    .seq(sequence_)
+    .seq(_sequence)
     .map((predicates) => predicates[0] == null
         ? predicates[1]
         : NotCharacterPredicate(predicates[1]));

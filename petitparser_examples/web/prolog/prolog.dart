@@ -2,10 +2,10 @@ import 'dart:html';
 
 import 'package:petitparser_examples/prolog.dart';
 
-final rulesElement = querySelector('#rules') as TextAreaElement;
-final queryElement = querySelector('#query') as TextInputElement;
-final askElement = querySelector('#ask') as SubmitButtonInputElement;
-final answersElement = querySelector('#answers') as UListElement;
+final rulesElement = querySelector('#rules')! as TextAreaElement;
+final queryElement = querySelector('#query')! as TextInputElement;
+final askElement = querySelector('#ask')! as SubmitButtonInputElement;
+final answersElement = querySelector('#answers')! as UListElement;
 
 void main() {
   askElement.onClick.listen((event) async {
