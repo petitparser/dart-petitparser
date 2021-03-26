@@ -45,6 +45,7 @@ class ChoiceParser<T> extends ListParser<T> {
         return result as Result<T>;
       }
     }
+    // ignore: cast_nullable_to_non_nullable
     return result as Result<T>;
   }
 
