@@ -5,18 +5,18 @@ import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 
 /// A helper to build a parser from a {@link GrammarDefinition}.
-class GrammarParser extends DelegateParser {
+class GrammarParser<T> extends DelegateParser<T, T> {
   GrammarParser(GrammarDefinition definition) : this._(definition.build());
 
-  GrammarParser._(Parser parser) : super(parser);
+  GrammarParser._(Parser<T> parser) : super(parser);
 
   @override
-  Result parseOn(Context context) => delegate.parseOn(context);
+  Result<T> parseOn(Context context) => delegate.parseOn(context);
 
   @override
   int fastParseOn(String buffer, int position) =>
       delegate.fastParseOn(buffer, position);
 
   @override
-  GrammarParser copy() => GrammarParser._(delegate);
+  GrammarParser<T> copy() => GrammarParser<T>._(delegate);
 }

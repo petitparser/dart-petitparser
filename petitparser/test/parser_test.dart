@@ -1,4 +1,5 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'test_utils.dart';
@@ -11,6 +12,20 @@ void expectCommon(Parser parser) {
     expect(copy.runtimeType, parser.runtimeType);
     expect(copy.children,
         pairwiseCompare(parser.children, identical, 'same children'));
+  });
+  test('transform', () {
+    final copy = transformParser(parser, (parser) => parser);
+    expect(copy, isNot(same(parser)));
+    expect(copy.toString(), parser.toString());
+    expect(copy.runtimeType, parser.runtimeType);
+    expect(
+        copy.children,
+        pairwiseCompare(parser.children, (parser, copy) {
+          expect(copy, isNot(same(parser)));
+          expect(copy.toString(), parser.toString());
+          expect(copy.runtimeType, parser.runtimeType);
+          return true;
+        }, 'same children'));
   });
   test('isEqualTo', () {
     final copy = parser.copy();
@@ -73,7 +88,7 @@ void main() {
         expectFailure(parser, '1', 0, 'letter expected');
       });
       test('resume', () {
-        final continuations = <ContinuationCallback>[];
+        final continuations = <ContinuationFunction>[];
         final contexts = <Context>[];
         final parser = digit().callCC((continuation, context) {
           continuations.add(continuation);

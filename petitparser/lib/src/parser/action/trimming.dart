@@ -19,7 +19,7 @@ extension TrimmingParserExtension<T> on Parser<T> {
 
 /// A parser that silently consumes input of another parser around
 /// its delegate.
-class TrimmingParser<T> extends DelegateParser<T> {
+class TrimmingParser<T> extends DelegateParser<T, T> {
   Parser left;
   Parser right;
 
@@ -36,7 +36,7 @@ class TrimmingParser<T> extends DelegateParser<T> {
     }
 
     // Consume the delegate:
-    final result = delegate.parseOn(context) as Result<T>;
+    final result = delegate.parseOn(context);
     if (result.isFailure) {
       return result;
     }
@@ -65,14 +65,13 @@ class TrimmingParser<T> extends DelegateParser<T> {
   }
 
   @override
-  TrimmingParser<T> copy() =>
-      TrimmingParser<T>(delegate as Parser<T>, left, right);
+  TrimmingParser<T> copy() => TrimmingParser<T>(delegate, left, right);
 
   @override
   List<Parser> get children => [delegate, left, right];
 
   @override
-  void replace(Parser source, Parser target) {
+  void replace(covariant Parser source, covariant Parser target) {
     super.replace(source, target);
     if (left == source) {
       left = target;

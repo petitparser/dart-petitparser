@@ -4,7 +4,7 @@ import 'unbounded.dart';
 
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances
 /// of its delegate.
-abstract class RepeatingParser<T> extends DelegateParser<List<T>> {
+abstract class RepeatingParser<T> extends DelegateParser<T, List<T>> {
   final int min;
   final int max;
 

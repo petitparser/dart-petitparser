@@ -113,12 +113,11 @@ void main() {
     test('loop (new)', () {
       final source = lowercase();
       final input = source;
-      final inner = failure().settable();
+      final inner = failure<String>().settable();
       final outer = inner.settable().settable();
       inner.set(outer);
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? outer : parser;
-      });
+      final output = transformParser(
+          input, (parser) => source.isEqualTo(parser) ? outer : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(output.isEqualTo(outer), isTrue);
