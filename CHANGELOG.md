@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.0
+
+* Strict types
+
 ## 4.0.0
 
 * Dart 2.12 requirement and null-safety.

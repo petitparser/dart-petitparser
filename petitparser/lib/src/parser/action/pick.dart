@@ -3,22 +3,22 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension PickParserExtension on Parser<List> {
+extension PickParserExtension<T> on Parser<List<T>> {
   /// Returns a parser that transforms a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
   /// the elements from the back of the list.
   ///
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
-  Parser<T> pick<T>(int index) => PickParser<T>(this, index);
+  Parser<T> pick(int index) => PickParser<T>(this, index);
 }
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class PickParser<T> extends DelegateParser<T> {
+class PickParser<T> extends DelegateParser<List<T>, T> {
   final int index;
 
-  PickParser(Parser<List> delegate, this.index) : super(delegate);
+  PickParser(Parser<List<T>> delegate, this.index) : super(delegate);
 
   @override
   Result<T> parseOn(Context context) {
@@ -37,7 +37,7 @@ class PickParser<T> extends DelegateParser<T> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  PickParser<T> copy() => PickParser<T>(delegate as Parser<List>, index);
+  PickParser<T> copy() => PickParser<T>(delegate, index);
 
   @override
   bool hasEqualProperties(PickParser<T> other) =>

@@ -29,7 +29,7 @@ extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
 }
 
 /// A parser that uses the first parser that succeeds.
-class ChoiceParser<T> extends ListParser<T> {
+class ChoiceParser<T> extends ListParser<T, T> {
   ChoiceParser(Iterable<Parser<T>> children) : super(children) {
     if (children.isEmpty) {
       throw ArgumentError('Choice parser cannot be empty.');
@@ -38,15 +38,14 @@ class ChoiceParser<T> extends ListParser<T> {
 
   @override
   Result<T> parseOn(Context context) {
-    Result? result;
+    Result<T>? result;
     for (var i = 0; i < children.length; i++) {
       result = children[i].parseOn(context);
       if (result.isSuccess) {
-        return result as Result<T>;
+        return result;
       }
     }
-    // ignore: cast_nullable_to_non_nullable
-    return result as Result<T>;
+    return result!;
   }
 
   @override
@@ -62,5 +61,5 @@ class ChoiceParser<T> extends ListParser<T> {
   }
 
   @override
-  ChoiceParser<T> copy() => ChoiceParser<T>(children as List<Parser<T>>);
+  ChoiceParser<T> copy() => ChoiceParser<T>(children);
 }

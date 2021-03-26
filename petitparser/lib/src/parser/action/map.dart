@@ -23,7 +23,7 @@ extension MapParserExtension<T> on Parser<T> {
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class MapParser<T, R> extends DelegateParser<R> {
+class MapParser<T, R> extends DelegateParser<T, R> {
   final MapCallback<T, R> callback;
   final bool hasSideEffects;
 
@@ -49,8 +49,7 @@ class MapParser<T, R> extends DelegateParser<R> {
   }
 
   @override
-  MapParser<T, R> copy() =>
-      MapParser<T, R>(delegate as Parser<T>, callback, hasSideEffects);
+  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);
 
   @override
   bool hasEqualProperties(MapParser<T, R> other) =>

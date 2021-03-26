@@ -125,7 +125,6 @@ abstract class Parser<T> {
   ///
   /// Override this method and [Parser.children] in all subclasses that
   /// reference other parsers.
-  void replace(Parser source, Parser target) {
-    // no children, nothing to do
-  }
+  @mustCallSuper
+  void replace(Parser source, Parser target) {}
 }

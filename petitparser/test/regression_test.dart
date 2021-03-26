@@ -124,7 +124,7 @@ void main() {
         delimiter,
         delimiter.neg().star().flatten(),
         delimiter,
-      ].toSequenceParser().pick<String>(1);
+      ].toSequenceParser().pick(1);
       return parser.parseOn(context);
     });
     expectSuccess(delimited, '"hello"', 'hello');

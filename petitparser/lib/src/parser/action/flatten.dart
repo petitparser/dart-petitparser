@@ -14,13 +14,13 @@ extension FlattenParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().plus().flatten()` returns `'abc'`
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
-  Parser<String> flatten([String? message]) => FlattenParser(this, message);
+  Parser<String> flatten([String? message]) => FlattenParser<T>(this, message);
 }
 
 /// A parser that answers a substring of the range its delegate
 /// parses.
-class FlattenParser extends DelegateParser<String> {
-  FlattenParser(Parser delegate, [this.message]) : super(delegate);
+class FlattenParser<T> extends DelegateParser<T, String> {
+  FlattenParser(Parser<T> delegate, [this.message]) : super(delegate);
 
   final String? message;
 
@@ -55,5 +55,5 @@ class FlattenParser extends DelegateParser<String> {
       super.hasEqualProperties(other) && message == other.message;
 
   @override
-  FlattenParser copy() => FlattenParser(delegate, message);
+  FlattenParser<T> copy() => FlattenParser<T>(delegate, message);
 }
