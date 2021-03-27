@@ -2,7 +2,8 @@
 
 ## 4.1.0
 
-* Strict types
+* Properly type all delegating parsers.
+* Fix typing of `transformParser` function.
 
 ## 4.0.0
 

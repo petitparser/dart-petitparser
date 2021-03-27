@@ -23,7 +23,7 @@ import 'output.dart';
 /// children.
 Parser profile(Parser root, [OutputHandler output = print]) {
   final frames = <FrameProfile>[];
-  return transformParser(root, (parser) {
+  return transformParser(root, <T>(parser) {
     final frame = FrameProfile(parser);
     frames.add(frame);
     return parser.callCC((continuation, context) {

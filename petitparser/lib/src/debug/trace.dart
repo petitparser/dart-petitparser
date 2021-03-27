@@ -29,7 +29,7 @@ import 'output.dart';
 /// context.
 Parser trace(Parser parser, [OutputHandler output = print]) {
   var level = 0;
-  return transformParser(parser, (each) {
+  return transformParser(parser, <T>(each) {
     return each.callCC((continuation, context) {
       output('${'  ' * level}$each');
       level++;
