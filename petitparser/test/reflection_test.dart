@@ -49,7 +49,7 @@ void main() {
   group('transform', () {
     test('copy', () {
       final input = lowercase().settable();
-      final output = transformParser(input, (parser) => parser);
+      final output = transformParser(input, <T>(parser) => parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isTrue);
       expect(input.children.single, isNot(output.children.single));
@@ -58,8 +58,8 @@ void main() {
       final source = lowercase();
       final input = source;
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
+      final output = transformParser(input, <T>(parser) {
+        return source.isEqualTo(parser) ? target as Parser<T> : parser;
       });
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
@@ -70,8 +70,8 @@ void main() {
       final source = lowercase();
       final input = source.settable();
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
+      final output = transformParser(input, <T>(parser) {
+        return source.isEqualTo(parser) ? target as Parser<T> : parser;
       });
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
@@ -82,8 +82,8 @@ void main() {
       final source = lowercase();
       final input = source & source;
       final target = uppercase();
-      final output = transformParser(input, (parser) {
-        return source.isEqualTo(parser) ? target : parser;
+      final output = transformParser(input, <T>(parser) {
+        return source.isEqualTo(parser) ? target as Parser<T> : parser;
       });
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
@@ -96,7 +96,7 @@ void main() {
       final inner = failure().settable();
       final outer = inner.settable().settable();
       inner.set(outer);
-      final output = transformParser(outer, (parser) {
+      final output = transformParser(outer, <T>(parser) {
         return parser;
       });
       expect(outer, isNot(output));
@@ -117,7 +117,9 @@ void main() {
       final outer = inner.settable().settable();
       inner.set(outer);
       final output = transformParser(
-          input, (parser) => source.isEqualTo(parser) ? outer : parser);
+          input,
+          <T>(parser) =>
+              source.isEqualTo(parser) ? outer as Parser<T> : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(output.isEqualTo(outer), isTrue);

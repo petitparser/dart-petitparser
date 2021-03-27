@@ -14,7 +14,7 @@ void expectCommon(Parser parser) {
         pairwiseCompare(parser.children, identical, 'same children'));
   });
   test('transform', () {
-    final copy = transformParser(parser, (parser) => parser);
+    final copy = transformParser(parser, <T>(parser) => parser);
     expect(copy, isNot(same(parser)));
     expect(copy.toString(), parser.toString());
     expect(copy.runtimeType, parser.runtimeType);

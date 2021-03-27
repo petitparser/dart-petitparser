@@ -127,4 +127,9 @@ abstract class Parser<T> {
   /// reference other parsers.
   @mustCallSuper
   void replace(Parser source, Parser target) {}
+
+  /// Internal helper to be able to provide the type of the parser to other
+  /// methods: https://stackoverflow.com/questions/66824070/capture-a-generic-runtime-type-of-an-object-in-a-function
+  @internal
+  R callWith<R>(R Function<T>(Parser<T> self) callback) => callback<T>(this);
 }
