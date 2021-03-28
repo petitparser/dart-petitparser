@@ -41,9 +41,17 @@ Parser<String> pattern(String element, [String? message]) => CharacterParser(
 /// any character, but fails for the characters 'a' or 'A'.
 Parser<String> patternIgnoreCase(String element, [String? message]) {
   final isNegated = element.startsWith('^');
-  final value = isNegated ? element.substring(1) : element;
+  if (isNegated) {
+    element = element.substring(1);
+  }
+  final isDashed = element.endsWith('-');
+  if (isDashed) {
+    element = element.substring(0, element.length - 1);
+  }
   return pattern(
-      '${isNegated ? '^' : ''}${value.toLowerCase()}${value.toUpperCase()}',
+      '${isNegated ? '^' : ''}'
+      '${element.toLowerCase()}${element.toUpperCase()}'
+      '${isDashed ? '-' : ''}',
       message);
 }
 
