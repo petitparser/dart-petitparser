@@ -18,9 +18,7 @@ class ExpressionGroup {
     _primitives.add(action != null ? parser.map(action) : parser);
   }
 
-  Parser _buildPrimitive(Parser inner) {
-    return _buildChoice(_primitives, inner);
-  }
+  Parser _buildPrimitive(Parser inner) => _buildChoice(_primitives, inner);
 
   final List<Parser> _primitives = [];
 

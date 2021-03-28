@@ -5,6 +5,7 @@ import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 
 /// A helper to build a parser from a {@link GrammarDefinition}.
+@Deprecated('Directly use the GrammarDefinition to build parsers.')
 class GrammarParser<T> extends DelegateParser<T, T> {
   GrammarParser(GrammarDefinition definition) : this._(definition.build());
 

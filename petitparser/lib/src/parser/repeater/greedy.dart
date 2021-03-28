@@ -16,7 +16,8 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [starLazy] for the lazy, more efficient, and generally preferred
   /// variation of this combinator.
-  Parser<List<T>> starGreedy(Parser limit) => repeatGreedy(limit, 0, unbounded);
+  Parser<List<T>> starGreedy(Parser<void> limit) =>
+      repeatGreedy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
   /// reaches [limit]. This is a greedy non-blind implementation of the [plus]
@@ -27,7 +28,8 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [plusLazy] for the lazy, more efficient, and generally preferred
   /// variation of this combinator.
-  Parser<List<T>> plusGreedy(Parser limit) => repeatGreedy(limit, 1, unbounded);
+  Parser<List<T>> plusGreedy(Parser<void> limit) =>
+      repeatGreedy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a greedy non-blind
@@ -35,21 +37,21 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// This is the more generic variation of the [starGreedy] and [plusGreedy]
   /// combinators.
-  Parser<List<T>> repeatGreedy(Parser limit, int min, int max) =>
+  Parser<List<T>> repeatGreedy(Parser<void> limit, int min, int max) =>
       GreedyRepeatingParser<T>(this, limit, min, max);
 }
 
 /// A greedy repeating parser, commonly seen in regular expression
 /// implementations. It aggressively consumes as much input as possible and then
 /// backtracks to meet the 'limit' condition.
-class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
-  GreedyRepeatingParser(Parser<T> parser, Parser limit, int min, int max)
+class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
+  GreedyRepeatingParser(Parser<R> parser, Parser<void> limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
-  Result<List<T>> parseOn(Context context) {
+  Result<List<R>> parseOn(Context context) {
     var current = context;
-    final elements = <T>[];
+    final elements = <R>[];
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -121,6 +123,6 @@ class GreedyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
-  GreedyRepeatingParser<T> copy() =>
-      GreedyRepeatingParser<T>(delegate, limit, min, max);
+  GreedyRepeatingParser<R> copy() =>
+      GreedyRepeatingParser<R>(delegate, limit, min, max);
 }

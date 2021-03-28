@@ -22,6 +22,7 @@ extension FlattenParserExtension<T> on Parser<T> {
 class FlattenParser<T> extends DelegateParser<T, String> {
   FlattenParser(Parser<T> delegate, [this.message]) : super(delegate);
 
+  /// Error message to indicate parse failures with.
   final String? message;
 
   @override

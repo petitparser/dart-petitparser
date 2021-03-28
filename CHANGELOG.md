@@ -2,8 +2,10 @@
 
 ## 4.1.0
 
-* Properly type all delegating parsers.
-* Fix typing of `transformParser` function.
+* Properly type all delegate parsers in choice, sequence, repeat, action, ...
+  * Fix typing in `transformParser` and its users (debug tools, optimizers).
+  * Fix typing of `GrammarDefinition` and reference parsers.
+* Improve documentation of delegate parsers.
 
 ## 4.0.0
 

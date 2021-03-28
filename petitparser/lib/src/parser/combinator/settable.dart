@@ -22,24 +22,24 @@ extension SettableParserExtension<T> on Parser<T> {
 ///
 ///     final p = undefined();
 ///     p.set(char('a').seq(p).or(char('b')));
-SettableParser<T> undefined<T>([String message = 'undefined parser']) =>
-    failure<T>(message).settable();
+SettableParser<R> undefined<R>([String message = 'undefined parser']) =>
+    failure<R>(message).settable();
 
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
-class SettableParser<T> extends DelegateParser<T, T> {
-  SettableParser(Parser<T> delegate) : super(delegate);
+class SettableParser<R> extends DelegateParser<R, R> {
+  SettableParser(Parser<R> delegate) : super(delegate);
 
   /// Sets the receiver to delegate to [parser].
-  void set(Parser<T> parser) => replace(children[0], parser);
+  void set(Parser<R> parser) => replace(children[0], parser);
 
   @override
-  Result<T> parseOn(Context context) => delegate.parseOn(context);
+  Result<R> parseOn(Context context) => delegate.parseOn(context);
 
   @override
   int fastParseOn(String buffer, int position) =>
       delegate.fastParseOn(buffer, position);
 
   @override
-  SettableParser<T> copy() => SettableParser<T>(delegate);
+  SettableParser<R> copy() => SettableParser<R>(delegate);
 }

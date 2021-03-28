@@ -22,14 +22,16 @@ Parser<void> endOfInput([String message = 'end of input expected']) =>
 
 /// A parser that succeeds at the end of input.
 class EndOfInputParser extends Parser<void> {
-  final String message;
-
   EndOfInputParser(this.message);
 
+  /// Error message to annotate parse failures with.
+  final String message;
+
   @override
-  Result parseOn(Context context) => context.position < context.buffer.length
-      ? context.failure(message)
-      : context.success(null);
+  Result<void> parseOn(Context context) =>
+      context.position < context.buffer.length
+          ? context.failure(message)
+          : context.success(null);
 
   @override
   int fastParseOn(String buffer, int position) =>

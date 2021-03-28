@@ -32,16 +32,17 @@ extension NotParserExtension<T> on Parser<T> {
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].
-class NotParser<T> extends DelegateParser<T, Failure<T>> {
+class NotParser<R> extends DelegateParser<R, Failure<R>> {
+  NotParser(Parser<R> delegate, this.message) : super(delegate);
+
+  /// Error message to annotate parse failures with.
   final String message;
 
-  NotParser(Parser<T> delegate, this.message) : super(delegate);
-
   @override
-  Result<Failure<T>> parseOn(Context context) {
+  Result<Failure<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isFailure) {
-      return context.success(result as Failure<T>);
+      return context.success(result as Failure<R>);
     } else {
       return context.failure(message);
     }
@@ -57,9 +58,9 @@ class NotParser<T> extends DelegateParser<T, Failure<T>> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  NotParser<T> copy() => NotParser<T>(delegate, message);
+  NotParser<R> copy() => NotParser<R>(delegate, message);
 
   @override
-  bool hasEqualProperties(NotParser<T> other) =>
+  bool hasEqualProperties(NotParser<R> other) =>
       super.hasEqualProperties(other) && message == other.message;
 }

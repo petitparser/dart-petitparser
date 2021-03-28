@@ -1,9 +1,10 @@
 import '../../core/parser.dart';
 
-/// An abstract parser that delegates to another one.
+/// An abstract parser that delegates to a parser of type [T].
 abstract class DelegateParser<T, R> extends Parser<R> {
   DelegateParser(this.delegate);
 
+  /// The parser this parser delegates to.
   Parser<T> delegate;
 
   @override

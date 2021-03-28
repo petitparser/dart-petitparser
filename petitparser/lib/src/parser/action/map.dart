@@ -24,11 +24,14 @@ extension MapParserExtension<T> on Parser<T> {
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
 class MapParser<T, R> extends DelegateParser<T, R> {
-  final MapCallback<T, R> callback;
-  final bool hasSideEffects;
-
   MapParser(Parser<T> delegate, this.callback, [this.hasSideEffects = false])
       : super(delegate);
+
+  /// The production action to be called.
+  final MapCallback<T, R> callback;
+
+  /// Whether the [callback] has side-effects.
+  final bool hasSideEffects;
 
   @override
   Result<R> parseOn(Context context) {
@@ -49,11 +52,11 @@ class MapParser<T, R> extends DelegateParser<T, R> {
   }
 
   @override
-  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);
-
-  @override
   bool hasEqualProperties(MapParser<T, R> other) =>
       super.hasEqualProperties(other) &&
       callback == other.callback &&
       hasSideEffects == other.hasSideEffects;
+
+  @override
+  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);
 }

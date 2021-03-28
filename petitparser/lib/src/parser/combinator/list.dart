@@ -5,6 +5,7 @@ abstract class ListParser<T, R> extends Parser<R> {
   ListParser(Iterable<Parser<T>> children)
       : children = List<Parser<T>>.of(children, growable: false);
 
+  /// The children parsers being delegated to.
   @override
   final List<Parser<T>> children;
 
