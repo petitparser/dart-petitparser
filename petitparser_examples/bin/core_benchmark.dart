@@ -39,7 +39,7 @@ final String string = characters.join();
 
 // JSON tests
 
-final JsonParser json = JsonParser();
+final json = JsonParserDefinition().build();
 
 const String jsonEvent =
     '{"type": "change", "eventPhase": 2, "bubbles": true, "cancelable": true, '

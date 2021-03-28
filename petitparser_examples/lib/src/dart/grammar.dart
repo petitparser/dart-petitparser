@@ -1,10 +1,5 @@
 import 'package:petitparser/petitparser.dart';
 
-/// Dart grammar.
-class DartGrammar extends GrammarParser {
-  DartGrammar() : super(DartGrammarDefinition());
-}
-
 /// Dart grammar definition.
 class DartGrammarDefinition extends GrammarDefinition {
   Parser token(Object input) {

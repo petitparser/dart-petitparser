@@ -7,7 +7,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser_examples/dart.dart';
 import 'package:test/test.dart';
 
-final DartGrammar grammar = DartGrammar();
+final grammar = DartGrammarDefinition().build();
 
 Function accept(Parser parser) => (input) => parser.parse(input).isSuccess;
 

@@ -5,12 +5,7 @@ import 'grammar.dart';
 import 'name.dart';
 
 /// The standard lisp parser definition.
-final LispParser lispParser = LispParser();
-
-/// LISP parser.
-class LispParser extends GrammarParser {
-  LispParser() : super(LispParserDefinition());
-}
+final Parser lispParser = LispParserDefinition().build();
 
 /// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {

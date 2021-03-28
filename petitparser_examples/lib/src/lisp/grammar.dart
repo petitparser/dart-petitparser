@@ -1,10 +1,5 @@
 import 'package:petitparser/petitparser.dart';
 
-/// LISP grammar.
-class LispGrammar extends GrammarParser {
-  LispGrammar() : super(LispGrammarDefinition());
-}
-
 /// LISP grammar definition.
 class LispGrammarDefinition extends GrammarDefinition {
   Parser start() => ref(atom).star().end();

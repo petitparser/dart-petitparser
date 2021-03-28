@@ -1,10 +1,5 @@
 import 'package:petitparser/petitparser.dart';
 
-/// Prolog grammar.
-class PrologGrammar extends GrammarParser {
-  PrologGrammar() : super(PrologGrammarDefinition());
-}
-
 /// Prolog grammar definition.
 class PrologGrammarDefinition extends GrammarDefinition {
   Parser start() => throw UnsupportedError('Either parse rules or terms.');
