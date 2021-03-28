@@ -3,9 +3,8 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any whitespace character.
-Parser<String> whitespace([String message = 'whitespace expected']) {
-  return CharacterParser(const WhitespaceCharPredicate(), message);
-}
+Parser<String> whitespace([String message = 'whitespace expected']) =>
+    CharacterParser(const WhitespaceCharPredicate(), message);
 
 class WhitespaceCharPredicate implements CharacterPredicate {
   const WhitespaceCharPredicate();

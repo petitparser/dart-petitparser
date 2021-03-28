@@ -1,11 +1,11 @@
 import 'predicate.dart';
 
 class RangesCharPredicate implements CharacterPredicate {
+  const RangesCharPredicate(this.length, this.starts, this.stops);
+
   final int length;
   final List<int> starts;
   final List<int> stops;
-
-  const RangesCharPredicate(this.length, this.starts, this.stops);
 
   @override
   bool test(int value) {

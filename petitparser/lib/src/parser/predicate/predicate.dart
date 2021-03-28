@@ -9,7 +9,7 @@ typedef Predicate = bool Function(String input);
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
 Parser<String> predicate(int length, Predicate predicate, String message) =>
-  PredicateParser(length, predicate, message);
+    PredicateParser(length, predicate, message);
 
 /// A parser for a literal satisfying a predicate.
 class PredicateParser extends Parser<String> {

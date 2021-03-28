@@ -47,12 +47,11 @@ class Token<T> {
   String toString() => 'Token[${positionString(buffer, start)}]: $value';
 
   @override
-  bool operator ==(Object other) {
-    return other is Token &&
-        value == other.value &&
-        start == other.start &&
-        stop == other.stop;
-  }
+  bool operator ==(Object other) =>
+      other is Token &&
+      value == other.value &&
+      start == other.start &&
+      stop == other.stop;
 
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;

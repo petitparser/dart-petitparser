@@ -36,10 +36,8 @@ extension PredicateStringExtension on String {
 ///
 /// For example, `string('foo')` `succeeds and consumes the input string
 /// `'foo'`. Fails for any other input.`
-Parser<String> string(String element, [String? message]) {
-  return predicate(element.length, (each) => element == each,
-      message ?? '$element expected');
-}
+Parser<String> string(String element, [String? message]) => predicate(
+    element.length, (each) => element == each, message ?? '$element expected');
 
 /// Returns a parser that accepts the string [element] ignoring the case.
 ///

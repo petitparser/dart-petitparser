@@ -5,10 +5,8 @@ import 'predicate.dart';
 import 'range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string) {
-  return optimizedRanges(
-      string.codeUnits.map((value) => RangeCharPredicate(value, value)));
-}
+CharacterPredicate optimizedString(String string) => optimizedRanges(
+    string.codeUnits.map((value) => RangeCharPredicate(value, value)));
 
 /// Creates an optimized predicate from a list of range predicates.
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {

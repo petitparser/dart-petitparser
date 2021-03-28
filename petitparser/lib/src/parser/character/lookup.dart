@@ -4,10 +4,6 @@ import 'predicate.dart';
 import 'range.dart';
 
 class LookupCharPredicate implements CharacterPredicate {
-  final int start;
-  final int stop;
-  final Uint32List bits;
-
   LookupCharPredicate(List<RangeCharPredicate> ranges)
       : start = ranges.first.start,
         stop = ranges.last.stop,
@@ -21,6 +17,10 @@ class LookupCharPredicate implements CharacterPredicate {
       }
     }
   }
+
+  final int start;
+  final int stop;
+  final Uint32List bits;
 
   @override
   bool test(int value) =>

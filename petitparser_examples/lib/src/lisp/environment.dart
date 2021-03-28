@@ -38,9 +38,7 @@ class Environment {
   }
 
   /// Defines a new binding from [key] to [value].
-  dynamic define(Name key, dynamic value) {
-    return _bindings[key] = value;
-  }
+  dynamic define(Name key, dynamic value) => _bindings[key] = value;
 
   /// Returns the keys of the bindings.
   Iterable<Name> get keys => _bindings.keys;
