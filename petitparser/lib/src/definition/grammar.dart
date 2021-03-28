@@ -9,15 +9,15 @@ import 'reference.dart';
 /// To create a new grammar definition subclass [GrammarDefinition]. For every
 /// production create a new method returning the primitive parser defining it.
 /// The method called [start] is supposed to return the start production of the
-/// grammar. To refer to a production defined in the same definition use [ref]
-/// with the function reference as the first argument.
+/// grammar. To refer to a production defined in the same definition use [ref0]
+/// with the function reference as the argument.
 ///
 /// Consider the following example to parse a list of numbers:
 ///
 ///     class ListGrammarDefinition extends GrammarDefinition {
-///       start()   => ref(list).end();
-///       list()    => ref(element) & char(',') & ref(list)
-///                  | ref(element);
+///       start()   => ref0(list).end();
+///       list()    => ref0(element) & char(',') & ref0(list)
+///                  | ref0(element);
 ///       element() => digit().plus().flatten();
 ///     }
 ///
@@ -35,15 +35,15 @@ import 'reference.dart';
 ///
 /// Note that productions can be parametrized. Define such productions with
 /// positional arguments and reference to multiple instances by passing the
-/// arguments to [ref].
+/// arguments to [ref1], [ref2], [ref3], [ref4], or [ref5] instead.
 ///
 /// Consider extending the above grammar with a parametrized token production:
 ///
 ///     class TokenizedListGrammarDefinition extends GrammarDefinition {
-///       start()   => ref(list).end();
-///       list()    => ref(element) & ref(token, char(',')) & ref(list)
-///                  | ref(element);
-///       element() => ref(token, digit().plus());
+///       start()   => ref0(list).end();
+///       list()    => ref0(element) & ref1(token, char(',')) & ref0(list)
+///                  | ref0(element);
+///       element() => ref1(token, digit().plus());
 ///       token(p)  => p.token().trim();
 ///     }
 ///
@@ -53,7 +53,7 @@ import 'reference.dart';
 /// starting production into the grammar. The optional `arguments` parametrize
 /// the start production.
 ///
-///     let parser = new ListParserDefinition().build();
+///     final parser = new ListParserDefinition().build();
 ///
 ///     parser.parse('1');          // [1]
 ///     parser.parse('1,2,3');      // [1, 2, 3]
@@ -65,22 +65,61 @@ abstract class GrammarDefinition {
   /// The starting production of this definition.
   Parser start();
 
-  /// Returns a parser reference to a production defined by a [function].
+  /// Reference to a production [callback] optionally parametrized with
+  /// [arg1], [arg2], [arg3], [arg4], and [arg5].
   ///
-  /// The optional arguments parametrize the called production.
-  Parser ref(Function function,
-      [Object? arg1,
-      Object? arg2,
-      Object? arg3,
-      Object? arg4,
-      Object? arg5,
-      Object? arg6]) {
-    final arguments = [arg1, arg2, arg3, arg4, arg5, arg6]
-        .takeWhile((each) => each != null)
-        .cast<Object>()
+  /// This function is deprecated because it doesn't work well in strong mode.
+  /// Use [ref0], [ref1], [ref2], [ref3], [ref4], or [ref5] instead.
+  @Deprecated('Use [ref0], [ref1], [ref2], ... instead.')
+  Parser<T> ref<T>(Function callback,
+      [dynamic arg1 = _undefined,
+      dynamic arg2 = _undefined,
+      dynamic arg3 = _undefined,
+      dynamic arg4 = _undefined,
+      dynamic arg5 = _undefined]) {
+    final arguments = [arg1, arg2, arg3, arg4, arg5]
+        .takeWhile((each) => each != _undefined)
         .toList(growable: false);
-    return Reference(function, arguments);
+    return Reference<T>(callback, arguments);
   }
+
+  /// Reference to a production [callback] without any parameters.
+  Parser<T> ref0<T>(Parser<T> Function() callback) =>
+      Reference<T>(callback, const []);
+
+  /// Reference to a production [callback] parametrized with a single argument
+  /// [arg1].
+  Parser<T> ref1<T, A1>(Parser<T> Function(A1) callback, A1 arg1) =>
+      Reference<T>(callback, [arg1]);
+
+  /// Reference to a production [callback] parametrized with two arguments
+  /// [arg1] and [arg2].
+  Parser<T> ref2<T, A1, A2>(
+          Parser<T> Function(A1, A2) callback, A1 arg1, A2 arg2) =>
+      Reference<T>(callback, [arg1, arg2]);
+
+  /// Reference to a production [callback] parametrized with tree arguments
+  /// [arg1], [arg2], and [arg3].
+  Parser<T> ref3<T, A1, A2, A3>(
+          Parser<T> Function(A1, A2, A3) callback, A1 arg1, A2 arg2, A3 arg3) =>
+      Reference<T>(callback, [arg1, arg2, arg3]);
+
+  /// Reference to a production [callback] parametrized with four arguments
+  /// [arg1], [arg2], [arg3], and [arg4].
+  Parser<T> ref4<T, A1, A2, A3, A4>(Parser<T> Function(A1, A2, A3, A4) callback,
+          A1 arg1, A2 arg2, A3 arg3, A4 arg4) =>
+      Reference<T>(callback, [arg1, arg2, arg3, arg4]);
+
+  /// Reference to a production [callback] parametrized with five arguments
+  /// [arg1], [arg2], [arg3], [arg4], and [arg5].
+  Parser<T> ref5<T, A1, A2, A3, A4, A5>(
+          Parser<T> Function(A1, A2, A3, A4, A5) callback,
+          A1 arg1,
+          A2 arg2,
+          A3 arg3,
+          A4 arg4,
+          A5 arg5) =>
+      Reference<T>(callback, [arg1, arg2, arg3, arg4, arg5]);
 
   /// Builds a composite parser from this definition.
   ///
@@ -133,3 +172,9 @@ abstract class GrammarDefinition {
     return mapping[reference]!;
   }
 }
+
+class _Undefined {
+  const _Undefined();
+}
+
+const _undefined = _Undefined();
