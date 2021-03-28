@@ -3,6 +3,28 @@ import 'dart:math' as math;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+class ExpressionDefinition extends GrammarDefinition {
+  Parser start() => ref0(term).end();
+
+  Parser term() => [ref0(add), ref0(prod)].toChoiceParser();
+  Parser add() => ref0(prod) & char('+').trim() & ref0(term);
+
+  Parser prod() => [ref0(mul), ref0(prim)].toChoiceParser();
+  Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
+
+  Parser prim() => [ref0(parens), ref0(number)].toChoiceParser();
+  Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
+
+  Parser number() => digit().plus().flatten().trim();
+}
+
+class EvaluatorDefinition extends ExpressionDefinition {
+  Parser add() => super.add().map((values) => values[0] + values[2]);
+  Parser mul() => super.mul().map((values) => values[0] * values[2]);
+  Parser parens() => super.parens().castList<num>().pick(1);
+  Parser number() => super.number().map((value) => int.parse(value));
+}
+
 void main() {
   test('simple grammar (operators)', () {
     final id = letter() & (letter() | digit()).star();
@@ -63,6 +85,63 @@ void main() {
     expect(parser.parse('1 + 2 + 3').value, 6);
     expect(parser.parse('1 + 2 * 3').value, 7);
     expect(parser.parse('(1 + 2) * 3').value, 9);
+  });
+  test('expression definition', () {
+    final parser = ExpressionDefinition().build();
+    expect(parser.parse('1 + 2 + 3').value, [
+      '1',
+      '+',
+      ['2', '+', '3']
+    ]);
+    expect(parser.parse('1 + 2 * 3').value, [
+      '1',
+      '+',
+      ['2', '*', '3']
+    ]);
+    expect(parser.parse('(1 + 2) * 3').value, [
+      [
+        '(',
+        ['1', '+', '2'],
+        ')'
+      ],
+      '*',
+      '3'
+    ]);
+  });
+  test('evaluator definition', () {
+    final definition = ExpressionDefinition();
+    final parser = definition.build();
+    expect(parser.parse('1 + 2 + 3').value, [
+      '1',
+      '+',
+      ['2', '+', '3']
+    ]);
+    expect(parser.parse('1 + 2 * 3').value, [
+      '1',
+      '+',
+      ['2', '*', '3']
+    ]);
+    expect(parser.parse('(1 + 2) * 3').value, [
+      [
+        '(',
+        ['1', '+', '2'],
+        ')'
+      ],
+      '*',
+      '3'
+    ]);
+  });
+  test('number definition', () {
+    final definition = EvaluatorDefinition();
+    final parser = definition.build();
+    expect(parser.parse('1 + 2 + 3').value, 6);
+    expect(parser.parse('1 + 2 * 3').value, 7);
+    expect(parser.parse('(1 + 2) * 3').value, 9);
+  });
+  test('number definition', () {
+    final definition = EvaluatorDefinition();
+    final parser = definition.build(start: definition.number);
+    expect(parser.parse('42').value, 42);
   });
   test('expression builder', () {
     final builder = ExpressionBuilder();

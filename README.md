@@ -21,6 +21,7 @@ Tutorial
 
 Below are step-by-step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser/tree/main/example).
 
+
 ### Installation
 
 Follow the installation instructions on [dart packages](https://pub.dev/packages/petitparser#-installing-tab-).
@@ -30,6 +31,7 @@ Import the package into your Dart code using:
 ```dart
 import 'package:petitparser/petitparser.dart';
 ```
+
 
 ### Writing a Simple Grammar
 
@@ -54,6 +56,7 @@ The operators `&` and `|` are overloaded and create a sequence and a choice pars
 final id1 = letter().seq(letter().or(digit()).star());
 final id2 = [letter(), [letter(), digit()].toChoiceParser()].toSequenceParser().star();
 ```
+
 
 ### Parsing Some Input
 
@@ -89,6 +92,7 @@ If you are only interested if a given string is valid you can use the helper met
 print(id.accept('foo'));                // true
 print(id.accept('123'));                // false
 ```
+
 
 ### Different Kinds of Parsers
 
@@ -143,6 +147,7 @@ print(matches);                         // ['foo', 'bar4']
 
 These are the basic elements to build parsers. There are a few more well documented and tested factory methods in the `Parser` class. If you want browse their documentation and tests.
 
+
 ### Writing a More Complicated Grammar
 
 Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for a number (actually an integer):
@@ -184,6 +189,70 @@ That's it, now we can test our parser and evaluator:
 parser.parse('1 + 2 * 3');              // 7
 parser.parse('(1 + 2) * 3');            // 9
 ```
+
+
+### Using Grammar Definitions
+
+Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). The class `GrammarDefinition` provides the building block to conveniently define and build complex grammars with possibly hundreds of productions.
+
+To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition. For every production create a new method returning the primitive parser defining it. The method called [start] is supposed to return the start production of the grammar. To refer to a production defined in the same definition use [ref0] with the function reference as the argument.
+
+```dart
+class ExpressionDefinition extends GrammarDefinition {
+  Parser start() => ref0(term).end();
+
+  Parser term() => [ref0(add), ref0(prod)].toChoiceParser();
+  Parser add() => ref0(prod) & char('+').trim() & ref0(term);
+
+  Parser prod() => [ref0(mul), ref0(prim)].toChoiceParser();
+  Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
+
+  Parser prim() => [ref0(parens), ref0(number)].toChoiceParser();
+  Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
+
+  Parser number() => digit().plus().flatten().trim();
+}
+```
+
+To create a parser with all the references correctly resolved call `build()`. 
+
+```dart
+final definition = new ExpressionDefinition();
+final parser = definition.build();
+parser.parse('1 + 2 * 3');              // ['1', '+', ['2', '+', '3']]
+```
+
+Again, since this is plain Dart, common code refactorings such as renaming a production updates all references correctly. Also code navigation and code completion works as expected.
+
+To attach custom production actions you might want to further subclass your grammar definition and override overriding the necessary productions defined in the superclass:
+
+```dart
+class EvaluatorDefinition extends ExpressionDefinition {
+  Parser add() => super.add().map((values) => values[0] + values[2]);
+  Parser mul() => super.mul().map((values) => values[0] * values[2]);
+  Parser parens() => super.parens().castList<num>().pick(1);
+  Parser number() => super.number().map((value) => int.parse(value));
+}
+```
+
+Similarly, build the evaluator parser like so:
+
+```dart
+final definition = new EvaluatorDefinition();
+final parser = definition.build();
+parser.parse('1 + 2 * 3');              // 7
+```
+
+To use just a part of the parser you can specify the start production when building. For example, to reuse the number parser one would write:
+
+```dart
+final definition = new EvaluatorDefinition();
+final parser = definition.build(start: definition.number);
+parser.parse('42');                     // 42
+```
+
+This is just the surface of what `GrammarDefinition` can do, check out [the documentation](https://pub.dev/documentation/petitparser/latest/definition/GrammarDefinition-class.html) and the examples using it.
+
 
 ### Using the Expression Builder
 
@@ -234,8 +303,7 @@ Finally, we can build the parser:
 final parser = builder.build().end();
 ```
 
-After executing the above code we get an efficient parser that correctly
-evaluates expressions like:
+After executing the above code we get an efficient parser that correctly evaluates expressions like:
 
 ```dart
 parser.parse('-8');                     // -8
@@ -245,8 +313,12 @@ parser.parse('8/4/2');                  // 1
 parser.parse('2^2^3');                  // 256
 ```
 
+Check out [the documentation](https://pub.dev/documentation/petitparser/latest/expression/ExpressionBuilder-class.html) for more examples.
+
+
 Misc
 ----
+
 
 ### Examples
 
@@ -269,9 +341,11 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 - [rythm](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
 - [xml](https://pub.dev/packages/xml) is a lightweight library for parsing, traversing, and querying XML documents.
 
+
 ### History
 
 PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
+
 
 ### Implementations
 
@@ -281,6 +355,7 @@ PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.
 - [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser)
 - [Swift](https://github.com/philipparndt/swift-petitparser)
 - [TypeScript](https://github.com/mindplay-dk/petitparser-ts)
+
 
 ### License
 
