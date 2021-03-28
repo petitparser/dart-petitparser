@@ -4,13 +4,11 @@ import 'package:petitparser/petitparser.dart';
 class DartGrammarDefinition extends GrammarDefinition {
   Parser token(Object input) {
     if (input is Parser) {
-      return input.token().trim(ref(hiddenStuffWhitespace));
+      return input.token().trim(ref0(hiddenStuffWhitespace));
     } else if (input is String) {
       return token(input.toParser());
-    } else if (input is Function) {
-      return token(ref(input));
     }
-    throw ArgumentError.value(input, 'invalid token parser');
+    throw ArgumentError.value(input, 'Invalid token parser');
   }
 
   // Copyright (c) 2011, the Dart project authors. Please see the AUTHORS file
@@ -20,721 +18,738 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Keyword definitions.
   // -----------------------------------------------------------------
-  Parser breakToken() => ref(token, 'break');
-  Parser caseToken() => ref(token, 'case');
-  Parser catchToken() => ref(token, 'catch');
-  Parser constToken() => ref(token, 'const');
-  Parser continueToken() => ref(token, 'continue');
-  Parser defaultToken() => ref(token, 'default');
-  Parser doToken() => ref(token, 'do');
-  Parser elseToken() => ref(token, 'else');
-  Parser falseToken() => ref(token, 'false');
-  Parser finalToken() => ref(token, 'final');
-  Parser finallyToken() => ref(token, 'finally');
-  Parser forToken() => ref(token, 'for');
-  Parser ifToken() => ref(token, 'if');
-  Parser inToken() => ref(token, 'in');
-  Parser newToken() => ref(token, 'new');
-  Parser nullToken() => ref(token, 'null');
-  Parser returnToken() => ref(token, 'return');
-  Parser superToken() => ref(token, 'super');
-  Parser switchToken() => ref(token, 'switch');
-  Parser thisToken() => ref(token, 'this');
-  Parser throwToken() => ref(token, 'throw');
-  Parser trueToken() => ref(token, 'true');
-  Parser tryToken() => ref(token, 'try');
-  Parser varToken() => ref(token, 'var');
-  Parser voidToken() => ref(token, 'void');
-  Parser whileToken() => ref(token, 'while');
+  Parser breakToken() => ref1(token, 'break');
+  Parser caseToken() => ref1(token, 'case');
+  Parser catchToken() => ref1(token, 'catch');
+  Parser constToken() => ref1(token, 'const');
+  Parser continueToken() => ref1(token, 'continue');
+  Parser defaultToken() => ref1(token, 'default');
+  Parser doToken() => ref1(token, 'do');
+  Parser elseToken() => ref1(token, 'else');
+  Parser falseToken() => ref1(token, 'false');
+  Parser finalToken() => ref1(token, 'final');
+  Parser finallyToken() => ref1(token, 'finally');
+  Parser forToken() => ref1(token, 'for');
+  Parser ifToken() => ref1(token, 'if');
+  Parser inToken() => ref1(token, 'in');
+  Parser newToken() => ref1(token, 'new');
+  Parser nullToken() => ref1(token, 'null');
+  Parser returnToken() => ref1(token, 'return');
+  Parser superToken() => ref1(token, 'super');
+  Parser switchToken() => ref1(token, 'switch');
+  Parser thisToken() => ref1(token, 'this');
+  Parser throwToken() => ref1(token, 'throw');
+  Parser trueToken() => ref1(token, 'true');
+  Parser tryToken() => ref1(token, 'try');
+  Parser varToken() => ref1(token, 'var');
+  Parser voidToken() => ref1(token, 'void');
+  Parser whileToken() => ref1(token, 'while');
 
   // Pseudo-keywords that should also be valid identifiers.
-  Parser abstractToken() => ref(token, 'abstract');
-  Parser asToken() => ref(token, 'as');
-  Parser assertToken() => ref(token, 'assert');
-  Parser classToken() => ref(token, 'class');
-  Parser deferredToken() => ref(token, 'deferred');
-  Parser exportToken() => ref(token, 'export');
-  Parser extendsToken() => ref(token, 'extends');
-  Parser factoryToken() => ref(token, 'factory');
-  Parser getToken() => ref(token, 'get');
-  Parser hideToken() => ref(token, 'hide');
-  Parser implementsToken() => ref(token, 'implements');
-  Parser importToken() => ref(token, 'import');
-  Parser isToken() => ref(token, 'is');
-  Parser libraryToken() => ref(token, 'library');
-  Parser nativeToken() => ref(token, 'native');
-  Parser negateToken() => ref(token, 'negate');
-  Parser ofToken() => ref(token, 'of');
-  Parser operatorToken() => ref(token, 'operator');
-  Parser partToken() => ref(token, 'part');
-  Parser setToken() => ref(token, 'set');
-  Parser showToken() => ref(token, 'show');
-  Parser staticToken() => ref(token, 'static');
-  Parser typedefToken() => ref(token, 'typedef');
+  Parser abstractToken() => ref1(token, 'abstract');
+  Parser asToken() => ref1(token, 'as');
+  Parser assertToken() => ref1(token, 'assert');
+  Parser classToken() => ref1(token, 'class');
+  Parser deferredToken() => ref1(token, 'deferred');
+  Parser exportToken() => ref1(token, 'export');
+  Parser extendsToken() => ref1(token, 'extends');
+  Parser factoryToken() => ref1(token, 'factory');
+  Parser getToken() => ref1(token, 'get');
+  Parser hideToken() => ref1(token, 'hide');
+  Parser implementsToken() => ref1(token, 'implements');
+  Parser importToken() => ref1(token, 'import');
+  Parser isToken() => ref1(token, 'is');
+  Parser libraryToken() => ref1(token, 'library');
+  Parser nativeToken() => ref1(token, 'native');
+  Parser negateToken() => ref1(token, 'negate');
+  Parser ofToken() => ref1(token, 'of');
+  Parser operatorToken() => ref1(token, 'operator');
+  Parser partToken() => ref1(token, 'part');
+  Parser setToken() => ref1(token, 'set');
+  Parser showToken() => ref1(token, 'show');
+  Parser staticToken() => ref1(token, 'static');
+  Parser typedefToken() => ref1(token, 'typedef');
 
   // -----------------------------------------------------------------
   // Grammar productions.
   // -----------------------------------------------------------------
-  Parser start() => ref(compilationUnit).end();
+  Parser start() => ref0(compilationUnit).end();
 
   Parser compilationUnit() =>
-      ref(hashbangLexicalToken).optional() &
-      ref(libraryDirective).optional() &
-      ref(importDirective).star() &
-      ref(topLevelDefinition).star();
+      ref0(hashbangLexicalToken).optional() &
+      ref0(libraryDirective).optional() &
+      ref0(importDirective).star() &
+      ref0(topLevelDefinition).star();
 
   Parser libraryDirective() =>
-      ref(libraryToken) & ref(qualified) & ref(token, ';') |
-      ref(partToken) & ref(ofToken) & ref(qualified) & ref(token, ';');
+      ref0(libraryToken) & ref0(qualified) & ref1(token, ';') |
+      ref0(partToken) & ref0(ofToken) & ref0(qualified) & ref1(token, ';');
 
   Parser importDirective() =>
-      ref(importToken) &
-          ref(singleLineStringLexicalToken) &
-          ref(deferredToken).optional() &
-          (ref(asToken) & ref(identifier)).optional() &
-          ((ref(showToken) | ref(hideToken)) &
-                  ref(identifier).separatedBy(ref(token, ',')))
+      ref0(importToken) &
+          ref0(singleLineStringLexicalToken) &
+          ref0(deferredToken).optional() &
+          (ref0(asToken) & ref0(identifier)).optional() &
+          ((ref0(showToken) | ref0(hideToken)) &
+                  ref0(identifier).separatedBy(ref1(token, ',')))
               .optional() &
-          ref(token, ';') |
-      ref(exportToken) &
-          ref(singleLineStringLexicalToken) &
-          ((ref(showToken) | ref(hideToken)) &
-                  ref(identifier).separatedBy(ref(token, ',')))
+          ref1(token, ';') |
+      ref0(exportToken) &
+          ref0(singleLineStringLexicalToken) &
+          ((ref0(showToken) | ref0(hideToken)) &
+                  ref0(identifier).separatedBy(ref1(token, ',')))
               .optional() &
-          ref(token, ';') |
-      ref(partToken) & ref(singleLineStringLexicalToken) & ref(token, ';');
+          ref1(token, ';') |
+      ref0(partToken) & ref0(singleLineStringLexicalToken) & ref1(token, ';');
 
   Parser topLevelDefinition() =>
-      ref(classDefinition) |
-      ref(functionTypeAlias) |
-      ref(functionDeclaration) & ref(functionBodyOrNative) |
-      ref(returnType).optional() &
-          ref(getOrSet) &
-          ref(identifier) &
-          ref(formalParameterList) &
-          ref(functionBodyOrNative) |
-      ref(finalToken) &
-          ref(type).optional() &
-          ref(staticFinalDeclarationList) &
-          ref(token, ';') |
-      ref(constToken) &
-          ref(type).optional() &
-          ref(staticFinalDeclarationList) &
-          ref(token, ';') |
-      ref(constInitializedVariableDeclaration) & ref(token, ';');
+      ref0(classDefinition) |
+      ref0(functionTypeAlias) |
+      ref0(functionDeclaration) & ref0(functionBodyOrNative) |
+      ref0(returnType).optional() &
+          ref0(getOrSet) &
+          ref0(identifier) &
+          ref0(formalParameterList) &
+          ref0(functionBodyOrNative) |
+      ref0(finalToken) &
+          ref0(type).optional() &
+          ref0(staticFinalDeclarationList) &
+          ref1(token, ';') |
+      ref0(constToken) &
+          ref0(type).optional() &
+          ref0(staticFinalDeclarationList) &
+          ref1(token, ';') |
+      ref0(constInitializedVariableDeclaration) & ref1(token, ';');
 
   Parser classDefinition() =>
-      ref(abstractToken).optional() &
-          ref(classToken) &
-          ref(identifier) &
-          ref(typeParameters).optional() &
-          ref(superclass).optional() &
-          ref(interfaces).optional() &
-          ref(token, '{') &
-          ref(classMemberDefinition).star() &
-          ref(token, '}') |
-      ref(abstractToken).optional() &
-          ref(classToken) &
-          ref(identifier) &
-          ref(typeParameters).optional() &
-          ref(interfaces).optional() &
-          ref(nativeToken) &
-          ref(token, stringLexicalToken) &
-          ref(token, '{') &
-          ref(classMemberDefinition).star() &
-          ref(token, '}');
+      ref0(abstractToken).optional() &
+          ref0(classToken) &
+          ref0(identifier) &
+          ref0(typeParameters).optional() &
+          ref0(superclass).optional() &
+          ref0(interfaces).optional() &
+          ref1(token, '{') &
+          ref0(classMemberDefinition).star() &
+          ref1(token, '}') |
+      ref0(abstractToken).optional() &
+          ref0(classToken) &
+          ref0(identifier) &
+          ref0(typeParameters).optional() &
+          ref0(interfaces).optional() &
+          ref0(nativeToken) &
+          ref1(token, ref0(stringLexicalToken)) &
+          ref1(token, '{') &
+          ref0(classMemberDefinition).star() &
+          ref1(token, '}');
 
   Parser typeParameter() =>
-      ref(identifier) & (ref(extendsToken) & ref(type)).optional();
+      ref0(identifier) & (ref0(extendsToken) & ref0(type)).optional();
 
   Parser typeParameters() =>
-      ref(token, '<') &
-      ref(typeParameter) &
-      (ref(token, ',') & ref(typeParameter)).star() &
-      ref(token, '>');
+      ref1(token, '<') &
+      ref0(typeParameter) &
+      (ref1(token, ',') & ref0(typeParameter)).star() &
+      ref1(token, '>');
 
-  Parser superclass() => ref(extendsToken) & ref(type);
+  Parser superclass() => ref0(extendsToken) & ref0(type);
 
-  Parser interfaces() => ref(implementsToken) & ref(typeList);
+  Parser interfaces() => ref0(implementsToken) & ref0(typeList);
 
   // This rule is organized in a way that may not be most readable, but
   // gives the best error messages.
   Parser classMemberDefinition() =>
-      ref(declaration) & ref(token, ';') |
-      ref(constructorDeclaration) & ref(token, ';') |
-      ref(methodDeclaration) & ref(functionBodyOrNative) |
-      ref(constToken) &
-          ref(factoryConstructorDeclaration) &
-          ref(functionNative);
+      ref0(declaration) & ref1(token, ';') |
+      ref0(constructorDeclaration) & ref1(token, ';') |
+      ref0(methodDeclaration) & ref0(functionBodyOrNative) |
+      ref0(constToken) &
+          ref0(factoryConstructorDeclaration) &
+          ref0(functionNative);
 
   Parser functionBodyOrNative() =>
-      ref(nativeToken) & ref(functionBody) |
-      ref(functionNative) |
-      ref(functionBody);
+      ref0(nativeToken) & ref0(functionBody) |
+      ref0(functionNative) |
+      ref0(functionBody);
 
   Parser functionNative() =>
-      ref(nativeToken) &
-      ref(token, stringLexicalToken).optional() &
-      ref(token, ';');
+      ref0(nativeToken) &
+      ref1(token, ref0(stringLexicalToken)).optional() &
+      ref1(token, ';');
 
   // A method, operator, or constructor (which all should be followed by
   // a block of code).
   Parser methodDeclaration() =>
-      ref(factoryConstructorDeclaration) |
-      ref(staticToken) & ref(functionDeclaration) |
-      ref(specialSignatureDefinition) |
-      ref(functionDeclaration) & ref(initializers).optional() |
-      ref(namedConstructorDeclaration) & ref(initializers).optional();
+      ref0(factoryConstructorDeclaration) |
+      ref0(staticToken) & ref0(functionDeclaration) |
+      ref0(specialSignatureDefinition) |
+      ref0(functionDeclaration) & ref0(initializers).optional() |
+      ref0(namedConstructorDeclaration) & ref0(initializers).optional();
 
   // An abstract method/operator, a field, or const constructor (which
   // all should be followed by a semicolon).
   Parser declaration() =>
-      ref(functionDeclaration) & ref(redirection) |
-      ref(namedConstructorDeclaration) & ref(redirection) |
-      ref(abstractToken) & ref(specialSignatureDefinition) |
-      ref(abstractToken) & ref(functionDeclaration) |
-      ref(staticToken) &
-          ref(finalToken) &
-          ref(type).optional() &
-          ref(staticFinalDeclarationList) |
-      ref(staticToken).optional() & ref(constInitializedVariableDeclaration);
+      ref0(functionDeclaration) & ref0(redirection) |
+      ref0(namedConstructorDeclaration) & ref0(redirection) |
+      ref0(abstractToken) & ref0(specialSignatureDefinition) |
+      ref0(abstractToken) & ref0(functionDeclaration) |
+      ref0(staticToken) &
+          ref0(finalToken) &
+          ref0(type).optional() &
+          ref0(staticFinalDeclarationList) |
+      ref0(staticToken).optional() & ref0(constInitializedVariableDeclaration);
 
   Parser initializers() =>
-      ref(token, ':') &
-      ref(superCallOrFieldInitializer) &
-      (ref(token, ',') & ref(superCallOrFieldInitializer)).star();
+      ref1(token, ':') &
+      ref0(superCallOrFieldInitializer) &
+      (ref1(token, ',') & ref0(superCallOrFieldInitializer)).star();
 
   Parser redirection() =>
-      ref(token, ':') &
-      ref(thisToken) &
-      (ref(token, '.') & ref(identifier)).optional() &
-      ref(arguments);
+      ref1(token, ':') &
+      ref0(thisToken) &
+      (ref1(token, '.') & ref0(identifier)).optional() &
+      ref0(arguments);
 
   Parser fieldInitializer() =>
-      (ref(thisToken) & ref(token, '.')).optional() &
-      ref(identifier) &
-      ref(token, '=') &
-      ref(conditionalExpression);
+      (ref0(thisToken) & ref1(token, '.')).optional() &
+      ref0(identifier) &
+      ref1(token, '=') &
+      ref0(conditionalExpression);
 
   Parser superCallOrFieldInitializer() =>
-      ref(superToken) & ref(arguments) |
-      ref(superToken) & ref(token, '.') & ref(identifier) & ref(arguments) |
-      ref(fieldInitializer);
+      ref0(superToken) & ref0(arguments) |
+      ref0(superToken) & ref1(token, '.') & ref0(identifier) & ref0(arguments) |
+      ref0(fieldInitializer);
 
   Parser staticFinalDeclarationList() =>
-      ref(staticFinalDeclaration) &
-      (ref(token, ',') & ref(staticFinalDeclaration)).star();
+      ref0(staticFinalDeclaration) &
+      (ref1(token, ',') & ref0(staticFinalDeclaration)).star();
 
   Parser staticFinalDeclaration() =>
-      ref(identifier) & ref(token, '=') & ref(constantExpression);
+      ref0(identifier) & ref1(token, '=') & ref0(constantExpression);
 
   Parser functionTypeAlias() =>
-      ref(typedefToken) &
-      ref(functionPrefix) &
-      ref(typeParameters).optional() &
-      ref(formalParameterList) &
-      ref(token, ';');
+      ref0(typedefToken) &
+      ref0(functionPrefix) &
+      ref0(typeParameters).optional() &
+      ref0(formalParameterList) &
+      ref1(token, ';');
 
   Parser factoryConstructorDeclaration() =>
-      ref(factoryToken) &
-      ref(qualified) &
-      ref(typeParameters).optional() &
-      (ref(token, '.') & ref(identifier)).optional() &
-      ref(formalParameterList);
+      ref0(factoryToken) &
+      ref0(qualified) &
+      ref0(typeParameters).optional() &
+      (ref1(token, '.') & ref0(identifier)).optional() &
+      ref0(formalParameterList);
 
   Parser constructorDeclaration() =>
-      ref(constToken).optional() &
-          ref(identifier) &
-          ref(formalParameterList) &
-          (ref(redirection) | ref(initializers)).optional() |
-      ref(constToken).optional() &
-          ref(namedConstructorDeclaration) &
-          (ref(redirection) | ref(initializers)).optional();
+      ref0(constToken).optional() &
+          ref0(identifier) &
+          ref0(formalParameterList) &
+          (ref0(redirection) | ref0(initializers)).optional() |
+      ref0(constToken).optional() &
+          ref0(namedConstructorDeclaration) &
+          (ref0(redirection) | ref0(initializers)).optional();
 
   Parser namedConstructorDeclaration() =>
-      ref(identifier) &
-      ref(token, '.') &
-      ref(identifier) &
-      ref(formalParameterList);
+      ref0(identifier) &
+      ref1(token, '.') &
+      ref0(identifier) &
+      ref0(formalParameterList);
 
   Parser constantConstructorDeclaration() =>
-      ref(constToken) & ref(qualified) & ref(formalParameterList);
+      ref0(constToken) & ref0(qualified) & ref0(formalParameterList);
 
   Parser specialSignatureDefinition() =>
-      ref(staticToken).optional() &
-          ref(returnType).optional() &
-          ref(getOrSet) &
-          ref(identifier) &
-          ref(formalParameterList) |
-      ref(returnType).optional() &
-          ref(operatorToken) &
-          ref(userDefinableOperator) &
-          ref(formalParameterList);
+      ref0(staticToken).optional() &
+          ref0(returnType).optional() &
+          ref0(getOrSet) &
+          ref0(identifier) &
+          ref0(formalParameterList) |
+      ref0(returnType).optional() &
+          ref0(operatorToken) &
+          ref0(userDefinableOperator) &
+          ref0(formalParameterList);
 
-  Parser getOrSet() => ref(getToken) | ref(setToken);
+  Parser getOrSet() => ref0(getToken) | ref0(setToken);
 
   Parser userDefinableOperator() =>
-      ref(multiplicativeOperator) |
-      ref(additiveOperator) |
-      ref(shiftOperator) |
-      ref(relationalOperator) |
-      ref(bitwiseOperator) |
-      ref(token, '==') // Disallow negative and === equality checks.
+      ref0(multiplicativeOperator) |
+      ref0(additiveOperator) |
+      ref0(shiftOperator) |
+      ref0(relationalOperator) |
+      ref0(bitwiseOperator) |
+      ref1(token, '==') // Disallow negative and === equality checks.
       |
-      ref(token, '~') // Disallow ! operator.
+      ref1(token, '~') // Disallow ! operator.
       |
-      ref(negateToken) |
-      ref(token, '[') & ref(token, ']') |
-      ref(token, '[') & ref(token, ']') & ref(token, '=');
+      ref0(negateToken) |
+      ref1(token, '[') & ref1(token, ']') |
+      ref1(token, '[') & ref1(token, ']') & ref1(token, '=');
 
-  Parser prefixOperator() => ref(additiveOperator) | ref(negateOperator);
+  Parser prefixOperator() => ref0(additiveOperator) | ref0(negateOperator);
 
-  Parser postfixOperator() => ref(incrementOperator);
+  Parser postfixOperator() => ref0(incrementOperator);
 
-  Parser negateOperator() => ref(token, '!') | ref(token, '~');
+  Parser negateOperator() => ref1(token, '!') | ref1(token, '~');
 
   Parser multiplicativeOperator() =>
-      ref(token, '*') | ref(token, '/') | ref(token, '%') | ref(token, '~/');
+      ref1(token, '*') |
+      ref1(token, '/') |
+      ref1(token, '%') |
+      ref1(token, '~/');
 
   Parser assignmentOperator() =>
-      ref(token, '=') |
-      ref(token, '*=') |
-      ref(token, '/=') |
-      ref(token, '~/=') |
-      ref(token, '%=') |
-      ref(token, '+=') |
-      ref(token, '-=') |
-      ref(token, '<<=') |
-      ref(token, '>>>=') |
-      ref(token, '>>=') |
-      ref(token, '&=') |
-      ref(token, '^=') |
-      ref(token, '|=');
+      ref1(token, '=') |
+      ref1(token, '*=') |
+      ref1(token, '/=') |
+      ref1(token, '~/=') |
+      ref1(token, '%=') |
+      ref1(token, '+=') |
+      ref1(token, '-=') |
+      ref1(token, '<<=') |
+      ref1(token, '>>>=') |
+      ref1(token, '>>=') |
+      ref1(token, '&=') |
+      ref1(token, '^=') |
+      ref1(token, '|=');
 
-  Parser additiveOperator() => ref(token, '+') | ref(token, '-');
+  Parser additiveOperator() => ref1(token, '+') | ref1(token, '-');
 
-  Parser incrementOperator() => ref(token, '++') | ref(token, '--');
+  Parser incrementOperator() => ref1(token, '++') | ref1(token, '--');
 
   Parser shiftOperator() =>
-      ref(token, '<<') | ref(token, '>>>') | ref(token, '>>');
+      ref1(token, '<<') | ref1(token, '>>>') | ref1(token, '>>');
 
   Parser relationalOperator() =>
-      ref(token, '>=') | ref(token, '>') | ref(token, '<=') | ref(token, '<');
+      ref1(token, '>=') |
+      ref1(token, '>') |
+      ref1(token, '<=') |
+      ref1(token, '<');
 
   Parser equalityOperator() =>
-      ref(token, '===') |
-      ref(token, '!==') |
-      ref(token, '==') |
-      ref(token, '!=');
+      ref1(token, '===') |
+      ref1(token, '!==') |
+      ref1(token, '==') |
+      ref1(token, '!=');
 
   Parser bitwiseOperator() =>
-      ref(token, '&') | ref(token, '^') | ref(token, '|');
+      ref1(token, '&') | ref1(token, '^') | ref1(token, '|');
 
   Parser formalParameterList() =>
-      ref(token, '(') &
-          ref(optionalFormalParameters).optional() &
-          ref(token, ')') |
-      ref(token, '(') &
-          ref(namedFormalParameters).optional() &
-          ref(token, ')') |
-      ref(token, '(') &
-          ref(normalFormalParameter) &
-          ref(normalFormalParameterTail).optional() &
-          ref(token, ')');
+      ref1(token, '(') &
+          ref0(optionalFormalParameters).optional() &
+          ref1(token, ')') |
+      ref1(token, '(') &
+          ref0(namedFormalParameters).optional() &
+          ref1(token, ')') |
+      ref1(token, '(') &
+          ref0(normalFormalParameter) &
+          ref0(normalFormalParameterTail).optional() &
+          ref1(token, ')');
 
   Parser normalFormalParameterTail() =>
-      ref(token, ',') & ref(optionalFormalParameters) |
-      ref(token, ',') & ref(namedFormalParameters) |
-      ref(token, ',') &
-          ref(normalFormalParameter) &
-          ref(normalFormalParameterTail).optional();
+      ref1(token, ',') & ref0(optionalFormalParameters) |
+      ref1(token, ',') & ref0(namedFormalParameters) |
+      ref1(token, ',') &
+          ref0(normalFormalParameter) &
+          ref0(normalFormalParameterTail).optional();
 
   Parser normalFormalParameter() =>
-      ref(fieldFormalParameter) |
-      ref(functionDeclaration) |
-      ref(simpleFormalParameter);
+      ref0(fieldFormalParameter) |
+      ref0(functionDeclaration) |
+      ref0(simpleFormalParameter);
 
-  Parser simpleFormalParameter() => ref(declaredIdentifier) | ref(identifier);
+  Parser simpleFormalParameter() => ref0(declaredIdentifier) | ref0(identifier);
 
   Parser fieldFormalParameter() =>
-      ref(thisToken) & ref(token, '.') & ref(identifier);
+      ref0(thisToken) & ref1(token, '.') & ref0(identifier);
 
   Parser optionalFormalParameters() =>
-      ref(token, '[') &
-      ref(defaultFormalParameter) &
-      (ref(token, ',') & ref(defaultFormalParameter)).star() &
-      ref(token, ']');
+      ref1(token, '[') &
+      ref0(defaultFormalParameter) &
+      (ref1(token, ',') & ref0(defaultFormalParameter)).star() &
+      ref1(token, ']');
 
   Parser namedFormalParameters() =>
-      ref(token, '{') &
-      ref(namedFormatParameter) &
-      (ref(token, ',') & ref(namedFormatParameter)).star() &
-      ref(token, '}');
+      ref1(token, '{') &
+      ref0(namedFormatParameter) &
+      (ref1(token, ',') & ref0(namedFormatParameter)).star() &
+      ref1(token, '}');
 
   Parser namedFormatParameter() =>
-      ref(normalFormalParameter) &
-      (ref(token, ':') & ref(constantExpression)).optional();
+      ref0(normalFormalParameter) &
+      (ref1(token, ':') & ref0(constantExpression)).optional();
 
   Parser defaultFormalParameter() =>
-      ref(normalFormalParameter) &
-      (ref(token, '=') & ref(constantExpression)).optional();
+      ref0(normalFormalParameter) &
+      (ref1(token, '=') & ref0(constantExpression)).optional();
 
-  Parser returnType() => ref(voidToken) | ref(type);
+  Parser returnType() => ref0(voidToken) | ref0(type);
 
   // We have to introduce a separate rule for 'declared' identifiers to
   // allow ANTLR to decide if the first identifier we encounter after
   // final is a type or an identifier. Before this change, we used the
   // production 'finalVarOrType identifier' in numerous places.
   Parser declaredIdentifier() =>
-      ref(finalToken) & ref(type).optional() & ref(identifier) |
-      ref(varToken) & ref(identifier) |
-      ref(type) & ref(identifier);
+      ref0(finalToken) & ref0(type).optional() & ref0(identifier) |
+      ref0(varToken) & ref0(identifier) |
+      ref0(type) & ref0(identifier);
 
-  Parser identifier() => ref(token, ref(identifierLexicalToken));
+  Parser identifier() => ref1(token, ref0(identifierLexicalToken));
 
   Parser qualified() =>
-      ref(identifier) & (ref(token, '.') & ref(identifier)).star();
+      ref0(identifier) & (ref1(token, '.') & ref0(identifier)).star();
 
-  Parser type() => ref(qualified) & ref(typeArguments).optional();
+  Parser type() => ref0(qualified) & ref0(typeArguments).optional();
 
-  Parser typeArguments() => ref(token, '<') & ref(typeList) & ref(token, '>');
+  Parser typeArguments() =>
+      ref1(token, '<') & ref0(typeList) & ref1(token, '>');
 
-  Parser typeList() => ref(type) & (ref(token, ',') & ref(type)).star();
+  Parser typeList() => ref0(type) & (ref1(token, ',') & ref0(type)).star();
 
-  Parser block() => ref(token, '{') & ref(statements) & ref(token, '}');
+  Parser block() => ref1(token, '{') & ref0(statements) & ref1(token, '}');
 
-  Parser statements() => ref(statement).star();
+  Parser statements() => ref0(statement).star();
 
-  Parser statement() => ref(label).star() & ref(nonLabelledStatement);
+  Parser statement() => ref0(label).star() & ref0(nonLabelledStatement);
 
   Parser nonLabelledStatement() =>
-      ref(block) |
-      ref(initializedVariableDeclaration) & ref(token, ';') |
-      ref(iterationStatement) |
-      ref(selectionStatement) |
-      ref(tryStatement) |
-      ref(breakToken) & ref(identifier).optional() & ref(token, ';') |
-      ref(continueToken) & ref(identifier).optional() & ref(token, ';') |
-      ref(returnToken) & ref(expression).optional() & ref(token, ';') |
-      ref(throwToken) & ref(expression).optional() & ref(token, ';') |
-      ref(expression).optional() & ref(token, ';') |
-      ref(assertToken) &
-          ref(token, '(') &
-          ref(conditionalExpression) &
-          ref(token, ')') &
-          ref(token, ';') |
-      ref(functionDeclaration) & ref(functionBody);
+      ref0(block) |
+      ref0(initializedVariableDeclaration) & ref1(token, ';') |
+      ref0(iterationStatement) |
+      ref0(selectionStatement) |
+      ref0(tryStatement) |
+      ref0(breakToken) & ref0(identifier).optional() & ref1(token, ';') |
+      ref0(continueToken) & ref0(identifier).optional() & ref1(token, ';') |
+      ref0(returnToken) & ref0(expression).optional() & ref1(token, ';') |
+      ref0(throwToken) & ref0(expression).optional() & ref1(token, ';') |
+      ref0(expression).optional() & ref1(token, ';') |
+      ref0(assertToken) &
+          ref1(token, '(') &
+          ref0(conditionalExpression) &
+          ref1(token, ')') &
+          ref1(token, ';') |
+      ref0(functionDeclaration) & ref0(functionBody);
 
-  Parser label() => ref(identifier) & ref(token, ':');
+  Parser label() => ref0(identifier) & ref1(token, ':');
 
   Parser iterationStatement() =>
-      ref(whileToken) &
-          ref(token, '(') &
-          ref(expression) &
-          ref(token, ')') &
-          ref(statement) |
-      ref(doToken) &
-          ref(statement) &
-          ref(whileToken) &
-          ref(token, '(') &
-          ref(expression) &
-          ref(token, ')') &
-          ref(token, ';') |
-      ref(forToken) &
-          ref(token, '(') &
-          ref(forLoopParts) &
-          ref(token, ')') &
-          ref(statement);
+      ref0(whileToken) &
+          ref1(token, '(') &
+          ref0(expression) &
+          ref1(token, ')') &
+          ref0(statement) |
+      ref0(doToken) &
+          ref0(statement) &
+          ref0(whileToken) &
+          ref1(token, '(') &
+          ref0(expression) &
+          ref1(token, ')') &
+          ref1(token, ';') |
+      ref0(forToken) &
+          ref1(token, '(') &
+          ref0(forLoopParts) &
+          ref1(token, ')') &
+          ref0(statement);
 
   Parser forLoopParts() =>
-      ref(forInitializerStatement) &
-          ref(expression).optional() &
-          ref(token, ';') &
-          ref(expressionList).optional() |
-      ref(declaredIdentifier) & ref(inToken) & ref(expression) |
-      ref(identifier) & ref(inToken) & ref(expression);
+      ref0(forInitializerStatement) &
+          ref0(expression).optional() &
+          ref1(token, ';') &
+          ref0(expressionList).optional() |
+      ref0(declaredIdentifier) & ref0(inToken) & ref0(expression) |
+      ref0(identifier) & ref0(inToken) & ref0(expression);
 
   Parser forInitializerStatement() =>
-      ref(initializedVariableDeclaration) & ref(token, ';') |
-      ref(expression).optional() & ref(token, ';');
+      ref0(initializedVariableDeclaration) & ref1(token, ';') |
+      ref0(expression).optional() & ref1(token, ';');
 
   Parser selectionStatement() =>
-      ref(ifToken) &
-          ref(token, '(') &
-          ref(expression) &
-          ref(token, ')') &
-          ref(statement) &
-          (ref(elseToken) & ref(statement)).optional() |
-      ref(switchToken) &
-          ref(token, '(') &
-          ref(expression) &
-          ref(token, ')') &
-          ref(token, '{') &
-          ref(switchCase).star() &
-          ref(defaultCase).optional() &
-          ref(token, '}');
+      ref0(ifToken) &
+          ref1(token, '(') &
+          ref0(expression) &
+          ref1(token, ')') &
+          ref0(statement) &
+          (ref0(elseToken) & ref0(statement)).optional() |
+      ref0(switchToken) &
+          ref1(token, '(') &
+          ref0(expression) &
+          ref1(token, ')') &
+          ref1(token, '{') &
+          ref0(switchCase).star() &
+          ref0(defaultCase).optional() &
+          ref1(token, '}');
 
   Parser switchCase() =>
-      ref(label).optional() &
-      (ref(caseToken) & ref(expression) & ref(token, ':')).plus() &
-      ref(statements);
+      ref0(label).optional() &
+      (ref0(caseToken) & ref0(expression) & ref1(token, ':')).plus() &
+      ref0(statements);
 
   Parser defaultCase() =>
-      ref(label).optional() &
-      ref(defaultToken) &
-      ref(token, ':') &
-      ref(statements);
+      ref0(label).optional() &
+      ref0(defaultToken) &
+      ref1(token, ':') &
+      ref0(statements);
 
   Parser tryStatement() =>
-      ref(tryToken) &
-      ref(block) &
-      (ref(catchPart).plus() & ref(finallyPart).optional() | ref(finallyPart));
+      ref0(tryToken) &
+      ref0(block) &
+      (ref0(catchPart).plus() & ref0(finallyPart).optional() |
+          ref0(finallyPart));
 
   Parser catchPart() =>
-      ref(catchToken) &
-      ref(token, '(') &
-      ref(declaredIdentifier) &
-      (ref(token, ',') & ref(declaredIdentifier)).optional() &
-      ref(token, ')') &
-      ref(block);
+      ref0(catchToken) &
+      ref1(token, '(') &
+      ref0(declaredIdentifier) &
+      (ref1(token, ',') & ref0(declaredIdentifier)).optional() &
+      ref1(token, ')') &
+      ref0(block);
 
-  Parser finallyPart() => ref(finallyToken) & ref(block);
+  Parser finallyPart() => ref0(finallyToken) & ref0(block);
 
   Parser variableDeclaration() =>
-      ref(declaredIdentifier) & (ref(token, ',') & ref(identifier)).star();
+      ref0(declaredIdentifier) & (ref1(token, ',') & ref0(identifier)).star();
 
   Parser initializedVariableDeclaration() =>
-      ref(declaredIdentifier) &
-      (ref(token, '=') & ref(expression)).optional() &
-      (ref(token, ',') & ref(initializedIdentifier)).star();
+      ref0(declaredIdentifier) &
+      (ref1(token, '=') & ref0(expression)).optional() &
+      (ref1(token, ',') & ref0(initializedIdentifier)).star();
 
   Parser initializedIdentifierList() =>
-      ref(initializedIdentifier) &
-      (ref(token, ',') & ref(initializedIdentifier)).star();
+      ref0(initializedIdentifier) &
+      (ref1(token, ',') & ref0(initializedIdentifier)).star();
 
   Parser initializedIdentifier() =>
-      ref(identifier) & (ref(token, '=') & ref(expression)).optional();
+      ref0(identifier) & (ref1(token, '=') & ref0(expression)).optional();
 
   Parser constInitializedVariableDeclaration() =>
-      ref(declaredIdentifier) &
-      (ref(token, '=') & ref(constantExpression)).optional() &
-      (ref(token, ',') & ref(constInitializedIdentifier)).star();
+      ref0(declaredIdentifier) &
+      (ref1(token, '=') & ref0(constantExpression)).optional() &
+      (ref1(token, ',') & ref0(constInitializedIdentifier)).star();
 
   Parser constInitializedIdentifier() =>
-      ref(identifier) & (ref(token, '=') & ref(constantExpression)).optional();
+      ref0(identifier) &
+      (ref1(token, '=') & ref0(constantExpression)).optional();
 
   // The constant expression production is used to mark certain expressions
   // as only being allowed to hold a compile-time constant. The grammar cannot
   // express these restrictions (yet), so this will have to be enforced by a
   // separate analysis phase.
-  Parser constantExpression() => ref(expression);
+  Parser constantExpression() => ref0(expression);
 
   Parser expression() =>
-      ref(assignableExpression) & ref(assignmentOperator) & ref(expression) |
-      ref(conditionalExpression);
+      ref0(assignableExpression) & ref0(assignmentOperator) & ref0(expression) |
+      ref0(conditionalExpression);
 
-  Parser expressionList() => ref(expression).separatedBy(ref(token, ','));
+  Parser expressionList() => ref0(expression).separatedBy(ref1(token, ','));
 
   Parser arguments() =>
-      ref(token, '(') & ref(argumentList).optional() & ref(token, ')');
+      ref1(token, '(') & ref0(argumentList).optional() & ref1(token, ')');
 
-  Parser argumentList() => ref(argumentElement).separatedBy(ref(token, ','));
+  Parser argumentList() => ref0(argumentElement).separatedBy(ref1(token, ','));
 
-  Parser argumentElement() => ref(label) & ref(expression) | ref(expression);
+  Parser argumentElement() => ref0(label) & ref0(expression) | ref0(expression);
 
   Parser assignableExpression() =>
-      ref(primary) & (ref(arguments).star() & ref(assignableSelector)).plus() |
-      ref(superToken) & ref(assignableSelector) |
-      ref(identifier);
+      ref0(primary) &
+          (ref0(arguments).star() & ref0(assignableSelector)).plus() |
+      ref0(superToken) & ref0(assignableSelector) |
+      ref0(identifier);
 
   Parser conditionalExpression() =>
-      ref(logicalOrExpression) &
-      (ref(token, '?') & ref(expression) & ref(token, ':') & ref(expression))
+      ref0(logicalOrExpression) &
+      (ref1(token, '?') &
+              ref0(expression) &
+              ref1(token, ':') &
+              ref0(expression))
           .optional();
 
   Parser logicalOrExpression() =>
-      ref(logicalAndExpression) &
-      (ref(token, '||') & ref(logicalAndExpression)).star();
+      ref0(logicalAndExpression) &
+      (ref1(token, '||') & ref0(logicalAndExpression)).star();
 
   Parser logicalAndExpression() =>
-      ref(bitwiseOrExpression) &
-      (ref(token, '&&') & ref(bitwiseOrExpression)).star();
+      ref0(bitwiseOrExpression) &
+      (ref1(token, '&&') & ref0(bitwiseOrExpression)).star();
 
   Parser bitwiseOrExpression() =>
-      ref(bitwiseXorExpression) &
-          (ref(token, '|') & ref(bitwiseXorExpression)).star() |
-      ref(superToken) & (ref(token, '|') & ref(bitwiseXorExpression)).plus();
+      ref0(bitwiseXorExpression) &
+          (ref1(token, '|') & ref0(bitwiseXorExpression)).star() |
+      ref0(superToken) & (ref1(token, '|') & ref0(bitwiseXorExpression)).plus();
 
   Parser bitwiseXorExpression() =>
-      ref(bitwiseAndExpression) &
-          (ref(token, '^') & ref(bitwiseAndExpression)).star() |
-      ref(superToken) & (ref(token, '^') & ref(bitwiseAndExpression)).plus();
+      ref0(bitwiseAndExpression) &
+          (ref1(token, '^') & ref0(bitwiseAndExpression)).star() |
+      ref0(superToken) & (ref1(token, '^') & ref0(bitwiseAndExpression)).plus();
 
   Parser bitwiseAndExpression() =>
-      ref(equalityExpression) &
-          (ref(token, '&') & ref(equalityExpression)).star() |
-      ref(superToken) & (ref(token, '&') & ref(equalityExpression)).plus();
+      ref0(equalityExpression) &
+          (ref1(token, '&') & ref0(equalityExpression)).star() |
+      ref0(superToken) & (ref1(token, '&') & ref0(equalityExpression)).plus();
 
   Parser equalityExpression() =>
-      ref(relationalExpression) &
-          (ref(equalityOperator) & ref(relationalExpression)).optional() |
-      ref(superToken) & ref(equalityOperator) & ref(relationalExpression);
+      ref0(relationalExpression) &
+          (ref0(equalityOperator) & ref0(relationalExpression)).optional() |
+      ref0(superToken) & ref0(equalityOperator) & ref0(relationalExpression);
 
   Parser relationalExpression() =>
-      ref(shiftExpression) &
-          (ref(isOperator) & ref(type) |
-                  ref(relationalOperator) & ref(shiftExpression))
+      ref0(shiftExpression) &
+          (ref0(isOperator) & ref0(type) |
+                  ref0(relationalOperator) & ref0(shiftExpression))
               .optional() |
-      ref(superToken) & ref(relationalOperator) & ref(shiftExpression);
+      ref0(superToken) & ref0(relationalOperator) & ref0(shiftExpression);
 
-  Parser isOperator() => ref(isToken) & ref(token, '!').optional();
+  Parser isOperator() => ref0(isToken) & ref1(token, '!').optional();
 
   Parser shiftExpression() =>
-      ref(additiveExpression) &
-          (ref(shiftOperator) & ref(additiveExpression)).star() |
-      ref(superToken) & (ref(shiftOperator) & ref(additiveExpression)).plus();
+      ref0(additiveExpression) &
+          (ref0(shiftOperator) & ref0(additiveExpression)).star() |
+      ref0(superToken) &
+          (ref0(shiftOperator) & ref0(additiveExpression)).plus();
 
   Parser additiveExpression() =>
-      ref(multiplicativeExpression) &
-          (ref(additiveOperator) & ref(multiplicativeExpression)).star() |
-      ref(superToken) &
-          (ref(additiveOperator) & ref(multiplicativeExpression)).plus();
+      ref0(multiplicativeExpression) &
+          (ref0(additiveOperator) & ref0(multiplicativeExpression)).star() |
+      ref0(superToken) &
+          (ref0(additiveOperator) & ref0(multiplicativeExpression)).plus();
 
   Parser multiplicativeExpression() =>
-      ref(unaryExpression) &
-          (ref(multiplicativeOperator) & ref(unaryExpression)).star() |
-      ref(superToken) &
-          (ref(multiplicativeOperator) & ref(unaryExpression)).plus();
+      ref0(unaryExpression) &
+          (ref0(multiplicativeOperator) & ref0(unaryExpression)).star() |
+      ref0(superToken) &
+          (ref0(multiplicativeOperator) & ref0(unaryExpression)).plus();
 
   Parser unaryExpression() =>
-      ref(postfixExpression) |
-      ref(prefixOperator) & ref(unaryExpression) |
-      ref(negateOperator) & ref(superToken) |
-      ref(token, '-') & ref(superToken) |
-      ref(incrementOperator) & ref(assignableExpression);
+      ref0(postfixExpression) |
+      ref0(prefixOperator) & ref0(unaryExpression) |
+      ref0(negateOperator) & ref0(superToken) |
+      ref1(token, '-') & ref0(superToken) |
+      ref0(incrementOperator) & ref0(assignableExpression);
 
   Parser postfixExpression() =>
-      ref(assignableExpression) & ref(postfixOperator) |
-      ref(primary) & ref(selector).star();
+      ref0(assignableExpression) & ref0(postfixOperator) |
+      ref0(primary) & ref0(selector).star();
 
-  Parser selector() => ref(assignableSelector) | ref(arguments);
+  Parser selector() => ref0(assignableSelector) | ref0(arguments);
 
   Parser assignableSelector() =>
-      ref(token, '[') & ref(expression) & ref(token, ']') |
-      ref(token, '.') & ref(identifier);
+      ref1(token, '[') & ref0(expression) & ref1(token, ']') |
+      ref1(token, '.') & ref0(identifier);
 
   Parser primary() =>
-      ref(thisToken) |
-      ref(superToken) & ref(assignableSelector) |
-      ref(constToken).optional() &
-          ref(typeArguments).optional() &
-          ref(compoundLiteral) |
-      (ref(newToken) | ref(constToken)) &
-          ref(type) &
-          (ref(token, '.') & ref(identifier)).optional() &
-          ref(arguments) |
-      ref(functionExpression) |
-      ref(expressionInParentheses) |
-      ref(literal) |
-      ref(identifier);
+      ref0(thisToken) |
+      ref0(superToken) & ref0(assignableSelector) |
+      ref0(constToken).optional() &
+          ref0(typeArguments).optional() &
+          ref0(compoundLiteral) |
+      (ref0(newToken) | ref0(constToken)) &
+          ref0(type) &
+          (ref1(token, '.') & ref0(identifier)).optional() &
+          ref0(arguments) |
+      ref0(functionExpression) |
+      ref0(expressionInParentheses) |
+      ref0(literal) |
+      ref0(identifier);
 
   Parser expressionInParentheses() =>
-      ref(token, '(') & ref(expression) & ref(token, ')');
+      ref1(token, '(') & ref0(expression) & ref1(token, ')');
 
-  Parser literal() => ref(
+  Parser literal() => ref1(
       token,
-      ref(nullToken) |
-          ref(trueToken) |
-          ref(falseToken) |
-          ref(hexNumberLexicalToken) |
-          ref(numberLexicalToken) |
-          ref(stringLexicalToken));
+      ref0(nullToken) |
+          ref0(trueToken) |
+          ref0(falseToken) |
+          ref0(hexNumberLexicalToken) |
+          ref0(numberLexicalToken) |
+          ref0(stringLexicalToken));
 
-  Parser compoundLiteral() => ref(listLiteral) | ref(mapLiteral);
+  Parser compoundLiteral() => ref0(listLiteral) | ref0(mapLiteral);
 
   Parser listLiteral() =>
-      ref(token, '[') &
-      (ref(expressionList) & ref(token, ',').optional()).optional() &
-      ref(token, ']');
+      ref1(token, '[') &
+      (ref0(expressionList) & ref1(token, ',').optional()).optional() &
+      ref1(token, ']');
 
   Parser mapLiteral() =>
-      ref(token, '{') &
-      (ref(mapLiteralEntry) &
-              (ref(token, ',') & ref(mapLiteralEntry)).star() &
-              ref(token, ',').optional())
+      ref1(token, '{') &
+      (ref0(mapLiteralEntry) &
+              (ref1(token, ',') & ref0(mapLiteralEntry)).star() &
+              ref1(token, ',').optional())
           .optional() &
-      ref(token, '}');
+      ref1(token, '}');
 
   Parser mapLiteralEntry() =>
-      ref(token, stringLexicalToken) & ref(token, ':') & ref(expression);
+      ref1(token, ref0(stringLexicalToken)) &
+      ref1(token, ':') &
+      ref0(expression);
 
   Parser functionExpression() =>
-      ref(returnType).optional() &
-      ref(identifier).optional() &
-      ref(formalParameterList) &
-      ref(functionExpressionBody);
+      ref0(returnType).optional() &
+      ref0(identifier).optional() &
+      ref0(formalParameterList) &
+      ref0(functionExpressionBody);
 
   Parser functionDeclaration() =>
-      ref(returnType) & ref(identifier) & ref(formalParameterList) |
-      ref(identifier) & ref(formalParameterList);
+      ref0(returnType) & ref0(identifier) & ref0(formalParameterList) |
+      ref0(identifier) & ref0(formalParameterList);
 
-  Parser functionPrefix() => ref(returnType).optional() & ref(identifier);
+  Parser functionPrefix() => ref0(returnType).optional() & ref0(identifier);
 
   Parser functionBody() =>
-      ref(token, '=>') & ref(expression) & ref(token, ';') | ref(block);
+      ref1(token, '=>') & ref0(expression) & ref1(token, ';') | ref0(block);
 
   Parser functionExpressionBody() =>
-      ref(token, '=>') & ref(expression) | ref(block);
+      ref1(token, '=>') & ref0(expression) | ref0(block);
 
   // -----------------------------------------------------------------
   // Lexical tokens.
   // -----------------------------------------------------------------
   Parser identifierLexicalToken() =>
-      ref(identifierStartLexicalToken) & ref(identifierPartLexicalToken).star();
+      ref0(identifierStartLexicalToken) &
+      ref0(identifierPartLexicalToken).star();
 
   Parser hexNumberLexicalToken() =>
-      string('0x') & ref(hexDigitLexicalToken).plus() |
-      string('0X') & ref(hexDigitLexicalToken).plus();
+      string('0x') & ref0(hexDigitLexicalToken).plus() |
+      string('0X') & ref0(hexDigitLexicalToken).plus();
 
   Parser numberLexicalToken() =>
-      ref(digitLexicalToken).plus() &
-          ref(numberOptFractionalPartLexicalToken) &
-          ref(exponentLexicalToken).optional() &
-          ref(numberOptIllegalEndLexicalToken) |
+      ref0(digitLexicalToken).plus() &
+          ref0(numberOptFractionalPartLexicalToken) &
+          ref0(exponentLexicalToken).optional() &
+          ref0(numberOptIllegalEndLexicalToken) |
       char('.') &
-          ref(digitLexicalToken).plus() &
-          ref(exponentLexicalToken).optional() &
-          ref(numberOptIllegalEndLexicalToken);
+          ref0(digitLexicalToken).plus() &
+          ref0(exponentLexicalToken).optional() &
+          ref0(numberOptIllegalEndLexicalToken);
 
   Parser numberOptFractionalPartLexicalToken() =>
-      char('.') & ref(digitLexicalToken).plus() | epsilon();
+      char('.') & ref0(digitLexicalToken).plus() | epsilon();
 
   Parser numberOptIllegalEndLexicalToken() => epsilon();
-//        ref(IDENTIFIER_START).end()
+//        ref0(IDENTIFIER_START).end()
 //      | epsilon()
 //      ;
 
   Parser hexDigitLexicalToken() => pattern('0-9a-fA-F');
 
   Parser identifierStartLexicalToken() =>
-      ref(identifierStartNoDollarLexicalToken) | char('\$');
+      ref0(identifierStartNoDollarLexicalToken) | char('\$');
 
   Parser identifierStartNoDollarLexicalToken() =>
-      ref(letterLexicalToken) | char('_');
+      ref0(letterLexicalToken) | char('_');
 
   Parser identifierPartLexicalToken() =>
-      ref(identifierStartLexicalToken) | ref(digitLexicalToken);
+      ref0(identifierStartLexicalToken) | ref0(digitLexicalToken);
 
   Parser letterLexicalToken() => letter();
 
   Parser digitLexicalToken() => digit();
 
   Parser exponentLexicalToken() =>
-      pattern('eE') & pattern('+-').optional() & ref(digitLexicalToken).plus();
+      pattern('eE') & pattern('+-').optional() & ref0(digitLexicalToken).plus();
 
   Parser stringLexicalToken() =>
-      char('@').optional() & ref(multiLineStringLexicalToken) |
-      ref(singleLineStringLexicalToken);
+      char('@').optional() & ref0(multiLineStringLexicalToken) |
+      ref0(singleLineStringLexicalToken);
 
   Parser multiLineStringLexicalToken() =>
       string('"""') & any().starLazy(string('"""')) & string('"""') |
@@ -742,10 +757,10 @@ class DartGrammarDefinition extends GrammarDefinition {
 
   Parser singleLineStringLexicalToken() =>
       char('"') &
-          ref(stringContentDoubleQuotedLexicalToken).star() &
+          ref0(stringContentDoubleQuotedLexicalToken).star() &
           char('"') |
       char("'") &
-          ref(stringContentSingleQuotedLexicalToken).star() &
+          ref0(stringContentSingleQuotedLexicalToken).star() &
           char("'") |
       string('@"') & pattern('^"\n\r').star() & char('"') |
       string("@'") & pattern("^'\n\r").star() & char("'");
@@ -761,25 +776,27 @@ class DartGrammarDefinition extends GrammarDefinition {
   Parser hashbangLexicalToken() =>
       string('#!') &
       pattern('^\n\r').star() &
-      ref(newlineLexicalToken).optional();
+      ref0(newlineLexicalToken).optional();
 
   // -----------------------------------------------------------------
   // Whitespace and comments.
   // -----------------------------------------------------------------
-  Parser hiddenWhitespace() => ref(hiddenStuffWhitespace).plus();
+  Parser hiddenWhitespace() => ref0(hiddenStuffWhitespace).plus();
 
   Parser hiddenStuffWhitespace() =>
-      ref(visibleWhitespace) | ref(singleLineComment) | ref(multiLineComment);
+      ref0(visibleWhitespace) |
+      ref0(singleLineComment) |
+      ref0(multiLineComment);
 
   Parser visibleWhitespace() => whitespace();
 
   Parser singleLineComment() =>
       string('//') &
-      ref(newlineLexicalToken).neg().star() &
-      ref(newlineLexicalToken).optional();
+      ref0(newlineLexicalToken).neg().star() &
+      ref0(newlineLexicalToken).optional();
 
   Parser multiLineComment() =>
       string('/*') &
-      (ref(multiLineComment) | string('*/').neg()).star() &
+      (ref0(multiLineComment) | string('*/').neg()).star() &
       string('*/');
 }
