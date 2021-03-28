@@ -5,38 +5,35 @@ import 'benchmark.dart';
 
 // Character tests
 
-Function charTest(List<String> inputs, Parser parser) {
-  return (fast) {
-    if (fast) {
-      return () {
-        for (var i = 0; i < inputs.length; i++) {
-          parser.accept(inputs[i]);
-        }
-      };
-    } else {
-      return () {
-        for (var i = 0; i < inputs.length; i++) {
-          parser.parse(inputs[i]);
-        }
-      };
-    }
-  };
-}
+Function charTest(List<String> inputs, Parser parser) => (fast) {
+      if (fast) {
+        return () {
+          for (var i = 0; i < inputs.length; i++) {
+            parser.accept(inputs[i]);
+          }
+        };
+      } else {
+        return () {
+          for (var i = 0; i < inputs.length; i++) {
+            parser.parse(inputs[i]);
+          }
+        };
+      }
+    };
 
 final List<String> characters =
     List.generate(0xff, (value) => String.fromCharCode(value));
 
 // String tests
 
-Function stringTest(String input, Parser parser, {bool fast = false}) {
-  return (fast) {
-    if (fast) {
-      return () => parser.accept(input);
-    } else {
-      return () => parser.parse(input).isSuccess;
-    }
-  };
-}
+Function stringTest(String input, Parser parser, {bool fast = false}) =>
+    (fast) {
+      if (fast) {
+        return () => parser.accept(input);
+      } else {
+        return () => parser.parse(input).isSuccess;
+      }
+    };
 
 final String string = characters.join();
 

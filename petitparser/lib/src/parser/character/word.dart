@@ -3,9 +3,8 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any word character.
-Parser<String> word([String message = 'letter or digit expected']) {
-  return CharacterParser(const WordCharPredicate(), message);
-}
+Parser<String> word([String message = 'letter or digit expected']) =>
+    CharacterParser(const WordCharPredicate(), message);
 
 class WordCharPredicate implements CharacterPredicate {
   const WordCharPredicate();

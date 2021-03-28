@@ -3,9 +3,8 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any uppercase character.
-Parser<String> uppercase([String message = 'uppercase letter expected']) {
-  return CharacterParser(const UppercaseCharPredicate(), message);
-}
+Parser<String> uppercase([String message = 'uppercase letter expected']) =>
+    CharacterParser(const UppercaseCharPredicate(), message);
 
 class UppercaseCharPredicate implements CharacterPredicate {
   const UppercaseCharPredicate();

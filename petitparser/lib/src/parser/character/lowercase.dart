@@ -3,9 +3,8 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any lowercase character.
-Parser<String> lowercase([String message = 'lowercase letter expected']) {
-  return CharacterParser(const LowercaseCharPredicate(), message);
-}
+Parser<String> lowercase([String message = 'lowercase letter expected']) =>
+    CharacterParser(const LowercaseCharPredicate(), message);
 
 class LowercaseCharPredicate extends CharacterPredicate {
   const LowercaseCharPredicate();

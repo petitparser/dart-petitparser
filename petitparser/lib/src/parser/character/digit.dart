@@ -3,9 +3,8 @@ import 'parser.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any digit character.
-Parser<String> digit([String message = 'digit expected']) {
-  return CharacterParser(const DigitCharPredicate(), message);
-}
+Parser<String> digit([String message = 'digit expected']) =>
+    CharacterParser(const DigitCharPredicate(), message);
 
 class DigitCharPredicate extends CharacterPredicate {
   const DigitCharPredicate();

@@ -1,9 +1,9 @@
 import 'predicate.dart';
 
 class ConstantCharPredicate extends CharacterPredicate {
-  final bool constant;
-
   const ConstantCharPredicate(this.constant);
+
+  final bool constant;
 
   @override
   bool test(int value) => constant;

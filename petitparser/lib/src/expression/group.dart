@@ -33,9 +33,8 @@ class ExpressionGroup {
         .map((value) => callback(value[0], value[1], value[2])));
   }
 
-  Parser _buildWrapper(Parser inner) {
-    return _buildChoice([..._wrappers, inner], inner);
-  }
+  Parser _buildWrapper(Parser inner) =>
+      _buildChoice([..._wrappers, inner], inner);
 
   final List<Parser> _wrappers = [];
 
