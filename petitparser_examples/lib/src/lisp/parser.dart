@@ -5,7 +5,10 @@ import 'grammar.dart';
 import 'name.dart';
 
 /// The standard lisp parser definition.
-final Parser lispParser = LispParserDefinition().build();
+final _definition = LispParserDefinition();
+
+/// The standard prolog parser to read rules.
+final lispParser = _definition.build();
 
 /// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {

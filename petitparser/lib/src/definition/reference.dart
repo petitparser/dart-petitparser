@@ -6,18 +6,18 @@ import '../core/parser.dart';
 
 @immutable
 class Reference extends Parser {
+  Reference(this.function, this.arguments);
+
   final Function function;
   final List<Object> arguments;
-
-  Reference(this.function, this.arguments);
 
   Parser resolve() => Function.apply(function, arguments);
 
   @override
   bool operator ==(Object other) {
     if (other is Reference) {
-      if (other.function != function ||
-          other.arguments.length != arguments.length) {
+      if (function != other.function ||
+          arguments.length != other.arguments.length) {
         return false;
       }
       for (var i = 0; i < arguments.length; i++) {

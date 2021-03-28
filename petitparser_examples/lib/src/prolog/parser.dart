@@ -4,7 +4,7 @@ import 'evaluator.dart';
 import 'grammar.dart';
 
 /// The standard prolog parser definition.
-final PrologParserDefinition _definition = PrologParserDefinition();
+final _definition = PrologParserDefinition();
 
 /// The standard prolog parser to read rules.
 final Parser<List<Rule>> rulesParser =
