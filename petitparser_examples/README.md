@@ -7,7 +7,7 @@ To run the web examples execute the following commands from the command line and
 
 ```bash
 pub global activate webdev
-webdev serve
+webdev serve --release
 ```
 
 ### Dart
