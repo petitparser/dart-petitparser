@@ -21,14 +21,15 @@ extension OptionalParserExtension<T> on Parser<T> {
   Parser<T> optionalWith(T value) => OptionalParser<T>(this, value);
 }
 
-/// A parser that optionally parsers its delegate, or answers null.
-class OptionalParser<T> extends DelegateParser<T, T> {
-  final T otherwise;
+/// A parser that optionally parsers its delegate, or answers `null`.
+class OptionalParser<R> extends DelegateParser<R, R> {
+  OptionalParser(Parser<R> delegate, this.otherwise) : super(delegate);
 
-  OptionalParser(Parser<T> delegate, this.otherwise) : super(delegate);
+  /// The value returned if the [delegate] cannot be parsed.
+  final R otherwise;
 
   @override
-  Result<T> parseOn(Context context) {
+  Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
       return result;
@@ -44,9 +45,9 @@ class OptionalParser<T> extends DelegateParser<T, T> {
   }
 
   @override
-  OptionalParser<T> copy() => OptionalParser<T>(delegate, otherwise);
+  OptionalParser<R> copy() => OptionalParser<R>(delegate, otherwise);
 
   @override
-  bool hasEqualProperties(OptionalParser<T> other) =>
+  bool hasEqualProperties(OptionalParser<R> other) =>
       super.hasEqualProperties(other) && otherwise == other.otherwise;
 }

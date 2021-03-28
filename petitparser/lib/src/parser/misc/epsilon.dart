@@ -9,24 +9,25 @@ import '../../core/parser.dart';
 Parser<void> epsilon() => epsilonWith<void>(null);
 
 /// Returns a parser that consumes nothing and succeeds with [result].
-Parser<T> epsilonWith<T>(T result) => EpsilonParser<T>(result);
+Parser<R> epsilonWith<R>(R result) => EpsilonParser<R>(result);
 
 /// A parser that consumes nothing and succeeds.
-class EpsilonParser<T> extends Parser<T> {
-  final T result;
-
+class EpsilonParser<R> extends Parser<R> {
   EpsilonParser(this.result);
 
+  /// Value to be returned when the parser is activated.
+  final R result;
+
   @override
-  Result<T> parseOn(Context context) => context.success(result);
+  Result<R> parseOn(Context context) => context.success(result);
 
   @override
   int fastParseOn(String buffer, int position) => position;
 
   @override
-  EpsilonParser<T> copy() => EpsilonParser<T>(result);
+  EpsilonParser<R> copy() => EpsilonParser<R>(result);
 
   @override
-  bool hasEqualProperties(EpsilonParser<T> other) =>
+  bool hasEqualProperties(EpsilonParser<R> other) =>
       super.hasEqualProperties(other) && result == other.result;
 }

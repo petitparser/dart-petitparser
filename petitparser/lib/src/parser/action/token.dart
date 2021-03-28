@@ -15,15 +15,15 @@ extension TokenParserExtension<T> on Parser<T> {
   Parser<Token<T>> token() => TokenParser<T>(this);
 }
 
-/// A parser that answers a token of the result its delegate parses.
-class TokenParser<T> extends DelegateParser<T, Token<T>> {
-  TokenParser(Parser<T> delegate) : super(delegate);
+/// A parser that creates a token of the result its delegate parses.
+class TokenParser<R> extends DelegateParser<R, Token<R>> {
+  TokenParser(Parser<R> delegate) : super(delegate);
 
   @override
-  Result<Token<T>> parseOn(Context context) {
+  Result<Token<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      final token = Token<T>(
+      final token = Token<R>(
           result.value, context.buffer, context.position, result.position);
       return result.success(token);
     } else {
@@ -32,9 +32,9 @@ class TokenParser<T> extends DelegateParser<T, Token<T>> {
   }
 
   @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
+  TokenParser<R> copy() => TokenParser<R>(delegate);
 
   @override
-  TokenParser<T> copy() => TokenParser<T>(delegate);
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
 }

@@ -16,19 +16,19 @@ extension PermuteParserExtension<T> on Parser<List<T>> {
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
-class PermuteParser<T> extends DelegateParser<List<T>, List<T>> {
+class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
+  PermuteParser(Parser<List<R>> delegate, this.indexes) : super(delegate);
+
+  /// Indicates which elements to return from the parsed list.
   final List<int> indexes;
 
-  PermuteParser(Parser<List<T>> delegate, this.indexes) : super(delegate);
-
   @override
-  Result<List<T>> parseOn(Context context) {
+  Result<List<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
       final value = result.value;
       final values = indexes
           .map((index) => value[index < 0 ? value.length + index : index])
-          .cast<T>()
           .toList(growable: false);
       return result.success(values);
     } else {
@@ -41,9 +41,9 @@ class PermuteParser<T> extends DelegateParser<List<T>, List<T>> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  PermuteParser<T> copy() => PermuteParser<T>(delegate, indexes);
+  PermuteParser<R> copy() => PermuteParser<R>(delegate, indexes);
 
   @override
-  bool hasEqualProperties(PermuteParser<T> other) =>
+  bool hasEqualProperties(PermuteParser<R> other) =>
       super.hasEqualProperties(other) && indexes == other.indexes;
 }

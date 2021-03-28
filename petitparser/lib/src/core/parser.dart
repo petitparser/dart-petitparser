@@ -5,9 +5,9 @@ import '../context/failure.dart';
 import '../context/result.dart';
 import '../context/success.dart';
 
-/// Abstract base class of all parsers.
+/// Abstract base class of all parsers that produce a parse result of type [R].
 @optionalTypeArgs
-abstract class Parser<T> {
+abstract class Parser<R> {
   Parser();
 
   /// Primitive method doing the actual parsing.
@@ -16,7 +16,7 @@ abstract class Parser<T> {
   /// parser specific logic. The methods takes a parse [context] and
   /// returns the resulting context, which is either a [Success] or
   /// [Failure] context.
-  Result<T> parseOn(Context context);
+  Result<R> parseOn(Context context);
 
   /// Primitive method doing the actual parsing.
   ///
@@ -47,12 +47,12 @@ abstract class Parser<T> {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
-  Result<T> parse(String input) => parseOn(Context(input, 0));
+  Result<R> parse(String input) => parseOn(Context(input, 0));
 
   /// Returns a shallow copy of the receiver.
   ///
   /// Override this method in all subclasses, return its own type.
-  Parser<T> copy();
+  Parser<R> copy();
 
   /// Recursively tests for structural equality of two parsers.
   ///
@@ -128,8 +128,12 @@ abstract class Parser<T> {
   @mustCallSuper
   void replace(Parser source, Parser target) {}
 
-  /// Internal helper to be able to provide the type of the parser to other
-  /// methods: https://stackoverflow.com/questions/66824070/capture-a-generic-runtime-type-of-an-object-in-a-function
+  /// Internal helper to be able to provide the type of the parser to external
+  /// methods. This makes it possible to transform the parser without loosing
+  /// type information.
+  ///
+  /// https://stackoverflow.com/questions/66824070/capture-a-generic-runtime-type-of-an-object-in-a-function
   @internal
-  R callWith<R>(R Function<T>(Parser<T> self) callback) => callback<T>(this);
+  @nonVirtual
+  T callWith<T>(T Function<R>(Parser<R> self) callback) => callback<R>(this);
 }

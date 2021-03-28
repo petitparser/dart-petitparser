@@ -13,20 +13,23 @@ extension TrimmingParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
-  Parser<T> trim([Parser? left, Parser? right]) =>
+  Parser<T> trim([Parser<void>? left, Parser<void>? right]) =>
       TrimmingParser<T>(this, left ??= whitespace(), right ??= left);
 }
 
 /// A parser that silently consumes input of another parser around
 /// its delegate.
-class TrimmingParser<T> extends DelegateParser<T, T> {
-  Parser left;
-  Parser right;
+class TrimmingParser<R> extends DelegateParser<R, R> {
+  TrimmingParser(Parser<R> delegate, this.left, this.right) : super(delegate);
 
-  TrimmingParser(Parser<T> delegate, this.left, this.right) : super(delegate);
+  /// Parser that consumes input before the delegate.
+  Parser<void> left;
+
+  /// Parser that consumes input after the delegate.
+  Parser<void> right;
 
   @override
-  Result<T> parseOn(Context context) {
+  Result<R> parseOn(Context context) {
     final buffer = context.buffer;
 
     // Trim the left part:
@@ -65,7 +68,7 @@ class TrimmingParser<T> extends DelegateParser<T, T> {
   }
 
   @override
-  TrimmingParser<T> copy() => TrimmingParser<T>(delegate, left, right);
+  TrimmingParser<R> copy() => TrimmingParser<R>(delegate, left, right);
 
   @override
   List<Parser> get children => [delegate, left, right];

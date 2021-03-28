@@ -16,7 +16,8 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [starGreedy] for the greedy and less efficient variation of
   /// this combinator.
-  Parser<List<T>> starLazy(Parser limit) => repeatLazy(limit, 0, unbounded);
+  Parser<List<T>> starLazy(Parser<void> limit) =>
+      repeatLazy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
   /// reaches a [limit]. This is a lazy non-blind implementation of the [plus]
@@ -27,7 +28,8 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [plusGreedy] for the greedy and less efficient variation of
   /// this combinator.
-  Parser<List<T>> plusLazy(Parser limit) => repeatLazy(limit, 1, unbounded);
+  Parser<List<T>> plusLazy(Parser<void> limit) =>
+      repeatLazy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a lazy non-blind implementation
@@ -35,21 +37,21 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// This is the more generic variation of the [starLazy] and [plusLazy]
   /// combinators.
-  Parser<List<T>> repeatLazy(Parser limit, int min, int max) =>
+  Parser<List<T>> repeatLazy(Parser<void> limit, int min, int max) =>
       LazyRepeatingParser<T>(this, limit, min, max);
 }
 
 /// A lazy repeating parser, commonly seen in regular expression
 /// implementations. It limits its consumption to meet the 'limit' condition as
 /// early as possible.
-class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
-  LazyRepeatingParser(Parser<T> parser, Parser limit, int min, int max)
+class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
+  LazyRepeatingParser(Parser<R> parser, Parser<void> limit, int min, int max)
       : super(parser, limit, min, max);
 
   @override
-  Result<List<T>> parseOn(Context context) {
+  Result<List<R>> parseOn(Context context) {
     var current = context;
-    final elements = <T>[];
+    final elements = <R>[];
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
@@ -107,6 +109,6 @@ class LazyRepeatingParser<T> extends LimitedRepeatingParser<T> {
   }
 
   @override
-  LazyRepeatingParser<T> copy() =>
-      LazyRepeatingParser<T>(delegate, limit, min, max);
+  LazyRepeatingParser<R> copy() =>
+      LazyRepeatingParser<R>(delegate, limit, min, max);
 }

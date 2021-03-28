@@ -5,11 +5,13 @@ import 'predicate.dart';
 
 /// Parser class for individual character classes.
 class CharacterParser extends Parser<String> {
+  CharacterParser(this.predicate, this.message);
+
+  /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;
 
+  /// Error message to annotate parse failures with.
   final String message;
-
-  CharacterParser(this.predicate, this.message);
 
   @override
   Result<String> parseOn(Context context) {

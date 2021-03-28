@@ -16,11 +16,11 @@ extension AndParserExtension<T> on Parser<T> {
 
 /// The and-predicate, a parser that succeeds whenever its delegate does, but
 /// does not consume the input stream [Parr 1994, 1995].
-class AndParser<T> extends DelegateParser<T, T> {
-  AndParser(Parser<T> delegate) : super(delegate);
+class AndParser<R> extends DelegateParser<R, R> {
+  AndParser(Parser<R> delegate) : super(delegate);
 
   @override
-  Result<T> parseOn(Context context) {
+  Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
       return context.success(result.value);
@@ -36,5 +36,5 @@ class AndParser<T> extends DelegateParser<T, T> {
   }
 
   @override
-  AndParser<T> copy() => AndParser<T>(delegate);
+  AndParser<R> copy() => AndParser<R>(delegate);
 }

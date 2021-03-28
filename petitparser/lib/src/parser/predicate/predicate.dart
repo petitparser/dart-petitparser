@@ -8,23 +8,22 @@ typedef Predicate = bool Function(String input);
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
-Parser<String> predicate(int length, Predicate predicate, String message) {
-  return PredicateParser(length, predicate, message);
-}
+Parser<String> predicate(int length, Predicate predicate, String message) =>
+  PredicateParser(length, predicate, message);
 
 /// A parser for a literal satisfying a predicate.
 class PredicateParser extends Parser<String> {
+  PredicateParser(this.length, this.predicate, this.message)
+      : assert(length > 0, 'length must be positive');
+
   /// The length of the input to read.
   final int length;
 
   /// The predicate function testing the input.
   final Predicate predicate;
 
-  /// The failure message in case of a miss-match.
+  /// Error message to annotate parse failures with.
   final String message;
-
-  PredicateParser(this.length, this.predicate, this.message)
-      : assert(length > 0, 'length must be positive');
 
   @override
   Result<String> parseOn(Context context) {
