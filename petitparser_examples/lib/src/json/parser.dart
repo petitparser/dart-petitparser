@@ -2,15 +2,8 @@ import 'package:petitparser/petitparser.dart';
 
 import 'grammar.dart';
 
-/// JSON parser.
-class JsonParser extends GrammarParser {
-  JsonParser() : super(const JsonParserDefinition());
-}
-
 /// JSON parser definition.
 class JsonParserDefinition extends JsonGrammarDefinition {
-  const JsonParserDefinition();
-
   Parser array() => super.array().map((each) => each[1] ?? []);
   Parser object() => super.object().map((each) {
         final result = {};

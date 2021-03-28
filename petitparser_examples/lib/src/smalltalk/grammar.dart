@@ -1,10 +1,5 @@
 import 'package:petitparser/petitparser.dart';
 
-/// Smalltalk grammar.
-class SmalltalkGrammar extends GrammarParser {
-  SmalltalkGrammar() : super(SmalltalkGrammarDefinition());
-}
-
 /// Smalltalk grammar definition.
 class SmalltalkGrammarDefinition extends GrammarDefinition {
   // the original implementation used a handwritten parser to

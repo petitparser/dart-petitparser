@@ -2,8 +2,8 @@ import 'package:petitparser_examples/json.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final grammar = JsonGrammar();
-  final parser = JsonParser();
+  final grammar = JsonGrammarDefinition().build();
+  final parser = JsonParserDefinition().build();
   group('arrays', () {
     test('empty', () {
       expect(parser.parse('[]').value, []);

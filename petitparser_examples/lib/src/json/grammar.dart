@@ -1,14 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 
-/// JSON grammar.
-class JsonGrammar extends GrammarParser {
-  JsonGrammar() : super(const JsonGrammarDefinition());
-}
-
 /// JSON grammar definition.
 class JsonGrammarDefinition extends GrammarDefinition {
-  const JsonGrammarDefinition();
-
   Parser start() => ref(value).end();
   Parser token(Object source, [String? name]) {
     if (source is String) {

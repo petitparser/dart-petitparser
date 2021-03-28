@@ -6,6 +6,9 @@ const Matcher isString = TypeMatcher<String>();
 const Matcher isCons = TypeMatcher<Cons>();
 
 void main() {
+  final parserDefinition = LispParserDefinition();
+  final grammarDefinition = LispGrammarDefinition();
+
   final native = NativeEnvironment();
   final standard = StandardEnvironment(native);
 
@@ -59,7 +62,7 @@ void main() {
     });
   });
   group('Grammar', () {
-    final grammar = LispGrammar();
+    final grammar = grammarDefinition.build();
     test('Name', () {
       final result = grammar.parse('foo').value;
       expect(result, ['foo']);
@@ -173,8 +176,7 @@ void main() {
     });
   });
   group('Parser', () {
-    final definition = LispParserDefinition();
-    final atom = definition.build(start: definition.atom);
+    final atom = parserDefinition.build(start: parserDefinition.atom);
     test('Name', () {
       final cell = atom.parse('foo').value;
       expect(cell, isName);

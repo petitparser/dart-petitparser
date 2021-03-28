@@ -5,7 +5,8 @@
 * Properly type all delegate parsers in choice, sequence, repeat, action, ...
   * Fix typing in `transformParser` and its users (debug tools, optimizers).
   * Fix typing of `GrammarDefinition` and reference parsers.
-* Improve documentation of delegate parsers.
+* Deprecate `GrammarParser`, a historical wrapper around `GrammarDefinition`. Call `build()` on the definition to get an equivalent parser.
+* Significant improvement of documentation.
 
 ## 4.0.0
 
