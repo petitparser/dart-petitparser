@@ -8,11 +8,11 @@ final console = querySelector('#console')! as ParagraphElement;
 final environment = querySelector('#environment')! as ParagraphElement;
 final evaluate = querySelector('#evaluate')! as SubmitButtonInputElement;
 
-void main() {
-  final root = NativeEnvironment();
-  final standard = StandardEnvironment(root);
-  final user = standard.create();
+final root = NativeEnvironment();
+final standard = StandardEnvironment(root);
+final user = standard.create();
 
+void main() {
   printer = (object) {
     console.appendText(object.toString());
     console.append(document.createElement('br'));

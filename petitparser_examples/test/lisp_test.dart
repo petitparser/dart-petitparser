@@ -6,8 +6,8 @@ const Matcher isString = TypeMatcher<String>();
 const Matcher isCons = TypeMatcher<Cons>();
 
 void main() {
-  final parserDefinition = LispParserDefinition();
   final grammarDefinition = LispGrammarDefinition();
+  final parserDefinition = LispParserDefinition();
 
   final native = NativeEnvironment();
   final standard = StandardEnvironment(native);
