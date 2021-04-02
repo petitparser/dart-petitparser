@@ -13,7 +13,7 @@ typedef TransformationHandler = Parser<T> Function<T>(Parser<T> parser);
 Parser<T> transformParser<T>(Parser<T> parser, TransformationHandler handler) {
   final mapping = Map<Parser, Parser>.identity();
   for (final each in allParser(parser)) {
-    mapping[each] = each.copy().callWith(handler);
+    mapping[each] = each.copy().captureResultGeneric(handler);
   }
   final todo = [...mapping.values];
   final seen = {...mapping.values};
