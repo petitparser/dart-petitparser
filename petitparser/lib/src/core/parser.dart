@@ -128,12 +128,11 @@ abstract class Parser<R> {
   @mustCallSuper
   void replace(Parser source, Parser target) {}
 
-  /// Internal helper to be able to provide the type of the parser to external
-  /// methods. This makes it possible to transform the parser without loosing
-  /// type information.
-  ///
-  /// https://stackoverflow.com/questions/66824070/capture-a-generic-runtime-type-of-an-object-in-a-function
+  /// Internal helper to capture the generic type [R] of the parse result from
+  /// extension methods. This makes it possible to wrap the parser without
+  /// loosing type information.
   @internal
   @nonVirtual
-  T callWith<T>(T Function<R>(Parser<R> self) callback) => callback<R>(this);
+  T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
+      callback<R>(this);
 }

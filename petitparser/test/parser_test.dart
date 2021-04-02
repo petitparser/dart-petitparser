@@ -875,6 +875,26 @@ void main() {
       test('empty', () {
         expect(() => <Parser>[].toChoiceParser(), throwsArgumentError);
       });
+      test('same type', () {
+        final first = any();
+        final second = any();
+        expect(first, isA<Parser<String>>());
+        expect(second, isA<Parser<String>>());
+        // TODO(renggli): https://github.com/dart-lang/language/issues/1557
+        // expect(first | second, isA<Parser<String>>());
+        // expect(first.or(second), isA<Parser<String>>());
+        expect([first, second].toChoiceParser(), isA<Parser<String>>());
+      });
+      test('different type', () {
+        final first = any().map(int.parse);
+        final second = any().map(double.parse);
+        expect(first, isA<Parser<int>>());
+        expect(second, isA<Parser<double>>());
+        // TODO(renggli): https://github.com/dart-lang/language/issues/1557
+        // expect(first | second, isA<Parser<num>>());
+        // expect(first.or(second), isA<Parser<num>>());
+        expect([first, second].toChoiceParser(), isA<Parser<num>>());
+      });
     });
     group('not', () {
       expectCommon(any().not());
