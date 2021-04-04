@@ -10,7 +10,7 @@ stages:
       - command: "pub run test test/all_test.dart --platform vm"
       - command: "pub run test test/all_test.dart --platform chrome"
   - coverage:
-      - command: "pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
+      - command: "pub global activate dart_coveralls ; dart_coveralls report test/all_test.dart"
 
 cache:
   directories:
