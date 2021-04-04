@@ -1,4 +1,4 @@
-# Created with package:mono_repo v3.4.6
+# Created with package:mono_repo v3.4.7
 language: dart
 
 jobs:
@@ -6,46 +6,46 @@ jobs:
     - stage: analyze
       name: mono_repo self validate
       os: linux
-      script: "pub global activate mono_repo 3.4.6 && pub global run mono_repo generate --validate"
+      script: "pub global activate mono_repo 3.4.7 && pub global run mono_repo generate --validate"
     - stage: analyze
       name: "PKGS: petitparser, petitparser_examples; `dartanalyzer --fatal-infos .`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser petitparser_examples"
       script: tool/ci.sh command_0
     - stage: analyze
       name: "PKGS: petitparser, petitparser_examples; `dartfmt --dry-run --set-exit-if-changed .`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser petitparser_examples"
       script: tool/ci.sh command_1
     - stage: unit_test
       name: "PKG: petitparser; `pub run test test/all_test.dart --platform vm`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser"
       script: tool/ci.sh command_2
     - stage: unit_test
       name: "PKG: petitparser; `pub run test test/all_test.dart --platform chrome`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser"
       script: tool/ci.sh command_3
     - stage: unit_test
       name: "PKG: petitparser_examples; `pub run test --platform vm`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser_examples"
       script: tool/ci.sh command_5
     - stage: unit_test
       name: "PKG: petitparser_examples; `pub run test --platform chrome`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser_examples"
       script: tool/ci.sh command_6
     - stage: coverage
       name: "PKG: petitparser; `pub global activate dart_coveralls && dart_coveralls report test/all_test.dart`"
-      dart: dev
+      dart: stable
       os: linux
       env: PKGS="petitparser"
       script: tool/ci.sh command_4
