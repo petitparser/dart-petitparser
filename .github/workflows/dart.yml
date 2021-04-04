@@ -73,7 +73,7 @@ jobs:
         working-directory: petitparser_examples
         run: dart analyze --fatal-infos .
   job_003:
-    name: "analyze; PKGS: petitparser, petitparser_examples; `dart format --set-exit-if-changed .`"
+    name: "analyze; PKGS: petitparser, petitparser_examples; `dart format --output=none --set-exit-if-changed .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -96,19 +96,19 @@ jobs:
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: petitparser
         run: pub upgrade --no-precompile
-      - name: "petitparser; dart format --set-exit-if-changed ."
+      - name: "petitparser; dart format --output=none --set-exit-if-changed ."
         if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
         working-directory: petitparser
-        run: dart format --set-exit-if-changed .
+        run: "dart format --output=none --set-exit-if-changed ."
       - id: petitparser_examples_pub_upgrade
         name: "petitparser_examples; pub upgrade --no-precompile"
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: petitparser_examples
         run: pub upgrade --no-precompile
-      - name: "petitparser_examples; dart format --set-exit-if-changed ."
+      - name: "petitparser_examples; dart format --output=none --set-exit-if-changed ."
         if: "always() && steps.petitparser_examples_pub_upgrade.conclusion == 'success'"
         working-directory: petitparser_examples
-        run: dart format --set-exit-if-changed .
+        run: "dart format --output=none --set-exit-if-changed ."
   job_004:
     name: "unit_test; PKG: petitparser; `dart test --platform vm test/all_test.dart`"
     runs-on: ubuntu-latest

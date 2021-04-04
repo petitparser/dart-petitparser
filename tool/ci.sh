@@ -63,8 +63,8 @@ for PKG in ${PKGS}; do
         dart analyze --fatal-infos . || EXIT_CODE=$?
         ;;
       command_1)
-        echo 'dart format --set-exit-if-changed .'
-        dart format --set-exit-if-changed . || EXIT_CODE=$?
+        echo 'dart format --output=none --set-exit-if-changed .'
+        dart format --output=none --set-exit-if-changed . || EXIT_CODE=$?
         ;;
       command_2)
         echo 'dart test --platform vm test/all_test.dart'

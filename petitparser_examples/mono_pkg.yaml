@@ -5,7 +5,7 @@ dart:
 stages:
   - analyze:
       - command: "dart analyze --fatal-infos ."
-      - command: "dart format --set-exit-if-changed ."
+      - command: "dart format --output=none --set-exit-if-changed ."
   - unit_test:
       - command: "dart test --platform vm test/all_test.dart"
       - command: "dart test --platform chrome test/all_test.dart"
