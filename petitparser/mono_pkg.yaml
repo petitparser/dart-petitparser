@@ -11,7 +11,3 @@ stages:
       - command: "dart test --platform chrome test/all_test.dart"
   - coverage:
       - command: "dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart"
-
-cache:
-  directories:
-    - .dart_tool/build

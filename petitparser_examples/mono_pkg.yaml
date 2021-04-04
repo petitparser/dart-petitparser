@@ -9,7 +9,3 @@ stages:
   - unit_test:
       - command: "dart test --platform vm test/all_test.dart"
       - command: "dart test --platform chrome test/all_test.dart"
-
-cache:
-  directories:
-    - .dart_tool/build
