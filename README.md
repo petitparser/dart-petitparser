@@ -324,21 +324,23 @@ Misc
 
 The package comes with a large collection of example grammars and language experiments ready to explore:
 
-- `example/lib/dart` contains an experimental Dart grammar.
-- `example/lib/json` contains a complete JSON grammar and parser.
-- `example/lib/lisp` contains a complete LISP grammar, parser and evaluator.
-- `example/lib/prolog` contains a basic Prolog grammar, parser and evaluator.
-- `example/lib/smalltalk` contains a complete Smalltalk grammar.
+- [Dart](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/dart) contains an experimental Dart grammar.
+- [JSON](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/json) contains a complete JSON grammar and parser.
+- [Lisp](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/lisp) contains a complete LISP grammar, parser and evaluator.
+- [Prolog](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/prolog) contains a basic Prolog grammar, parser and evaluator.
+- [Smalltalk](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/smalltalk) contains a complete Smalltalk grammar.
 
 Furthermore, there are [numerous open source projects](https://pub.dev/packages?q=dependency:petitparser) using PetitParser:
 
-- [badger](https://github.com/badger-lang/badger) is an experimental programming language.
+- [apollovm](https://pub.dev/packages/apollovm), a simple VM that can parse, run and generate basic Dart and Java8 code.
+- [equations](https://pub.dev/packages/equations) is an equation solving library.
 - [expression_language](https://pub.dev/packages/expression_language) is a library for parsing and evaluating expressions.
+- [expressions](https://pub.dev/packages/expressions) is a library to parse and evaluate simple expressions.
 - [intl_translation](https://pub.dev/packages/intl_translation) provides internationalization and localization support to Dart.
+- [json_path](https://pub.dev/packages/json_path) is an implementation of JSONPath expressions.
 - [pem](https://pub.dev/packages/pem) encodes and decodes textual cryptographic keys.
-- [powerconfig](https://github.com/kaendfinger/powerconfig.dart) is a power config implementation.
+- [puppeteer](https://pub.dev/packages/puppeteer) is a library to automate the Chrome browser.
 - [query](https://pub.dev/packages/query) implements search queries with support for boolean groups, field scopes, ranges, etc.
-- [rythm](https://github.com/freewind/RythmDart) is a rich featured, high performance template engine.
 - [xml](https://pub.dev/packages/xml) is a lightweight library for parsing, traversing, and querying XML documents.
 
 
