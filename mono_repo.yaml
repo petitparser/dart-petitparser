@@ -1,7 +1,12 @@
 # See with https://github.com/dart-lang/mono_repo for details on this file
 
-# Enables Travis-CI - https://docs.travis-ci.com/
-travis: true
+# Enables GitHub
+github:
+  on:
+    push:
+      branches: [ main ]
+    pull_request:
+      branches: [ main ]
 
 # Adds a job that runs `mono_repo generate --validate` to check that everything
 # is up to date. You can specify the value as just `true` or give a `stage`
