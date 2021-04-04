@@ -2,6 +2,7 @@
 
 ## 4.1.0
 
+* Add the option to select the failure join strategy on `ChoiceParser` parsers.
 * Properly type all delegate parsers in choice, sequence, repeat, action, ...
   * Fix typing in `transformParser` and its users (debug tools, optimizers). To fix type your transformation function.
   * Fix typing of `GrammarDefinition` and reference parsers. To take advantage replace uses of `ref` with `ref0`, `ref1`, ...

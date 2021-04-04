@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../core/token.dart';
 import 'failure.dart';
-import 'result.dart';
 import 'success.dart';
 
 /// An immutable parse context.
@@ -17,11 +16,11 @@ class Context {
   final int position;
 
   /// Returns a result indicating a parse success.
-  Result<R> success<R>(R result, [int? position]) =>
+  Success<R> success<R>(R result, [int? position]) =>
       Success<R>(buffer, position ?? this.position, result);
 
   /// Returns a result indicating a parse failure.
-  Result<R> failure<R>(String message, [int? position]) =>
+  Failure<R> failure<R>(String message, [int? position]) =>
       Failure<R>(buffer, position ?? this.position, message);
 
   /// Returns the current line:column position in the [buffer].

@@ -875,25 +875,122 @@ void main() {
       test('empty', () {
         expect(() => <Parser>[].toChoiceParser(), throwsArgumentError);
       });
-      test('same type', () {
-        final first = any();
-        final second = any();
-        expect(first, isA<Parser<String>>());
-        expect(second, isA<Parser<String>>());
-        // TODO(renggli): https://github.com/dart-lang/language/issues/1557
-        // expect(first | second, isA<Parser<String>>());
-        // expect(first.or(second), isA<Parser<String>>());
-        expect([first, second].toChoiceParser(), isA<Parser<String>>());
+      group('types', () {
+        test('same', () {
+          final first = any();
+          final second = any();
+          expect(first, isA<Parser<String>>());
+          expect(second, isA<Parser<String>>());
+          // TODO(renggli): https://github.com/dart-lang/language/issues/1557
+          // expect(first | second, isA<Parser<String>>());
+          // expect(first.or(second), isA<Parser<String>>());
+          expect([first, second].toChoiceParser(), isA<Parser<String>>());
+        });
+        test('different', () {
+          final first = any().map(int.parse);
+          final second = any().map(double.parse);
+          expect(first, isA<Parser<int>>());
+          expect(second, isA<Parser<double>>());
+          // TODO(renggli): https://github.com/dart-lang/language/issues/1557
+          // expect(first | second, isA<Parser<num>>());
+          // expect(first.or(second), isA<Parser<num>>());
+          expect([first, second].toChoiceParser(), isA<Parser<num>>());
+        });
       });
-      test('different type', () {
-        final first = any().map(int.parse);
-        final second = any().map(double.parse);
-        expect(first, isA<Parser<int>>());
-        expect(second, isA<Parser<double>>());
-        // TODO(renggli): https://github.com/dart-lang/language/issues/1557
-        // expect(first | second, isA<Parser<num>>());
-        // expect(first.or(second), isA<Parser<num>>());
-        expect([first, second].toChoiceParser(), isA<Parser<num>>());
+      group('failure joining', () {
+        const failureA0 = Failure('A0', 0, 'A0');
+        const failureA1 = Failure('A1', 1, 'A1');
+        const failureB0 = Failure('B0', 0, 'B0');
+        const failureB1 = Failure('B1', 1, 'B1');
+        final parsers = [
+          anyOf('ab').plus() & anyOf('12').plus(),
+          anyOf('ac').plus() & anyOf('13').plus(),
+          anyOf('ad').plus() & anyOf('14').plus(),
+        ].map((parser) => parser.flatten());
+        test('construction', () {
+          final defaultTwo = any().or(any());
+          expect(defaultTwo.failureJoiner(failureA1, failureA0), failureA0);
+          final customTwo = any().or(any(), failureJoiner: selectFarthest);
+          expect(customTwo.failureJoiner(failureA1, failureA0), failureA1);
+          final customCopy = customTwo.copy();
+          expect(customCopy.failureJoiner(failureA1, failureA0), failureA1);
+          final customThree =
+              any().or(any(), failureJoiner: selectFarthest).or(any());
+          expect(customThree.failureJoiner(failureA1, failureA0), failureA1);
+        });
+        test('select first', () {
+          final parser = parsers.toChoiceParser(failureJoiner: selectFirst);
+          expect(selectFirst(failureA0, failureB0), failureA0);
+          expect(selectFirst(failureB0, failureA0), failureB0);
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ab" expected');
+          expectFailure(parser, 'a', 1, 'any of "12" expected');
+          expectFailure(parser, 'ab', 2, 'any of "12" expected');
+          expectFailure(parser, 'ac', 1, 'any of "12" expected');
+          expectFailure(parser, 'ad', 1, 'any of "12" expected');
+        });
+        test('select last', () {
+          final parser = parsers.toChoiceParser(failureJoiner: selectLast);
+          expect(selectLast(failureA0, failureB0), failureB0);
+          expect(selectLast(failureB0, failureA0), failureA0);
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ad" expected');
+          expectFailure(parser, 'a', 1, 'any of "14" expected');
+          expectFailure(parser, 'ab', 1, 'any of "14" expected');
+          expectFailure(parser, 'ac', 1, 'any of "14" expected');
+          expectFailure(parser, 'ad', 2, 'any of "14" expected');
+        });
+        test('farthest failure', () {
+          final parser = parsers.toChoiceParser(failureJoiner: selectFarthest);
+          expect(selectFarthest(failureA0, failureB0), failureB0);
+          expect(selectFarthest(failureA0, failureB1), failureB1);
+          expect(selectFarthest(failureB0, failureA0), failureA0);
+          expect(selectFarthest(failureB1, failureA0), failureB1);
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(parser, '', 0, 'any of "ad" expected');
+          expectFailure(parser, 'a', 1, 'any of "14" expected');
+          expectFailure(parser, 'ab', 2, 'any of "12" expected');
+          expectFailure(parser, 'ac', 2, 'any of "13" expected');
+          expectFailure(parser, 'ad', 2, 'any of "14" expected');
+        });
+        test('farthest failure and joined', () {
+          final parser =
+              parsers.toChoiceParser(failureJoiner: selectFarthestJoined);
+          expect(selectFarthestJoined(failureA0, failureB1), failureB1);
+          expect(selectFarthestJoined(failureB1, failureA0), failureB1);
+          expect(
+              selectFarthestJoined(failureA0, failureB0).message, 'A0 OR B0');
+          expect(
+              selectFarthestJoined(failureB0, failureA0).message, 'B0 OR A0');
+          expect(
+              selectFarthestJoined(failureA1, failureB1).message, 'A1 OR B1');
+          expect(
+              selectFarthestJoined(failureB1, failureA1).message, 'B1 OR A1');
+          expectSuccess(parser, 'ab12', 'ab12');
+          expectSuccess(parser, 'ac13', 'ac13');
+          expectSuccess(parser, 'ad14', 'ad14');
+          expectFailure(
+              parser,
+              '',
+              0,
+              'any of "ab" expected OR '
+                  'any of "ac" expected OR any of "ad" expected');
+          expectFailure(
+              parser,
+              'a',
+              1,
+              'any of "12" expected OR '
+                  'any of "13" expected OR any of "14" expected');
+          expectFailure(parser, 'ab', 2, 'any of "12" expected');
+          expectFailure(parser, 'ac', 2, 'any of "13" expected');
+          expectFailure(parser, 'ad', 2, 'any of "14" expected');
+        });
       });
     });
     group('not', () {
