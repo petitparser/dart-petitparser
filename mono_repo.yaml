@@ -7,8 +7,6 @@ github:
       branches: [ main ]
     pull_request:
       branches: [ main ]
-  env:
-    COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
 
 # Adds a job that runs `mono_repo generate --validate` to check that everything
 # is up to date. You can specify the value as just `true` or give a `stage`

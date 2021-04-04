@@ -12,7 +12,6 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
-  COVERALLS_TOKEN: "${{ secrets.COVERALLS_TOKEN }}"
 
 jobs:
   job_001:
