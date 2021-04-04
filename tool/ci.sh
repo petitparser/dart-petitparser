@@ -59,32 +59,24 @@ for PKG in ${PKGS}; do
       echo -e "\033[1mPKG: ${PKG}; TASK: ${TASK}\033[22m"
       case ${TASK} in
       command_0)
-        echo 'dartanalyzer --fatal-infos .'
-        dartanalyzer --fatal-infos . || EXIT_CODE=$?
+        echo 'dart analyze --fatal-infos .'
+        dart analyze --fatal-infos . || EXIT_CODE=$?
         ;;
       command_1)
-        echo 'dartfmt --dry-run --set-exit-if-changed .'
-        dartfmt --dry-run --set-exit-if-changed . || EXIT_CODE=$?
+        echo 'dart format --set-exit-if-changed .'
+        dart format --set-exit-if-changed . || EXIT_CODE=$?
         ;;
       command_2)
-        echo 'pub run test test/all_test.dart --platform vm'
-        pub run test test/all_test.dart --platform vm || EXIT_CODE=$?
+        echo 'dart test --platform vm test/all_test.dart'
+        dart test --platform vm test/all_test.dart || EXIT_CODE=$?
         ;;
       command_3)
-        echo 'pub run test test/all_test.dart --platform chrome'
-        pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
+        echo 'dart test --platform chrome test/all_test.dart'
+        dart test --platform chrome test/all_test.dart || EXIT_CODE=$?
         ;;
       command_4)
-        echo 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
-        pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
-        ;;
-      command_5)
-        echo 'pub run test --platform vm'
-        pub run test --platform vm || EXIT_CODE=$?
-        ;;
-      command_6)
-        echo 'pub run test --platform chrome'
-        pub run test --platform chrome || EXIT_CODE=$?
+        echo 'dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart'
+        dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart || EXIT_CODE=$?
         ;;
       *)
         echo -e "\033[31mUnknown TASK '${TASK}' - TERMINATING JOB\033[0m"

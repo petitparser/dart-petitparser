@@ -4,13 +4,13 @@ dart:
 
 stages:
   - analyze:
-      - command: "dartanalyzer --fatal-infos ."
-      - command: "dartfmt --dry-run --set-exit-if-changed ."
+      - command: "dart analyze --fatal-infos ."
+      - command: "dart format --set-exit-if-changed ."
   - unit_test:
-      - command: "pub run test test/all_test.dart --platform vm"
-      - command: "pub run test test/all_test.dart --platform chrome"
+      - command: "dart test --platform vm test/all_test.dart"
+      - command: "dart test --platform chrome test/all_test.dart"
   - coverage:
-      - command: "pub global activate dart_coveralls ; dart_coveralls report test/all_test.dart"
+      - command: "dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart"
 
 cache:
   directories:
