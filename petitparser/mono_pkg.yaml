@@ -9,5 +9,7 @@ stages:
   - unit_test:
       - command: "dart test --platform vm test/all_test.dart"
       - command: "dart test --platform chrome test/all_test.dart"
-  - coverage:
-      - command: "dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart"
+
+cache:
+  directories:
+    - .dart_tool/build

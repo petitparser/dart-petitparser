@@ -74,10 +74,6 @@ for PKG in ${PKGS}; do
         echo 'dart test --platform chrome test/all_test.dart'
         dart test --platform chrome test/all_test.dart || EXIT_CODE=$?
         ;;
-      command_4)
-        echo 'dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart'
-        dart pub global activate dart_coveralls; dart_coveralls report test/all_test.dart || EXIT_CODE=$?
-        ;;
       *)
         echo -e "\033[31mUnknown TASK '${TASK}' - TERMINATING JOB\033[0m"
         exit 64
