@@ -238,7 +238,7 @@ jobs:
       - job_002
       - job_003
   job_008:
-    name: "coverage; PKG: petitparser; `pub global activate dart_coveralls && dart_coveralls report test/all_test.dart`"
+    name: "coverage; PKG: petitparser; `pub global activate dart_coveralls && dart_coveralls report --token ${{ secrets.COVERALLS_TOKEN }} test/all_test.dart`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -261,10 +261,10 @@ jobs:
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: petitparser
         run: pub upgrade --no-precompile
-      - name: "petitparser; pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
+      - name: "petitparser; pub global activate dart_coveralls && dart_coveralls report --token ${{ secrets.COVERALLS_TOKEN }} test/all_test.dart"
         if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
         working-directory: petitparser
-        run: "pub global activate dart_coveralls && dart_coveralls report test/all_test.dart"
+        run: "pub global activate dart_coveralls && dart_coveralls report --token ${{ secrets.COVERALLS_TOKEN }} test/all_test.dart"
     needs:
       - job_001
       - job_002
