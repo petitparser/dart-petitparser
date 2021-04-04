@@ -75,8 +75,8 @@ for PKG in ${PKGS}; do
         pub run test test/all_test.dart --platform chrome || EXIT_CODE=$?
         ;;
       command_4)
-        echo 'pub global activate dart_coveralls && dart_coveralls report --token ${{ secrets.COVERALLS_TOKEN }} test/all_test.dart'
-        pub global activate dart_coveralls && dart_coveralls report --token ${{ secrets.COVERALLS_TOKEN }} test/all_test.dart || EXIT_CODE=$?
+        echo 'pub global activate dart_coveralls && dart_coveralls report test/all_test.dart'
+        pub global activate dart_coveralls && dart_coveralls report test/all_test.dart || EXIT_CODE=$?
         ;;
       command_5)
         echo 'pub run test --platform vm'
