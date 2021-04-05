@@ -51,7 +51,7 @@ class FlattenParser<T> extends DelegateParser<T, String> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  bool hasEqualProperties(FlattenParser other) =>
+  bool hasEqualProperties(FlattenParser<T> other) =>
       super.hasEqualProperties(other) && message == other.message;
 
   @override

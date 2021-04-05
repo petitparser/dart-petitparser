@@ -47,6 +47,7 @@ abstract class Parser<R> {
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
+  @nonVirtual
   Result<R> parse(String input) => parseOn(Context(input, 0));
 
   /// Returns a shallow copy of the receiver.
@@ -83,7 +84,7 @@ abstract class Parser<R> {
   /// Normally this method does not need to be overridden, as this method works
   /// generically on the returned [Parser.children].
   @protected
-  @mustCallSuper
+  @nonVirtual
   bool hasEqualChildren(covariant Parser other, Set<Parser> seen) {
     final thisChildren = children, otherChildren = other.children;
     if (thisChildren.length != otherChildren.length) {
