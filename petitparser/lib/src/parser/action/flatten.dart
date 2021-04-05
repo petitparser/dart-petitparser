@@ -5,7 +5,7 @@ import '../combinator/delegate.dart';
 
 extension FlattenParserExtension<T> on Parser<T> {
   /// Returns a parser that discards the result of the receiver, and returns
-  /// a sub-string of the consumed range in the string/list being parsed.
+  /// the sub-string of the consumed range in the input being parsed.
   ///
   /// If a [message] is provided, the flatten parser can switch to a fast mode
   /// where error tracking within the receiver is suppressed and in case of a
@@ -17,8 +17,8 @@ extension FlattenParserExtension<T> on Parser<T> {
   Parser<String> flatten([String? message]) => FlattenParser<T>(this, message);
 }
 
-/// A parser that answers a substring of the range its delegate
-/// parses.
+/// A parser that discards the result of the delegate, and answers the
+/// sub-string its delegate consumes.
 class FlattenParser<T> extends DelegateParser<T, String> {
   FlattenParser(Parser<T> delegate, [this.message]) : super(delegate);
 
