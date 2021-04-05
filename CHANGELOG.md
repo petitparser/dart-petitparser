@@ -2,7 +2,10 @@
 
 ## 4.1.0
 
-* Add the option to select the failure join strategy on `ChoiceParser` parsers.
+* Add the option to select the failure join strategy on `ChoiceParser` parsers:
+  * `selectLast` is the default strategy, reporting the failure of the last parser tried.
+  * `selectFarthest` reports the parser failure the farthest down in the input string, preferring later failures over earlier ones.
+  * `selectFarthestJoined` is the same as above, but joins error messages that happen at the same position.
 * Properly type all delegate parsers in choice, sequence, repeat, action, ...
   * Fix typing in `transformParser` and its users (debug tools, optimizers). To fix type your transformation function.
   * Fix typing of `GrammarDefinition` and reference parsers. To take advantage replace uses of `ref` with `ref0`, `ref1`, ...

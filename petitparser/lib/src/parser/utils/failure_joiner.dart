@@ -7,7 +7,7 @@ typedef FailureJoiner<T> = Failure<T> Function(
 /// Reports the first parse failure observed.
 Failure<T> selectFirst<T>(Failure<T> first, Failure<T> second) => first;
 
-/// Reports the last parse failure observed.
+/// Reports the last parse failure observed (default).
 Failure<T> selectLast<T>(Failure<T> first, Failure<T> second) => second;
 
 /// Reports the parser failure farthest down in the input string, preferring
