@@ -194,7 +194,7 @@ parser.parse('(1 + 2) * 3');            // 9
 
 Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). The class `GrammarDefinition` provides the building block to conveniently define and build complex grammars with possibly hundreds of productions.
 
-To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition. For every production create a new method returning the primitive parser defining it. The method called [start] is supposed to return the start production of the grammar. To refer to a production defined in the same definition use [ref0] with the function reference as the argument.
+To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition`. For every production create a new method returning the primitive parser defining it. The method called `start` is supposed to return the start production of the grammar. To refer to a production defined in the same definition use `ref0` with the function reference as the argument. The _0_ at the end of `ref0` means that the production reference isn't parametrized (zero argument production method).
 
 ```dart
 class ExpressionDefinition extends GrammarDefinition {
