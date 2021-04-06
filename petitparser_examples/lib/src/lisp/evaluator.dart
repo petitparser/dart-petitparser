@@ -1,9 +1,9 @@
 import 'package:petitparser/petitparser.dart';
 
-import 'quote.dart';
 import 'cons.dart';
 import 'environment.dart';
 import 'name.dart';
+import 'quote.dart';
 
 /// The evaluation function.
 dynamic eval(Environment env, dynamic expr) {

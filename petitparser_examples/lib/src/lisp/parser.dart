@@ -1,9 +1,9 @@
 import 'package:petitparser/petitparser.dart';
 
-import 'quote.dart';
 import 'cons.dart';
 import 'grammar.dart';
 import 'name.dart';
+import 'quote.dart';
 
 /// The standard lisp parser definition.
 final _definition = LispParserDefinition();
