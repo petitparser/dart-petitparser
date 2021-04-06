@@ -73,7 +73,7 @@ class NativeEnvironment extends Environment {
   }
 
   static dynamic _quote(Environment env, dynamic args) {
-    return args;
+    return args.head;
   }
 
   static dynamic _eval(Environment env, dynamic args) {

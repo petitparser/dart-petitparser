@@ -1,12 +1,15 @@
 import 'package:petitparser/petitparser.dart';
 
+import 'quote.dart';
 import 'cons.dart';
 import 'environment.dart';
 import 'name.dart';
 
 /// The evaluation function.
 dynamic eval(Environment env, dynamic expr) {
-  if (expr is Cons) {
+  if (expr is Quote) {
+    return expr.datum;
+  } else if (expr is Cons) {
     final Function function = eval(env, expr.head);
     return function(env, expr.tail);
   } else if (expr is Name) {
