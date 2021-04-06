@@ -277,17 +277,18 @@ void main() {
       expect(exec('((lambda (x y z) (+ x y z)) 2 4 6)'), 12);
     });
     test('Quote', () {
-      expect(exec('(quote)'), null);
-      expect(exec('(quote 1)'), Cons(1, null));
-      expect(exec('(quote + 1)'), Cons(Name('+'), Cons(1, null)));
+      expect(exec('(quote 1)'), 1);
+      expect(exec('(quote a)'), Name('a'));
+      expect(exec('(quote (+ 1))'), Cons(Name('+'), Cons(1, null)));
     });
     test('Quote (syntax)', () {
       expect(exec('\'()'), null);
+      expect(exec('\'a'), Name('a'));
       expect(exec('\'(1)'), Cons(1, null));
       expect(exec('\'(+ 1)'), Cons(Name('+'), Cons(1, null)));
     });
     test('Eval', () {
-      expect(exec('(eval (quote + 1 2))'), 3);
+      expect(exec('(eval (quote (+ 1 2)))'), 3);
     });
     test('Apply', () {
       expect(exec('(apply + 1 2 3)'), 6);
