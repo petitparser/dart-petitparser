@@ -3,6 +3,7 @@ import 'package:petitparser/petitparser.dart';
 import 'cons.dart';
 import 'grammar.dart';
 import 'name.dart';
+import 'quote.dart';
 
 /// The standard lisp parser definition.
 final _definition = LispParserDefinition();
@@ -28,5 +29,5 @@ class LispParserDefinition extends LispGrammarDefinition {
   Parser number() => super.number().map((each) => num.parse(each));
 
   Parser quote() =>
-      super.quote().map((each) => Cons((_, args) => args, each[1]));
+  super.quote().map((each) => Quote(each[1]));
 }
