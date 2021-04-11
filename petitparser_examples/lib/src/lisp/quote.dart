@@ -1,9 +1,8 @@
-/// A quoted datum
-///
+/// A quoted datum.
 class Quote {
   /// The quoted datum.
-  Object? datum;
-  
+  dynamic datum;
+
   /// Constructs as a quote.
   Quote(this.datum);
 }

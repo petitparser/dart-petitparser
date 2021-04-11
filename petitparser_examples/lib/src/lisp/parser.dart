@@ -28,6 +28,5 @@ class LispParserDefinition extends LispGrammarDefinition {
   Parser symbol() => super.symbol().map((each) => Name(each));
   Parser number() => super.number().map((each) => num.parse(each));
 
-  Parser quote() =>
-  super.quote().map((each) => Quote(each[1]));
+  Parser quote() => super.quote().map((each) => Quote(each[1]));
 }
