@@ -881,20 +881,22 @@ void main() {
           final second = any();
           expect(first, isA<Parser<String>>());
           expect(second, isA<Parser<String>>());
+          expect(ChoiceParser([first, second]), isA<Parser<String>>());
+          expect([first, second].toChoiceParser(), isA<Parser<String>>());
           // TODO(renggli): https://github.com/dart-lang/language/issues/1557
           // expect(first | second, isA<Parser<String>>());
           // expect(first.or(second), isA<Parser<String>>());
-          expect([first, second].toChoiceParser(), isA<Parser<String>>());
         });
         test('different', () {
           final first = any().map(int.parse);
           final second = any().map(double.parse);
           expect(first, isA<Parser<int>>());
           expect(second, isA<Parser<double>>());
+          expect(ChoiceParser([first, second]), isA<Parser<num>>());
+          expect([first, second].toChoiceParser(), isA<Parser<num>>());
           // TODO(renggli): https://github.com/dart-lang/language/issues/1557
           // expect(first | second, isA<Parser<num>>());
           // expect(first.or(second), isA<Parser<num>>());
-          expect([first, second].toChoiceParser(), isA<Parser<num>>());
         });
       });
       group('failure joining', () {
