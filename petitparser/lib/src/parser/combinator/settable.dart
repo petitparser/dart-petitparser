@@ -1,3 +1,5 @@
+import 'package:petitparser/src/parser/utils/resolvable.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -27,11 +29,15 @@ SettableParser<R> undefined<R>([String message = 'undefined parser']) =>
 
 /// A parser that is not defined, but that can be set at a later
 /// point in time.
-class SettableParser<R> extends DelegateParser<R, R> {
+class SettableParser<R> extends DelegateParser<R, R>
+    implements ResolvableParser<R> {
   SettableParser(Parser<R> delegate) : super(delegate);
 
   /// Sets the receiver to delegate to [parser].
   void set(Parser<R> parser) => replace(children[0], parser);
+
+  @override
+  Parser<R> resolve() => delegate;
 
   @override
   Result<R> parseOn(Context context) => delegate.parseOn(context);

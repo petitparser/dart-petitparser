@@ -3,15 +3,17 @@ import 'package:meta/meta.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../../parser/utils/resolvable.dart';
 
 /// Internal implementation of a reference parser.
 @immutable
-class ReferenceParser<R> extends Parser<R> {
+class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   ReferenceParser(this.function, this.arguments);
 
   final Function function;
   final List arguments;
 
+  @override
   Parser<R> resolve() => Function.apply(function, arguments);
 
   @override
