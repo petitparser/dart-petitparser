@@ -1,8 +1,4 @@
 name: Dart Deploy
-on:
-  push:
-    branches:
-      - main
 defaults:
   run:
     shell: bash

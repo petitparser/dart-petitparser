@@ -1,10 +1,9 @@
-import 'package:petitparser/src/parser/utils/resolvable.dart';
-
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import '../misc/failure.dart';
+import '../utils/resolvable.dart';
 
 extension SettableParserExtension<T> on Parser<T> {
   /// Returns a parser that points to the receiver, but can be changed to point
