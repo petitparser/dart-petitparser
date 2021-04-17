@@ -6,7 +6,7 @@ This package contains examples to illustrate the use of [PetitParser](https://gi
 To run the web examples execute the following commands from the command line and navigate to http://localhost:8080/:
 
 ```bash
-pub global activate webdev
+dart pub global activate webdev
 webdev serve --release
 ```
 
