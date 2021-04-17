@@ -1,4 +1,5 @@
 name: Dart Deploy
+on: workflow_dispatch
 defaults:
   run:
     shell: bash
