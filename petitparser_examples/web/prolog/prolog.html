@@ -16,10 +16,26 @@
   <h1>Prolog Interpreter</h1>
 
   <h2>Rules</h2>
-  <textarea id="rules"></textarea>
+  <textarea id="rules">
+father_child(massimo, ridge).
+father_child(eric, thorne).
+father_child(thorne, alexandria).
+
+mother_child(stephanie, thorne).
+mother_child(stephanie, kristen).
+mother_child(stephanie, felicia).
+
+parent_child(X, Y) :- father_child(X, Y).
+parent_child(X, Y) :- mother_child(X, Y).
+
+sibling(X, Y) :- parent_child(Z, X), parent_child(Z, Y).
+
+ancestor(X, Y) :- parent_child(X, Y).
+ancestor(X, Y) :- parent_child(X, Z), ancestor(Z, Y).
+  </textarea>
 
   <h2>Query</h2>
-  <input type="text" id="query">
+  <input type="text" id="query" value="sibling(X, felicia)">
   <input type="submit" id="ask" value="Ask">
 
   <h2>Answers</h2>
