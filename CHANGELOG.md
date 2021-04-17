@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.2.0
+
+* `ref0`, `ref1`, `ref2`, ... is now also usable outside of `GrammarDefinition`.
+  * Use `resolve` to inline all the referenced parsers.
+
 ## 4.1.0
 
 * Add the option to select the failure join strategy on `ChoiceParser` parsers:

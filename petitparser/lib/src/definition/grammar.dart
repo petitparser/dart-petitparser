@@ -1,7 +1,9 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import 'reference.dart';
+import 'internal/reference.dart';
+import 'internal/undefined.dart';
+import 'resolve.dart';
 
 /// Helper to conveniently define and build complex, recursive grammars using
 /// plain Dart code.
@@ -73,43 +75,43 @@ abstract class GrammarDefinition {
   /// Use [ref0], [ref1], [ref2], [ref3], [ref4], or [ref5] instead.
   @Deprecated('Use [ref0], [ref1], [ref2], ... instead.')
   Parser<T> ref<T>(Function callback,
-      [dynamic arg1 = _undefined,
-      dynamic arg2 = _undefined,
-      dynamic arg3 = _undefined,
-      dynamic arg4 = _undefined,
-      dynamic arg5 = _undefined]) {
+      [dynamic arg1 = undefined,
+      dynamic arg2 = undefined,
+      dynamic arg3 = undefined,
+      dynamic arg4 = undefined,
+      dynamic arg5 = undefined]) {
     final arguments = [arg1, arg2, arg3, arg4, arg5]
-        .takeWhile((each) => each != _undefined)
+        .takeWhile((each) => each != undefined)
         .toList(growable: false);
-    return Reference<T>(callback, arguments);
+    return ReferenceParser<T>(callback, arguments);
   }
 
   /// Reference to a production [callback] without any parameters.
   Parser<T> ref0<T>(Parser<T> Function() callback) =>
-      Reference<T>(callback, const []);
+      ReferenceParser<T>(callback, const []);
 
   /// Reference to a production [callback] parametrized with a single argument
   /// [arg1].
   Parser<T> ref1<T, A1>(Parser<T> Function(A1) callback, A1 arg1) =>
-      Reference<T>(callback, [arg1]);
+      ReferenceParser<T>(callback, [arg1]);
 
   /// Reference to a production [callback] parametrized with two arguments
   /// [arg1] and [arg2].
   Parser<T> ref2<T, A1, A2>(
           Parser<T> Function(A1, A2) callback, A1 arg1, A2 arg2) =>
-      Reference<T>(callback, [arg1, arg2]);
+      ReferenceParser<T>(callback, [arg1, arg2]);
 
   /// Reference to a production [callback] parametrized with tree arguments
   /// [arg1], [arg2], and [arg3].
   Parser<T> ref3<T, A1, A2, A3>(
           Parser<T> Function(A1, A2, A3) callback, A1 arg1, A2 arg2, A3 arg3) =>
-      Reference<T>(callback, [arg1, arg2, arg3]);
+      ReferenceParser<T>(callback, [arg1, arg2, arg3]);
 
   /// Reference to a production [callback] parametrized with four arguments
   /// [arg1], [arg2], [arg3], and [arg4].
   Parser<T> ref4<T, A1, A2, A3, A4>(Parser<T> Function(A1, A2, A3, A4) callback,
           A1 arg1, A2 arg2, A3 arg3, A4 arg4) =>
-      Reference<T>(callback, [arg1, arg2, arg3, arg4]);
+      ReferenceParser<T>(callback, [arg1, arg2, arg3, arg4]);
 
   /// Reference to a production [callback] parametrized with five arguments
   /// [arg1], [arg2], [arg3], [arg4], and [arg5].
@@ -120,62 +122,20 @@ abstract class GrammarDefinition {
           A3 arg3,
           A4 arg4,
           A5 arg5) =>
-      Reference<T>(callback, [arg1, arg2, arg3, arg4, arg5]);
+      ReferenceParser<T>(callback, [arg1, arg2, arg3, arg4, arg5]);
 
   /// Builds a composite parser from this definition.
   ///
   /// The optional [start] reference specifies a different starting production
   /// into the grammar. The optional [arguments] list parametrizes the called
   /// production.
-  Parser<T> build<T>({Function? start, List<Object> arguments = const []}) =>
-      _resolve(Reference(start ?? this.start, arguments)) as Parser<T>;
-
-  /// Internal helper to resolve a complete parser graph.
-  Parser _resolve(Reference reference) {
-    final mapping = <Reference, Parser>{};
-
-    Parser _dereference(Reference reference) {
-      var parser = mapping[reference];
-      if (parser == null) {
-        final references = {reference};
-        parser = reference.resolve();
-        while (parser is Reference) {
-          if (references.contains(parser)) {
-            throw StateError('Recursive references detected: $references');
-          }
-          references.add(parser);
-          parser = parser.resolve();
-        }
-        for (final otherReference in references) {
-          mapping[otherReference] = parser!;
-        }
-      }
-      return parser!;
+  Parser<T> build<T>({Function? start, List<Object> arguments = const []}) {
+    if (start != null) {
+      return resolve(Function.apply(start, arguments));
+    } else if (arguments.isEmpty) {
+      return resolve(this.start() as Parser<T>);
+    } else {
+      throw StateError('Invalid arguments passed.');
     }
-
-    final todo = [_dereference(reference)];
-    final seen = {...todo};
-
-    while (todo.isNotEmpty) {
-      final parent = todo.removeLast();
-      for (var child in parent.children) {
-        if (child is Reference) {
-          final referenced = _dereference(child);
-          parent.replace(child, referenced);
-          child = referenced;
-        }
-        if (seen.add(child)) {
-          todo.add(child);
-        }
-      }
-    }
-
-    return mapping[reference]!;
   }
 }
-
-class _Undefined {
-  const _Undefined();
-}
-
-const _undefined = _Undefined();
