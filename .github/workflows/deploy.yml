@@ -11,6 +11,7 @@ jobs:
         with:
           sdk: stable
       - uses: actions/checkout@v2
+      - run: "dart pub get"
       - run: "dart pub global activate webdev"
       - run: "webdev build --release"
       - uses: peaceiris/actions-gh-pages@v3
