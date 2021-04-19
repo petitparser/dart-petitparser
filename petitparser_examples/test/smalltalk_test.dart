@@ -305,13 +305,13 @@ exampleWithNumber: x
     return validate('#__gen__binding', grammar.symbolLiteral);
   });
   test('testSymbolLiteral7', () {
-    return validate('# fucker', grammar.symbolLiteral);
+    return validate('# foo', grammar.symbolLiteral);
   });
   test('testSymbolLiteral8', () {
-    return validate('##fucker', grammar.symbolLiteral);
+    return validate('##foo', grammar.symbolLiteral);
   });
   test('testSymbolLiteral9', () {
-    return validate('## fucker', grammar.symbolLiteral);
+    return validate('## foo', grammar.symbolLiteral);
   });
   test('testBinaryExpression1', () {
     return validate('1 + 2', grammar.expression);
