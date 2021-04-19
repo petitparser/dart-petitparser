@@ -292,6 +292,60 @@ void main() {
         ];
         expect(result.map((token) => token.input), expected);
       });
+      test('map', () {
+        final expected = [
+          '49',
+          '13',
+          '49',
+          '50',
+          '13',
+          '10',
+          '49',
+          '50',
+          '51',
+          '10',
+          '49',
+          '50',
+          '51',
+          '52'
+        ];
+        expect(
+            result
+                .map((token) => token.map((value) => value.toString()))
+                .map((token) => token.value),
+            expected);
+      });
+      group('join', () {
+        test('normal', () {
+          final joined = Token.join(result);
+          expect(
+              joined,
+              isA<Token<List<int>>>()
+                  .having((token) => token.value, 'value',
+                      [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52])
+                  .having((token) => token.buffer, 'buffer', buffer)
+                  .having((token) => token.start, 'start', 0)
+                  .having((token) => token.stop, 'stop', buffer.length));
+        });
+        test('reverse order', () {
+          final joined = Token.join(result.reversed);
+          expect(
+              joined,
+              isA<Token<List<int>>>()
+                  .having((token) => token.value, 'value',
+                      [52, 51, 50, 49, 10, 51, 50, 49, 10, 13, 50, 49, 13, 49])
+                  .having((token) => token.buffer, 'buffer', buffer)
+                  .having((token) => token.start, 'start', 0)
+                  .having((token) => token.stop, 'stop', buffer.length));
+        });
+        test('empty', () {
+          expect(() => Token.join([]), throwsArgumentError);
+        });
+        test('different buffer', () {
+          const token = [Token(12, '12', 0, 2), Token(32, '32', 0, 2)];
+          expect(() => Token.join(token), throwsArgumentError);
+        });
+      });
       test('unique', () {
         expect({...result}.length, result.length);
       });

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart';
 
 import '../matcher/matches_skipping.dart';
@@ -43,6 +45,10 @@ class Token<T> {
   /// The column number of this token (only works for [String] buffers).
   int get column => Token.lineAndColumnOf(buffer, start)[1];
 
+  /// Converts the value of the token.
+  Token<R> map<R>(R Function(T value) mapper) =>
+      Token(mapper(value), buffer, start, stop);
+
   @override
   String toString() => 'Token[${positionString(buffer, start)}]: $value';
 
@@ -56,9 +62,30 @@ class Token<T> {
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
+  /// Combines multiple token into a single token with the list of its values.
+  static Token<List<T>> join<T>(Iterable<Token<T>> token) {
+    final iterator = token.iterator;
+    if (!iterator.moveNext()) {
+      throw ArgumentError.value(token, 'token', 'Require at least one token');
+    }
+    final value = <T>[iterator.current.value];
+    final buffer = iterator.current.buffer;
+    var start = iterator.current.start;
+    var stop = iterator.current.stop;
+    while (iterator.moveNext()) {
+      if (buffer != iterator.current.buffer) {
+        throw ArgumentError.value(
+            token, 'token', 'Token do not use same buffer');
+      }
+      value.add(iterator.current.value);
+      start = math.min(start, iterator.current.start);
+      stop = math.max(stop, iterator.current.stop);
+    }
+    return Token(value, buffer, start, stop);
+  }
+
   /// Returns a parser for that detects newlines platform independently.
   static Parser newlineParser() => _newlineParser;
-
   static final Parser _newlineParser =
       char('\n') | (char('\r') & char('\n').optional());
 
