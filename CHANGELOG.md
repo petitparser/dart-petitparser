@@ -3,7 +3,8 @@
 ## 4.2.0
 
 * `ref0`, `ref1`, `ref2`, ... is now also usable outside of `GrammarDefinition`.
-  * Use `resolve` to inline all the referenced parsers.
+  * Use `resolve` to inline all the referenced parsers, which now also works with `SettableParser`.
+  * Deprecated `removeSettables`, that is superseded by the more powerful `resolve` operation.
 
 ## 4.1.0
 

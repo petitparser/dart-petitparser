@@ -2,6 +2,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
+// ignore_for_file: deprecated_member_use_from_same_package
 void main() {
   group('iterator', () {
     test('single', () {
@@ -126,20 +127,22 @@ void main() {
     });
   });
   group('optimize', () {
-    test('remove settables', () {
-      final input = lowercase().settable();
-      final output = removeSettables(input);
-      expect(output.isEqualTo(lowercase()), isTrue);
-    });
-    test('remove nested settables', () {
-      final input = lowercase().settable().star();
-      final output = removeSettables(input);
-      expect(output.isEqualTo(lowercase().star()), isTrue);
-    });
-    test('remove double settables', () {
-      final input = lowercase().settable().settable();
-      final output = removeSettables(input);
-      expect(output.isEqualTo(lowercase()), isTrue);
+    group('remove settables', () {
+      test('basic settables', () {
+        final input = lowercase().settable();
+        final output = removeSettables(input);
+        expect(output.isEqualTo(lowercase()), isTrue);
+      });
+      test('nested settables', () {
+        final input = lowercase().settable().star();
+        final output = removeSettables(input);
+        expect(output.isEqualTo(lowercase().star()), isTrue);
+      });
+      test('double settables', () {
+        final input = lowercase().settable().settable();
+        final output = removeSettables(input);
+        expect(output.isEqualTo(lowercase()), isTrue);
+      });
     });
     test('remove duplicate', () {
       final input = lowercase() & lowercase();
