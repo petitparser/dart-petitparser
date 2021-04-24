@@ -109,8 +109,18 @@ String buildString(String input) =>
 ValueNode buildAssignment(List variables, ValueNode value) =>
     variables.isEmpty ? value : throw UnimplementedError();
 
-ValueNode buildCascade(ValueNode receiver, List messages) =>
-    messages.isEmpty ? receiver : throw UnimplementedError();
+ValueNode buildCascade(ValueNode node, List parts) {
+  if (parts.isEmpty) {
+    return node;
+  }
+  final messages = [node as MessageNode];
+  final semicolons = <Token>[];
+  for (final part in parts) {
+    messages.add(buildMessage(messages[0].receiver, [part[1]]) as MessageNode);
+    semicolons.add(part[0]);
+  }
+  return CascadeNode(messages, semicolons);
+}
 
 ValueNode buildMessage(ValueNode receiver, List? messages) => (messages ?? [])
     .fold(

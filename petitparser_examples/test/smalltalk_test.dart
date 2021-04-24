@@ -26,6 +26,19 @@ void verify(String name, String source, Parser Function() grammarProduction,
 Matcher isLiteralNode(dynamic value) =>
     isA<LiteralNode>().having((node) => node.value, 'value', value);
 
+Matcher isVariableNode(String name) =>
+    isA<VariableNode>().having((node) => node.name, 'name', name);
+
+Matcher isMessageNode(Matcher receiver, String selector,
+        [List<Matcher> arguments = const []]) =>
+    isA<MessageNode>()
+        .having((node) => node.receiver, 'receiver', receiver)
+        .having((node) => node.selector, 'selector', selector)
+        .having((node) => node.arguments, 'arguments', arguments);
+
+Matcher isCascadeNode(List<Matcher> messages) =>
+    isA<CascadeNode>().having((node) => node.messages, 'messages', messages);
+
 void main() {
   group('grammar', () {
     test('start', () {
@@ -82,29 +95,19 @@ exampleWithNumber: x
     verify('Temporaries2', '| a b |', grammar.sequence);
     verify('Temporaries3', '| a b c |', grammar.sequence);
     verify('Variable1', 'trueBinding', grammar.primary, parser.primary,
-        isA<VariableNode>().having((node) => node.name, 'name', 'trueBinding'));
-    verify(
-        'Variable2',
-        'falseBinding',
-        grammar.primary,
-        parser.primary,
-        isA<VariableNode>()
-            .having((node) => node.name, 'name', 'falseBinding'));
+        isVariableNode('trueBinding'));
+    verify('Variable2', 'falseBinding', grammar.primary, parser.primary,
+        isVariableNode('falseBinding'));
     verify('Variable3', 'nilly', grammar.primary, parser.primary,
-        isA<VariableNode>().having((node) => node.name, 'name', 'nilly'));
+        isVariableNode('nilly'));
     verify('Variable4', 'selfish', grammar.primary, parser.primary,
-        isA<VariableNode>().having((node) => node.name, 'name', 'selfish'));
+        isVariableNode('selfish'));
     verify('Variable5', 'superman', grammar.primary, parser.primary,
-        isA<VariableNode>().having((node) => node.name, 'name', 'superman'));
+        isVariableNode('superman'));
     verify('Variable6', 'super_nanny', grammar.primary, parser.primary,
-        isA<VariableNode>().having((node) => node.name, 'name', 'super_nanny'));
-    verify(
-        'Variable7',
-        '__gen_var_123__',
-        grammar.primary,
-        parser.primary,
-        isA<VariableNode>()
-            .having((node) => node.name, 'name', '__gen_var_123__'));
+        isVariableNode('super_nanny'));
+    verify('Variable7', '__gen_var_123__', grammar.primary, parser.primary,
+        isVariableNode('__gen_var_123__'));
     verify('ArgumentsBlock1', '[ :a | ]', grammar.block);
     verify('ArgumentsBlock2', '[ :a :b | ]', grammar.block);
     verify('ArgumentsBlock3', '[ :a :b :c | ]', grammar.block);
@@ -227,126 +230,91 @@ exampleWithNumber: x
         parser.symbolLiteral, isLiteralNode('foo'));
     verify('SymbolLiteral9', '## foo', grammar.symbolLiteral,
         parser.symbolLiteral, isLiteralNode('foo'));
-    verify(
-        'BinaryExpression1',
-        '1 + 2',
-        grammar.expression,
-        parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', '+')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
+    verify('BinaryExpression1', '1 + 2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
     verify(
         'BinaryExpression2',
         '1 + 2 + 3',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having(
-                (node) => node.receiver,
-                'receiver',
-                isA<MessageNode>()
-                    .having(
-                        (node) => node.receiver, 'receiver', isLiteralNode(1))
-                    .having((node) => node.selector, 'selector', '+')
-                    .having((node) => node.arguments, 'arguments',
-                        [isLiteralNode(2)]))
-            .having((node) => node.selector, 'selector', '+')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(3)]));
-    verify(
-        'BinaryExpression3',
-        '1 // 2',
-        grammar.expression,
-        parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', '//')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
-    verify(
-        'BinaryExpression4',
-        '1 -- 2',
-        grammar.expression,
-        parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', '--')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
+        isMessageNode(isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]),
+            '+', [isLiteralNode(3)]));
+    verify('BinaryExpression3', '1 // 2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '//', [isLiteralNode(2)]));
+    verify('BinaryExpression4', '1 -- 2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '--', [isLiteralNode(2)]));
     verify(
         'BinaryExpression5',
         '1 ==> 2',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', '==>')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
+        isMessageNode(isLiteralNode(1), '==>', [isLiteralNode(2)]));
     verify('BinaryMethod1', '+ a', grammar.method);
     verify('BinaryMethod2', '+ a | b |', grammar.method);
     verify('BinaryMethod3', '+ a b', grammar.method);
     verify('BinaryMethod4', '+ a | b | c', grammar.method);
     verify('BinaryMethod5', '-- a', grammar.method);
-    verify('CascadeExpression1', '1 abs; negated', grammar.expression);
-    verify('CascadeExpression2', '1 abs negated; raisedTo: 12; negated',
-        grammar.expression);
-    verify('CascadeExpression3', '1 + 2; - 3', grammar.expression);
+    verify(
+        'CascadeExpression1',
+        '1 abs; negated',
+        grammar.expression,
+        parser.expression,
+        isCascadeNode([
+          isMessageNode(isLiteralNode(1), 'abs'),
+          isMessageNode(isLiteralNode(1), 'negated'),
+        ]));
+    verify(
+        'CascadeExpression2',
+        '1 abs negated; raisedTo: 12; negated',
+        grammar.expression,
+        parser.expression,
+        isCascadeNode([
+          isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'),
+          isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'raisedTo:',
+              [isLiteralNode(12)]),
+          isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'),
+        ]));
+    verify(
+        'CascadeExpression3',
+        '1 + 2; - 3',
+        grammar.expression,
+        parser.expression,
+        isCascadeNode([
+          isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]),
+          isMessageNode(isLiteralNode(1), '-', [isLiteralNode(3)]),
+        ]));
     verify(
         'KeywordExpression1',
         '1 to: 2',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', 'to:')
-            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
+        isMessageNode(isLiteralNode(1), 'to:', [isLiteralNode(2)]));
     verify(
         'KeywordExpression2',
         '1 to: 2 by: 3',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', 'to:by:')
-            .having((node) => node.arguments, 'arguments',
-                [isLiteralNode(2), isLiteralNode(3)]));
+        isMessageNode(
+            isLiteralNode(1), 'to:by:', [isLiteralNode(2), isLiteralNode(3)]));
     verify(
         'KeywordExpression3',
         '1 to: 2 by: 3 do: 4',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', 'to:by:do:')
-            .having((node) => node.arguments, 'arguments',
-                [isLiteralNode(2), isLiteralNode(3), isLiteralNode(4)]));
+        isMessageNode(isLiteralNode(1), 'to:by:do:',
+            [isLiteralNode(2), isLiteralNode(3), isLiteralNode(4)]));
     verify('KeywordMethod1', 'to: a', grammar.method);
     verify('KeywordMethod2', 'to: a do: b | c |', grammar.method);
     verify('KeywordMethod3', 'to: a do: b by: c d', grammar.method);
     verify('KeywordMethod4', 'to: a do: b by: c | d | e', grammar.method);
-    verify(
-        'UnaryExpression1',
-        '1 abs',
-        grammar.expression,
-        parser.expression,
-        isA<MessageNode>()
-            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
-            .having((node) => node.selector, 'selector', 'abs')
-            .having((node) => node.arguments, 'arguments', []));
+    verify('UnaryExpression1', '1 abs', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), 'abs'));
     verify(
         'UnaryExpression2',
         '1 abs negated',
         grammar.expression,
         parser.expression,
-        isA<MessageNode>()
-            .having(
-                (node) => node.receiver,
-                'receiver',
-                isA<MessageNode>()
-                    .having(
-                        (node) => node.receiver, 'receiver', isLiteralNode(1))
-                    .having((node) => node.selector, 'selector', 'abs')
-                    .having((node) => node.arguments, 'arguments', []))
-            .having((node) => node.selector, 'selector', 'negated')
-            .having((node) => node.arguments, 'arguments', []));
+        isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'));
     verify('UnaryMethod1', 'abs', grammar.method);
     verify('UnaryMethod2', 'abs | a |', grammar.method);
     verify('UnaryMethod3', 'abs a', grammar.method);
