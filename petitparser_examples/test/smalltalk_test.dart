@@ -326,9 +326,33 @@ exampleWithNumber: x
             node,
             isA<LiteralValueNode<num>>()
                 .having((node) => node.value, 'value', 0)));
-    verify('NumberLiteral10', '10r10', grammar.numberLiteral);
-    verify('NumberLiteral11', '8r777', grammar.numberLiteral);
-    verify('NumberLiteral12', '16rAF', grammar.numberLiteral);
+    verify(
+        'NumberLiteral10',
+        '10r10',
+        grammar.numberLiteral,
+        parser.numberLiteral,
+        (node) => expect(
+            node,
+            isA<LiteralValueNode<num>>()
+                .having((node) => node.value, 'value', 10)));
+    verify(
+        'NumberLiteral11',
+        '8r777',
+        grammar.numberLiteral,
+        parser.numberLiteral,
+        (node) => expect(
+            node,
+            isA<LiteralValueNode<num>>()
+                .having((node) => node.value, 'value', 511)));
+    verify(
+        'NumberLiteral12',
+        '16rAF',
+        grammar.numberLiteral,
+        parser.numberLiteral,
+        (node) => expect(
+            node,
+            isA<LiteralValueNode<num>>()
+                .having((node) => node.value, 'value', 175)));
     verify(
         'NumberLiteral2',
         '0.1',

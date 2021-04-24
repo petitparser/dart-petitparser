@@ -60,7 +60,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
 
   Parser numberLiteral() => super
       .numberLiteral()
-      .map((input) => LiteralValueNode<num>(input, num.parse(input.value)));
+      .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
 
   Parser parens() =>
       super.parens().map((input) => input[1].addParens(input[0], input[1]));
@@ -90,6 +90,15 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       super.trueLiteral().map((input) => LiteralValueNode<bool>(input, true));
 
   Parser variable() => super.variable().map((input) => VariableNode(input));
+}
+
+num buildNumber(String input) {
+  final values = input.split('r');
+  return values.length == 1
+      ? num.parse(values[0])
+      : values.length == 2
+          ? int.parse(values[1], radix: int.parse(values[0]))
+          : throw ArgumentError.value(input, 'number', 'Unable to parse');
 }
 
 String buildString(String input) =>
