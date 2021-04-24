@@ -91,10 +91,12 @@ class LiteralArrayNode<T> extends LiteralNode<List<T>> {
 
 class MessageNode extends ValueNode {
   final ValueNode receiver;
-  final String selector;
+  final List<Token> selectorToken;
   final List<ValueNode> arguments;
 
-  MessageNode(this.receiver, this.selector, this.arguments);
+  MessageNode(this.receiver, this.selectorToken, this.arguments);
+
+  String get selector => selectorToken.map((token) => token.input).join('');
 }
 
 class VariableNode extends ValueNode {

@@ -7,9 +7,6 @@ import 'grammar.dart';
 
 /// Smalltalk parser definition.
 class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
-  Parser token(Object source, [String? message]) =>
-      super.token(source, message).token();
-
   Parser array() =>
       super.array().map((input) => ArrayNode(input[0], input[1], input[2]));
 
@@ -20,8 +17,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       LiteralArrayNode(input[0], input[1].cast<LiteralNode>(), input[2]));
 
   Parser binaryExpression() =>
-      super.binaryExpression().map((input) => input[1].fold(input[0],
-          (selector, receiver) => MessageNode(receiver, selector, [])));
+      super.binaryExpression().map((input) => buildMessage(input[0], input[1]));
 
   Parser block() => super.block();
 
@@ -40,14 +36,19 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser characterLiteral() => super.characterLiteral().map(
       (input) => LiteralValueNode<String>(input, input.value.substring(1)));
 
-  Parser expression() => super.expression();
+  Parser cascadeExpression() => super
+      .cascadeExpression()
+      .map((input) => buildCascade(input[0], input[1]));
+
+  Parser expression() =>
+      super.expression().map((input) => buildAssignment(input[0], input[1]));
 
   Parser falseLiteral() =>
       super.falseLiteral().map((input) => LiteralValueNode<bool>(input, false));
 
-  Parser keywordExpression() =>
-      super.keywordExpression().map((input) => input[1].fold(input[0],
-          (selector, receiver) => MessageNode(receiver, selector, [])));
+  Parser keywordExpression() => super
+      .keywordExpression()
+      .map((input) => buildMessage(input[0], [input[1]]));
 
   Parser method() => super.method();
 
@@ -83,8 +84,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
 
   Parser unaryExpression() =>
-      super.unaryExpression().map((input) => input[1].fold(input[0],
-          (selector, receiver) => MessageNode(receiver, selector, [])));
+      super.unaryExpression().map((input) => buildMessage(input[0], input[1]));
 
   Parser trueLiteral() =>
       super.trueLiteral().map((input) => LiteralValueNode<bool>(input, true));
@@ -105,3 +105,17 @@ String buildString(String input) =>
     input.isNotEmpty && input.startsWith("'") && input.startsWith("'")
         ? input.substring(1, input.length - 1).replaceAll("''", "'")
         : input;
+
+ValueNode buildAssignment(List variables, ValueNode value) =>
+    variables.isEmpty ? value : throw UnimplementedError();
+
+ValueNode buildCascade(ValueNode receiver, List messages) =>
+    messages.isEmpty ? receiver : throw UnimplementedError();
+
+ValueNode buildMessage(ValueNode receiver, List? messages) => (messages ?? [])
+    .fold(
+        receiver,
+        (receiver, selectorsAndArguments) => selectorsAndArguments == null
+            ? receiver
+            : MessageNode(receiver, selectorsAndArguments[0].cast<Token>(),
+                selectorsAndArguments[1].cast<ValueNode>()));

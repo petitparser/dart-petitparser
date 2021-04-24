@@ -8,10 +8,11 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
     if (source is String) {
       return source
           .toParser(message: 'Expected ${message ?? source}')
+          .token()
           .trim(ref0(spacer));
     } else if (source is Parser) {
       ArgumentError.checkNotNull(message, 'message');
-      return source.flatten('Expected $message').trim(ref0(spacer));
+      return source.flatten('Expected $message').token().trim(ref0(spacer));
     } else {
       throw ArgumentError('Unknown token type: $source.');
     }
@@ -68,9 +69,12 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser binary() => anyOf('!%&*+,-/<=>?@\\|~').plus();
   Parser binaryExpression() =>
       ref0(unaryExpression).seq(ref0(binaryMessage).star());
-  Parser binaryMessage() => ref0(binaryToken).seq(ref0(unaryExpression));
-  Parser binaryMethod() => ref0(binaryToken).seq(ref0(variable));
-  Parser binaryPragma() => ref0(binaryToken).seq(ref0(arrayItem));
+  Parser binaryMessage() =>
+      ref0(binaryToken).seq(ref0(unaryExpression)).map(buildBinary);
+  Parser binaryMethod() =>
+      ref0(binaryToken).seq(ref0(variable)).map(buildBinary);
+  Parser binaryPragma() =>
+      ref0(binaryToken).seq(ref0(arrayItem)).map(buildBinary);
   Parser binaryToken() => ref2(token, ref0(binary), 'binary selector');
   Parser block() => ref1(token, '[').seq(ref0(blockBody)).seq(ref1(token, ']'));
   Parser blockArgument() => ref1(token, ':').seq(ref0(variable));
@@ -101,9 +105,11 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser keywordExpression() =>
       ref0(binaryExpression).seq(ref0(keywordMessage).optional());
   Parser keywordMessage() =>
-      ref0(keywordToken).seq(ref0(binaryExpression)).plus();
-  Parser keywordMethod() => ref0(keywordToken).seq(ref0(variable)).plus();
-  Parser keywordPragma() => ref0(keywordToken).seq(ref0(arrayItem)).plus();
+      ref0(keywordToken).seq(ref0(binaryExpression)).plus().map(buildKeyword);
+  Parser keywordMethod() =>
+      ref0(keywordToken).seq(ref0(variable)).plus().map(buildKeyword);
+  Parser keywordPragma() =>
+      ref0(keywordToken).seq(ref0(arrayItem)).plus().map(buildKeyword);
   Parser keywordToken() => ref2(token, ref0(keyword), 'keyword selector');
   Parser literal() => ref0(numberLiteral)
       .or(ref0(stringLiteral))
@@ -176,9 +182,22 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser trueToken() => ref2(token, 'true'.toParser() & word().not(), 'true');
   Parser unary() => ref0(identifier).seq(char(':').not());
   Parser unaryExpression() => ref0(primary).seq(ref0(unaryMessage).star());
-  Parser unaryMessage() => ref0(unaryToken);
-  Parser unaryMethod() => ref0(identifierToken);
-  Parser unaryPragma() => ref0(identifierToken);
+  Parser unaryMessage() => ref0(unaryToken).map(buildUnary);
+  Parser unaryMethod() => ref0(identifierToken).map(buildUnary);
+  Parser unaryPragma() => ref0(identifierToken).map(buildUnary);
   Parser unaryToken() => ref2(token, ref0(unary), 'unary selector');
   Parser variable() => ref0(identifierToken);
 }
+
+dynamic buildUnary(dynamic input) => [
+      [input],
+      [],
+    ];
+dynamic buildBinary(dynamic input) => [
+      [input[0]],
+      [input[1]],
+    ];
+dynamic buildKeyword(dynamic input) => [
+      input.map((each) => each[0]).toList(),
+      input.map((each) => each[1]).toList(),
+    ];

@@ -13,15 +13,18 @@ dynamic parse(String source, Parser Function() production) {
 }
 
 void verify(String name, String source, Parser Function() grammarProduction,
-    [Parser Function()? parserProduction,
-    void Function(Node)? parserAssertion]) {
+    [Parser Function()? parserProduction, Matcher? parseMatcher]) {
   group(name, () {
     test('grammar', () => parse(source, grammarProduction));
-    if (parserProduction != null && parserAssertion != null) {
-      test('parser', () => parserAssertion(parse(source, parserProduction)));
+    if (parserProduction != null && parseMatcher != null) {
+      test('parser',
+          () => expect(parse(source, parserProduction), parseMatcher));
     }
   });
 }
+
+Matcher isLiteralNode(dynamic value) =>
+    isA<LiteralNode>().having((node) => node.value, 'value', value);
 
 void main() {
   group('grammar', () {
@@ -56,7 +59,7 @@ exampleWithNumber: x
     verify('Assignment1', '1', grammar.expression);
     verify('Assignment2', 'a := 1', grammar.expression);
     verify('Assignment3', 'a := b := 1', grammar.expression);
-    verify('Assignment6', 'a := (b := c)', grammar.expression);
+    verify('Assignment4', 'a := (b := c)', grammar.expression);
     verify('Comment1', '1"one"+2', grammar.expression);
     verify('Comment2', '1 "one" +2', grammar.expression);
     verify('Comment3', '1"one"+"two"2', grammar.expression);
@@ -78,67 +81,30 @@ exampleWithNumber: x
     verify('Temporaries1', '| a |', grammar.sequence);
     verify('Temporaries2', '| a b |', grammar.sequence);
     verify('Temporaries3', '| a b c |', grammar.sequence);
-    verify(
-        'Variable1',
-        'trueBinding',
-        grammar.primary,
-        parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', 'trueBinding')));
+    verify('Variable1', 'trueBinding', grammar.primary, parser.primary,
+        isA<VariableNode>().having((node) => node.name, 'name', 'trueBinding'));
     verify(
         'Variable2',
         'falseBinding',
         grammar.primary,
         parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', 'falseBinding')));
-    verify(
-        'Variable3',
-        'nilly',
-        grammar.primary,
-        parser.primary,
-        (node) => expect(node,
-            isA<VariableNode>().having((node) => node.name, 'name', 'nilly')));
-    verify(
-        'Variable4',
-        'selfish',
-        grammar.primary,
-        parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', 'selfish')));
-    verify(
-        'Variable5',
-        'supernanny',
-        grammar.primary,
-        parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', 'supernanny')));
-    verify(
-        'Variable6',
-        'super_nanny',
-        grammar.primary,
-        parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', 'super_nanny')));
+        isA<VariableNode>()
+            .having((node) => node.name, 'name', 'falseBinding'));
+    verify('Variable3', 'nilly', grammar.primary, parser.primary,
+        isA<VariableNode>().having((node) => node.name, 'name', 'nilly'));
+    verify('Variable4', 'selfish', grammar.primary, parser.primary,
+        isA<VariableNode>().having((node) => node.name, 'name', 'selfish'));
+    verify('Variable5', 'superman', grammar.primary, parser.primary,
+        isA<VariableNode>().having((node) => node.name, 'name', 'superman'));
+    verify('Variable6', 'super_nanny', grammar.primary, parser.primary,
+        isA<VariableNode>().having((node) => node.name, 'name', 'super_nanny'));
     verify(
         'Variable7',
         '__gen_var_123__',
         grammar.primary,
         parser.primary,
-        (node) => expect(
-            node,
-            isA<VariableNode>()
-                .having((node) => node.name, 'name', '__gen_var_123__')));
+        isA<VariableNode>()
+            .having((node) => node.name, 'name', '__gen_var_123__'));
     verify('ArgumentsBlock1', '[ :a | ]', grammar.block);
     verify('ArgumentsBlock2', '[ :a :b | ]', grammar.block);
     verify('ArgumentsBlock3', '[ :a :b :c | ]', grammar.block);
@@ -150,412 +116,170 @@ exampleWithNumber: x
     verify('StatementBlock1', '[ nil ]', grammar.block);
     verify('StatementBlock2', '[ | a | nil ]', grammar.block);
     verify('StatementBlock3', '[ | a b | nil ]', grammar.block);
-    verify(
-        'ArrayLiteral1',
-        '#()',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(node,
-            isA<LiteralArrayNode>().having((node) => node.value, 'value', [])));
-    verify(
-        'ArrayLiteral2',
-        '#(1)',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', [1])));
-    verify(
-        'ArrayLiteral3',
-        '#(1 2)',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', [1, 2])));
-    verify(
-        'ArrayLiteral4',
-        '#(true false nil)',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', [true, false, null])));
-    verify(
-        'ArrayLiteral5',
-        '#(\$a)',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', ['a'])));
-    verify(
-        'ArrayLiteral6',
-        '#(1.2)',
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', [1.2])));
-    verify(
-        'ArrayLiteral7',
-        "#(size #at: at:put: #'==')",
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>().having((node) => node.value, 'value',
-                ['size', 'at:', 'at:put:', '=='])));
-    verify(
-        'ArrayLiteral8',
-        "#('baz')",
-        grammar.arrayLiteral,
-        parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>()
-                .having((node) => node.value, 'value', ['baz'])));
+    verify('ArrayLiteral1', '#()', grammar.arrayLiteral, parser.arrayLiteral,
+        isLiteralNode([]));
+    verify('ArrayLiteral2', '#(1)', grammar.arrayLiteral, parser.arrayLiteral,
+        isLiteralNode([1]));
+    verify('ArrayLiteral3', '#(1 2)', grammar.arrayLiteral, parser.arrayLiteral,
+        isLiteralNode([1, 2]));
+    verify('ArrayLiteral4', '#(true false nil)', grammar.arrayLiteral,
+        parser.arrayLiteral, isLiteralNode([true, false, null]));
+    verify('ArrayLiteral5', '#(\$a)', grammar.arrayLiteral, parser.arrayLiteral,
+        isLiteralNode(['a']));
+    verify('ArrayLiteral6', '#(1.2)', grammar.arrayLiteral, parser.arrayLiteral,
+        isLiteralNode([1.2]));
+    verify('ArrayLiteral7', "#(size #at: at:put: #'==')", grammar.arrayLiteral,
+        parser.arrayLiteral, isLiteralNode(['size', 'at:', 'at:put:', '==']));
+    verify('ArrayLiteral8', "#('baz')", grammar.arrayLiteral,
+        parser.arrayLiteral, isLiteralNode(['baz']));
     verify(
         'ArrayLiteral9',
         '#((1) 2)',
         grammar.arrayLiteral,
         parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>().having((node) => node.value, 'value', [
-              [1],
-              2
-            ])));
+        isLiteralNode([
+          [1],
+          2
+        ]));
     verify(
         'ArrayLiteral10',
         '#((1 2) #(1 2 3))',
         grammar.arrayLiteral,
         parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>().having((node) => node.value, 'value', [
-              [1, 2],
-              [1, 2, 3]
-            ])));
+        isLiteralNode([
+          [1, 2],
+          [1, 2, 3]
+        ]));
     verify(
         'ArrayLiteral11',
         '#([1 2] #[1 2 3])',
         grammar.arrayLiteral,
         parser.arrayLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode>().having((node) => node.value, 'value', [
-              [1, 2],
-              [1, 2, 3]
-            ])));
+        isLiteralNode([
+          [1, 2],
+          [1, 2, 3]
+        ]));
+    verify('ByteLiteral1', '#[]', grammar.byteLiteral, parser.byteLiteral,
+        isLiteralNode([]));
+    verify('ByteLiteral2', '#[0]', grammar.byteLiteral, parser.byteLiteral,
+        isLiteralNode([0]));
+    verify('ByteLiteral3', '#[255]', grammar.byteLiteral, parser.byteLiteral,
+        isLiteralNode([255]));
+    verify('ByteLiteral4', '#[ 1 2 ]', grammar.byteLiteral, parser.byteLiteral,
+        isLiteralNode([1, 2]));
+    verify('ByteLiteral5', '#[ 2r1010 8r77 16rFF ]', grammar.byteLiteral,
+        parser.byteLiteral, isLiteralNode([10, 63, 255]));
+    verify('CharLiteral1', '\$a', grammar.characterLiteral,
+        parser.characterLiteral, isLiteralNode('a'));
+    verify('CharLiteral2', '\$ ', grammar.characterLiteral,
+        parser.characterLiteral, isLiteralNode(' '));
+    verify('CharLiteral3', '\$\$', grammar.characterLiteral,
+        parser.characterLiteral, isLiteralNode('\$'));
+    verify('NumberLiteral1', '0', grammar.numberLiteral, parser.numberLiteral,
+        isLiteralNode(0));
+    verify('NumberLiteral10', '10r10', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(10));
+    verify('NumberLiteral11', '8r777', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(511));
+    verify('NumberLiteral12', '16rAF', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(175));
+    verify('NumberLiteral2', '0.1', grammar.numberLiteral, parser.numberLiteral,
+        isLiteralNode(0.1));
+    verify('NumberLiteral3', '123', grammar.numberLiteral, parser.numberLiteral,
+        isLiteralNode(123));
+    verify('NumberLiteral4', '123.456', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(123.456));
+    verify('NumberLiteral5', '-0', grammar.numberLiteral, parser.numberLiteral,
+        isLiteralNode(0));
+    verify('NumberLiteral6', '-0.1', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(-0.1));
+    verify('NumberLiteral7', '-123', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(-123));
+    verify('NumberLiteral9', '-123.456', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(-123.456));
+    verify('SpecialLiteral1', 'true', grammar.trueLiteral, parser.trueLiteral,
+        isLiteralNode(true));
+    verify('SpecialLiteral2', 'false', grammar.falseLiteral,
+        parser.falseLiteral, isLiteralNode(false));
+    verify('SpecialLiteral3', 'nil', grammar.nilLiteral, parser.nilLiteral,
+        isLiteralNode(null));
+    verify('StringLiteral1', "''", grammar.stringLiteral, parser.stringLiteral,
+        isLiteralNode(''));
+    verify('StringLiteral2', '\'ab\'', grammar.stringLiteral,
+        parser.stringLiteral, isLiteralNode('ab'));
+    verify('StringLiteral3', '\'ab\'\'cd\'', grammar.stringLiteral,
+        parser.stringLiteral, isLiteralNode('ab\'cd'));
+    verify('SymbolLiteral1', '#foo', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('foo'));
+    verify('SymbolLiteral2', '#+', grammar.symbolLiteral, parser.symbolLiteral,
+        isLiteralNode('+'));
+    verify('SymbolLiteral3', '#key:', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('key:'));
+    verify('SymbolLiteral4', '#key:value:', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('key:value:'));
+    verify('SymbolLiteral5', '#\'ing-result\'', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('ing-result'));
+    verify('SymbolLiteral6', '#__gen__binding', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('__gen__binding'));
+    verify('SymbolLiteral7', '# foo', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('foo'));
+    verify('SymbolLiteral8', '##foo', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('foo'));
+    verify('SymbolLiteral9', '## foo', grammar.symbolLiteral,
+        parser.symbolLiteral, isLiteralNode('foo'));
     verify(
-        'ByteLiteral1',
-        '#[]',
-        grammar.byteLiteral,
-        parser.byteLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode<num>>()
-                .having((node) => node.value, 'value', [])));
+        'BinaryExpression1',
+        '1 + 2',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', '+')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
     verify(
-        'ByteLiteral2',
-        '#[0]',
-        grammar.byteLiteral,
-        parser.byteLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode<num>>()
-                .having((node) => node.value, 'value', [0])));
+        'BinaryExpression2',
+        '1 + 2 + 3',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having(
+                (node) => node.receiver,
+                'receiver',
+                isA<MessageNode>()
+                    .having(
+                        (node) => node.receiver, 'receiver', isLiteralNode(1))
+                    .having((node) => node.selector, 'selector', '+')
+                    .having((node) => node.arguments, 'arguments',
+                        [isLiteralNode(2)]))
+            .having((node) => node.selector, 'selector', '+')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(3)]));
     verify(
-        'ByteLiteral3',
-        '#[255]',
-        grammar.byteLiteral,
-        parser.byteLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode<num>>()
-                .having((node) => node.value, 'value', [255])));
+        'BinaryExpression3',
+        '1 // 2',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', '//')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
     verify(
-        'ByteLiteral4',
-        '#[ 1 2 ]',
-        grammar.byteLiteral,
-        parser.byteLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralArrayNode<num>>()
-                .having((node) => node.value, 'value', [1, 2])));
-    verify('ByteLiteral5', '#[ 2r1010 8r77 16rFF ]', grammar.byteLiteral);
+        'BinaryExpression4',
+        '1 -- 2',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', '--')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
     verify(
-        'CharLiteral1',
-        '\$a',
-        grammar.characterLiteral,
-        parser.characterLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'a')));
-    verify(
-        'CharLiteral2',
-        '\$ ',
-        grammar.characterLiteral,
-        parser.characterLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', ' ')));
-    verify(
-        'CharLiteral3',
-        '\$\$',
-        grammar.characterLiteral,
-        parser.characterLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', '\$')));
-    verify(
-        'NumberLiteral1',
-        '0',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 0)));
-    verify(
-        'NumberLiteral10',
-        '10r10',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 10)));
-    verify(
-        'NumberLiteral11',
-        '8r777',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 511)));
-    verify(
-        'NumberLiteral12',
-        '16rAF',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 175)));
-    verify(
-        'NumberLiteral2',
-        '0.1',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 0.1)));
-    verify(
-        'NumberLiteral3',
-        '123',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 123)));
-    verify(
-        'NumberLiteral4',
-        '123.456',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 123.456)));
-    verify(
-        'NumberLiteral5',
-        '-0',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', 0)));
-    verify(
-        'NumberLiteral6',
-        '-0.1',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', -0.1)));
-    verify(
-        'NumberLiteral7',
-        '-123',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', -123)));
-    verify(
-        'NumberLiteral9',
-        '-123.456',
-        grammar.numberLiteral,
-        parser.numberLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<num>>()
-                .having((node) => node.value, 'value', -123.456)));
-    verify(
-        'SpecialLiteral1',
-        'true',
-        grammar.trueLiteral,
-        parser.trueLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<bool>>()
-                .having((node) => node.value, 'value', true)));
-    verify(
-        'SpecialLiteral2',
-        'false',
-        grammar.falseLiteral,
-        parser.falseLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<bool>>()
-                .having((node) => node.value, 'value', false)));
-    verify(
-        'SpecialLiteral3',
-        'nil',
-        grammar.nilLiteral,
-        parser.nilLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<void>>()
-                .having((node) => node.value, 'value', null)));
-    verify(
-        'StringLiteral1',
-        '\'\'',
-        grammar.stringLiteral,
-        parser.stringLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', '')));
-    verify(
-        'StringLiteral2',
-        '\'ab\'',
-        grammar.stringLiteral,
-        parser.stringLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'ab')));
-    verify(
-        'StringLiteral3',
-        '\'ab\'\'cd\'',
-        grammar.stringLiteral,
-        parser.stringLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'ab\'cd')));
-    verify(
-        'SymbolLiteral1',
-        '#foo',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'foo')));
-    verify(
-        'SymbolLiteral2',
-        '#+',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', '+')));
-    verify(
-        'SymbolLiteral3',
-        '#key:',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'key:')));
-    verify(
-        'SymbolLiteral4',
-        '#key:value:',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'key:value:')));
-    verify(
-        'SymbolLiteral5',
-        '#\'ing-result\'',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'ing-result')));
-    verify(
-        'SymbolLiteral6',
-        '#__gen__binding',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', '__gen__binding')));
-    verify(
-        'SymbolLiteral7',
-        '# foo',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'foo')));
-    verify(
-        'SymbolLiteral8',
-        '##foo',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'foo')));
-    verify(
-        'SymbolLiteral9',
-        '## foo',
-        grammar.symbolLiteral,
-        parser.symbolLiteral,
-        (node) => expect(
-            node,
-            isA<LiteralValueNode<String>>()
-                .having((node) => node.value, 'value', 'foo')));
-    verify('BinaryExpression1', '1 + 2', grammar.expression);
-    verify('BinaryExpression2', '1 + 2 + 3', grammar.expression);
-    verify('BinaryExpression3', '1 // 2', grammar.expression);
-    verify('BinaryExpression4', '1 -- 2', grammar.expression);
-    verify('BinaryExpression5', '1 ==> 2', grammar.expression);
+        'BinaryExpression5',
+        '1 ==> 2',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', '==>')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
     verify('BinaryMethod1', '+ a', grammar.method);
     verify('BinaryMethod2', '+ a | b |', grammar.method);
     verify('BinaryMethod3', '+ a b', grammar.method);
@@ -565,15 +289,64 @@ exampleWithNumber: x
     verify('CascadeExpression2', '1 abs negated; raisedTo: 12; negated',
         grammar.expression);
     verify('CascadeExpression3', '1 + 2; - 3', grammar.expression);
-    verify('KeywordExpression1', '1 to: 2', grammar.expression);
-    verify('KeywordExpression2', '1 to: 2 by: 3', grammar.expression);
-    verify('KeywordExpression3', '1 to: 2 by: 3 do: 4', grammar.expression);
+    verify(
+        'KeywordExpression1',
+        '1 to: 2',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', 'to:')
+            .having((node) => node.arguments, 'arguments', [isLiteralNode(2)]));
+    verify(
+        'KeywordExpression2',
+        '1 to: 2 by: 3',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', 'to:by:')
+            .having((node) => node.arguments, 'arguments',
+                [isLiteralNode(2), isLiteralNode(3)]));
+    verify(
+        'KeywordExpression3',
+        '1 to: 2 by: 3 do: 4',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', 'to:by:do:')
+            .having((node) => node.arguments, 'arguments',
+                [isLiteralNode(2), isLiteralNode(3), isLiteralNode(4)]));
     verify('KeywordMethod1', 'to: a', grammar.method);
     verify('KeywordMethod2', 'to: a do: b | c |', grammar.method);
     verify('KeywordMethod3', 'to: a do: b by: c d', grammar.method);
     verify('KeywordMethod4', 'to: a do: b by: c | d | e', grammar.method);
-    verify('UnaryExpression1', '1 abs', grammar.expression);
-    verify('UnaryExpression2', '1 abs negated', grammar.expression);
+    verify(
+        'UnaryExpression1',
+        '1 abs',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having((node) => node.receiver, 'receiver', isLiteralNode(1))
+            .having((node) => node.selector, 'selector', 'abs')
+            .having((node) => node.arguments, 'arguments', []));
+    verify(
+        'UnaryExpression2',
+        '1 abs negated',
+        grammar.expression,
+        parser.expression,
+        isA<MessageNode>()
+            .having(
+                (node) => node.receiver,
+                'receiver',
+                isA<MessageNode>()
+                    .having(
+                        (node) => node.receiver, 'receiver', isLiteralNode(1))
+                    .having((node) => node.selector, 'selector', 'abs')
+                    .having((node) => node.arguments, 'arguments', []))
+            .having((node) => node.selector, 'selector', 'negated')
+            .having((node) => node.arguments, 'arguments', []));
     verify('UnaryMethod1', 'abs', grammar.method);
     verify('UnaryMethod2', 'abs | a |', grammar.method);
     verify('UnaryMethod3', 'abs a', grammar.method);
