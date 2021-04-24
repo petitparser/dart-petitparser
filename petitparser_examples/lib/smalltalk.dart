@@ -2,3 +2,4 @@
 ///
 /// It was automatically exported from PetitParser for Smalltalk.
 export 'src/smalltalk/grammar.dart';
+export 'src/smalltalk/parser.dart';

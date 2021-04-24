@@ -93,7 +93,8 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser characterToken() => ref2(token, ref0(character), 'character');
   Parser expression() => ref0(assignment).star().seq(ref0(cascadeExpression));
   Parser falseLiteral() => ref0(falseToken);
-  Parser falseToken() => ref1(token, 'false').seq(word().not());
+  Parser falseToken() =>
+      ref2(token, 'false'.toParser() & word().not(), 'false');
   Parser identifier() => pattern('a-zA-Z_').seq(word().star());
   Parser identifierToken() => ref2(token, ref0(identifier), 'identifier');
   Parser keyword() => ref0(identifier).seq(char(':'));
@@ -129,7 +130,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       .seq(ref0(statements));
   Parser multiword() => ref0(keyword).plus();
   Parser nilLiteral() => ref0(nilToken);
-  Parser nilToken() => ref1(token, 'nil').seq(word().not());
+  Parser nilToken() => ref2(token, 'nil'.toParser() & word().not(), 'nil');
   Parser numberLiteral() => ref0(numberToken);
   Parser numberToken() => ref2(token, ref0(number), 'number');
   Parser parens() =>
@@ -172,7 +173,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       .seq(ref1(token, '|'))
       .optional();
   Parser trueLiteral() => ref0(trueToken);
-  Parser trueToken() => ref1(token, 'true').seq(word().not());
+  Parser trueToken() => ref2(token, 'true'.toParser() & word().not(), 'true');
   Parser unary() => ref0(identifier).seq(char(':').not());
   Parser unaryExpression() => ref0(primary).seq(ref0(unaryMessage).star());
   Parser unaryMessage() => ref0(unaryToken);
