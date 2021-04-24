@@ -34,9 +34,10 @@ abstract class ValueNode extends Node {
   final List<Token> openParens = [];
   final List<Token> closeParens = [];
 
-  void addParens(Token open, Token close) {
+  ValueNode addParens(Token open, Token close) {
     openParens.add(open);
     closeParens.add(close);
+    return this;
   }
 }
 
@@ -50,9 +51,10 @@ class ArrayNode extends ValueNode {
 
 class AssignmentNode extends ValueNode {
   final VariableNode variable;
+  final Token assignment;
   final ValueNode value;
 
-  AssignmentNode(this.variable, this.value);
+  AssignmentNode(this.variable, this.assignment, this.value);
 }
 
 class BlockNode extends ValueNode {

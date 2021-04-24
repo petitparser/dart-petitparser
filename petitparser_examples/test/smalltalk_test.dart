@@ -39,6 +39,10 @@ Matcher isMessageNode(Matcher receiver, String selector,
 Matcher isCascadeNode(List<Matcher> messages) =>
     isA<CascadeNode>().having((node) => node.messages, 'messages', messages);
 
+Matcher isAssignmentNode(String name, Matcher value) => isA<AssignmentNode>()
+    .having((node) => node.variable, 'variable', isVariableNode(name))
+    .having((node) => node.value, 'value', value);
+
 void main() {
   group('grammar', () {
     test('start', () {
@@ -69,10 +73,18 @@ exampleWithNumber: x
     verify('Array2', '{self foo}', grammar.array);
     verify('Array3', '{self foo. self bar}', grammar.array);
     verify('Array4', '{self foo. self bar.}', grammar.array);
-    verify('Assignment1', '1', grammar.expression);
-    verify('Assignment2', 'a := 1', grammar.expression);
-    verify('Assignment3', 'a := b := 1', grammar.expression);
-    verify('Assignment4', 'a := (b := c)', grammar.expression);
+    verify('Assignment1', '1', grammar.expression, parser.expression,
+        isLiteralNode(1));
+    verify('Assignment2', 'a := 1', grammar.expression, parser.expression,
+        isAssignmentNode('a', isLiteralNode(1)));
+    verify('Assignment3', 'a := b := 1', grammar.expression, parser.expression,
+        isAssignmentNode('a', isAssignmentNode('b', isLiteralNode(1))));
+    verify(
+        'Assignment4',
+        'a := (b := c)',
+        grammar.expression,
+        parser.expression,
+        isAssignmentNode('a', isAssignmentNode('b', isVariableNode('c'))));
     verify('Comment1', '1"one"+2', grammar.expression);
     verify('Comment2', '1 "one" +2', grammar.expression);
     verify('Comment3', '1"one"+"two"2', grammar.expression);

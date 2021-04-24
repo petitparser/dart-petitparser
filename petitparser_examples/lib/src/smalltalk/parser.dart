@@ -41,7 +41,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       .map((input) => buildCascade(input[0], input[1]));
 
   Parser expression() =>
-      super.expression().map((input) => buildAssignment(input[0], input[1]));
+      super.expression().map((input) => buildAssignment(input[1], input[0]));
 
   Parser falseLiteral() =>
       super.falseLiteral().map((input) => LiteralValueNode<bool>(input, false));
@@ -64,7 +64,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
 
   Parser parens() =>
-      super.parens().map((input) => input[1].addParens(input[0], input[1]));
+      super.parens().map((input) => input[1].addParens(input[0], input[2]));
 
   Parser pragma() => super.pragma();
 
@@ -106,8 +106,15 @@ String buildString(String input) =>
         ? input.substring(1, input.length - 1).replaceAll("''", "'")
         : input;
 
-ValueNode buildAssignment(List variables, ValueNode value) =>
-    variables.isEmpty ? value : throw UnimplementedError();
+ValueNode buildAssignment(ValueNode node, List parts) {
+  if (parts.isEmpty) {
+    return node;
+  }
+  return parts.reversed.fold(
+      node,
+      (result, variableAndToken) =>
+          AssignmentNode(variableAndToken[0], variableAndToken[1], result));
+}
 
 ValueNode buildCascade(ValueNode node, List parts) {
   if (parts.isEmpty) {
