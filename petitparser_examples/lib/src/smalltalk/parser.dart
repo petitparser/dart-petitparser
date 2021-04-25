@@ -3,8 +3,6 @@ import 'package:petitparser/petitparser.dart';
 import 'ast.dart';
 import 'grammar.dart';
 
-// ignore_for_file: unnecessary_overrides
-
 /// Smalltalk parser definition.
 class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser array() => super.array().map(buildArrayNode);
@@ -87,9 +85,9 @@ String buildString(String input) =>
 
 Node buildArrayNode(dynamic parts) {
   final result = ArrayNode();
-  result.surroundWith(parts[0], parts[2]);
   addTo<IsStatement>(result.statements, parts[1]);
   addTo<Token>(result.periods, parts[1]);
+  result.surroundWith(parts[0], parts[2]);
   return result;
 }
 
