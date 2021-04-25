@@ -303,12 +303,6 @@ exampleWithNumber: x
         parser.characterLiteral, isLiteralNode('\$'));
     verify('NumberLiteral1', '0', grammar.numberLiteral, parser.numberLiteral,
         isLiteralNode(0));
-    verify('NumberLiteral10', '10r10', grammar.numberLiteral,
-        parser.numberLiteral, isLiteralNode(10));
-    verify('NumberLiteral11', '8r777', grammar.numberLiteral,
-        parser.numberLiteral, isLiteralNode(511));
-    verify('NumberLiteral12', '16rAF', grammar.numberLiteral,
-        parser.numberLiteral, isLiteralNode(175));
     verify('NumberLiteral2', '0.1', grammar.numberLiteral, parser.numberLiteral,
         isLiteralNode(0.1));
     verify('NumberLiteral3', '123', grammar.numberLiteral, parser.numberLiteral,
@@ -323,6 +317,12 @@ exampleWithNumber: x
         parser.numberLiteral, isLiteralNode(-123));
     verify('NumberLiteral9', '-123.456', grammar.numberLiteral,
         parser.numberLiteral, isLiteralNode(-123.456));
+    verify('NumberLiteral10', '10r10', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(10));
+    verify('NumberLiteral11', '8r777', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(511));
+    verify('NumberLiteral12', '16rAF', grammar.numberLiteral,
+        parser.numberLiteral, isLiteralNode(175));
     verify('SpecialLiteral1', 'true', grammar.trueLiteral, parser.trueLiteral,
         isLiteralNode(true));
     verify('SpecialLiteral2', 'false', grammar.falseLiteral,
@@ -444,13 +444,6 @@ exampleWithNumber: x
     verify('UnaryMethod4', 'abs | a | b', grammar.method);
     verify('UnaryMethod5', 'abs | a |', grammar.method);
     verify('Pragma1', 'method <foo>', grammar.method);
-    verify('Pragma10', 'method <foo: bar>', grammar.method);
-    verify('Pragma11', 'method <foo: true>', grammar.method);
-    verify('Pragma12', 'method <foo: false>', grammar.method);
-    verify('Pragma13', 'method <foo: nil>', grammar.method);
-    verify('Pragma14', 'method <foo: ()>', grammar.method);
-    verify('Pragma15', 'method <foo: #()>', grammar.method);
-    verify('Pragma16', 'method < + 1 >', grammar.method);
     verify('Pragma2', 'method <foo> <bar>', grammar.method);
     verify('Pragma3', 'method | a | <foo>', grammar.method);
     verify('Pragma4', 'method <foo> | a |', grammar.method);
@@ -459,5 +452,12 @@ exampleWithNumber: x
     verify('Pragma7', 'method <foo: 1.2>', grammar.method);
     verify('Pragma8', 'method <foo: ' 'bar' '>', grammar.method);
     verify('Pragma9', 'method <foo: #' 'bar' '>', grammar.method);
+    verify('Pragma10', 'method <foo: bar>', grammar.method);
+    verify('Pragma11', 'method <foo: true>', grammar.method);
+    verify('Pragma12', 'method <foo: false>', grammar.method);
+    verify('Pragma13', 'method <foo: nil>', grammar.method);
+    verify('Pragma14', 'method <foo: ()>', grammar.method);
+    verify('Pragma15', 'method <foo: #()>', grammar.method);
+    verify('Pragma16', 'method < + 1 >', grammar.method);
   });
 }

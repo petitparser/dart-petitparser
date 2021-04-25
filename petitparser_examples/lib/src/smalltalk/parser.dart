@@ -21,8 +21,6 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser block() =>
       super.block().map((input) => input[1]..surroundWith(input[0], input[2]));
 
-  Parser blockArgument() => super.blockArgument();
-
   Parser blockBody() => super.blockBody().map(buildBlockNode);
 
   Parser byteLiteral() => super.byteLiteral().map(buildLiteralArrayNode);
