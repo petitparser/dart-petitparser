@@ -58,12 +58,18 @@ TypeMatcher<SequenceNode> isSequenceNode(
 TypeMatcher<ReturnNode> isReturnNode(Matcher value) =>
     isA<ReturnNode>().having((node) => node.value, 'value', value);
 
+TypeMatcher<BlockNode> isBlockNode(List<Matcher> arguments,
+        List<Matcher> temporaries, List<Matcher> statements) =>
+    isA<BlockNode>()
+        .having((node) => node.arguments, 'arguments', arguments)
+        .having((node) => node.body, 'body',
+            isSequenceNode(temporaries, statements));
+
 void main() {
   group('grammar', () {
     test('start', () {
       parse(r'''
 exampleWithNumber: x
-
   "A method that illustrates every part of Smalltalk method syntax
   except primitives. It has unary, binary, and keyword messages,
   declares arguments and temporaries, accesses a global variable
@@ -131,13 +137,22 @@ exampleWithNumber: x
     verify('Method1', 'negated ^ 0 - self', grammar.method);
     verify('Method2', '   negated ^ 0 - self', grammar.method);
     verify('Method3', ' negated ^ 0 - self  ', grammar.method);
+    verify('Sequence1', '| a | 1', grammar.sequence, parser.sequence,
+        isSequenceNode([isVariableNode('a')], [isLiteralNode(1)]));
     verify(
-        'Sequence1',
-        '| a | 1 . 2',
+        'Sequence2',
+        '| a | ^ 1',
         grammar.sequence,
         parser.sequence,
         isSequenceNode(
-            [isVariableNode('a')], [isLiteralNode(1), isLiteralNode(2)]));
+            [isVariableNode('a')], [isReturnNode(isLiteralNode(1))]));
+    verify(
+        'Sequence3',
+        '| a | 1. ^ 2',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode([isVariableNode('a')],
+            [isLiteralNode(1), isReturnNode(isLiteralNode(2))]));
     verify('Statements1', '1', grammar.sequence, parser.sequence,
         isSequenceNode([], [isLiteralNode(1)]));
     verify('Statements2', '1 . 2', grammar.sequence, parser.sequence,
@@ -203,17 +218,50 @@ exampleWithNumber: x
         isVariableNode('super_nanny'));
     verify('Variable7', '__gen_var_123__', grammar.primary, parser.primary,
         isVariableNode('__gen_var_123__'));
-    verify('ArgumentsBlock1', '[ :a | ]', grammar.block);
-    verify('ArgumentsBlock2', '[ :a :b | ]', grammar.block);
-    verify('ArgumentsBlock3', '[ :a :b :c | ]', grammar.block);
-    verify('ComplexBlock1', '[ :a | | b | c ]', grammar.block);
-    verify('ComplexBlock2', '[:a||b|c]', grammar.block);
-    verify('SimpleBlock1', '[ ]', grammar.block);
-    verify('SimpleBlock2', '[ nil ]', grammar.block);
-    verify('SimpleBlock3', '[ :a ]', grammar.block);
-    verify('StatementBlock1', '[ nil ]', grammar.block);
-    verify('StatementBlock2', '[ | a | nil ]', grammar.block);
-    verify('StatementBlock3', '[ | a b | nil ]', grammar.block);
+    verify('ArgumentsBlock1', '[ :a | ]', grammar.block, parser.block,
+        isBlockNode([isVariableNode('a')], [], []));
+    verify('ArgumentsBlock2', '[ :a :b | ]', grammar.block, parser.block,
+        isBlockNode([isVariableNode('a'), isVariableNode('b')], [], []));
+    verify(
+        'ArgumentsBlock3',
+        '[ :a :b :c | ]',
+        grammar.block,
+        parser.block,
+        isBlockNode(
+            [isVariableNode('a'), isVariableNode('b'), isVariableNode('c')],
+            [],
+            []));
+    verify(
+        'ComplexBlock1',
+        '[ :a | | b | c ]',
+        grammar.block,
+        parser.block,
+        isBlockNode([isVariableNode('a')], [isVariableNode('b')],
+            [isVariableNode('c')]));
+    verify(
+        'ComplexBlock2',
+        '[:a||b|c]',
+        grammar.block,
+        parser.block,
+        isBlockNode([isVariableNode('a')], [isVariableNode('b')],
+            [isVariableNode('c')]));
+    verify('SimpleBlock1', '[ ]', grammar.block, parser.block,
+        isBlockNode([], [], []));
+    verify('SimpleBlock2', '[ a ]', grammar.block, parser.block,
+        isBlockNode([], [], [isVariableNode('a')]));
+    verify('SimpleBlock3', '[ :a ]', grammar.block, parser.block,
+        isBlockNode([isVariableNode('a')], [], []));
+    verify('StatementBlock1', '[ 1 ]', grammar.block, parser.block,
+        isBlockNode([], [], [isLiteralNode(1)]));
+    verify('StatementBlock2', '[ | a | 1 ]', grammar.block, parser.block,
+        isBlockNode([], [isVariableNode('a')], [isLiteralNode(1)]));
+    verify(
+        'StatementBlock3',
+        '[ | a b | 1 ]',
+        grammar.block,
+        parser.block,
+        isBlockNode([], [isVariableNode('a'), isVariableNode('b')],
+            [isLiteralNode(1)]));
     verify('ArrayLiteral1', '#()', grammar.arrayLiteral, parser.arrayLiteral,
         isLiteralNode([]));
     verify('ArrayLiteral2', '#(1)', grammar.arrayLiteral, parser.arrayLiteral,

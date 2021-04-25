@@ -40,22 +40,20 @@ class ReturnNode extends Node implements IsStatement {
 }
 
 abstract class ValueNode extends Node implements IsStatement {
-  final List<Token> openParens = [];
-  final List<Token> closeParens = [];
+  final List<Token> beforeToken = [];
+  final List<Token> afterToken = [];
 
-  void addParens(Token open, Token close) {
-    openParens.add(open);
-    closeParens.add(close);
+  void surroundWith(Token before, Token after) {
+    beforeToken.add(before);
+    afterToken.add(after);
   }
 }
 
 class ArrayNode extends ValueNode implements HasStatements {
-  final Token openToken;
   final List<ValueNode> statements = [];
   final List<Token> periods = [];
-  final Token closeToken;
 
-  ArrayNode(this.openToken, this.closeToken);
+  ArrayNode();
 }
 
 class AssignmentNode extends ValueNode {
@@ -93,11 +91,9 @@ class LiteralValueNode<T> extends LiteralNode<T> {
 }
 
 class LiteralArrayNode<T> extends LiteralNode<List<T>> {
-  final Token openToken;
   final List<LiteralNode<T>> values;
-  final Token closeToken;
 
-  LiteralArrayNode(this.openToken, this.values, this.closeToken)
+  LiteralArrayNode(this.values)
       : super(values.map((value) => value.value).toList());
 }
 

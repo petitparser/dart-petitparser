@@ -53,7 +53,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser array() => ref1(token, '{')
       .seq(ref0(expression)
           .separatedBy(ref0(periodToken).plus(), optionalSeparatorAtEnd: true)
-          .optional())
+          .optionalWith([]))
       .seq(ref1(token, '}'));
   Parser arrayItem() => ref0(literal)
       .or(ref0(symbolLiteralArray))
@@ -75,14 +75,14 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser binaryPragma() =>
       ref0(binaryToken).seq(ref0(arrayItem)).map(buildBinary);
   Parser binaryToken() => ref2(token, ref0(binary), 'binary selector');
-  Parser block() => ref1(token, '[').seq(ref0(blockBody)).seq(ref1(token, ']'));
+  Parser block() => ref1(token, '[') & ref0(blockBody) & ref1(token, ']');
   Parser blockArgument() => ref1(token, ':').seq(ref0(variable));
   Parser blockArguments() =>
       ref0(blockArgumentsWith).or(ref0(blockArgumentsWithout));
   Parser blockArgumentsWith() => ref0(blockArgument)
       .plus()
       .seq(ref1(token, '|').or(ref1(token, ']').and()));
-  Parser blockArgumentsWithout() => epsilon();
+  Parser blockArgumentsWithout() => epsilonWith([]);
   Parser blockBody() => ref0(blockArguments).seq(ref0(sequence));
   Parser byteLiteral() =>
       ref1(token, '#[').seq(ref0(numberLiteral).star()).seq(ref1(token, ']'));
