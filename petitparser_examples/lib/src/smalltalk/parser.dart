@@ -45,11 +45,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       .keywordExpression()
       .map((input) => buildMessageNodes(input[0], [input[1]]));
 
-  Parser method() => super.method();
-
-  Parser methodDeclaration() => super.methodDeclaration();
-
-  Parser methodSequence() => super.methodSequence();
+  Parser method() => super.method().map(buildMethodNode);
 
   Parser nilLiteral() =>
       super.nilLiteral().map((input) => LiteralValueNode<void>(input, null));
@@ -59,7 +55,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser parens() =>
       super.parens().map((input) => input[1]..surroundWith(input[0], input[2]));
 
-  Parser pragma() => super.pragma();
+  Parser pragma() => super.pragma().map(buildPragmaNode);
 
   Parser sequence() => super.sequence().map(buildSequenceNode);
 
@@ -151,6 +147,28 @@ Node buildMessageNodes(ValueNode receiver, dynamic messages) => messages.fold(
         ? receiver
         : MessageNode(receiver, parts[0].cast<Token>().toList(),
             parts[1].cast<ValueNode>().toList()));
+
+Node buildMethodNode(dynamic input) {
+  final result = MethodNode();
+  addTo<Token>(result.selectorToken, input[0][0]);
+  addTo<VariableNode>(result.arguments, input[0][1]);
+  addTo<Token>(result.body.periods, input[1][0]);
+  addTo<PragmaNode>(result.pragmas, input[1][1]);
+  addTo<Token>(result.body.periods, input[1][2]);
+  addTo<VariableNode>(result.body.temporaries, input[1][3]);
+  addTo<Token>(result.body.periods, input[1][4]);
+  addTo<PragmaNode>(result.pragmas, input[1][5]);
+  addTo<Token>(result.body.periods, input[1][6]);
+  addTo<IsStatement>(result.body.statements, input[1][7]);
+  return result;
+}
+
+Node buildPragmaNode(dynamic input) {
+  final result = PragmaNode();
+  addTo<Token>(result.selectorToken, input[1][0]);
+  addTo<LiteralNode>(result.arguments, input[1][1]);
+  return result;
+}
 
 Node buildSequenceNode(dynamic input) {
   final result = SequenceNode();

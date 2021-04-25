@@ -13,13 +13,10 @@ dynamic parse(String source, Parser Function() production) {
 }
 
 void verify(String name, String source, Parser Function() grammarProduction,
-    [Parser Function()? parserProduction, Matcher? parseMatcher]) {
+    Parser Function() parserProduction, Matcher parseMatcher) {
   group(name, () {
     test('grammar', () => parse(source, grammarProduction));
-    if (parserProduction != null && parseMatcher != null) {
-      test('parser',
-          () => expect(parse(source, parserProduction), parseMatcher));
-    }
+    test('parser', () => expect(parse(source, parserProduction), parseMatcher));
   });
 }
 
@@ -50,18 +47,40 @@ TypeMatcher<ArrayNode> isArrayNode(List<Matcher> statements) => isA<ArrayNode>()
     .having((node) => node.statements, 'statements', statements);
 
 TypeMatcher<SequenceNode> isSequenceNode(
-        List<Matcher> temporaries, List<Matcher> statements) =>
+        List<String> temporaries, List<Matcher> statements) =>
     isA<SequenceNode>()
-        .having((node) => node.temporaries, 'temporaries', temporaries)
+        .having((node) => node.temporaries, 'temporaries',
+            temporaries.map((each) => isVariableNode(each)))
         .having((node) => node.statements, 'statements', statements);
 
 TypeMatcher<ReturnNode> isReturnNode(Matcher value) =>
     isA<ReturnNode>().having((node) => node.value, 'value', value);
 
-TypeMatcher<BlockNode> isBlockNode(List<Matcher> arguments,
-        List<Matcher> temporaries, List<Matcher> statements) =>
+TypeMatcher<BlockNode> isBlockNode(List<String> arguments,
+        List<String> temporaries, List<Matcher> statements) =>
     isA<BlockNode>()
-        .having((node) => node.arguments, 'arguments', arguments)
+        .having((node) => node.arguments, 'arguments',
+            arguments.map((each) => isVariableNode(each)))
+        .having((node) => node.body, 'body',
+            isSequenceNode(temporaries, statements));
+
+TypeMatcher<PragmaNode> isPragmaNode(String selector,
+        [List<Matcher> arguments = const []]) =>
+    isA<PragmaNode>()
+        .having((node) => node.selector, 'selector', selector)
+        .having((node) => node.arguments, 'arguments', arguments);
+
+TypeMatcher<MethodNode> isMethodNode(
+        String selector,
+        List<String> arguments,
+        List<Matcher> pragmas,
+        List<String> temporaries,
+        List<Matcher> statements) =>
+    isA<MethodNode>()
+        .having((node) => node.selector, 'selector', selector)
+        .having((node) => node.arguments, 'arguments',
+            arguments.map((each) => isVariableNode(each)))
+        .having((node) => node.pragmas, 'pragmas', pragmas)
         .having((node) => node.body, 'body',
             isSequenceNode(temporaries, statements));
 
@@ -109,30 +128,54 @@ exampleWithNumber: x
         grammar.expression,
         parser.expression,
         isAssignmentNode('a', isAssignmentNode('b', isVariableNode('c'))));
-    verify('Comment1', '1"one"+2', grammar.expression);
-    verify('Comment2', '1 "one" +2', grammar.expression);
-    verify('Comment3', '1"one"+"two"2', grammar.expression);
-    verify('Comment4', '1"one""two"+2', grammar.expression);
-    verify('Comment5', '1"one" "two"+2', grammar.expression);
-    verify('Method1', 'negated ^ 0 - self', grammar.method);
-    verify('Method2', '   negated ^ 0 - self', grammar.method);
-    verify('Method3', ' negated ^ 0 - self  ', grammar.method);
-    verify('Sequence1', '| a | 1', grammar.sequence, parser.sequence,
-        isSequenceNode([isVariableNode('a')], [isLiteralNode(1)]));
+    verify('Comment1', '1"one"+2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
+    verify('Comment2', '1 "one" +2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
+    verify('Comment3', '1"one"+"two"2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
+    verify('Comment4', '1"one""two"+2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
+    verify('Comment5', '1"one" "two"+2', grammar.expression, parser.expression,
+        isMessageNode(isLiteralNode(1), '+', [isLiteralNode(2)]));
     verify(
-        'Sequence2',
-        '| a | ^ 1',
-        grammar.sequence,
-        parser.sequence,
-        isSequenceNode(
-            [isVariableNode('a')], [isReturnNode(isLiteralNode(1))]));
+        'Method1',
+        'negated ^ 0 - self',
+        grammar.method,
+        parser.method,
+        isMethodNode('negated', [], [], [], [
+          isReturnNode(
+              isMessageNode(isLiteralNode(0), '-', [isVariableNode('self')]))
+        ]));
+    verify(
+        'Method2',
+        '   negated ^ 0 - self',
+        grammar.method,
+        parser.method,
+        isMethodNode('negated', [], [], [], [
+          isReturnNode(
+              isMessageNode(isLiteralNode(0), '-', [isVariableNode('self')]))
+        ]));
+    verify(
+        'Method3',
+        ' negated ^ 0 - self  ',
+        grammar.method,
+        parser.method,
+        isMethodNode('negated', [], [], [], [
+          isReturnNode(
+              isMessageNode(isLiteralNode(0), '-', [isVariableNode('self')]))
+        ]));
+    verify('Sequence1', '| a | 1', grammar.sequence, parser.sequence,
+        isSequenceNode(['a'], [isLiteralNode(1)]));
+    verify('Sequence2', '| a | ^ 1', grammar.sequence, parser.sequence,
+        isSequenceNode(['a'], [isReturnNode(isLiteralNode(1))]));
     verify(
         'Sequence3',
         '| a | 1. ^ 2',
         grammar.sequence,
         parser.sequence,
-        isSequenceNode([isVariableNode('a')],
-            [isLiteralNode(1), isReturnNode(isLiteralNode(2))]));
+        isSequenceNode(
+            ['a'], [isLiteralNode(1), isReturnNode(isLiteralNode(2))]));
     verify('Statements1', '1', grammar.sequence, parser.sequence,
         isSequenceNode([], [isLiteralNode(1)]));
     verify('Statements2', '1 . 2', grammar.sequence, parser.sequence,
@@ -173,17 +216,11 @@ exampleWithNumber: x
     verify('Sequence11', '1. ^ 2', grammar.sequence, parser.sequence,
         isSequenceNode([], [isLiteralNode(1), isReturnNode(isLiteralNode(2))]));
     verify('Temporaries1', '| a |', grammar.sequence, parser.sequence,
-        isSequenceNode([isVariableNode('a')], []));
+        isSequenceNode(['a'], []));
     verify('Temporaries2', '| a b |', grammar.sequence, parser.sequence,
-        isSequenceNode([isVariableNode('a'), isVariableNode('b')], []));
-    verify(
-        'Temporaries3',
-        '| a b c |',
-        grammar.sequence,
-        parser.sequence,
-        isSequenceNode(
-            [isVariableNode('a'), isVariableNode('b'), isVariableNode('c')],
-            []));
+        isSequenceNode(['a', 'b'], []));
+    verify('Temporaries3', '| a b c |', grammar.sequence, parser.sequence,
+        isSequenceNode(['a', 'b', 'c'], []));
     verify('Variable1', 'trueBinding', grammar.primary, parser.primary,
         isVariableNode('trueBinding'));
     verify('Variable2', 'falseBinding', grammar.primary, parser.primary,
@@ -199,49 +236,27 @@ exampleWithNumber: x
     verify('Variable7', '__gen_var_123__', grammar.primary, parser.primary,
         isVariableNode('__gen_var_123__'));
     verify('ArgumentsBlock1', '[ :a | ]', grammar.block, parser.block,
-        isBlockNode([isVariableNode('a')], [], []));
+        isBlockNode(['a'], [], []));
     verify('ArgumentsBlock2', '[ :a :b | ]', grammar.block, parser.block,
-        isBlockNode([isVariableNode('a'), isVariableNode('b')], [], []));
-    verify(
-        'ArgumentsBlock3',
-        '[ :a :b :c | ]',
-        grammar.block,
-        parser.block,
-        isBlockNode(
-            [isVariableNode('a'), isVariableNode('b'), isVariableNode('c')],
-            [],
-            []));
-    verify(
-        'ComplexBlock1',
-        '[ :a | | b | c ]',
-        grammar.block,
-        parser.block,
-        isBlockNode([isVariableNode('a')], [isVariableNode('b')],
-            [isVariableNode('c')]));
-    verify(
-        'ComplexBlock2',
-        '[:a||b|c]',
-        grammar.block,
-        parser.block,
-        isBlockNode([isVariableNode('a')], [isVariableNode('b')],
-            [isVariableNode('c')]));
+        isBlockNode(['a', 'b'], [], []));
+    verify('ArgumentsBlock3', '[ :a :b :c | ]', grammar.block, parser.block,
+        isBlockNode(['a', 'b', 'c'], [], []));
+    verify('ComplexBlock1', '[ :a | | b | c ]', grammar.block, parser.block,
+        isBlockNode(['a'], ['b'], [isVariableNode('c')]));
+    verify('ComplexBlock2', '[:a||b|c]', grammar.block, parser.block,
+        isBlockNode(['a'], ['b'], [isVariableNode('c')]));
     verify('SimpleBlock1', '[ ]', grammar.block, parser.block,
         isBlockNode([], [], []));
     verify('SimpleBlock2', '[ a ]', grammar.block, parser.block,
         isBlockNode([], [], [isVariableNode('a')]));
     verify('SimpleBlock3', '[ :a ]', grammar.block, parser.block,
-        isBlockNode([isVariableNode('a')], [], []));
+        isBlockNode(['a'], [], []));
     verify('StatementBlock1', '[ 1 ]', grammar.block, parser.block,
         isBlockNode([], [], [isLiteralNode(1)]));
     verify('StatementBlock2', '[ | a | 1 ]', grammar.block, parser.block,
-        isBlockNode([], [isVariableNode('a')], [isLiteralNode(1)]));
-    verify(
-        'StatementBlock3',
-        '[ | a b | 1 ]',
-        grammar.block,
-        parser.block,
-        isBlockNode([], [isVariableNode('a'), isVariableNode('b')],
-            [isLiteralNode(1)]));
+        isBlockNode([], ['a'], [isLiteralNode(1)]));
+    verify('StatementBlock3', '[ | a b | 1 ]', grammar.block, parser.block,
+        isBlockNode([], ['a', 'b'], [isLiteralNode(1)]));
     verify('ArrayLiteral1', '#()', grammar.arrayLiteral, parser.arrayLiteral,
         isLiteralNode([]));
     verify('ArrayLiteral2', '#(1)', grammar.arrayLiteral, parser.arrayLiteral,
@@ -372,11 +387,16 @@ exampleWithNumber: x
         grammar.expression,
         parser.expression,
         isMessageNode(isLiteralNode(1), '==>', [isLiteralNode(2)]));
-    verify('BinaryMethod1', '+ a', grammar.method);
-    verify('BinaryMethod2', '+ a | b |', grammar.method);
-    verify('BinaryMethod3', '+ a b', grammar.method);
-    verify('BinaryMethod4', '+ a | b | c', grammar.method);
-    verify('BinaryMethod5', '-- a', grammar.method);
+    verify('BinaryMethod1', '+ a', grammar.method, parser.method,
+        isMethodNode('+', ['a'], [], [], []));
+    verify('BinaryMethod2', '+ a | b |', grammar.method, parser.method,
+        isMethodNode('+', ['a'], [], ['b'], []));
+    verify('BinaryMethod3', '+ a b', grammar.method, parser.method,
+        isMethodNode('+', ['a'], [], [], [isVariableNode('b')]));
+    verify('BinaryMethod4', '+ a | b | c', grammar.method, parser.method,
+        isMethodNode('+', ['a'], [], ['b'], [isVariableNode('c')]));
+    verify('BinaryMethod5', '-- a', grammar.method, parser.method,
+        isMethodNode('--', ['a'], [], [], []));
     verify(
         'CascadeExpression1',
         '1 abs; negated',
@@ -426,10 +446,24 @@ exampleWithNumber: x
         parser.expression,
         isMessageNode(isLiteralNode(1), 'to:by:do:',
             [isLiteralNode(2), isLiteralNode(3), isLiteralNode(4)]));
-    verify('KeywordMethod1', 'to: a', grammar.method);
-    verify('KeywordMethod2', 'to: a do: b | c |', grammar.method);
-    verify('KeywordMethod3', 'to: a do: b by: c d', grammar.method);
-    verify('KeywordMethod4', 'to: a do: b by: c | d | e', grammar.method);
+    verify('KeywordMethod1', 'to: a', grammar.method, parser.method,
+        isMethodNode('to:', ['a'], [], [], []));
+    verify('KeywordMethod2', 'to: a do: b | c |', grammar.method, parser.method,
+        isMethodNode('to:do:', ['a', 'b'], [], ['c'], []));
+    verify(
+        'KeywordMethod3',
+        'to: a do: b by: c d',
+        grammar.method,
+        parser.method,
+        isMethodNode(
+            'to:do:by:', ['a', 'b', 'c'], [], [], [isVariableNode('d')]));
+    verify(
+        'KeywordMethod4',
+        'to: a do: b by: c | d | e',
+        grammar.method,
+        parser.method,
+        isMethodNode(
+            'to:do:by:', ['a', 'b', 'c'], [], ['d'], [isVariableNode('e')]));
     verify('UnaryExpression1', '1 abs', grammar.expression, parser.expression,
         isMessageNode(isLiteralNode(1), 'abs'));
     verify(
@@ -438,26 +472,121 @@ exampleWithNumber: x
         grammar.expression,
         parser.expression,
         isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'));
-    verify('UnaryMethod1', 'abs', grammar.method);
-    verify('UnaryMethod2', 'abs | a |', grammar.method);
-    verify('UnaryMethod3', 'abs a', grammar.method);
-    verify('UnaryMethod4', 'abs | a | b', grammar.method);
-    verify('UnaryMethod5', 'abs | a |', grammar.method);
-    verify('Pragma1', 'method <foo>', grammar.method);
-    verify('Pragma2', 'method <foo> <bar>', grammar.method);
-    verify('Pragma3', 'method | a | <foo>', grammar.method);
-    verify('Pragma4', 'method <foo> | a |', grammar.method);
-    verify('Pragma5', 'method <foo> | a | <bar>', grammar.method);
-    verify('Pragma6', 'method <foo: 1>', grammar.method);
-    verify('Pragma7', 'method <foo: 1.2>', grammar.method);
-    verify('Pragma8', 'method <foo: ' 'bar' '>', grammar.method);
-    verify('Pragma9', 'method <foo: #' 'bar' '>', grammar.method);
-    verify('Pragma10', 'method <foo: bar>', grammar.method);
-    verify('Pragma11', 'method <foo: true>', grammar.method);
-    verify('Pragma12', 'method <foo: false>', grammar.method);
-    verify('Pragma13', 'method <foo: nil>', grammar.method);
-    verify('Pragma14', 'method <foo: ()>', grammar.method);
-    verify('Pragma15', 'method <foo: #()>', grammar.method);
-    verify('Pragma16', 'method < + 1 >', grammar.method);
+    verify('UnaryMethod1', 'abs', grammar.method, parser.method,
+        isMethodNode('abs', [], [], [], []));
+    verify('UnaryMethod2', 'abs | a |', grammar.method, parser.method,
+        isMethodNode('abs', [], [], ['a'], []));
+    verify('UnaryMethod3', 'abs a', grammar.method, parser.method,
+        isMethodNode('abs', [], [], [], [isVariableNode('a')]));
+    verify('UnaryMethod4', 'abs | a | b', grammar.method, parser.method,
+        isMethodNode('abs', [], [], ['a'], [isVariableNode('b')]));
+    verify('Pragma1', 'method <foo>', grammar.method, parser.method,
+        isMethodNode('method', [], [isPragmaNode('foo')], [], []));
+    verify(
+        'Pragma2',
+        'method <foo> <bar>',
+        grammar.method,
+        parser.method,
+        isMethodNode(
+            'method', [], [isPragmaNode('foo'), isPragmaNode('bar')], [], []));
+    verify('Pragma3', 'method | a | <foo>', grammar.method, parser.method,
+        isMethodNode('method', [], [isPragmaNode('foo')], ['a'], []));
+    verify('Pragma4', 'method <foo> | a |', grammar.method, parser.method,
+        isMethodNode('method', [], [isPragmaNode('foo')], ['a'], []));
+    verify(
+        'Pragma5',
+        'method <foo> | a | <bar>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [isPragmaNode('foo'), isPragmaNode('bar')],
+            ['a'], []));
+    verify(
+        'Pragma6',
+        'method <foo: 1>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode(1)])
+        ], [], []));
+    verify(
+        'Pragma7',
+        'method <foo: 1.2>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode(1.2)])
+        ], [], []));
+    verify(
+        'Pragma8',
+        'method <foo: \'bar\'>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode('bar')])
+        ], [], []));
+    verify(
+        'Pragma9',
+        'method <foo: #\'bar\'>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode('bar')])
+        ], [], []));
+    verify(
+        'Pragma10',
+        'method <foo: bar>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode('bar')])
+        ], [], []));
+    verify(
+        'Pragma11',
+        'method <foo: true>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode(true)])
+        ], [], []));
+    verify(
+        'Pragma12',
+        'method <foo: false>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode(false)])
+        ], [], []));
+    verify(
+        'Pragma13',
+        'method <foo: nil>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode(null)])
+        ], [], []));
+    verify(
+        'Pragma14',
+        'method <foo: ()>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode([])])
+        ], [], []));
+    verify(
+        'Pragma15',
+        'method <foo: #()>',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('foo:', [isLiteralNode([])])
+        ], [], []));
+    verify(
+        'Pragma16',
+        'method < + 1 >',
+        grammar.method,
+        parser.method,
+        isMethodNode('method', [], [
+          isPragmaNode('+', [isLiteralNode(1)])
+        ], [], []));
   });
 }

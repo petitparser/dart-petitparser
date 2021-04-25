@@ -4,24 +4,32 @@ abstract class Node {}
 
 abstract class HasStatements {
   List<IsStatement> get statements;
+
   List<Token> get periods;
 }
 
 abstract class IsStatement {}
 
-class MethodNode extends Node {
-  final String selector;
-  final List<VariableNode> arguments;
-  final SequenceNode body;
+mixin HasSelector {
+  List<Token> get selectorToken;
 
-  MethodNode(this.selector, this.arguments, this.body);
+  String get selector => selectorToken.map((token) => token.input).join('');
 }
 
-class PragmaNode extends Node {
-  final String selector;
-  final List<LiteralNode> arguments;
+class MethodNode extends Node with HasSelector {
+  final List<Token> selectorToken = [];
+  final List<VariableNode> arguments = [];
+  final List<PragmaNode> pragmas = [];
+  final SequenceNode body = SequenceNode();
 
-  PragmaNode(this.selector, this.arguments);
+  MethodNode();
+}
+
+class PragmaNode extends Node with HasSelector {
+  final List<Token> selectorToken = [];
+  final List<LiteralNode> arguments = [];
+
+  PragmaNode();
 }
 
 class SequenceNode extends Node implements HasStatements {
@@ -99,14 +107,12 @@ class LiteralArrayNode<T> extends LiteralNode<List<T>> {
       : super(values.map((value) => value.value).toList());
 }
 
-class MessageNode extends ValueNode {
+class MessageNode extends ValueNode with HasSelector {
   final ValueNode receiver;
   final List<Token> selectorToken;
   final List<ValueNode> arguments;
 
   MessageNode(this.receiver, this.selectorToken, this.arguments);
-
-  String get selector => selectorToken.map((token) => token.input).join('');
 }
 
 class VariableNode extends ValueNode {
