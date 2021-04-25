@@ -72,10 +72,12 @@ class BlockNode extends ValueNode {
 }
 
 class CascadeNode extends ValueNode {
-  final List<MessageNode> messages;
-  final List<Token> semicolons;
+  final List<MessageNode> messages = [];
+  final List<Token> semicolons = [];
 
-  CascadeNode(this.messages, this.semicolons);
+  CascadeNode();
+
+  ValueNode get receiver => messages[0].receiver;
 }
 
 abstract class LiteralNode<T> extends ValueNode {

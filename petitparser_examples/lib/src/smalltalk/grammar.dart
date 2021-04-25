@@ -103,7 +103,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser identifierToken() => ref2(token, ref0(identifier), 'identifier');
   Parser keyword() => ref0(identifier).seq(char(':'));
   Parser keywordExpression() =>
-      ref0(binaryExpression).seq(ref0(keywordMessage).optional());
+      ref0(binaryExpression).seq(ref0(keywordMessage).optionalWith([]));
   Parser keywordMessage() =>
       ref0(keywordToken).seq(ref0(binaryExpression)).plus().map(buildKeyword);
   Parser keywordMethod() =>
@@ -160,7 +160,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser statements() => ref0(expressionReturn)
       .or(ref0(expression))
       .separatedBy(ref0(periodToken).plus(), optionalSeparatorAtEnd: true)
-      .optional();
+      .optionalWith([]);
   Parser _string() =>
       char('\'').seq(string('\'\'').or(pattern('^\'')).star()).seq(char('\''));
   Parser stringLiteral() => ref0(stringToken);

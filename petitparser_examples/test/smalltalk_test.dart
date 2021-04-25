@@ -91,32 +91,12 @@ exampleWithNumber: x
     });
     // All the productions and production actions of the grammar and parser.
     verify('Array1', '{}', grammar.array, parser.array, isArrayNode([]));
-    verify(
-        'Array2',
-        '{self foo}',
-        grammar.array,
-        parser.array,
-        isArrayNode([
-          isMessageNode(isVariableNode('self'), 'foo'),
-        ]));
-    verify(
-        'Array3',
-        '{self foo. self bar}',
-        grammar.array,
-        parser.array,
-        isArrayNode([
-          isMessageNode(isVariableNode('self'), 'foo'),
-          isMessageNode(isVariableNode('self'), 'bar'),
-        ]));
-    verify(
-        'Array4',
-        '{self foo. self bar.}',
-        grammar.array,
-        parser.array,
-        isArrayNode([
-          isMessageNode(isVariableNode('self'), 'foo'),
-          isMessageNode(isVariableNode('self'), 'bar'),
-        ]));
+    verify('Array2', '{1}', grammar.array, parser.array,
+        isArrayNode([isLiteralNode(1)]));
+    verify('Array3', '{1. 2}', grammar.array, parser.array,
+        isArrayNode([isLiteralNode(1), isLiteralNode(2)]));
+    verify('Array4', '{1. 2. }', grammar.array, parser.array,
+        isArrayNode([isLiteralNode(1), isLiteralNode(2)]));
     verify('Assignment1', '1', grammar.expression, parser.expression,
         isLiteralNode(1));
     verify('Assignment2', 'a := 1', grammar.expression, parser.expression,
