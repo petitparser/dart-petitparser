@@ -56,9 +56,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser nilLiteral() =>
       super.nilLiteral().map((input) => LiteralValueNode<void>(input, null));
 
-  Parser numberLiteral() => super
-      .numberLiteral()
-      .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
+  Parser numberLiteral() => super.numberLiteral().map(buildLiteralNumber);
 
   Parser parens() =>
       super.parens().map((input) => input[1]..surroundWith(input[0], input[2]));
@@ -86,15 +84,6 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       super.trueLiteral().map((input) => LiteralValueNode<bool>(input, true));
 
   Parser variable() => super.variable().map((input) => VariableNode(input));
-}
-
-num buildNumber(String input) {
-  final values = input.split('r');
-  return values.length == 1
-      ? num.parse(values[0])
-      : values.length == 2
-          ? int.parse(values[1], radix: int.parse(values[0]))
-          : throw ArgumentError.value(input, 'number', 'Unable to parse');
 }
 
 String buildString(String input) =>
@@ -145,6 +134,18 @@ Node buildCascadeNode(dynamic input) {
 Node buildLiteralArrayNode<T>(dynamic input) =>
     LiteralArrayNode<T>(input[1].cast<LiteralNode<T>>().toList())
       ..surroundWith(input[0], input[2]);
+
+Node buildLiteralNumber(dynamic input) {
+  final token = input as Token;
+  if (token.input.contains('.')) {
+    return LiteralValueNode<double>(token, double.parse(token.input));
+  }
+  final values = token.input.split('r');
+  final value = values.length == 1
+      ? int.parse(token.input)
+      : int.parse(values[1], radix: int.parse(values[0]));
+  return LiteralValueNode<int>(token, value);
+}
 
 Node buildMessageNodes(ValueNode receiver, dynamic messages) => messages.fold(
     receiver,
