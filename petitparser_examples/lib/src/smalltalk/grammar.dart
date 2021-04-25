@@ -52,8 +52,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   // the original smalltalk grammar
   Parser array() => ref1(token, '{')
       .seq(ref0(expression)
-          .separatedBy(ref0(periodToken))
-          .seq(ref0(periodToken).optional())
+          .separatedBy(ref0(periodToken), optionalSeparatorAtEnd: true)
           .optional())
       .seq(ref1(token, '}'));
   Parser arrayItem() => ref0(literal)

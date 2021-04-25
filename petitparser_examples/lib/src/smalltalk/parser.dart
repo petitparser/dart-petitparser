@@ -7,14 +7,16 @@ import 'grammar.dart';
 
 /// Smalltalk parser definition.
 class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
-  Parser array() =>
-      super.array().map((input) => ArrayNode(input[0], input[1], input[2]));
+  Parser array() => super
+      .array()
+      .map((input) => addStatements(ArrayNode(input[0], input[2]), input[1]));
 
-  Parser arrayLiteral() => super.arrayLiteral().map((input) =>
-      LiteralArrayNode(input[0], input[1].cast<LiteralNode>(), input[2]));
+  Parser arrayLiteral() => super.arrayLiteral().map((input) => LiteralArrayNode(
+      input[0], input[1].cast<LiteralNode>().toList(), input[2]));
 
-  Parser arrayLiteralArray() => super.arrayLiteralArray().map((input) =>
-      LiteralArrayNode(input[0], input[1].cast<LiteralNode>(), input[2]));
+  Parser arrayLiteralArray() =>
+      super.arrayLiteralArray().map((input) => LiteralArrayNode(
+          input[0], input[1].cast<LiteralNode>().toList(), input[2]));
 
   Parser binaryExpression() =>
       super.binaryExpression().map((input) => buildMessage(input[0], input[1]));
@@ -27,11 +29,11 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
 
   Parser byteLiteral() =>
       super.byteLiteral().map((input) => LiteralArrayNode<num>(
-          input[0], input[1].cast<LiteralNode<num>>(), input[2]));
+          input[0], input[1].cast<LiteralNode<num>>().toList(), input[2]));
 
   Parser byteLiteralArray() =>
       super.byteLiteralArray().map((input) => LiteralArrayNode<num>(
-          input[0], input[1].cast<LiteralNode<num>>(), input[2]));
+          input[0], input[1].cast<LiteralNode<num>>().toList(), input[2]));
 
   Parser characterLiteral() => super.characterLiteral().map(
       (input) => LiteralValueNode<String>(input, input.value.substring(1)));
@@ -64,7 +66,7 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
       .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
 
   Parser parens() =>
-      super.parens().map((input) => input[1].addParens(input[0], input[2]));
+      super.parens().map((input) => input[1]..addParens(input[0], input[2]));
 
   Parser pragma() => super.pragma();
 
@@ -129,10 +131,20 @@ ValueNode buildCascade(ValueNode node, List parts) {
   return CascadeNode(messages, semicolons);
 }
 
-ValueNode buildMessage(ValueNode receiver, List? messages) => (messages ?? [])
-    .fold(
-        receiver,
-        (receiver, selectorsAndArguments) => selectorsAndArguments == null
-            ? receiver
-            : MessageNode(receiver, selectorsAndArguments[0].cast<Token>(),
-                selectorsAndArguments[1].cast<ValueNode>()));
+ValueNode buildMessage(ValueNode receiver, List? parts) => (parts ?? []).fold(
+    receiver,
+    (receiver, selectorsAndArguments) => selectorsAndArguments == null
+        ? receiver
+        : MessageNode(receiver, selectorsAndArguments[0].cast<Token>().toList(),
+            selectorsAndArguments[1].cast<ValueNode>().toList()));
+
+HasStatements addStatements(HasStatements node, List? parts) {
+  for (final part in parts ?? []) {
+    if (part is Token) {
+      node.periods.add(part);
+    } else {
+      node.statements.add(part);
+    }
+  }
+  return node;
+}

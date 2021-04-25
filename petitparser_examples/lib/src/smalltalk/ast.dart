@@ -2,6 +2,12 @@ import 'package:petitparser/petitparser.dart';
 
 abstract class Node {}
 
+abstract class HasStatements {
+  List<ValueNode> get statements;
+
+  List<Token> get periods;
+}
+
 class MethodNode extends Node {
   final String selector;
   final List<VariableNode> arguments;
@@ -23,30 +29,31 @@ class ReturnNode extends Node {
   ReturnNode(this.value);
 }
 
-class SequenceNode extends Node {
+class SequenceNode extends Node implements HasStatements {
   final List<VariableNode> arguments;
-  final List<ValueNode> statements;
+  final List<ValueNode> statements = [];
+  final List<Token> periods = [];
 
-  SequenceNode(this.arguments, this.statements);
+  SequenceNode(this.arguments);
 }
 
 abstract class ValueNode extends Node {
   final List<Token> openParens = [];
   final List<Token> closeParens = [];
 
-  ValueNode addParens(Token open, Token close) {
+  void addParens(Token open, Token close) {
     openParens.add(open);
     closeParens.add(close);
-    return this;
   }
 }
 
-class ArrayNode extends ValueNode {
+class ArrayNode extends ValueNode implements HasStatements {
   final Token openToken;
-  final List<ValueNode> statements;
+  final List<ValueNode> statements = [];
+  final List<Token> periods = [];
   final Token closeToken;
 
-  ArrayNode(this.openToken, this.statements, this.closeToken);
+  ArrayNode(this.openToken, this.closeToken);
 }
 
 class AssignmentNode extends ValueNode {
@@ -104,7 +111,8 @@ class MessageNode extends ValueNode {
 
 class VariableNode extends ValueNode {
   final Token token;
-  final String name;
 
-  VariableNode(this.token) : name = token.input;
+  VariableNode(this.token);
+
+  String get name => token.input;
 }

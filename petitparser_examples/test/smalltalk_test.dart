@@ -23,25 +23,29 @@ void verify(String name, String source, Parser Function() grammarProduction,
   });
 }
 
-Matcher isLiteralNode(dynamic value) =>
+TypeMatcher<LiteralNode> isLiteralNode(dynamic value) =>
     isA<LiteralNode>().having((node) => node.value, 'value', value);
 
-Matcher isVariableNode(String name) =>
+TypeMatcher<VariableNode> isVariableNode(String name) =>
     isA<VariableNode>().having((node) => node.name, 'name', name);
 
-Matcher isMessageNode(Matcher receiver, String selector,
+TypeMatcher<MessageNode> isMessageNode(Matcher receiver, String selector,
         [List<Matcher> arguments = const []]) =>
     isA<MessageNode>()
         .having((node) => node.receiver, 'receiver', receiver)
         .having((node) => node.selector, 'selector', selector)
         .having((node) => node.arguments, 'arguments', arguments);
 
-Matcher isCascadeNode(List<Matcher> messages) =>
+TypeMatcher<CascadeNode> isCascadeNode(List<Matcher> messages) =>
     isA<CascadeNode>().having((node) => node.messages, 'messages', messages);
 
-Matcher isAssignmentNode(String name, Matcher value) => isA<AssignmentNode>()
-    .having((node) => node.variable, 'variable', isVariableNode(name))
-    .having((node) => node.value, 'value', value);
+TypeMatcher<AssignmentNode> isAssignmentNode(String name, Matcher value) =>
+    isA<AssignmentNode>()
+        .having((node) => node.variable, 'variable', isVariableNode(name))
+        .having((node) => node.value, 'value', value);
+
+TypeMatcher<ArrayNode> isArrayNode(List<Matcher> statements) => isA<ArrayNode>()
+    .having((node) => node.statements, 'statements', statements);
 
 void main() {
   group('grammar', () {
@@ -69,10 +73,33 @@ exampleWithNumber: x
       expect(() => grammar.token(123), throwsArgumentError);
     });
     // All the productions and production actions of the grammar and parser.
-    verify('Array1', '{}', grammar.array);
-    verify('Array2', '{self foo}', grammar.array);
-    verify('Array3', '{self foo. self bar}', grammar.array);
-    verify('Array4', '{self foo. self bar.}', grammar.array);
+    verify('Array1', '{}', grammar.array, parser.array, isArrayNode([]));
+    verify(
+        'Array2',
+        '{self foo}',
+        grammar.array,
+        parser.array,
+        isArrayNode([
+          isMessageNode(isVariableNode('self'), 'foo'),
+        ]));
+    verify(
+        'Array3',
+        '{self foo. self bar}',
+        grammar.array,
+        parser.array,
+        isArrayNode([
+          isMessageNode(isVariableNode('self'), 'foo'),
+          isMessageNode(isVariableNode('self'), 'bar'),
+        ]));
+    verify(
+        'Array4',
+        '{self foo. self bar.}',
+        grammar.array,
+        parser.array,
+        isArrayNode([
+          isMessageNode(isVariableNode('self'), 'foo'),
+          isMessageNode(isVariableNode('self'), 'bar'),
+        ]));
     verify('Assignment1', '1', grammar.expression, parser.expression,
         isLiteralNode(1));
     verify('Assignment2', 'a := 1', grammar.expression, parser.expression,
