@@ -3,10 +3,11 @@ import 'package:petitparser/petitparser.dart';
 abstract class Node {}
 
 abstract class HasStatements {
-  List<ValueNode> get statements;
-
+  List<IsStatement> get statements;
   List<Token> get periods;
 }
+
+abstract class IsStatement {}
 
 class MethodNode extends Node {
   final String selector;
@@ -23,21 +24,22 @@ class PragmaNode extends Node {
   PragmaNode(this.selector, this.arguments);
 }
 
-class ReturnNode extends Node {
-  final ValueNode value;
-
-  ReturnNode(this.value);
-}
-
 class SequenceNode extends Node implements HasStatements {
-  final List<VariableNode> arguments;
-  final List<ValueNode> statements = [];
+  final List<VariableNode> temporaries = [];
+  final List<IsStatement> statements = [];
   final List<Token> periods = [];
 
-  SequenceNode(this.arguments);
+  SequenceNode();
 }
 
-abstract class ValueNode extends Node {
+class ReturnNode extends Node implements IsStatement {
+  final Token caret;
+  final ValueNode value;
+
+  ReturnNode(this.caret, this.value);
+}
+
+abstract class ValueNode extends Node implements IsStatement {
   final List<Token> openParens = [];
   final List<Token> closeParens = [];
 

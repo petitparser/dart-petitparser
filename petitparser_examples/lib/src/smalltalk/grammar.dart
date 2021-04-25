@@ -52,7 +52,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   // the original smalltalk grammar
   Parser array() => ref1(token, '{')
       .seq(ref0(expression)
-          .separatedBy(ref0(periodToken), optionalSeparatorAtEnd: true)
+          .separatedBy(ref0(periodToken).plus(), optionalSeparatorAtEnd: true)
           .optional())
       .seq(ref1(token, '}'));
   Parser arrayItem() => ref0(literal)
@@ -95,6 +95,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser characterLiteral() => ref0(characterToken);
   Parser characterToken() => ref2(token, ref0(character), 'character');
   Parser expression() => ref0(assignment).star().seq(ref0(cascadeExpression));
+  Parser expressionReturn() => ref1(token, '^').seq(ref0(expression));
   Parser falseLiteral() => ref0(falseToken);
   Parser falseToken() =>
       ref2(token, 'false'.toParser() & word().not(), 'false');
@@ -152,18 +153,14 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       .or(ref0(block))
       .or(ref0(parens))
       .or(ref0(array));
-  Parser answer() => ref1(token, '^').seq(ref0(expression));
   Parser sequence() =>
       ref0(temporaries).seq(ref0(periodToken).star()).seq(ref0(statements));
   Parser start() => ref0(startMethod);
   Parser startMethod() => ref0(method).end();
-  Parser statements() => ref0(expression)
-      .seq(ref0(periodToken)
-          .plus()
-          .seq(ref0(statements))
-          .or(ref0(periodToken).star()))
-      .or(ref0(answer).seq(ref0(periodToken).star()))
-      .or(ref0(periodToken).star());
+  Parser statements() => ref0(expressionReturn)
+      .or(ref0(expression))
+      .separatedBy(ref0(periodToken).plus(), optionalSeparatorAtEnd: true)
+      .optional();
   Parser _string() =>
       char('\'').seq(string('\'\'').or(pattern('^\'')).star()).seq(char('\''));
   Parser stringLiteral() => ref0(stringToken);
@@ -176,7 +173,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
   Parser temporaries() => ref1(token, '|')
       .seq(ref0(variable).star())
       .seq(ref1(token, '|'))
-      .optional();
+      .optionalWith([]);
   Parser trueLiteral() => ref0(trueToken);
   Parser trueToken() => ref2(token, 'true'.toParser() & word().not(), 'true');
   Parser unary() => ref0(identifier).seq(char(':').not());

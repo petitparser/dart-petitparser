@@ -23,6 +23,8 @@ void verify(String name, String source, Parser Function() grammarProduction,
   });
 }
 
+// Node matchers
+
 TypeMatcher<LiteralNode> isLiteralNode(dynamic value) =>
     isA<LiteralNode>().having((node) => node.value, 'value', value);
 
@@ -46,6 +48,15 @@ TypeMatcher<AssignmentNode> isAssignmentNode(String name, Matcher value) =>
 
 TypeMatcher<ArrayNode> isArrayNode(List<Matcher> statements) => isA<ArrayNode>()
     .having((node) => node.statements, 'statements', statements);
+
+TypeMatcher<SequenceNode> isSequenceNode(
+        List<Matcher> temporaries, List<Matcher> statements) =>
+    isA<SequenceNode>()
+        .having((node) => node.temporaries, 'temporaries', temporaries)
+        .having((node) => node.statements, 'statements', statements);
+
+TypeMatcher<ReturnNode> isReturnNode(Matcher value) =>
+    isA<ReturnNode>().having((node) => node.value, 'value', value);
 
 void main() {
   group('grammar', () {
@@ -120,19 +131,64 @@ exampleWithNumber: x
     verify('Method1', 'negated ^ 0 - self', grammar.method);
     verify('Method2', '   negated ^ 0 - self', grammar.method);
     verify('Method3', ' negated ^ 0 - self  ', grammar.method);
-    verify('Sequence1', '| a | 1 . 2', grammar.sequence);
-    verify('Statements1', '1', grammar.sequence);
-    verify('Statements2', '1 . 2', grammar.sequence);
-    verify('Statements3', '1 . 2 . 3', grammar.sequence);
-    verify('Statements4', '1 . 2 . 3 .', grammar.sequence);
-    verify('Statements5', '1 . . 2', grammar.sequence);
-    verify('Statements6', '1. 2', grammar.sequence);
-    verify('Statements7', '. 1', grammar.sequence);
-    verify('Statements8', '.1', grammar.sequence);
-    verify('Statements9', 'a := 1. b := 2', grammar.sequence);
-    verify('Temporaries1', '| a |', grammar.sequence);
-    verify('Temporaries2', '| a b |', grammar.sequence);
-    verify('Temporaries3', '| a b c |', grammar.sequence);
+    verify(
+        'Sequence1',
+        '| a | 1 . 2',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode(
+            [isVariableNode('a')], [isLiteralNode(1), isLiteralNode(2)]));
+    verify('Statements1', '1', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1)]));
+    verify('Statements2', '1 . 2', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1), isLiteralNode(2)]));
+    verify(
+        'Statements3',
+        '1 . 2 . 3',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode(
+            [], [isLiteralNode(1), isLiteralNode(2), isLiteralNode(3)]));
+    verify(
+        'Statements4',
+        '1 . 2 . 3 .',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode(
+            [], [isLiteralNode(1), isLiteralNode(2), isLiteralNode(3)]));
+    verify('Statements5', '1 . . 2', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1), isLiteralNode(2)]));
+    verify('Statements6', '1. 2', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1), isLiteralNode(2)]));
+    verify('Statements7', '. 1', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1)]));
+    verify('Statements8', '.1', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1)]));
+    verify(
+        'Statements9',
+        'a := 1. b := 2',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode([], [
+          isAssignmentNode('a', isLiteralNode(1)),
+          isAssignmentNode('b', isLiteralNode(2))
+        ]));
+    verify('Sequence10', '^ 1', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isReturnNode(isLiteralNode(1))]));
+    verify('Sequence11', '1. ^ 2', grammar.sequence, parser.sequence,
+        isSequenceNode([], [isLiteralNode(1), isReturnNode(isLiteralNode(2))]));
+    verify('Temporaries1', '| a |', grammar.sequence, parser.sequence,
+        isSequenceNode([isVariableNode('a')], []));
+    verify('Temporaries2', '| a b |', grammar.sequence, parser.sequence,
+        isSequenceNode([isVariableNode('a'), isVariableNode('b')], []));
+    verify(
+        'Temporaries3',
+        '| a b c |',
+        grammar.sequence,
+        parser.sequence,
+        isSequenceNode(
+            [isVariableNode('a'), isVariableNode('b'), isVariableNode('c')],
+            []));
     verify('Variable1', 'trueBinding', grammar.primary, parser.primary,
         isVariableNode('trueBinding'));
     verify('Variable2', 'falseBinding', grammar.primary, parser.primary,

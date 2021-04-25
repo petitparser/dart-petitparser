@@ -45,6 +45,9 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser expression() =>
       super.expression().map((input) => buildAssignment(input[1], input[0]));
 
+  Parser expressionReturn() =>
+      super.expressionReturn().map((input) => ReturnNode(input[0], input[1]));
+
   Parser falseLiteral() =>
       super.falseLiteral().map((input) => LiteralValueNode<bool>(input, false));
 
@@ -70,9 +73,9 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
 
   Parser pragma() => super.pragma();
 
-  Parser answer() => super.answer();
-
-  Parser sequence() => super.sequence();
+  Parser sequence() => super
+      .sequence()
+      .map((input) => buildSequence(input[0], [input[1], input[2]]));
 
   Parser stringLiteral() => super.stringLiteral().map(
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
@@ -138,11 +141,22 @@ ValueNode buildMessage(ValueNode receiver, List? parts) => (parts ?? []).fold(
         : MessageNode(receiver, selectorsAndArguments[0].cast<Token>().toList(),
             selectorsAndArguments[1].cast<ValueNode>().toList()));
 
+SequenceNode buildSequence(List temporaries, List statements) {
+  final result = SequenceNode();
+  if (temporaries.isNotEmpty) {
+    result.temporaries.addAll(temporaries[1].cast<VariableNode>());
+  }
+  addStatements(result, statements);
+  return result;
+}
+
 HasStatements addStatements(HasStatements node, List? parts) {
   for (final part in parts ?? []) {
-    if (part is Token) {
+    if (part is List) {
+      addStatements(node, part);
+    } else if (part is Token) {
       node.periods.add(part);
-    } else {
+    } else if (part is IsStatement) {
       node.statements.add(part);
     }
   }
