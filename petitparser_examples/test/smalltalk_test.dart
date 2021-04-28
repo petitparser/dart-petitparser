@@ -16,7 +16,10 @@ void verify(String name, String source, Parser Function() grammarProduction,
     Parser Function() parserProduction, Matcher parseMatcher) {
   group(name, () {
     test('grammar', () => parse(source, grammarProduction));
-    test('parser', () => expect(parse(source, parserProduction), parseMatcher));
+    test('parser', () {
+      final ast = parse(source, parserProduction);
+      expect(ast, parseMatcher);
+    });
   });
 }
 
