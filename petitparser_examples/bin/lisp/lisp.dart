@@ -35,7 +35,7 @@ void main(List<String> arguments) {
       } else if (option == '-i') {
         interactiveMode = true;
       } else if (option == '-?') {
-        print('${Platform.executable} lisp.dart -n -i [files]');
+        print('${Platform.executable} smalltalk.dart -n -i [files]');
         print(' -i enforces the interactive mode');
         print(' -n does not load the standard library');
         exit(0);
