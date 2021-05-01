@@ -30,11 +30,11 @@ void main() {
     #query: 'q',
     #fragment: isNull,
   });
-  uriTest('ftp://www.example.org/foo bar/zork<>?\^`{|}', {
+  uriTest('ftp://www.example.org/foo bar/zork<>?\\^`{|}', {
     #scheme: 'ftp',
     #authority: 'www.example.org',
     #path: '/foo bar/zork<>',
-    #query: '\^`{|}',
+    #query: '\\^`{|}',
     #fragment: isNull,
   });
   uriTest('data:text/plain;charset=iso-8859-7,hallo', {
