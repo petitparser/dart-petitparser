@@ -65,7 +65,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       ref1(token, '(').seq(ref0(arrayItem).star()).seq(ref1(token, ')'));
   Parser assignment() => ref0(variable).seq(ref0(assignmentToken));
   Parser assignmentToken() => ref1(token, ':=');
-  Parser binary() => anyOf('!%&*+,-/<=>?@\\|~').plus();
+  Parser binary() => anyOf(r'!%&*+,-/<=>?@\|~').plus();
   Parser binaryExpression() =>
       ref0(unaryExpression).seq(ref0(binaryMessage).star());
   Parser binaryMessage() =>

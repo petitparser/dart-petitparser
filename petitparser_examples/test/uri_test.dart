@@ -30,11 +30,11 @@ void main() {
     #query: 'q',
     #fragment: isNull,
   });
-  uriTest('ftp://www.example.org/foo bar/zork<>?\\^`{|}', {
+  uriTest(r'ftp://www.example.org/foo bar/zork<>?\^`{|}', {
     #scheme: 'ftp',
     #authority: 'www.example.org',
     #path: '/foo bar/zork<>',
-    #query: '\\^`{|}',
+    #query: r'\^`{|}',
     #fragment: isNull,
   });
   uriTest('data:text/plain;charset=iso-8859-7,hallo', {
@@ -58,10 +58,10 @@ void main() {
     #query: isNull,
     #fragment: isNull,
   });
-  uriTest('file:c:\\foo\\bar.html', {
+  uriTest(r'file:c:\\foo\\bar.html', {
     #scheme: 'file',
     #authority: isNull,
-    #path: 'c:\\foo\\bar.html',
+    #path: r'c:\\foo\\bar.html',
     #query: isNull,
     #fragment: isNull,
   });
