@@ -49,12 +49,14 @@ If you inspect the object `id` in the debugger, you'll notice that the code abov
       - CharacterParser: This parser accepts a single letter.
       - CharacterParser: This parser accepts a single digit.
 
-The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. Both of the parsers below are equivalent to the one above:
+The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. Both of the following parsers accept the same inputs as the parser above:
 
 ```dart
 final id1 = letter().seq(letter().or(digit()).star());
-final id2 = [letter(), [letter(), digit()].toChoiceParser()].toSequenceParser().star();
+final id2 = [letter(), [letter(), digit()].toChoiceParser().star()].toSequenceParser();
 ```
+
+Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators or chained function calls is `Parser<dynamic>`. The last variation created from lists has more specific type information.
 
 
 ### Parsing Some Input
@@ -97,12 +99,14 @@ print(id.accept('123'));                // false
 
 PetitParser provides a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. Terminal parsers are the simplest. We've already seen a few of those:
 
-- `char('a')` (or `'a'.toParser()`) parses the character *a*.
-- `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
-- `pattern('a-f')` (or `'abc'.toParser(isPattern: true)`) parsers any character between _a_ and _f_.
 - `any()` parses any character.
+- `char('a')` (or `'a'.toParser()`) parses the character *a*.
 - `digit()` parses any digit from *0* to *9*.
 - `letter()` parses any letter from *a* to *z* and *A* to *Z*.
+- `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parsers any character between *a* and *f*.
+- `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parsers and character between *a* and *f*, or *A* and *F*.
+- `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
+- `stringIgnoreCase('abc')` (or `'abc'.toParser(caseInsensitive: true)`) parses the strings *Abc*, *aBC*, ...
 - `word()` parses any letter or digit.
 
 So instead of using the letter and digit predicate, we could have written our identifier parser like this:
@@ -318,6 +322,8 @@ Check out [the documentation](https://pub.dev/documentation/petitparser/latest/e
 Misc
 ----
 
+[petitparser.github.io](http://petitparser.github.io/) contains up-to-date information about PetitParser.
+
 
 ### Examples
 
@@ -328,6 +334,7 @@ The package comes with a large collection of example grammars and language exper
 - [Lisp](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/lisp) contains a complete LISP grammar, parser and evaluator.
 - [Prolog](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/prolog) contains a basic Prolog grammar, parser and evaluator.
 - [Smalltalk](https://github.com/petitparser/dart-petitparser/tree/main/petitparser_examples/lib/src/smalltalk) contains a complete Smalltalk grammar.
+- [Uri](https://github.com/petitparser/dart-petitparser/blob/main/petitparser_examples/lib/uri.dart) contains a simple URI parser.
 
 Furthermore, there are [numerous open source projects](https://pub.dev/packages?q=dependency:petitparser) using PetitParser:
 

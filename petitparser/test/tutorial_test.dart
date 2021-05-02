@@ -44,6 +44,45 @@ void main() {
     expect(id.accept('foo'), isTrue);
     expect(id.accept('123'), isFalse);
   });
+  test('simple grammar (chained calls)', () {
+    final id = letter().seq(letter().or(digit()).star());
+    final id1 = id.parse('yeah');
+    final id2 = id.parse('f12');
+    expect(id1.value, [
+      'y',
+      ['e', 'a', 'h']
+    ]);
+    expect(id2.value, [
+      'f',
+      ['1', '2']
+    ]);
+    final id3 = id.parse('123');
+    expect(id3.message, 'letter expected');
+    expect(id3.position, 0);
+    expect(id.accept('foo'), isTrue);
+    expect(id.accept('123'), isFalse);
+  });
+  test('simple grammar (lists)', () {
+    final id = [
+      letter(),
+      [letter(), digit()].toChoiceParser().star()
+    ].toSequenceParser();
+    final id1 = id.parse('yeah');
+    final id2 = id.parse('f12');
+    expect(id1.value, [
+      'y',
+      ['e', 'a', 'h']
+    ]);
+    expect(id2.value, [
+      'f',
+      ['1', '2']
+    ]);
+    final id3 = id.parse('123');
+    expect(id3.message, 'letter expected');
+    expect(id3.position, 0);
+    expect(id.accept('foo'), isTrue);
+    expect(id.accept('123'), isFalse);
+  });
   test('simple grammar (chained functions)', () {
     final id = letter().seq(letter().or(digit()).star());
     final id1 = id.parse('yeah');
