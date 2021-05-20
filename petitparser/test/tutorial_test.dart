@@ -194,10 +194,11 @@ void main() {
       ..wrapper(
           char('(').trim(), char(')').trim(), (String l, num a, String r) => a);
     // negation is a prefix operator
-    builder.group()..prefix(char('-').trim(), (String op, num a) => -a);
+    builder.group().prefix(char('-').trim(), (String op, num a) => -a);
     // power is right-associative
-    builder.group()
-      ..right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
+    builder
+        .group()
+        .right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
     // multiplication and addition are left-associative
     builder.group()
       ..left(char('*').trim(), (num a, String op, num b) => a * b)

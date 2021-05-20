@@ -16,8 +16,8 @@ Parser buildParser() {
         .map(num.tryParse))
     ..wrapper(
         char('(').trim(), char(')').trim(), (left, value, right) => value);
-  builder.group()..prefix(char('-').trim(), (op, num a) => -a);
-  builder.group()..right(char('^').trim(), (num a, op, num b) => pow(a, b));
+  builder.group().prefix(char('-').trim(), (op, num a) => -a);
+  builder.group().right(char('^').trim(), (num a, op, num b) => pow(a, b));
   builder.group()
     ..left(char('*').trim(), (num a, op, num b) => a * b)
     ..left(char('/').trim(), (num a, op, num b) => a / b);

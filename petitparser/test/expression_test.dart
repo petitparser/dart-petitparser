@@ -18,12 +18,11 @@ Parser build({bool attachAction = true}) {
         action((left, value, right) => value))
     ..wrapper(string('sqrt(').trim(), char(')').trim(),
         action((left, value, right) => math.sqrt(value)));
-  builder.group()..prefix(char('-').trim(), action((op, a) => -a));
+  builder.group().prefix(char('-').trim(), action((op, a) => -a));
   builder.group()
     ..postfix(string('++').trim(), action((a, op) => ++a))
     ..postfix(string('--').trim(), action((a, op) => --a));
-  builder.group()
-    ..right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+  builder.group().right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
   builder.group()
     ..left(char('*').trim(), action((a, op, b) => a * b))
     ..left(char('/').trim(), action((a, op, b) => a / b));

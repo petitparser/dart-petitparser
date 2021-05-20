@@ -7,6 +7,10 @@ import 'test_utils.dart';
 
 typedef Evaluator = num Function(num value);
 
+Parser element() => char('(').seq(ref0(content)).seq(char(')'));
+Parser content() => (ref0(element) | any()).star();
+final nestedParser = resolve(ref0(content)).flatten().end();
+
 void main() {
   test('flatten().trim()', () {
     final parser = word().plus().flatten().trim();
@@ -148,14 +152,14 @@ void main() {
       ..primitive(char('x').trim().map((_) => (num value) => value))
       ..wrapper(char('(').trim(), char(')').trim(), (_, Evaluator a, __) => a);
     // negation is a prefix operator
-    builder.group()
-      ..prefix(char('-').trim(), (_, Evaluator a) => (num value) => -a(value));
+    builder
+        .group()
+        .prefix(char('-').trim(), (_, Evaluator a) => (num value) => -a(value));
     // power is right-associative
-    builder.group()
-      ..right(
-          char('^').trim(),
-          (Evaluator a, _, Evaluator b) =>
-              (num value) => pow(a(value), b(value)));
+    builder.group().right(
+        char('^').trim(),
+        (Evaluator a, _, Evaluator b) =>
+            (num value) => pow(a(value), b(value)));
     // multiplication and addition are left-associative
     builder.group()
       ..left(char('*').trim(),
@@ -175,5 +179,12 @@ void main() {
     expect(expression(0), -2);
     expect(expression(1), 3);
     expect(expression(2), 38);
+  });
+  test('stackoverflow.com/q/67617000/82303', () {
+    expectSuccess(nestedParser, '()', '()');
+    expectSuccess(nestedParser, '(a)', '(a)');
+    expectSuccess(nestedParser, '(a()b)', '(a()b)');
+    expectSuccess(nestedParser, '(a(b)c)', '(a(b)c)');
+    expectSuccess(nestedParser, '(a()b(cd))', '(a()b(cd))');
   });
 }
