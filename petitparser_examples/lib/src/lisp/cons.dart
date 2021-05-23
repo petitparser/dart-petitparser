@@ -7,7 +7,7 @@ class Cons {
   dynamic cdr;
 
   /// Constructs a cons.
-  Cons(this.car, [this.cdr]);
+  Cons([this.car, this.cdr]);
 
   /// The head of the cons.
   dynamic get head => car;

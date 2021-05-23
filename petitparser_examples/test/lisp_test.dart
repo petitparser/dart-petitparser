@@ -279,13 +279,13 @@ void main() {
     test('Quote', () {
       expect(exec('(quote 1)'), 1);
       expect(exec('(quote a)'), Name('a'));
-      expect(exec('(quote (+ 1))'), Cons(Name('+'), Cons(1, null)));
+      expect(exec('(quote (+ 1))'), Cons(Name('+'), Cons(1)));
     });
     test('Quote (syntax)', () {
-      expect(exec('\'()'), null);
-      expect(exec('\'a'), Name('a'));
-      expect(exec('\'(1)'), Cons(1, null));
-      expect(exec('\'(+ 1)'), Cons(Name('+'), Cons(1, null)));
+      expect(exec("'()"), null);
+      expect(exec("'a"), Name('a'));
+      expect(exec("'(1)"), Cons(1));
+      expect(exec("'(+ 1)"), Cons(Name('+'), Cons(1)));
     });
     test('Eval', () {
       expect(exec('(eval (quote (+ 1 2)))'), 3);
@@ -489,9 +489,9 @@ void main() {
     });
     test('Cons', () {
       expect(exec('(cons 1 2)'), Cons(1, 2));
-      expect(exec('(cons 1 null)'), Cons(1, null));
+      expect(exec('(cons 1 null)'), Cons(1));
       expect(exec('(cons null 2)'), Cons(null, 2));
-      expect(exec('(cons null null)'), Cons(null, null));
+      expect(exec('(cons null null)'), Cons());
       expect(
           exec('(cons 1 (cons 2 (cons 3 null)))'), Cons(1, Cons(2, Cons(3))));
     });
@@ -517,7 +517,7 @@ void main() {
       expect(exec('null'), isNull);
     });
     test('Null? (true)', () {
-      expect(exec('(null? \'())'), isTrue);
+      expect(exec("(null? '())"), isTrue);
       expect(exec('(null? null)'), isTrue);
     });
     test('Null? (false)', () {
@@ -528,42 +528,42 @@ void main() {
       expect(exec('(null? false)'), isFalse);
     });
     test('Length', () {
-      expect(exec('(length \'())'), 0);
-      expect(exec('(length \'(1))'), 1);
-      expect(exec('(length \'(1 1))'), 2);
-      expect(exec('(length \'(1 1 1))'), 3);
-      expect(exec('(length \'(1 1 1 1))'), 4);
-      expect(exec('(length \'(1 1 1 1 1))'), 5);
+      expect(exec("(length '())"), 0);
+      expect(exec("(length '(1))"), 1);
+      expect(exec("(length '(1 1))"), 2);
+      expect(exec("(length '(1 1 1))"), 3);
+      expect(exec("(length '(1 1 1 1))"), 4);
+      expect(exec("(length '(1 1 1 1 1))"), 5);
     });
     test('Append', () {
-      expect(exec('(append \'() \'())'), isNull);
-      expect(exec('(append \'(1) \'())'), exec('\'(1)'));
-      expect(exec('(append \'() \'(1))'), exec('\'(1)'));
-      expect(exec('(append \'(1) \'(2))'), exec('\'(1 2)'));
-      expect(exec('(append \'(1 2) \'(3))'), exec('\'(1 2 3)'));
-      expect(exec('(append \'(1) \'(2 3))'), exec('\'(1 2 3)'));
+      expect(exec("(append '() '())"), isNull);
+      expect(exec("(append '(1) '())"), exec("'(1)"));
+      expect(exec("(append '() '(1))"), exec("'(1)"));
+      expect(exec("(append '(1) '(2))"), exec("'(1 2)"));
+      expect(exec("(append '(1 2) '(3))"), exec("'(1 2 3)"));
+      expect(exec("(append '(1) '(2 3))"), exec("'(1 2 3)"));
     });
     test('List Head', () {
-      expect(exec('(list-head \'(5 6 7) 0)'), 5);
-      expect(exec('(list-head \'(5 6 7) 1)'), 6);
-      expect(exec('(list-head \'(5 6 7) 2)'), 7);
-      expect(exec('(list-head \'(5 6 7) 3)'), isNull);
+      expect(exec("(list-head '(5 6 7) 0)"), 5);
+      expect(exec("(list-head '(5 6 7) 1)"), 6);
+      expect(exec("(list-head '(5 6 7) 2)"), 7);
+      expect(exec("(list-head '(5 6 7) 3)"), isNull);
     });
     test('List Tail', () {
-      expect(exec('(list-tail \'(5 6 7) 0)'), exec('\'(6 7)'));
-      expect(exec('(list-tail \'(5 6 7) 1)'), exec('\'(7)'));
-      expect(exec('(list-tail \'(5 6 7) 2)'), isNull);
+      expect(exec("(list-tail '(5 6 7) 0)"), exec("'(6 7)"));
+      expect(exec("(list-tail '(5 6 7) 1)"), exec("'(7)"));
+      expect(exec("(list-tail '(5 6 7) 2)"), isNull);
     });
     test('Map', () {
-      expect(exec('(map \'() (lambda (x) (* 2 x)))'), isNull);
-      expect(exec('(map \'(2) (lambda (x) (* 2 x)))'), exec('\'(4)'));
-      expect(exec('(map \'(2 3) (lambda (x) (* 2 x)))'), exec('\'(4 6)'));
-      expect(exec('(map \'(2 3 4) (lambda (x) (* 2 x)))'), exec('\'(4 6 8)'));
+      expect(exec("(map '() (lambda (x) (* 2 x)))"), isNull);
+      expect(exec("(map '(2) (lambda (x) (* 2 x)))"), exec("'(4)"));
+      expect(exec("(map '(2 3) (lambda (x) (* 2 x)))"), exec("'(4 6)"));
+      expect(exec("(map '(2 3 4) (lambda (x) (* 2 x)))"), exec("'(4 6 8)"));
     });
     test('Inject', () {
-      expect(exec('(inject \'() 5 (lambda (s e) (+ s e 1)))'), 5);
-      expect(exec('(inject \'(2) 5 (lambda (s e) (+ s e 1)))'), 8);
-      expect(exec('(inject \'(2 3) 5 (lambda (s e) (+ s e 1)))'), 12);
+      expect(exec("(inject '() 5 (lambda (s e) (+ s e 1)))"), 5);
+      expect(exec("(inject '(2) 5 (lambda (s e) (+ s e 1)))"), 8);
+      expect(exec("(inject '(2 3) 5 (lambda (s e) (+ s e 1)))"), 12);
     });
   });
   group('Examples', () {

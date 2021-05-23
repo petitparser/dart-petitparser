@@ -7,8 +7,10 @@ import 'grammar.dart';
 /// A (now pointless) helper to build a parser from a {@link GrammarDefinition}.
 @Deprecated('Directly use the GrammarDefinition to build parsers.')
 class GrammarParser<T> extends DelegateParser<T, T> {
+  @Deprecated('Directly use the GrammarDefinition to build parsers.')
   GrammarParser(GrammarDefinition definition) : this._(definition.build());
 
+  @Deprecated('Directly use the GrammarDefinition to build parsers.')
   GrammarParser._(Parser<T> parser) : super(parser);
 
   @override

@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-Parser build({bool attachAction = true}) {
+Parser build({required bool attachAction}) {
   final action = attachAction ? (func) => func : (func) => null;
   final builder = ExpressionBuilder();
   builder.group()

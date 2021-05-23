@@ -46,13 +46,13 @@ void main() {
     });
     test('invalid', () {
       expect(parser.parse('{').isFailure, isTrue);
-      expect(parser.parse('{\'a\'').isFailure, isTrue);
-      expect(parser.parse('{\'a\':').isFailure, isTrue);
-      expect(parser.parse('{\'a\':\'b\'').isFailure, isTrue);
-      expect(parser.parse('{\'a\':\'b\',').isFailure, isTrue);
-      expect(parser.parse('{\'a\'}').isFailure, isTrue);
-      expect(parser.parse('{\'a\':}').isFailure, isTrue);
-      expect(parser.parse('{\'a\':\'b\',}').isFailure, isTrue);
+      expect(parser.parse("{'a'").isFailure, isTrue);
+      expect(parser.parse("{'a':").isFailure, isTrue);
+      expect(parser.parse("{'a':'b'").isFailure, isTrue);
+      expect(parser.parse("{'a':'b',").isFailure, isTrue);
+      expect(parser.parse("{'a'}").isFailure, isTrue);
+      expect(parser.parse("{'a':}").isFailure, isTrue);
+      expect(parser.parse("{'a':'b',}").isFailure, isTrue);
       expect(parser.parse('{}}').isFailure, isTrue);
     });
   });

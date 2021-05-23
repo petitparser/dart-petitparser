@@ -162,7 +162,7 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       .separatedBy(ref0(periodToken).plus(), optionalSeparatorAtEnd: true)
       .optionalWith([]);
   Parser _string() =>
-      char('\'').seq(string('\'\'').or(pattern('^\'')).star()).seq(char('\''));
+      char("'").seq(string("''").or(pattern("^'")).star()).seq(char("'"));
   Parser stringLiteral() => ref0(stringToken);
   Parser stringToken() => ref2(token, ref0(_string), 'string');
   Parser symbol() =>

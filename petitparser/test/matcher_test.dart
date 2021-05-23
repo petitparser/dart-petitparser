@@ -43,7 +43,7 @@ void main() {
       expect(matches.map((matcher) => matcher[0]), ['', '123', '', '45', '']);
     });
     test('matchAsPrefix()', () {
-      final match1 = pattern.matchAsPrefix(input, 0);
+      final match1 = pattern.matchAsPrefix(input);
       expect(match1, isNull);
       final match2 = pattern.matchAsPrefix(input, 2)!;
       expect(match2.pattern, pattern);
@@ -57,14 +57,13 @@ void main() {
     });
     test('startsWith()', () {
       expect(input.startsWith(pattern), isFalse);
-      expect(input.startsWith(pattern, 0), isFalse);
       expect(input.startsWith(pattern, 1), isTrue);
       expect(input.startsWith(pattern, 2), isTrue);
       expect(input.startsWith(pattern, 3), isFalse);
     });
     test('indexOf()', () {
       expect(input.indexOf(pattern), 1);
-      expect(input.indexOf(pattern, 0), 1);
+      expect(input.indexOf(pattern), 1);
       expect(input.indexOf(pattern, 1), 1);
       expect(input.indexOf(pattern, 2), 2);
       expect(input.indexOf(pattern, 3), 5);

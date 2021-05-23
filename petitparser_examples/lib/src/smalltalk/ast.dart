@@ -17,10 +17,11 @@ abstract class IsStatement implements Node {}
 mixin HasSelector {
   List<Token> get selectorToken;
 
-  String get selector => selectorToken.map((token) => token.input).join('');
+  String get selector => selectorToken.map((token) => token.input).join();
 }
 
 class MethodNode extends Node with HasSelector {
+  @override
   final List<Token> selectorToken = [];
   final List<VariableNode> arguments = [];
   final List<PragmaNode> pragmas = [];
@@ -28,25 +29,31 @@ class MethodNode extends Node with HasSelector {
 
   MethodNode();
 
+  @override
   void accept(Visitor visitor) => visitor.visitMethodNode(this);
 }
 
 class PragmaNode extends Node with HasSelector {
+  @override
   final List<Token> selectorToken = [];
   final List<LiteralNode> arguments = [];
 
   PragmaNode();
 
+  @override
   void accept(Visitor visitor) => visitor.visitPragmaNode(this);
 }
 
 class SequenceNode extends Node implements HasStatements {
   final List<VariableNode> temporaries = [];
+  @override
   final List<IsStatement> statements = [];
+  @override
   final List<Token> periods = [];
 
   SequenceNode();
 
+  @override
   void accept(Visitor visitor) => visitor.visitSequenceNode(this);
 }
 
@@ -56,6 +63,7 @@ class ReturnNode extends Node implements IsStatement {
 
   ReturnNode(this.caret, this.value);
 
+  @override
   void accept(Visitor visitor) => visitor.visitReturnNode(this);
 }
 
@@ -70,11 +78,14 @@ abstract class ValueNode extends Node implements IsStatement {
 }
 
 class ArrayNode extends ValueNode implements HasStatements {
+  @override
   final List<ValueNode> statements = [];
+  @override
   final List<Token> periods = [];
 
   ArrayNode();
 
+  @override
   void accept(Visitor visitor) => visitor.visitArrayNode(this);
 }
 
@@ -85,6 +96,7 @@ class AssignmentNode extends ValueNode {
 
   AssignmentNode(this.variable, this.assignment, this.value);
 
+  @override
   void accept(Visitor visitor) => visitor.visitAssignmentNode(this);
 }
 
@@ -94,6 +106,7 @@ class BlockNode extends ValueNode {
 
   BlockNode(this.arguments, this.body);
 
+  @override
   void accept(Visitor visitor) => visitor.visitBlockNode(this);
 }
 
@@ -105,6 +118,7 @@ class CascadeNode extends ValueNode {
 
   ValueNode get receiver => messages[0].receiver;
 
+  @override
   void accept(Visitor visitor) => visitor.visitCascadeNode(this);
 }
 
@@ -120,6 +134,7 @@ class LiteralArrayNode<T> extends LiteralNode<List<T>> {
   LiteralArrayNode(this.values)
       : super(values.map((value) => value.value).toList());
 
+  @override
   void accept(Visitor visitor) => visitor.visitLiteralArrayNode(this);
 }
 
@@ -128,16 +143,19 @@ class LiteralValueNode<T> extends LiteralNode<T> {
 
   LiteralValueNode(this.token, T value) : super(value);
 
+  @override
   void accept(Visitor visitor) => visitor.visitLiteralValueNode(this);
 }
 
 class MessageNode extends ValueNode with HasSelector {
   final ValueNode receiver;
+  @override
   final List<Token> selectorToken;
   final List<ValueNode> arguments;
 
   MessageNode(this.receiver, this.selectorToken, this.arguments);
 
+  @override
   void accept(Visitor visitor) => visitor.visitMessageNode(this);
 }
 
@@ -148,5 +166,6 @@ class VariableNode extends ValueNode {
 
   String get name => token.input;
 
+  @override
   void accept(Visitor visitor) => visitor.visitVariableNode(this);
 }

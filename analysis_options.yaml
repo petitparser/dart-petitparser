@@ -18,18 +18,18 @@ linter:
     # - avoid_dynamic_calls
     - avoid_empty_else
     # - avoid_equals_and_hash_code_on_mutable_classes
-    # - avoid_escaping_inner_quotes
+    - avoid_escaping_inner_quotes
     - avoid_field_initializers_in_const_classes
     - avoid_function_literals_in_foreach_calls
     - avoid_implementing_value_types
     - avoid_init_to_null
     - avoid_js_rounded_ints
-    # NEW: - avoid_multiple_declarations_per_line
+    # - avoid_multiple_declarations_per_line
     - avoid_null_checks_in_equality_operators
     # - avoid_positional_boolean_parameters
     # - avoid_print
     - avoid_private_typedef_functions
-    # - avoid_redundant_argument_values
+    - avoid_redundant_argument_values
     - avoid_relative_lib_imports
     - avoid_renaming_method_parameters
     - avoid_return_types_on_setters
@@ -39,7 +39,7 @@ linter:
     - avoid_returning_this
     - avoid_setters_without_getters
     - avoid_shadowing_type_parameters
-    # - avoid_single_cascade_in_expression_statements
+    - avoid_single_cascade_in_expression_statements
     - avoid_slow_async_io
     - avoid_type_to_string
     - avoid_types_as_parameter_names
@@ -59,7 +59,8 @@ linter:
     - constant_identifier_names
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
-    # NEW: - deprecated_consistency
+    # NEW: - depend_on_referenced_packages
+    - deprecated_consistency
     - diagnostic_describe_all_properties
     - directives_ordering
     - do_not_use_environment
@@ -77,16 +78,18 @@ linter:
     - leading_newlines_in_multiline_strings
     - library_names
     - library_prefixes
+    # NEW: - library_private_types_in_public_api
     - lines_longer_than_80_chars
     - list_remove_unrelated_type
     - literal_only_boolean_expressions
-    # - missing_whitespace_between_adjacent_strings
+    - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
     - no_default_cases
     - no_duplicate_case_values
     - no_logic_in_create_state
     - no_runtimeType_toString
     - non_constant_identifier_names
+    # NEW: - noop_primitive_operations
     - null_check_on_nullable_type_parameter
     - null_closures
     - omit_local_variable_types
@@ -114,6 +117,7 @@ linter:
     - prefer_final_fields
     - prefer_final_in_for_each
     - prefer_final_locals
+    # NEW: - prefer_final_parameters
     - prefer_for_elements_to_map_fromIterable
     - prefer_foreach
     - prefer_function_declarations_over_variables
@@ -129,15 +133,17 @@ linter:
     - prefer_is_not_operator
     - prefer_iterable_whereType
     - prefer_mixin
+    # NEW: - prefer_null_aware_method_calls
     - prefer_null_aware_operators
     - prefer_relative_imports
-    - prefer_single_quotes
+    # - prefer_single_quotes
     - prefer_spread_collections
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
     # - public_member_api_docs
     - recursive_getters
+    # NEW: - require_trailing_commas
     - sized_box_for_whitespace
     - slash_for_doc_comments
     - sort_child_properties_last
@@ -170,17 +176,19 @@ linter:
     - unnecessary_this
     - unrelated_type_equality_checks
     - unsafe_html
+    - use_build_context_synchronously
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
-    # NEW: - use_if_null_to_convert_nulls_to_bools
+    - use_if_null_to_convert_nulls_to_bools
     - use_is_even_rather_than_modulo
     - use_key_in_widget_constructors
     - use_late_for_private_fields_and_variables
-    # NEW: - use_named_constants
+    - use_named_constants
     # - use_raw_strings
     - use_rethrow_when_possible
     - use_setters_to_change_properties
     - use_string_buffers
+    # NEW: - use_test_throws_matchers
     # - use_to_and_as_if_applicable
     - valid_regexps
     - void_checks

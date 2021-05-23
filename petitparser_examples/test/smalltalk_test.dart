@@ -349,10 +349,10 @@ exampleWithNumber: x
         isLiteralNode(null));
     verify('StringLiteral1', "''", grammar.stringLiteral, parser.stringLiteral,
         isLiteralNode(''));
-    verify('StringLiteral2', '\'ab\'', grammar.stringLiteral,
+    verify('StringLiteral2', "'ab'", grammar.stringLiteral,
         parser.stringLiteral, isLiteralNode('ab'));
-    verify('StringLiteral3', '\'ab\'\'cd\'', grammar.stringLiteral,
-        parser.stringLiteral, isLiteralNode('ab\'cd'));
+    verify('StringLiteral3', "'ab''cd'", grammar.stringLiteral,
+        parser.stringLiteral, isLiteralNode("ab'cd"));
     verify('SymbolLiteral1', '#foo', grammar.symbolLiteral,
         parser.symbolLiteral, isLiteralNode('foo'));
     verify('SymbolLiteral2', '#+', grammar.symbolLiteral, parser.symbolLiteral,
@@ -361,7 +361,7 @@ exampleWithNumber: x
         parser.symbolLiteral, isLiteralNode('key:'));
     verify('SymbolLiteral4', '#key:value:', grammar.symbolLiteral,
         parser.symbolLiteral, isLiteralNode('key:value:'));
-    verify('SymbolLiteral5', '#\'ing-result\'', grammar.symbolLiteral,
+    verify('SymbolLiteral5', "#'ing-result'", grammar.symbolLiteral,
         parser.symbolLiteral, isLiteralNode('ing-result'));
     verify('SymbolLiteral6', '#__gen__binding', grammar.symbolLiteral,
         parser.symbolLiteral, isLiteralNode('__gen__binding'));
@@ -521,7 +521,7 @@ exampleWithNumber: x
         ], [], []));
     verify(
         'Pragma8',
-        'method <foo: \'bar\'>',
+        "method <foo: 'bar'>",
         grammar.method,
         parser.method,
         isMethodNode('method', [], [
@@ -529,7 +529,7 @@ exampleWithNumber: x
         ], [], []));
     verify(
         'Pragma9',
-        'method <foo: #\'bar\'>',
+        "method <foo: #'bar'>",
         grammar.method,
         parser.method,
         isMethodNode('method', [], [

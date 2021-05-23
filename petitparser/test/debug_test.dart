@@ -10,24 +10,24 @@ void main() {
       final lines = <Object?>[];
       expect(trace(identifier, lines.add).parse('a').isSuccess, isTrue);
       expect(lines, [
-        'Instance of \'SequenceParser<dynamic>\'',
-        '  Instance of \'CharacterParser\'[letter expected]',
-        '  Success[1:2]: a',
-        '  Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
-        '    Instance of \'CharacterParser\'[letter or digit expected]',
-        '    Failure[1:2]: letter or digit expected',
-        '  Success[1:2]: []',
-        'Success[1:2]: [a, []]'
+        "Instance of 'SequenceParser<dynamic>'",
+        "  Instance of 'CharacterParser'[letter expected]",
+        "  Success[1:2]: a",
+        "  Instance of 'PossessiveRepeatingParser<String>'[0..*]",
+        "    Instance of 'CharacterParser'[letter or digit expected]",
+        "    Failure[1:2]: letter or digit expected",
+        "  Success[1:2]: []",
+        "Success[1:2]: [a, []]",
       ]);
     });
     test('failure', () {
       final lines = <Object?>[];
       expect(trace(identifier, lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
-        'Instance of \'SequenceParser<dynamic>\'',
-        '  Instance of \'CharacterParser\'[letter expected]',
-        '  Failure[1:1]: letter expected',
-        'Failure[1:1]: letter expected'
+        "Instance of 'SequenceParser<dynamic>'",
+        "  Instance of 'CharacterParser'[letter expected]",
+        "  Failure[1:1]: letter expected",
+        "Failure[1:1]: letter expected",
       ]);
     });
   });
@@ -74,22 +74,22 @@ void main() {
       final lines = <Object?>[];
       expect(progress(identifier, lines.add).parse('ab123').isSuccess, isTrue);
       expect(lines, [
-        '* Instance of \'SequenceParser<dynamic>\'',
-        '* Instance of \'CharacterParser\'[letter expected]',
-        '** Instance of \'PossessiveRepeatingParser<String>\'[0..*]',
-        '** Instance of \'CharacterParser\'[letter or digit expected]',
-        '*** Instance of \'CharacterParser\'[letter or digit expected]',
-        '**** Instance of \'CharacterParser\'[letter or digit expected]',
-        '***** Instance of \'CharacterParser\'[letter or digit expected]',
-        '****** Instance of \'CharacterParser\'[letter or digit expected]'
+        "* Instance of 'SequenceParser<dynamic>'",
+        "* Instance of 'CharacterParser'[letter expected]",
+        "** Instance of 'PossessiveRepeatingParser<String>'[0..*]",
+        "** Instance of 'CharacterParser'[letter or digit expected]",
+        "*** Instance of 'CharacterParser'[letter or digit expected]",
+        "**** Instance of 'CharacterParser'[letter or digit expected]",
+        "***** Instance of 'CharacterParser'[letter or digit expected]",
+        "****** Instance of 'CharacterParser'[letter or digit expected]",
       ]);
     });
     test('failure', () {
       final lines = <Object?>[];
       expect(progress(identifier, lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
-        '* Instance of \'SequenceParser<dynamic>\'',
-        '* Instance of \'CharacterParser\'[letter expected]'
+        "* Instance of 'SequenceParser<dynamic>'",
+        "* Instance of 'CharacterParser'[letter expected]",
       ]);
     });
   });
