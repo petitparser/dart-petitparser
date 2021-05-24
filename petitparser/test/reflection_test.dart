@@ -2,9 +2,57 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
+void expectAll(Iterable<Parser> parsers, Iterable<String> inputs) {
+  final matchedParsers = <Parser, int>{for (final parser in parsers) parser: 0};
+  final matchedInputs = <String, int>{for (final input in inputs) input: 0};
+  for (final parser in parsers) {
+    final tester = parser.end();
+    for (final input in inputs) {
+      if (tester.accept(input)) {
+        matchedInputs[input] = matchedInputs[input]! + 1;
+        matchedParsers[parser] = matchedParsers[parser]! + 1;
+      }
+    }
+  }
+  matchedInputs.forEach((input, count) =>
+      expect(count, greaterThan(0), reason: '$input expected'));
+  matchedParsers.forEach((parser, count) =>
+      expect(count, greaterThan(0), reason: '$parser not expected'));
+}
+
 // ignore_for_file: deprecated_member_use_from_same_package
 void main() {
-  group('iterator', () {
+  group('first-set', () {
+    test('plus', () {
+      final parser = char('a').plus();
+      expectAll(firstSet(parser), ['a']);
+    });
+    test('star', () {
+      final parser = char('a').star();
+      expectAll(firstSet(parser), ['a', '']);
+    });
+    test('optional', () {
+      final parser = char('a').optional();
+      expectAll(firstSet(parser), ['a', '']);
+    });
+    test('choice', () {
+      final parser = char('a').or(char('b'));
+      expectAll(firstSet(parser), ['a', 'b']);
+    });
+    test('sequence', () {
+      final parser = char('a').seq(char('b'));
+      expectAll(firstSet(parser), ['a']);
+    });
+    test('epsilon sequence', () {
+      final parser = epsilon().seq(char('a'));
+      expectAll(firstSet(parser), ['a']);
+    });
+    test('optional sequence', () {
+      final parser = char('a').optional().seq(char('b'));
+      expectAll(firstSet(parser), ['a', 'b']);
+    });
+  });
+  group('iterable', () {
     test('single', () {
       final parser1 = lowercase();
       final parsers = allParser(parser1).toList();
@@ -45,6 +93,42 @@ void main() {
       parser3.set(parser1);
       final parsers = allParser(parser1).toList();
       expect(parsers, [parser1, parser2, parser3]);
+    });
+  });
+  group('queries', () {
+    group('isNullable', () {
+      test('true', () {
+        expect(isNullable(char('a').optional()), isTrue);
+        expect(isNullable(char('a').optionalWith('b')), isTrue);
+        expect(isNullable(char('a').star()), isTrue);
+        expect(isNullable(char('a').starGreedy(char('b'))), isTrue);
+        expect(isNullable(char('a').starLazy(char('b'))), isTrue);
+        expect(isNullable(epsilon()), isTrue);
+      });
+      test('false', () {
+        expect(isNullable(char('a')), isFalse);
+        expect(isNullable(char('a').and()), isFalse);
+        expect(isNullable(char('a').not()), isFalse);
+        expect(isNullable(char('a').or(char('b'))), isFalse);
+        expect(isNullable(char('a').plus()), isFalse);
+        expect(isNullable(char('a').seq(char('b'))), isFalse);
+        expect(isNullable(failure()), isFalse);
+      });
+    });
+    group('isTerminal', () {
+      test('true', () {
+        expect(isTerminal(char('a')), isTrue);
+        expect(isTerminal(epsilon()), isTrue);
+        expect(isTerminal(failure()), isTrue);
+        expect(isTerminal(string('a')), isTrue);
+      });
+      test('false', () {
+        expect(isTerminal(char('a').and()), isFalse);
+        expect(isTerminal(char('a').not()), isFalse);
+        expect(isTerminal(char('a').or(char('b'))), isFalse);
+        expect(isTerminal(char('a').plus()), isFalse);
+        expect(isTerminal(char('a').seq(char('b'))), isFalse);
+      });
     });
   });
   group('transform', () {
