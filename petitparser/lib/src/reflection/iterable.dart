@@ -10,16 +10,38 @@ import '../core/parser.dart';
 ///       print(each);
 ///     });
 ///
-Iterable<Parser> allParser(Parser root) sync* {
-  final todo = [root];
-  final seen = {root};
-  while (todo.isNotEmpty) {
-    final current = todo.removeLast();
-    yield current;
+Iterable<Parser> allParser(Parser root) => _ParserIterable(root);
+
+class _ParserIterable extends Iterable<Parser> {
+  final Parser root;
+
+  _ParserIterable(this.root);
+
+  @override
+  Iterator<Parser> get iterator => _ParserIterator(root);
+}
+
+class _ParserIterator extends Iterator<Parser> {
+  final List<Parser> todo;
+  final Set<Parser> seen;
+
+  @override
+  late Parser current;
+
+  _ParserIterator(Parser root)
+      : todo = [root],
+        seen = {root};
+
+  bool moveNext() {
+    if (todo.isEmpty) {
+      return false;
+    }
+    current = todo.removeLast();
     for (final parser in current.children) {
       if (seen.add(parser)) {
         todo.add(parser);
       }
     }
+    return true;
   }
 }
