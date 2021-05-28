@@ -7,6 +7,7 @@
   * Use `resolve` to inline all the referenced parsers, which now also works with `SettableParser`.
   * Deprecated `removeSettables`, that is superseded by the more powerful `resolve` operation.
 * Add the possibility to join multiple `Token` and transform their values.
+* Add `Analyzer` to compute nullability, as well as first- and follow sets of parsers.
 
 ## 4.1.0
 
