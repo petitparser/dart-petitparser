@@ -30,6 +30,31 @@ Map<Symbol, Parser> createDragon() {
   return grammar;
 }
 
+// A highly ambiguous grammar by Saichaitanya Jampana. Exploring the problem of
+// ambiguity in context-free grammars.
+Map<Symbol, Parser> createAmbiguous() {
+  final grammar = <Symbol, SettableParser>{
+    for (final symbol in [#S, #A, #a, #B, #b]) symbol: undefined(),
+  };
+  grammar[#S]!.set((grammar[#A]! & grammar[#B]!) | grammar[#a]!);
+  grammar[#A]!.set((grammar[#S]! & grammar[#B]!) | grammar[#b]!);
+  grammar[#a]!.set(char('a'));
+  grammar[#B]!.set((grammar[#B]! & grammar[#A]!) | grammar[#a]!);
+  grammar[#b]!.set(char('b'));
+  return grammar;
+}
+
+// A highly recursive parser.
+Map<Symbol, Parser> createRecursive() {
+  final grammar = <Symbol, SettableParser>{
+    for (final symbol in [#S, #P, #p]) symbol: undefined(),
+  };
+  grammar[#S]!.set(grammar[#P]! | grammar[#p]!);
+  grammar[#P]!.set(grammar[#S]! & char('+') & grammar[#S]!);
+  grammar[#p]!.set(char('p'));
+  return grammar;
+}
+
 void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
   final expectedInputs = {...inputs};
   final actualInputs = {
@@ -108,6 +133,22 @@ void main() {
         expect(analyzer.isNullable(parsers[#Tp]!), isTrue);
         expect(analyzer.isNullable(parsers[#F]!), isFalse);
       });
+      test('ambiguous grammar', () {
+        final parsers = createAmbiguous();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.isNullable(parsers[#S]!), isFalse);
+        expect(analyzer.isNullable(parsers[#A]!), isFalse);
+        expect(analyzer.isNullable(parsers[#B]!), isFalse);
+        expect(analyzer.isNullable(parsers[#a]!), isFalse);
+        expect(analyzer.isNullable(parsers[#b]!), isFalse);
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.isNullable(parsers[#S]!), isFalse);
+        expect(analyzer.isNullable(parsers[#P]!), isFalse);
+        expect(analyzer.isNullable(parsers[#p]!), isFalse);
+      });
     });
     group('first-set', () {
       test('plus', () {
@@ -170,6 +211,22 @@ void main() {
         expectTerminals(analyzer.firstSet(parsers[#T]!), ['(', 'i']);
         expectTerminals(analyzer.firstSet(parsers[#Tp]!), ['*', '']);
         expectTerminals(analyzer.firstSet(parsers[#F]!), ['(', 'i']);
+      });
+      test('ambiguous grammar', () {
+        final parsers = createAmbiguous();
+        final analyzer = Analyzer(parsers[#S]!);
+        expectTerminals(analyzer.firstSet(parsers[#S]!), ['a', 'b']);
+        expectTerminals(analyzer.firstSet(parsers[#A]!), ['a', 'b']);
+        expectTerminals(analyzer.firstSet(parsers[#B]!), ['a']);
+        expectTerminals(analyzer.firstSet(parsers[#a]!), ['a']);
+        expectTerminals(analyzer.firstSet(parsers[#b]!), ['b']);
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expectTerminals(analyzer.firstSet(parsers[#S]!), ['p']);
+        expectTerminals(analyzer.firstSet(parsers[#P]!), ['p']);
+        expectTerminals(analyzer.firstSet(parsers[#p]!), ['p']);
       });
     });
     group('follow-set', () {
@@ -246,6 +303,22 @@ void main() {
         expectTerminals(analyzer.followSet(parsers[#T]!), [')', '+', '']);
         expectTerminals(analyzer.followSet(parsers[#Tp]!), [')', '+', '']);
         expectTerminals(analyzer.followSet(parsers[#F]!), [')', '+', '*', '']);
+      });
+      test('ambiguous grammar', () {
+        final parsers = createAmbiguous();
+        final analyzer = Analyzer(parsers[#S]!);
+        expectTerminals(analyzer.followSet(parsers[#S]!), ['a', '']);
+        expectTerminals(analyzer.followSet(parsers[#A]!), ['a', 'b', '']);
+        expectTerminals(analyzer.followSet(parsers[#B]!), ['a', 'b', '']);
+        expectTerminals(analyzer.followSet(parsers[#a]!), ['a', 'b', '']);
+        expectTerminals(analyzer.followSet(parsers[#b]!), ['a', 'b', '']);
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expectTerminals(analyzer.followSet(parsers[#S]!), ['+', '']);
+        expectTerminals(analyzer.followSet(parsers[#P]!), ['+', '']);
+        expectTerminals(analyzer.followSet(parsers[#p]!), ['+', '']);
       });
     });
   });
