@@ -19,10 +19,7 @@ Map<Parser, Set<Parser>> computeFollowSets({
     changed = false;
     for (final parser in parsers) {
       changed |= expandFollowSet(
-          parser: parser,
-          followSets: followSets,
-          firstSets: firstSets,
-          sentinel: sentinel);
+          parser: parser, followSets: followSets, firstSets: firstSets);
     }
   } while (changed);
   return followSets;
@@ -32,7 +29,6 @@ bool expandFollowSet({
   required Parser parser,
   required Map<Parser, Set<Parser>> followSets,
   required Map<Parser, Set<Parser>> firstSets,
-  required Parser sentinel,
 }) {
   if (isSequence(parser)) {
     return expandFollowSetOfSequence(
