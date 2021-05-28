@@ -1,5 +1,7 @@
+
 import '../core/parser.dart';
 import '../parser/misc/epsilon.dart';
+import 'internal/cycle_set.dart';
 import 'internal/first_set.dart';
 import 'internal/follow_set.dart';
 import 'iterable.dart';
@@ -39,6 +41,12 @@ class Analyzer {
 
   late final Map<Parser, Set<Parser>> _followSet = computeFollowSets(
       root: root, parsers: parsers, firstSets: _firstSets, sentinel: sentinel);
+
+  /// Returns a set of all parsers that are in direct cycles.
+  Iterable<Parser> get cycleSet => _cycleSet;
+
+  late final Set<Parser> _cycleSet =
+      computeCycleSet(root: root, firstSets: _firstSets);
 
   /// A marker to identify
   static final EpsilonParser sentinel = EpsilonParser<void>(null);

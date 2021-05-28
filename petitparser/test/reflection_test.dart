@@ -321,6 +321,28 @@ void main() {
         expectTerminals(analyzer.followSet(parsers[#p]!), ['+', '']);
       });
     });
+    group('cycle-set', () {
+      test('übersetzerbau grammar', () {
+        final parsers = createUebersetzerbau();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.cycleSet, isEmpty);
+      });
+      test('dragon grammar', () {
+        final parsers = createDragon();
+        final analyzer = Analyzer(parsers[#E]!);
+        expect(analyzer.cycleSet, isEmpty);
+      });
+      test('ambiguous grammar', () {
+        final parsers = createAmbiguous();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.cycleSet, hasLength(6));
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.cycleSet, hasLength(4));
+      });
+    });
   });
 
   group('iterable', () {
