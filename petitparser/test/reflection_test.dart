@@ -55,6 +55,13 @@ Map<Symbol, Parser> createRecursive() {
   return grammar;
 }
 
+// A parser that references itself.
+Parser createSelfReference() {
+  final parser = undefined();
+  parser.set(parser);
+  return parser;
+}
+
 void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
   final expectedInputs = {...inputs};
   final actualInputs = {
@@ -149,6 +156,11 @@ void main() {
         expect(analyzer.isNullable(parsers[#P]!), isFalse);
         expect(analyzer.isNullable(parsers[#p]!), isFalse);
       });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expect(analyzer.isNullable(parser), isFalse);
+      });
     });
     group('first-set', () {
       test('plus', () {
@@ -227,6 +239,11 @@ void main() {
         expectTerminals(analyzer.firstSet(parsers[#S]!), ['p']);
         expectTerminals(analyzer.firstSet(parsers[#P]!), ['p']);
         expectTerminals(analyzer.firstSet(parsers[#p]!), ['p']);
+      });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expectTerminals(analyzer.firstSet(parser), []);
       });
     });
     group('follow-set', () {
@@ -320,27 +337,53 @@ void main() {
         expectTerminals(analyzer.followSet(parsers[#P]!), ['+', '']);
         expectTerminals(analyzer.followSet(parsers[#p]!), ['+', '']);
       });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expectTerminals(analyzer.followSet(parser), ['']);
+      });
     });
     group('cycle-set', () {
       test('übersetzerbau grammar', () {
         final parsers = createUebersetzerbau();
         final analyzer = Analyzer(parsers[#S]!);
-        expect(analyzer.cycleSet, isEmpty);
+        for (final parser in parsers.values) {
+          expect(analyzer.cycleSet(parser), isEmpty);
+        }
       });
       test('dragon grammar', () {
         final parsers = createDragon();
         final analyzer = Analyzer(parsers[#E]!);
-        expect(analyzer.cycleSet, isEmpty);
+        for (final parser in parsers.values) {
+          expect(analyzer.cycleSet(parser), isEmpty);
+        }
       });
       test('ambiguous grammar', () {
         final parsers = createAmbiguous();
         final analyzer = Analyzer(parsers[#S]!);
-        expect(analyzer.cycleSet, hasLength(6));
+        expect(analyzer.cycleSet(parsers[#S]!),
+            allOf(hasLength(6), containsAll([parsers[#S]!, parsers[#A]!])));
+        expect(analyzer.cycleSet(parsers[#A]!),
+            allOf(hasLength(6), containsAll([parsers[#S]!, parsers[#A]!])));
+        expect(analyzer.cycleSet(parsers[#B]!),
+            allOf(hasLength(3), containsAll([parsers[#B]!])));
+        expect(analyzer.cycleSet(parsers[#a]!), isEmpty);
+        expect(analyzer.cycleSet(parsers[#b]!), isEmpty);
       });
       test('recursive grammar', () {
         final parsers = createRecursive();
         final analyzer = Analyzer(parsers[#S]!);
-        expect(analyzer.cycleSet, hasLength(4));
+        expect(analyzer.cycleSet(parsers[#S]!),
+            allOf(hasLength(4), containsAll([parsers[#S]!, parsers[#P]!])));
+        expect(analyzer.cycleSet(parsers[#P]!),
+            allOf(hasLength(4), containsAll([parsers[#S]!, parsers[#P]!])));
+        expect(analyzer.cycleSet(parsers[#p]!), isEmpty);
+      });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expect(analyzer.cycleSet(parser),
+            allOf(hasLength(1), containsAll([parser])));
       });
     });
   });

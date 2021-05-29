@@ -1,44 +1,69 @@
 import '../../core/parser.dart';
 import 'utilities.dart';
 
-Set<Parser> computeCycleSet({
-  required Parser root,
+Map<Parser, List<Parser>> computeCycleSets({
+  required Iterable<Parser> parsers,
   required Map<Parser, Set<Parser>> firstSets,
 }) {
-  final result = <Parser>{};
-  expandCycleSet(parser: root, firstSets: firstSets, stack: [], result: result);
-  return result;
+  final cycleSets = <Parser, List<Parser>>{};
+  for (final parser in parsers) {
+    computeCycleSet(parser: parser, firstSets: firstSets, cycleSets: cycleSets);
+  }
+  return cycleSets;
 }
 
-void expandCycleSet({
+void computeCycleSet({
   required Parser parser,
   required Map<Parser, Set<Parser>> firstSets,
-  required List<Parser> stack,
-  required Set<Parser> result,
+  required Map<Parser, List<Parser>> cycleSets,
+  List<Parser>? stack,
 }) {
+  if (cycleSets.containsKey(parser)) {
+    return;
+  }
   if (isTerminal(parser)) {
+    cycleSets[parser] = const <Parser>[];
     return;
   }
-  final index = stack.lastIndexOf(parser);
-  if (index >= 0) {
-    result.addAll(stack.sublist(index));
+  stack ??= <Parser>[parser];
+  final children = computeCycleChildren(parser: parser, firstSets: firstSets);
+  for (final child in children) {
+    final index = stack.indexOf(child);
+    if (index >= 0) {
+      final cycle = stack.sublist(index);
+      for (final parser in cycle) {
+        cycleSets[parser] = cycle;
+      }
+      return;
+    } else {
+      stack.add(child);
+      computeCycleSet(
+          parser: child,
+          firstSets: firstSets,
+          cycleSets: cycleSets,
+          stack: stack);
+      stack.removeLast();
+    }
+  }
+  if (!cycleSets.containsKey(parser)) {
+    cycleSets[parser] = const <Parser>[];
     return;
   }
-  stack.add(parser);
-  final children = [];
+}
+
+List<Parser> computeCycleChildren({
+  required Parser parser,
+  required Map<Parser, Set<Parser>> firstSets,
+}) {
   if (isSequence(parser)) {
+    final children = <Parser>[];
     for (final child in parser.children) {
       children.add(child);
       if (!firstSets[child]!.any(isNullable)) {
         break;
       }
     }
-  } else {
-    children.addAll(parser.children);
+    return children;
   }
-  for (final child in children) {
-    expandCycleSet(
-        parser: child, firstSets: firstSets, stack: stack, result: result);
-  }
-  stack.removeLast();
+  return parser.children;
 }
