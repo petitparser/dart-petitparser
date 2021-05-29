@@ -6,14 +6,8 @@ void main() {
   final grammar = JsonGrammarDefinition().build();
   final parser = JsonParserDefinition().build();
   test('linter', () {
-    linter(
-        grammar,
-        (parser, type, title, description, [fixer]) =>
-            fail('$type: $title\n$description'));
-    linter(
-        parser,
-        (parser, type, title, description, [fixer]) =>
-            fail('$type: $title\n$description'));
+    expect(linter(grammar), isEmpty);
+    expect(linter(parser), isEmpty);
   });
   group('arrays', () {
     test('empty', () {

@@ -1,5 +1,6 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
+import 'package:petitparser/src/reflection/internal/linter_rules.dart';
 import 'package:test/test.dart';
 
 // Güting, Erwig, Übersetzerbau, Springer (p.63)
@@ -387,7 +388,6 @@ void main() {
       });
     });
   });
-
   group('iterable', () {
     test('single', () {
       final parser1 = lowercase();
@@ -431,42 +431,107 @@ void main() {
       expect(parsers, [parser1, parser2, parser3]);
     });
   });
-  // group('queries', () {
-  //   group('isNullable', () {
-  //     test('true', () {
-  //       expect(isNullable(char('a').optional()), isTrue);
-  //       expect(isNullable(char('a').optionalWith('b')), isTrue);
-  //       expect(isNullable(char('a').star()), isTrue);
-  //       expect(isNullable(char('a').starGreedy(char('b'))), isTrue);
-  //       expect(isNullable(char('a').starLazy(char('b'))), isTrue);
-  //       expect(isNullable(epsilon()), isTrue);
-  //     });
-  //     test('false', () {
-  //       expect(isNullable(char('a')), isFalse);
-  //       expect(isNullable(char('a').and()), isFalse);
-  //       expect(isNullable(char('a').not()), isFalse);
-  //       expect(isNullable(char('a').or(char('b'))), isFalse);
-  //       expect(isNullable(char('a').plus()), isFalse);
-  //       expect(isNullable(char('a').seq(char('b'))), isFalse);
-  //       expect(isNullable(failure()), isFalse);
-  //     });
-  //   });
-  //   group('isTerminal', () {
-  //     test('true', () {
-  //       expect(isTerminal(char('a')), isTrue);
-  //       expect(isTerminal(epsilon()), isTrue);
-  //       expect(isTerminal(failure()), isTrue);
-  //       expect(isTerminal(string('a')), isTrue);
-  //     });
-  //     test('false', () {
-  //       expect(isTerminal(char('a').and()), isFalse);
-  //       expect(isTerminal(char('a').not()), isFalse);
-  //       expect(isTerminal(char('a').or(char('b'))), isFalse);
-  //       expect(isTerminal(char('a').plus()), isFalse);
-  //       expect(isTerminal(char('a').seq(char('b'))), isFalse);
-  //     });
-  //   });
-  // });
+  group('linter', () {
+    test('unresolved settable', () {
+      final parser = undefined().optional();
+      final results = linter(parser, rules: [unresolvedSettable]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.error);
+      expect(result.title, 'Unresolved settable');
+    });
+    test('unnecessary resolvable', () {
+      final parser = char('a').settable().optional();
+      final results = linter(parser, rules: [unnecessaryResolvable]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.warning);
+      expect(result.title, 'Unnecessary resolvable');
+      result.fixer!();
+      expect(parser.isEqualTo(char('a').optional()), isTrue);
+    });
+    test('nested choice', () {
+      final parser = [
+        char('1'),
+        [char('2'), char('3')].toChoiceParser(),
+        char('4'),
+      ].toChoiceParser().optional();
+      final results = linter(parser, rules: [nestedChoice]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.info);
+      expect(result.title, 'Nested choice');
+      result.fixer!();
+      expect(
+          parser.children[0].children,
+          pairwiseCompare<Parser, Parser>(
+              [char('1'), char('2'), char('3'), char('4')],
+              (a, b) => a.isEqualTo(b),
+              'Equal parsers'));
+    });
+    test('repeated choice', () {
+      final parser = [
+        char('1'),
+        char('2'),
+        char('3'),
+        char('2'),
+        char('4'),
+      ].toChoiceParser().optional();
+      final results = linter(parser, rules: [repeatedChoice]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.warning);
+      expect(result.title, 'Repeated choice');
+      result.fixer!();
+      expect(
+          parser.children[0].children,
+          pairwiseCompare<Parser, Parser>(
+              [char('1'), char('2'), char('3'), char('4')],
+              (a, b) => a.isEqualTo(b),
+              'Equal parsers'));
+    });
+    test('unreachable choice', () {
+      final parser = [
+        char('1'),
+        char('2'),
+        epsilon(),
+        char('3'),
+      ].toChoiceParser().optional();
+      final results = linter(parser, rules: [unreachableChoice]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.info);
+      expect(result.title, 'Unreachable choice');
+      result.fixer!();
+      expect(
+          parser.children[0].children,
+          pairwiseCompare<Parser, Parser>([char('1'), char('2'), epsilon()],
+              (a, b) => a.isEqualTo(b), 'Equal parsers'));
+    });
+    test('nullable repeater', () {
+      final parser = epsilon().star().optional();
+      final results = linter(parser, rules: [nullableRepeater]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.error);
+      expect(result.title, 'Nullable repeater');
+    });
+    test('left recursion', () {
+      final parser = createSelfReference().optional();
+      final results = linter(parser, rules: [leftRecursion]);
+      expect(results, hasLength(1));
+      final result = results[0];
+      expect(result.parser, parser.children[0]);
+      expect(result.type, LinterType.error);
+      expect(result.title, 'Left recursion');
+    });
+  });
   group('transform', () {
     test('copy', () {
       final input = lowercase().settable();

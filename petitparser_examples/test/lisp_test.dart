@@ -65,11 +65,7 @@ void main() {
   group('Grammar', () {
     final grammar = grammarDefinition.build();
     test('Linter', () {
-      linter(
-          grammar,
-          (parser, type, title, description, [fixer]) => type != LinterType.info
-              ? fail('$type: $title\n$description')
-              : null);
+      expect(linter(grammar, excludedRules: {'Nested choice'}), isEmpty);
     });
     test('Name', () {
       final result = grammar.parse('foo').value;
@@ -186,10 +182,7 @@ void main() {
   group('Parser', () {
     final atom = parserDefinition.build(start: parserDefinition.atom);
     test('Linter', () {
-      linter(
-          atom,
-          (parser, type, title, description, [fixer]) =>
-              fail('$type: $title ($parser)\n$description'));
+      expect(linter(atom), isEmpty);
     });
     test('Name', () {
       final cell = atom.parse('foo').value;

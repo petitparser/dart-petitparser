@@ -7,12 +7,8 @@ Function accept(Parser parser) => (input) => parser.parse(input).isSuccess;
 
 void main() {
   final grammar = DartGrammarDefinition();
-  test('linter', () {
-    linter(
-        grammar.build(),
-        (parser, type, title, description, [fixer]) => type != LinterType.info
-            ? fail('$type: $title\n$description')
-            : null);
+  test('grammar linter', () {
+    expect(linter(grammar.build(), excludedRules: {'Nested choice'}), isEmpty);
   });
   group('directives', () {
     final directives = grammar.build(start: grammar.start).end();

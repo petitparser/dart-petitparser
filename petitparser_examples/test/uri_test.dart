@@ -18,10 +18,7 @@ void uriTest(String source, Map<Symbol, dynamic> values) {
 
 void main() {
   test('linter', () {
-    linter(
-        parser,
-        (parser, type, title, description, [fixer]) =>
-            fail('$type: $title\n$description'));
+    expect(linter(parser), isEmpty);
   });
   uriTest('http://www.ics.uci.edu/pub/ietf/uri/#Related', {
     #scheme: 'http',

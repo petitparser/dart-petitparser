@@ -6,10 +6,7 @@ import 'package:test/test.dart';
 void main() {
   group('database', () {
     test('linter', () {
-      linter(
-          rulesParser,
-          (parser, type, title, description, [fixer]) =>
-              fail('$type: $title ($parser)\n$description'));
+      expect(linter(rulesParser), isEmpty);
     });
     test('toString', () {
       final db = Database.parse('''
@@ -31,10 +28,7 @@ void main() {
   });
   group('term', () {
     test('linter', () {
-      linter(
-          termParser,
-          (parser, type, title, description, [fixer]) =>
-              fail('$type: $title ($parser)\n$description'));
+      expect(linter(termParser), isEmpty);
     });
     test('toString', () {
       final query = Term.parse('foo(bar, zork)');

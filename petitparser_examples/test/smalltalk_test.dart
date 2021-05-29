@@ -113,11 +113,8 @@ exampleWithNumber: x
       expect(() => grammar.token(123), throwsArgumentError);
     });
     test('linter', () {
-      linter(
-          resolve(grammar.start()),
-          (parser, type, title, description, [fixer]) => type != LinterType.info
-              ? fail('$type: $title ($parser)\n$description')
-              : null);
+      expect(linter(resolve(grammar.start()), excludedRules: {'Nested choice'}),
+          isEmpty);
     });
     // All the productions and production actions of the grammar and parser.
     verify('Array1', '{}', grammar.array, parser.array, isArrayNode([]));
