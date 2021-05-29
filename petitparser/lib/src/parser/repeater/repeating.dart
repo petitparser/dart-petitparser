@@ -10,7 +10,7 @@ abstract class RepeatingParser<R> extends DelegateParser<R, List<R>> {
       throw ArgumentError(
           'Minimum repetitions must be positive, but got $min.');
     }
-    if (max != unbounded && max < min) {
+    if (max < min) {
       throw ArgumentError(
           'Maximum repetitions must be larger than $min, but got $max.');
     }

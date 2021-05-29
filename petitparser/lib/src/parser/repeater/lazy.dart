@@ -65,7 +65,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       if (limiter.isSuccess) {
         return current.success(elements);
       } else {
-        if (max != unbounded && elements.length >= max) {
+        if (elements.length >= max) {
           return limiter.failure(limiter.message);
         }
         final result = delegate.parseOn(current);
@@ -95,7 +95,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       if (limiter >= 0) {
         return current;
       } else {
-        if (max != unbounded && count >= max) {
+        if (count >= max) {
           return -1;
         }
         final result = delegate.fastParseOn(buffer, current);

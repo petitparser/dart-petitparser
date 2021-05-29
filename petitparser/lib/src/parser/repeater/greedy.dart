@@ -61,7 +61,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       current = result;
     }
     final contexts = <Context>[current];
-    while (max == unbounded || elements.length < max) {
+    while (elements.length < max) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
         break;
@@ -98,7 +98,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       count++;
     }
     final positions = <int>[current];
-    while (max == unbounded || count < max) {
+    while (count < max) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) {
         break;
