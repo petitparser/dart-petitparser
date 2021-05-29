@@ -21,7 +21,7 @@ void main() {
     linter(
         parser,
         (parser, type, title, description, [fixer]) =>
-            fail('$type: $title ($parser)\n$description'));
+            fail('$type: $title\n$description'));
   });
   uriTest('http://www.ics.uci.edu/pub/ietf/uri/#Related', {
     #scheme: 'http',

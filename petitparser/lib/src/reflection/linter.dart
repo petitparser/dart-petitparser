@@ -19,7 +19,10 @@ final linterRules = [
   unresolvedSettable,
   unnecessaryResolvable,
   nestedChoice,
+  repeatedChoice,
   unreachableChoice,
+  nullableRepeater,
+  leftRecursion,
 ];
 
 void linter(Parser parser, LinterCallback callback, {List<LinterRule>? rules}) {

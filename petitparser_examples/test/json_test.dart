@@ -9,11 +9,11 @@ void main() {
     linter(
         grammar,
         (parser, type, title, description, [fixer]) =>
-            fail('$type: $title ($parser)\n$description'));
+            fail('$type: $title\n$description'));
     linter(
         parser,
         (parser, type, title, description, [fixer]) =>
-            fail('$type: $title ($parser)\n$description'));
+            fail('$type: $title\n$description'));
   });
   group('arrays', () {
     test('empty', () {

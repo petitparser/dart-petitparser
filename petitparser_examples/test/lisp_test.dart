@@ -68,7 +68,7 @@ void main() {
       linter(
           grammar,
           (parser, type, title, description, [fixer]) => type != LinterType.info
-              ? fail('$type: $title ($parser)\n$description')
+              ? fail('$type: $title\n$description')
               : null);
     });
     test('Name', () {
