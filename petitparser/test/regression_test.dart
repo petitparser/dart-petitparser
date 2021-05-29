@@ -8,6 +8,7 @@ import 'test_utils.dart';
 typedef Evaluator = num Function(num value);
 
 Parser element() => char('(').seq(ref0(content)).seq(char(')'));
+
 Parser content() => (ref0(element) | any()).star();
 final nestedParser = resolve(ref0(content)).flatten().end();
 
@@ -188,9 +189,9 @@ void main() {
     expectSuccess(nestedParser, '(a()b(cd))', '(a()b(cd))');
   });
   group('https://github.com/petitparser/dart-petitparser/issues/109', () {
-    // The number defines how many characters are read.
+    // The digit defines how many characters are read by the data parser.
     Parser buildMetadataParser() => digit().flatten().map(int.parse);
-    Parser buildDataParser(int count) => any().repeat(count);
+    Parser buildDataParser(int count) => any().repeat(count).flatten();
 
     const input = '4database';
     test('split', () {
@@ -198,7 +199,7 @@ void main() {
       final metadataResult = metadataParser.parse(input);
       final dataParser = buildDataParser(metadataResult.value);
       final dataResult = dataParser.parseOn(metadataResult);
-      expect(dataResult.value, ['d', 'a', 't', 'a']);
+      expect(dataResult.value, 'data');
     });
     test('continuation', () {
       final parser = buildMetadataParser().callCC((continuation, context) {
@@ -206,7 +207,7 @@ void main() {
         final dataParser = buildDataParser(metadataResult.value);
         return dataParser.parseOn(metadataResult);
       });
-      expect(parser.parse(input).value, ['d', 'a', 't', 'a']);
+      expect(parser.parse(input).value, 'data');
     });
   });
 }
