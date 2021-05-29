@@ -1,4 +1,5 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/uri.dart';
 import 'package:test/test.dart';
 
@@ -16,6 +17,12 @@ void uriTest(String source, Map<Symbol, dynamic> values) {
 }
 
 void main() {
+  test('linter', () {
+    linter(
+        parser,
+        (parser, type, title, description, [fixer]) =>
+            fail('$type: $title ($parser)\n$description'));
+  });
   uriTest('http://www.ics.uci.edu/pub/ietf/uri/#Related', {
     #scheme: 'http',
     #authority: 'www.ics.uci.edu',

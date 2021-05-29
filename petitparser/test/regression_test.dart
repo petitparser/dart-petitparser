@@ -188,7 +188,7 @@ void main() {
     expectSuccess(nestedParser, '(a(b)c)', '(a(b)c)');
     expectSuccess(nestedParser, '(a()b(cd))', '(a()b(cd))');
   });
-  group('https://github.com/petitparser/dart-petitparser/issues/109', () {
+  group('github.com/petitparser/dart-petitparser/issues/109', () {
     // The digit defines how many characters are read by the data parser.
     Parser buildMetadataParser() => digit().flatten().map(int.parse);
     Parser buildDataParser(int count) => any().repeat(count).flatten();

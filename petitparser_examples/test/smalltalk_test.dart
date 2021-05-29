@@ -1,4 +1,5 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/smalltalk.dart';
 import 'package:petitparser_examples/src/smalltalk/ast.dart';
 import 'package:test/test.dart';
@@ -110,6 +111,13 @@ exampleWithNumber: x
     });
     test('token', () {
       expect(() => grammar.token(123), throwsArgumentError);
+    });
+    test('linter', () {
+      linter(
+          resolve(grammar.start()),
+          (parser, type, title, description, [fixer]) => type != LinterType.info
+              ? fail('$type: $title ($parser)\n$description')
+              : null);
     });
     // All the productions and production actions of the grammar and parser.
     verify('Array1', '{}', grammar.array, parser.array, isArrayNode([]));

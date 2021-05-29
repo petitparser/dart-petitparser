@@ -1,9 +1,20 @@
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/json.dart';
 import 'package:test/test.dart';
 
 void main() {
   final grammar = JsonGrammarDefinition().build();
   final parser = JsonParserDefinition().build();
+  test('linter', () {
+    linter(
+        grammar,
+        (parser, type, title, description, [fixer]) =>
+            fail('$type: $title ($parser)\n$description'));
+    linter(
+        parser,
+        (parser, type, title, description, [fixer]) =>
+            fail('$type: $title ($parser)\n$description'));
+  });
   group('arrays', () {
     test('empty', () {
       expect(parser.parse('[]').value, []);

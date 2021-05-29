@@ -1,9 +1,16 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/prolog.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('database', () {
+    test('linter', () {
+      linter(
+          rulesParser,
+          (parser, type, title, description, [fixer]) =>
+              fail('$type: $title ($parser)\n$description'));
+    });
     test('toString', () {
       final db = Database.parse('''
       foo(bar, zork).
@@ -23,6 +30,12 @@ void main() {
     });
   });
   group('term', () {
+    test('linter', () {
+      linter(
+          termParser,
+          (parser, type, title, description, [fixer]) =>
+              fail('$type: $title ($parser)\n$description'));
+    });
     test('toString', () {
       final query = Term.parse('foo(bar, zork)');
       expect(query.toString(), 'foo(bar, zork)');

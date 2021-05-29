@@ -1,3 +1,4 @@
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/lisp.dart';
 import 'package:test/test.dart';
 
@@ -63,6 +64,13 @@ void main() {
   });
   group('Grammar', () {
     final grammar = grammarDefinition.build();
+    test('Linter', () {
+      linter(
+          grammar,
+          (parser, type, title, description, [fixer]) => type != LinterType.info
+              ? fail('$type: $title ($parser)\n$description')
+              : null);
+    });
     test('Name', () {
       final result = grammar.parse('foo').value;
       expect(result, ['foo']);
@@ -177,6 +185,12 @@ void main() {
   });
   group('Parser', () {
     final atom = parserDefinition.build(start: parserDefinition.atom);
+    test('Linter', () {
+      linter(
+          atom,
+          (parser, type, title, description, [fixer]) =>
+              fail('$type: $title ($parser)\n$description'));
+    });
     test('Name', () {
       final cell = atom.parse('foo').value;
       expect(cell, isName);

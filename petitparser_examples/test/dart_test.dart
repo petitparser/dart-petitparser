@@ -1,4 +1,5 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/dart.dart';
 import 'package:test/test.dart';
 
@@ -6,6 +7,13 @@ Function accept(Parser parser) => (input) => parser.parse(input).isSuccess;
 
 void main() {
   final grammar = DartGrammarDefinition();
+  test('linter', () {
+    linter(
+        grammar.build(),
+        (parser, type, title, description, [fixer]) => type != LinterType.info
+            ? fail('$type: $title ($parser)\n$description')
+            : null);
+  });
   group('directives', () {
     final directives = grammar.build(start: grammar.start).end();
     test('hashbang', () {
