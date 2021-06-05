@@ -8,6 +8,8 @@
   * Deprecated `removeSettables`, that is superseded by the more powerful `resolve` operation.
 * Add the possibility to join multiple `Token` and transform their values.
 * Add `Analyzer` to compute nullability, as well as first-, follow-, and cycle-sets of parsers.
+* Add a `linter` that performs a series of checks on grammar graphs.
+* Expand the tutorial with a section on testing.
 
 ## 4.1.0
 

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 class ExpressionDefinition extends GrammarDefinition {
@@ -212,5 +213,15 @@ void main() {
     expect(parser.parse('1*2+3').value, 5);
     expect(parser.parse('8/4/2').value, 1);
     expect(parser.parse('2^2^3').value, 256);
+  });
+  test('number parsing', () {
+    final definition = EvaluatorDefinition();
+    final parser = definition.build(start: definition.number);
+    expect(parser.parse('42').value, 42);
+  });
+  test('detect common problems', () {
+    final definition = EvaluatorDefinition();
+    final parser = definition.build();
+    expect(linter(parser), isEmpty);
   });
 }
