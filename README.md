@@ -325,7 +325,7 @@ Real world grammar are typically large and complicated. PetitParser's architectu
 
 Start the development and testing of a new grammar at the leaves (or tokens): write the parsers that read numbers, strings, and variables first; then continue with the expressions that can be built from these literals; and finally conclude with control structures, classes and other overarching constructs. At each step add tests and assert that the individual parsers behave as desired, so that you can be sure they also work when composing them to a larger grammar later.
 
-Accessing and testing individual productions is simple: If you organize your grammar in your own code, make sure to expose different parsers of the grammar individually. If you use a `GrammarDefinition`, you can build individual productions using the optional start parameter of the `build` method. For example, to test the number parsing of the `EvaluatorDefinition` from above you would write:
+Accessing and testing individual productions is simple: If you organize your grammar in your own code, make sure to expose parts of the grammar individually. If you use a `GrammarDefinition`, you can build individual productions using the optional start parameter of the `build` method. For example, to test the number production of the `EvaluatorDefinition` from above you would write:
 
 ```dart
 test('number parsing', () {
@@ -347,7 +347,7 @@ test('detect common problems', () {
 });
 ```
 
-To exclude certain rules from being reported you can pass excluded rules, i.e. `linter(parser, excludedRules: {'Nested choice'})`.
+To exclude certain rules from being reported you can exclude certain rules, i.e. `linter(parser, excludedRules: {'Nested choice'})`.
 
 Check out the extensive test suites of [PetitParser](https://github.com/petitparser/dart-petitparser/blob/main/petitparser/test) and [PetitParser Examples](https://github.com/petitparser/dart-petitparser/blob/main/petitparser_examples/test) for examples on testing.
 
