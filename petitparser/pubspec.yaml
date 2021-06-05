@@ -8,6 +8,6 @@ description: A dynamic parser framework to build efficient grammars and parsers
 environment:
   sdk: '>=2.13.0 <3.0.0'
 dependencies:
-  meta: ^1.3.0
+  meta: ^1.4.0
 dev_dependencies:
   test: ^1.17.0

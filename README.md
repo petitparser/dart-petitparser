@@ -322,7 +322,7 @@ Check out [the documentation](https://pub.dev/documentation/petitparser/latest/e
 Misc
 ----
 
-[petitparser.github.io](http://petitparser.github.io/) contains up-to-date information about PetitParser.
+[petitparser.github.io](https://petitparser.github.io/) contains up-to-date information about PetitParser.
 
 
 ### Examples
