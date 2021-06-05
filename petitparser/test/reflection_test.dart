@@ -432,104 +432,152 @@ void main() {
     });
   });
   group('linter', () {
-    test('unresolved settable', () {
-      final parser = undefined().optional();
-      final results = linter(parser, rules: [unresolvedSettable]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.error);
-      expect(result.title, 'Unresolved settable');
+    test('rules called on all parsers', () {
+      final seen = <Parser>{};
+      final input = char('a') | char('b');
+      final results = linter(input,
+          rules: [(analyzer, parser, callback) => seen.add(parser)],
+          callback: (issue) => fail('Unexpected callback'));
+      expect(results, isEmpty);
+      expect(seen, {input, input.children[0], input.children[1]});
     });
-    test('unnecessary resolvable', () {
-      final parser = char('a').settable().optional();
-      final results = linter(parser, rules: [unnecessaryResolvable]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.warning);
-      expect(result.title, 'Unnecessary resolvable');
-      result.fixer!();
-      expect(parser.isEqualTo(char('a').optional()), isTrue);
+    test('issue triggered', () {
+      final input = 'trigger'.toParser();
+      final called = <LinterIssue>[];
+      final results = linter(input,
+          rules: [
+            (analyzer, parser, callback) {
+              expect(parser, same(input));
+              callback(LinterIssue(
+                  parser, LinterType.warning, 'Triggered', 'Described'));
+            }
+          ],
+          callback: called.add);
+      expect(results, [
+        isA<LinterIssue>()
+            .having((issue) => issue.parser, 'parser', same(input))
+            .having((issue) => issue.type, 'type', LinterType.warning)
+            .having((issue) => issue.title, 'title', 'Triggered')
+            .having((issue) => issue.description, 'description', 'Described')
+      ]);
+      expect(called, results);
     });
-    test('nested choice', () {
-      final parser = [
-        char('1'),
-        [char('2'), char('3')].toChoiceParser(),
-        char('4'),
-      ].toChoiceParser().optional();
-      final results = linter(parser, rules: [nestedChoice]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.info);
-      expect(result.title, 'Nested choice');
-      result.fixer!();
-      expect(
-          parser.children[0].children,
-          pairwiseCompare<Parser, Parser>(
-              [char('1'), char('2'), char('3'), char('4')],
-              (a, b) => a.isEqualTo(b),
-              'Equal parsers'));
+    test('issue excluded', () {
+      final input = 'trigger'.toParser();
+      final called = <LinterIssue>[];
+      final results = linter(input,
+          rules: [
+            (analyzer, parser, callback) {
+              expect(parser, same(input));
+              callback(LinterIssue(
+                  parser, LinterType.info, 'Triggered', 'Described'));
+            }
+          ],
+          callback: called.add,
+          excludedRules: {'Triggered'});
+      expect(results, isEmpty);
+      expect(called, isEmpty);
     });
-    test('repeated choice', () {
-      final parser = [
-        char('1'),
-        char('2'),
-        char('3'),
-        char('2'),
-        char('4'),
-      ].toChoiceParser().optional();
-      final results = linter(parser, rules: [repeatedChoice]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.warning);
-      expect(result.title, 'Repeated choice');
-      result.fixer!();
-      expect(
-          parser.children[0].children,
-          pairwiseCompare<Parser, Parser>(
-              [char('1'), char('2'), char('3'), char('4')],
-              (a, b) => a.isEqualTo(b),
-              'Equal parsers'));
-    });
-    test('unreachable choice', () {
-      final parser = [
-        char('1'),
-        char('2'),
-        epsilon(),
-        char('3'),
-      ].toChoiceParser().optional();
-      final results = linter(parser, rules: [unreachableChoice]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.info);
-      expect(result.title, 'Unreachable choice');
-      result.fixer!();
-      expect(
-          parser.children[0].children,
-          pairwiseCompare<Parser, Parser>([char('1'), char('2'), epsilon()],
-              (a, b) => a.isEqualTo(b), 'Equal parsers'));
-    });
-    test('nullable repeater', () {
-      final parser = epsilon().star().optional();
-      final results = linter(parser, rules: [nullableRepeater]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.error);
-      expect(result.title, 'Nullable repeater');
-    });
-    test('left recursion', () {
-      final parser = createSelfReference().optional();
-      final results = linter(parser, rules: [leftRecursion]);
-      expect(results, hasLength(1));
-      final result = results[0];
-      expect(result.parser, parser.children[0]);
-      expect(result.type, LinterType.error);
-      expect(result.title, 'Left recursion');
+    group('rules', () {
+      test('unresolved settable', () {
+        final parser = undefined().optional();
+        final results = linter(parser, rules: [unresolvedSettable]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.error);
+        expect(result.title, 'Unresolved settable');
+      });
+      test('unnecessary resolvable', () {
+        final parser = char('a').settable().optional();
+        final results = linter(parser, rules: [unnecessaryResolvable]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.warning);
+        expect(result.title, 'Unnecessary resolvable');
+        result.fixer!();
+        expect(parser.isEqualTo(char('a').optional()), isTrue);
+      });
+      test('nested choice', () {
+        final parser = [
+          char('1'),
+          [char('2'), char('3')].toChoiceParser(),
+          char('4'),
+        ].toChoiceParser().optional();
+        final results = linter(parser, rules: [nestedChoice]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.info);
+        expect(result.title, 'Nested choice');
+        result.fixer!();
+        expect(
+            parser.children[0].children,
+            pairwiseCompare<Parser, Parser>(
+                [char('1'), char('2'), char('3'), char('4')],
+                (a, b) => a.isEqualTo(b),
+                'Equal parsers'));
+      });
+      test('repeated choice', () {
+        final parser = [
+          char('1'),
+          char('2'),
+          char('3'),
+          char('2'),
+          char('4'),
+        ].toChoiceParser().optional();
+        final results = linter(parser, rules: [repeatedChoice]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.warning);
+        expect(result.title, 'Repeated choice');
+        result.fixer!();
+        expect(
+            parser.children[0].children,
+            pairwiseCompare<Parser, Parser>(
+                [char('1'), char('2'), char('3'), char('4')],
+                (a, b) => a.isEqualTo(b),
+                'Equal parsers'));
+      });
+      test('unreachable choice', () {
+        final parser = [
+          char('1'),
+          char('2'),
+          epsilon(),
+          char('3'),
+        ].toChoiceParser().optional();
+        final results = linter(parser, rules: [unreachableChoice]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.info);
+        expect(result.title, 'Unreachable choice');
+        result.fixer!();
+        expect(
+            parser.children[0].children,
+            pairwiseCompare<Parser, Parser>([char('1'), char('2'), epsilon()],
+                (a, b) => a.isEqualTo(b), 'Equal parsers'));
+      });
+      test('nullable repeater', () {
+        final parser = epsilon().star().optional();
+        final results = linter(parser, rules: [nullableRepeater]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.error);
+        expect(result.title, 'Nullable repeater');
+      });
+      test('left recursion', () {
+        final parser = createSelfReference().optional();
+        final results = linter(parser, rules: [leftRecursion]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.error);
+        expect(result.title, 'Left recursion');
+      });
     });
   });
   group('transform', () {
