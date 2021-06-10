@@ -371,4 +371,8 @@ void main() {
       ]
     ]);
   });
+  // test('linter', () {
+  //   expect(linter(parser), isEmpty);
+  //   expect(linter(evaluator), isEmpty);
+  // });
 }

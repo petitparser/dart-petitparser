@@ -65,7 +65,7 @@ void main() {
   group('Grammar', () {
     final grammar = grammarDefinition.build();
     test('Linter', () {
-      expect(linter(grammar, excludedRules: {'Nested choice'}), isEmpty);
+      expect(linter(grammar), isEmpty);
     });
     test('Name', () {
       final result = grammar.parse('foo').value;

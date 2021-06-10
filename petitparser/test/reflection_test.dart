@@ -76,6 +76,17 @@ void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
   expect(actualInputs, expectedInputs);
 }
 
+class PluggableLinterRule extends LinterRule {
+  const PluggableLinterRule(LinterType type, String title, this._run)
+      : super(type, title);
+
+  final void Function(LinterRule rule, Analyzer, Parser, LinterCallback) _run;
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) =>
+      _run(this, analyzer, parser, callback);
+}
+
 // ignore_for_file: deprecated_member_use_from_same_package
 void main() {
   group('analyzer', () {
@@ -436,7 +447,10 @@ void main() {
       final seen = <Parser>{};
       final input = char('a') | char('b');
       final results = linter(input,
-          rules: [(analyzer, parser, callback) => seen.add(parser)],
+          rules: [
+            PluggableLinterRule(LinterType.error, 'Fake Rule',
+                (rule, analyzer, parser, callback) => seen.add(parser))
+          ],
           callback: (issue) => fail('Unexpected callback'));
       expect(results, isEmpty);
       expect(seen, {input, input.children[0], input.children[1]});
@@ -446,42 +460,58 @@ void main() {
       final called = <LinterIssue>[];
       final results = linter(input,
           rules: [
-            (analyzer, parser, callback) {
+            PluggableLinterRule(LinterType.error, 'Fake Rule',
+                (rule, analyzer, parser, callback) {
               expect(parser, same(input));
-              callback(LinterIssue(
-                  parser, LinterType.warning, 'Triggered', 'Described'));
-            }
+              callback(LinterIssue(rule, parser, 'Described'));
+            })
           ],
           callback: called.add);
       expect(results, [
         isA<LinterIssue>()
             .having((issue) => issue.parser, 'parser', same(input))
-            .having((issue) => issue.type, 'type', LinterType.warning)
-            .having((issue) => issue.title, 'title', 'Triggered')
+            .having((issue) => issue.type, 'type', LinterType.error)
+            .having((issue) => issue.title, 'title', 'Fake Rule')
             .having((issue) => issue.description, 'description', 'Described')
       ]);
       expect(called, results);
     });
-    test('issue excluded', () {
+    test('rule title excluded', () {
       final input = 'trigger'.toParser();
       final called = <LinterIssue>[];
       final results = linter(input,
           rules: [
-            (analyzer, parser, callback) {
-              expect(parser, same(input));
-              callback(LinterIssue(
-                  parser, LinterType.info, 'Triggered', 'Described'));
-            }
+            PluggableLinterRule(
+                LinterType.error,
+                'Fake Rule',
+                (rule, analyzer, parser, callback) =>
+                    fail('Not expected to be called.'))
           ],
           callback: called.add,
-          excludedRules: {'Triggered'});
+          excludedRules: {'Fake Rule'});
+      expect(results, isEmpty);
+      expect(called, isEmpty);
+    });
+    test('rule type excluded', () {
+      final input = 'trigger'.toParser();
+      final called = <LinterIssue>[];
+      final results = linter(input,
+          rules: [
+            PluggableLinterRule(
+                LinterType.error,
+                'Fake Rule',
+                (rule, analyzer, parser, callback) =>
+                    fail('Not expected to be called.'))
+          ],
+          callback: called.add,
+          excludedTypes: {LinterType.error});
       expect(results, isEmpty);
       expect(called, isEmpty);
     });
     group('rules', () {
       test('unresolved settable', () {
         final parser = undefined().optional();
-        final results = linter(parser, rules: [unresolvedSettable]);
+        final results = linter(parser, rules: const [UnresolvedSettable()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -490,7 +520,7 @@ void main() {
       });
       test('unnecessary resolvable', () {
         final parser = char('a').settable().optional();
-        final results = linter(parser, rules: [unnecessaryResolvable]);
+        final results = linter(parser, rules: const [UnnecessaryResolvable()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -505,7 +535,8 @@ void main() {
           [char('2'), char('3')].toChoiceParser(),
           char('4'),
         ].toChoiceParser().optional();
-        final results = linter(parser, rules: [nestedChoice]);
+        final results =
+            linter(parser, rules: const [NestedChoice()], excludedTypes: {});
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -527,7 +558,7 @@ void main() {
           char('2'),
           char('4'),
         ].toChoiceParser().optional();
-        final results = linter(parser, rules: [repeatedChoice]);
+        final results = linter(parser, rules: const [RepeatedChoice()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -537,9 +568,23 @@ void main() {
         expect(
             parser.children[0].children,
             pairwiseCompare<Parser, Parser>(
-                [char('1'), char('2'), char('3'), char('4')],
+                [char('1'), char('3'), char('2'), char('4')],
                 (a, b) => a.isEqualTo(b),
                 'Equal parsers'));
+      });
+      test('overlapping choice', () {
+        final parser = [
+          char('1'),
+          char('2') & char('a'),
+          char('2') & char('b'),
+          char('3'),
+        ].toChoiceParser().optional();
+        final results = linter(parser, rules: const [OverlappingChoice()]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.info);
+        expect(result.title, 'Overlapping choice');
       });
       test('unreachable choice', () {
         final parser = [
@@ -548,11 +593,11 @@ void main() {
           epsilon(),
           char('3'),
         ].toChoiceParser().optional();
-        final results = linter(parser, rules: [unreachableChoice]);
+        final results = linter(parser, rules: const [UnreachableChoice()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.info);
+        expect(result.type, LinterType.warning);
         expect(result.title, 'Unreachable choice');
         result.fixer!();
         expect(
@@ -562,7 +607,7 @@ void main() {
       });
       test('nullable repeater', () {
         final parser = epsilon().star().optional();
-        final results = linter(parser, rules: [nullableRepeater]);
+        final results = linter(parser, rules: const [NullableRepeater()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -571,7 +616,7 @@ void main() {
       });
       test('left recursion', () {
         final parser = createSelfReference().optional();
-        final results = linter(parser, rules: [leftRecursion]);
+        final results = linter(parser, rules: const [LeftRecursion()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);

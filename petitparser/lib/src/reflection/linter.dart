@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import 'analyzer.dart';
 import 'internal/linter_rules.dart';
@@ -9,71 +11,100 @@ enum LinterType {
   error,
 }
 
+/// Encapsulates a single linter rule.
+@immutable
+abstract class LinterRule {
+  /// Constructs a new linter rule.
+  const LinterRule(this.type, this.title);
+
+  /// Severity of issues detected by this rule.
+  final LinterType type;
+
+  /// Human readable title of this rule.
+  final String title;
+
+  /// Executes this rule using a provided [analyzer] on a [parser]. Expected
+  /// to call [callback] zero or more times as issues are detected.
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback);
+
+  @override
+  String toString() => 'LinterRule(type: $type, title: $title)';
+}
+
 /// Encapsulates a single linter issue.
+@immutable
 class LinterIssue {
+  /// Constructs a new linter rule.
+  const LinterIssue(this.rule, this.parser, this.description, [this.fixer]);
+
+  /// Rule that identified the issue.
+  final LinterRule rule;
+
+  /// Severity of the issue.
+  LinterType get type => rule.type;
+
+  /// Title of the issue.
+  String get title => rule.title;
+
   /// Parser object with the issue.
   final Parser parser;
 
-  /// Type of the issue found (info, warning, error).
-  final LinterType type;
-
-  /// Title of the issue.
-  final String title;
-
-  /// Issue specific description with more details about the problem.
+  /// Detailed explanation of the issue.
   final String description;
 
   /// Optional function to fix the issue in-place.
   final void Function()? fixer;
 
-  LinterIssue(this.parser, this.type, this.title, this.description,
-      [this.fixer]);
-
   @override
-  String toString() => '$type: $title\n$description';
+  String toString() => 'LinterIssue(type: $type, title: $title, '
+      'parser: $parser, description: $description)';
 }
 
 /// Function signature of a linter callback that is called whenever a linter
 /// rule identifies an issue.
 typedef LinterCallback = void Function(LinterIssue issue);
 
-/// Function signature of a linter rule.
-typedef LinterRule = void Function(
-    Analyzer analyzer, Parser parser, LinterCallback callback);
-
-/// Default linter rules to be run.
-final defaultLinterRules = [
-  unresolvedSettable,
-  unnecessaryResolvable,
-  nestedChoice,
-  repeatedChoice,
-  unreachableChoice,
-  nullableRepeater,
-  leftRecursion,
+/// All default linter rules to be run.
+const allLinterRules = [
+  UnresolvedSettable(),
+  UnnecessaryResolvable(),
+  RepeatedChoice(),
+  UnreachableChoice(),
+  NullableRepeater(),
+  LeftRecursion(),
+  NestedChoice(),
+  OverlappingChoice(),
 ];
 
 /// Returns a list of linter issues found when analyzing the parser graph
 /// reachable from [parser].
 ///
 /// The optional [callback] is triggered during the search for each issue
-/// discovered. A custom list of [rules] can be provided, otherwise the
-/// [defaultLinterRules] are used. Last but not least, a set of [excludedRules]
-/// can be specified by title.
+/// discovered.
+///
+/// A custom list of [rules] can be provided, otherwise [allLinterRules] are
+/// used and filtered by a set of [excludedRules] and [excludedTypes]
+/// (rules of `LinterType.info` are ignored by default).
 List<LinterIssue> linter(Parser parser,
     {LinterCallback? callback,
     List<LinterRule>? rules,
-    Set<String> excludedRules = const {}}) {
+    Set<String> excludedRules = const {},
+    Set<LinterType> excludedTypes = const {LinterType.info}}) {
   final issues = <LinterIssue>[];
   final analyzer = Analyzer(parser);
+  final selectedRules = rules ??
+      allLinterRules
+          .where((rule) =>
+              !excludedRules.contains(rule.title) &&
+              !excludedTypes.contains(rule.type))
+          .toList(growable: false);
   for (final parser in analyzer.parsers) {
-    for (final rule in rules ?? defaultLinterRules) {
-      rule(analyzer, parser, (issue) {
-        if (!excludedRules.contains(issue.title)) {
-          if (callback != null) {
-            callback(issue);
-          }
-          issues.add(issue);
+    for (final rule in selectedRules) {
+      rule.run(analyzer, parser, (issue) {
+        if (callback != null) {
+          callback(issue);
         }
+        issues.add(issue);
       });
     }
   }
