@@ -446,33 +446,30 @@ void main() {
     test('rules called on all parsers', () {
       final seen = <Parser>{};
       final input = char('a') | char('b');
+      final rule = PluggableLinterRule(LinterType.error, 'Fake Rule',
+          (rule, analyzer, parser, callback) => seen.add(parser));
       final results = linter(input,
-          rules: [
-            PluggableLinterRule(LinterType.error, 'Fake Rule',
-                (rule, analyzer, parser, callback) => seen.add(parser))
-          ],
-          callback: (issue) => fail('Unexpected callback'));
+          rules: [rule], callback: (issue) => fail('Unexpected callback'));
       expect(results, isEmpty);
       expect(seen, {input, input.children[0], input.children[1]});
     });
     test('issue triggered', () {
       final input = 'trigger'.toParser();
       final called = <LinterIssue>[];
-      final results = linter(input,
-          rules: [
-            PluggableLinterRule(LinterType.error, 'Fake Rule',
-                (rule, analyzer, parser, callback) {
-              expect(parser, same(input));
-              callback(LinterIssue(rule, parser, 'Described'));
-            })
-          ],
-          callback: called.add);
+      final rule = PluggableLinterRule(LinterType.error, 'Fake Rule',
+          (rule, analyzer, parser, callback) {
+        expect(parser, same(input));
+        callback(LinterIssue(rule, parser, 'Described'));
+      });
+      final results = linter(input, rules: [rule], callback: called.add);
       expect(results, [
         isA<LinterIssue>()
-            .having((issue) => issue.parser, 'parser', same(input))
+            .having((issue) => issue.rule, 'rule', same(rule))
             .having((issue) => issue.type, 'type', LinterType.error)
             .having((issue) => issue.title, 'title', 'Fake Rule')
+            .having((issue) => issue.parser, 'parser', same(input))
             .having((issue) => issue.description, 'description', 'Described')
+            .having((issue) => issue.fixer, 'fixer', isNull)
       ]);
       expect(called, results);
     });
