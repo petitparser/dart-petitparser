@@ -476,38 +476,6 @@ void main() {
       ]);
       expect(called, results);
     });
-    test('rule title excluded', () {
-      final input = 'trigger'.toParser();
-      final called = <LinterIssue>[];
-      final results = linter(input,
-          rules: [
-            PluggableLinterRule(
-                LinterType.error,
-                'Fake Rule',
-                (rule, analyzer, parser, callback) =>
-                    fail('Not expected to be called.'))
-          ],
-          callback: called.add,
-          excludedRules: {'Fake Rule'});
-      expect(results, isEmpty);
-      expect(called, isEmpty);
-    });
-    test('rule type excluded', () {
-      final input = 'trigger'.toParser();
-      final called = <LinterIssue>[];
-      final results = linter(input,
-          rules: [
-            PluggableLinterRule(
-                LinterType.error,
-                'Fake Rule',
-                (rule, analyzer, parser, callback) =>
-                    fail('Not expected to be called.'))
-          ],
-          callback: called.add,
-          excludedTypes: {LinterType.error});
-      expect(results, isEmpty);
-      expect(called, isEmpty);
-    });
     group('rules', () {
       test('unresolved settable', () {
         final parser = undefined().optional();

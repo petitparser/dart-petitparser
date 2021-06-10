@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 Parser build({required bool attachAction}) {
@@ -371,8 +372,8 @@ void main() {
       ]
     ]);
   });
-  // test('linter', () {
-  //   expect(linter(parser), isEmpty);
-  //   expect(linter(evaluator), isEmpty);
-  // });
+  test('linter', () {
+    expect(linter(parser, excludedTypes: const {}), isEmpty);
+    expect(linter(evaluator, excludedTypes: const {}), isEmpty);
+  });
 }

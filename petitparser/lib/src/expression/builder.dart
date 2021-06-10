@@ -1,4 +1,5 @@
 import '../core/parser.dart';
+import '../definition/resolve.dart';
 import '../parser/combinator/settable.dart';
 import '../parser/misc/failure.dart';
 import 'group.dart';
@@ -74,6 +75,6 @@ class ExpressionBuilder {
       (a, b) => b.build(a),
     );
     _loopback.set(parser);
-    return parser;
+    return resolve(parser);
   }
 }

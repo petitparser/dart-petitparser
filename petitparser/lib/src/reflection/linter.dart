@@ -83,8 +83,8 @@ const allLinterRules = [
 /// discovered.
 ///
 /// A custom list of [rules] can be provided, otherwise [allLinterRules] are
-/// used and filtered by a set of [excludedRules] and [excludedTypes]
-/// (rules of `LinterType.info` are ignored by default).
+/// used and filtered by the set of [excludedRules] and [excludedTypes] (rules
+/// of `LinterType.info` are ignored by default).
 List<LinterIssue> linter(Parser parser,
     {LinterCallback? callback,
     List<LinterRule>? rules,
