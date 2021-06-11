@@ -5,17 +5,18 @@ import 'internal/first_set.dart';
 import 'internal/follow_set.dart';
 import 'iterable.dart';
 
-/// Helper to efficiently analyze properties of a grammar.
+/// Helper to reflect on properties of a grammar.
 class Analyzer {
+  /// Constructs an analyzer on the parser graph starting at [root].
   Analyzer(this.root);
 
-  /// The root of this parser.
+  /// The start parser of analysis.
   final Parser root;
 
   /// Returns a set of all parsers reachable from [root].
   Iterable<Parser> get parsers => _parsers;
 
-  late final List<Parser> _parsers = allParser(root).toList(growable: false);
+  late final Set<Parser> _parsers = allParser(root).toSet();
 
   /// Returns `true` if [parser] is transitively nullable, that is it can
   /// successfully parse nothing.
@@ -35,7 +36,7 @@ class Analyzer {
   ///
   /// The follow-set of a parser is the list of terminal parsers that can
   /// appear immediately after [parser]. Includes [sentinel], if the parse can
-  /// end here.
+  /// complete when starting at [root].
   Iterable<Parser> followSet(Parser parser) => _followSet[parser]!;
 
   late final Map<Parser, Set<Parser>> _followSet = computeFollowSets(
@@ -47,13 +48,14 @@ class Analyzer {
   late final Map<Parser, List<Parser>> _cycleSet =
       computeCycleSets(parsers: _parsers, firstSets: _firstSets);
 
-  /// Helper to do a global replace.
+  /// Helper to do a global replace of [source] with [target].
   void replaceAll(Parser source, Parser target) {
     for (final parent in _parsers) {
       parent.replace(source, target);
     }
   }
 
-  /// A marker to identify
+  /// A unique parser used as a marker in [firstSet] and [followSet]
+  /// computations.
   static final EpsilonParser sentinel = EpsilonParser<void>(null);
 }
