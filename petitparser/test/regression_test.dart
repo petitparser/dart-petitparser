@@ -210,4 +210,37 @@ void main() {
       expect(parser.parse(input).value, 'data');
     });
   });
+  group('stackoverflow.com/questions/68105573', () {
+    const firstInput = '(use = "official").empty()';
+    const secondInput = '((5 + 5) * 5) + 5';
+
+    test('greedy', () {
+      final parser =
+          char('(') & any().starGreedy(char(')')).flatten() & char(')');
+      expect(parser.parse(firstInput).value,
+          ['(', 'use = "official").empty(', ')']);
+      expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
+    });
+    test('lazy', () {
+      final parser =
+          char('(') & any().starLazy(char(')')).flatten() & char(')');
+      expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
+      expect(parser.parse(secondInput).value, ['(', '(5 + 5', ')']);
+    });
+    test('recursive', () {
+      final inner = undefined();
+      final parser =
+          char('(') & inner.starLazy(char(')')).flatten() & char(')');
+      inner.set(parser | any());
+      expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
+      expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
+    });
+    test('recursive (better)', () {
+      final inner = undefined();
+      final parser = char('(') & inner.star().flatten() & char(')');
+      inner.set(parser | pattern('^)'));
+      expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
+      expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
+    });
+  });
 }
