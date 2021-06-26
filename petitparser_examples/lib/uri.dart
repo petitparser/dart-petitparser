@@ -5,13 +5,15 @@
 import 'package:petitparser/petitparser.dart';
 
 import 'src/uri/authority.dart';
+import 'src/uri/query.dart';
 
-final uri = _uri.map((values) => <Symbol, String?>{
+final uri = _uri.map((values) => <Symbol, dynamic>{
       #scheme: values[0]?[0],
       #authority: values[1]?[1],
       ...authority.parse(values[1]?[1] ?? '').value,
       #path: values[2],
       #query: values[3]?[1],
+      #params: query.parse(values[3]?[1] ?? '').value,
       #fragment: values[4]?[1],
     });
 

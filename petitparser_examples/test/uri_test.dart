@@ -1,5 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
+import 'package:petitparser_examples/src/uri/authority.dart';
+import 'package:petitparser_examples/src/uri/query.dart';
 import 'package:petitparser_examples/uri.dart';
 import 'package:test/test.dart';
 
@@ -19,6 +21,8 @@ void uriTest(String source, Map<Symbol, dynamic> values) {
 void main() {
   test('linter', () {
     expect(linter(parser), isEmpty);
+    expect(linter(authority), isEmpty);
+    expect(linter(query), isEmpty);
   });
   uriTest('http://www.ics.uci.edu/pub/ietf/uri/#Related', {
     #scheme: 'http',
@@ -29,17 +33,22 @@ void main() {
     #port: isNull,
     #path: '/pub/ietf/uri/',
     #query: isNull,
+    #params: [],
     #fragment: 'Related',
   });
-  uriTest('http://a/b/c/d;p?q', {
+  uriTest('http://a/b/c/d;e?f&g=h', {
     #scheme: 'http',
     #authority: 'a',
     #username: isNull,
     #password: isNull,
     #hostname: 'a',
     #port: isNull,
-    #path: '/b/c/d;p',
-    #query: 'q',
+    #path: '/b/c/d;e',
+    #query: 'f&g=h',
+    #params: [
+      ['f', null],
+      ['g', 'h']
+    ],
     #fragment: isNull,
   });
   uriTest(r'ftp://www.example.org:22/foo bar/zork<>?\^`{|}', {
@@ -62,6 +71,7 @@ void main() {
     #port: isNull,
     #path: 'text/plain;charset=iso-8859-7,hallo',
     #query: isNull,
+    #params: [],
     #fragment: isNull,
   });
   uriTest('https://www.übermäßig.de/müßiggänger', {
@@ -73,6 +83,7 @@ void main() {
     #port: isNull,
     #path: '/müßiggänger',
     #query: isNull,
+    #params: [],
     #fragment: isNull,
   });
   uriTest('http:test', {
@@ -84,6 +95,7 @@ void main() {
     #port: isNull,
     #path: 'test',
     #query: isNull,
+    #params: [],
     #fragment: isNull,
   });
   uriTest(r'file:c:\\foo\\bar.html', {
@@ -95,6 +107,7 @@ void main() {
     #port: isNull,
     #path: r'c:\\foo\\bar.html',
     #query: isNull,
+    #params: [],
     #fragment: isNull,
   });
   uriTest('file://foo:bar@localhost/test', {
@@ -106,6 +119,7 @@ void main() {
     #port: isNull,
     #path: '/test',
     #query: isNull,
+    #params: [],
     #fragment: isNull,
   });
 }

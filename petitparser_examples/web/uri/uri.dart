@@ -45,6 +45,12 @@ void update() {
         <th>Query:</th>
         <td>${result.value[#query]}</td>
       </tr>
+      ${result.value[#params].map((each) => '''
+      <tr class="sub">  
+        <th>${each[0]}</th>
+        <td>${each[1]}</td>
+      </tr>
+      ''')}
       <tr>  
         <th>Fragment:</th>
         <td>${result.value[#fragment]}</td>
