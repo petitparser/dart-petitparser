@@ -4,9 +4,12 @@
 /// Appendix B of the standard: https://tools.ietf.org/html/rfc3986#appendix-B.
 import 'package:petitparser/petitparser.dart';
 
+import 'src/uri/authority.dart';
+
 final uri = _uri.map((values) => <Symbol, String?>{
       #scheme: values[0]?[0],
       #authority: values[1]?[1],
+      ...authority.parse(values[1]?[1] ?? '').value,
       #path: values[2],
       #query: values[3]?[1],
       #fragment: values[4]?[1],

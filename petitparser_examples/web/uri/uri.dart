@@ -12,22 +12,44 @@ void update() {
   final result = uri.parse(input.value ?? '');
   if (result.isSuccess) {
     output.innerHtml = '''
-    <dl>
-      <dt>Scheme:</dt>
-      <dd>${result.value[#scheme]}</dd>
-      
-      <dt>Authority:</dt>
-      <dd>${result.value[#authority]}</dd>
-      
-      <dt>Path:</dt>
-      <dd>${result.value[#path]}</dd>
-      
-      <dt>Query:</dt>
-      <dd>${result.value[#query]}</dd>
-      
-      <dt>Fragment:</dt>
-      <dd>${result.value[#fragment]}</dd>
-    </dl>
+    <table>
+      <tr>
+        <th>Scheme:</th>
+        <td>${result.value[#scheme]}</td>
+      </tr>
+      <tr>  
+        <th>Authority:</th>
+        <td>${result.value[#authority]}</td>
+      </tr>
+      <tr class="sub">  
+        <th>Username:</th>
+        <td>${result.value[#username]}</td>
+      </tr>
+      <tr class="sub">  
+        <th>Password:</th>
+        <td>${result.value[#password]}</td>
+      </tr>
+      <tr class="sub">  
+        <th>Hostname:</th>
+        <td>${result.value[#hostname]}</td>
+      </tr>
+      <tr class="sub">  
+        <th>Port:</th>
+        <td>${result.value[#port]}</td>
+      </tr>
+      <tr>  
+        <th>Path:</th>
+        <td>${result.value[#path]}</td>
+      </tr>
+      <tr>  
+        <th>Query:</th>
+        <td>${result.value[#query]}</td>
+      </tr>
+      <tr>  
+        <th>Fragment:</th>
+        <td>${result.value[#fragment]}</td>
+      </tr>
+    </table>
     ''';
   } else {
     output.innerHtml = '''
