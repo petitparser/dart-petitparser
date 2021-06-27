@@ -14,35 +14,35 @@ void update() {
     output.innerHtml = '''
     <table>
       <tr>
-        <th>Scheme:</th>
+        <th>Scheme</th>
         <td>${result.value[#scheme]}</td>
       </tr>
       <tr>  
-        <th>Authority:</th>
+        <th>Authority</th>
         <td>${result.value[#authority]}</td>
       </tr>
       <tr class="sub">  
-        <th>Username:</th>
+        <th>Username</th>
         <td>${result.value[#username]}</td>
       </tr>
       <tr class="sub">  
-        <th>Password:</th>
+        <th>Password</th>
         <td>${result.value[#password]}</td>
       </tr>
       <tr class="sub">  
-        <th>Hostname:</th>
+        <th>Hostname</th>
         <td>${result.value[#hostname]}</td>
       </tr>
       <tr class="sub">  
-        <th>Port:</th>
+        <th>Port</th>
         <td>${result.value[#port]}</td>
       </tr>
       <tr>  
-        <th>Path:</th>
+        <th>Path</th>
         <td>${result.value[#path]}</td>
       </tr>
       <tr>  
-        <th>Query:</th>
+        <th>Query</th>
         <td>${result.value[#query]}</td>
       </tr>
       ${result.value[#params].map((each) => '''
@@ -50,9 +50,9 @@ void update() {
         <th>${each[0]}</th>
         <td>${each[1]}</td>
       </tr>
-      ''')}
+      ''').join()}
       <tr>  
-        <th>Fragment:</th>
+        <th>Fragment</th>
         <td>${result.value[#fragment]}</td>
       </tr>
     </table>
