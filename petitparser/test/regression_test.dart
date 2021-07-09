@@ -243,4 +243,21 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
   });
+  test('https://github.com/petitparser/dart-petitparser/issues/112', () {
+    final parser = digit() &
+        digit().callCC((continuation, context) {
+          final result = continuation(context);
+          if (result.value[0] != result.value[1]) {
+            return context.failure('values do not match');
+          } else {
+            return result;
+          }
+        });
+    expectSuccess(parser, '11', ['1', '1']);
+    expectSuccess(parser, '22', ['2', '2']);
+    expectSuccess(parser, '33', ['3', '3']);
+    expectFailure(parser, '1');
+    expectFailure(parser, '12');
+    expectFailure(parser, '21');
+  });
 }
