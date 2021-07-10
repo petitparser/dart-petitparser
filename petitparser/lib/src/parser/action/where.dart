@@ -12,22 +12,22 @@ extension WhereParserExtension<T> on Parser<T> {
   ///
   /// The function [failureMessage] receives the parse result and is expected
   /// to return an error string of the failed predicate. If no function is
-  /// specified a default error message is created.
+  /// provided a default error message is created.
   ///
   /// Similarly, the [failurePosition] receives the parse result and is
   /// expected to return the position of the error of the failed predicate. If
-  /// no function is specified the parser fails at the beginning of the
+  /// no function is provided the parser fails at the beginning of the
   /// delegate.
   ///
-  /// The following example parses two digits, but only succeeds if the two
-  /// numbers match:
+  /// The following example parses two characters, but only succeeds if they
+  /// are equal:
   ///
-  ///     final inner = digit() & digit();
+  ///     final inner = any() & any();
   ///     final parser = inner.where(
   ///         (value) => value[0] == value[1],
-  ///         failureMessage: (value) => 'digits do not match');
-  ///     parser.parse('11');   // ==> Success: ['1', '1']
-  ///     parser.parse('12');   // ==> Failure: digits do not match
+  ///         failureMessage: (value) => 'characters do not match');
+  ///     parser.parse('aa');   // ==> Success: ['a', 'a']
+  ///     parser.parse('ab');   // ==> Failure: characters do not match
   ///
   Parser<T> where(Predicate<T> predicate,
           {Callback<T, String>? failureMessage,
