@@ -150,23 +150,32 @@ void main() {
         expectFailure(parser, '', 0, 'input expected');
         expectFailure(parser, '!', 0, 'unexpected "!"');
       });
-      test('with failure callback', () {
-        final inner = any() & any();
-        final parser = inner.where((value) => value[0] == value[1],
-            onFailure: (value) => 'Expected: "${value[0]}" == "${value[1]}"');
-        expectSuccess(parser, 'aa', ['a', 'a']);
-        expectFailure(parser, 'ab', 0, 'Expected: "a" == "b"');
-        expectFailure(parser, '', 0, 'input expected');
-      });
       test('with failure message', () {
         final parser = digit().plus().flatten().map(int.parse).where(
             (value) => value % 7 == 0,
-            failureMessage: 'expected divisible by 7');
+            failureMessage: (value) => '$value is not divisible by 7');
         expectSuccess(parser, '7', 7);
         expectSuccess(parser, '14', 14);
         expectSuccess(parser, '861', 861);
         expectFailure(parser, '', 0, 'digit expected');
-        expectFailure(parser, '865', 0, 'expected divisible by 7');
+        expectFailure(parser, '865', 0, '865 is not divisible by 7');
+      });
+      test('with failure position', () {
+        final inner = any() & any();
+        final parser = inner.where((value) => value[0] == value[1],
+            failurePosition: (tokens) => 1);
+        expectSuccess(parser, 'aa', ['a', 'a']);
+        expectFailure(parser, 'ab', 1, 'unexpected "[a, b]"');
+        expectFailure(parser, '', 0, 'input expected');
+      });
+      test('with failure message and position', () {
+        final inner = any() & any();
+        final parser = inner.where((list) => list[0] == list[1],
+            failureMessage: (list) => '${list[0]} != ${list[1]}',
+            failurePosition: (list) => 1);
+        expectSuccess(parser, 'aa', ['a', 'a']);
+        expectFailure(parser, 'ab', 1, 'a != b');
+        expectFailure(parser, '', 0, 'input expected');
       });
     });
     group('map', () {
