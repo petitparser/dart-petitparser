@@ -243,21 +243,33 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
   });
-  test('https://github.com/petitparser/dart-petitparser/issues/112', () {
+  group('github.com/petitparser/dart-petitparser/issues/112', () {
     final inner = digit() & digit();
-    final parser = inner.callCC((continuation, context) {
-      final result = continuation(context);
-      if (result.isSuccess && result.value[0] != result.value[1]) {
-        return context.failure('values do not match');
-      } else {
-        return result;
-      }
+    test('original', () {
+      final parser = inner.callCC((continuation, context) {
+        final result = continuation(context);
+        if (result.isSuccess && result.value[0] != result.value[1]) {
+          return context.failure('values do not match');
+        } else {
+          return result;
+        }
+      });
+      expectSuccess(parser, '11', ['1', '1']);
+      expectSuccess(parser, '22', ['2', '2']);
+      expectSuccess(parser, '33', ['3', '3']);
+      expectFailure(parser, '1', 1, 'digit expected');
+      expectFailure(parser, '12', 0, 'values do not match');
+      expectFailure(parser, '21', 0, 'values do not match');
     });
-    expectSuccess(parser, '11', ['1', '1']);
-    expectSuccess(parser, '22', ['2', '2']);
-    expectSuccess(parser, '33', ['3', '3']);
-    expectFailure(parser, '1', 1, 'digit expected');
-    expectFailure(parser, '12', 0, 'values do not match');
-    expectFailure(parser, '21', 0, 'values do not match');
+    test('filter', () {
+      final parser =
+          inner.filter((value) => value[0] == value[1], 'values do not match');
+      expectSuccess(parser, '11', ['1', '1']);
+      expectSuccess(parser, '22', ['2', '2']);
+      expectSuccess(parser, '33', ['3', '3']);
+      expectFailure(parser, '1', 1, 'digit expected');
+      expectFailure(parser, '12', 0, 'values do not match');
+      expectFailure(parser, '21', 0, 'values do not match');
+    });
   });
 }

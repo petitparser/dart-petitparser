@@ -2,6 +2,7 @@
 export 'src/parser/action/cast.dart';
 export 'src/parser/action/cast_list.dart';
 export 'src/parser/action/continuation.dart';
+export 'src/parser/action/filter.dart';
 export 'src/parser/action/flatten.dart';
 export 'src/parser/action/map.dart';
 export 'src/parser/action/permute.dart';

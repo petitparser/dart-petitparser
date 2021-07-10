@@ -2,9 +2,7 @@ import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
-
-/// Typed action callback.
-typedef MapCallback<T, R> = R Function(T value);
+import '../utils/types.dart';
 
 extension MapParserExtension<T> on Parser<T> {
   /// Returns a parser that evaluates a [callback] as the production action
@@ -17,7 +15,7 @@ extension MapParserExtension<T> on Parser<T> {
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fails, the
   /// production action is not executed and the failure is passed on.
-  Parser<R> map<R>(MapCallback<T, R> callback, {bool hasSideEffects = false}) =>
+  Parser<R> map<R>(Callback<T, R> callback, {bool hasSideEffects = false}) =>
       MapParser<T, R>(this, callback, hasSideEffects);
 }
 
@@ -28,7 +26,7 @@ class MapParser<T, R> extends DelegateParser<T, R> {
       : super(delegate);
 
   /// The production action to be called.
-  final MapCallback<T, R> callback;
+  final Callback<T, R> callback;
 
   /// Whether the [callback] has side-effects.
   final bool hasSideEffects;

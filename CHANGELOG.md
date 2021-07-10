@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.3.0
+
+* Add a `filter` parser, that allows to add additional constraints on parse results.
+* Extract `Predicate<T>` and `Callback<T>` function types to shared file.
+
 ## 4.2.0
 
 * Dart 2.13 requirement.

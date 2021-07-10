@@ -142,6 +142,28 @@ void main() {
         expectSuccess(parser, '1234', '1234');
       });
     });
+    group('filter', () {
+      expectCommon(any().filter((value) => true, 'filter'));
+      test('default', () {
+        final parser =
+            any().filter((value) => value == '*', 'asterisk expected');
+        expectSuccess(parser, '*', '*');
+        expectFailure(parser, '', 0, 'input expected');
+        expectFailure(parser, '!', 0, 'asterisk expected');
+      });
+      test('complicated', () {
+        final parser = digit()
+            .plus()
+            .flatten()
+            .map(int.parse)
+            .filter((value) => value % 7 == 0, 'integer not divisible by 7');
+        expectSuccess(parser, '7', 7);
+        expectSuccess(parser, '14', 14);
+        expectSuccess(parser, '861', 861);
+        expectFailure(parser, '', 0, 'digit expected');
+        expectFailure(parser, '865', 0, 'integer not divisible by 7');
+      });
+    });
     group('map', () {
       expectCommon(any().map((a) => a));
       test('default', () {

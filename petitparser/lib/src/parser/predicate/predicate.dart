@@ -1,14 +1,12 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-
-/// A generic predicate function returning `true` or `false` for a given
-/// [input] argument.
-typedef Predicate = bool Function(String input);
+import '../utils/types.dart';
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].
-Parser<String> predicate(int length, Predicate predicate, String message) =>
+Parser<String> predicate(
+        int length, Predicate<String> predicate, String message) =>
     PredicateParser(length, predicate, message);
 
 /// A parser for a literal satisfying a predicate.
@@ -20,7 +18,7 @@ class PredicateParser extends Parser<String> {
   final int length;
 
   /// The predicate function testing the input.
-  final Predicate predicate;
+  final Predicate<String> predicate;
 
   /// Error message to annotate parse failures with.
   final String message;
