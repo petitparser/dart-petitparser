@@ -143,25 +143,30 @@ void main() {
       });
     });
     group('where', () {
-      expectCommon(any().where((value) => true, 'always true'));
+      expectCommon(any().where((value) => true));
       test('default', () {
-        final parser =
-            any().where((value) => value == '*', 'asterisk expected');
+        final parser = any().where((value) => value == '*');
         expectSuccess(parser, '*', '*');
         expectFailure(parser, '', 0, 'input expected');
-        expectFailure(parser, '!', 0, 'asterisk expected');
+        expectFailure(parser, '!', 0, 'unexpected "!"');
       });
-      test('complicated', () {
-        final parser = digit()
-            .plus()
-            .flatten()
-            .map(int.parse)
-            .where((value) => value % 7 == 0, 'integer not divisible by 7');
+      test('with failure callback', () {
+        final inner = any() & any();
+        final parser = inner.where((value) => value[0] == value[1],
+            onFailure: (value) => 'Expected: "${value[0]}" == "${value[1]}"');
+        expectSuccess(parser, 'aa', ['a', 'a']);
+        expectFailure(parser, 'ab', 0, 'Expected: "a" == "b"');
+        expectFailure(parser, '', 0, 'input expected');
+      });
+      test('with failure message', () {
+        final parser = digit().plus().flatten().map(int.parse).where(
+            (value) => value % 7 == 0,
+            failureMessage: 'expected divisible by 7');
         expectSuccess(parser, '7', 7);
         expectSuccess(parser, '14', 14);
         expectSuccess(parser, '861', 861);
         expectFailure(parser, '', 0, 'digit expected');
-        expectFailure(parser, '865', 0, 'integer not divisible by 7');
+        expectFailure(parser, '865', 0, 'expected divisible by 7');
       });
     });
     group('map', () {

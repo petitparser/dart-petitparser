@@ -128,12 +128,13 @@ The next set of parsers are used to combine other parsers together:
 
 The last type of parsers are actions or transformations we can use as follows:
 
-- `p.map((value) => ...)` performs the transformation using the provided callback.
+- `p.map((value) => ...)` performs a transformation using the provided callback on the result of *p*.
+- `p.where((value) => ...)` fails the parser *p* if its result does not satisfy the predicate.
 - `p.pick(n)` returns the *n*-th element of the list *p* returns.
+- `p.cast<T>()` casts the result of *p* to the type `T`.
 - `p.flatten()` creates a string from the consumed input of *p*.
 - `p.token()` creates a token from the result of *p*.
 - `p.trim()` trims whitespaces before and after *p*.
-- `p.cast<T>()` casts the result of *p* to the type `T`.
 
 To return a string of the parsed identifier, we can modify our parser like this:
 

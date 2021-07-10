@@ -28,6 +28,7 @@ extension ContinuationParserExtension<T> on Parser<T> {
   ///       print('Parser was activated, the result is $result.');
   ///       return result;
   ///     });
+  ///
   Parser<R> callCC<R>(ContinuationHandler<T, R> handler) =>
       ContinuationParser<T, R>(this, handler);
 }
