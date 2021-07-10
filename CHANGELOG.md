@@ -2,7 +2,7 @@
 
 ## 4.3.0
 
-* Add a `filter` parser, that allows to add additional constraints on parse results.
+* Add a `where` parser, that allows to add additional constraints on parse results.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 
 ## 4.2.0

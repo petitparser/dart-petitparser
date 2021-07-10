@@ -261,9 +261,9 @@ void main() {
       expectFailure(parser, '12', 0, 'values do not match');
       expectFailure(parser, '21', 0, 'values do not match');
     });
-    test('filter', () {
+    test('where', () {
       final parser =
-          inner.filter((value) => value[0] == value[1], 'values do not match');
+          inner.where((value) => value[0] == value[1], 'values do not match');
       expectSuccess(parser, '11', ['1', '1']);
       expectSuccess(parser, '22', ['2', '2']);
       expectSuccess(parser, '33', ['3', '3']);

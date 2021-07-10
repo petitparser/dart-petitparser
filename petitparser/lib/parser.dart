@@ -2,13 +2,13 @@
 export 'src/parser/action/cast.dart';
 export 'src/parser/action/cast_list.dart';
 export 'src/parser/action/continuation.dart';
-export 'src/parser/action/filter.dart';
 export 'src/parser/action/flatten.dart';
 export 'src/parser/action/map.dart';
 export 'src/parser/action/permute.dart';
 export 'src/parser/action/pick.dart';
 export 'src/parser/action/token.dart';
 export 'src/parser/action/trimming.dart';
+export 'src/parser/action/where.dart';
 export 'src/parser/character/any_of.dart';
 export 'src/parser/character/char.dart';
 export 'src/parser/character/digit.dart';

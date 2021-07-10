@@ -142,11 +142,11 @@ void main() {
         expectSuccess(parser, '1234', '1234');
       });
     });
-    group('filter', () {
-      expectCommon(any().filter((value) => true, 'filter'));
+    group('where', () {
+      expectCommon(any().where((value) => true, 'always true'));
       test('default', () {
         final parser =
-            any().filter((value) => value == '*', 'asterisk expected');
+            any().where((value) => value == '*', 'asterisk expected');
         expectSuccess(parser, '*', '*');
         expectFailure(parser, '', 0, 'input expected');
         expectFailure(parser, '!', 0, 'asterisk expected');
@@ -156,7 +156,7 @@ void main() {
             .plus()
             .flatten()
             .map(int.parse)
-            .filter((value) => value % 7 == 0, 'integer not divisible by 7');
+            .where((value) => value % 7 == 0, 'integer not divisible by 7');
         expectSuccess(parser, '7', 7);
         expectSuccess(parser, '14', 14);
         expectSuccess(parser, '861', 861);
