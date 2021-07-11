@@ -5,24 +5,18 @@ import 'package:petitparser_examples/json.dart';
 
 final parser = JsonParserDefinition().build();
 
-final input = querySelector('#input')! as TextAreaElement;
-final action = querySelector('#action')! as SubmitButtonInputElement;
-
-final timingCustom = querySelector('#timing .custom')!;
-final timingNative = querySelector('#timing .native')!;
-final outputCustom = querySelector('#output .custom')!;
-final outputNative = querySelector('#output .native')!;
-
 void execute(
-    Element timingElement, Element outputElement, dynamic Function() callback) {
+  String value,
+  Element timingElement,
+  Element outputElement,
+  dynamic Function(String value) parse,
+) {
   Object? result;
-
   var count = 0, elapsed = 0;
   final watch = Stopwatch()..start();
   while (elapsed < 100000) {
-    // 100ms
     try {
-      result = callback();
+      result = parse(value);
     } on Exception catch (exception) {
       result = exception;
     }
@@ -42,10 +36,28 @@ void execute(
   }
 }
 
+final input = querySelector('#input')! as TextAreaElement;
+final action = querySelector('#action')! as SubmitButtonInputElement;
+
+final timingCustom = querySelector('#timing .custom')!;
+final timingNative = querySelector('#timing .native')!;
+final outputCustom = querySelector('#output .custom')!;
+final outputNative = querySelector('#output .native')!;
+
 void update() {
   final value = input.value ?? '';
-  execute(timingCustom, outputCustom, () => parser.parse(value).value);
-  execute(timingNative, outputNative, () => convert.json.decode(value));
+  execute(
+    value,
+    timingCustom,
+    outputCustom,
+    (input) => parser.parse(input).value,
+  );
+  execute(
+    value,
+    timingNative,
+    outputNative,
+    (input) => convert.json.decode(input),
+  );
 }
 
 void main() {
