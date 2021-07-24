@@ -404,6 +404,10 @@ exampleWithNumber: x
         isMethodNode('+', ['a'], [], ['b'], [isVariableNode('c')]));
     verify('BinaryMethod5', '-- a', grammar.method, parser.method,
         isMethodNode('--', ['a'], [], [], []));
+    verify('BinaryPragma1', '<& true>', grammar.pragma, parser.pragma,
+        isPragmaNode('&', [isLiteralNode(true)]));
+    verify('BinaryPragma2', '<// nil>', grammar.pragma, parser.pragma,
+        isPragmaNode('//', [isLiteralNode(null)]));
     verify(
         'CascadeExpression1',
         '1 abs; negated',
@@ -415,14 +419,14 @@ exampleWithNumber: x
         ]));
     verify(
         'CascadeExpression2',
-        '1 abs negated; raisedTo: 12; negated',
+        '1 abs negated; raisedTo: 12; rounded',
         grammar.expression,
         parser.expression,
         isCascadeNode([
           isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'),
           isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'raisedTo:',
               [isLiteralNode(12)]),
-          isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'negated'),
+          isMessageNode(isMessageNode(isLiteralNode(1), 'abs'), 'rounded'),
         ]));
     verify(
         'CascadeExpression3',
@@ -471,6 +475,15 @@ exampleWithNumber: x
         parser.method,
         isMethodNode(
             'to:do:by:', ['a', 'b', 'c'], [], ['d'], [isVariableNode('e')]));
+    verify('KeywordPragma1', '<primitive: 42>', grammar.pragma, parser.pragma,
+        isPragmaNode('primitive:', [isLiteralNode(42)]));
+    verify(
+        'KeywordPragma2',
+        "<primitive: 'fileOpen' error: 0>",
+        grammar.pragma,
+        parser.pragma,
+        isPragmaNode(
+            'primitive:error:', [isLiteralNode('fileOpen'), isLiteralNode(0)]));
     verify('UnaryExpression1', '1 abs', grammar.expression, parser.expression,
         isMessageNode(isLiteralNode(1), 'abs'));
     verify(
@@ -487,6 +500,8 @@ exampleWithNumber: x
         isMethodNode('abs', [], [], [], [isVariableNode('a')]));
     verify('UnaryMethod4', 'abs | a | b', grammar.method, parser.method,
         isMethodNode('abs', [], [], ['a'], [isVariableNode('b')]));
+    verify('UnaryPragma1', '<menu>', grammar.pragma, parser.pragma,
+        isPragmaNode('menu'));
     verify('Pragma1', 'method <foo>', grammar.method, parser.method,
         isMethodNode('method', [], [isPragmaNode('foo')], [], []));
     verify(

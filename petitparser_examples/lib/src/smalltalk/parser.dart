@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_overrides
 import 'package:petitparser/petitparser.dart';
 
 import 'ast.dart';
@@ -5,33 +6,46 @@ import 'grammar.dart';
 
 /// Smalltalk parser definition.
 class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
-  Parser array() => super.array().map(buildArrayNode);
+  Parser array() => super
+      .array()
+      .map((input) => buildArray(input[1])..surroundWith(input[0], input[2]));
 
-  Parser arrayLiteral() => super.arrayLiteral().map(buildLiteralArrayNode);
+  Parser arrayLiteral() => super.arrayLiteral().map((input) =>
+      LiteralArrayNode(input[1].cast<LiteralNode>().toList())
+        ..surroundWith(input[0], input[2]));
 
-  Parser arrayLiteralArray() =>
-      super.arrayLiteralArray().map(buildLiteralArrayNode);
+  Parser arrayLiteralArray() => super.arrayLiteralArray().map((input) =>
+      LiteralArrayNode(input[1].cast<LiteralNode>().toList())
+        ..surroundWith(input[0], input[2]));
 
-  Parser binaryExpression() => super
-      .binaryExpression()
-      .map((input) => buildMessageNodes(input[0], input[1]));
+  Parser binaryExpression() =>
+      super.binaryExpression().map((input) => buildMessage(input[0], input[1]));
 
   Parser block() =>
       super.block().map((input) => input[1]..surroundWith(input[0], input[2]));
 
-  Parser blockBody() => super.blockBody().map(buildBlockNode);
+  Parser blockArgument() => super.blockArgument();
 
-  Parser byteLiteral() => super.byteLiteral().map(buildLiteralArrayNode);
+  Parser blockBody() =>
+      super.blockBody().map((input) => buildBlock(input[0], input[1]));
 
-  Parser byteLiteralArray() =>
-      super.byteLiteralArray().map(buildLiteralArrayNode);
+  Parser byteLiteral() => super.byteLiteral().map((input) =>
+      LiteralArrayNode<num>(input[1].cast<LiteralNode<num>>().toList())
+        ..surroundWith(input[0], input[2]));
+
+  Parser byteLiteralArray() => super.byteLiteralArray().map((input) =>
+      LiteralArrayNode<num>(input[1].cast<LiteralNode<num>>().toList())
+        ..surroundWith(input[0], input[2]));
 
   Parser characterLiteral() => super.characterLiteral().map(
       (input) => LiteralValueNode<String>(input, input.value.substring(1)));
 
-  Parser cascadeExpression() => super.cascadeExpression().map(buildCascadeNode);
+  Parser cascadeExpression() => super
+      .cascadeExpression()
+      .map((input) => buildCascade(input[0], input[1]));
 
-  Parser expression() => super.expression().map(buildAssignmentNode);
+  Parser expression() =>
+      super.expression().map((input) => buildAssignment(input[1], input[0]));
 
   Parser expressionReturn() =>
       super.expressionReturn().map((input) => ReturnNode(input[0], input[1]));
@@ -41,21 +55,27 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
 
   Parser keywordExpression() => super
       .keywordExpression()
-      .map((input) => buildMessageNodes(input[0], [input[1]]));
+      .map((input) => buildMessage(input[0], [input[1]]));
 
-  Parser method() => super.method().map(buildMethodNode);
+  Parser method() => super.method().map((input) => buildMethod(input));
 
   Parser nilLiteral() =>
       super.nilLiteral().map((input) => LiteralValueNode<void>(input, null));
 
-  Parser numberLiteral() => super.numberLiteral().map(buildLiteralNumber);
+  Parser numberLiteral() => super
+      .numberLiteral()
+      .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
 
   Parser parens() =>
       super.parens().map((input) => input[1]..surroundWith(input[0], input[2]));
 
-  Parser pragma() => super.pragma().map(buildPragmaNode);
+  Parser pragma() => super
+      .pragma()
+      .map((input) => buildPragma(input[1])..surroundWith(input[0], input[2]));
 
-  Parser sequence() => super.sequence().map(buildSequenceNode);
+  Parser sequence() => super
+      .sequence()
+      .map((input) => buildSequence(input[0], [input[1], input[2]]));
 
   Parser stringLiteral() => super.stringLiteral().map(
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
@@ -68,9 +88,8 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser symbolLiteralArray() => super.symbolLiteralArray().map(
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
 
-  Parser unaryExpression() => super
-      .unaryExpression()
-      .map((input) => buildMessageNodes(input[0], input[1]));
+  Parser unaryExpression() =>
+      super.unaryExpression().map((input) => buildMessage(input[0], input[1]));
 
   Parser trueLiteral() =>
       super.trueLiteral().map((input) => LiteralValueNode<bool>(input, true));
@@ -78,111 +97,102 @@ class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
   Parser variable() => super.variable().map((input) => VariableNode(input));
 }
 
-String buildString(String input) =>
-    input.isNotEmpty && input.startsWith("'") && input.startsWith("'")
-        ? input.substring(1, input.length - 1).replaceAll("''", "'")
-        : input;
+// Build different node types
 
-Node buildArrayNode(dynamic parts) {
+ArrayNode buildArray(List statements) {
   final result = ArrayNode();
-  addTo<IsStatement>(result.statements, parts[1]);
-  addTo<Token>(result.periods, parts[1]);
-  result.surroundWith(parts[0], parts[2]);
+  addTo<IsStatement>(result.statements, statements);
+  addTo<Token>(result.periods, statements);
   return result;
 }
 
-Node buildAssignmentNode(dynamic input) {
-  final parts = input[0] as List;
-  if (parts.isEmpty) {
-    return input[1];
-  }
-  return parts.reversed.fold<ValueNode>(
-      input[1],
+ValueNode buildAssignment(ValueNode node, List parts) {
+  return parts.reversed.fold(
+      node,
       (result, variableAndToken) =>
           AssignmentNode(variableAndToken[0], variableAndToken[1], result));
 }
 
-Node buildBlockNode(dynamic input) {
-  final arguments = <VariableNode>[];
-  addTo<VariableNode>(arguments, input[0]);
-  return BlockNode(arguments, input[1]);
-}
-
-Node buildCascadeNode(dynamic input) {
-  final parts = input[1] as List;
-  if (parts.isEmpty) {
-    return input[0];
-  }
-  final result = CascadeNode();
-  result.messages.add(input[0]);
-  for (final part in parts) {
-    result.messages
-        .add(buildMessageNodes(result.receiver, [part[1]]) as MessageNode);
-    result.semicolons.add(part[0]);
-  }
+ValueNode buildBlock(List arguments, SequenceNode body) {
+  final result = BlockNode(body);
+  addTo<VariableNode>(result.arguments, arguments);
+  addTo<Token>(result.separators, arguments);
   return result;
 }
 
-Node buildLiteralArrayNode<T>(dynamic input) =>
-    LiteralArrayNode<T>(input[1].cast<LiteralNode<T>>().toList())
-      ..surroundWith(input[0], input[2]);
-
-Node buildLiteralNumber(dynamic input) {
-  final token = input as Token;
-  if (token.input.contains('.')) {
-    return LiteralValueNode<double>(token, double.parse(token.input));
+ValueNode buildCascade(ValueNode value, List parts) {
+  if (parts.isNotEmpty) {
+    final result = CascadeNode();
+    result.messages.add(value as MessageNode);
+    for (final part in parts) {
+      final message = buildMessage(result.receiver, [part[1]]);
+      result.messages.add(message as MessageNode);
+      result.semicolons.add(part[0]);
+    }
+    return result;
   }
-  final values = token.input.split('r');
-  final value = values.length == 1
-      ? int.parse(token.input)
-      : int.parse(values[1], radix: int.parse(values[0]));
-  return LiteralValueNode<int>(token, value);
+  return value;
 }
 
-Node buildMessageNodes(ValueNode receiver, dynamic messages) => messages.fold(
-    receiver,
-    (receiver, parts) => parts == null || parts.isEmpty
-        ? receiver
-        : MessageNode(receiver, parts[0].cast<Token>().toList(),
-            parts[1].cast<ValueNode>().toList()));
+ValueNode buildMessage(ValueNode receiver, List parts) {
+  return parts
+      .where((selectorAndArguments) => selectorAndArguments.isNotEmpty)
+      .fold(receiver, (receiver, selectorAndArguments) {
+    final message = MessageNode(receiver);
+    addTo<Token>(message.selectorToken, selectorAndArguments);
+    addTo<ValueNode>(message.arguments, selectorAndArguments);
+    return message;
+  });
+}
 
-Node buildMethodNode(dynamic input) {
+MethodNode buildMethod(List parts) {
   final result = MethodNode();
-  addTo<Token>(result.selectorToken, input[0][0]);
-  addTo<VariableNode>(result.arguments, input[0][1]);
-  addTo<Token>(result.body.periods, input[1][0]);
-  addTo<PragmaNode>(result.pragmas, input[1][1]);
-  addTo<Token>(result.body.periods, input[1][2]);
-  addTo<VariableNode>(result.body.temporaries, input[1][3]);
-  addTo<Token>(result.body.periods, input[1][4]);
-  addTo<PragmaNode>(result.pragmas, input[1][5]);
-  addTo<Token>(result.body.periods, input[1][6]);
-  addTo<IsStatement>(result.body.statements, input[1][7]);
+  addTo<Token>(result.selectorToken, parts[0]);
+  addTo<VariableNode>(result.arguments, parts[0]);
+  addTo<PragmaNode>(result.pragmas, parts[1]);
+  addTo<VariableNode>(result.body.temporaries, parts[1][3]);
+  addTo<IsStatement>(result.body.statements, parts[1][7]);
+  addTo<Token>(result.body.periods, parts[1][7]);
   return result;
 }
 
-Node buildPragmaNode(dynamic input) {
+PragmaNode buildPragma(List parts) {
   final result = PragmaNode();
-  addTo<Token>(result.selectorToken, input[1][0]);
-  addTo<LiteralNode>(result.arguments, input[1][1]);
+  addTo<Token>(result.selectorToken, parts);
+  addTo<LiteralNode>(result.arguments, parts);
   return result;
 }
 
-Node buildSequenceNode(dynamic input) {
+SequenceNode buildSequence(List temporaries, List statements) {
   final result = SequenceNode();
-  addTo<VariableNode>(result.temporaries, input[0]);
-  addTo<Token>(result.periods, input[1]);
-  addTo<IsStatement>(result.statements, input[2]);
-  addTo<Token>(result.periods, input[2]);
+  addTo<VariableNode>(result.temporaries, temporaries);
+  addTo<IsStatement>(result.statements, statements);
+  addTo<Token>(result.periods, statements);
   return result;
 }
 
-void addTo<T>(List<T> result, List parts) {
+// Various other helpers.
+
+void addTo<T>(List<T> target, List parts) {
   for (final part in parts) {
     if (part is T) {
-      result.add(part);
+      target.add(part);
     } else if (part is List) {
-      addTo<T>(result, part);
+      addTo<T>(target, part);
     }
   }
 }
+
+num buildNumber(String input) {
+  final values = input.split('r');
+  return values.length == 1
+      ? num.parse(values[0])
+      : values.length == 2
+          ? int.parse(values[1], radix: int.parse(values[0]))
+          : throw ArgumentError.value(input, 'number', 'Unable to parse');
+}
+
+String buildString(String input) =>
+    input.isNotEmpty && input.startsWith("'") && input.startsWith("'")
+        ? input.substring(1, input.length - 1).replaceAll("''", "'")
+        : input;

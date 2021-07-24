@@ -6,68 +6,14 @@ abstract class Node {
   void accept(Visitor visitor);
 }
 
-abstract class HasStatements implements Node {
-  List<IsStatement> get statements;
-
-  List<Token> get periods;
-}
-
-abstract class IsStatement implements Node {}
-
-mixin HasSelector {
-  List<Token> get selectorToken;
-
-  String get selector => selectorToken.map((token) => token.input).join();
-}
-
-class MethodNode extends Node with HasSelector {
-  @override
-  final List<Token> selectorToken = [];
-  final List<VariableNode> arguments = [];
-  final List<PragmaNode> pragmas = [];
-  final SequenceNode body = SequenceNode();
-
-  MethodNode();
-
-  @override
-  void accept(Visitor visitor) => visitor.visitMethodNode(this);
-}
-
-class PragmaNode extends Node with HasSelector {
-  @override
-  final List<Token> selectorToken = [];
-  final List<LiteralNode> arguments = [];
-
-  PragmaNode();
-
-  @override
-  void accept(Visitor visitor) => visitor.visitPragmaNode(this);
-}
-
-class SequenceNode extends Node implements HasStatements {
-  final List<VariableNode> temporaries = [];
-  @override
+mixin HasStatements implements Node {
   final List<IsStatement> statements = [];
-  @override
   final List<Token> periods = [];
-
-  SequenceNode();
-
-  @override
-  void accept(Visitor visitor) => visitor.visitSequenceNode(this);
 }
 
-class ReturnNode extends Node implements IsStatement {
-  final Token caret;
-  final ValueNode value;
+mixin IsStatement implements Node {}
 
-  ReturnNode(this.caret, this.value);
-
-  @override
-  void accept(Visitor visitor) => visitor.visitReturnNode(this);
-}
-
-abstract class ValueNode extends Node implements IsStatement {
+mixin IsSurrounded implements Node {
   final List<Token> beforeToken = [];
   final List<Token> afterToken = [];
 
@@ -77,12 +23,64 @@ abstract class ValueNode extends Node implements IsStatement {
   }
 }
 
-class ArrayNode extends ValueNode implements HasStatements {
-  @override
-  final List<ValueNode> statements = [];
-  @override
-  final List<Token> periods = [];
+mixin HasSelector implements Node {
+  final List<Token> selectorToken = [];
 
+  List get arguments;
+
+  String get selector => selectorToken.map((token) => token.input).join();
+
+  bool get isUnary => arguments.isEmpty;
+
+  bool get isBinary => !(isUnary || isKeyword);
+
+  bool get isKeyword => selectorToken.first.value.endsWith(':');
+}
+
+class MethodNode extends Node with HasSelector {
+  MethodNode();
+
+  final List<VariableNode> arguments = [];
+  final List<PragmaNode> pragmas = [];
+  final SequenceNode body = SequenceNode();
+
+  @override
+  void accept(Visitor visitor) => visitor.visitMethodNode(this);
+}
+
+class PragmaNode extends Node with HasSelector, IsSurrounded {
+  PragmaNode();
+
+  final List<LiteralNode> arguments = [];
+
+  @override
+  void accept(Visitor visitor) => visitor.visitPragmaNode(this);
+}
+
+class SequenceNode extends Node with HasStatements {
+  SequenceNode();
+
+  final List<VariableNode> temporaries = [];
+
+  @override
+  void accept(Visitor visitor) => visitor.visitSequenceNode(this);
+}
+
+class ReturnNode extends Node with IsStatement {
+  ReturnNode(this.caret, this.value);
+
+  final Token caret;
+  final ValueNode value;
+
+  @override
+  void accept(Visitor visitor) => visitor.visitReturnNode(this);
+}
+
+abstract class ValueNode extends Node with IsStatement, IsSurrounded {
+  ValueNode();
+}
+
+class ArrayNode extends ValueNode with HasStatements {
   ArrayNode();
 
   @override
@@ -90,79 +88,78 @@ class ArrayNode extends ValueNode implements HasStatements {
 }
 
 class AssignmentNode extends ValueNode {
+  AssignmentNode(this.variable, this.assignment, this.value);
+
   final VariableNode variable;
   final Token assignment;
   final ValueNode value;
-
-  AssignmentNode(this.variable, this.assignment, this.value);
 
   @override
   void accept(Visitor visitor) => visitor.visitAssignmentNode(this);
 }
 
 class BlockNode extends ValueNode {
-  final List<VariableNode> arguments;
-  final SequenceNode body;
+  BlockNode(this.body);
 
-  BlockNode(this.arguments, this.body);
+  final List<VariableNode> arguments = [];
+  final List<Token> separators = [];
+  final SequenceNode body;
 
   @override
   void accept(Visitor visitor) => visitor.visitBlockNode(this);
 }
 
 class CascadeNode extends ValueNode {
+  CascadeNode();
+
   final List<MessageNode> messages = [];
   final List<Token> semicolons = [];
 
-  CascadeNode();
-
-  ValueNode get receiver => messages[0].receiver;
+  ValueNode get receiver => messages.first.receiver;
 
   @override
   void accept(Visitor visitor) => visitor.visitCascadeNode(this);
 }
 
 abstract class LiteralNode<T> extends ValueNode {
-  final T value;
-
   LiteralNode(this.value);
+
+  final T value;
 }
 
 class LiteralArrayNode<T> extends LiteralNode<List<T>> {
-  final List<LiteralNode<T>> values;
-
   LiteralArrayNode(this.values)
       : super(values.map((value) => value.value).toList());
+
+  final List<LiteralNode<T>> values;
 
   @override
   void accept(Visitor visitor) => visitor.visitLiteralArrayNode(this);
 }
 
 class LiteralValueNode<T> extends LiteralNode<T> {
-  final Token token;
-
   LiteralValueNode(this.token, T value) : super(value);
+
+  final Token token;
 
   @override
   void accept(Visitor visitor) => visitor.visitLiteralValueNode(this);
 }
 
 class MessageNode extends ValueNode with HasSelector {
-  final ValueNode receiver;
-  @override
-  final List<Token> selectorToken;
-  final List<ValueNode> arguments;
+  MessageNode(this.receiver);
 
-  MessageNode(this.receiver, this.selectorToken, this.arguments);
+  final ValueNode receiver;
+  final List<ValueNode> arguments = [];
 
   @override
   void accept(Visitor visitor) => visitor.visitMessageNode(this);
 }
 
 class VariableNode extends ValueNode {
-  final Token token;
-
   VariableNode(this.token);
+
+  final Token token;
 
   String get name => token.input;
 
