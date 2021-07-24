@@ -84,7 +84,7 @@ class RepeatedChoice extends LinterRule {
             callback(LinterIssue(
                 this,
                 parser,
-                'The choices at index $i and $j are is identical '
+                'The choices at index $i and $j are identical '
                 '(${children[i]}). The second choice can never succeed and '
                 'can therefore be removed.',
                 () => analyzer.replaceAll(
