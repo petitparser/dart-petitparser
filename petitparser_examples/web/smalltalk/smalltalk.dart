@@ -7,7 +7,7 @@ final output = querySelector('#output')! as ParagraphElement;
 final parse = querySelector('#parse')! as SubmitButtonInputElement;
 
 final parserDefinition = SmalltalkParserDefinition();
-final methodParser = parserDefinition.build(start: parserDefinition.method);
+final methodParser = parserDefinition.build();
 
 void main() {
   parse.onClick.listen((event) {
@@ -37,15 +37,17 @@ class PrintVisitor extends Visitor {
     _indent = previous;
   }
 
-  String variables(List<VariableNode> variables) => variables
-      .map((variable) => '<i title="${variable.token}">${variable.name}</i>')
-      .join(', ');
+  String variable(VariableNode node) =>
+      '<i title="${node.token}">${node.name}</i>';
+
+  String selector(HasSelector node) =>
+      '<i title="${node.selectorToken.join(', ')}">${node.selector}</i>';
 
   void visitMethodNode(MethodNode node) {
-    print('<b>Method</b>: <i>${node.selector}</i>');
+    print('<b>Method</b>: ${selector(node)}');
     indent(() {
       if (node.arguments.isNotEmpty) {
-        print('Arguments: ${variables(node.arguments)}');
+        print('Arguments: ${node.arguments.map(variable).join(', ')}');
       }
       if (node.pragmas.isNotEmpty) {
         print('Pragmas');
@@ -56,7 +58,7 @@ class PrintVisitor extends Visitor {
   }
 
   void visitPragmaNode(PragmaNode node) {
-    print('<b>Pragma</b>: <i>${node.selector}</i>');
+    print('<b>Pragma</b>: ${selector(node)}');
     indent(() => node.arguments.forEach(visit));
   }
 
@@ -69,7 +71,7 @@ class PrintVisitor extends Visitor {
     print('<b>Sequence</b>');
     indent(() {
       if (node.temporaries.isNotEmpty) {
-        print('Temporaries: ${variables(node.temporaries)}');
+        print('Temporaries: ${node.temporaries.map(variable).join(', ')}');
       }
       node.statements.forEach(visit);
     });
@@ -81,7 +83,7 @@ class PrintVisitor extends Visitor {
   }
 
   void visitAssignmentNode(AssignmentNode node) {
-    print('<b>Assignment</b>: <i>${node.variable.name}</i>');
+    print('<b>Assignment</b>: ${variable(node.variable)}');
     indent(() => visit(node.value));
   }
 
@@ -89,7 +91,7 @@ class PrintVisitor extends Visitor {
     print('<b>Block</b>');
     indent(() {
       if (node.arguments.isNotEmpty) {
-        print('Arguments: ${variables(node.arguments)}');
+        print('Arguments: ${node.arguments.map(variable).join(', ')}');
       }
       visit(node.body);
     });
@@ -100,7 +102,7 @@ class PrintVisitor extends Visitor {
     indent(() {
       visit(node.receiver);
       for (final message in node.messages) {
-        print('Selector: <i>${message.selector}</i>');
+        print('Selector: ${selector(message)}');
         if (message.arguments.isNotEmpty) {
           print('Arguments');
           indent(() => message.arguments.forEach(visit));
@@ -118,7 +120,7 @@ class PrintVisitor extends Visitor {
   }
 
   void visitMessageNode(MessageNode node) {
-    print('<b>Message</b>: <i>${node.selector}</i>');
+    print('<b>Message</b>: ${selector(node)}');
     indent(() {
       visit(node.receiver);
       if (node.arguments.isNotEmpty) {
@@ -129,6 +131,6 @@ class PrintVisitor extends Visitor {
   }
 
   void visitVariableNode(VariableNode node) {
-    print('<b>Variable</b>: <i>${node.name}</i>');
+    print('<b>Variable</b>: ${variable(node)}');
   }
 }
