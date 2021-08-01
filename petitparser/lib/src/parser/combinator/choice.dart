@@ -26,7 +26,6 @@ extension ChoiceParserExtension on Parser {
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
   ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) {
-    // TODO(renggli): https://github.com/dart-lang/sdk/issues/44660
     final self = this;
     return self is ChoiceParser
         ? ChoiceParser([...self.children, other],
