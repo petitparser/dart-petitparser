@@ -1207,6 +1207,14 @@ void main() {
         expectFailure(parser, 'a', 0, 'failure');
       });
     });
+    group('label', () {
+      expectCommon(any().label('anything'));
+      test('default', () {
+        final parser = char('a').label('anything');
+        expectSuccess(parser, 'a', 'a');
+        expectFailure(parser, 'b', 0, '"a" expected');
+      });
+    });
     group('position', () {
       expectCommon(position());
       test('default', () {

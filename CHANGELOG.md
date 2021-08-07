@@ -3,6 +3,7 @@
 ## 4.3.0
 
 * Add a `where` parser, that allows to add additional constraints on parse results.
+* Add a `label` parser, that allows to add a debug label to the parser graph.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 
 ## 4.2.0
@@ -66,7 +67,7 @@
 
 ## 2.5.0
 
-* Made `ParserError` a `FormatException` to follow typical Dart exception style. 
+* Made `ParserError` a `FormatException` to follow typical Dart exception style.
 
 ## 2.4.0
 
@@ -98,8 +99,8 @@
 
 ## 2.0.0
 
-* Make parsers fully typed, where it makes sense. 
-  * In most cases this should have no effect on existing code, but sometimes can point out actual bugs. 
+* Make parsers fully typed, where it makes sense.
+  * In most cases this should have no effect on existing code, but sometimes can point out actual bugs.
   * In rare cases, it might be necessary to insert `cast<R>` or `castList<R>` at the appropriate places.
 * Move examples into their own example package.
 
