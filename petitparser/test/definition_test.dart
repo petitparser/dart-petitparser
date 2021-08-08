@@ -175,7 +175,8 @@ void main() {
       Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
       Parser<List<String>> f0() => ref1(f1, 1);
       Parser<List<String>> start() => ref0(f0);
-      expectSuccess(resolve(start()), '123456789', '123456789'.split(''));
+      expect(
+          resolve(start()), isParseSuccess('123456789', '123456789'.split('')));
     });
     test('references untyped', () {
       Parser<List<String>> f9(int a1, int a2, int a3, int a4, int a5, int a6,
@@ -200,15 +201,16 @@ void main() {
       Parser<List<String>> f1(int a1) => ref(f2, a1, 2);
       Parser<List<String>> f0() => ref(f1, 1);
       Parser<List<String>> start() => ref(f0);
-      expectSuccess(resolve(start()), '123456789', '123456789'.split(''));
+      expect(
+          resolve(start()), isParseSuccess('123456789', '123456789'.split('')));
     });
     test('resolved parser', () {
-      expectSuccess(resolve(number()), '1', 1);
-      expectSuccess(resolve(numberList()), '1,2', [1, 2]);
+      expect(resolve(number()), isParseSuccess('1', 1));
+      expect(resolve(numberList()), isParseSuccess('1,2', [1, 2]));
     });
     test('resolved parser with arguments', () {
-      expectSuccess(resolve(numberList()), '1,2', [1, 2]);
-      expectSuccess(resolve(numberList(';')), '3;4;5', [3, 4, 5]);
+      expect(resolve(numberList()), isParseSuccess('1,2', [1, 2]));
+      expect(resolve(numberList(';')), isParseSuccess('3;4;5', [3, 4, 5]));
     });
     test('direct recursion', () {
       Parser<String> create() => ref0(create);
@@ -227,9 +229,9 @@ void main() {
             ref0(number).map((value) => [value]),
           ].toChoiceParser();
       final parser = resolve<List<num>>(list());
-      expectSuccess(parser, '1', [1]);
-      expectSuccess(parser, '1,2', [1, 2]);
-      expectSuccess(parser, '1,2,2', [1, 2, 2]);
+      expect(parser, isParseSuccess('1', [1]));
+      expect(parser, isParseSuccess('1,2', [1, 2]));
+      expect(parser, isParseSuccess('1,2,2', [1, 2, 2]));
     });
   });
   group('definition', () {
@@ -270,12 +272,12 @@ void main() {
     });
     test('reference with multiple arguments', () {
       final parser = typedReferenceDefinition.build();
-      expectSuccess(parser, '12345', ['1', '2', '3', '4', '5']);
+      expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
     });
     test('reference with multiple arguments (untyped)', () {
       @Deprecated('Testing deprecated code')
       final parser = untypedReferenceDefinition.build();
-      expectSuccess(parser, '12345', ['1', '2', '3', '4', '5']);
+      expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
     });
     test('reference unsupported methods', () {
       final reference = grammarDefinition.ref0(grammarDefinition.start);
@@ -284,30 +286,36 @@ void main() {
     });
     test('grammar', () {
       final parser = grammarDefinition.build();
-      expectSuccess(parser, '1,2', ['1', ',', '2']);
-      expectSuccess(parser, '1,2,3', [
-        '1',
-        ',',
-        ['2', ',', '3']
-      ]);
+      expect(parser, isParseSuccess('1,2', ['1', ',', '2']));
+      expect(
+          parser,
+          isParseSuccess('1,2,3', [
+            '1',
+            ',',
+            ['2', ',', '3']
+          ]));
     });
     test('parser', () {
       final parser = parserDefinition.build();
-      expectSuccess(parser, '1,2', [1, ',', 2]);
-      expectSuccess(parser, '1,2,3', [
-        1,
-        ',',
-        [2, ',', 3]
-      ]);
+      expect(parser, isParseSuccess('1,2', [1, ',', 2]));
+      expect(
+          parser,
+          isParseSuccess('1,2,3', [
+            1,
+            ',',
+            [2, ',', 3]
+          ]));
     });
     test('token', () {
       final parser = tokenDefinition.build();
-      expectSuccess(parser, '1, 2', ['1', ',', '2']);
-      expectSuccess(parser, '1, 2, 3', [
-        '1',
-        ',',
-        ['2', ',', '3']
-      ]);
+      expect(parser, isParseSuccess('1, 2', ['1', ',', '2']));
+      expect(
+          parser,
+          isParseSuccess('1, 2, 3', [
+            '1',
+            ',',
+            ['2', ',', '3']
+          ]));
     });
     test('direct recursion', () {
       expect(

@@ -22,91 +22,91 @@ void main() {
       .seq(string('"""'))
       .pick(1);
   test('valid identifier', () {
-    expectSuccess(identifier, 'a', 'a');
-    expectSuccess(identifier, 'a1', 'a1');
-    expectSuccess(identifier, 'a12', 'a12');
-    expectSuccess(identifier, 'ab', 'ab');
-    expectSuccess(identifier, 'a1b', 'a1b');
+    expect(identifier, isParseSuccess('a', 'a'));
+    expect(identifier, isParseSuccess('a1', 'a1'));
+    expect(identifier, isParseSuccess('a12', 'a12'));
+    expect(identifier, isParseSuccess('ab', 'ab'));
+    expect(identifier, isParseSuccess('a1b', 'a1b'));
   });
   test('incomplete identifier', () {
-    expectSuccess(identifier, 'a=', 'a', 1);
-    expectSuccess(identifier, 'a1-', 'a1', 2);
-    expectSuccess(identifier, 'a12+', 'a12', 3);
-    expectSuccess(identifier, 'ab ', 'ab', 2);
+    expect(identifier, isParseSuccess('a=', 'a', 1));
+    expect(identifier, isParseSuccess('a1-', 'a1', 2));
+    expect(identifier, isParseSuccess('a12+', 'a12', 3));
+    expect(identifier, isParseSuccess('ab ', 'ab', 2));
   });
   test('invalid identifier', () {
-    expectFailure(identifier, '', 0, 'letter expected');
-    expectFailure(identifier, '1', 0, 'letter expected');
-    expectFailure(identifier, '1a', 0, 'letter expected');
+    expect(identifier, isParseFailure('', 0, 'letter expected'));
+    expect(identifier, isParseFailure('1', 0, 'letter expected'));
+    expect(identifier, isParseFailure('1a', 0, 'letter expected'));
   });
   test('positive number', () {
-    expectSuccess(number, '1', '1');
-    expectSuccess(number, '12', '12');
-    expectSuccess(number, '12.3', '12.3');
-    expectSuccess(number, '12.34', '12.34');
+    expect(number, isParseSuccess('1', '1'));
+    expect(number, isParseSuccess('12', '12'));
+    expect(number, isParseSuccess('12.3', '12.3'));
+    expect(number, isParseSuccess('12.34', '12.34'));
   });
   test('negative number', () {
-    expectSuccess(number, '-1', '-1');
-    expectSuccess(number, '-12', '-12');
-    expectSuccess(number, '-12.3', '-12.3');
-    expectSuccess(number, '-12.34', '-12.34');
+    expect(number, isParseSuccess('-1', '-1'));
+    expect(number, isParseSuccess('-12', '-12'));
+    expect(number, isParseSuccess('-12.3', '-12.3'));
+    expect(number, isParseSuccess('-12.34', '-12.34'));
   });
   test('incomplete number', () {
-    expectSuccess(number, '1..', '1', 1);
-    expectSuccess(number, '12-', '12', 2);
-    expectSuccess(number, '12.3.', '12.3', 4);
-    expectSuccess(number, '12.34.', '12.34', 5);
+    expect(number, isParseSuccess('1..', '1', 1));
+    expect(number, isParseSuccess('12-', '12', 2));
+    expect(number, isParseSuccess('12.3.', '12.3', 4));
+    expect(number, isParseSuccess('12.34.', '12.34', 5));
   });
   test('invalid number', () {
-    expectFailure(number, '', 0, 'digit expected');
-    expectFailure(number, '-', 1, 'digit expected');
-    expectFailure(number, '-x', 1, 'digit expected');
-    expectFailure(number, '.', 0, 'digit expected');
-    expectFailure(number, '.1', 0, 'digit expected');
+    expect(number, isParseFailure('', 0, 'digit expected'));
+    expect(number, isParseFailure('-', 1, 'digit expected'));
+    expect(number, isParseFailure('-x', 1, 'digit expected'));
+    expect(number, isParseFailure('.', 0, 'digit expected'));
+    expect(number, isParseFailure('.1', 0, 'digit expected'));
   });
   test('valid string', () {
-    expectSuccess(quoted, '""', '""');
-    expectSuccess(quoted, '"a"', '"a"');
-    expectSuccess(quoted, '"ab"', '"ab"');
-    expectSuccess(quoted, '"abc"', '"abc"');
+    expect(quoted, isParseSuccess('""', '""'));
+    expect(quoted, isParseSuccess('"a"', '"a"'));
+    expect(quoted, isParseSuccess('"ab"', '"ab"'));
+    expect(quoted, isParseSuccess('"abc"', '"abc"'));
   });
   test('incomplete string', () {
-    expectSuccess(quoted, '""x', '""', 2);
-    expectSuccess(quoted, '"a"x', '"a"', 3);
-    expectSuccess(quoted, '"ab"x', '"ab"', 4);
-    expectSuccess(quoted, '"abc"x', '"abc"', 5);
+    expect(quoted, isParseSuccess('""x', '""', 2));
+    expect(quoted, isParseSuccess('"a"x', '"a"', 3));
+    expect(quoted, isParseSuccess('"ab"x', '"ab"', 4));
+    expect(quoted, isParseSuccess('"abc"x', '"abc"', 5));
   });
   test('invalid string', () {
-    expectFailure(quoted, '"', 1, '"\\"" expected');
-    expectFailure(quoted, '"a', 2, '"\\"" expected');
-    expectFailure(quoted, '"ab', 3, '"\\"" expected');
-    expectFailure(quoted, 'a"', 0, '"\\"" expected');
-    expectFailure(quoted, 'ab"', 0, '"\\"" expected');
+    expect(quoted, isParseFailure('"', 1, '"\\"" expected'));
+    expect(quoted, isParseFailure('"a', 2, '"\\"" expected'));
+    expect(quoted, isParseFailure('"ab', 3, '"\\"" expected'));
+    expect(quoted, isParseFailure('a"', 0, '"\\"" expected'));
+    expect(quoted, isParseFailure('ab"', 0, '"\\"" expected'));
   });
   test('return statement', () {
-    expectSuccess(keyword, 'return f', 'f');
-    expectSuccess(keyword, 'return  f', 'f');
-    expectSuccess(keyword, 'return foo', 'foo');
-    expectSuccess(keyword, 'return    foo', 'foo');
-    expectSuccess(keyword, 'return 1', '1');
-    expectSuccess(keyword, 'return  1', '1');
-    expectSuccess(keyword, 'return -2.3', '-2.3');
-    expectSuccess(keyword, 'return    -2.3', '-2.3');
-    expectSuccess(keyword, 'return "a"', '"a"');
-    expectSuccess(keyword, 'return  "a"', '"a"');
+    expect(keyword, isParseSuccess('return f', 'f'));
+    expect(keyword, isParseSuccess('return  f', 'f'));
+    expect(keyword, isParseSuccess('return foo', 'foo'));
+    expect(keyword, isParseSuccess('return    foo', 'foo'));
+    expect(keyword, isParseSuccess('return 1', '1'));
+    expect(keyword, isParseSuccess('return  1', '1'));
+    expect(keyword, isParseSuccess('return -2.3', '-2.3'));
+    expect(keyword, isParseSuccess('return    -2.3', '-2.3'));
+    expect(keyword, isParseSuccess('return "a"', '"a"'));
+    expect(keyword, isParseSuccess('return  "a"', '"a"'));
   });
   test('invalid statement', () {
-    expectFailure(keyword, 'retur f', 0, 'return expected');
-    expectFailure(keyword, 'return1', 6, 'whitespace expected');
-    expectFailure(keyword, 'return  _', 8, '"\\"" expected');
+    expect(keyword, isParseFailure('retur f', 0, 'return expected'));
+    expect(keyword, isParseFailure('return1', 6, 'whitespace expected'));
+    expect(keyword, isParseFailure('return  _', 8, '"\\"" expected'));
   });
   test('javadoc', () {
-    expectSuccess(javadoc, '/** foo */', '/** foo */');
-    expectSuccess(javadoc, '/** * * */', '/** * * */');
+    expect(javadoc, isParseSuccess('/** foo */', '/** foo */'));
+    expect(javadoc, isParseSuccess('/** * * */', '/** * * */'));
   });
   test('multiline', () {
-    expectSuccess(multiLine, r'"""abc"""', r'abc');
-    expectSuccess(multiLine, r'"""abc\n"""', r'abc\n');
-    expectSuccess(multiLine, r'"""abc\"""def"""', r'abc\"""def');
+    expect(multiLine, isParseSuccess(r'"""abc"""', r'abc'));
+    expect(multiLine, isParseSuccess(r'"""abc\n"""', r'abc\n'));
+    expect(multiLine, isParseSuccess(r'"""abc\"""def"""', r'abc\"""def'));
   });
 }
