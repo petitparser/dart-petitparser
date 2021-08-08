@@ -29,10 +29,10 @@ void main() {
     expect(identifier, isParseSuccess('a1b', 'a1b'));
   });
   test('incomplete identifier', () {
-    expect(identifier, isParseSuccess('a=', 'a', 1));
-    expect(identifier, isParseSuccess('a1-', 'a1', 2));
-    expect(identifier, isParseSuccess('a12+', 'a12', 3));
-    expect(identifier, isParseSuccess('ab ', 'ab', 2));
+    expect(identifier, isParseSuccess('a=', 'a', position: 1));
+    expect(identifier, isParseSuccess('a1-', 'a1', position: 2));
+    expect(identifier, isParseSuccess('a12+', 'a12', position: 3));
+    expect(identifier, isParseSuccess('ab ', 'ab', position: 2));
   });
   test('invalid identifier', () {
     expect(identifier, isParseFailure('', message: 'letter expected'));
@@ -52,10 +52,10 @@ void main() {
     expect(number, isParseSuccess('-12.34', '-12.34'));
   });
   test('incomplete number', () {
-    expect(number, isParseSuccess('1..', '1', 1));
-    expect(number, isParseSuccess('12-', '12', 2));
-    expect(number, isParseSuccess('12.3.', '12.3', 4));
-    expect(number, isParseSuccess('12.34.', '12.34', 5));
+    expect(number, isParseSuccess('1..', '1', position: 1));
+    expect(number, isParseSuccess('12-', '12', position: 2));
+    expect(number, isParseSuccess('12.3.', '12.3', position: 4));
+    expect(number, isParseSuccess('12.34.', '12.34', position: 5));
   });
   test('invalid number', () {
     expect(number, isParseFailure('', position: 0, message: 'digit expected'));
@@ -72,10 +72,10 @@ void main() {
     expect(quoted, isParseSuccess('"abc"', '"abc"'));
   });
   test('incomplete string', () {
-    expect(quoted, isParseSuccess('""x', '""', 2));
-    expect(quoted, isParseSuccess('"a"x', '"a"', 3));
-    expect(quoted, isParseSuccess('"ab"x', '"ab"', 4));
-    expect(quoted, isParseSuccess('"abc"x', '"abc"', 5));
+    expect(quoted, isParseSuccess('""x', '""', position: 2));
+    expect(quoted, isParseSuccess('"a"x', '"a"', position: 3));
+    expect(quoted, isParseSuccess('"ab"x', '"ab"', position: 4));
+    expect(quoted, isParseSuccess('"abc"x', '"abc"', position: 5));
   });
   test('invalid string', () {
     expect(quoted, isParseFailure('"', position: 1, message: '"\\"" expected'));
