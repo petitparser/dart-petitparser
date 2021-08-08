@@ -1,3 +1,4 @@
+import '../context/context.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../parser/utils/types.dart';
@@ -11,7 +12,7 @@ import '../reflection/transform.dart';
 ///     final parser = letter() & word().star();
 ///     progress(parser).parse('f123');
 ///
-/// produces the following output:
+/// prints the following output:
 ///
 ///     * Instance of 'SequenceParser'
 ///     * Instance of 'CharacterParser'[letter expected]
@@ -22,12 +23,35 @@ import '../reflection/transform.dart';
 ///     ***** Instance of 'CharacterParser'[letter or digit expected]
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
-/// be reordered to such expensive parses.
-Parser<T> progress<T>(Parser<T> root, {Callback<String, void> output = print}) {
+/// be reordered to avoid such expensive parses.
+Parser<T> progress<T>(Parser<T> root,
+    {VoidCallback<ProgressFrame> output = print}) {
   return transformParser(root, <T>(parser) {
     return parser.callCC((continuation, context) {
-      output('${'*' * (1 + context.position)} $parser');
+      output(_ProgressFrame(parser, context));
       return continuation(context);
     });
   });
+}
+
+/// Encapsulates the data around a parser progress.
+mixin ProgressFrame {
+  /// Return the parser of this frame.
+  Parser get parser;
+
+  /// Returns the activation context of this frame.
+  Context get context;
+}
+
+class _ProgressFrame with ProgressFrame {
+  _ProgressFrame(this.parser, this.context);
+
+  @override
+  final Parser parser;
+
+  @override
+  final Context context;
+
+  @override
+  String toString() => '${'*' * (1 + context.position)} $parser';
 }

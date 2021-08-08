@@ -38,7 +38,9 @@ void main() {
                 (frame) => frame.parser.toString(), 'parser', contains(parser))
             .having((frame) => frame.count, 'count', count)
             .having((frame) => frame.elapsed, 'elapsed',
-                greaterThanOrEqualTo(Duration.zero));
+                greaterThanOrEqualTo(Duration.zero))
+            .having((frame) => frame.toString(), 'toString',
+                allOf(startsWith(count.toString()), contains(parser)));
 
     test('success', () {
       final frames = <ProfileFrame>[];
@@ -64,28 +66,36 @@ void main() {
     });
   });
   group('progress', () {
+    Matcher isProgressFrame({required String parser, required int position}) =>
+        isA<ProgressFrame>()
+            .having(
+                (frame) => frame.parser.toString(), 'parser', contains(parser))
+            .having((frame) => frame.context.position, 'position', position)
+            .having((frame) => frame.toString(), 'toString',
+                allOf(startsWith('*' * (position + 1)), contains(parser)));
+
     test('success', () {
-      final lines = <Object?>[];
-      expect(progress(identifier, output: lines.add).parse('ab123').isSuccess,
-          isTrue);
-      expect(lines, [
-        "* Instance of 'SequenceParser<dynamic>'",
-        "* Instance of 'CharacterParser'[letter expected]",
-        "** Instance of 'PossessiveRepeatingParser<String>'[0..*]",
-        "** Instance of 'CharacterParser'[letter or digit expected]",
-        "*** Instance of 'CharacterParser'[letter or digit expected]",
-        "**** Instance of 'CharacterParser'[letter or digit expected]",
-        "***** Instance of 'CharacterParser'[letter or digit expected]",
-        "****** Instance of 'CharacterParser'[letter or digit expected]",
+      final frames = <ProgressFrame>[];
+      final parser = progress(identifier, output: frames.add);
+      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(frames, [
+        isProgressFrame(parser: 'SequenceParser', position: 0),
+        isProgressFrame(parser: 'letter expected', position: 0),
+        isProgressFrame(parser: '[0..*]', position: 1),
+        isProgressFrame(parser: 'letter or digit expected', position: 1),
+        isProgressFrame(parser: 'letter or digit expected', position: 2),
+        isProgressFrame(parser: 'letter or digit expected', position: 3),
+        isProgressFrame(parser: 'letter or digit expected', position: 4),
+        isProgressFrame(parser: 'letter or digit expected', position: 5),
       ]);
     });
     test('failure', () {
-      final lines = <Object?>[];
-      expect(
-          progress(identifier, output: lines.add).parse('1').isFailure, isTrue);
-      expect(lines, [
-        "* Instance of 'SequenceParser<dynamic>'",
-        "* Instance of 'CharacterParser'[letter expected]",
+      final frames = <ProgressFrame>[];
+      final parser = progress(identifier, output: frames.add);
+      expect(parser.parse('1').isFailure, isTrue);
+      expect(frames, [
+        isProgressFrame(parser: 'SequenceParser', position: 0),
+        isProgressFrame(parser: 'letter expected', position: 0),
       ]);
     });
   });

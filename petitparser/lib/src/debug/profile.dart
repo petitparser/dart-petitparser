@@ -46,7 +46,8 @@ Parser<T> profile<T>(Parser<T> root,
   });
 }
 
-abstract class ProfileFrame {
+/// Encapsulates the data around a parser profile.
+mixin ProfileFrame {
   /// Return the parser of this frame.
   Parser get parser;
 
@@ -57,7 +58,7 @@ abstract class ProfileFrame {
   Duration get elapsed;
 }
 
-class _ProfileFrame extends ProfileFrame {
+class _ProfileFrame with ProfileFrame {
   _ProfileFrame(this.parser);
 
   final stopwatch = Stopwatch();
