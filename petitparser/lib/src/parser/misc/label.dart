@@ -1,6 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../../parser/utils/labeled.dart';
 import '../combinator/delegate.dart';
 
 extension LabelParserExtension<R> on Parser<R> {
@@ -9,9 +10,9 @@ extension LabelParserExtension<R> on Parser<R> {
   Parser<R> label(String label) => LabelParser<R>(this, label);
 }
 
-/// A parser that alwauys defers to its delegate, but that also holds a label
-/// for debugging.
-class LabelParser<R> extends DelegateParser<R, R> {
+/// A parser that always defers to its delegate, but that also holds a label
+/// for debugging purposes.
+class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   LabelParser(Parser<R> delegate, this.label) : super(delegate);
 
   /// Label of this parser.
