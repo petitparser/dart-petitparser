@@ -2,13 +2,15 @@ import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+import 'test_utils.dart';
+
 final identifier = letter() & word().star();
 
 void main() {
   group('trace', () {
     test('success', () {
       final lines = <Object?>[];
-      expect(trace(identifier, lines.add).parse('a').isSuccess, isTrue);
+      expect(trace(identifier, output: lines.add).parse('a').isSuccess, isTrue);
       expect(lines, [
         "Instance of 'SequenceParser<dynamic>'",
         "  Instance of 'CharacterParser'[letter expected]",
@@ -22,7 +24,7 @@ void main() {
     });
     test('failure', () {
       final lines = <Object?>[];
-      expect(trace(identifier, lines.add).parse('1').isFailure, isTrue);
+      expect(trace(identifier, output: lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
         "Instance of 'SequenceParser<dynamic>'",
         "  Instance of 'CharacterParser'[letter expected]",
@@ -32,47 +34,42 @@ void main() {
     });
   });
   group('profile', () {
+    Matcher isProfileFrame({required String parser, int count = 0}) =>
+        isA<ProfileFrame>()
+            .having(
+                (frame) => frame.parser.toString(), 'parser', contains(parser))
+            .having((frame) => frame.count, 'count', count)
+            .having((frame) => frame.elapsed.inMicroseconds, 'elapsed',
+                count == 0 ? 0 : isPositive);
+
     test('success', () {
-      final lines = <Object?>[];
-      expect(profile(identifier, lines.add).parse('ab123').isSuccess, isTrue);
-      expect(lines, hasLength(4));
-      final splitLines =
-          lines.whereType<String>().map((row) => row.split('\t'));
-      final counts = splitLines.map((row) => int.parse(row[0]));
-      final times = splitLines.map((row) => int.parse(row[1]));
-      final names = splitLines.map((row) => row[2]);
-      expect(counts.every((cell) => cell >= 0), isTrue);
-      expect(times.every((cell) => cell >= 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
-          isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
-          isTrue);
+      final frames = <ProfileFrame>[];
+      final parser = profile(identifier, output: frames.add);
+      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(frames, [
+        isProfileFrame(parser: 'SequenceParser', count: 1),
+        isProfileFrame(parser: '[0..*]', count: 1),
+        isProfileFrame(parser: 'letter or digit expected', count: 5),
+        isProfileFrame(parser: 'letter expected', count: 1),
+      ]);
     });
     test('failure', () {
-      final lines = <Object?>[];
-      expect(profile(identifier, lines.add).parse('1').isFailure, isTrue);
-      expect(lines, hasLength(4));
-      final splitLines =
-          lines.whereType<String>().map((row) => row.split('\t'));
-      final counts = splitLines.map((row) => int.parse(row[0]));
-      final times = splitLines.map((row) => int.parse(row[1]));
-      final names = splitLines.map((row) => row[2]);
-      expect(counts.every((cell) => cell >= 0), isTrue);
-      expect(times.every((cell) => cell >= 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('SequenceParser') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('letter expected') > 0), isTrue);
-      expect(names.any((cell) => cell.indexOf('PossessiveRepeatingParser') > 0),
-          isTrue);
-      expect(names.any((cell) => cell.indexOf('letter or digit expected') > 0),
-          isTrue);
+      final frames = <ProfileFrame>[];
+      final parser = profile(identifier, output: frames.add);
+      expect(parser.parse('1').isFailure, isTrue);
+      expect(frames, [
+        isProfileFrame(parser: 'SequenceParser', count: 1),
+        isProfileFrame(parser: '[0..*]'),
+        isProfileFrame(parser: 'letter or digit expected'),
+        isProfileFrame(parser: 'letter expected', count: 1),
+      ]);
     });
   });
   group('progress', () {
     test('success', () {
       final lines = <Object?>[];
-      expect(progress(identifier, lines.add).parse('ab123').isSuccess, isTrue);
+      expect(progress(identifier, output: lines.add).parse('ab123').isSuccess,
+          isTrue);
       expect(lines, [
         "* Instance of 'SequenceParser<dynamic>'",
         "* Instance of 'CharacterParser'[letter expected]",
@@ -86,7 +83,8 @@ void main() {
     });
     test('failure', () {
       final lines = <Object?>[];
-      expect(progress(identifier, lines.add).parse('1').isFailure, isTrue);
+      expect(
+          progress(identifier, output: lines.add).parse('1').isFailure, isTrue);
       expect(lines, [
         "* Instance of 'SequenceParser<dynamic>'",
         "* Instance of 'CharacterParser'[letter expected]",

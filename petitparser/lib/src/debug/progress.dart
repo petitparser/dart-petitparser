@@ -1,9 +1,9 @@
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
+import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
-import 'output.dart';
 
-/// Returns a transformed [parser] that when being used to read input
+/// Returns a transformed [Parser] that when being used to read input
 /// visually prints its progress while progressing.
 ///
 /// For example, the snippet
@@ -23,10 +23,10 @@ import 'output.dart';
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
 /// be reordered to such expensive parses.
-Parser progress(Parser parser, [OutputHandler output = print]) {
-  return transformParser(parser, <T>(each) {
-    return each.callCC((continuation, context) {
-      output('${'*' * (1 + context.position)} $each');
+Parser<T> progress<T>(Parser<T> root, {Callback<String, void> output = print}) {
+  return transformParser(root, <T>(parser) {
+    return parser.callCC((continuation, context) {
+      output('${'*' * (1 + context.position)} $parser');
       return continuation(context);
     });
   });

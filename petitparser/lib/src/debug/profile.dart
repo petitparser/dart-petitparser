@@ -1,7 +1,7 @@
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
+import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
-import 'output.dart';
 
 /// Returns a transformed [Parser] that when being used measures
 /// the activation count and total time of each parser.
@@ -11,7 +11,7 @@ import 'output.dart';
 ///     final parser = letter() & word().star();
 ///     profile(parser).parse('f1234567890');
 ///
-/// produces the following output:
+/// prints the following output:
 ///
 ///      1  2006  Instance of 'SequenceParser'
 ///      1   697  Instance of 'PossessiveRepeatingParser'[0..*]
@@ -21,33 +21,53 @@ import 'output.dart';
 /// The first number refers to the number of activations of each parser, and
 /// the second number is the microseconds spent in this parser and all its
 /// children.
-Parser profile(Parser root, [OutputHandler output = print]) {
-  final frames = <FrameProfile>[];
+Parser<T> profile<T>(Parser<T> root,
+    {VoidCallback<ProfileFrame> output = print}) {
+  final frames = <ProfileFrame>[];
   return transformParser(root, <T>(parser) {
-    final frame = FrameProfile(parser);
+    final frame = _ProfileFrame(parser);
     frames.add(frame);
     return parser.callCC((continuation, context) {
       frame.count++;
-      frame.watch.start();
+      frame.stopwatch.start();
       final result = continuation(context);
-      frame.watch.stop();
+      frame.stopwatch.stop();
       return result;
     });
   }).callCC((continuation, context) {
     final result = continuation(context);
-    for (final frame in frames) {
-      output('${frame.count}\t'
-          '${frame.watch.elapsedMicroseconds}\t'
-          '${frame.parser}');
-    }
+    frames.forEach(output);
     return result;
   });
 }
 
-class FrameProfile {
-  int count = 0;
-  final watch = Stopwatch();
+abstract class ProfileFrame {
+  /// Return the parser of this frame.
+  Parser get parser;
+
+  /// Return the number of times this parser was activated.
+  int get count;
+
+  /// Return the total elapsed time in this parser and its children.
+  Duration get elapsed;
+}
+
+class _ProfileFrame extends ProfileFrame {
+  _ProfileFrame(this.parser);
+
+  final stopwatch = Stopwatch();
+
+  @override
   final Parser parser;
 
-  FrameProfile(this.parser);
+  @override
+  int count = 0;
+
+  @override
+  Duration get elapsed => stopwatch.elapsed;
+
+  @override
+  String toString() => '$count\t'
+      '${elapsed.inMicroseconds}\t'
+      '$parser';
 }
