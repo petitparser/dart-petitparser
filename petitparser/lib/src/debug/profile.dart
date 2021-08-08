@@ -1,5 +1,6 @@
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
+import '../parser/utils/labeled.dart';
 import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
 
@@ -22,18 +23,22 @@ import '../reflection/transform.dart';
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser<T> profile<T>(Parser<T> root,
-    {VoidCallback<ProfileFrame> output = print, bool useLabeled = true}) {
+    {VoidCallback<ProfileFrame> output = print, bool useLabeled = false}) {
   final frames = <ProfileFrame>[];
   return transformParser(root, <T>(parser) {
-    final frame = _ProfileFrame(parser);
-    frames.add(frame);
-    return parser.callCC((continuation, context) {
-      frame.count++;
-      frame.stopwatch.start();
-      final result = continuation(context);
-      frame.stopwatch.stop();
-      return result;
-    });
+    if (!useLabeled || parser is LabeledParser) {
+      final frame = _ProfileFrame(parser);
+      frames.add(frame);
+      return parser.callCC((continuation, context) {
+        frame.count++;
+        frame.stopwatch.start();
+        final result = continuation(context);
+        frame.stopwatch.stop();
+        return result;
+      });
+    } else {
+      return parser;
+    }
   }).callCC((continuation, context) {
     final result = continuation(context);
     frames.forEach(output);
