@@ -37,8 +37,8 @@ void main() {
             .having(
                 (frame) => frame.parser.toString(), 'parser', contains(parser))
             .having((frame) => frame.count, 'count', count)
-            .having((frame) => frame.elapsed.inMicroseconds, 'elapsed',
-                count == 0 ? 0 : isPositive);
+            .having((frame) => frame.elapsed, 'elapsed',
+                count == 0 ? Duration.zero : greaterThan(Duration.zero));
 
     test('success', () {
       final frames = <ProfileFrame>[];

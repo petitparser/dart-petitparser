@@ -74,5 +74,5 @@ class _ProfileFrame extends ProfileFrame {
   @override
   String toString() => '$count\t'
       '${elapsed.inMicroseconds}\t'
-      '$parser';
+      '${parser is LabeledParser ? (parser as LabeledParser).label : parser}';
 }
