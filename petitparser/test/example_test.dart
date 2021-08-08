@@ -35,9 +35,9 @@ void main() {
     expect(identifier, isParseSuccess('ab ', 'ab', 2));
   });
   test('invalid identifier', () {
-    expect(identifier, isParseFailure('', 0, 'letter expected'));
-    expect(identifier, isParseFailure('1', 0, 'letter expected'));
-    expect(identifier, isParseFailure('1a', 0, 'letter expected'));
+    expect(identifier, isParseFailure('', message: 'letter expected'));
+    expect(identifier, isParseFailure('1', message: 'letter expected'));
+    expect(identifier, isParseFailure('1a', message: 'letter expected'));
   });
   test('positive number', () {
     expect(number, isParseSuccess('1', '1'));
@@ -58,11 +58,12 @@ void main() {
     expect(number, isParseSuccess('12.34.', '12.34', 5));
   });
   test('invalid number', () {
-    expect(number, isParseFailure('', 0, 'digit expected'));
-    expect(number, isParseFailure('-', 1, 'digit expected'));
-    expect(number, isParseFailure('-x', 1, 'digit expected'));
-    expect(number, isParseFailure('.', 0, 'digit expected'));
-    expect(number, isParseFailure('.1', 0, 'digit expected'));
+    expect(number, isParseFailure('', position: 0, message: 'digit expected'));
+    expect(number, isParseFailure('-', position: 1, message: 'digit expected'));
+    expect(
+        number, isParseFailure('-x', position: 1, message: 'digit expected'));
+    expect(number, isParseFailure('.', message: 'digit expected'));
+    expect(number, isParseFailure('.1', message: 'digit expected'));
   });
   test('valid string', () {
     expect(quoted, isParseSuccess('""', '""'));
@@ -77,11 +78,13 @@ void main() {
     expect(quoted, isParseSuccess('"abc"x', '"abc"', 5));
   });
   test('invalid string', () {
-    expect(quoted, isParseFailure('"', 1, '"\\"" expected'));
-    expect(quoted, isParseFailure('"a', 2, '"\\"" expected'));
-    expect(quoted, isParseFailure('"ab', 3, '"\\"" expected'));
-    expect(quoted, isParseFailure('a"', 0, '"\\"" expected'));
-    expect(quoted, isParseFailure('ab"', 0, '"\\"" expected'));
+    expect(quoted, isParseFailure('"', position: 1, message: '"\\"" expected'));
+    expect(
+        quoted, isParseFailure('"a', position: 2, message: '"\\"" expected'));
+    expect(
+        quoted, isParseFailure('"ab', position: 3, message: '"\\"" expected'));
+    expect(quoted, isParseFailure('a"', message: '"\\"" expected'));
+    expect(quoted, isParseFailure('ab"', message: '"\\"" expected'));
   });
   test('return statement', () {
     expect(keyword, isParseSuccess('return f', 'f'));
@@ -96,9 +99,11 @@ void main() {
     expect(keyword, isParseSuccess('return  "a"', '"a"'));
   });
   test('invalid statement', () {
-    expect(keyword, isParseFailure('retur f', 0, 'return expected'));
-    expect(keyword, isParseFailure('return1', 6, 'whitespace expected'));
-    expect(keyword, isParseFailure('return  _', 8, '"\\"" expected'));
+    expect(keyword, isParseFailure('retur f', message: 'return expected'));
+    expect(keyword,
+        isParseFailure('return1', position: 6, message: 'whitespace expected'));
+    expect(keyword,
+        isParseFailure('return  _', position: 8, message: '"\\"" expected'));
   });
   test('javadoc', () {
     expect(javadoc, isParseSuccess('/** foo */', '/** foo */'));

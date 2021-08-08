@@ -68,8 +68,8 @@ void main() {
     expect(parser, isParseSuccess('00', '00'));
     expect(parser, isParseSuccess('24', '24'));
     expect(parser, isParseSuccess('31', '31'));
-    expect(parser, isParseFailure('32', 0, '00-31 expected'));
-    expect(parser, isParseFailure('3', 1, 'digit expected'));
+    expect(parser, isParseFailure('32', message: '00-31 expected'));
+    expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
   });
   group('date format parser', () {
     final day = 'dd'.toParser().map((token) => digit()
@@ -107,19 +107,21 @@ void main() {
       final date = format.parse('yyyy-mm-dd').value;
       expect(date, isParseSuccess('1980-06-11', DateTime(1980, 6, 11)));
       expect(date, isParseSuccess('1982-08-24', DateTime(1982, 8, 24)));
-      expect(date, isParseFailure('1984.10.31', 4, '"-" expected'));
+      expect(date,
+          isParseFailure('1984.10.31', position: 4, message: '"-" expected'));
     });
     test('europe', () {
       final date = format.parse('dd.mm.yyyy').value;
       expect(date, isParseSuccess('11.06.1980', DateTime(1980, 6, 11)));
       expect(date, isParseSuccess('24.08.1982', DateTime(1982, 8, 24)));
-      expect(date, isParseFailure('1984', 2, '"." expected'));
+      expect(
+          date, isParseFailure('1984', position: 2, message: '"." expected'));
     });
     test('us', () {
       final date = format.parse('mm/dd/yyyy').value;
       expect(date, isParseSuccess('06/11/1980', DateTime(1980, 6, 11)));
       expect(date, isParseSuccess('08/24/1982', DateTime(1982, 8, 24)));
-      expect(date, isParseFailure('Hello', 0, 'digit expected'));
+      expect(date, isParseFailure('Hello', message: 'digit expected'));
     });
   });
   test('stackoverflow.com/questions/64670722', () {
@@ -136,7 +138,8 @@ void main() {
     expect(delimited, isParseSuccess('/hello/', 'hello'));
     expect(delimited, isParseSuccess(',hello,', 'hello'));
     expect(delimited, isParseSuccess('xhellox', 'hello'));
-    expect(delimited, isParseFailure('abc', 3, '"a" expected'));
+    expect(
+        delimited, isParseFailure('abc', position: 3, message: '"a" expected'));
   });
   test('function evaluator', () {
     final builder = ExpressionBuilder();
@@ -257,9 +260,10 @@ void main() {
       expect(parser, isParseSuccess('11', ['1', '1']));
       expect(parser, isParseSuccess('22', ['2', '2']));
       expect(parser, isParseSuccess('33', ['3', '3']));
-      expect(parser, isParseFailure('1', 1, 'digit expected'));
-      expect(parser, isParseFailure('12', 0, 'values do not match'));
-      expect(parser, isParseFailure('21', 0, 'values do not match'));
+      expect(
+          parser, isParseFailure('1', position: 1, message: 'digit expected'));
+      expect(parser, isParseFailure('12', message: 'values do not match'));
+      expect(parser, isParseFailure('21', message: 'values do not match'));
     });
     test('where', () {
       final parser = inner.where((value) => value[0] == value[1],
@@ -267,9 +271,10 @@ void main() {
       expect(parser, isParseSuccess('11', ['1', '1']));
       expect(parser, isParseSuccess('22', ['2', '2']));
       expect(parser, isParseSuccess('33', ['3', '3']));
-      expect(parser, isParseFailure('1', 1, 'digit expected'));
-      expect(parser, isParseFailure('12', 0, 'values do not match'));
-      expect(parser, isParseFailure('21', 0, 'values do not match'));
+      expect(
+          parser, isParseFailure('1', position: 1, message: 'digit expected'));
+      expect(parser, isParseFailure('12', message: 'values do not match'));
+      expect(parser, isParseFailure('21', message: 'values do not match'));
     });
   });
 }
