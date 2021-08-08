@@ -28,8 +28,7 @@ import '../reflection/transform.dart';
 /// signifies the returning of a parse result either with a success or failure
 /// context.
 Parser<T> trace<T>(Parser<T> root,
-    {VoidCallback<String> output = print,
-    String indent = '  '}) {
+    {VoidCallback<String> output = print, String indent = '  '}) {
   var level = 0;
   return transformParser(root, <T>(each) {
     return each.callCC((continuation, context) {
