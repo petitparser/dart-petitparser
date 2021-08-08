@@ -13,16 +13,17 @@ TypeMatcher<Success<T>> isSuccessContext<T>(dynamic value, [int? position]) =>
 
 /// Returns a [Matcher] that asserts the parser under test yields a successful
 /// parse result with the given [input].
+///
+/// If no [position] is provided, assert that the parsing fails at the end of
+/// the input.
 Matcher isParseSuccess<T>(String input, dynamic resultMatcher,
-    [int? position]) {
-  final expectedPosition = position ?? input.length;
-  return isA<Parser<T>>()
-      .having((parser) => parser.parse(input), 'parse',
-          isSuccessContext<T>(resultMatcher, expectedPosition))
-      .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn',
-          expectedPosition)
-      .having((parser) => parser.accept(input), 'accept', isTrue);
-}
+        [int? position]) =>
+    isA<Parser<T>>()
+        .having((parser) => parser.parse(input), 'parse',
+            isSuccessContext<T>(resultMatcher, position ?? input.length))
+        .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn',
+            position ?? input.length)
+        .having((parser) => parser.accept(input), 'accept', isTrue);
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
@@ -38,6 +39,10 @@ TypeMatcher<Failure<T>> isFailureContext<T>(
 
 /// Returns a [Matcher] that asserts the parser under test yields a parse
 /// failure for the given [input].
+///
+/// If no [position] is provided, assert that the parsing fails at the beginning
+/// of the input. An optional [message] can be provided to assert on the error
+/// message.
 Matcher isParseFailure<T>(String input,
         {dynamic position = 0, dynamic message = anything}) =>
     isA<Parser<T>>()
