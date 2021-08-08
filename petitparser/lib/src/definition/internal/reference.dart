@@ -13,6 +13,9 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   final Function function;
   final List arguments;
 
+  /// Returns a readable label of this reference.
+  String get label =>
+
   @override
   Parser<R> resolve() => Function.apply(function, arguments);
 

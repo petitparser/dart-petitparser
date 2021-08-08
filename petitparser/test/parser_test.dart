@@ -1207,12 +1207,13 @@ void main() {
         expectFailure(parser, 'a', 0, 'failure');
       });
     });
-    group('label', () {
-      expectCommon(any().label('anything'));
+    group('labeled', () {
+      expectCommon(any().labeled('anything'));
       test('default', () {
-        final parser = char('a').label('anything');
-        expectSuccess(parser, 'a', 'a');
-        expectFailure(parser, 'b', 0, '"a" expected');
+        final parser = char('*').labeled('asterisk');
+        expect(parser.label, 'asterisk');
+        expectSuccess(parser, '*', '*');
+        expectFailure(parser, 'a', 0, '"*" expected');
       });
     });
     group('position', () {

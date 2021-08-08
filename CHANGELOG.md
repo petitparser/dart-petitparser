@@ -3,7 +3,7 @@
 ## 4.3.0
 
 * Add a `where` parser, that allows to add additional constraints on parse results.
-* Add a `label` parser, that allows to add a debug label to the parser graph.
+* Add a `labeled` parser, that allows to add a debug label to the parser graph.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 
 ## 4.2.0

@@ -7,7 +7,7 @@ import '../combinator/delegate.dart';
 extension LabelParserExtension<R> on Parser<R> {
   /// Returns a parser that simply defers to its delegate, but that
   /// has a [label] for debugging purposes.
-  Parser<R> label(String label) => LabelParser<R>(this, label);
+  LabeledParser<R> labeled(String label) => LabelParser<R>(this, label);
 }
 
 /// A parser that always defers to its delegate, but that also holds a label
@@ -26,12 +26,12 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  String toString() => '${super.toString()}[$label]';
-
-  @override
   LabelParser<R> copy() => LabelParser<R>(delegate, label);
 
   @override
   bool hasEqualProperties(LabelParser<R> other) =>
       super.hasEqualProperties(other) && label == other.label;
+
+  @override
+  String toString() => '${super.toString()}[$label]';
 }
