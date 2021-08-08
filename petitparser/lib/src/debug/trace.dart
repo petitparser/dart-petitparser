@@ -1,3 +1,5 @@
+import '../context/context.dart';
+import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../parser/utils/types.dart';
@@ -27,17 +29,54 @@ import '../reflection/transform.dart';
 /// Indentation signifies the activation of a parser object. Reverse indentation
 /// signifies the returning of a parse result either with a success or failure
 /// context.
-Parser<T> trace<T>(Parser<T> root,
-    {VoidCallback<String> output = print, String indent = '  '}) {
-  var level = 0;
-  return transformParser(root, <T>(each) {
-    return each.callCC((continuation, context) {
-      output('${indent * level}$each');
-      level++;
+Parser<T> trace<T>(Parser<T> root, {VoidCallback<_TraceEvent> output = print}) {
+  TraceEvent? parent;
+  return transformParser(root, <T>(parser) {
+    return parser.callCC((continuation, context) {
+      final currentParent = parent;
+      output(parent = _TraceEvent(currentParent, parser, context));
       final result = continuation(context);
-      level--;
-      output('${indent * level}$result');
+      output(_TraceEvent(currentParent, parser, context, result));
+      parent = currentParent;
       return result;
     });
   });
+}
+
+/// Encapsulates the entry and exit data around a parser trace.
+abstract class TraceEvent {
+  /// Returns the parent trace event.
+  TraceEvent? get parent;
+
+  /// Returns the parser of this event.
+  Parser get parser;
+
+  /// Returns the activation context of this event.
+  Context get context;
+
+  /// Returns the result if this is a exit event, otherwise `null`.
+  Result? get result;
+
+  /// Returns the nesting level of this event.
+  int get level => parent != null ? parent!.level + 1 : 0;
+}
+
+class _TraceEvent extends TraceEvent {
+  _TraceEvent(this.parent, this.parser, this.context, [this.result]);
+
+  @override
+  final TraceEvent? parent;
+
+  @override
+  final Parser parser;
+
+  @override
+  final Context context;
+
+  @override
+  final Result? result;
+
+  // The former debug string for backward compatibility.
+  @override
+  String toString() => '${'  ' * level}${result ?? parser}';
 }

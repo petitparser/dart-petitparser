@@ -2,7 +2,18 @@ import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+import 'test_utils.dart';
+
 final identifier = letter() & word().star();
+
+Matcher isTraceEvent(
+        {required String parser,
+        required int level,
+        dynamic result = isNull}) =>
+    isA<TraceEvent>()
+        .having((frame) => frame.parser.toString(), 'parser', contains(parser))
+        .having((frame) => frame.level, 'level', level)
+        .having((frame) => frame.result, 'result', result);
 
 Matcher isProfileFrame({required String parser, int count = 0}) =>
     isA<ProfileFrame>()
@@ -23,27 +34,43 @@ Matcher isProgressFrame({required String parser, required int position}) =>
 void main() {
   group('trace', () {
     test('success', () {
-      final lines = <Object?>[];
-      expect(trace(identifier, output: lines.add).parse('a').isSuccess, isTrue);
-      expect(lines, [
-        "Instance of 'SequenceParser<dynamic>'",
-        "  Instance of 'CharacterParser'[letter expected]",
-        "  Success[1:2]: a",
-        "  Instance of 'PossessiveRepeatingParser<String>'[0..*]",
-        "    Instance of 'CharacterParser'[letter or digit expected]",
-        "    Failure[1:2]: letter or digit expected",
-        "  Success[1:2]: []",
-        "Success[1:2]: [a, []]",
+      final events = <TraceEvent>[];
+      final parser = trace(identifier, output: events.add);
+      expect(parser.parse('a').isSuccess, isTrue);
+      expect(events, [
+        isTraceEvent(parser: 'SequenceParser', level: 0),
+        isTraceEvent(parser: 'letter expected', level: 1),
+        isTraceEvent(
+            parser: 'letter expected',
+            level: 1,
+            result: isSuccessContext(value: 'a')),
+        isTraceEvent(parser: '[0..*]', level: 1),
+        isTraceEvent(parser: 'letter or digit expected', level: 2),
+        isTraceEvent(
+            parser: 'letter or digit expected',
+            level: 2,
+            result: isFailureContext(message: 'letter or digit expected')),
+        isTraceEvent(
+            parser: '[0..*]', level: 1, result: isSuccessContext(value: [])),
+        isTraceEvent(
+            parser: 'SequenceParser', level: 0, result: isSuccessContext()),
       ]);
     });
     test('failure', () {
-      final lines = <Object?>[];
-      expect(trace(identifier, output: lines.add).parse('1').isFailure, isTrue);
-      expect(lines, [
-        "Instance of 'SequenceParser<dynamic>'",
-        "  Instance of 'CharacterParser'[letter expected]",
-        "  Failure[1:1]: letter expected",
-        "Failure[1:1]: letter expected",
+      final events = <TraceEvent>[];
+      final parser = trace(identifier, output: events.add);
+      expect(parser.parse('1').isFailure, isTrue);
+      expect(events, [
+        isTraceEvent(parser: 'SequenceParser', level: 0),
+        isTraceEvent(parser: 'letter expected', level: 1),
+        isTraceEvent(
+            parser: 'letter expected',
+            level: 1,
+            result: isFailureContext(message: 'letter expected')),
+        isTraceEvent(
+            parser: 'SequenceParser',
+            level: 0,
+            result: isFailureContext(message: 'letter expected')),
       ]);
     });
   });
