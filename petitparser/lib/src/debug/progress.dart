@@ -35,7 +35,7 @@ Parser<T> progress<T>(Parser<T> root,
 }
 
 /// Encapsulates the data around a parser progress.
-mixin ProgressFrame {
+abstract class ProgressFrame {
   /// Return the parser of this frame.
   Parser get parser;
 
@@ -43,7 +43,7 @@ mixin ProgressFrame {
   Context get context;
 }
 
-class _ProgressFrame with ProgressFrame {
+class _ProgressFrame extends ProgressFrame {
   _ProgressFrame(this.parser, this.context);
 
   @override
@@ -52,6 +52,7 @@ class _ProgressFrame with ProgressFrame {
   @override
   final Context context;
 
+  // The former debug string for backward compatibility.
   @override
   String toString() => '${'*' * (1 + context.position)} $parser';
 }

@@ -47,7 +47,7 @@ Parser<T> profile<T>(Parser<T> root,
 }
 
 /// Encapsulates the data around a parser profile.
-mixin ProfileFrame {
+abstract class ProfileFrame {
   /// Return the parser of this frame.
   Parser get parser;
 
@@ -58,7 +58,7 @@ mixin ProfileFrame {
   Duration get elapsed;
 }
 
-class _ProfileFrame with ProfileFrame {
+class _ProfileFrame extends ProfileFrame {
   _ProfileFrame(this.parser);
 
   final stopwatch = Stopwatch();
@@ -72,8 +72,7 @@ class _ProfileFrame with ProfileFrame {
   @override
   Duration get elapsed => stopwatch.elapsed;
 
+  // The former debug string for backward compatibility.
   @override
-  String toString() => '$count\t'
-      '${elapsed.inMicroseconds}\t'
-      '${parser is LabeledParser ? (parser as LabeledParser).label : parser}';
+  String toString() => '$count\t${elapsed.inMicroseconds}\t$parser';
 }
