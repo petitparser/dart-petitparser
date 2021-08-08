@@ -4,6 +4,22 @@ import 'package:test/test.dart';
 
 final identifier = letter() & word().star();
 
+Matcher isProfileFrame({required String parser, int count = 0}) =>
+    isA<ProfileFrame>()
+        .having((frame) => frame.parser.toString(), 'parser', contains(parser))
+        .having((frame) => frame.count, 'count', count)
+        .having((frame) => frame.elapsed, 'elapsed',
+            greaterThanOrEqualTo(Duration.zero))
+        .having((frame) => frame.toString(), 'toString',
+            allOf(startsWith(count.toString()), contains(parser)));
+
+Matcher isProgressFrame({required String parser, required int position}) =>
+    isA<ProgressFrame>()
+        .having((frame) => frame.parser.toString(), 'parser', contains(parser))
+        .having((frame) => frame.context.position, 'position', position)
+        .having((frame) => frame.toString(), 'toString',
+            allOf(startsWith('*' * (position + 1)), contains(parser)));
+
 void main() {
   group('trace', () {
     test('success', () {
@@ -32,16 +48,6 @@ void main() {
     });
   });
   group('profile', () {
-    Matcher isProfileFrame({required String parser, int count = 0}) =>
-        isA<ProfileFrame>()
-            .having(
-                (frame) => frame.parser.toString(), 'parser', contains(parser))
-            .having((frame) => frame.count, 'count', count)
-            .having((frame) => frame.elapsed, 'elapsed',
-                greaterThanOrEqualTo(Duration.zero))
-            .having((frame) => frame.toString(), 'toString',
-                allOf(startsWith(count.toString()), contains(parser)));
-
     test('success', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
@@ -66,14 +72,6 @@ void main() {
     });
   });
   group('progress', () {
-    Matcher isProgressFrame({required String parser, required int position}) =>
-        isA<ProgressFrame>()
-            .having(
-                (frame) => frame.parser.toString(), 'parser', contains(parser))
-            .having((frame) => frame.context.position, 'position', position)
-            .having((frame) => frame.toString(), 'toString',
-                allOf(startsWith('*' * (position + 1)), contains(parser)));
-
     test('success', () {
       final frames = <ProgressFrame>[];
       final parser = progress(identifier, output: frames.add);
