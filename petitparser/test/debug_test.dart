@@ -2,8 +2,6 @@ import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'test_utils.dart';
-
 final identifier = letter() & word().star();
 
 void main() {

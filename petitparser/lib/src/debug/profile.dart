@@ -22,7 +22,7 @@ import '../reflection/transform.dart';
 /// the second number is the microseconds spent in this parser and all its
 /// children.
 Parser<T> profile<T>(Parser<T> root,
-    {VoidCallback<ProfileFrame> output = print}) {
+    {VoidCallback<ProfileFrame> output = print, bool useLabeled = true}) {
   final frames = <ProfileFrame>[];
   return transformParser(root, <T>(parser) {
     final frame = _ProfileFrame(parser);
