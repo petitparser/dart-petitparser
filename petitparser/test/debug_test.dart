@@ -5,6 +5,8 @@ import 'package:test/test.dart';
 import 'test_utils.dart';
 
 final identifier = letter() & word().star();
+final labeledIdentifier =
+    letter().labeled('first') & word().star().labeled('remaining');
 
 Matcher isProfileFrame({required String parser, int count = 0}) =>
     isA<ProfileFrame>()
@@ -54,6 +56,16 @@ void main() {
         isProfileFrame(parser: 'letter expected', count: 1),
       ]);
     });
+    test('labeled', () {
+      final frames = <ProfileFrame>[];
+      final parser = profile(labeledIdentifier,
+          output: frames.add, predicate: (parser) => parser is LabeledParser);
+      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(frames, [
+        isProfileFrame(parser: 'remaining', count: 1),
+        isProfileFrame(parser: 'first', count: 1),
+      ]);
+    });
     test('failure', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
@@ -80,6 +92,16 @@ void main() {
         isProgressFrame(parser: 'letter or digit expected', position: 3),
         isProgressFrame(parser: 'letter or digit expected', position: 4),
         isProgressFrame(parser: 'letter or digit expected', position: 5),
+      ]);
+    });
+    test('labeled', () {
+      final frames = <ProgressFrame>[];
+      final parser = progress(labeledIdentifier,
+          output: frames.add, predicate: (parser) => parser is LabeledParser);
+      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(frames, [
+        isProgressFrame(parser: 'first', position: 0),
+        isProgressFrame(parser: 'remaining', position: 1),
       ]);
     });
     test('failure', () {
@@ -114,6 +136,22 @@ void main() {
             parser: '[0..*]', level: 1, result: isSuccessContext(value: [])),
         isTraceEvent(
             parser: 'SequenceParser', level: 0, result: isSuccessContext()),
+      ]);
+    });
+    test('labeled', () {
+      final events = <TraceEvent>[];
+      final parser = trace(labeledIdentifier,
+          output: events.add, predicate: (parser) => parser is LabeledParser);
+      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(events, [
+        isTraceEvent(parser: 'first', level: 0),
+        isTraceEvent(
+            parser: 'first', level: 0, result: isSuccessContext(value: 'a')),
+        isTraceEvent(parser: 'remaining', level: 0),
+        isTraceEvent(
+            parser: 'remaining',
+            level: 0,
+            result: isSuccessContext(value: 'b123'.split(''))),
       ]);
     });
     test('failure', () {
