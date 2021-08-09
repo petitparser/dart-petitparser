@@ -417,7 +417,7 @@ void main() {
       final parser2 = uppercase();
       final parser1 = parser2.seq(parser3);
       final parsers = allParser(parser1).toList();
-      expect(parsers, [parser1, parser3, parser2]);
+      expect(parsers, [parser1, parser2, parser3]);
     });
     test('duplicated', () {
       final parser2 = uppercase();

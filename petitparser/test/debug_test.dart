@@ -51,9 +51,9 @@ void main() {
       expect(parser.parse('ab123').isSuccess, isTrue);
       expect(frames, [
         isProfileFrame(parser: 'SequenceParser', count: 1),
+        isProfileFrame(parser: 'letter expected', count: 1),
         isProfileFrame(parser: '[0..*]', count: 1),
         isProfileFrame(parser: 'letter or digit expected', count: 5),
-        isProfileFrame(parser: 'letter expected', count: 1),
       ]);
     });
     test('labeled', () {
@@ -62,8 +62,8 @@ void main() {
           output: frames.add, predicate: (parser) => parser is LabeledParser);
       expect(parser.parse('ab123').isSuccess, isTrue);
       expect(frames, [
-        isProfileFrame(parser: 'remaining', count: 1),
         isProfileFrame(parser: 'first', count: 1),
+        isProfileFrame(parser: 'remaining', count: 1),
       ]);
     });
     test('failure', () {
@@ -72,9 +72,9 @@ void main() {
       expect(parser.parse('1').isFailure, isTrue);
       expect(frames, [
         isProfileFrame(parser: 'SequenceParser', count: 1),
+        isProfileFrame(parser: 'letter expected', count: 1),
         isProfileFrame(parser: '[0..*]'),
         isProfileFrame(parser: 'letter or digit expected'),
-        isProfileFrame(parser: 'letter expected', count: 1),
       ]);
     });
   });

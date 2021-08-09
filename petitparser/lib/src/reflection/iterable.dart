@@ -1,6 +1,8 @@
 import '../core/parser.dart';
 
-/// Returns a lazy iterable over all parsers reachable from a [root].
+/// Returns a lazy iterable over all parsers reachable from [root] using
+/// a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search)
+/// over the connected parser graph.
 ///
 /// For example, the following code prints the two parsers of the
 /// defined grammar:
@@ -34,10 +36,11 @@ class _ParserIterator extends Iterator<Parser> {
 
   bool moveNext() {
     if (todo.isEmpty) {
+      seen.clear();
       return false;
     }
     current = todo.removeLast();
-    for (final parser in current.children) {
+    for (final parser in current.children.reversed) {
       if (seen.add(parser)) {
         todo.add(parser);
       }
