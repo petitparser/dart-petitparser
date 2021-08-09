@@ -15,8 +15,6 @@ Matcher isParserEqual<T>(Parser<T> parser) => test.predicate(
 TypeMatcher<Success<T>> isSuccessContext<T>(
         {dynamic position = anything, dynamic value = anything}) =>
     isA<Success<T>>()
-        .having((context) => context.isSuccess, 'isSuccess', isTrue)
-        .having((context) => context.isFailure, 'isFailure', isFalse)
         .having((context) => context.value, 'value', value)
         .having((context) => context.position, 'position', position);
 
@@ -39,10 +37,6 @@ Matcher isParseSuccess<T>(String input, dynamic result, {dynamic position}) =>
 TypeMatcher<Failure<T>> isFailureContext<T>(
         {dynamic position = anything, dynamic message = anything}) =>
     isA<Failure<T>>()
-        .having((context) => context.isSuccess, 'isSuccess', isFalse)
-        .having((context) => context.isFailure, 'isFailure', isTrue)
-        .having((context) => () => context.value, 'value',
-            throwsA(isParserException))
         .having((context) => context.message, 'message', message)
         .having((context) => context.position, 'position', position);
 

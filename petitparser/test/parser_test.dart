@@ -873,8 +873,8 @@ void main() {
         expectCommon(parser);
         test('test', () {
           for (var i = 0; i <= 0xffff; i++) {
-            expect(parser,
-                isParseFailure(String.fromCharCode(i), message: '[] expected'));
+            final character = String.fromCharCode(i);
+            expect(parser, isParseFailure(character, message: '[] expected'));
           }
         });
       });
