@@ -1,6 +1,5 @@
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
-import '../parser/utils/labeled.dart';
 import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
 
@@ -26,10 +25,10 @@ import '../reflection/transform.dart';
 /// The optional [output] callback can be used to receive [ProfileFrame]
 /// objects with the full profiling information at the end of the parse.
 Parser<T> profile<T>(Parser<T> root,
-    {VoidCallback<ProfileFrame> output = print, bool useLabeled = false}) {
+    {VoidCallback<ProfileFrame> output = print, Predicate<Parser>? predicate}) {
   final frames = <ProfileFrame>[];
   return transformParser(root, <T>(parser) {
-    if (!useLabeled || parser is LabeledParser) {
+    if (predicate == null || predicate(parser)) {
       final frame = _ProfileFrame(parser);
       frames.add(frame);
       return parser.callCC((continuation, context) {
