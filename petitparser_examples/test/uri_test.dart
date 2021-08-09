@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/src/uri/authority.dart';
@@ -7,6 +8,7 @@ import 'package:test/test.dart';
 
 final parser = uri.end();
 
+@isTest
 void uriTest(String source, Map<Symbol, dynamic> values) {
   test(source, () {
     final result = parser.parse(source);

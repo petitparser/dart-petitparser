@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:petitparser_examples/smalltalk.dart';
@@ -13,6 +14,7 @@ dynamic parse(String source, Parser Function() production) {
   return result.value;
 }
 
+@isTest
 void verify(String name, String source, Parser Function() grammarProduction,
     Parser Function() parserProduction, Matcher parseMatcher) {
   group(name, () {
