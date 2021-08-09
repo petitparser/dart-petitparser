@@ -18,7 +18,7 @@ Matcher isProfileFrame({required String parser, int count = 0}) =>
 Matcher isProgressFrame({required String parser, required int position}) =>
     isA<ProgressFrame>()
         .having((frame) => frame.parser.toString(), 'parser', contains(parser))
-        .having((frame) => frame.context.position, 'position', position)
+        .having((frame) => frame.position, 'position', position)
         .having((frame) => frame.toString(), 'toString',
             allOf(startsWith('*' * (position + 1)), contains(parser)));
 

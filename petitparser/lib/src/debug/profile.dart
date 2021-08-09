@@ -22,6 +22,9 @@ import '../reflection/transform.dart';
 /// The first number refers to the number of activations of each parser, and
 /// the second number is the microseconds spent in this parser and all its
 /// children.
+///
+/// The optional [output] callback can be used to receive [ProfileFrame]
+/// objects with the full profiling information at the end of the parse.
 Parser<T> profile<T>(Parser<T> root,
     {VoidCallback<ProfileFrame> output = print, bool useLabeled = false}) {
   final frames = <ProfileFrame>[];
@@ -72,7 +75,6 @@ class _ProfileFrame extends ProfileFrame {
   @override
   Duration get elapsed => stopwatch.elapsed;
 
-  // The former debug string for backward compatibility.
   @override
   String toString() => '$count\t${elapsed.inMicroseconds}\t$parser';
 }

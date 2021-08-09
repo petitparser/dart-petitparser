@@ -29,6 +29,9 @@ import '../reflection/transform.dart';
 /// Indentation signifies the activation of a parser object. Reverse indentation
 /// signifies the returning of a parse result either with a success or failure
 /// context.
+///
+/// The optional [output] callback can be used to continuously receive
+/// [TraceEvent] objects with current enter and exit data.
 Parser<T> trace<T>(Parser<T> root, {VoidCallback<TraceEvent> output = print}) {
   TraceEvent? parent;
   return transformParser(root, <T>(parser) {
@@ -76,7 +79,6 @@ class _TraceEvent extends TraceEvent {
   @override
   final Result? result;
 
-  // The former debug string for backward compatibility.
   @override
   String toString() => '${'  ' * level}${result ?? parser}';
 }

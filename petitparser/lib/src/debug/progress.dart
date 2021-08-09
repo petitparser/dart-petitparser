@@ -24,6 +24,9 @@ import '../reflection/transform.dart';
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
 /// be reordered to avoid such expensive parses.
+///
+/// The optional [output] callback can be used to continuously receive
+/// [ProgressFrame] updates with the current progress information.
 Parser<T> progress<T>(Parser<T> root,
     {VoidCallback<ProgressFrame> output = print}) {
   return transformParser(root, <T>(parser) {
@@ -41,6 +44,9 @@ abstract class ProgressFrame {
 
   /// Returns the activation context of this frame.
   Context get context;
+
+  /// Returns the current position in the input.
+  int get position => context.position;
 }
 
 class _ProgressFrame extends ProgressFrame {
@@ -52,7 +58,6 @@ class _ProgressFrame extends ProgressFrame {
   @override
   final Context context;
 
-  // The former debug string for backward compatibility.
   @override
-  String toString() => '${'*' * (1 + context.position)} $parser';
+  String toString() => '${'*' * (1 + position)} $parser';
 }
