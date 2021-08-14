@@ -23,7 +23,7 @@ Below are step-by-step instructions of how to write your first parser. More elab
 
 ### Installation
 
-Follow the installation instructions on [dart packages](https://pub.dev/packages/petitparser#-installing-tab-).
+Follow the installation instructions on [dart packages](https://pub.dev/packages/petitparser/install).
 
 Import the package into your Dart code using:
 
@@ -218,7 +218,7 @@ class ExpressionDefinition extends GrammarDefinition {
 }
 ```
 
-To create a parser with all the references correctly resolved call `build()`. 
+To create a parser with all the references correctly resolved call `build()`.
 
 ```dart
 final definition = new ExpressionDefinition();
@@ -332,7 +332,7 @@ Accessing and testing individual productions is simple: If you organize your gra
 test('number parsing', () {
   final definition = new EvaluatorDefinition();
   final parser = definition.build(start: definition.number);
-  expect(parser.parse('42').value, 42);  
+  expect(parser.parse('42').value, 42);
 });
 ```
 
