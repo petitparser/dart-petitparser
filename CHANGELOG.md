@@ -6,6 +6,9 @@
 * Add a `labeled` parser, that allows to add a debug label to the parser graph.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 * Change debug functions to named arguments, and generate output events with first class objects instead of strings.
+* Add the possibility to compute all  deeply referenced children through the `Analyzer`.
+* Fix inaccuracies in character parser documentation and tutorial.
+* Add more grammar linter rules that detect common bugs.
 
 ## 4.2.0
 
