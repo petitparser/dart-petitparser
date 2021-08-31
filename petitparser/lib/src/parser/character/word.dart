@@ -2,7 +2,9 @@ import '../../core/parser.dart';
 import 'parser.dart';
 import 'predicate.dart';
 
-/// Returns a parser that accepts any word character.
+/// Returns a parser that accepts any word character (lowercase, uppercase,
+/// underscore, or digit). The accepted input is equivalent to the character-set
+/// `a-zA-Z_0-9`.
 Parser<String> word([String message = 'letter or digit expected']) =>
     CharacterParser(const WordCharPredicate(), message);
 

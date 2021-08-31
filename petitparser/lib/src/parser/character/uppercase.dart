@@ -2,7 +2,8 @@ import '../../core/parser.dart';
 import 'parser.dart';
 import 'predicate.dart';
 
-/// Returns a parser that accepts any uppercase character.
+/// Returns a parser that accepts any uppercase character. The accepted input is
+/// equivalent to the character-set `A-Z`.
 Parser<String> uppercase([String message = 'uppercase letter expected']) =>
     CharacterParser(const UppercaseCharPredicate(), message);
 
