@@ -1,4 +1,11 @@
 import '../../core/parser.dart';
+import '../../parser/action/cast.dart';
+import '../../parser/action/cast_list.dart';
+import '../../parser/action/flatten.dart';
+import '../../parser/action/map.dart';
+import '../../parser/action/permute.dart';
+import '../../parser/action/pick.dart';
+import '../../parser/action/token.dart';
 import '../../parser/combinator/choice.dart';
 import '../../parser/combinator/settable.dart';
 import '../../parser/misc/failure.dart';
@@ -176,6 +183,38 @@ class LeftRecursion extends LinterRule {
           'The parsers directly or indirectly refers to itself without '
           'consuming input: ${analyzer.cycleSet(parser)}. This causes an '
           'infinite loop when parsing.'));
+    }
+  }
+}
+
+class UnusedResult extends LinterRule {
+  const UnusedResult() : super(LinterType.warning, 'Unused result');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is FlattenParser) {
+      final deepChildren = analyzer.allChildren(parser);
+      final ignoredResults = deepChildren
+          .where((parser) =>
+              (parser is CastParser) ||
+              (parser is CastListParser) ||
+              (parser is FlattenParser) ||
+              (parser is MapParser && !parser.hasSideEffects) ||
+              (parser is PermuteParser) ||
+              (parser is PickParser) ||
+              (parser is TokenParser))
+          .toSet();
+      if (ignoredResults.isNotEmpty) {
+        callback(LinterIssue(
+            this,
+            parser,
+            'The flatten parser discards the result of its children and '
+            'instead returns the consumed input. Yet this flatten parser '
+            'refers (indirectly) to other parsers that explicitly produce '
+            'a result and which is ignored when called from this context: '
+            '${ignoredResults.join(', ')}. This might point to an inefficient '
+            'grammar or a possible bug.'));
+      }
     }
   }
 }

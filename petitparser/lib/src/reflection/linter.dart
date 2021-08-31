@@ -74,6 +74,7 @@ const allLinterRules = [
   LeftRecursion(),
   NestedChoice(),
   OverlappingChoice(),
+  UnusedResult(),
 ];
 
 /// Returns a list of linter issues found when analyzing the parser graph

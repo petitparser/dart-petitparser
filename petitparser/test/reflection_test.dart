@@ -547,8 +547,7 @@ void main() {
           [char('2'), char('3')].toChoiceParser(),
           char('4'),
         ].toChoiceParser().optional();
-        final results =
-            linter(parser, rules: const [NestedChoice()], excludedTypes: {});
+        final results = linter(parser, rules: const [NestedChoice()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
@@ -634,6 +633,15 @@ void main() {
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.error);
         expect(result.title, 'Left recursion');
+      });
+      test('unused result', () {
+        final parser = digit().map(int.parse).star().flatten();
+        final results = linter(parser, rules: const [UnusedResult()]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser);
+        expect(result.type, LinterType.warning);
+        expect(result.title, 'Unused result');
       });
     });
   });
