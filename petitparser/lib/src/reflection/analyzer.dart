@@ -18,6 +18,17 @@ class Analyzer {
 
   late final Set<Parser> _parsers = allParser(root).toSet();
 
+  /// Returns a set of all deep children reachable from [parser].
+  ///
+  /// The returned set does only include the [parser] itself, if it is
+  /// recursively calling itself.
+  Set<Parser> allChildren(Parser parser) => _allChildren.putIfAbsent(
+      parser,
+      () => parser.children.fold(
+          <Parser>{}, (result, child) => result..addAll(allParser(child))));
+
+  late final Map<Parser, Set<Parser>> _allChildren = {};
+
   /// Returns `true` if [parser] is transitively nullable, that is it can
   /// successfully parse nothing.
   bool isNullable(Parser parser) => _firstSets[parser]!.contains(sentinel);

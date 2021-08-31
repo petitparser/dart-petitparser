@@ -90,6 +90,53 @@ class PluggableLinterRule extends LinterRule {
 // ignore_for_file: deprecated_member_use_from_same_package
 void main() {
   group('analyzer', () {
+    test('root', () {
+      final parser = char('a').plus();
+      final analyzer = Analyzer(parser);
+      expect(analyzer.root, parser);
+    });
+    test('parsers', () {
+      final parser = char('a').plus();
+      final analyzer = Analyzer(parser);
+      expect(analyzer.parsers, {parser, parser.children.first});
+    });
+    group('allChildren', () {
+      test('single', () {
+        final inner = char('a');
+        final parser = inner.plus();
+        final analyzer = Analyzer(parser);
+        expect(analyzer.allChildren(parser), {inner});
+        expect(analyzer.allChildren(inner), isEmpty);
+      });
+      test('multiple', () {
+        final inner1 = char('a');
+        final inner2 = char('b');
+        final parser = inner1 & inner2;
+        final analyzer = Analyzer(parser);
+        expect(analyzer.allChildren(parser), {inner1, inner2});
+        expect(analyzer.allChildren(inner1), isEmpty);
+        expect(analyzer.allChildren(inner2), isEmpty);
+      });
+      test('repeated', () {
+        final inner1 = char('a');
+        final inner2 = char('b');
+        final parser = inner1 | inner2 | inner2;
+        final analyzer = Analyzer(parser);
+        expect(analyzer.allChildren(parser), {inner1, inner2});
+        expect(analyzer.allChildren(inner1), isEmpty);
+        expect(analyzer.allChildren(inner2), isEmpty);
+      });
+      test('recursive', () {
+        final inner1 = char('a');
+        final inner2 = undefined();
+        final parser = inner1 | inner2;
+        inner2.set(parser);
+        final analyzer = Analyzer(parser);
+        expect(analyzer.allChildren(parser), {inner1, inner2, parser});
+        expect(analyzer.allChildren(inner1), isEmpty);
+        expect(analyzer.allChildren(inner2), {inner1, inner2, parser});
+      });
+    });
     group('isNullable', () {
       test('plus', () {
         final parser = char('a').plus();
