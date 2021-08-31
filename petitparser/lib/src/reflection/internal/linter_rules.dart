@@ -211,7 +211,7 @@ class UnusedResult extends LinterRule {
             'The flatten parser discards the result of its children and '
             'instead returns the consumed input. Yet this flatten parser '
             'refers (indirectly) to other parsers that explicitly produce '
-            'a result and which is ignored when called from this context: '
+            'a result which is then ignored when called from this context: '
             '${ignoredResults.join(', ')}. This might point to an inefficient '
             'grammar or a possible bug.'));
       }
