@@ -8,7 +8,7 @@ PetitParser for Dart
 [![GitHub Stars](https://img.shields.io/github/stars/petitparser/dart-petitparser.svg)](https://github.com/petitparser/dart-petitparser/stargazers)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/petitparser/dart-petitparser/main/LICENSE)
 
-Grammars for programming languages are traditionally specified statically. They are hard to compose and reuse due to ambiguities that inevitably arise. PetitParser combines ideas from [scannnerless parsing](https://en.wikipedia.org/wiki/Scannerless_parsing), [parser combinators](https://en.wikipedia.org/wiki/Parser_combinator), [parsing expression grammars](https://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG) and packrat parsers to model grammars and parsers as objects that can be reconfigured dynamically.
+Grammars for programming languages are traditionally specified statically. They are hard to compose and reuse due to ambiguities that inevitably arise. PetitParser combines ideas from [scannerless parsing](https://en.wikipedia.org/wiki/Scannerless_parsing), [parser combinators](https://en.wikipedia.org/wiki/Parser_combinator), [parsing expression grammars](https://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG) and packrat parsers to model grammars and parsers as objects that can be reconfigured dynamically.
 
 This library is open source, stable and well tested. Development happens on [GitHub](https://github.com/petitparser/dart-petitparser). Feel free to report issues or create a pull-request there. General questions are best asked on [StackOverflow](https://stackoverflow.com/questions/tagged/petitparser+dart).
 
@@ -42,10 +42,10 @@ final id = letter() & (letter() | digit()).star();
 
 If you inspect the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
 
-- SequenceParser: This parser accepts a sequence of parsers.
+- SequenceParser: This parser accepts the sequence of its child parsers.
   - CharacterParser: This parser accepts a single letter.
-  - PossessiveRepeatingParser: This parser accepts zero or more times another parser.
-    - ChoiceParser: This parser accepts a single word character.
+  - PossessiveRepeatingParser: This parser accepts zero or more times its child parsers.
+    - ChoiceParser: This parser accepts the first of its succeeding child parsers, or otherwise fails.
       - CharacterParser: This parser accepts a single letter.
       - CharacterParser: This parser accepts a single digit.
 
@@ -101,18 +101,18 @@ PetitParser provides a large set of ready-made parser that you can compose to co
 
 - `any()` parses any character.
 - `char('a')` (or `'a'.toParser()`) parses the character *a*.
-- `digit()` parses any digit from *0* to *9*.
-- `letter()` parses any letter from *a* to *z* and *A* to *Z*.
-- `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parsers any character between *a* and *f*.
-- `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parsers and character between *a* and *f*, or *A* and *F*.
+- `digit()` parses a single digit from *0* to *9*.
+- `letter()` parses a single letter from *a* to *z* and *A* to *Z*.
+- `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parses a single character between *a* and *f*.
+- `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parses a single character between *a* and *f*, or *A* and *F*.
 - `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
 - `stringIgnoreCase('abc')` (or `'abc'.toParser(caseInsensitive: true)`) parses the strings *Abc*, *aBC*, ...
-- `word()` parses any letter or digit.
+- `word()` parses a single letter, digit, or the underscore character.
 
-So instead of using the letter and digit predicate, we could have written our identifier parser like this:
+So instead of using the letter and digit predicate above, we could have written our identifier parser like this:
 
 ```dart
-final id = letter() & word().star();
+final id = letter() & pattern('a-zA-Z0-9').star();
 ```
 
 The next set of parsers are used to combine other parsers together:
@@ -139,7 +139,7 @@ The last type of parsers are actions or transformations we can use as follows:
 To return a string of the parsed identifier, we can modify our parser like this:
 
 ```dart
-final id = (letter() & word().star()).flatten();
+final id = (letter() & pattern('a-zA-Z0-9').star()).flatten();
 ```
 
 To conveniently find all matches in a given input string you can use `Parser.matchesSkipping`:

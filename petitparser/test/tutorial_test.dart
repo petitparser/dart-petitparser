@@ -103,7 +103,7 @@ void main() {
     expect(id.accept('123'), isFalse);
   });
   test('different parsers', () {
-    final id = (letter() & word().star()).flatten();
+    final id = (pattern('a-zA-Z') & pattern('a-zA-Z0-9').star()).flatten();
     final matches = id.matchesSkipping('foo 123 bar4');
     expect(matches, ['foo', 'bar4']);
   });
