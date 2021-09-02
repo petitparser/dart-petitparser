@@ -30,17 +30,17 @@ void main() {
       test(name, () {
         final string = letter();
         final stringList = builder(string);
-        expect(stringList is Parser<List<String>>, isTrue);
+        expect(stringList, const TypeMatcher<Parser<List<String>>>());
         expect(stringList, isParseSuccess('a,b,c', ['a', 'b', 'c']));
 
         final integer = digit().map(int.parse);
         final integerList = builder(integer);
-        expect(integerList is Parser<List<int>>, isTrue);
+        expect(integerList, const TypeMatcher<Parser<List<int>>>());
         expect(integerList, isParseSuccess('1,2,3', [1, 2, 3]));
 
         final mixed = string | integer;
         final mixedList = builder(mixed);
-        expect(mixedList is Parser<List>, isTrue);
+        expect(mixedList, const TypeMatcher<Parser<List>>());
         expect(mixedList, isParseSuccess('1,a,2', [1, 'a', 2]));
       });
     }
