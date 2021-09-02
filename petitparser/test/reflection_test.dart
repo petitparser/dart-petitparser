@@ -48,11 +48,12 @@ Map<Symbol, Parser> createAmbiguous() {
 // A highly recursive parser.
 Map<Symbol, Parser> createRecursive() {
   final grammar = <Symbol, SettableParser>{
-    for (final symbol in [#S, #P, #p]) symbol: undefined(),
+    for (final symbol in [#S, #P, #p, #+]) symbol: undefined(),
   };
   grammar[#S]!.set(grammar[#P]! | grammar[#p]!);
-  grammar[#P]!.set(grammar[#S]! & char('+') & grammar[#S]!);
+  grammar[#P]!.set(grammar[#S]! & grammar[#+]! & grammar[#S]!);
   grammar[#p]!.set(char('p'));
+  grammar[#+]!.set(char('+'));
   return grammar;
 }
 
@@ -135,6 +136,51 @@ void main() {
         expect(analyzer.allChildren(parser), {inner1, inner2, parser});
         expect(analyzer.allChildren(inner1), isEmpty);
         expect(analyzer.allChildren(inner2), {inner1, inner2, parser});
+      });
+      test('übersetzerbau grammar', () {
+        final parsers = createUebersetzerbau();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.allChildren(parsers[#S]!), {
+          parsers[#A],
+          parsers[#B],
+          parsers[#a],
+          parsers[#b],
+          parsers[#c],
+          parsers[#d],
+          parsers[#e],
+        });
+        expect(analyzer.allChildren(parsers[#A]!), {
+          parsers[#B],
+          parsers[#a],
+          parsers[#b],
+          parsers[#e],
+        });
+        expect(analyzer.allChildren(parsers[#B]!), {
+          parsers[#b],
+          parsers[#e],
+        });
+        expect(analyzer.allChildren(parsers[#a]!), isEmpty);
+        expect(analyzer.allChildren(parsers[#b]!), isEmpty);
+        expect(analyzer.allChildren(parsers[#c]!), isEmpty);
+        expect(analyzer.allChildren(parsers[#d]!), isEmpty);
+        expect(analyzer.allChildren(parsers[#e]!), isEmpty);
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(analyzer.allChildren(parsers[#S]!), analyzer.parsers);
+        expect(analyzer.allChildren(parsers[#P]!), analyzer.parsers);
+        expect(analyzer.allChildren(parsers[#p]!), {
+          parsers[#p]!.children.first,
+        });
+        expect(analyzer.allChildren(parsers[#+]!), {
+          parsers[#+]!.children.first,
+        });
+      });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expect(analyzer.allChildren(parser), {parser});
       });
     });
     group('isNullable', () {
