@@ -183,6 +183,60 @@ void main() {
         expect(analyzer.allChildren(parser), {parser});
       });
     });
+    group('findPath', () {
+      test('simple', () {
+        final parser = char('a');
+        final analyzer = Analyzer(parser);
+        final path = analyzer.findPathTo(parser, parser)!;
+        expect(path.parsers, [parser]);
+        expect(path.indexes, []);
+        final paths = analyzer.findAllPathsTo(parser, parser).toList();
+        expect(paths, hasLength(1));
+        expect(paths[0].parsers, [parser]);
+        expect(paths[0].indexes, []);
+      });
+      test('choice', () {
+        final terminal = char('a');
+        final parser = terminal | terminal;
+        final analyzer = Analyzer(parser);
+        final path = analyzer.findPathTo(parser, terminal)!;
+        expect(path.parsers, [parser, terminal]);
+        expect(path.indexes, [0]);
+        final paths = analyzer.findAllPathsTo(parser, terminal).toList();
+        expect(paths, hasLength(2));
+        expect(paths[0].parsers, [parser, terminal]);
+        expect(paths[0].indexes, [0]);
+        expect(paths[1].parsers, [parser, terminal]);
+        expect(paths[1].indexes, [1]);
+      });
+      test('length', () {
+        final terminal = char('a');
+        final repeated = terminal.star();
+        final parser = repeated | terminal;
+        final analyzer = Analyzer(parser);
+        final path = analyzer.findPathTo(parser, terminal)!;
+        expect(path.parsers, [parser, terminal]);
+        expect(path.indexes, [1]);
+        final paths = analyzer.findAllPathsTo(parser, terminal).toList();
+        expect(paths, hasLength(2));
+        expect(paths[0].parsers, [parser, repeated, terminal]);
+        expect(paths[0].indexes, [0, 0]);
+        expect(paths[1].parsers, [parser, terminal]);
+        expect(paths[1].indexes, [1]);
+      });
+      test('recursive grammar', () {
+        final parsers = createRecursive();
+        final analyzer = Analyzer(parsers[#S]!);
+        expect(
+            analyzer.findAllPaths(analyzer.root, (target) => false), isEmpty);
+      });
+      test('self reference', () {
+        final parser = createSelfReference();
+        final analyzer = Analyzer(parser);
+        expect(
+            analyzer.findAllPaths(analyzer.root, (target) => false), isEmpty);
+      });
+    });
     group('isNullable', () {
       test('plus', () {
         final parser = char('a').plus();
