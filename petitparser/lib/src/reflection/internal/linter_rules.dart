@@ -205,15 +205,21 @@ class UnusedResult extends LinterRule {
               (parser is TokenParser))
           .toSet();
       if (ignoredResults.isNotEmpty) {
+        final path = analyzer.findPath(
+            parser, (path) => ignoredResults.contains(path.target))!;
+        final description = [
+          for (var i = 0; i < path.indexes.length; i++)
+            '${path.indexes[i]}: ${path.parsers[i + 1]}'
+        ].join(', ');
         callback(LinterIssue(
             this,
             parser,
             'The flatten parser discards the result of its children and '
             'instead returns the consumed input. Yet this flatten parser '
-            'refers (indirectly) to other parsers that explicitly produce '
-            'a result which is then ignored when called from this context: '
-            '${ignoredResults.join(', ')}. This might point to an inefficient '
-            'grammar or a possible bug.'));
+            'refers (indirectly) to one or more other parsers that explicitly '
+            'produce a result which is then ignored when called from this '
+            'context: $description. This might point to an inefficient grammar '
+            'or a possible bug.'));
       }
     }
   }
