@@ -740,7 +740,7 @@ void main() {
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser);
-        expect(result.type, LinterType.warning);
+        expect(result.type, LinterType.info);
         expect(result.title, 'Unused result');
       });
     });

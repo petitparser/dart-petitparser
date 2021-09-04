@@ -188,7 +188,7 @@ class LeftRecursion extends LinterRule {
 }
 
 class UnusedResult extends LinterRule {
-  const UnusedResult() : super(LinterType.warning, 'Unused result');
+  const UnusedResult() : super(LinterType.info, 'Unused result');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
