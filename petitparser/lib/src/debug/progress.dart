@@ -1,8 +1,8 @@
 import '../context/context.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
-import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
+import '../shared/types.dart';
 
 /// Returns a transformed [Parser] that when being used to read input
 /// visually prints its progress while progressing.

@@ -1,8 +1,8 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../../shared/types.dart';
 import '../combinator/delegate.dart';
-import '../utils/types.dart';
 
 extension WhereParserExtension<T> on Parser<T> {
   /// Returns a parser that evaluates the [predicate] with the successful

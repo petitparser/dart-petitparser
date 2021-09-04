@@ -2,8 +2,8 @@ import '../context/context.dart';
 import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
-import '../parser/utils/types.dart';
 import '../reflection/transform.dart';
+import '../shared/types.dart';
 
 /// Returns a transformed [Parser] that when being used to read input prints a
 /// trace of all activated parsers and their respective parse results.

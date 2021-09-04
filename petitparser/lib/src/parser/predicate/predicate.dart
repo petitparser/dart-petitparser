@@ -1,7 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../utils/types.dart';
+import '../../shared/types.dart';
 
 /// Returns a parser that reads input of the specified [length], accepts
 /// it if the [predicate] matches, or fails with the given [message].

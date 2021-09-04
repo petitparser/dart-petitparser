@@ -1,8 +1,8 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../../shared/types.dart';
 import '../combinator/delegate.dart';
-import '../utils/types.dart';
 
 extension MapParserExtension<T> on Parser<T> {
   /// Returns a parser that evaluates a [callback] as the production action
