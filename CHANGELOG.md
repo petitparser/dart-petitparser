@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.0
+## 4.3.0 (unpublished)
 
 * Add a `where` parser, that allows to add additional constraints on parse results.
 * Add a `labeled` parser, that allows to add a debug label to the parser graph.
