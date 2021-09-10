@@ -1,14 +1,15 @@
 # Changelog
 
-## 4.3.0 (unpublished)
+## 4.3.0
 
+* Dart 2.14 requirement.
 * Add a `where` parser, that allows to add additional constraints on parse results.
 * Add a `labeled` parser, that allows to add a debug label to the parser graph.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 * Change debug functions to named arguments, and generate output events with first class objects instead of strings.
 * Various improvements to the `Analyzer`:
   * Compute all deeply referenced children.
-  * Compute all or the shortest path between parsers.
+  * Compute all paths or the shortest path between parsers.
 * Fix inaccuracies in character parser documentation and tutorial.
 * Add more grammar linter rules that detect common bugs.
 
