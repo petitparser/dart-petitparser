@@ -40,6 +40,7 @@ mixin HasSelector implements Node {
 class MethodNode extends Node with HasSelector {
   MethodNode();
 
+  @override
   final List<VariableNode> arguments = [];
   final List<PragmaNode> pragmas = [];
   final SequenceNode body = SequenceNode();
@@ -51,6 +52,7 @@ class MethodNode extends Node with HasSelector {
 class PragmaNode extends Node with HasSelector, IsSurrounded {
   PragmaNode();
 
+  @override
   final List<LiteralNode> arguments = [];
 
   @override
@@ -150,6 +152,7 @@ class MessageNode extends ValueNode with HasSelector {
   MessageNode(this.receiver);
 
   final ValueNode receiver;
+  @override
   final List<ValueNode> arguments = [];
 
   @override

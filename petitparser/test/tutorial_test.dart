@@ -5,6 +5,7 @@ import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 class ExpressionDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(term).end();
 
   Parser term() => ref0(add) | ref0(prod);
@@ -20,9 +21,13 @@ class ExpressionDefinition extends GrammarDefinition {
 }
 
 class EvaluatorDefinition extends ExpressionDefinition {
+  @override
   Parser add() => super.add().map((values) => values[0] + values[2]);
+  @override
   Parser mul() => super.mul().map((values) => values[0] * values[2]);
+  @override
   Parser parens() => super.parens().castList<num>().pick(1);
+  @override
   Parser number() => super.number().map((value) => int.parse(value));
 }
 

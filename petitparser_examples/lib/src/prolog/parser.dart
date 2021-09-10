@@ -18,8 +18,10 @@ final Parser<Term> termParser =
 class PrologParserDefinition extends PrologGrammarDefinition {
   final Map<String, Variable> scope = {};
 
+  @override
   Parser<List<Rule>> rules() => super.rules().castList();
 
+  @override
   Parser<Rule> rule() => super.rule().map((each) {
         scope.clear();
         final head = each[0];
@@ -37,6 +39,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         }
       });
 
+  @override
   Parser<Term> term() => super.term().map((each) {
         final name = each[0];
         final rest = each[1];
@@ -47,6 +50,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         return Term(name.toString(), terms.cast());
       });
 
+  @override
   Parser<Node> parameter() => super.parameter().map((each) {
         final name = each[0];
         final rest = each[1];
@@ -57,6 +61,7 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         return Term(name.toString(), terms.cast());
       });
 
+  @override
   Parser<Variable> variable() => super.variable().map((name) {
         if (name == '_') {
           return const Variable('_');
@@ -67,5 +72,6 @@ class PrologParserDefinition extends PrologGrammarDefinition {
         return scope[name] = Variable(name);
       });
 
+  @override
   Parser<Value> value() => super.value().map((name) => Value(name));
 }

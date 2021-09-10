@@ -4,16 +4,19 @@ import 'package:test/test.dart';
 import 'test_utils.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(list).end();
   Parser list() => ref0(element) & char(',') & ref0(list) | ref0(element);
   Parser element() => digit().plus().flatten();
 }
 
 class ListParserDefinition extends ListGrammarDefinition {
+  @override
   Parser element() => super.element().map((value) => int.parse(value));
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(list).end();
   Parser list() =>
       ref0(element) & ref1(token, char(',')) & ref0(list) | ref0(element);
@@ -22,6 +25,7 @@ class TokenizedListGrammarDefinition extends GrammarDefinition {
 }
 
 class TypedReferencesGrammarDefinition extends GrammarDefinition {
+  @override
   Parser<List<String>> start() => ref0(f0);
   Parser<List<String>> f0() => ref1(f1, 1);
   Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
@@ -40,6 +44,7 @@ class TypedReferencesGrammarDefinition extends GrammarDefinition {
 
 // ignore_for_file: deprecated_member_use_from_same_package
 class UntypedReferencesGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref(f0);
   Parser f0() => ref(f1, 1);
   Parser f1(int a1) => ref(f2, a1, 2);
@@ -56,6 +61,7 @@ class UntypedReferencesGrammarDefinition extends GrammarDefinition {
 }
 
 class BuggedGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => epsilon();
 
   Parser directRecursion1() => ref0(directRecursion1);
@@ -70,6 +76,7 @@ class BuggedGrammarDefinition extends GrammarDefinition {
 }
 
 class LambdaGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(expression).end();
   Parser expression() => ref0(variable) | ref0(abstraction) | ref0(application);
 
@@ -83,6 +90,7 @@ class LambdaGrammarDefinition extends GrammarDefinition {
 }
 
 class ExpressionGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(terms).end();
   Parser terms() => ref0(addition) | ref0(factors);
 

@@ -6,94 +6,121 @@ import 'grammar.dart';
 
 /// Smalltalk parser definition.
 class SmalltalkParserDefinition extends SmalltalkGrammarDefinition {
+  @override
   Parser array() => super
       .array()
       .map((input) => buildArray(input[1])..surroundWith(input[0], input[2]));
 
+  @override
   Parser arrayLiteral() => super.arrayLiteral().map((input) =>
       LiteralArrayNode(input[1].cast<LiteralNode>().toList())
         ..surroundWith(input[0], input[2]));
 
+  @override
   Parser arrayLiteralArray() => super.arrayLiteralArray().map((input) =>
       LiteralArrayNode(input[1].cast<LiteralNode>().toList())
         ..surroundWith(input[0], input[2]));
 
+  @override
   Parser binaryExpression() =>
       super.binaryExpression().map((input) => buildMessage(input[0], input[1]));
 
+  @override
   Parser block() =>
       super.block().map((input) => input[1]..surroundWith(input[0], input[2]));
 
+  @override
   Parser blockArgument() => super.blockArgument();
 
+  @override
   Parser blockBody() =>
       super.blockBody().map((input) => buildBlock(input[0], input[1]));
 
+  @override
   Parser byteLiteral() => super.byteLiteral().map((input) =>
       LiteralArrayNode<num>(input[1].cast<LiteralNode<num>>().toList())
         ..surroundWith(input[0], input[2]));
 
+  @override
   Parser byteLiteralArray() => super.byteLiteralArray().map((input) =>
       LiteralArrayNode<num>(input[1].cast<LiteralNode<num>>().toList())
         ..surroundWith(input[0], input[2]));
 
+  @override
   Parser characterLiteral() => super.characterLiteral().map(
       (input) => LiteralValueNode<String>(input, input.value.substring(1)));
 
+  @override
   Parser cascadeExpression() => super
       .cascadeExpression()
       .map((input) => buildCascade(input[0], input[1]));
 
+  @override
   Parser expression() =>
       super.expression().map((input) => buildAssignment(input[1], input[0]));
 
+  @override
   Parser expressionReturn() =>
       super.expressionReturn().map((input) => ReturnNode(input[0], input[1]));
 
+  @override
   Parser falseLiteral() =>
       super.falseLiteral().map((input) => LiteralValueNode<bool>(input, false));
 
+  @override
   Parser keywordExpression() => super
       .keywordExpression()
       .map((input) => buildMessage(input[0], [input[1]]));
 
+  @override
   Parser method() => super.method().map((input) => buildMethod(input));
 
+  @override
   Parser nilLiteral() =>
       super.nilLiteral().map((input) => LiteralValueNode<void>(input, null));
 
+  @override
   Parser numberLiteral() => super
       .numberLiteral()
       .map((input) => LiteralValueNode<num>(input, buildNumber(input.value)));
 
+  @override
   Parser parens() =>
       super.parens().map((input) => input[1]..surroundWith(input[0], input[2]));
 
+  @override
   Parser pragma() => super
       .pragma()
       .map((input) => buildPragma(input[1])..surroundWith(input[0], input[2]));
 
+  @override
   Parser sequence() => super
       .sequence()
       .map((input) => buildSequence(input[0], [input[1], input[2]]));
 
+  @override
   Parser stringLiteral() => super.stringLiteral().map(
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
 
+  @override
   Parser symbolLiteral() =>
       super.symbolLiteral().map((input) => LiteralValueNode<String>(
           Token.join<dynamic>([...input[0], input[1]]),
           buildString(input[1].value)));
 
+  @override
   Parser symbolLiteralArray() => super.symbolLiteralArray().map(
       (input) => LiteralValueNode<String>(input, buildString(input.value)));
 
+  @override
   Parser unaryExpression() =>
       super.unaryExpression().map((input) => buildMessage(input[0], input[1]));
 
+  @override
   Parser trueLiteral() =>
       super.trueLiteral().map((input) => LiteralValueNode<bool>(input, true));
 
+  @override
   Parser variable() => super.variable().map((input) => VariableNode(input));
 }
 

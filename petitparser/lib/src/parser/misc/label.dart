@@ -16,6 +16,7 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   LabelParser(Parser<R> delegate, this.label) : super(delegate);
 
   /// Label of this parser.
+  @override
   final String label;
 
   @override

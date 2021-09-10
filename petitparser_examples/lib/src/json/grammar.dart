@@ -2,6 +2,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// JSON grammar definition.
 class JsonGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(value).end();
   Parser token(Object source, [String? name]) {
     if (source is String) {

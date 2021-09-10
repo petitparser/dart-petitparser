@@ -13,20 +13,33 @@ final lispParser = _definition.build();
 
 /// LISP parser definition.
 class LispParserDefinition extends LispGrammarDefinition {
+  @override
   Parser list() => super.list().map((each) => each[1]);
 
+  @override
   Parser cell() => super.cell().map((each) => Cons(each[0], each[1]));
+
+  @override
   Parser empty() => super.empty().map((each) => null);
 
+  @override
   Parser string() =>
       super.string().map((each) => String.fromCharCodes(each[1].cast<int>()));
+
+  @override
   Parser characterEscape() =>
       super.characterEscape().map((each) => each[1].codeUnitAt(0));
+
+  @override
   Parser characterRaw() =>
       super.characterRaw().map((each) => each.codeUnitAt(0));
 
+  @override
   Parser symbol() => super.symbol().map((each) => Name(each));
+
+  @override
   Parser number() => super.number().map((each) => num.parse(each));
 
+  @override
   Parser quote() => super.quote().map((each) => Quote(each[1]));
 }

@@ -2,6 +2,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// Prolog grammar definition.
 class PrologGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => throw UnsupportedError('Either parse rules or terms.');
 
   Parser<List> rules() => ref0(rule).star();

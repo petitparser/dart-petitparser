@@ -2,6 +2,7 @@ import 'package:petitparser/petitparser.dart';
 
 /// LISP grammar definition.
 class LispGrammarDefinition extends GrammarDefinition {
+  @override
   Parser start() => ref0(atom).star().end();
 
   Parser atom() => ref0(atomChoice).trim(ref0(space));

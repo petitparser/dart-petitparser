@@ -2,6 +2,9 @@ import 'package:petitparser/petitparser.dart';
 
 /// Smalltalk grammar definition.
 class SmalltalkGrammarDefinition extends GrammarDefinition {
+  @override
+  Parser start() => ref0(startMethod);
+
   // the original implementation used a handwritten parser to
   // build special token objects
   Parser token(Object source, [String? message]) {
@@ -155,7 +158,6 @@ class SmalltalkGrammarDefinition extends GrammarDefinition {
       .or(ref0(array));
   Parser sequence() =>
       ref0(temporaries).seq(ref0(periodToken).star()).seq(ref0(statements));
-  Parser start() => ref0(startMethod);
   Parser startMethod() => ref0(method).end();
   Parser statements() => ref0(expressionReturn)
       .or(ref0(expression))

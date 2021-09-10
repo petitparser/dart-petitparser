@@ -73,6 +73,7 @@ class DartGrammarDefinition extends GrammarDefinition {
   // -----------------------------------------------------------------
   // Grammar productions.
   // -----------------------------------------------------------------
+  @override
   Parser start() => ref0(compilationUnit).end();
 
   Parser compilationUnit() =>

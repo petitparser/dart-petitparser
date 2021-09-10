@@ -34,6 +34,7 @@ class _ParserIterator extends Iterator<Parser> {
       : todo = [root],
         seen = {root};
 
+  @override
   bool moveNext() {
     if (todo.isEmpty) {
       seen.clear();

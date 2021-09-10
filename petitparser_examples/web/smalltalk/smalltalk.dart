@@ -43,6 +43,7 @@ class PrintVisitor extends Visitor {
   String selector(HasSelector node) =>
       '<i title="${node.selectorToken.join(', ')}">${node.selector}</i>';
 
+  @override
   void visitMethodNode(MethodNode node) {
     print('<b>Method</b>: ${selector(node)}');
     indent(() {
@@ -57,16 +58,19 @@ class PrintVisitor extends Visitor {
     });
   }
 
+  @override
   void visitPragmaNode(PragmaNode node) {
     print('<b>Pragma</b>: ${selector(node)}');
     indent(() => node.arguments.forEach(visit));
   }
 
+  @override
   void visitReturnNode(ReturnNode node) {
     print('<b>Return</b>');
     indent(() => visit(node.value));
   }
 
+  @override
   void visitSequenceNode(SequenceNode node) {
     print('<b>Sequence</b>');
     indent(() {
@@ -77,16 +81,19 @@ class PrintVisitor extends Visitor {
     });
   }
 
+  @override
   void visitArrayNode(ArrayNode node) {
     print('<b>Array</b>');
     indent(() => node.statements.forEach(visit));
   }
 
+  @override
   void visitAssignmentNode(AssignmentNode node) {
     print('<b>Assignment</b>: ${variable(node.variable)}');
     indent(() => visit(node.value));
   }
 
+  @override
   void visitBlockNode(BlockNode node) {
     print('<b>Block</b>');
     indent(() {
@@ -97,6 +104,7 @@ class PrintVisitor extends Visitor {
     });
   }
 
+  @override
   void visitCascadeNode(CascadeNode node) {
     print('<b>Cascade</b>');
     indent(() {
@@ -111,14 +119,17 @@ class PrintVisitor extends Visitor {
     });
   }
 
+  @override
   void visitLiteralArrayNode(LiteralArrayNode node) {
     print('<b>Literal Array</b>: <i>${node.value}</i>');
   }
 
+  @override
   void visitLiteralValueNode(LiteralValueNode node) {
     print('<b>Literal Value</b>: <i>${node.value}</i>');
   }
 
+  @override
   void visitMessageNode(MessageNode node) {
     print('<b>Message</b>: ${selector(node)}');
     indent(() {
@@ -130,6 +141,7 @@ class PrintVisitor extends Visitor {
     });
   }
 
+  @override
   void visitVariableNode(VariableNode node) {
     print('<b>Variable</b>: ${variable(node)}');
   }
