@@ -17,6 +17,8 @@ Parser buildParser() {
     ..wrapper(
         char('(').trim(), char(')').trim(), (left, value, right) => value);
   builder.group().prefix(char('-').trim(), (op, num a) => -a);
+  builder.group().postfix(char('%').trim(),
+      (num a, op) => a / 100); //.prefix(char('-').trim(), (op, num a) => -a);
   builder.group().right(char('^').trim(), (num a, op, num b) => pow(a, b));
   builder.group()
     ..left(char('*').trim(), (num a, op, num b) => a * b)
@@ -26,6 +28,7 @@ Parser buildParser() {
     ..left(char('-').trim(), (num a, op, num b) => a - b);
   return builder.build().end();
 }
+
 
 void main(List<String> arguments) {
   final parser = buildParser();
