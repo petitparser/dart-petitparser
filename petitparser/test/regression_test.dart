@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';
-import 'package:test/test.dart';
+import 'package:test/test.dart' hide anyOf;
 
 import 'test_utils.dart';
 
@@ -276,5 +276,14 @@ void main() {
       expect(parser, isParseFailure('12', message: 'values do not match'));
       expect(parser, isParseFailure('21', message: 'values do not match'));
     });
+  });
+  test('https://github.com/petitparser/dart-petitparser/issues/121', () {
+    final parser = (((letter() | char('_')) &
+            (letter() | digit() | anyOf('_- ()')).star() &
+            char('.').not('end of id expected')))
+        .flatten();
+    expect(parser, isParseSuccess('foo', 'foo'));
+    expect(parser,
+        isParseFailure('foo.1', message: 'end of id expected', position: 3));
   });
 }
