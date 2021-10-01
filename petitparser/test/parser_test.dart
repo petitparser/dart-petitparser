@@ -1338,6 +1338,35 @@ void main() {
         expect(parser, isParseFailure('', message: 'input expected'));
       });
     });
+    group('pattern', () {
+      final digits = PatternParser(RegExp(r'\d+'), 'digits expected');
+      expectCommon(digits);
+      test('default', () {
+        final parser = digits.map((match) => match.group(0));
+        expect(parser, isParseSuccess('1', '1'));
+        expect(parser, isParseSuccess('12', '12'));
+        expect(parser, isParseSuccess('123', '123'));
+        expect(parser, isParseSuccess('1a', '1', position: 1));
+        expect(parser, isParseSuccess('12ab', '12', position: 2));
+        expect(parser, isParseSuccess('123abc', '123', position: 3));
+        expect(parser, isParseFailure(''));
+        expect(parser, isParseFailure('a'));
+        expect(parser, isParseFailure('a1'));
+      });
+      test('groups', () {
+        final parser =
+            PatternParser(RegExp(r'(\d+)\s*,\s*(\d+)'), 'pair expected')
+                .map((match) => [match.group(1), match.group(2)]);
+        expect(parser, isParseSuccess('1,2', ['1', '2']));
+        expect(parser, isParseSuccess('1, 2', ['1', '2']));
+        expect(parser, isParseSuccess('1 ,2', ['1', '2']));
+        expect(parser, isParseSuccess('1 , 2', ['1', '2']));
+        expect(parser, isParseSuccess('12,345', ['12', '345']));
+        expect(parser, isParseSuccess('12, 345', ['12', '345']));
+        expect(parser, isParseSuccess('12 ,345', ['12', '345']));
+        expect(parser, isParseSuccess('12 , 345', ['12', '345']));
+      });
+    });
     group('string', () {
       expectCommon(string('foo'));
       test('default', () {

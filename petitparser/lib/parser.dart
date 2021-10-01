@@ -36,6 +36,7 @@ export 'src/parser/misc/failure.dart';
 export 'src/parser/misc/label.dart';
 export 'src/parser/misc/position.dart';
 export 'src/parser/predicate/any.dart';
+export 'src/parser/predicate/pattern.dart';
 export 'src/parser/predicate/predicate.dart';
 export 'src/parser/predicate/string.dart';
 export 'src/parser/repeater/greedy.dart';

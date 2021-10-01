@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.4.0 (unpublished)
+
+* Add a `PatternParser` that allows to use any Dart `Pattern` as a parser.
+
 ## 4.3.0
 
 * Dart 2.14 requirement.
