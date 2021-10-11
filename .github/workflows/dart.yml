@@ -1,241 +1,71 @@
-# Created with package:mono_repo v3.4.7
 name: Dart CI
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
   schedule:
     - cron: "0 0 * * 0"
 defaults:
   run:
     shell: bash
-env:
-  PUB_ENVIRONMENT: bot.github
 
 jobs:
-  job_001:
-    name: mono_repo self validate
+  petitparser:
+    name: "Dart CI - PetitParser"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: petitparser
     steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - name: mono_repo self validate
-        run: pub global activate mono_repo 3.4.7
-      - name: mono_repo self validate
-        run: pub global run mono_repo generate --validate
-  job_002:
-    name: "analyze; PKGS: petitparser, petitparser_examples; `dart analyze --fatal-infos .`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser-petitparser_examples;commands:command_0"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser-petitparser_examples
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_pub_upgrade
-        name: "petitparser; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser
+      - name: "Dependencies"
         run: pub upgrade --no-precompile
-      - name: "petitparser; dart analyze --fatal-infos ."
-        if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser
+      - name: "Dart Analyzer"
         run: dart analyze --fatal-infos .
-      - id: petitparser_examples_pub_upgrade
-        name: "petitparser_examples; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
+      - name: "Dart Formatter"
+        run: dart format --output=none --set-exit-if-changed .
+      - name: "VM Tests"
+        run: dart test --platform vm --coverage . test/all_test.dart
+      - name: "Chrome Tests"
+        run: dart test --platform chrome test test/all_test.dart
+      - name: "Format coverage"
+        run: |
+          dart pub global activate coverage
+          dart pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=test/all_test.dart.vm.json --out=test/all_test.dart.lcov
+          rm test/all_test.dart.vm.json
+      - name: "Upload coverage"
+        uses: codecov/codecov-action@v2
+  petitparser_examples:
+    name: "Dart CI - PetitParser Examples"
+    needs: petitparser
+    runs-on: ubuntu-latest
+    defaults:
+      run:
         working-directory: petitparser_examples
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: "Dependencies"
         run: pub upgrade --no-precompile
-      - name: "petitparser_examples; dart analyze --fatal-infos ."
-        if: "always() && steps.petitparser_examples_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser_examples
+      - name: "Dart Analyzer"
         run: dart analyze --fatal-infos .
-  job_003:
-    name: "analyze; PKGS: petitparser, petitparser_examples; `dart format --output=none --set-exit-if-changed .`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser-petitparser_examples;commands:command_1"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser-petitparser_examples
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_pub_upgrade
-        name: "petitparser; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser
-        run: pub upgrade --no-precompile
-      - name: "petitparser; dart format --output=none --set-exit-if-changed ."
-        if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser
-        run: "dart format --output=none --set-exit-if-changed ."
-      - id: petitparser_examples_pub_upgrade
-        name: "petitparser_examples; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: pub upgrade --no-precompile
-      - name: "petitparser_examples; dart format --output=none --set-exit-if-changed ."
-        if: "always() && steps.petitparser_examples_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: "dart format --output=none --set-exit-if-changed ."
-  job_004:
-    name: "unit_test; PKG: petitparser; `dart test --platform vm test/all_test.dart`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser;commands:command_2"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_pub_upgrade
-        name: "petitparser; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser
-        run: pub upgrade --no-precompile
-      - name: "petitparser; dart test --platform vm test/all_test.dart"
-        if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser
+      - name: "Dart Formatter"
+        run: dart format --output=none --set-exit-if-changed .
+      - name: "VM Tests"
         run: dart test --platform vm test/all_test.dart
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_005:
-    name: "unit_test; PKG: petitparser_examples; `dart test --platform vm test/all_test.dart`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser_examples;commands:command_2"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser_examples
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_examples_pub_upgrade
-        name: "petitparser_examples; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: pub upgrade --no-precompile
-      - name: "petitparser_examples; dart test --platform vm test/all_test.dart"
-        if: "always() && steps.petitparser_examples_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: dart test --platform vm test/all_test.dart
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_006:
-    name: "unit_test; PKG: petitparser; `dart test --platform chrome test/all_test.dart`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser;commands:command_3"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_pub_upgrade
-        name: "petitparser; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser
-        run: pub upgrade --no-precompile
-      - name: "petitparser; dart test --platform chrome test/all_test.dart"
-        if: "always() && steps.petitparser_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser
-        run: dart test --platform chrome test/all_test.dart
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_007:
-    name: "unit_test; PKG: petitparser_examples; `dart test --platform chrome test/all_test.dart`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser_examples;commands:command_3"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:petitparser_examples
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: petitparser_examples_pub_upgrade
-        name: "petitparser_examples; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: pub upgrade --no-precompile
-      - name: "petitparser_examples; dart test --platform chrome test/all_test.dart"
-        if: "always() && steps.petitparser_examples_pub_upgrade.conclusion == 'success'"
-        working-directory: petitparser_examples
-        run: dart test --platform chrome test/all_test.dart
-    needs:
-      - job_001
-      - job_002
-      - job_003
+      - name: "Chrome Tests"
+        run: dart test --platform chrome test test/all_test.dart
