@@ -1,3 +1,5 @@
+// coverage:ignore-file
+
 import '../context/context.dart';
 import '../context/result.dart';
 import '../core/parser.dart';

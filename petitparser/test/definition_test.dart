@@ -42,8 +42,25 @@ class TypedReferencesGrammarDefinition extends GrammarDefinition {
       ].toSequenceParser();
 }
 
-// ignore_for_file: deprecated_member_use_from_same_package
 class UntypedReferencesGrammarDefinition extends GrammarDefinition {
+  @override
+  Parser start() => ref0(f0);
+  Parser f0() => ref1(f1, 1);
+  Parser f1(int a1) => ref2(f2, a1, 2);
+  Parser f2(int a1, int a2) => ref3(f3, a1, a2, 3);
+  Parser f3(int a1, int a2, int a3) => ref4(f4, a1, a2, a3, 4);
+  Parser f4(int a1, int a2, int a3, int a4) => ref5(f5, a1, a2, a3, a4, 5);
+  Parser f5(int a1, int a2, int a3, int a4, int a5) => [
+        a1.toString().toParser(),
+        a2.toString().toParser(),
+        a3.toString().toParser(),
+        a4.toString().toParser(),
+        a5.toString().toParser(),
+      ].toSequenceParser();
+}
+
+// ignore_for_file: deprecated_member_use_from_same_package
+class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => ref(f0);
   Parser f0() => ref(f1, 1);
@@ -248,6 +265,8 @@ void main() {
     final tokenDefinition = TokenizedListGrammarDefinition();
     final typedReferenceDefinition = TypedReferencesGrammarDefinition();
     final untypedReferenceDefinition = UntypedReferencesGrammarDefinition();
+    final deprecatedUntypedReferenceDefinition =
+        UntypedReferencesGrammarDefinition();
     final buggedDefinition = BuggedGrammarDefinition();
 
     test('reference without parameters', () {
@@ -283,9 +302,16 @@ void main() {
       expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
     });
     test('reference with multiple arguments (untyped)', () {
-      @Deprecated('Testing deprecated code')
       final parser = untypedReferenceDefinition.build();
       expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
+    });
+    test('reference with multiple arguments (untyped, deprecated)', () {
+      final parser = deprecatedUntypedReferenceDefinition.build();
+      expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
+    });
+    test('invalid building', () {
+      expect(() => grammarDefinition.build(arguments: [1, 2, 3]),
+          throwsStateError);
     });
     test('reference unsupported methods', () {
       final reference = grammarDefinition.ref0(grammarDefinition.start);
