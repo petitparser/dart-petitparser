@@ -188,6 +188,8 @@ void main() {
         final parser = char('a');
         final analyzer = Analyzer(parser);
         final path = analyzer.findPathTo(parser, parser)!;
+        expect(path.source, parser);
+        expect(path.target, parser);
         expect(path.parsers, [parser]);
         expect(path.indexes, []);
         final paths = analyzer.findAllPathsTo(parser, parser).toList();
@@ -200,6 +202,8 @@ void main() {
         final parser = terminal | terminal;
         final analyzer = Analyzer(parser);
         final path = analyzer.findPathTo(parser, terminal)!;
+        expect(path.source, parser);
+        expect(path.target, terminal);
         expect(path.parsers, [parser, terminal]);
         expect(path.indexes, [0]);
         final paths = analyzer.findAllPathsTo(parser, terminal).toList();
@@ -215,6 +219,8 @@ void main() {
         final parser = repeated | terminal;
         final analyzer = Analyzer(parser);
         final path = analyzer.findPathTo(parser, terminal)!;
+        expect(path.source, parser);
+        expect(path.target, terminal);
         expect(path.parsers, [parser, terminal]);
         expect(path.indexes, [1]);
         final paths = analyzer.findAllPathsTo(parser, terminal).toList();
@@ -608,6 +614,8 @@ void main() {
         expect(parser, same(input));
         callback(LinterIssue(rule, parser, 'Described'));
       });
+      expect(rule.toString(),
+          'LinterRule(type: LinterType.error, title: Fake Rule)');
       final results = linter(input, rules: [rule], callback: called.add);
       expect(results, [
         isA<LinterIssue>()
@@ -617,6 +625,12 @@ void main() {
             .having((issue) => issue.parser, 'parser', same(input))
             .having((issue) => issue.description, 'description', 'Described')
             .having((issue) => issue.fixer, 'fixer', isNull)
+            .having(
+                (issue) => issue.toString(),
+                'toString',
+                'LinterIssue(type: LinterType.error, title: Fake Rule, '
+                    'parser: Instance of \'PredicateParser\'[trigger '
+                    'expected], description: Described)')
       ]);
       expect(called, results);
     });
