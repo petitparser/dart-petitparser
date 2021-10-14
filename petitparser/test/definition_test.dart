@@ -1,6 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+import 'parser_test.dart';
 import 'test_utils.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
@@ -401,7 +402,30 @@ void main() {
     });
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
-      final parser = GrammarParser(definition);
+      final parser = definition.build();
+      expect(parser.accept('1'), isTrue);
+      expect(parser.accept('12'), isTrue);
+      expect(parser.accept('1.23'), isTrue);
+      expect(parser.accept('-12.3'), isTrue);
+      expect(parser.accept('1 + 2'), isTrue);
+      expect(parser.accept('1 + 2 + 3'), isTrue);
+      expect(parser.accept('1 - 2'), isTrue);
+      expect(parser.accept('1 - 2 - 3'), isTrue);
+      expect(parser.accept('1 * 2'), isTrue);
+      expect(parser.accept('1 * 2 * 3'), isTrue);
+      expect(parser.accept('1 / 2'), isTrue);
+      expect(parser.accept('1 / 2 / 3'), isTrue);
+      expect(parser.accept('1 ^ 2'), isTrue);
+      expect(parser.accept('1 ^ 2 ^ 3'), isTrue);
+      expect(parser.accept('1 + (2 * 3)'), isTrue);
+      expect(parser.accept('(1 + 2) * 3'), isTrue);
+    });
+  });
+  group('definition parser', () {
+    final definition = ExpressionGrammarDefinition();
+    final parser = GrammarParser(definition);
+    expectCommon(parser);
+    test('expression', () {
       expect(parser.accept('1'), isTrue);
       expect(parser.accept('12'), isTrue);
       expect(parser.accept('1.23'), isTrue);
