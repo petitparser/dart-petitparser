@@ -243,12 +243,6 @@ void main() {
       Parser<String> create() => ref0(create);
       expect(() => resolve(create()), throwsStateError);
     });
-    // test('indirect recursion', () {
-    //   Parser<String> create1() => ref0(create2);
-    //   Parser<String> create2() => ref0(create3);
-    //   Parser<String> create3() => ref0(create1);
-    //   expect(() => resolve(create1()), throwsStateError);
-    // });
     test('reference', () {
       Parser<List<num>> list() => [
             (ref0(number) & char(',') & ref0(list))
@@ -374,51 +368,45 @@ void main() {
           throwsStateError);
     });
     test('delegation', () {
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation1)
-              is EpsilonParser,
-          isTrue);
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation2)
-              is EpsilonParser,
-          isTrue);
-      expect(
-          buggedDefinition.build(start: buggedDefinition.delegation3)
-              is EpsilonParser,
-          isTrue);
+      expect(buggedDefinition.build(start: buggedDefinition.delegation1),
+          isA<EpsilonParser>());
+      expect(buggedDefinition.build(start: buggedDefinition.delegation2),
+          isA<EpsilonParser>());
+      expect(buggedDefinition.build(start: buggedDefinition.delegation3),
+          isA<EpsilonParser>());
     });
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();
       final parser = definition.build();
-      expect(parser.accept('x'), isTrue);
-      expect(parser.accept('xy'), isTrue);
-      expect(parser.accept('x12'), isTrue);
-      expect(parser.accept('\\x.y'), isTrue);
-      expect(parser.accept('\\x.\\y.z'), isTrue);
-      expect(parser.accept('(x x)'), isTrue);
-      expect(parser.accept('(x y)'), isTrue);
-      expect(parser.accept('(x (y z))'), isTrue);
-      expect(parser.accept('((x y) z)'), isTrue);
+      expect(parser, isParseSuccess('x', isNotNull));
+      expect(parser, isParseSuccess('xy', isNotNull));
+      expect(parser, isParseSuccess('x12', isNotNull));
+      expect(parser, isParseSuccess('\\x.y', isNotNull));
+      expect(parser, isParseSuccess('\\x.\\y.z', isNotNull));
+      expect(parser, isParseSuccess('(x x)', isNotNull));
+      expect(parser, isParseSuccess('(x y)', isNotNull));
+      expect(parser, isParseSuccess('(x (y z))', isNotNull));
+      expect(parser, isParseSuccess('((x y) z)', isNotNull));
     });
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
       final parser = definition.build();
-      expect(parser.accept('1'), isTrue);
-      expect(parser.accept('12'), isTrue);
-      expect(parser.accept('1.23'), isTrue);
-      expect(parser.accept('-12.3'), isTrue);
-      expect(parser.accept('1 + 2'), isTrue);
-      expect(parser.accept('1 + 2 + 3'), isTrue);
-      expect(parser.accept('1 - 2'), isTrue);
-      expect(parser.accept('1 - 2 - 3'), isTrue);
-      expect(parser.accept('1 * 2'), isTrue);
-      expect(parser.accept('1 * 2 * 3'), isTrue);
-      expect(parser.accept('1 / 2'), isTrue);
-      expect(parser.accept('1 / 2 / 3'), isTrue);
-      expect(parser.accept('1 ^ 2'), isTrue);
-      expect(parser.accept('1 ^ 2 ^ 3'), isTrue);
-      expect(parser.accept('1 + (2 * 3)'), isTrue);
-      expect(parser.accept('(1 + 2) * 3'), isTrue);
+      expect(parser, isParseSuccess('1', isNotNull));
+      expect(parser, isParseSuccess('12', isNotNull));
+      expect(parser, isParseSuccess('1.23', isNotNull));
+      expect(parser, isParseSuccess('-12.3', isNotNull));
+      expect(parser, isParseSuccess('1 + 2', isNotNull));
+      expect(parser, isParseSuccess('1 + 2 + 3', isNotNull));
+      expect(parser, isParseSuccess('1 - 2', isNotNull));
+      expect(parser, isParseSuccess('1 - 2 - 3', isNotNull));
+      expect(parser, isParseSuccess('1 * 2', isNotNull));
+      expect(parser, isParseSuccess('1 * 2 * 3', isNotNull));
+      expect(parser, isParseSuccess('1 / 2', isNotNull));
+      expect(parser, isParseSuccess('1 / 2 / 3', isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2', isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2 ^ 3', isNotNull));
+      expect(parser, isParseSuccess('1 + (2 * 3)', isNotNull));
+      expect(parser, isParseSuccess('(1 + 2) * 3', isNotNull));
     });
   });
   group('definition parser', () {
@@ -426,22 +414,22 @@ void main() {
     final parser = GrammarParser(definition);
     expectCommon(parser);
     test('expression', () {
-      expect(parser.accept('1'), isTrue);
-      expect(parser.accept('12'), isTrue);
-      expect(parser.accept('1.23'), isTrue);
-      expect(parser.accept('-12.3'), isTrue);
-      expect(parser.accept('1 + 2'), isTrue);
-      expect(parser.accept('1 + 2 + 3'), isTrue);
-      expect(parser.accept('1 - 2'), isTrue);
-      expect(parser.accept('1 - 2 - 3'), isTrue);
-      expect(parser.accept('1 * 2'), isTrue);
-      expect(parser.accept('1 * 2 * 3'), isTrue);
-      expect(parser.accept('1 / 2'), isTrue);
-      expect(parser.accept('1 / 2 / 3'), isTrue);
-      expect(parser.accept('1 ^ 2'), isTrue);
-      expect(parser.accept('1 ^ 2 ^ 3'), isTrue);
-      expect(parser.accept('1 + (2 * 3)'), isTrue);
-      expect(parser.accept('(1 + 2) * 3'), isTrue);
+      expect(parser, isParseSuccess('1', isNotNull));
+      expect(parser, isParseSuccess('12', isNotNull));
+      expect(parser, isParseSuccess('1.23', isNotNull));
+      expect(parser, isParseSuccess('-12.3', isNotNull));
+      expect(parser, isParseSuccess('1 + 2', isNotNull));
+      expect(parser, isParseSuccess('1 + 2 + 3', isNotNull));
+      expect(parser, isParseSuccess('1 - 2', isNotNull));
+      expect(parser, isParseSuccess('1 - 2 - 3', isNotNull));
+      expect(parser, isParseSuccess('1 * 2', isNotNull));
+      expect(parser, isParseSuccess('1 * 2 * 3', isNotNull));
+      expect(parser, isParseSuccess('1 / 2', isNotNull));
+      expect(parser, isParseSuccess('1 / 2 / 3', isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2', isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2 ^ 3', isNotNull));
+      expect(parser, isParseSuccess('1 + (2 * 3)', isNotNull));
+      expect(parser, isParseSuccess('(1 + 2) * 3', isNotNull));
     });
   });
 }
