@@ -267,7 +267,7 @@ void main() {
     final typedReferenceDefinition = TypedReferencesGrammarDefinition();
     final untypedReferenceDefinition = UntypedReferencesGrammarDefinition();
     final deprecatedUntypedReferenceDefinition =
-        UntypedReferencesGrammarDefinition();
+        DeprecatedUntypedReferencesGrammarDefinition();
     final buggedDefinition = BuggedGrammarDefinition();
 
     test('reference without parameters', () {
@@ -401,7 +401,7 @@ void main() {
     });
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
-      final parser = definition.build();
+      final parser = GrammarParser(definition);
       expect(parser.accept('1'), isTrue);
       expect(parser.accept('12'), isTrue);
       expect(parser.accept('1.23'), isTrue);

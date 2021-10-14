@@ -929,7 +929,7 @@ void main() {
         expect(parser, isParseFailure(''));
       });
       test('unicode', () {
-        final string = String.fromCharCodes([
+        final whitespace = {
           9,
           10,
           11,
@@ -956,8 +956,15 @@ void main() {
           8287,
           12288,
           65279
-        ]);
-        expect(parser.star().flatten(), isParseSuccess(string, string));
+        };
+        for (var i = 0; i < 65536; i++) {
+          String character = String.fromCharCode(i);
+          expect(
+              parser,
+              whitespace.contains(i)
+                  ? isParseSuccess(character, character)
+                  : isParseFailure(character));
+        }
       });
     });
     group('word', () {
