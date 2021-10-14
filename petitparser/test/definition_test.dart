@@ -30,7 +30,8 @@ class TypedReferencesGrammarDefinition extends GrammarDefinition {
   Parser<List<String>> f0() => this.ref1(f1, 1);
   Parser<List<String>> f1(int a1) => this.ref2(f2, a1, 2);
   Parser<List<String>> f2(int a1, int a2) => this.ref3(f3, a1, a2, 3);
-  Parser<List<String>> f3(int a1, int a2, int a3) => this.ref4(f4, a1, a2, a3, 4);
+  Parser<List<String>> f3(int a1, int a2, int a3) =>
+      this.ref4(f4, a1, a2, a3, 4);
   Parser<List<String>> f4(int a1, int a2, int a3, int a4) =>
       this.ref5(f5, a1, a2, a3, a4, 5);
   Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) => [
