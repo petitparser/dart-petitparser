@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import 'internal/reference.dart';
 import 'internal/undefined.dart';
 import 'resolve.dart';
+import 'reference.dart' as reference;
 
 /// Helper to conveniently define and build complex, recursive grammars using
 /// plain Dart code.
@@ -75,43 +75,39 @@ abstract class GrammarDefinition {
   /// Use [ref0], [ref1], [ref2], [ref3], [ref4], or [ref5] instead.
   @Deprecated('Use [ref0], [ref1], [ref2], ... instead.')
   Parser<T> ref<T>(Function callback,
-      [dynamic arg1 = undefined,
-      dynamic arg2 = undefined,
-      dynamic arg3 = undefined,
-      dynamic arg4 = undefined,
-      dynamic arg5 = undefined]) {
-    final arguments = [arg1, arg2, arg3, arg4, arg5]
-        .takeWhile((each) => each != undefined)
-        .toList(growable: false);
-    return ReferenceParser<T>(callback, arguments);
-  }
+          [dynamic arg1 = undefined,
+          dynamic arg2 = undefined,
+          dynamic arg3 = undefined,
+          dynamic arg4 = undefined,
+          dynamic arg5 = undefined]) =>
+      reference.ref(callback, arg1, arg2, arg3, arg4, arg5);
 
   /// Reference to a production [callback] without any parameters.
   Parser<T> ref0<T>(Parser<T> Function() callback) =>
-      ReferenceParser<T>(callback, const []);
+      reference.ref0<T>(callback);
 
   /// Reference to a production [callback] parametrized with a single argument
   /// [arg1].
   Parser<T> ref1<T, A1>(Parser<T> Function(A1) callback, A1 arg1) =>
-      ReferenceParser<T>(callback, [arg1]);
+      reference.ref1<T, A1>(callback, arg1);
 
   /// Reference to a production [callback] parametrized with two arguments
   /// [arg1] and [arg2].
   Parser<T> ref2<T, A1, A2>(
           Parser<T> Function(A1, A2) callback, A1 arg1, A2 arg2) =>
-      ReferenceParser<T>(callback, [arg1, arg2]);
+      reference.ref2<T, A1, A2>(callback, arg1, arg2);
 
   /// Reference to a production [callback] parametrized with tree arguments
   /// [arg1], [arg2], and [arg3].
   Parser<T> ref3<T, A1, A2, A3>(
           Parser<T> Function(A1, A2, A3) callback, A1 arg1, A2 arg2, A3 arg3) =>
-      ReferenceParser<T>(callback, [arg1, arg2, arg3]);
+      reference.ref3<T, A1, A2, A3>(callback, arg1, arg2, arg3);
 
   /// Reference to a production [callback] parametrized with four arguments
   /// [arg1], [arg2], [arg3], and [arg4].
   Parser<T> ref4<T, A1, A2, A3, A4>(Parser<T> Function(A1, A2, A3, A4) callback,
           A1 arg1, A2 arg2, A3 arg3, A4 arg4) =>
-      ReferenceParser<T>(callback, [arg1, arg2, arg3, arg4]);
+      reference.ref4<T, A1, A2, A3, A4>(callback, arg1, arg2, arg3, arg4);
 
   /// Reference to a production [callback] parametrized with five arguments
   /// [arg1], [arg2], [arg3], [arg4], and [arg5].
@@ -122,7 +118,8 @@ abstract class GrammarDefinition {
           A3 arg3,
           A4 arg4,
           A5 arg5) =>
-      ReferenceParser<T>(callback, [arg1, arg2, arg3, arg4, arg5]);
+      reference.ref5<T, A1, A2, A3, A4, A5>(
+          callback, arg1, arg2, arg3, arg4, arg5);
 
   /// Builds a composite parser from this definition.
   ///
