@@ -1,8 +1,9 @@
 # Changelog
 
-## 4.4.0 (unpublished)
+## 4.4.0
 
 * Add a `PatternParser` that allows to use any Dart `Pattern` as a parser.
+* Greatly improve the test coverage of all code to 98%.
 
 ## 4.3.0
 
