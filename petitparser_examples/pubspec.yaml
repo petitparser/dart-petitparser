@@ -1,5 +1,5 @@
 name: petitparser_examples
-version: 4.4.0
+version: 4.5.0
 
 homepage: https://github.com/petitparser/dart-petitparser
 description: A collection of example parsers, applications, and benchmarks that
@@ -12,6 +12,9 @@ dependencies:
   meta: ^1.7.0
   more: ^3.3.0
   petitparser: ^4.4.0
+dependency_overrides:
+  petitparser:
+    path: ../petitparser
 dev_dependencies:
   build_runner: ^2.1.0
   build_web_compilers: ^3.2.0
