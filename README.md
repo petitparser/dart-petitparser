@@ -32,6 +32,9 @@ Import the package into your Dart code using:
 import 'package:petitparser/petitparser.dart';
 ```
 
+It is also possible to more selectively import only certain parts of this library, i.e. `package:petitparser/core.dart` and `package:petitparser/parser.dart` for core infrastructure and the basic parsers.
+
+:warning: This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of its functionality.
 
 ### Writing a Simple Grammar
 
