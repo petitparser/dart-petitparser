@@ -1,7 +1,7 @@
 PetitParser Examples
 ====================
 
-For more complicated examples see the official [GitHub repository](https://github.com/petitparser/dart-petitparser/tree/main/example).
+For more complicated examples see the official [example repository](https://github.com/petitparser/dart-petitparser-examples) or the [demo page](https://petitparser.github.io/).
  
 This directory contains the command-line calculator that is described in the introductory tutorial:
  

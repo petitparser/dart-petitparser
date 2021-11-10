@@ -19,7 +19,7 @@ The package is hosted on [dart packages](https://pub.dev/packages/petitparser). 
 Tutorial
 --------
 
-Below are step-by-step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser-examples).
+Below are step-by-step instructions of how to write your first parser. More elaborate examples (JSON parser, LISP parser and evaluator, Prolog parser and evaluator, etc.) are included in the [example repository](https://github.com/petitparser/dart-petitparser-examples). Try out the running demos at [petitparser.github.io](https://petitparser.github.io/).
 
 
 ### Installation
