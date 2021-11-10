@@ -2,6 +2,8 @@
 
 ## 4.5.0 (unpublished)
 
+* Moved PetitParser Examples to a separate Git repository.
+
 ## 4.4.0
 
 * Add a `PatternParser` that allows to use any Dart `Pattern` as a parser.

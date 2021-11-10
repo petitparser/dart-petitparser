@@ -2,8 +2,8 @@ import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
 import 'internal/undefined.dart';
-import 'resolve.dart';
 import 'reference.dart' as reference;
+import 'resolve.dart';
 
 /// Helper to conveniently define and build complex, recursive grammars using
 /// plain Dart code.

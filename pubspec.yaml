@@ -10,5 +10,5 @@ environment:
 dependencies:
   meta: ^1.7.0
 dev_dependencies:
-  test: ^1.17.0
+  test: ^1.19.0
   lints: ^1.0.0
