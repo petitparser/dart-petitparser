@@ -367,12 +367,12 @@ Misc
 
 The package comes with a large collection of example grammars and language experiments ready to explore:
 
-- [Dart](https://github.com/petitparser/dart-petitparser-examles/tree/main/lib/src/dart) contains an experimental Dart grammar.
-- [JSON](https://github.com/petitparser/dart-petitparser-examles/tree/main/lib/src/json) contains a complete JSON grammar and parser.
-- [Lisp](https://github.com/petitparser/dart-petitparser-examles/tree/main/lib/src/lisp) contains a complete LISP grammar, parser and evaluator.
-- [Prolog](https://github.com/petitparser/dart-petitparser-examles/tree/main/lib/src/prolog) contains a basic Prolog grammar, parser and evaluator.
-- [Smalltalk](https://github.com/petitparser/dart-petitparser-examles/tree/main/lib/src/smalltalk) contains a complete Smalltalk grammar.
-- [Uri](https://github.com/petitparser/dart-petitparser-examles/blob/main/lib/uri.dart) contains a simple URI parser.
+- [Dart](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/dart) contains an experimental Dart grammar.
+- [JSON](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/json) contains a complete JSON grammar and parser.
+- [Lisp](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/lisp) contains a complete LISP grammar, parser and evaluator.
+- [Prolog](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/prolog) contains a basic Prolog grammar, parser and evaluator.
+- [Smalltalk](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/smalltalk) contains a complete Smalltalk grammar.
+- [Uri](https://github.com/petitparser/dart-petitparser-examples/blob/main/lib/uri.dart) contains a simple URI parser.
 
 Furthermore, there are [numerous open source projects](https://pub.dev/packages?q=dependency:petitparser) using PetitParser:
 
