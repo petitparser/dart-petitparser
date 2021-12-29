@@ -11,8 +11,8 @@ extension SurroundedByParserExtension<T> on Parser<T> {
   /// consume input afterwards. To skip the [before] or [after] parsing pass an
   /// `epsilon()` parser.
   ///
-  /// For example, the parser `digit().plus().surroundedBy(char('['), char(']'))`
-  /// returns `'42'` for the input `'[42]'`.
+  /// For example, the parser `digit().surroundedBy(char('['), char(']'))`
+  /// returns `'3'` for the input `'[3]'`.
   Parser<T> surroundedBy(Parser<void> before, [Parser<void>? after]) =>
       [before, this, after ?? before].toSequenceParser().pick(1).cast<T>();
 }
