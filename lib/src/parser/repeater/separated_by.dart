@@ -4,7 +4,7 @@ import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
 import '../repeater/possessive.dart';
 
-extension SeparatedBy<T> on Parser<T> {
+extension SeparatedByParserExtension<T> on Parser<T> {
   /// Returns a parser that consumes the receiver one or more times separated
   /// by the [separator] parser. The resulting parser returns a flat list of
   /// the parse results of the receiver interleaved with the parse result of the

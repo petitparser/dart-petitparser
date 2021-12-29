@@ -1285,6 +1285,36 @@ void main() {
         expect(parser, isParseSuccess('a', 'a'));
       });
     });
+    group('surrounded', () {
+      group('shared before and after', () {
+        final parser = any().surroundedBy(char('*'));
+        expectCommon(parser);
+        test('default', () {
+          expect(parser, isParseSuccess('*a*', 'a'));
+          expect(parser, isParseSuccess('*b*', 'b'));
+          expect(parser, isParseFailure('', message: '"*" expected'));
+          expect(parser,
+              isParseFailure('*', position: 1, message: 'input expected'));
+          expect(parser, isParseFailure('a', message: '"*" expected'));
+          expect(parser,
+              isParseFailure('*a', position: 2, message: '"*" expected'));
+        });
+      });
+      group('different before and after', () {
+        final parser = any().surroundedBy(char('['), char(']'));
+        expectCommon(parser);
+        test('default', () {
+          expect(parser, isParseSuccess('[a]', 'a'));
+          expect(parser, isParseSuccess('[b]', 'b'));
+          expect(parser, isParseFailure('', message: '"[" expected'));
+          expect(parser,
+              isParseFailure('[', position: 1, message: 'input expected'));
+          expect(parser, isParseFailure('a', message: '"[" expected'));
+          expect(parser,
+              isParseFailure('[a', position: 2, message: '"]" expected'));
+        });
+      });
+    });
   });
   group('misc', () {
     group('end', () {

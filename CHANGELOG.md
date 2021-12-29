@@ -3,6 +3,7 @@
 ## 4.5.0 (unpublished)
 
 * Moved PetitParser Examples to a separate Git repository.
+* Add a `surroundedBy` helper that silently consumes input before and after another parser.
 
 ## 4.4.0
 
