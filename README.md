@@ -360,7 +360,7 @@ Check out the extensive test suites of [PetitParser](https://github.com/petitpar
 Misc
 ----
 
-[petitparser.github.io](https://petitparser.github.io/) contains up-to-date information about PetitParser.
+[petitparser.github.io](https://petitparser.github.io/) contains up-to-date information about PetitParser and ports to other languages.
 
 
 ### Examples
@@ -391,16 +391,6 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 ### History
 
 PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
-
-
-### Implementations
-
-- [Dart](https://github.com/petitparser/dart-petitparser)
-- [Java](https://github.com/petitparser/java-petitparser)
-- [PHP](https://github.com/mindplay-dk/petitparserphp)
-- [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser)
-- [Swift](https://github.com/philipparndt/swift-petitparser)
-- [TypeScript](https://github.com/mindplay-dk/petitparser-ts)
 
 
 ### License
