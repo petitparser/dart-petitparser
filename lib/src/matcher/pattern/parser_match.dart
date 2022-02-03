@@ -4,6 +4,8 @@ import 'parser_pattern.dart';
 
 @immutable
 class ParserMatch implements Match {
+  const ParserMatch(this.pattern, this.input, this.start, this.end);
+
   @override
   final ParserPattern pattern;
 
@@ -15,8 +17,6 @@ class ParserMatch implements Match {
 
   @override
   final int end;
-
-  const ParserMatch(this.pattern, this.input, this.start, this.end);
 
   @override
   String? group(int group) => this[group];

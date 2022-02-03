@@ -2,9 +2,9 @@ import '../context/failure.dart';
 
 /// An exception raised in case of a parse error.
 class ParserException implements FormatException {
-  final Failure failure;
-
   ParserException(this.failure);
+
+  final Failure failure;
 
   @override
   String get message => failure.message;

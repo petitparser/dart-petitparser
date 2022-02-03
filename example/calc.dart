@@ -1,4 +1,5 @@
 /// Calculator from the tutorial.
+import 'dart:io';
 import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';
@@ -32,9 +33,10 @@ void main(List<String> arguments) {
   final input = arguments.join(' ');
   final result = parser.parse(input);
   if (result.isSuccess) {
-    print(' = ${result.value}');
+    stdout.writeln(' = ${result.value}');
   } else {
-    print(input);
-    print('${' ' * (result.position - 1)}^-- ${result.message}');
+    stderr.writeln(input);
+    stderr.writeln('${' ' * (result.position - 1)}^-- ${result.message}');
+    exit(1);
   }
 }

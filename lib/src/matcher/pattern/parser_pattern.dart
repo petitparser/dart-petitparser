@@ -6,9 +6,9 @@ import 'pattern_iterable.dart';
 
 @immutable
 class ParserPattern implements Pattern {
-  final Parser parser;
-
   const ParserPattern(this.parser);
+
+  final Parser parser;
 
   /// Matches this parser against [string] repeatedly.
   ///

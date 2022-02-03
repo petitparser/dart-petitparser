@@ -958,7 +958,7 @@ void main() {
           65279
         };
         for (var i = 0; i < 65536; i++) {
-          String character = String.fromCharCode(i);
+          var character = String.fromCharCode(i);
           expect(
               parser,
               whitespace.contains(i)

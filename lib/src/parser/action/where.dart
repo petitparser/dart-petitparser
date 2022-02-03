@@ -36,13 +36,13 @@ extension WhereParserExtension<T> on Parser<T> {
 }
 
 class WhereParser<T> extends DelegateParser<T, T> {
-  final Predicate<T> predicate;
-  final Callback<T, String>? failureMessage;
-  final Callback<T, int>? failurePosition;
-
   WhereParser(Parser<T> parser, this.predicate, this.failureMessage,
       this.failurePosition)
       : super(parser);
+
+  final Predicate<T> predicate;
+  final Callback<T, String>? failureMessage;
+  final Callback<T, int>? failurePosition;
 
   @override
   Result<T> parseOn(Context context) {

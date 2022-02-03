@@ -8,9 +8,9 @@ import 'result.dart';
 
 /// Models a group of operators of the same precedence.
 class ExpressionGroup {
-  final Parser _loopback;
-
   ExpressionGroup(this._loopback);
+
+  final Parser _loopback;
 
   /// Defines a new primitive or literal [parser]. Evaluates the optional
   /// [action].

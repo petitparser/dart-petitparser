@@ -15,24 +15,24 @@ import '../core/parser.dart';
 Iterable<Parser> allParser(Parser root) => _ParserIterable(root);
 
 class _ParserIterable extends Iterable<Parser> {
-  final Parser root;
-
   _ParserIterable(this.root);
+
+  final Parser root;
 
   @override
   Iterator<Parser> get iterator => _ParserIterator(root);
 }
 
 class _ParserIterator extends Iterator<Parser> {
+  _ParserIterator(Parser root)
+      : todo = [root],
+        seen = {root};
+
   final List<Parser> todo;
   final Set<Parser> seen;
 
   @override
   late Parser current;
-
-  _ParserIterator(Parser root)
-      : todo = [root],
-        seen = {root};
 
   @override
   bool moveNext() {

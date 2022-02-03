@@ -12,6 +12,11 @@ Parser element() => char('(').seq(ref0(content)).seq(char(')'));
 Parser content() => (ref0(element) | any()).star();
 final nestedParser = resolve(ref0(content)).flatten().end();
 
+class ParensGrammar extends GrammarDefinition {
+  @override
+  Parser start() => char('(') & ref0(start) & char(')') | epsilon();
+}
+
 void main() {
   test('flatten().trim()', () {
     final parser = word().plus().flatten().trim();
@@ -285,5 +290,28 @@ void main() {
     expect(parser, isParseSuccess('foo', 'foo'));
     expect(parser,
         isParseFailure('foo.1', message: 'end of id expected', position: 3));
+  });
+  test('https://github.com/petitparser/dart-petitparser/issues/126', () {
+    final parser = ParensGrammar().build();
+    expect(parser, isParseSuccess('', null));
+    expect(parser, isParseSuccess('()', ['(', null, ')']));
+    expect(
+        parser,
+        isParseSuccess('(())', [
+          '(',
+          ['(', null, ')'],
+          ')'
+        ]));
+    expect(
+        parser,
+        isParseSuccess('((()))', [
+          '(',
+          [
+            '(',
+            ['(', null, ')'],
+            ')'
+          ],
+          ')'
+        ]));
   });
 }

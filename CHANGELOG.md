@@ -2,11 +2,13 @@
 
 ## 4.5.0 (unpublished)
 
+* Dart 2.16 requirement.
 * Moved PetitParser Examples to a separate Git repository.
 * Add a `surroundedBy` helper that silently consumes input before and after another parser.
 
 ## 4.4.0
 
+* Dart 2.15 requirement.
 * Add a `PatternParser` that allows to use any Dart `Pattern` as a parser.
 * Greatly improve the test coverage of all code to 98%.
 
