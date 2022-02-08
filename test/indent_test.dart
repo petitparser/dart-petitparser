@@ -154,7 +154,6 @@ void main() {
             }
           ]));
     });
-    ;
     test('different indent', () {
       expect(parser, isParseFailure('a:\n b\n\tc', position: 6));
       expect(parser, isParseFailure('a:\n\tb\n c', position: 6));
