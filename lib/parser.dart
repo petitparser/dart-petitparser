@@ -1,4 +1,5 @@
 /// This package contains the standard parser implementations.
+export 'src/core/parser.dart';
 export 'src/parser/action/cast.dart';
 export 'src/parser/action/cast_list.dart';
 export 'src/parser/action/continuation.dart';
