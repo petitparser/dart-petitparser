@@ -21,10 +21,6 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
       throw UnsupportedError('References cannot be parsed.');
 
   @override
-  int fastParseOn(String buffer, int position) =>
-      throw UnsupportedError('References cannot be parsed.');
-
-  @override
   ReferenceParser<R> copy() =>
       throw UnsupportedError('References cannot be copied.');
 

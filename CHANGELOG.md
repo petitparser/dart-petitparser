@@ -5,6 +5,7 @@
 * Dart 2.16 requirement.
 * Moved PetitParser Examples to a separate Git repository.
 * Add a `surroundedBy` helper that silently consumes input before and after another parser.
+* Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
 
 ## 4.4.0
 

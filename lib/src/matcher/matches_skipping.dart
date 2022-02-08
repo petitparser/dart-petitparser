@@ -13,7 +13,7 @@ extension MatchesSkippingParser<T> on Parser<T> {
   /// overlapping parse results.
   List<T> matchesSkipping(String input) {
     final list = <T>[];
-    map(list.add, hasSideEffects: true).or(any()).star().fastParseOn(input, 0);
+    map(list.add).or(any()).star().fastParseOn(input, 0);
     return list;
   }
 }

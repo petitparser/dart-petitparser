@@ -15,12 +15,7 @@ extension MatchesParser<T> on Parser<T> {
   /// [matchesSkipping] to retrieve non-overlapping parse results.
   List<T> matches(String input) {
     final list = <T>[];
-    and()
-        .map(list.add, hasSideEffects: true)
-        .seq(any())
-        .or(any())
-        .star()
-        .fastParseOn(input, 0);
+    and().map(list.add).seq(any()).or(any()).star().fastParseOn(input, 0);
     return list;
   }
 }

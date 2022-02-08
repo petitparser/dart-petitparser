@@ -196,13 +196,13 @@ class UnusedResult extends LinterRule {
       final deepChildren = analyzer.allChildren(parser);
       final ignoredResults = deepChildren
           .where((parser) =>
-              (parser is CastParser) ||
-              (parser is CastListParser) ||
-              (parser is FlattenParser) ||
-              (parser is MapParser && !parser.hasSideEffects) ||
-              (parser is PermuteParser) ||
-              (parser is PickParser) ||
-              (parser is TokenParser))
+              parser is CastParser ||
+              parser is CastListParser ||
+              parser is FlattenParser ||
+              parser is MapParser ||
+              parser is PermuteParser ||
+              parser is PickParser ||
+              parser is TokenParser)
           .toSet();
       if (ignoredResults.isNotEmpty) {
         final path = analyzer.findPath(

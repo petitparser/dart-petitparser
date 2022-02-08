@@ -194,16 +194,6 @@ void main() {
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('a'));
       });
-      test('with side-effects', () {
-        final parser = digit().map(
-            (each) => each.codeUnitAt(0) - '0'.codeUnitAt(0),
-            hasSideEffects: true);
-        expect(parser, isParseSuccess('1', 1));
-        expect(parser, isParseSuccess('4', 4));
-        expect(parser, isParseSuccess('9', 9));
-        expect(parser, isParseFailure(''));
-        expect(parser, isParseFailure('a'));
-      });
     });
     group('permute', () {
       expectCommon(any().star().permute([-1, 1]));
