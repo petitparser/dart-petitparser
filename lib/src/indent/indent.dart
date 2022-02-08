@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import '../parser/action/flatten.dart';
 import '../parser/action/map.dart';
@@ -7,7 +9,7 @@ import '../parser/combinator/and.dart';
 import '../parser/misc/epsilon.dart';
 import '../parser/repeater/possessive.dart';
 
-/// A stateful set of parsers to handled indentation.
+/// A stateful set of parsers to handled indentation based grammars.
 ///
 /// Based on https://stackoverflow.com/a/56926044/82303.
 class Indent {
@@ -21,13 +23,16 @@ class Indent {
   /// The error message to display when an indention is expected.
   final String message;
 
-  /// The current stack of indentations.
+  /// Internal field with the stack of indentations.
+  @internal
   final List<String> stack = [];
 
-  /// The currently active indentation.
+  /// Internal field of the currently active indentation.
+  @internal
   String current = '';
 
-  /// A parser that increases the current indent, but does not consume anything.
+  /// A parser that increases the current indentation and returns it, but does
+  /// not consume anything.
   late Parser<String> increase = parser
       .plus()
       .flatten(message)
@@ -41,7 +46,8 @@ class Indent {
   late Parser<String> same =
       parser.star().flatten(message).where((value) => value == current);
 
-  /// A parser that reduces the current indent, but does not consume anything.
+  /// A parser that increases the current indentation and returns it, but does
+  /// not consume anything.
   late Parser<String> decrease = epsilon()
       .where((value) => stack.isNotEmpty)
       .map((value) => current = stack.removeLast());

@@ -65,21 +65,128 @@ void main() {
       expect(definition.indent.stack, isEmpty);
       expect(definition.indent.current, '');
     });
-    test('same', () {
-      expect(parser, isParseSuccess('''
-a
-b
-c
-''', ['a', 'b', 'c']));
+    test('empty', () {
+      expect(parser, isParseSuccess('', []));
+
+      expect(parser, isParseSuccess('\n', []));
+      expect(parser, isParseSuccess('\n\r', []));
+      expect(parser, isParseSuccess('\r', []));
+
+      expect(parser, isParseSuccess('\n\n', []));
+      expect(parser, isParseSuccess('\n\r\n\r', []));
+      expect(parser, isParseSuccess('\r\r', []));
+    });
+    test('newline before', () {
+      expect(parser, isParseSuccess('\na', ['a']));
+      expect(parser, isParseSuccess('\n\ra', ['a']));
+      expect(parser, isParseSuccess('\ra', ['a']));
+
+      expect(parser, isParseSuccess('\n\na', ['a']));
+      expect(parser, isParseSuccess('\n\r\n\ra', ['a']));
+      expect(parser, isParseSuccess('\r\ra', ['a']));
+    });
+    test('newline after', () {
+      expect(parser, isParseSuccess('a\n', ['a']));
+      expect(parser, isParseSuccess('a\n\r', ['a']));
+      expect(parser, isParseSuccess('a\r', ['a']));
+
+      expect(parser, isParseSuccess('a\n\n', ['a']));
+      expect(parser, isParseSuccess('a\n\r\n\r', ['a']));
+      expect(parser, isParseSuccess('a\r\r', ['a']));
+    });
+    test('single indent', () {
+      expect(
+          parser,
+          isParseSuccess('a:\n b', [
+            {
+              'a': ['b']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n\tb', [
+            {
+              'a': ['b']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n \tb', [
+            {
+              'a': ['b']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n\t b', [
+            {
+              'a': ['b']
+            }
+          ]));
+    });
+    test('same indent', () {
+      expect(
+          parser,
+          isParseSuccess('a:\n b\n c', [
+            {
+              'a': ['b', 'c']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n\tb\n\tc', [
+            {
+              'a': ['b', 'c']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n \tb\n \tc', [
+            {
+              'a': ['b', 'c']
+            }
+          ]));
+      expect(
+          parser,
+          isParseSuccess('a:\n\t b\n\t c', [
+            {
+              'a': ['b', 'c']
+            }
+          ]));
+    });
+    ;
+    test('different indent', () {
+      expect(parser, isParseFailure('a:\n b\n\tc', position: 6));
+      expect(parser, isParseFailure('a:\n\tb\n c', position: 6));
+    });
+    test('missing indent', () {
+      expect(parser, isParseSuccess('a:\nb', ['a:', 'b']));
+    });
+    test('unexpected indent', () {
+      expect(parser, isParseFailure('a\n b', position: 2));
+    });
+    test('same level', () {
+      expect(parser, isParseSuccess('a\nb\nc', ['a', 'b', 'c']));
+    });
+    test('inlined values', () {
+      expect(
+          parser,
+          isParseSuccess('a:1\nb: 2\nc :3', [
+            {
+              'a': ['1']
+            },
+            {
+              'b': ['2']
+            },
+            {
+              'c': ['3']
+            }
+          ]));
     });
     test('increasing', () {
       expect(
           parser,
-          isParseSuccess('''
-a:
-  b:
-    c
-''', [
+          isParseSuccess('a:\n  b:\n    c', [
             {
               'a': [
                 {
@@ -92,11 +199,7 @@ a:
     test('decreasing', () {
       expect(
           parser,
-          isParseSuccess('''
-a:
-  b
-c
-''', [
+          isParseSuccess('a:\n\tb\nc', [
             {
               'a': ['b']
             },
