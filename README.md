@@ -340,7 +340,7 @@ test('number parsing', () {
 });
 ```
 
-Additionally, PetitParser provides a Linter that comes with a collection of predefined rules that can help you find common bugs or inefficient constructs in your code. Among other things, the analyzer detects infinite loops, unreachable parsers, repeated parsers, and unresolved parsers. For an up-to-date list of all available rules check the implementation at [linter_rules.dart](https://github.com/petitparser/dart-petitparser/blob/main/petitparser/lib/src/reflection/internal/linter_rules.dart).
+Additionally, PetitParser provides a Linter that comes with a collection of predefined rules that can help you find common bugs or inefficient constructs in your code. Among other things, the analyzer detects infinite loops, unreachable parsers, repeated parsers, and unresolved parsers. For an up-to-date list of all available rules check the implementation at [linter_rules.dart](https://github.com/petitparser/dart-petitparser/blob/main/lib/src/reflection/internal/linter_rules.dart).
 
 To run the linter as part of your tests include the package `petitparser/reflection.dart`, call the `linter` function with the starting parser of your grammar, and assert that there are no findings. With the `EvaluatorDefinition` from above one would write:
 
