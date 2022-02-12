@@ -19,19 +19,20 @@ class ExpressionGroup<T> {
   /// Defines a new primitive or literal [parser].
   void primitive(Parser<T> parser) => _primitive.add(parser);
 
-  Parser<T> _buildPrimitive(Parser<T> inner) => buildChoice(_primitive, inner);
+  Parser<T> _buildPrimitive(Parser<T> inner) => _buildChoice(_primitive, inner);
 
   final List<Parser<T>> _primitive = [];
 
   /// Defines a new wrapper using [left] and [right] parsers, that are typically
   /// used for parenthesis. Evaluates the [callback] with the parsed `left`
   /// delimiter, the `value` and `right` delimiter.
-  void wrapper<O>(Parser<O> left, Parser<O> right,
-          T Function(O left, T value, O right) callback) =>
+  void wrapper<L, R>(Parser<L> left, Parser<R> right,
+          T Function(L left, T value, R right) callback) =>
       _wrapper.add([left, _loopback, right].toSequenceParser().map(
-          (value) => callback(value[0] as O, value[1] as T, value[2] as O)));
+          (value) => callback(value[0] as L, value[1] as T, value[2] as R)));
 
-  Parser<T> _buildWrapper(Parser<T> inner) => buildChoice([..._wrapper, inner]);
+  Parser<T> _buildWrapper(Parser<T> inner) =>
+      _buildChoice([..._wrapper, inner]);
 
   final List<Parser<T>> _wrapper = [];
 
@@ -45,7 +46,7 @@ class ExpressionGroup<T> {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return [buildChoice(_prefix).star(), inner].toSequenceParser().map(
+      return [_buildChoice(_prefix).star(), inner].toSequenceParser().map(
           (tuple) => (tuple.first as List).reversed.fold(tuple.last as T,
               (value, result) => (result as ExpressionResultPrefix)(value)));
     }
@@ -63,7 +64,7 @@ class ExpressionGroup<T> {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return [inner, buildChoice(_postfix).star()].toSequenceParser().map(
+      return [inner, _buildChoice(_postfix).star()].toSequenceParser().map(
           (tuple) => (tuple.last as List).fold(tuple.first as T,
               (value, result) => (result as ExpressionResultPostfix)(value)));
     }
@@ -82,7 +83,7 @@ class ExpressionGroup<T> {
     if (_right.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(buildChoice(_right)).map((sequence) {
+      return inner.separatedBy(_buildChoice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
           result =
@@ -106,7 +107,7 @@ class ExpressionGroup<T> {
     if (_left.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(buildChoice(_left)).map((sequence) {
+      return inner.separatedBy(_buildChoice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
           result =
@@ -126,7 +127,7 @@ class ExpressionGroup<T> {
 }
 
 // Internal helper to build an optimal choice parser.
-Parser<T> buildChoice<T>(List<Parser<T>> parsers, [Parser<T>? otherwise]) {
+Parser<T> _buildChoice<T>(List<Parser<T>> parsers, [Parser<T>? otherwise]) {
   if (parsers.isEmpty) {
     return otherwise!;
   } else if (parsers.length == 1) {
