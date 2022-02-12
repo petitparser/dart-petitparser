@@ -147,7 +147,7 @@ void main() {
         delimited, isParseFailure('abc', position: 3, message: '"a" expected'));
   });
   test('function evaluator', () {
-    final builder = ExpressionBuilder();
+    final builder = ExpressionBuilder<Evaluator>();
     builder.group()
       ..primitive(digit()
           .plus()
@@ -158,28 +158,22 @@ void main() {
         final number = num.parse(a);
         return (num value) => number;
       }))
-      ..primitive(char('x').trim().map((_) => (num value) => value))
-      ..wrapper(char('(').trim(), char(')').trim(), (_, Evaluator a, __) => a);
+      ..primitive(char('x').trim().map((_) => (value) => value))
+      ..wrapper(char('(').trim(), char(')').trim(), (_, a, __) => a);
     // negation is a prefix operator
     builder
         .group()
-        .prefix(char('-').trim(), (_, Evaluator a) => (num value) => -a(value));
+        .prefix(char('-').trim(), (_, a) => (num value) => -a(value));
     // power is right-associative
     builder.group().right(
-        char('^').trim(),
-        (Evaluator a, _, Evaluator b) =>
-            (num value) => pow(a(value), b(value)));
+        char('^').trim(), (a, _, b) => (num value) => pow(a(value), b(value)));
     // multiplication and addition are left-associative
     builder.group()
-      ..left(char('*').trim(),
-          (Evaluator a, _, Evaluator b) => (num value) => a(value) * b(value))
-      ..left(char('/').trim(),
-          (Evaluator a, _, Evaluator b) => (num value) => a(value) / b(value));
+      ..left(char('*').trim(), (a, _, b) => (num value) => a(value) * b(value))
+      ..left(char('/').trim(), (a, _, b) => (num value) => a(value) / b(value));
     builder.group()
-      ..left(char('+').trim(),
-          (Evaluator a, _, Evaluator b) => (num value) => a(value) + b(value))
-      ..left(char('-').trim(),
-          (Evaluator a, _, Evaluator b) => (num value) => a(value) - b(value));
+      ..left(char('+').trim(), (a, _, b) => (num value) => a(value) + b(value))
+      ..left(char('-').trim(), (a, _, b) => (num value) => a(value) - b(value));
     final parser = builder.build().end();
 
     final expression = parser.parse('5 * x ^ 3 - 2').value;

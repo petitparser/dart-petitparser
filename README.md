@@ -266,10 +266,10 @@ This is just the surface of what `GrammarDefinition` can do, check out [the docu
 
 Writing such expression parsers is pretty common and can be quite tricky to get right. To simplify things, PetitParser comes with a builder that can help you to define such grammars easily. It supports the definition of operator precedence; and prefix, postfix, left- and right-associative operators.
 
-The following code creates the empty expression builder:
+The following code creates the empty expression builder producing values of type `num`:
 
 ```dart
-final builder = ExpressionBuilder();
+final builder = ExpressionBuilder<num>();
 ```
 
 Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating-point numbers, not just integers. In the same group we add support for the parenthesis:
@@ -281,28 +281,26 @@ builder.group()
       .seq(char('.').seq(digit().plus()).optional())
       .flatten()
       .trim()
-      .map((a) => num.tryParse(a)))
-  ..wrapper(char('(').trim(), char(')').trim(), (String l, num a, String r) => a);
+      .map(num.parse))
+  ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 ```
 
 Then come the normal arithmetic operators. Note, that the action blocks receive both, the terms and the parsed operator in the order they appear in the parsed input:
 
 ```dart
-// negation is a prefix operator
-builder.group()
-  ..prefix(char('-').trim(), (String op, num a) => -a);
+// Negation is a prefix operator
+builder.group().prefix(char('-').trim(), (op, a) => -a);
 
-// power is right-associative
-builder.group()
-  ..right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
+// Power is right-associative
+builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
 
-// multiplication and addition are left-associative
+// Multiplication and addition are left-associative
 builder.group()
-  ..left(char('*').trim(), (num a, String op, num b) => a * b)
-  ..left(char('/').trim(), (num a, String op, num b) => a / b);
+..left(char('*').trim(), (a, op, b) => a * b)
+..left(char('/').trim(), (a, op, b) => a / b);
 builder.group()
-  ..left(char('+').trim(), (num a, String op, num b) => a + b)
-  ..left(char('-').trim(), (num a, String op, num b) => a - b);
+..left(char('+').trim(), (a, op, b) => a + b)
+..left(char('-').trim(), (a, op, b) => a - b);
 ```
 
 Finally, we can build the parser:

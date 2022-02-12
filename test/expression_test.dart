@@ -4,39 +4,62 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
-Parser build({required bool attachAction}) {
-  final action = attachAction ? (func) => func : (func) => null;
+Parser buildParser() {
   final builder = ExpressionBuilder();
   builder.group()
-    ..primitive(
-        digit()
-            .plus()
-            .seq(char('.').seq(digit().plus()).optional())
-            .flatten()
-            .trim(),
-        action(num.parse))
+    ..primitive(digit()
+        .plus()
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten()
+        .trim())
     ..wrapper(char('(').trim(), char(')').trim(),
-        action((left, value, right) => value))
+        (left, value, right) => [left, value, right])
     ..wrapper(string('sqrt(').trim(), char(')').trim(),
-        action((left, value, right) => math.sqrt(value)));
-  builder.group().prefix(char('-').trim(), action((op, a) => -a));
+        (left, value, right) => [left, value, right]);
+  builder.group().prefix(char('-').trim(), (op, a) => [op, a]);
   builder.group()
-    ..postfix(string('++').trim(), action((a, op) => ++a))
-    ..postfix(string('--').trim(), action((a, op) => --a));
-  builder.group().right(char('^').trim(), action((a, op, b) => math.pow(a, b)));
+    ..postfix(string('++').trim(), (a, op) => [a, op])
+    ..postfix(string('--').trim(), (a, op) => [a, op]);
+  builder.group().right(char('^').trim(), (a, op, b) => [a, op, b]);
   builder.group()
-    ..left(char('*').trim(), action((a, op, b) => a * b))
-    ..left(char('/').trim(), action((a, op, b) => a / b));
+    ..left(char('*').trim(), (a, op, b) => [a, op, b])
+    ..left(char('/').trim(), (a, op, b) => [a, op, b]);
   builder.group()
-    ..left(char('+').trim(), action((a, op, b) => a + b))
-    ..left(char('-').trim(), action((a, op, b) => a - b));
+    ..left(char('+').trim(), (a, op, b) => [a, op, b])
+    ..left(char('-').trim(), (a, op, b) => [a, op, b]);
+  return builder.build().end();
+}
+
+Parser<num> buildEvaluator() {
+  final builder = ExpressionBuilder<num>();
+  builder.group()
+    ..primitive(digit()
+        .plus()
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten()
+        .trim()
+        .map(num.parse))
+    ..wrapper(char('(').trim(), char(')').trim(), (left, value, right) => value)
+    ..wrapper(string('sqrt(').trim(), char(')').trim(),
+        (left, value, right) => math.sqrt(value));
+  builder.group().prefix(char('-').trim(), (op, a) => -a);
+  builder.group()
+    ..postfix(string('++').trim(), (a, op) => ++a)
+    ..postfix(string('--').trim(), (a, op) => --a);
+  builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
+  builder.group()
+    ..left(char('*').trim(), (a, op, b) => a * b)
+    ..left(char('/').trim(), (a, op, b) => a / b);
+  builder.group()
+    ..left(char('+').trim(), (a, op, b) => a + b)
+    ..left(char('-').trim(), (a, op, b) => a - b);
   return builder.build().end();
 }
 
 void main() {
   const epsilon = 1e-5;
-  final parser = build(attachAction: false);
-  final evaluator = build(attachAction: true);
+  final parser = buildParser();
+  final evaluator = buildEvaluator();
   test('number', () {
     expect(evaluator.parse('0').value, closeTo(0, epsilon));
     expect(evaluator.parse('0.0').value, closeTo(0, epsilon));

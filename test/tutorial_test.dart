@@ -9,12 +9,15 @@ class ExpressionDefinition extends GrammarDefinition {
   Parser start() => ref0(term).end();
 
   Parser term() => ref0(add) | ref0(prod);
+
   Parser add() => ref0(prod) & char('+').trim() & ref0(term);
 
   Parser prod() => ref0(mul) | ref0(prim);
+
   Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
 
   Parser prim() => ref0(parens) | ref0(number);
+
   Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
 
   Parser number() => digit().plus().flatten().trim();
@@ -23,10 +26,13 @@ class ExpressionDefinition extends GrammarDefinition {
 class EvaluatorDefinition extends ExpressionDefinition {
   @override
   Parser add() => super.add().map((values) => values[0] + values[2]);
+
   @override
   Parser mul() => super.mul().map((values) => values[0] * values[2]);
+
   @override
   Parser parens() => super.parens().castList<num>().pick(1);
+
   @override
   Parser number() => super.number().map((value) => int.parse(value));
 }
@@ -189,29 +195,26 @@ void main() {
     expect(parser.parse('42').value, 42);
   });
   test('expression builder', () {
-    final builder = ExpressionBuilder();
+    final builder = ExpressionBuilder<num>();
     builder.group()
       ..primitive(digit()
           .plus()
           .seq(char('.').seq(digit().plus()).optional())
           .flatten()
           .trim()
-          .map((a) => num.tryParse(a)))
-      ..wrapper(
-          char('(').trim(), char(')').trim(), (String l, num a, String r) => a);
-    // negation is a prefix operator
-    builder.group().prefix(char('-').trim(), (String op, num a) => -a);
-    // power is right-associative
-    builder
-        .group()
-        .right(char('^').trim(), (num a, String op, num b) => math.pow(a, b));
-    // multiplication and addition are left-associative
+          .map(num.parse))
+      ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
+    // Negation is a prefix operator
+    builder.group().prefix(char('-').trim(), (op, a) => -a);
+    // Power is right-associative
+    builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
+    // Multiplication and addition are left-associative
     builder.group()
-      ..left(char('*').trim(), (num a, String op, num b) => a * b)
-      ..left(char('/').trim(), (num a, String op, num b) => a / b);
+      ..left(char('*').trim(), (a, op, b) => a * b)
+      ..left(char('/').trim(), (a, op, b) => a / b);
     builder.group()
-      ..left(char('+').trim(), (num a, String op, num b) => a + b)
-      ..left(char('-').trim(), (num a, String op, num b) => a - b);
+      ..left(char('+').trim(), (a, op, b) => a + b)
+      ..left(char('-').trim(), (a, op, b) => a - b);
     final parser = builder.build().end();
     expect(parser.parse('-8').value, -8);
     expect(parser.parse('1+2*3').value, 7);

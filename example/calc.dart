@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:petitparser/petitparser.dart';
 
 Parser buildParser() {
-  final builder = ExpressionBuilder();
+  final builder = ExpressionBuilder<num>();
   builder.group()
     ..primitive((pattern('+-').optional() &
             digit().plus() &
@@ -14,17 +14,17 @@ Parser buildParser() {
                 .optional())
         .flatten('number expected')
         .trim()
-        .map(num.tryParse))
+        .map(num.parse))
     ..wrapper(
         char('(').trim(), char(')').trim(), (left, value, right) => value);
-  builder.group().prefix(char('-').trim(), (op, num a) => -a);
-  builder.group().right(char('^').trim(), (num a, op, num b) => pow(a, b));
+  builder.group().prefix(char('-').trim(), (op, a) => -a);
+  builder.group().right(char('^').trim(), (a, op, b) => pow(a, b));
   builder.group()
-    ..left(char('*').trim(), (num a, op, num b) => a * b)
-    ..left(char('/').trim(), (num a, op, num b) => a / b);
+    ..left(char('*').trim(), (a, op, b) => a * b)
+    ..left(char('/').trim(), (a, op, b) => a / b);
   builder.group()
-    ..left(char('+').trim(), (num a, op, num b) => a + b)
-    ..left(char('-').trim(), (num a, op, num b) => a - b);
+    ..left(char('+').trim(), (a, op, b) => a + b)
+    ..left(char('-').trim(), (a, op, b) => a - b);
   return builder.build().end();
 }
 
