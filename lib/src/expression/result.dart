@@ -1,3 +1,4 @@
+/// Encapsulates a prefix operation.
 class ExpressionResultPrefix<V, O> {
   ExpressionResultPrefix(this.operator, this.callback);
 
@@ -7,6 +8,7 @@ class ExpressionResultPrefix<V, O> {
   V call(V value) => callback(operator, value);
 }
 
+/// Encapsulates a postfix operation.
 class ExpressionResultPostfix<V, O> {
   ExpressionResultPostfix(this.operator, this.callback);
 
@@ -16,6 +18,7 @@ class ExpressionResultPostfix<V, O> {
   V call(V value) => callback(value, operator);
 }
 
+/// Encapsulates a infix operation.
 class ExpressionResultInfix<V, O> {
   ExpressionResultInfix(this.operator, this.callback);
 

@@ -11,87 +11,78 @@ import 'result.dart';
 /// Models a group of operators of the same precedence.
 class ExpressionGroup<T> {
   @internal
-  ExpressionGroup(this.loopback);
+  ExpressionGroup(this._loopback);
 
-  @internal
-  final Parser<T> loopback;
+  /// Loopback parser used to establish the recursive expressions.
+  final Parser<T> _loopback;
 
   /// Defines a new primitive or literal [parser].
-  void primitive(Parser<T> parser) => primitives.add(parser);
+  void primitive(Parser<T> parser) => _primitive.add(parser);
 
-  @internal
-  Parser<T> buildPrimitive(Parser<T> inner) => buildChoice(primitives, inner);
+  Parser<T> _buildPrimitive(Parser<T> inner) => buildChoice(_primitive, inner);
 
-  @internal
-  final List<Parser<T>> primitives = [];
+  final List<Parser<T>> _primitive = [];
 
   /// Defines a new wrapper using [left] and [right] parsers, that are typically
   /// used for parenthesis. Evaluates the [callback] with the parsed `left`
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<O>(Parser<O> left, Parser<O> right,
           T Function(O left, T value, O right) callback) =>
-      wrappers.add([left, loopback, right].toSequenceParser().map(
+      _wrapper.add([left, _loopback, right].toSequenceParser().map(
           (value) => callback(value[0] as O, value[1] as T, value[2] as O)));
 
-  @internal
-  Parser<T> buildWrapper(Parser<T> inner) => buildChoice([...wrappers, inner]);
+  Parser<T> _buildWrapper(Parser<T> inner) => buildChoice([..._wrapper, inner]);
 
-  @internal
-  final List<Parser<T>> wrappers = [];
+  final List<Parser<T>> _wrapper = [];
 
   /// Adds a prefix operator [parser]. Evaluates the [callback] with the parsed
   /// `operator` and `value`.
   void prefix<O>(Parser<O> parser, T Function(O operator, T value) callback) =>
-      prefixes.add(parser
+      _prefix.add(parser
           .map((operator) => ExpressionResultPrefix<T, O>(operator, callback)));
 
-  @internal
-  Parser<T> buildPrefix(Parser<T> inner) {
-    if (prefixes.isEmpty) {
+  Parser<T> _buildPrefix(Parser<T> inner) {
+    if (_prefix.isEmpty) {
       return inner;
     } else {
-      return [buildChoice(prefixes).star(), inner].toSequenceParser().map(
+      return [buildChoice(_prefix).star(), inner].toSequenceParser().map(
           (tuple) => (tuple.first as List).reversed.fold(tuple.last as T,
               (value, result) => (result as ExpressionResultPrefix)(value)));
     }
   }
 
-  @internal
-  final List<Parser<ExpressionResultPrefix>> prefixes = [];
+  final List<Parser<ExpressionResultPrefix>> _prefix = [];
 
   /// Adds a postfix operator [parser]. Evaluates the [callback] with the parsed
   /// `value` and `operator`.
   void postfix<O>(Parser<O> parser, T Function(T value, O operator) callback) =>
-      postfixes.add(parser.map(
+      _postfix.add(parser.map(
           (operator) => ExpressionResultPostfix<T, O>(operator, callback)));
 
-  @internal
-  Parser<T> buildPostfix(Parser<T> inner) {
-    if (postfixes.isEmpty) {
+  Parser<T> _buildPostfix(Parser<T> inner) {
+    if (_postfix.isEmpty) {
       return inner;
     } else {
-      return [inner, buildChoice(postfixes).star()].toSequenceParser().map(
+      return [inner, buildChoice(_postfix).star()].toSequenceParser().map(
           (tuple) => (tuple.last as List).fold(tuple.first as T,
               (value, result) => (result as ExpressionResultPostfix)(value)));
     }
   }
 
-  @internal
-  final List<Parser<ExpressionResultPostfix>> postfixes = [];
+  final List<Parser<ExpressionResultPostfix>> _postfix = [];
 
   /// Adds a right-associative operator [parser]. Evaluates the [callback] with
   /// the parsed `left` term, `operator`, and `right` term.
   void right<O>(
           Parser<O> parser, T Function(T left, O operator, T right) callback) =>
-      rights.add(parser
+      _right.add(parser
           .map((operator) => ExpressionResultInfix<T, O>(operator, callback)));
 
-  @internal
-  Parser<T> buildRight(Parser<T> inner) {
-    if (rights.isEmpty) {
+  Parser<T> _buildRight(Parser<T> inner) {
+    if (_right.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(buildChoice(rights)).map((sequence) {
+      return inner.separatedBy(buildChoice(_right)).map((sequence) {
         var result = sequence.last;
         for (var i = sequence.length - 2; i > 0; i -= 2) {
           result =
@@ -102,22 +93,20 @@ class ExpressionGroup<T> {
     }
   }
 
-  @internal
-  final List<Parser<ExpressionResultInfix>> rights = [];
+  final List<Parser<ExpressionResultInfix>> _right = [];
 
   /// Adds a left-associative operator [parser]. Evaluates the [callback] with
   /// the parsed `left` term, `operator`, and `right` term.
   void left<O>(
           Parser<O> parser, T Function(T left, O operator, T right) callback) =>
-      lefts.add(parser
+      _left.add(parser
           .map((operator) => ExpressionResultInfix<T, O>(operator, callback)));
 
-  @internal
-  Parser<T> buildLeft(Parser<T> inner) {
-    if (lefts.isEmpty) {
+  Parser<T> _buildLeft(Parser<T> inner) {
+    if (_left.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(buildChoice(lefts)).map((sequence) {
+      return inner.separatedBy(buildChoice(_left)).map((sequence) {
         var result = sequence.first;
         for (var i = 1; i < sequence.length; i += 2) {
           result =
@@ -128,13 +117,12 @@ class ExpressionGroup<T> {
     }
   }
 
-  @internal
-  final List<Parser<ExpressionResultInfix>> lefts = [];
+  final List<Parser<ExpressionResultInfix>> _left = [];
 
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => buildLeft(buildRight(
-      buildPostfix(buildPrefix(buildWrapper(buildPrimitive(inner))))));
+  Parser<T> build(Parser<T> inner) => _buildLeft(_buildRight(
+      _buildPostfix(_buildPrefix(_buildWrapper(_buildPrimitive(inner))))));
 }
 
 // Internal helper to build an optimal choice parser.
