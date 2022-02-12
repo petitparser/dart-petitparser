@@ -251,6 +251,8 @@ final parser = definition.build();
 parser.parse('1 + 2 * 3');              // 7
 ```
 
+:warning: Subclassing of definitions only works well, if you keep your parsers dynamic like in the example above (`Parser` or `Parser<dynamic>`). While this might increase reusability of your parser definitions, it might also increase your code size and come with extra run-time cost. To avoid, specify the desired static types or [let Dart infer them](https://dart.dev/guides/language/type-system#type-inference). 
+
 To use just a part of the parser you can specify the start production when building. For example, to reuse the number parser one would write:
 
 ```dart

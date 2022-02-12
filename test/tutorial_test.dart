@@ -9,15 +9,12 @@ class ExpressionDefinition extends GrammarDefinition {
   Parser start() => ref0(term).end();
 
   Parser term() => ref0(add) | ref0(prod);
-
   Parser add() => ref0(prod) & char('+').trim() & ref0(term);
 
   Parser prod() => ref0(mul) | ref0(prim);
-
   Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
 
   Parser prim() => ref0(parens) | ref0(number);
-
   Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
 
   Parser number() => digit().plus().flatten().trim();
@@ -25,10 +22,12 @@ class ExpressionDefinition extends GrammarDefinition {
 
 class EvaluatorDefinition extends ExpressionDefinition {
   @override
-  Parser add() => super.add().map((values) => values[0] + values[2]);
+  Parser add() =>
+      super.add().castList<num>().map((values) => values[0] + values[2]);
 
   @override
-  Parser mul() => super.mul().map((values) => values[0] * values[2]);
+  Parser mul() =>
+      super.mul().castList<num>().map((values) => values[0] * values[2]);
 
   @override
   Parser parens() => super.parens().castList<num>().pick(1);
@@ -122,11 +121,13 @@ void main() {
     final term = undefined();
     final prod = undefined();
     final prim = undefined();
-    final add =
-        (prod & char('+').trim() & term).map((values) => values[0] + values[2]);
+    final add = (prod & char('+').trim() & term)
+        .castList<num>()
+        .map((values) => values[0] + values[2]);
     term.set(add | prod);
-    final mul =
-        (prim & char('*').trim() & prod).map((values) => values[0] * values[2]);
+    final mul = (prim & char('*').trim() & prod)
+        .castList<num>()
+        .map((values) => values[0] * values[2]);
     prod.set(mul | prim);
     final parens =
         (char('(').trim() & term & char(')').trim()).map((values) => values[1]);

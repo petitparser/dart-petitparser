@@ -1,6 +1,7 @@
 include: package:lints/recommended.yaml
 linter:
   rules:
+    - avoid_dynamic_calls
     - avoid_final_parameters
     - avoid_print
     - camel_case_types
