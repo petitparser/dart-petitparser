@@ -31,7 +31,7 @@ export 'src/parser/combinator/not.dart';
 export 'src/parser/combinator/optional.dart';
 export 'src/parser/combinator/sequence.dart';
 export 'src/parser/combinator/settable.dart';
-export 'src/parser/combinator/surrounded_by.dart';
+export 'src/parser/combinator/skip.dart';
 export 'src/parser/misc/eof.dart';
 export 'src/parser/misc/epsilon.dart';
 export 'src/parser/misc/failure.dart';

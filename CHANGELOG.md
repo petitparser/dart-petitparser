@@ -4,7 +4,7 @@
 
 * Dart 2.16 requirement.
 * Moved PetitParser Examples to a separate Git repository.
-* Add a `surroundedBy` helper that silently consumes input before and after another parser.
+* Add a `skip` helper that silently consumes input before and after another parser.
 * Make the `ExpressionBuilder<T>` statically typed. This requires existing code to specify the desired result type, and provide all reduction actions.
 * Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
 * Initial support for indentation based grammars.
