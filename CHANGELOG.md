@@ -7,6 +7,7 @@
 * Add a `skip` helper that silently consumes input before and after another parser.
 * Make the `ExpressionBuilder<T>` statically typed. This requires existing code to specify the desired result type, and provide all reduction actions.
 * Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
+* Add `charIgnoringCase`. Better standard error messages for character parsers.
 * Initial support for indentation based grammars.
 
 ## 4.4.0

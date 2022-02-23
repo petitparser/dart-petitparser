@@ -1,5 +1,4 @@
 import '../../core/parser.dart';
-import '../character/any_of.dart';
 import '../character/char.dart';
 import '../character/pattern.dart';
 import '../misc/epsilon.dart';
@@ -16,7 +15,7 @@ extension PredicateStringExtension on String {
       return epsilonWith<String>(this);
     } else if (length == 1) {
       return caseInsensitive
-          ? anyOf('${toLowerCase()}${toUpperCase()}', message)
+          ? charIgnoringCase(this, message)
           : char(this, message);
     } else {
       if (isPattern) {
@@ -37,7 +36,9 @@ extension PredicateStringExtension on String {
 /// For example, `string('foo')` `succeeds and consumes the input string
 /// `'foo'`. Fails for any other input.`
 Parser<String> string(String element, [String? message]) => predicate(
-    element.length, (each) => element == each, message ?? '$element expected');
+    element.length,
+    (each) => element == each,
+    message ?? '"$element" expected');
 
 /// Returns a parser that accepts the string [element] ignoring the case.
 ///
@@ -46,5 +47,5 @@ Parser<String> string(String element, [String? message]) => predicate(
 Parser<String> stringIgnoreCase(String element, [String? message]) {
   final lowerElement = element.toLowerCase();
   return predicate(element.length, (each) => lowerElement == each.toLowerCase(),
-      message ?? '$element expected');
+      message ?? '"$element" (case-insensitive) expected');
 }

@@ -40,19 +40,20 @@ Parser<String> pattern(String element, [String? message]) => CharacterParser(
 /// fails for any other character. The parser `patternIgnoreCase('^A') accepts
 /// any character, but fails for the characters 'a' or 'A'.
 Parser<String> patternIgnoreCase(String element, [String? message]) {
-  final isNegated = element.startsWith('^');
+  var normalized = element;
+  final isNegated = normalized.startsWith('^');
   if (isNegated) {
-    element = element.substring(1);
+    normalized = normalized.substring(1);
   }
-  final isDashed = element.endsWith('-');
+  final isDashed = normalized.endsWith('-');
   if (isDashed) {
-    element = element.substring(0, element.length - 1);
+    normalized = normalized.substring(0, normalized.length - 1);
   }
   return pattern(
       '${isNegated ? '^' : ''}'
-      '${element.toLowerCase()}${element.toUpperCase()}'
+      '${normalized.toLowerCase()}${normalized.toUpperCase()}'
       '${isDashed ? '-' : ''}',
-      message);
+      message ?? '[${toReadableString(element)}] (case-insensitive) expected');
 }
 
 /// Parser that reads a single character.

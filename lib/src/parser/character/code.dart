@@ -1,8 +1,5 @@
 /// Converts an object to a character code.
-int toCharCode(Object element) {
-  if (element is num) {
-    return element.round();
-  }
+int toCharCode(String element) {
   final value = element.toString();
   if (value.length != 1) {
     throw ArgumentError('"$value" is not a character');
@@ -11,12 +8,8 @@ int toCharCode(Object element) {
 }
 
 /// Converts a character to a readable string.
-String toReadableString(Object element) => element is String
-    ? _toFormattedString(element)
-    : _toFormattedChar(toCharCode(element));
-
-String _toFormattedString(String input) =>
-    input.codeUnits.map(_toFormattedChar).join();
+String toReadableString(String element) =>
+    element.codeUnits.map(_toFormattedChar).join();
 
 String _toFormattedChar(int code) {
   switch (code) {

@@ -99,7 +99,7 @@ void main() {
     expect(keyword, isParseSuccess('return  "a"', '"a"'));
   });
   test('invalid statement', () {
-    expect(keyword, isParseFailure('retur f', message: 'return expected'));
+    expect(keyword, isParseFailure('retur f', message: '"return" expected'));
     expect(keyword,
         isParseFailure('return1', position: 6, message: 'whitespace expected'));
     expect(keyword,

@@ -629,7 +629,7 @@ void main() {
                 (issue) => issue.toString(),
                 'toString',
                 'LinterIssue(type: LinterType.error, title: Fake Rule, '
-                    'parser: Instance of \'PredicateParser\'[trigger '
+                    'parser: Instance of \'PredicateParser\'["trigger" '
                     'expected], description: Described)')
       ]);
       expect(called, results);
