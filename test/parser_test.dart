@@ -1396,18 +1396,19 @@ void main() {
       });
     });
     group('skip', () {
-      group('skip none', () {
-        final parser = digit().skip();
+      final inner = digit();
+      group('none', () {
+        final parser = inner.skip();
         expectCommon(parser);
         test('default', () {
+          expect(parser, same(inner));
           expect(parser, isParseSuccess('1', '1'));
           expect(parser, isParseSuccess('2', '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
-          expect(parser, isParseFailure('a', message: 'digit expected'));
         });
       });
-      group('skip before', () {
-        final parser = digit().skip(before: char('*'));
+      group('before', () {
+        final parser = inner.skip(before: char('*'));
         expectCommon(parser);
         test('default', () {
           expect(parser, isParseSuccess('*1', '1'));
@@ -1420,8 +1421,8 @@ void main() {
               isParseFailure('*a', message: 'digit expected', position: 1));
         });
       });
-      group('skip after', () {
-        final parser = digit().skip(after: char('!'));
+      group('after', () {
+        final parser = inner.skip(after: char('!'));
         expectCommon(parser);
         test('default', () {
           expect(parser, isParseSuccess('1!', '1'));
@@ -1433,8 +1434,8 @@ void main() {
           expect(parser, isParseFailure('a!', message: 'digit expected'));
         });
       });
-      group('skip before & after', () {
-        final parser = digit().skip(before: char('*'), after: char('!'));
+      group('before & after', () {
+        final parser = inner.skip(before: char('*'), after: char('!'));
         expectCommon(parser);
         test('default', () {
           expect(parser, isParseSuccess('*1!', '1'));
