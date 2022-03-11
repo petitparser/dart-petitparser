@@ -139,6 +139,9 @@ The last type of parsers are actions or transformations we can use as follows:
 - `p.flatten()` creates a string from the consumed input of *p*.
 - `p.token()` creates a token from the result of *p*.
 - `p.trim()` trims whitespaces before and after *p*.
+- `p.skip(before: p1, after: p2)` consumes *p1*, *p*, and *p2* in sequence, but only returns the result of *p*.
+
+Various other parsers for more specific use-cases are available, to discover browse the subclasses of the `Parser` class.
 
 To return a string of the parsed identifier, we can modify our parser like this:
 
@@ -266,7 +269,7 @@ This is just the surface of what `GrammarDefinition` can do, check out [the docu
 
 ### Using the Expression Builder
 
-Writing such expression parsers is pretty common and can be quite tricky to get right. To simplify things, PetitParser comes with a builder that can help you to define such grammars easily. It supports the definition of operator precedence; and prefix, postfix, left- and right-associative operators.
+Writing such expression parsers is pretty common and can be tricky to get right. To simplify things, PetitParser comes with a builder that can help you to define such grammars easily. It supports the definition of operator precedence; and prefix, postfix, left- and right-associative operators.
 
 The following code creates the empty expression builder producing values of type `num`:
 
@@ -291,18 +294,20 @@ Then come the normal arithmetic operators. Note, that the action blocks receive 
 
 ```dart
 // Negation is a prefix operator
-builder.group().prefix(char('-').trim(), (op, a) => -a);
+builder.group()
+  ..prefix(char('-').trim(), (op, a) => -a);
 
 // Power is right-associative
-builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
+builder.group()
+  ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
 
 // Multiplication and addition are left-associative
 builder.group()
-..left(char('*').trim(), (a, op, b) => a * b)
-..left(char('/').trim(), (a, op, b) => a / b);
+  ..left(char('*').trim(), (a, op, b) => a * b)
+  ..left(char('/').trim(), (a, op, b) => a / b);
 builder.group()
-..left(char('+').trim(), (a, op, b) => a + b)
-..left(char('-').trim(), (a, op, b) => a - b);
+  ..left(char('+').trim(), (a, op, b) => a + b)
+  ..left(char('-').trim(), (a, op, b) => a - b);
 ```
 
 Finally, we can build the parser:

@@ -1,14 +1,14 @@
 # Changelog
 
-## 5.0.0 (unpublished)
+## 5.0.0
 
 * Dart 2.16 requirement.
 * Moved PetitParser examples to a separate Git repository: https://github.com/petitparser/dart-petitparser-examples.
 * Add a `skip` helper that silently consumes input before and/or after another parser.
 * Make the `ExpressionBuilder<T>` statically typed. This requires existing code to specify the desired result type, and provide all reduction actions.
 * Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
-* Add `charIgnoringCase`. Better standard error messages for character parsers.
-* Initial support for indentation based grammars.
+* Add `charIgnoringCase`, and provide better standard error messages for character parsers.
+* Add initial support for indentation based grammars.
 
 ## 4.4.0
 
