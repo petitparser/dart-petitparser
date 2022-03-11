@@ -12,8 +12,10 @@ Matcher isParserEqual<T>(Parser<T> parser) => test.predicate(
 
 /// Returns a [Matcher] that asserts the context under test is a [Success].
 /// Optionally also asserts [position] and [value].
-TypeMatcher<Success<T>> isSuccessContext<T>(
-        {dynamic position = anything, dynamic value = anything}) =>
+TypeMatcher<Success<T>> isSuccessContext<T>({
+  dynamic position = anything,
+  dynamic value = anything,
+}) =>
     isA<Success<T>>()
         .having((context) => context.value, 'value', value)
         .having((context) => context.position, 'position', position);
@@ -21,7 +23,11 @@ TypeMatcher<Success<T>> isSuccessContext<T>(
 /// Returns a [Matcher] that asserts the parser under test yields a successful
 /// parse [result] for the given [input]. If no [position] is provided, assert
 /// that the parsing fails at the end of the input.
-Matcher isParseSuccess<T>(String input, dynamic result, {dynamic position}) =>
+Matcher isParseSuccess<T>(
+  String input,
+  dynamic result, {
+  dynamic position,
+}) =>
     isA<Parser<T>>()
         .having(
             (parser) => parser.parse(input),
@@ -34,8 +40,10 @@ Matcher isParseSuccess<T>(String input, dynamic result, {dynamic position}) =>
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
-TypeMatcher<Failure<T>> isFailureContext<T>(
-        {dynamic position = anything, dynamic message = anything}) =>
+TypeMatcher<Failure<T>> isFailureContext<T>({
+  dynamic position = anything,
+  dynamic message = anything,
+}) =>
     isA<Failure<T>>()
         .having((context) => context.message, 'message', message)
         .having((context) => context.position, 'position', position);
@@ -44,10 +52,30 @@ TypeMatcher<Failure<T>> isFailureContext<T>(
 /// failure for the given [input]. If no [position] is provided, assert that
 /// parsing fails at the beginning of the input. An optional [message] can be
 /// provided to assert on the error message.
-Matcher isParseFailure<T>(String input,
-        {dynamic position = 0, dynamic message = anything}) =>
+Matcher isParseFailure<T>(
+  String input, {
+  dynamic position = 0,
+  dynamic message = anything,
+}) =>
     isA<Parser<T>>()
         .having((parser) => parser.parse(input), 'parse',
             isFailureContext<T>(position: position, message: message))
         .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn', -1)
         .having((parser) => parser.accept(input), 'accept', isFalse);
+
+/// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].
+Matcher isMatch(
+  String match, {
+  dynamic start = anything,
+  dynamic end = anything,
+  dynamic groups = anything,
+}) =>
+    isA<Match>()
+        .having((match) => match.group(0), 'match', match)
+        .having((match) => match.start, 'start', start)
+        .having((match) => match.end, 'end', end)
+        .having(
+            (match) => List.generate(
+                match.groupCount, (group) => match.group(1 + group)),
+            'groups',
+            groups);

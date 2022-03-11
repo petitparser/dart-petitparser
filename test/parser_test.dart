@@ -1513,32 +1513,66 @@ void main() {
       });
     });
     group('pattern', () {
-      final digits = PatternParser(RegExp(r'\d+'), 'digits expected');
-      expectCommon(digits);
-      test('default', () {
-        final parser = digits.map((match) => match.group(0));
-        expect(parser, isParseSuccess('1', '1'));
-        expect(parser, isParseSuccess('12', '12'));
-        expect(parser, isParseSuccess('123', '123'));
-        expect(parser, isParseSuccess('1a', '1', position: 1));
-        expect(parser, isParseSuccess('12ab', '12', position: 2));
-        expect(parser, isParseSuccess('123abc', '123', position: 3));
+      expectCommon(PatternParser('42', 'number expected'));
+      test('string', () {
+        final parser = PatternParser('42', 'number expected');
+        expect(parser, isParseSuccess('42', isMatch('42', start: 0, end: 2)));
+        expect(parser, isParseFailure('4', message: 'number expected'));
+        expect(parser, isParseFailure('43', message: 'number expected'));
+      });
+      test('regexp', () {
+        final parser = PatternParser(RegExp(r'\d+'), 'digits expected');
+        expect(
+          parser,
+          isParseSuccess('1', isMatch('1', start: 0, end: 1)),
+        );
+        expect(
+          parser,
+          isParseSuccess('12', isMatch('12', start: 0, end: 2)),
+        );
+        expect(
+          parser,
+          isParseSuccess('123', isMatch('123', start: 0, end: 3)),
+        );
+        expect(
+          parser,
+          isParseSuccess('1a', isMatch('1', start: 0, end: 1), position: 1),
+        );
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('a'));
         expect(parser, isParseFailure('a1'));
       });
-      test('groups', () {
+      test('regexp groups', () {
         final parser =
-            PatternParser(RegExp(r'(\d+)\s*,\s*(\d+)'), 'pair expected')
-                .map((match) => [match.group(1), match.group(2)]);
-        expect(parser, isParseSuccess('1,2', ['1', '2']));
-        expect(parser, isParseSuccess('1, 2', ['1', '2']));
-        expect(parser, isParseSuccess('1 ,2', ['1', '2']));
-        expect(parser, isParseSuccess('1 , 2', ['1', '2']));
-        expect(parser, isParseSuccess('12,345', ['12', '345']));
-        expect(parser, isParseSuccess('12, 345', ['12', '345']));
-        expect(parser, isParseSuccess('12 ,345', ['12', '345']));
-        expect(parser, isParseSuccess('12 , 345', ['12', '345']));
+            PatternParser(RegExp(r'(\d+)\s*,\s*(\d+)'), 'pair expected');
+        expect(
+          parser,
+          isParseSuccess('1,2', isMatch('1,2', groups: ['1', '2'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('1, 2', isMatch('1, 2', groups: ['1', '2'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('1 ,2', isMatch('1 ,2', groups: ['1', '2'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('1 , 2', isMatch('1 , 2', groups: ['1', '2'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('12,3', isMatch('12,3', groups: ['12', '3'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('12, 3', isMatch('12, 3', groups: ['12', '3'])),
+        );
+        expect(
+          parser,
+          isParseSuccess('12 ,3', isMatch('12 ,3', groups: ['12', '3'])),
+        );
       });
     });
     group('string', () {
@@ -1566,6 +1600,18 @@ void main() {
         expect(parser, isParseSuccess('A', 'A'));
         expect(parser,
             isParseFailure('b', message: '"a" (case-insensitive) expected'));
+      });
+      test('convert pattern', () {
+        final parser = 'a-z'.toParser(isPattern: true);
+        expect(parser, isParseSuccess('x', 'x'));
+        expect(parser, isParseFailure('X', message: '[a-z] expected'));
+      });
+      test('convert pattern (case-insensitive)', () {
+        final parser = 'a-z'.toParser(isPattern: true, caseInsensitive: true);
+        expect(parser, isParseSuccess('x', 'x'));
+        expect(parser, isParseSuccess('X', 'X'));
+        expect(parser,
+            isParseFailure('1', message: '[a-z] (case-insensitive) expected'));
       });
       test('convert multiple chars', () {
         final parser = 'foo'.toParser();
