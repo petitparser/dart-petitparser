@@ -48,8 +48,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
 /// A greedy parser that repeatedly parses between 'min' and 'max' instances of
 /// its delegate.
 class PossessiveRepeatingParser<R> extends RepeatingParser<R> {
-  PossessiveRepeatingParser(Parser<R> parser, int min, int max)
-      : super(parser, min, max);
+  PossessiveRepeatingParser(super.parser, super.min, super.max);
 
   @override
   Result<List<R>> parseOn(Context context) {

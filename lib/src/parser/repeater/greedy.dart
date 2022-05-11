@@ -45,8 +45,7 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
 /// implementations. It aggressively consumes as much input as possible and then
 /// backtracks to meet the 'limit' condition.
 class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
-  GreedyRepeatingParser(Parser<R> parser, Parser<void> limit, int min, int max)
-      : super(parser, limit, min, max);
+  GreedyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
   Result<List<R>> parseOn(Context context) {

@@ -17,7 +17,7 @@ extension TokenParserExtension<T> on Parser<T> {
 
 /// A parser that creates a token of the result its delegate parses.
 class TokenParser<R> extends DelegateParser<R, Token<R>> {
-  TokenParser(Parser<R> delegate) : super(delegate);
+  TokenParser(super.delegate);
 
   @override
   Result<Token<R>> parseOn(Context context) {

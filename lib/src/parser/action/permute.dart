@@ -17,7 +17,7 @@ extension PermuteParserExtension<T> on Parser<List<T>> {
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
 class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
-  PermuteParser(Parser<List<R>> delegate, this.indexes) : super(delegate);
+  PermuteParser(super.delegate, this.indexes);
 
   /// Indicates which elements to return from the parsed list.
   final List<int> indexes;

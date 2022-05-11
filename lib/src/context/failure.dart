@@ -3,8 +3,7 @@ import 'result.dart';
 
 /// An immutable parse result in case of a failed parse.
 class Failure<R> extends Result<R> {
-  const Failure(String buffer, int position, this.message)
-      : super(buffer, position);
+  const Failure(super.buffer, super.position, this.message);
 
   @override
   bool get isFailure => true;

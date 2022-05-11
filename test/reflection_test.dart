@@ -78,8 +78,7 @@ void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
 }
 
 class PluggableLinterRule extends LinterRule {
-  const PluggableLinterRule(LinterType type, String title, this._run)
-      : super(type, title);
+  const PluggableLinterRule(super.type, super.title, this._run);
 
   final void Function(LinterRule rule, Analyzer, Parser, LinterCallback) _run;
 

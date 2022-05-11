@@ -2,7 +2,6 @@
 
 import '../context/context.dart';
 import '../context/result.dart';
-import '../core/parser.dart';
 import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 
@@ -13,7 +12,7 @@ class GrammarParser<T> extends DelegateParser<T, T> {
   GrammarParser(GrammarDefinition definition) : this._(definition.build());
 
   @Deprecated('Directly use the GrammarDefinition to build parsers.')
-  GrammarParser._(Parser<T> parser) : super(parser);
+  GrammarParser._(super.parser);
 
   @override
   Result<T> parseOn(Context context) => delegate.parseOn(context);

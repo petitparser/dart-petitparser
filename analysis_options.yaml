@@ -11,3 +11,4 @@ linter:
     - sort_constructors_first
     - unnecessary_late
     - unnecessary_statements
+    - use_super_parameters

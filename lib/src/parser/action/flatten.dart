@@ -20,7 +20,7 @@ extension FlattenParserExtension<T> on Parser<T> {
 /// A parser that discards the result of the delegate and answers the
 /// sub-string its delegate consumes.
 class FlattenParser<T> extends DelegateParser<T, String> {
-  FlattenParser(Parser<T> delegate, [this.message]) : super(delegate);
+  FlattenParser(super.delegate, [this.message]);
 
   /// Error message to indicate parse failures with.
   final String? message;

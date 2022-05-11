@@ -22,7 +22,7 @@ extension MapParserExtension<T> on Parser<T> {
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
 class MapParser<T, R> extends DelegateParser<T, R> {
-  MapParser(Parser<T> delegate, this.callback) : super(delegate);
+  MapParser(super.delegate, this.callback);
 
   /// The production action to be called.
   final Callback<T, R> callback;

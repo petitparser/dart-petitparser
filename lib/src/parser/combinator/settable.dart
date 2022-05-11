@@ -30,7 +30,7 @@ SettableParser<R> undefined<R>([String message = 'undefined parser']) =>
 /// point in time.
 class SettableParser<R> extends DelegateParser<R, R>
     implements ResolvableParser<R> {
-  SettableParser(Parser<R> delegate) : super(delegate);
+  SettableParser(super.delegate);
 
   /// Sets the receiver to delegate to [parser].
   void set(Parser<R> parser) => replace(children[0], parser);

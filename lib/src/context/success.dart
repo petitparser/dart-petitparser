@@ -2,8 +2,7 @@ import 'result.dart';
 
 /// An immutable parse result in case of a successful parse.
 class Success<R> extends Result<R> {
-  const Success(String buffer, int position, this.value)
-      : super(buffer, position);
+  const Success(super.buffer, super.position, this.value);
 
   @override
   bool get isSuccess => true;

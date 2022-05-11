@@ -1,11 +1,10 @@
-import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import 'unbounded.dart';
 
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances
 /// of its delegate.
 abstract class RepeatingParser<R> extends DelegateParser<R, List<R>> {
-  RepeatingParser(Parser<R> parser, this.min, this.max) : super(parser) {
+  RepeatingParser(super.parser, this.min, this.max) {
     if (min < 0) {
       throw ArgumentError(
           'Minimum repetitions must be positive, but got $min.');

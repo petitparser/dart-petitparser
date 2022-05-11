@@ -21,7 +21,7 @@ extension TrimmingParserExtension<T> on Parser<T> {
 /// A parser that silently consumes input of another parser around
 /// its delegate.
 class TrimmingParser<R> extends DelegateParser<R, R> {
-  TrimmingParser(Parser<R> delegate, this.left, this.right) : super(delegate);
+  TrimmingParser(super.delegate, this.left, this.right);
 
   /// Parser that consumes input before the delegate.
   Parser<void> left;

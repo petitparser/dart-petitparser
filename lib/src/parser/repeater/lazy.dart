@@ -45,8 +45,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
 /// implementations. It limits its consumption to meet the 'limit' condition as
 /// early as possible.
 class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
-  LazyRepeatingParser(Parser<R> parser, Parser<void> limit, int min, int max)
-      : super(parser, limit, min, max);
+  LazyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
   Result<List<R>> parseOn(Context context) {
