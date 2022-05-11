@@ -24,7 +24,7 @@ jobs:
         with:
           sdk: stable
       - name: "Dependencies"
-        run: pub upgrade --no-precompile
+        run: dart pub upgrade --no-precompile
       - name: "Dart Analyzer"
         run: dart analyze --fatal-infos .
       - name: "Dart Formatter"
