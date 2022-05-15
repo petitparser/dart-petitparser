@@ -30,13 +30,12 @@ jobs:
       - name: "Dart Formatter"
         run: dart format --output=none --set-exit-if-changed .
       - name: "VM Tests"
-        run: dart test --platform vm --coverage . test/all_test.dart
+        run: dart test --platform vm test/all_test.dart
       - name: "Chrome Tests"
-        run: dart test --platform chrome test test/all_test.dart
-      - name: "Format coverage"
+        run: dart test --platform chrome test/all_test.dart
+      - name: "Collect coverage"
         run: |
           dart pub global activate coverage
-          dart pub global run coverage:format_coverage --base-directory=. --report-on=lib/ --packages=.packages --lcov --in=test/all_test.dart.vm.json --out=test/all_test.dart.lcov
-          rm test/all_test.dart.vm.json
+          dart pub global run coverage:test_with_coverage --test test/all_test.dart
       - name: "Upload coverage"
         uses: codecov/codecov-action@v2
