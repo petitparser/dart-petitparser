@@ -12,31 +12,43 @@ extension SeparatedByParserExtension<T> on Parser<T> {
   /// list.
   ///
   /// If the optional argument [includeSeparators] is set to `false`, then the
-  /// separators are not included in the parse result. If the optional argument
-  /// [optionalSeparatorAtEnd] is set to `true` the parser also accepts an
-  /// optional separator at the end.
+  /// separators themselves are not included in the parse result. If the
+  /// optional argument [optionalSeparatorAtStart] or [optionalSeparatorAtEnd]
+  /// is set to `true` the parser also accepts optional separators at the start
+  /// and/or end.
   ///
   /// For example, the parser `digit().separatedBy(char('-'))` returns a parser
   /// that consumes input like `'1-2-3'` and returns a list of the elements and
   /// separators: `['1', '-', '2', '-', '3']`.
-  Parser<List<R>> separatedBy<R>(Parser separator,
-      {bool includeSeparators = true, bool optionalSeparatorAtEnd = false}) {
+  Parser<List<R>> separatedBy<R>(
+    Parser separator, {
+    bool includeSeparators = true,
+    bool optionalSeparatorAtStart = false,
+    bool optionalSeparatorAtEnd = false,
+  }) {
     final parser = [
+      if (optionalSeparatorAtStart) separator.optional(),
       this,
       [separator, this].toSequenceParser().star(),
       if (optionalSeparatorAtEnd) separator.optional(),
     ].toSequenceParser();
     return parser.map((list) {
       final result = <R>[];
-      result.add(list[0]);
-      for (List tuple in list[1]) {
+      if (includeSeparators && optionalSeparatorAtStart && list[0] != null) {
+        result.add(list[0]);
+      }
+      final offset = optionalSeparatorAtStart ? 1 : 0;
+      result.add(list[offset]);
+      for (List tuple in list[offset + 1]) {
         if (includeSeparators) {
           result.add(tuple[0]);
         }
         result.add(tuple[1]);
       }
-      if (includeSeparators && optionalSeparatorAtEnd && list[2] != null) {
-        result.add(list[2]);
+      if (includeSeparators &&
+          optionalSeparatorAtEnd &&
+          list[offset + 2] != null) {
+        result.add(list[offset + 2]);
       }
       return result;
     });

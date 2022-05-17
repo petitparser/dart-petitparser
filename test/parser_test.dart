@@ -1904,50 +1904,102 @@ void main() {
     });
     group('separated by', () {
       expectCommon(any().separatedBy(letter()));
-      test('default', () {
-        final parser = char('a').separatedBy(char('b'));
-        expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('ab', ['a'], position: 1));
-        expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
-        expect(parser, isParseSuccess('abab', ['a', 'b', 'a'], position: 3));
-        expect(parser, isParseSuccess('ababa', ['a', 'b', 'a', 'b', 'a']));
-        expect(parser,
-            isParseSuccess('ababab', ['a', 'b', 'a', 'b', 'a'], position: 5));
+      group('include separators', () {
+        test('default', () {
+          final parser = char('a').separatedBy(char('b'));
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ab', ['a'], position: 1));
+          expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'b', 'a'], position: 3));
+          expect(parser, isParseSuccess('ababa', ['a', 'b', 'a', 'b', 'a']));
+          expect(parser,
+              isParseSuccess('ababab', ['a', 'b', 'a', 'b', 'a'], position: 5));
+        });
+        test('optional separator at start', () {
+          final parser =
+              char('a').separatedBy(char('b'), optionalSeparatorAtStart: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser,
+              isParseFailure('b', message: '"a" expected', position: 1));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ba', ['b', 'a']));
+          expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
+          expect(parser, isParseSuccess('baba', ['b', 'a', 'b', 'a']));
+        });
+        test('optional separator at end', () {
+          final parser =
+              char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ab', ['a', 'b']));
+          expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'b', 'a', 'b']));
+        });
+        test('optional separators at start and end', () {
+          final parser = char('a').separatedBy(char('b'),
+              optionalSeparatorAtStart: true, optionalSeparatorAtEnd: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser,
+              isParseFailure('b', message: '"a" expected', position: 1));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ba', ['b', 'a']));
+          expect(parser, isParseSuccess('ab', ['a', 'b']));
+          expect(parser, isParseSuccess('bab', ['b', 'a', 'b']));
+          expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
+          expect(parser, isParseSuccess('baba', ['b', 'a', 'b', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'b', 'a', 'b']));
+          expect(parser, isParseSuccess('babab', ['b', 'a', 'b', 'a', 'b']));
+        });
       });
-      test('without separators', () {
-        final parser =
-            char('a').separatedBy(char('b'), includeSeparators: false);
-        expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('ab', ['a'], position: 1));
-        expect(parser, isParseSuccess('aba', ['a', 'a']));
-        expect(parser, isParseSuccess('abab', ['a', 'a'], position: 3));
-        expect(parser, isParseSuccess('ababa', ['a', 'a', 'a']));
-        expect(parser, isParseSuccess('ababab', ['a', 'a', 'a'], position: 5));
-      });
-      test('with separator at end', () {
-        final parser =
-            char('a').separatedBy(char('b'), optionalSeparatorAtEnd: true);
-        expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('ab', ['a', 'b']));
-        expect(parser, isParseSuccess('aba', ['a', 'b', 'a']));
-        expect(parser, isParseSuccess('abab', ['a', 'b', 'a', 'b']));
-        expect(parser, isParseSuccess('ababa', ['a', 'b', 'a', 'b', 'a']));
-        expect(
-            parser, isParseSuccess('ababab', ['a', 'b', 'a', 'b', 'a', 'b']));
-      });
-      test('without separators & separator at end', () {
-        final parser = char('a').separatedBy(char('b'),
-            includeSeparators: false, optionalSeparatorAtEnd: true);
-        expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('ab', ['a']));
-        expect(parser, isParseSuccess('aba', ['a', 'a']));
-        expect(parser, isParseSuccess('abab', ['a', 'a']));
-        expect(parser, isParseSuccess('ababa', ['a', 'a', 'a']));
-        expect(parser, isParseSuccess('ababab', ['a', 'a', 'a']));
+      group('exclude separators', () {
+        test('default', () {
+          final parser =
+              char('a').separatedBy(char('b'), includeSeparators: false);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ab', ['a'], position: 1));
+          expect(parser, isParseSuccess('aba', ['a', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'a'], position: 3));
+          expect(parser, isParseSuccess('ababa', ['a', 'a', 'a']));
+          expect(
+              parser, isParseSuccess('ababab', ['a', 'a', 'a'], position: 5));
+        });
+        test('optional separator at start', () {
+          final parser = char('a').separatedBy(char('b'),
+              includeSeparators: false, optionalSeparatorAtStart: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser,
+              isParseFailure('b', message: '"a" expected', position: 1));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ba', ['a']));
+          expect(parser, isParseSuccess('aba', ['a', 'a']));
+          expect(parser, isParseSuccess('baba', ['a', 'a']));
+        });
+        test('optional separator at end', () {
+          final parser = char('a').separatedBy(char('b'),
+              includeSeparators: false, optionalSeparatorAtEnd: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ab', ['a']));
+          expect(parser, isParseSuccess('aba', ['a', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'a']));
+        });
+        test('optional separators at start and end', () {
+          final parser = char('a').separatedBy(char('b'),
+              includeSeparators: false,
+              optionalSeparatorAtEnd: true,
+              optionalSeparatorAtStart: true);
+          expect(parser, isParseFailure('', message: '"a" expected'));
+          expect(parser, isParseSuccess('a', ['a']));
+          expect(parser, isParseSuccess('ba', ['a']));
+          expect(parser, isParseSuccess('ab', ['a']));
+          expect(parser, isParseSuccess('bab', ['a']));
+          expect(parser, isParseSuccess('aba', ['a', 'a']));
+          expect(parser, isParseSuccess('baba', ['a', 'a']));
+          expect(parser, isParseSuccess('abab', ['a', 'a']));
+          expect(parser, isParseSuccess('babab', ['a', 'a']));
+        });
       });
     });
   });

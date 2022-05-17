@@ -3,6 +3,7 @@
 ## 5.1.0 (unpublished)
 
 - Dart 2.17 requirement.
+- Improve `separatedBy` parser to optionally include the separator at the start.
 
 ## 5.0.0
 
