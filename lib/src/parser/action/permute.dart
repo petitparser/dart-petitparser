@@ -30,9 +30,9 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
       final values = indexes
           .map((index) => value[index < 0 ? value.length + index : index])
           .toList(growable: false);
-      return result.success(values);
+      return result.success(values, null, context.position);
     } else {
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 

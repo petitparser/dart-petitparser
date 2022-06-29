@@ -3,7 +3,7 @@ import 'context.dart';
 
 /// An immutable parse result.
 abstract class Result<R> extends Context {
-  const Result(super.buffer, super.position);
+  const Result(super.buffer, super.position, [super.start = 0]);
 
   /// Returns `true` if this result indicates a parse success.
   bool get isSuccess => false;

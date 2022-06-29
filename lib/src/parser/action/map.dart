@@ -17,6 +17,13 @@ extension MapParserExtension<T> on Parser<T> {
         bool hasSideEffects = true,
   }) =>
       MapParser<T, R>(this, callback);
+
+  Parser<R> mapResult<R>(
+    CallbackResult<T, R> callback, {
+    @Deprecated('All callbacks are considered to have side-effects.')
+        bool hasSideEffects = true,
+  }) =>
+      MapResultParser<T, R>(this, callback);
 }
 
 /// A parser that performs a transformation with a given function on the
@@ -31,9 +38,9 @@ class MapParser<T, R> extends DelegateParser<T, R> {
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return result.success(callback(result.value));
+      return result.success(callback(result.value), null, context.position);
     } else {
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 
@@ -43,4 +50,30 @@ class MapParser<T, R> extends DelegateParser<T, R> {
 
   @override
   MapParser<T, R> copy() => MapParser<T, R>(delegate, callback);
+}
+
+/// A parser that performs a transformation with a given function on the
+/// successful parse result of the delegate.
+class MapResultParser<T, R> extends DelegateParser<T, R> {
+  MapResultParser(super.delegate, this.callback);
+
+  /// The production action to be called.
+  final CallbackResult<T, R> callback;
+
+  @override
+  Result<R> parseOn(Context context) {
+    final result = delegate.parseOn(context);
+    if (result.isSuccess) {
+      return result.success(callback(result), null, context.position);
+    } else {
+      return result.failure(result.message, null, context.position);
+    }
+  }
+
+  @override
+  bool hasEqualProperties(MapResultParser<T, R> other) =>
+      super.hasEqualProperties(other) && callback == other.callback;
+
+  @override
+  MapResultParser<T, R> copy() => MapResultParser<T, R>(delegate, callback);
 }

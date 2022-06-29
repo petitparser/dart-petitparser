@@ -38,12 +38,12 @@ class SequenceParser<T> extends ListParser<T, List<T>> {
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(current);
       if (result.isFailure) {
-        return result.failure(result.message);
+        return result.failure(result.message, null, context.position);
       }
       elements.add(result.value);
       current = result;
     }
-    return current.success(elements);
+    return current.success(elements, null, context.position);
   }
 
   @override

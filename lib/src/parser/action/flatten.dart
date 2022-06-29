@@ -31,18 +31,18 @@ class FlattenParser<T> extends DelegateParser<T, String> {
     if (message != null) {
       final position = delegate.fastParseOn(context.buffer, context.position);
       if (position < 0) {
-        return context.failure(message!);
+        return context.failure(message!, null, context.position);
       }
       final output = context.buffer.substring(context.position, position);
-      return context.success(output, position);
+      return context.success(output, position, context.position);
     } else {
       final result = delegate.parseOn(context);
       if (result.isSuccess) {
         final output =
             context.buffer.substring(context.position, result.position);
-        return result.success(output);
+        return result.success(output, null, context.position);
       }
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 

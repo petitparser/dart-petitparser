@@ -54,7 +54,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
-        return result.failure(result.message);
+        return result.failure(result.message, null, context.position);
       }
       elements.add(result.value);
       current = result;
@@ -71,15 +71,15 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     for (;;) {
       final limiter = limit.parseOn(contexts.last);
       if (limiter.isSuccess) {
-        return contexts.last.success(elements);
+        return contexts.last.success(elements, null, context.position);
       }
       if (elements.isEmpty) {
-        return limiter.failure(limiter.message);
+        return limiter.failure(limiter.message, null, context.position);
       }
       contexts.removeLast();
       elements.removeLast();
       if (contexts.isEmpty) {
-        return limiter.failure(limiter.message);
+        return limiter.failure(limiter.message, null, context.position);
       }
     }
   }

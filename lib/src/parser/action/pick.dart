@@ -27,9 +27,9 @@ class PickParser<R> extends DelegateParser<List<R>, R> {
     if (result.isSuccess) {
       final value = result.value;
       final picked = value[index < 0 ? value.length + index : index];
-      return result.success(picked);
+      return result.success(picked, null, context.position);
     } else {
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 

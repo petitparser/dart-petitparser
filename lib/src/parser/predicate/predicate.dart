@@ -30,10 +30,10 @@ class PredicateParser extends Parser<String> {
     if (stop <= context.buffer.length) {
       final result = context.buffer.substring(start, stop);
       if (predicate(result)) {
-        return context.success(result, stop);
+        return context.success(result, stop, context.position);
       }
     }
-    return context.failure(message);
+    return context.failure(message, null, context.position);
   }
 
   @override

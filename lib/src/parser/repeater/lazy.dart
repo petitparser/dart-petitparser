@@ -54,7 +54,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
-        return result.failure(result.message);
+        return result.failure(result.message, null, context.position);
       }
       elements.add(result.value);
       current = result;
@@ -62,14 +62,14 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     for (;;) {
       final limiter = limit.parseOn(current);
       if (limiter.isSuccess) {
-        return current.success(elements);
+        return current.success(elements, null, context.position);
       } else {
         if (elements.length >= max) {
-          return limiter.failure(limiter.message);
+          return limiter.failure(limiter.message, null, context.position);
         }
         final result = delegate.parseOn(current);
         if (result.isFailure) {
-          return limiter.failure(limiter.message);
+          return limiter.failure(limiter.message, null, context.position);
         }
         elements.add(result.value);
         current = result;

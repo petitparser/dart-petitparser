@@ -20,8 +20,8 @@ class PatternParser extends Parser<Match> {
   Result<Match> parseOn(Context context) {
     final result = pattern.matchAsPrefix(context.buffer, context.position);
     return result != null
-        ? context.success(result, result.end)
-        : context.failure(message);
+        ? context.success(result, result.end, context.position)
+        : context.failure(message, null, context.position);
   }
 
   @override

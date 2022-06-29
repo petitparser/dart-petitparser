@@ -16,9 +16,9 @@ class CastParser<T, R> extends DelegateParser<T, R> {
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return result.success(result.value as R);
+      return result.success(result.value as R, null, context.position);
     } else {
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 

@@ -36,7 +36,7 @@ class TrimmingParser<R> extends DelegateParser<R, R> {
     // Trim the left part:
     final before = _trim(left, buffer, context.position);
     if (before != context.position) {
-      context = Context(buffer, before);
+      context = Context(buffer, before, context.start);
     }
 
     // Consume the delegate:
@@ -49,7 +49,7 @@ class TrimmingParser<R> extends DelegateParser<R, R> {
     final after = _trim(right, buffer, result.position);
     return after == result.position
         ? result
-        : result.success(result.value, after);
+        : result.success(result.value, after, context.position);
   }
 
   @override

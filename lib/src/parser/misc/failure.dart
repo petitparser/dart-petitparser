@@ -16,7 +16,7 @@ class FailureParser<R> extends Parser<R> {
   final String message;
 
   @override
-  Result<R> parseOn(Context context) => context.failure<R>(message);
+  Result<R> parseOn(Context context) => context.failure<R>(message, null, context.position);
 
   @override
   int fastParseOn(String buffer, int position) => -1;

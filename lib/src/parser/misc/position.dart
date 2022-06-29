@@ -10,7 +10,7 @@ class PositionParser extends Parser<int> {
   PositionParser();
 
   @override
-  Result<int> parseOn(Context context) => context.success(context.position);
+  Result<int> parseOn(Context context) => context.success(context.position, null, context.position);
 
   @override
   int fastParseOn(String buffer, int position) => position;

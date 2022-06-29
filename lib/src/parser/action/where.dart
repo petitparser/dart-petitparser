@@ -51,7 +51,8 @@ class WhereParser<T> extends DelegateParser<T, T> {
       if (!predicate(value)) {
         return context.failure(
             failureMessage?.call(value) ?? 'unexpected "$value"',
-            failurePosition?.call(value));
+            failurePosition?.call(value),
+            context.position);
       }
     }
     return result;

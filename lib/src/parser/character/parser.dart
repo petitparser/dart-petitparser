@@ -19,9 +19,9 @@ class CharacterParser extends Parser<String> {
     final position = context.position;
     if (position < buffer.length &&
         predicate.test(buffer.codeUnitAt(position))) {
-      return context.success(buffer[position], position + 1);
+      return context.success(buffer[position], position + 1, context.position);
     }
-    return context.failure(message);
+    return context.failure(message, null, context.position);
   }
 
   @override

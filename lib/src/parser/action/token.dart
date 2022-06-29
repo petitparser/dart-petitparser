@@ -25,9 +25,9 @@ class TokenParser<R> extends DelegateParser<R, Token<R>> {
     if (result.isSuccess) {
       final token = Token<R>(
           result.value, context.buffer, context.position, result.position);
-      return result.success(token);
+      return result.success(token, null, context.position);
     } else {
-      return result.failure(result.message);
+      return result.failure(result.message, null, context.position);
     }
   }
 

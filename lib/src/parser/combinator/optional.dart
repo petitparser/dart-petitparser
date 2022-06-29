@@ -34,7 +34,7 @@ class OptionalParser<R> extends DelegateParser<R, R> {
     if (result.isSuccess) {
       return result;
     } else {
-      return context.success(otherwise);
+      return context.success(otherwise, null, context.position);
     }
   }
 

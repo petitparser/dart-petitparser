@@ -23,7 +23,7 @@ class AndParser<R> extends DelegateParser<R, R> {
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return context.success(result.value);
+      return context.success(result.value, null, context.position);
     } else {
       return result;
     }

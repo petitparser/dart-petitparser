@@ -31,7 +31,7 @@ abstract class Parser<R> {
   /// Subclasses don't necessarily have to override this method, since it is
   /// emulated using its slower brother.
   int fastParseOn(String buffer, int position) {
-    final result = parseOn(Context(buffer, position));
+    final result = parseOn(Context(buffer, position, 0));
     return result.isSuccess ? result.position : -1;
   }
 
@@ -48,7 +48,7 @@ abstract class Parser<R> {
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
   @nonVirtual
-  Result<R> parse(String input) => parseOn(Context(input, 0));
+  Result<R> parse(String input) => parseOn(Context(input, 0, 0));
 
   /// Returns a shallow copy of the receiver.
   ///
