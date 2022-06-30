@@ -19,7 +19,8 @@ class EpsilonParser<R> extends Parser<R> {
   final R result;
 
   @override
-  Result<R> parseOn(Context context) => context.success(result, null, context.position);
+  Result<R> parseOn(Context context) =>
+      context.success(result, null, context.position);
 
   @override
   int fastParseOn(String buffer, int position) => position;

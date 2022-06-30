@@ -22,4 +22,5 @@ Failure<T> selectFarthestJoined<T>(Failure<T> first, Failure<T> second) =>
         ? first
         : first.position < second.position
             ? second
-            : first.failure<T>('${first.message} OR ${second.message}', null, second.start);
+            : first.failure<T>(
+                '${first.message} OR ${second.message}', null, second.start);

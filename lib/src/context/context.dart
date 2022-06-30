@@ -22,14 +22,15 @@ class Context {
   /// Returns a result indicating a parse success.
   @inlineVm
   @inlineJs
-  Success<R> success<R>(R result, [int? position, int? start]) =>
-      Success<R>(buffer, position ?? this.position, result, start ?? this.start);
+  Success<R> success<R>(R result, [int? position, int? start]) => Success<R>(
+      buffer, position ?? this.position, result, start ?? this.start);
 
   /// Returns a result indicating a parse failure.
   @inlineVm
   @inlineJs
   Failure<R> failure<R>(String message, [int? position, int? start]) =>
-      Failure<R>(buffer, position ?? this.position, message, start ?? this.start);
+      Failure<R>(
+          buffer, position ?? this.position, message, start ?? this.start);
 
   /// Returns the current line:column position in the [buffer].
   String toPositionString() => Token.positionString(buffer, position);

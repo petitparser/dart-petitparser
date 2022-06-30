@@ -15,7 +15,8 @@ class Success<R> extends Result<R> {
       throw UnsupportedError('Successful parse results do not have a message.');
 
   @override
-  Result<T> map<T>(T Function(R element) callback) => success(callback(value), position, start);
+  Result<T> map<T>(T Function(R element) callback) =>
+      success(callback(value), position, start);
 
   @override
   String toString() => 'Success[${toPositionString()}]: $value';
