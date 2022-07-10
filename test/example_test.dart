@@ -1,7 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 void main() {
   final identifier = letter().seq(word().star()).flatten();

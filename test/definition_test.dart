@@ -2,7 +2,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
 import 'parser_test.dart';
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
   @override

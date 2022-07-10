@@ -2,7 +2,7 @@ import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 final identifier = letter() & word().star();
 final labeledIdentifier =

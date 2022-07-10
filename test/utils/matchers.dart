@@ -36,7 +36,9 @@ Matcher isParseSuccess<T>(
                 value: result, position: position ?? input.length))
         .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn',
             position ?? input.length)
-        .having((parser) => parser.accept(input), 'accept', isTrue);
+        .having((parser) => parser.accept(input), 'accept', isTrue)
+        .having(
+            (parser) => parser.allMatches(input).first, 'allMatches', result);
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
@@ -64,7 +66,7 @@ Matcher isParseFailure<T>(
         .having((parser) => parser.accept(input), 'accept', isFalse);
 
 /// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].
-Matcher isMatch(
+Matcher isPatternMatch(
   String match, {
   dynamic start = anything,
   dynamic end = anything,

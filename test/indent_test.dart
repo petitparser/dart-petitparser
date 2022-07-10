@@ -4,7 +4,7 @@ import 'package:petitparser/indent.dart';
 import 'package:petitparser/parser.dart';
 import 'package:test/test.dart';
 
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 class IndentList extends GrammarDefinition {
   final indent = Indent();

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 typedef Evaluator = num Function(num value);
 

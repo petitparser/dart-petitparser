@@ -2,7 +2,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide anyOf;
 
-import 'test_utils.dart';
+import 'utils/matchers.dart';
 
 void expectCommon(Parser parser) {
   test('copy', () {
@@ -1516,7 +1516,8 @@ void main() {
       expectCommon(PatternParser('42', 'number expected'));
       test('string', () {
         final parser = PatternParser('42', 'number expected');
-        expect(parser, isParseSuccess('42', isMatch('42', start: 0, end: 2)));
+        expect(parser,
+            isParseSuccess('42', isPatternMatch('42', start: 0, end: 2)));
         expect(parser, isParseFailure('4', message: 'number expected'));
         expect(parser, isParseFailure('43', message: 'number expected'));
       });
@@ -1524,19 +1525,20 @@ void main() {
         final parser = PatternParser(RegExp(r'\d+'), 'digits expected');
         expect(
           parser,
-          isParseSuccess('1', isMatch('1', start: 0, end: 1)),
+          isParseSuccess('1', isPatternMatch('1', start: 0, end: 1)),
         );
         expect(
           parser,
-          isParseSuccess('12', isMatch('12', start: 0, end: 2)),
+          isParseSuccess('12', isPatternMatch('12', start: 0, end: 2)),
         );
         expect(
           parser,
-          isParseSuccess('123', isMatch('123', start: 0, end: 3)),
+          isParseSuccess('123', isPatternMatch('123', start: 0, end: 3)),
         );
         expect(
           parser,
-          isParseSuccess('1a', isMatch('1', start: 0, end: 1), position: 1),
+          isParseSuccess('1a', isPatternMatch('1', start: 0, end: 1),
+              position: 1),
         );
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('a'));
@@ -1547,31 +1549,31 @@ void main() {
             PatternParser(RegExp(r'(\d+)\s*,\s*(\d+)'), 'pair expected');
         expect(
           parser,
-          isParseSuccess('1,2', isMatch('1,2', groups: ['1', '2'])),
+          isParseSuccess('1,2', isPatternMatch('1,2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1, 2', isMatch('1, 2', groups: ['1', '2'])),
+          isParseSuccess('1, 2', isPatternMatch('1, 2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1 ,2', isMatch('1 ,2', groups: ['1', '2'])),
+          isParseSuccess('1 ,2', isPatternMatch('1 ,2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1 , 2', isMatch('1 , 2', groups: ['1', '2'])),
+          isParseSuccess('1 , 2', isPatternMatch('1 , 2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('12,3', isMatch('12,3', groups: ['12', '3'])),
+          isParseSuccess('12,3', isPatternMatch('12,3', groups: ['12', '3'])),
         );
         expect(
           parser,
-          isParseSuccess('12, 3', isMatch('12, 3', groups: ['12', '3'])),
+          isParseSuccess('12, 3', isPatternMatch('12, 3', groups: ['12', '3'])),
         );
         expect(
           parser,
-          isParseSuccess('12 ,3', isMatch('12 ,3', groups: ['12', '3'])),
+          isParseSuccess('12 ,3', isPatternMatch('12 ,3', groups: ['12', '3'])),
         );
       });
     });
