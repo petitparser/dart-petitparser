@@ -39,10 +39,10 @@ class Token<T> {
   /// The length of the token.
   int get length => stop - start;
 
-  /// The line number of the token (only works for [String] buffers).
+  /// The line number of the token.
   int get line => Token.lineAndColumnOf(buffer, start)[0];
 
-  /// The column number of this token (only works for [String] buffers).
+  /// The column number of this token.
   int get column => Token.lineAndColumnOf(buffer, start)[1];
 
   /// Converts the value of the token.
