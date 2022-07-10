@@ -12,13 +12,34 @@ void main() {
     expect(parser.accept('a'), isTrue);
     expect(parser.accept('b'), isFalse);
   });
-  test('matches()', () {
-    final parser = digit().seq(digit()).flatten();
-    expect(parser.matches('a123b45'), ['12', '23', '45']);
-  });
-  test('matchesSkipping()', () {
-    final parser = digit().seq(digit()).flatten();
-    expect(parser.matchesSkipping('a123b45'), ['12', '45']);
+  group('matches', () {
+    const input = 'a123b456';
+    final parser = digit().repeat(2, 2).flatten();
+    test('matches()', () {
+      // ignore: deprecated_member_use_from_same_package
+      expect(parser.matches(input), ['12', '23', '45', '56']);
+    });
+    test('matchesSkipping()', () {
+      // ignore: deprecated_member_use_from_same_package
+      expect(parser.matchesSkipping(input), ['12', '45']);
+    });
+    group('allMatches', () {
+      final parser = digit().seq(digit()).flatten();
+      test('allMatches()', () {
+        expect(parser.allMatches(input), ['12', '45']);
+      });
+      test('allMatches(start: 3)', () {
+        expect(parser.allMatches(input, start: 3), ['45']);
+      });
+      test('allMatches(overlapping: true)', () {
+        expect(parser.allMatches(input, overlapping: true),
+            ['12', '23', '45', '56']);
+      });
+      test('allMatches(start: 3, overlapping: true)', () {
+        expect(parser.allMatches(input, start: 3, overlapping: true),
+            ['45', '56']);
+      });
+    });
   });
   group('pattern', () {
     const input = 'a123b45';

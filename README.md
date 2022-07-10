@@ -149,10 +149,10 @@ To return a string of the parsed identifier, we can modify our parser like this:
 final id = (letter() & pattern('a-zA-Z0-9').star()).flatten();
 ```
 
-To conveniently find all matches in a given input string you can use `Parser.matchesSkipping`:
+To conveniently find all matches in a given input string you can use `Parser.allMatches`:
 
 ```dart
-final matches = id.matchesSkipping('foo 123 bar4');
+final matches = id.allMatches('foo 123 bar4');
 print(matches);                         // ['foo', 'bar4']
 ```
 

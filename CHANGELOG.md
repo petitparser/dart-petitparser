@@ -4,6 +4,7 @@
 
 - Dart 2.17 requirement.
 - Improve `separatedBy` parser to optionally include the separator at the start.
+- Add `Parser.matchesAll` that creates a lazy iterable over the (non-overlapping or overlapping) successful parse results. Deprecate `matches` and `matchesSkipping`.
 
 ## 5.0.0
 

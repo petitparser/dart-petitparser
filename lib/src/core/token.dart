@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
-import '../matcher/matches_skipping.dart';
+import '../matcher/matches.dart';
 import '../parser/action/token.dart';
 import '../parser/character/char.dart';
 import '../parser/combinator/choice.dart';
@@ -92,7 +92,7 @@ class Token<T> {
   /// Converts the [position] index in a [buffer] to a line and column tuple.
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
-    for (final token in newlineParser().token().matchesSkipping(buffer)) {
+    for (final token in newlineParser().token().allMatches(buffer)) {
       if (position < token.stop) {
         return [line, position - offset + 1];
       }

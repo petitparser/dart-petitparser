@@ -114,7 +114,7 @@ void main() {
   });
   test('different parsers', () {
     final id = (pattern('a-zA-Z') & pattern('a-zA-Z0-9').star()).flatten();
-    final matches = id.matchesSkipping('foo 123 bar4');
+    final matches = id.allMatches('foo 123 bar4');
     expect(matches, ['foo', 'bar4']);
   });
   test('complicated grammar', () {
