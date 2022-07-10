@@ -84,7 +84,7 @@ class Token<T> {
     return Token(value, buffer, start, stop);
   }
 
-  /// Returns a parser for that detects newlines platform independently.
+  /// Returns a parser that detects newlines platform independently.
   static Parser newlineParser() => _newlineParser;
   static final Parser _newlineParser =
       char('\n') | (char('\r') & char('\n').optional());
