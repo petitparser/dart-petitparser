@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
@@ -9,12 +10,15 @@ class ExpressionDefinition extends GrammarDefinition {
   Parser start() => ref0(term).end();
 
   Parser term() => ref0(add) | ref0(prod);
+
   Parser add() => ref0(prod) & char('+').trim() & ref0(term);
 
   Parser prod() => ref0(mul) | ref0(prim);
+
   Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
 
   Parser prim() => ref0(parens) | ref0(number);
+
   Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
 
   Parser number() => digit().plus().flatten().trim();
@@ -232,5 +236,22 @@ void main() {
     final definition = EvaluatorDefinition();
     final parser = definition.build();
     expect(linter(parser), isEmpty);
+  });
+  test('debugging parser', () {
+    final output = <TraceEvent>[];
+    final parser = letter() & word().star();
+    trace(parser, output: output.add).parse('f1');
+    expect(output.map((each) => each.toString()), [
+      "Instance of 'SequenceParser<dynamic>'",
+      "  Instance of 'CharacterParser'[letter expected]",
+      "  Success[1:2]: f",
+      "  Instance of 'PossessiveRepeatingParser<String>'[0..*]",
+      "    Instance of 'CharacterParser'[letter or digit expected]",
+      "    Success[1:3]: 1",
+      "    Instance of 'CharacterParser'[letter or digit expected]",
+      "    Failure[1:3]: letter or digit expected",
+      "  Success[1:3]: [1]",
+      "Success[1:3]: [f, [1]]",
+    ]);
   });
 }
