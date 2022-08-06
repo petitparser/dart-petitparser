@@ -364,7 +364,7 @@ Check out the extensive test suites of [PetitParser](https://github.com/petitpar
 
 ### Debugging your Grammars
 
-Sometimes parsers might not behave the way you expect them to. While the first step should always be to come up with a small reproducible example, PetitParser comes with a set of built-in tools that can help you understand what is going on.
+Sometimes parsers might not behave the way you expect them to. The first step should always be to come up with a small reproducible example. If this doesn't already solve the problem, PetitParser comes with a set of built-in tools that can help you understand what is going on.
 
 The function [trace](https://github.com/petitparser/dart-petitparser/blob/main/lib/src/debug/trace.dart) transforms your grammar so that each parser prints its activation and results:
 
