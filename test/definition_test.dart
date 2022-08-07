@@ -7,7 +7,9 @@ import 'utils/matchers.dart';
 class ListGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(list).end();
+
   Parser list() => ref0(element) & char(',') & ref0(list) | ref0(element);
+
   Parser element() => digit().plus().flatten();
 }
 
@@ -19,22 +21,30 @@ class ListParserDefinition extends ListGrammarDefinition {
 class TokenizedListGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(list).end();
+
   Parser list() =>
       ref0(element) & ref1(token, char(',')) & ref0(list) | ref0(element);
+
   Parser element() => ref1(token, digit().plus());
+
   Parser token(Parser parser) => parser.flatten().trim();
 }
 
 class TypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
-  Parser<List<String>> start() => this.ref0(f0);
-  Parser<List<String>> f0() => this.ref1(f1, 1);
-  Parser<List<String>> f1(int a1) => this.ref2(f2, a1, 2);
-  Parser<List<String>> f2(int a1, int a2) => this.ref3(f3, a1, a2, 3);
-  Parser<List<String>> f3(int a1, int a2, int a3) =>
-      this.ref4(f4, a1, a2, a3, 4);
+  Parser<List<String>> start() => ref0(f0);
+
+  Parser<List<String>> f0() => ref1(f1, 1);
+
+  Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
+
+  Parser<List<String>> f2(int a1, int a2) => ref3(f3, a1, a2, 3);
+
+  Parser<List<String>> f3(int a1, int a2, int a3) => ref4(f4, a1, a2, a3, 4);
+
   Parser<List<String>> f4(int a1, int a2, int a3, int a4) =>
-      this.ref5(f5, a1, a2, a3, a4, 5);
+      ref5(f5, a1, a2, a3, a4, 5);
+
   Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) => [
         a1.toString().toParser(),
         a2.toString().toParser(),
@@ -46,12 +56,18 @@ class TypedReferencesGrammarDefinition extends GrammarDefinition {
 
 class UntypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
-  Parser start() => this.ref0(f0);
-  Parser f0() => this.ref1(f1, 1);
-  Parser f1(int a1) => this.ref2(f2, a1, 2);
-  Parser f2(int a1, int a2) => this.ref3(f3, a1, a2, 3);
-  Parser f3(int a1, int a2, int a3) => this.ref4(f4, a1, a2, a3, 4);
-  Parser f4(int a1, int a2, int a3, int a4) => this.ref5(f5, a1, a2, a3, a4, 5);
+  Parser start() => ref0(f0);
+
+  Parser f0() => ref1(f1, 1);
+
+  Parser f1(int a1) => ref2(f2, a1, 2);
+
+  Parser f2(int a1, int a2) => ref3(f3, a1, a2, 3);
+
+  Parser f3(int a1, int a2, int a3) => ref4(f4, a1, a2, a3, 4);
+
+  Parser f4(int a1, int a2, int a3, int a4) => ref5(f5, a1, a2, a3, a4, 5);
+
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
         a1.toString().toParser(),
         a2.toString().toParser(),
@@ -64,12 +80,18 @@ class UntypedReferencesGrammarDefinition extends GrammarDefinition {
 // ignore_for_file: deprecated_member_use_from_same_package
 class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
-  Parser start() => this.ref(f0);
-  Parser f0() => this.ref(f1, 1);
-  Parser f1(int a1) => this.ref(f2, a1, 2);
-  Parser f2(int a1, int a2) => this.ref(f3, a1, a2, 3);
-  Parser f3(int a1, int a2, int a3) => this.ref(f4, a1, a2, a3, 4);
-  Parser f4(int a1, int a2, int a3, int a4) => this.ref(f5, a1, a2, a3, a4, 5);
+  Parser start() => ref(f0);
+
+  Parser f0() => ref(f1, 1);
+
+  Parser f1(int a1) => ref(f2, a1, 2);
+
+  Parser f2(int a1, int a2) => ref(f3, a1, a2, 3);
+
+  Parser f3(int a1, int a2, int a3) => ref(f4, a1, a2, a3, 4);
+
+  Parser f4(int a1, int a2, int a3, int a4) => ref(f5, a1, a2, a3, a4, 5);
+
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
         a1.toString().toParser(),
         a2.toString().toParser(),
@@ -86,22 +108,29 @@ class BuggedGrammarDefinition extends GrammarDefinition {
   Parser directRecursion1() => ref0(directRecursion1);
 
   Parser indirectRecursion1() => ref0(indirectRecursion2);
+
   Parser indirectRecursion2() => ref0(indirectRecursion3);
+
   Parser indirectRecursion3() => ref0(indirectRecursion1);
 
   Parser delegation1() => ref0(delegation2);
+
   Parser delegation2() => ref0(delegation3);
+
   Parser delegation3() => epsilon();
 }
 
 class LambdaGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(expression).end();
+
   Parser expression() => ref0(variable) | ref0(abstraction) | ref0(application);
 
   Parser variable() => (letter() & word().star()).flatten().trim();
+
   Parser abstraction() =>
       token('\\') & ref0(variable) & token('.') & ref0(expression);
+
   Parser application() =>
       token('(') & ref0(expression) & ref0(expression) & token(')');
 
@@ -111,21 +140,26 @@ class LambdaGrammarDefinition extends GrammarDefinition {
 class ExpressionGrammarDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(terms).end();
+
   Parser terms() => ref0(addition) | ref0(factors);
 
   Parser addition() => ref0(factors).separatedBy(token(char('+') | char('-')));
+
   Parser factors() => ref0(multiplication) | ref0(power);
 
   Parser multiplication() =>
       ref0(power).separatedBy(token(char('*') | char('/')));
+
   Parser power() => ref0(primary).separatedBy(char('^').trim());
 
   Parser primary() => ref0(number) | ref0(parentheses);
+
   Parser number() => token(char('-').optional() &
       digit().plus() &
       (char('.') & digit().plus()).optional());
 
   Parser parentheses() => token('(') & ref0(terms) & token(')');
+
   Parser token(Object value) {
     if (value is String) {
       return char(value).trim();
@@ -266,30 +300,26 @@ void main() {
     final buggedDefinition = BuggedGrammarDefinition();
 
     test('reference without parameters', () {
-      final firstReference = grammarDefinition.ref0(grammarDefinition.start);
-      final secondReference = grammarDefinition.ref0(grammarDefinition.start);
+      final firstReference = ref0(grammarDefinition.start);
+      final secondReference = ref0(grammarDefinition.start);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isTrue);
     });
     test('reference with different production', () {
-      final firstReference = grammarDefinition.ref0(grammarDefinition.start);
-      final secondReference = grammarDefinition.ref0(grammarDefinition.element);
+      final firstReference = ref0(grammarDefinition.start);
+      final secondReference = ref0(grammarDefinition.element);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isFalse);
     });
     test('reference with same parameters', () {
-      final firstReference =
-          typedReferenceDefinition.ref1(typedReferenceDefinition.f1, 42);
-      final secondReference =
-          typedReferenceDefinition.ref1(typedReferenceDefinition.f1, 42);
+      final firstReference = ref1(typedReferenceDefinition.f1, 42);
+      final secondReference = ref1(typedReferenceDefinition.f1, 42);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isTrue);
     });
     test('reference with different parameters', () {
-      final firstReference =
-          typedReferenceDefinition.ref1(typedReferenceDefinition.f1, 42);
-      final secondReference =
-          typedReferenceDefinition.ref1(typedReferenceDefinition.f1, 43);
+      final firstReference = ref1(typedReferenceDefinition.f1, 42);
+      final secondReference = ref1(typedReferenceDefinition.f1, 43);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isFalse);
     });
@@ -310,7 +340,7 @@ void main() {
           throwsStateError);
     });
     test('reference unsupported methods', () {
-      final reference = grammarDefinition.ref0(grammarDefinition.start);
+      final reference = ref0(grammarDefinition.start);
       expect(() => reference.copy(), throwsUnsupportedError);
       expect(() => reference.parse(''), throwsUnsupportedError);
     });

@@ -6,6 +6,8 @@
 - Improve `separatedBy` parser to optionally include the separator at the start.
 - Add `Parser.matchesAll` that creates a lazy iterable over the (non-overlapping or overlapping) successful parse results. Deprecate `matches` and `matchesSkipping`.
 - Add a section on debugging to the [tutorial](https://github.com/petitparser/dart-petitparser#debugging-your-grammars).
+- Remove the `ref0`, `ref1`, ... instance methods, these methods are globally defined since 4.2.0.
+- Make `GrammarDefinition` and `GrammarDefinition.start()` optionally typed.
 
 ## 5.0.0
 
