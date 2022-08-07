@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
@@ -15,6 +16,44 @@ final nestedParser = resolve(ref0(content)).flatten().end();
 class ParensGrammar extends GrammarDefinition {
   @override
   Parser start() => char('(') & ref0(start) & char(')') | epsilon();
+}
+
+class NestedGrammar1 {
+  Parser start() => ref0(term).end();
+  Parser term() => ref0(nestedTerm) | ref0(singleCharacter);
+  Parser nestedTerm() =>
+      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      ref0(term) &
+      char(')').map((value) => "'$value' (nestedTerm)");
+  Parser singleCharacter() =>
+      char('(').map((value) => "'$value' (singleCharacter)") |
+      char(')').map((value) => "'$value' (singleCharacter)") |
+      char('0').map((value) => "'$value' (singleCharacter)");
+}
+
+class NestedGrammar2 {
+  Parser start() => ref0(term).end();
+  Parser term() => (ref0(nestedTerm) | ref0(singleCharacter)).plus();
+  Parser nestedTerm() =>
+      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      ref0(term) &
+      char(')').map((value) => "'$value' (nestedTerm)");
+  Parser singleCharacter() =>
+      char('(').map((value) => "'$value' (singleCharacter)") |
+      char(')').map((value) => "'$value' (singleCharacter)") |
+      char('0').map((value) => "'$value' (singleCharacter)");
+}
+
+class NestedGrammar3 {
+  Parser start() => ref0(term).end();
+  Parser term() => (ref0(nestedTerm) | ref0(singleCharacter)).plus();
+  Parser nestedTerm() =>
+      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      ref0(term) &
+      char(')').map((value) => "'$value' (nestedTerm)");
+  Parser singleCharacter() =>
+      char('(').map((value) => "'$value' (singleCharacter)") |
+      char('0').map((value) => "'$value' (singleCharacter)");
 }
 
 void main() {
@@ -307,5 +346,39 @@ void main() {
           ],
           ')'
         ]));
+  });
+  group('https://stackoverflow.com/questions/73260748', () {
+    test('Case 1', () {
+      final parser = resolve(NestedGrammar1().start());
+      expect(
+          parser,
+          isParseSuccess('(0)', [
+            "'(' (nestedTerm)",
+            "'0' (singleCharacter)",
+            "')' (nestedTerm)",
+          ]));
+    });
+    test('Case 2', () {
+      final parser = resolve(NestedGrammar2().start());
+      expect(
+          parser,
+          isParseSuccess('(0)', [
+            "'(' (singleCharacter)",
+            "'0' (singleCharacter)",
+            "')' (singleCharacter)",
+          ]));
+    });
+    test('Case 3', () {
+      final parser = resolve(NestedGrammar3().start());
+      expect(
+          parser,
+          isParseSuccess('(0)', [
+            [
+              "'(' (nestedTerm)",
+              ["'0' (singleCharacter)"],
+              "')' (nestedTerm)",
+            ]
+          ]));
+    });
   });
 }
