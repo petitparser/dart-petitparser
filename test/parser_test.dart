@@ -59,7 +59,7 @@ void main() {
     group('cast', () {
       expectCommon(any().cast());
       test('default', () {
-        final parser = digit().map(num.parse);
+        final parser = digit().map(int.parse).cast<num>();
         expect(parser, isParseSuccess('1', 1));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
