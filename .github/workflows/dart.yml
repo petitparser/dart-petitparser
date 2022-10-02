@@ -15,12 +15,12 @@ jobs:
     name: "Dart CI"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
-      - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - name: "Dependencies"
@@ -38,4 +38,4 @@ jobs:
           dart pub global activate coverage
           dart pub global run coverage:test_with_coverage --test test/all_test.dart
       - name: "Upload coverage"
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
