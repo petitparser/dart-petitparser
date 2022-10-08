@@ -5,7 +5,7 @@ import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';
 import '../parser/combinator/sequence.dart';
 import '../parser/repeater/possessive.dart';
-import '../parser/repeater/separated_by.dart';
+import '../parser/repeater/separated.dart';
 import 'result.dart';
 
 /// Models a group of operators of the same precedence.
@@ -83,14 +83,9 @@ class ExpressionGroup<T> {
     if (_right.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(_buildChoice(_right)).map((sequence) {
-        var result = sequence.last;
-        for (var i = sequence.length - 2; i > 0; i -= 2) {
-          result =
-              (sequence[i] as ExpressionResultInfix)(sequence[i - 1], result);
-        }
-        return result;
-      });
+      return inner
+          .plusSeparated(_buildChoice(_right))
+          .map((sequence) => sequence.foldRight((a, b, c) => b(a, c)));
     }
   }
 
@@ -107,14 +102,9 @@ class ExpressionGroup<T> {
     if (_left.isEmpty) {
       return inner;
     } else {
-      return inner.separatedBy(_buildChoice(_left)).map((sequence) {
-        var result = sequence.first;
-        for (var i = 1; i < sequence.length; i += 2) {
-          result =
-              (sequence[i] as ExpressionResultInfix)(result, sequence[i + 1]);
-        }
-        return result;
-      });
+      return inner
+          .plusSeparated(_buildChoice(_left))
+          .map((sequence) => sequence.foldLeft((a, b, c) => b(a, c)));
     }
   }
 

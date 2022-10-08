@@ -1,8 +1,17 @@
+// ignore_for_file: deprecated_member_use_from_same_package
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/matchers.dart';
+
+TypeMatcher<SeparatedList<R, S>> isSeparatedList<R, S>({
+  List<R> elements = const [],
+  List<S> separators = const [],
+}) =>
+    isA<SeparatedList<R, S>>()
+        .having((list) => list.elements, 'elements', elements)
+        .having((list) => list.separators, 'separators', separators);
 
 void expectCommon(Parser parser) {
   test('copy', () {
@@ -1902,6 +1911,246 @@ void main() {
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
         expect(parser, isParseSuccess('aa', ['a', 'a']));
         expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+      });
+    });
+    group('separated', () {
+      expectCommon(digit().starSeparated(letter()));
+      test('star', () {
+        final parser = digit().starSeparated(letter());
+        expect(parser, isParseSuccess('', isSeparatedList()));
+        expect(parser, isParseSuccess('a', isSeparatedList(), position: 0));
+        expect(parser, isParseSuccess('1', isSeparatedList(elements: ['1'])));
+        expect(
+            parser,
+            isParseSuccess('1a', isSeparatedList(elements: ['1']),
+                position: 1));
+        expect(
+            parser,
+            isParseSuccess('1a2',
+                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+        expect(
+            parser,
+            isParseSuccess('1a2b',
+                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                position: 3));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4',
+                isSeparatedList(
+                    elements: ['1', '2', '3', '4'],
+                    separators: ['a', 'b', 'c'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4d',
+                isSeparatedList(
+                    elements: ['1', '2', '3', '4'],
+                    separators: ['a', 'b', 'c']),
+                position: 7));
+      });
+      test('plus', () {
+        final parser = digit().plusSeparated(letter());
+        expect(parser, isParseFailure('', message: 'digit expected'));
+        expect(parser, isParseFailure('a', message: 'digit expected'));
+        expect(parser, isParseSuccess('1', isSeparatedList(elements: ['1'])));
+        expect(
+            parser,
+            isParseSuccess('1a', isSeparatedList(elements: ['1']),
+                position: 1));
+        expect(
+            parser,
+            isParseSuccess('1a2',
+                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+        expect(
+            parser,
+            isParseSuccess('1a2b',
+                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                position: 3));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4',
+                isSeparatedList(
+                    elements: ['1', '2', '3', '4'],
+                    separators: ['a', 'b', 'c'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4d',
+                isSeparatedList(
+                    elements: ['1', '2', '3', '4'],
+                    separators: ['a', 'b', 'c']),
+                position: 7));
+      });
+      test('times', () {
+        final parser = digit().timesSeparated(letter(), 3);
+        expect(parser, isParseFailure('', message: 'digit expected'));
+        expect(parser, isParseFailure('a', message: 'digit expected'));
+        expect(parser,
+            isParseFailure('1', message: 'letter expected', position: 1));
+        expect(parser,
+            isParseFailure('1a', message: 'digit expected', position: 2));
+        expect(parser,
+            isParseFailure('1a2', message: 'letter expected', position: 3));
+        expect(parser,
+            isParseFailure('1a2b', message: 'digit expected', position: 4));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4d',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+      });
+      test('repeat', () {
+        final parser = digit().repeatSeparated(letter(), 2, 3);
+        expect(parser, isParseFailure('', message: 'digit expected'));
+        expect(parser, isParseFailure('a', message: 'digit expected'));
+        expect(parser,
+            isParseFailure('1', message: 'letter expected', position: 1));
+        expect(parser,
+            isParseFailure('1a', message: 'digit expected', position: 2));
+        expect(
+            parser,
+            isParseSuccess('1a2',
+                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+        expect(
+            parser,
+            isParseSuccess('1a2b',
+                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                position: 3));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b'])));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+        expect(
+            parser,
+            isParseSuccess(
+                '1a2b3c4d',
+                isSeparatedList(
+                    elements: ['1', '2', '3'], separators: ['a', 'b']),
+                position: 5));
+      });
+      group('separated list', () {
+        final empty = SeparatedList<String, String>([], []);
+        final single = SeparatedList<String, String>(['1'], []);
+        final double = SeparatedList<String, String>(['1', '2'], ['+']);
+        final triple =
+            SeparatedList<String, String>(['1', '2', '3'], ['+', '-']);
+        final quadruple = SeparatedList<String, String>(
+            ['1', '2', '3', '4'], ['+', '-', '*']);
+        final mixed = SeparatedList<int, String>([1, 2, 3], ['+', '-']);
+        String combinator(String first, String separator, String second) =>
+            '($first$separator$second)';
+        test('elements', () {
+          expect(empty.elements, []);
+          expect(single.elements, ['1']);
+          expect(double.elements, ['1', '2']);
+          expect(triple.elements, ['1', '2', '3']);
+          expect(quadruple.elements, ['1', '2', '3', '4']);
+          expect(mixed.elements, [1, 2, 3]);
+        });
+        test('separators', () {
+          expect(empty.separators, []);
+          expect(single.separators, []);
+          expect(double.separators, ['+']);
+          expect(triple.separators, ['+', '-']);
+          expect(quadruple.separators, ['+', '-', '*']);
+          expect(mixed.separators, ['+', '-']);
+        });
+        test('sequence', () {
+          expect(empty.sequential, []);
+          expect(single.sequential, ['1']);
+          expect(double.sequential, ['1', '+', '2']);
+          expect(triple.sequential, ['1', '+', '2', '-', '3']);
+          expect(quadruple.sequential, ['1', '+', '2', '-', '3', '*', '4']);
+          expect(mixed.sequential, [1, '+', 2, '-', 3]);
+        });
+        test('foldLeft', () {
+          expect(() => empty.foldLeft(combinator), throwsStateError);
+          expect(single.foldLeft(combinator), '1');
+          expect(double.foldLeft(combinator), '(1+2)');
+          expect(triple.foldLeft(combinator), '((1+2)-3)');
+          expect(quadruple.foldLeft(combinator), '(((1+2)-3)*4)');
+        });
+        test('foldRight', () {
+          expect(() => empty.foldRight(combinator), throwsStateError);
+          expect(single.foldRight(combinator), '1');
+          expect(double.foldRight(combinator), '(1+2)');
+          expect(triple.foldRight(combinator), '(1+(2-3))');
+          expect(quadruple.foldRight(combinator), '(1+(2-(3*4)))');
+        });
+        test('toString', () {
+          expect(empty.toString(), 'SeparatedList()');
+          expect(single.toString(), 'SeparatedList(1)');
+          expect(double.toString(), 'SeparatedList(1, +, 2)');
+          expect(triple.toString(), 'SeparatedList(1, +, 2, -, 3)');
+          expect(quadruple.toString(), 'SeparatedList(1, +, 2, -, 3, *, 4)');
+          expect(mixed.toString(), 'SeparatedList(1, +, 2, -, 3)');
+        });
       });
     });
     group('separated by', () {
