@@ -52,7 +52,7 @@ class ExpressionGroup<T> {
     }
   }
 
-  final List<Parser<ExpressionResultPrefix>> _prefix = [];
+  final List<Parser<ExpressionResultPrefix<T, void>>> _prefix = [];
 
   /// Adds a postfix operator [parser]. Evaluates the [callback] with the parsed
   /// `value` and `operator`.
@@ -70,7 +70,7 @@ class ExpressionGroup<T> {
     }
   }
 
-  final List<Parser<ExpressionResultPostfix>> _postfix = [];
+  final List<Parser<ExpressionResultPostfix<T, void>>> _postfix = [];
 
   /// Adds a right-associative operator [parser]. Evaluates the [callback] with
   /// the parsed `left` term, `operator`, and `right` term.
@@ -89,7 +89,7 @@ class ExpressionGroup<T> {
     }
   }
 
-  final List<Parser<ExpressionResultInfix>> _right = [];
+  final List<Parser<ExpressionResultInfix<T, void>>> _right = [];
 
   /// Adds a left-associative operator [parser]. Evaluates the [callback] with
   /// the parsed `left` term, `operator`, and `right` term.
@@ -108,7 +108,7 @@ class ExpressionGroup<T> {
     }
   }
 
-  final List<Parser<ExpressionResultInfix>> _left = [];
+  final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
   // Internal helper to build the group of parsers.
   @internal
