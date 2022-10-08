@@ -43,15 +43,15 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
       SeparatedRepeatingParser<R, S>(this, separator, min, max);
 }
 
-/// A greedy repeating parser, commonly seen in regular expression
-/// implementations. It aggressively consumes as much input as possible and then
-/// backtracks to meet the 'limit' condition.
+/// A parser that consumes the [delegate] between [min] and [max] times
+/// separated by the [separator] parser.
 class SeparatedRepeatingParser<R, S>
     extends RepeatingParser<R, SeparatedList<R, S>> {
   SeparatedRepeatingParser(
       super.delegate, this.separator, super.min, super.max);
 
-  final Parser<S> separator;
+  /// Parser consuming input between the repeated elements.
+  Parser<S> separator;
 
   @override
   Result<SeparatedList<R, S>> parseOn(Context context) {
@@ -131,6 +131,17 @@ class SeparatedRepeatingParser<R, S>
       current = result;
     }
     return current;
+  }
+
+  @override
+  List<Parser> get children => [delegate, separator];
+
+  @override
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    if (separator == source) {
+      separator = target as Parser<S>;
+    }
   }
 
   @override
