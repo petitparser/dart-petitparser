@@ -1,7 +1,8 @@
 import '../../core/parser.dart';
-import '../action/map.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
+import '../combinator/sequence_map.dart';
+import '../misc/epsilon.dart';
 import '../repeater/possessive.dart';
 
 extension SeparatedByParserExtension<T> on Parser<T> {
@@ -28,32 +29,32 @@ extension SeparatedByParserExtension<T> on Parser<T> {
     bool includeSeparators = true,
     bool optionalSeparatorAtStart = false,
     bool optionalSeparatorAtEnd = false,
-  }) {
-    final parser = [
-      if (optionalSeparatorAtStart) separator.optional(),
-      this,
-      [separator, this].toSequenceParser().star(),
-      if (optionalSeparatorAtEnd) separator.optional(),
-    ].toSequenceParser();
-    return parser.map((list) {
-      final result = <R>[];
-      if (includeSeparators && optionalSeparatorAtStart && list[0] != null) {
-        result.add(list[0]);
-      }
-      final offset = optionalSeparatorAtStart ? 1 : 0;
-      result.add(list[offset]);
-      for (List tuple in list[offset + 1]) {
-        if (includeSeparators) {
-          result.add(tuple[0]);
-        }
-        result.add(tuple[1]);
-      }
-      if (includeSeparators &&
-          optionalSeparatorAtEnd &&
-          list[offset + 2] != null) {
-        result.add(list[offset + 2]);
-      }
-      return result;
-    });
-  }
+  }) =>
+      seqMap4(
+        optionalSeparatorAtStart ? separator.optional() : epsilonWith(null),
+        this,
+        [separator, this].toSequenceParser().star(),
+        optionalSeparatorAtEnd ? separator.optional() : epsilonWith(null),
+        (separatorAtStart, firstElement, otherElements, separatorAtEnd) {
+          final result = <R>[];
+          if (includeSeparators &&
+              optionalSeparatorAtStart &&
+              separatorAtStart != null) {
+            result.add(separatorAtStart);
+          }
+          result.add(firstElement as R);
+          for (var tuple in otherElements) {
+            if (includeSeparators) {
+              result.add(tuple[0]);
+            }
+            result.add(tuple[1]);
+          }
+          if (includeSeparators &&
+              optionalSeparatorAtEnd &&
+              separatorAtEnd != null) {
+            result.add(separatorAtEnd);
+          }
+          return result;
+        },
+      );
 }

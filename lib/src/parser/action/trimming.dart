@@ -4,6 +4,7 @@ import '../../core/parser.dart';
 import '../../shared/annotations.dart';
 import '../character/whitespace.dart';
 import '../combinator/delegate.dart';
+import '../utils/sequential.dart';
 
 extension TrimmingParserExtension<T> on Parser<T> {
   /// Returns a parser that consumes input before and after the receiver,
@@ -20,7 +21,7 @@ extension TrimmingParserExtension<T> on Parser<T> {
 
 /// A parser that silently consumes input of another parser around
 /// its delegate.
-class TrimmingParser<R> extends DelegateParser<R, R> {
+class TrimmingParser<R> extends DelegateParser<R, R> implements SequentialParser {
   TrimmingParser(super.delegate, this.left, this.right);
 
   /// Parser that consumes input before the delegate.

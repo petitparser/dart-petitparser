@@ -1,6 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../utils/sequential.dart';
 import 'list.dart';
 
 extension SequenceParserExtension on Parser {
@@ -28,7 +29,7 @@ extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
 }
 
 /// A parser that parses a sequence of parsers.
-class SequenceParser<T> extends ListParser<T, List<T>> {
+class SequenceParser<T> extends ListParser<T, List<T>> implements SequentialParser {
   SequenceParser(super.children);
 
   @override

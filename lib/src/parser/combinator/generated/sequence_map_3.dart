@@ -3,10 +3,12 @@
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../utils/sequential.dart';
 
 /// A parser that consumes a sequence of 3 typed parsers and combines
 /// the successful parse with a [callback] to a result of type [R].
-class SequenceMapParser3<R1, R2, R3, R> extends Parser<R> {
+class SequenceMapParser3<R1, R2, R3, R> extends Parser<R>
+    implements SequentialParser {
   SequenceMapParser3(this.parser1, this.parser2, this.parser3, this.callback);
 
   Parser<R1> parser1;

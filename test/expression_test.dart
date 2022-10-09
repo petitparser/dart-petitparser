@@ -396,7 +396,7 @@ void main() {
     ]);
   });
   test('linter', () {
-    expect(linter(parser, excludedTypes: const {}), isEmpty);
-    expect(linter(evaluator, excludedTypes: const {}), isEmpty);
+    expect(linter(parser), isEmpty);
+    expect(linter(evaluator), isEmpty);
   });
 }

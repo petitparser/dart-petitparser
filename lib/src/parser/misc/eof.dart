@@ -1,9 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../action/cast.dart';
-import '../action/pick.dart';
-import '../combinator/sequence.dart';
+import '../combinator/sequence_map.dart';
 
 extension EndOfInputParserExtension<T> on Parser<T> {
   /// Returns a parser that succeeds only if the receiver consumes the complete
@@ -13,7 +11,7 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   Parser<T> end([String message = 'end of input expected']) =>
-      [this, endOfInput(message)].toSequenceParser().pick(0).cast<T>();
+      seqMap2(this, endOfInput(message), (value, _) => value);
 }
 
 /// Returns a parser that succeeds at the end of input.

@@ -2,11 +2,9 @@ import '../../context/context.dart';
 import '../../context/failure.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../action/cast.dart';
-import '../action/pick.dart';
-import '../combinator/sequence.dart';
 import '../predicate/any.dart';
 import 'delegate.dart';
+import 'sequence_map.dart';
 
 extension NotParserExtension<T> on Parser<T> {
   /// Returns a parser (logical not-predicate) that succeeds with the [Failure]
@@ -27,7 +25,7 @@ extension NotParserExtension<T> on Parser<T> {
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
   Parser<String> neg([String message = 'input not expected']) =>
-      [not(message), any()].toSequenceParser().pick(1).cast<String>();
+      seqMap2(not(message), any(), (first, second) => second);
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,

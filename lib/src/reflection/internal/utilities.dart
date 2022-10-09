@@ -1,9 +1,8 @@
 import '../../core/parser.dart';
-import '../../parser/action/trimming.dart';
 import '../../parser/combinator/optional.dart';
-import '../../parser/combinator/sequence.dart';
 import '../../parser/misc/epsilon.dart';
 import '../../parser/repeater/repeating.dart';
+import '../../parser/utils/sequential.dart';
 
 /// Returns `true`, if [parser] is directly nullable. This means that the parser
 /// can succeed without involving any other parsers.
@@ -24,8 +23,7 @@ bool isTerminal(Parser parser) => parser.children.isEmpty;
 /// Returns `true`, if [parser] consumes its children in the declared
 /// sequence.
 bool isSequence(Parser parser) =>
-    (parser is SequenceParser || parser is TrimmingParser) &&
-    parser.children.length > 1;
+    parser is SequentialParser && parser.children.length > 1;
 
 /// Adds all [elements] to [result]. Returns `true` if [result] was changed.
 bool addAll<T>(Set<T> result, Iterable<T> elements) {

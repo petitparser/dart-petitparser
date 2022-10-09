@@ -70,12 +70,15 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../../context/context.dart\';');
   out.writeln('import \'../../../context/result.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
+  out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
   out.writeln('/// A parser that consumes a sequence of $index typed parsers '
       'and combines');
   out.writeln('/// the successful parse with a [callback] to a result of type '
       '[R].');
-  out.writeln('class $className extends Parser<R> {');
+  out.writeln('class $className '
+      'extends Parser<R> '
+      'implements SequentialParser {');
   out.writeln('SequenceMapParser$index(');
   for (var i = 0; i < index; i++) {
     out.writeln('this.${parserNames[i]},');

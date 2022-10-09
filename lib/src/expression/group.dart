@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';
-import '../parser/combinator/sequence.dart';
+import '../parser/combinator/sequence_map.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
 import 'result.dart';
@@ -28,8 +28,7 @@ class ExpressionGroup<T> {
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<L, R>(Parser<L> left, Parser<R> right,
           T Function(L left, T value, R right) callback) =>
-      _wrapper.add([left, _loopback, right].toSequenceParser().map(
-          (value) => callback(value[0] as L, value[1] as T, value[2] as R)));
+      _wrapper.add(seqMap3(left, _loopback, right, callback));
 
   Parser<T> _buildWrapper(Parser<T> inner) =>
       _buildChoice([..._wrapper, inner]);
@@ -46,9 +45,11 @@ class ExpressionGroup<T> {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return [_buildChoice(_prefix).star(), inner].toSequenceParser().map(
-          (tuple) => (tuple.first as List).reversed.fold(tuple.last as T,
-              (value, result) => (result as ExpressionResultPrefix)(value)));
+      return seqMap2(
+          _buildChoice(_prefix).star(),
+          inner,
+          (prefix, value) =>
+              prefix.reversed.fold(value, (each, result) => result(each)));
     }
   }
 
@@ -64,9 +65,11 @@ class ExpressionGroup<T> {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return [inner, _buildChoice(_postfix).star()].toSequenceParser().map(
-          (tuple) => (tuple.last as List).fold(tuple.first as T,
-              (value, result) => (result as ExpressionResultPostfix)(value)));
+      return seqMap2(
+          inner,
+          _buildChoice(_postfix).star(),
+          (value, postfix) =>
+              postfix.fold(value, (each, result) => result(each)));
     }
   }
 

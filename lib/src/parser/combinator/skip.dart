@@ -1,6 +1,5 @@
 import '../../core/parser.dart';
-import '../action/map.dart';
-import 'sequence.dart';
+import 'sequence_map.dart';
 
 extension SkipParserExtension<T> on Parser<T> {
   /// Returns a parser that consumes input [before] and [after] the receiver,
@@ -12,10 +11,8 @@ extension SkipParserExtension<T> on Parser<T> {
   Parser<T> skip({Parser<void>? before, Parser<void>? after}) => before == null
       ? after == null
           ? this
-          : [this, after].toSequenceParser().map((list) => list[0] as T)
+          : seqMap2(this, after, (value, _) => value)
       : after == null
-          ? [before, this].toSequenceParser().map((list) => list[1] as T)
-          : [before, this, after]
-              .toSequenceParser()
-              .map((list) => list[1] as T);
+          ? seqMap2(before, this, (_, value) => value)
+          : seqMap3(before, this, after, (_, value, __) => value);
 }
