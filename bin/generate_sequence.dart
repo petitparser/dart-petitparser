@@ -4,6 +4,19 @@ import 'dart:io';
 final int min = 2;
 final int max = 9;
 
+/// Ordinal numbers for the sequence.
+const ordinals = [
+  'first',
+  'second',
+  'third',
+  'fourth',
+  'fifth',
+  'sixth',
+  'seventh',
+  'eighth',
+  'ninth',
+];
+
 /// Export file.
 final File exportFile = File('lib/src/parser/combinator/sequence_map.dart');
 
@@ -45,7 +58,7 @@ Future<void> generateImplementation(int index) async {
   final resultTypes = generateValues('R', index);
   final resultNames = generateValues('result', index);
   final valueTypes = generateValues('T', index);
-  final valueNames = generateValues('value', index);
+  final valueNames = ordinals.sublist(0, index);
 
   generateWarning(out);
   out.writeln('import \'package:meta/meta.dart\';');

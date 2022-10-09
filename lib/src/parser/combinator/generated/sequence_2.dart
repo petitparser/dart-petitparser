@@ -63,25 +63,25 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
 /// Immutable typed sequence with 2 values.
 @immutable
 class Sequence2<T1, T2> {
-  Sequence2(this.value1, this.value2);
+  Sequence2(this.first, this.second);
 
-  final T1 value1;
-  final T2 value2;
+  final T1 first;
+  final T2 second;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
-  R map<R>(R Function(T1, T2) callback) => callback(value1, value2);
+  R map<R>(R Function(T1, T2) callback) => callback(first, second);
 
   @override
-  int get hashCode => Object.hash(value1, value2);
+  int get hashCode => Object.hash(first, second);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence2<T1, T2> &&
-      value1 == other.value1 &&
-      value2 == other.value2;
+      first == other.first &&
+      second == other.second;
 
   @override
-  String toString() => '${super.toString()}($value1, $value2)';
+  String toString() => '${super.toString()}($first, $second)';
 }
 
 extension ParserSequenceExtension2<T1, T2> on Parser<Sequence2<T1, T2>> {

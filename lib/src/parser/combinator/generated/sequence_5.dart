@@ -91,33 +91,33 @@ class SequenceParser5<R1, R2, R3, R4, R5>
 /// Immutable typed sequence with 5 values.
 @immutable
 class Sequence5<T1, T2, T3, T4, T5> {
-  Sequence5(this.value1, this.value2, this.value3, this.value4, this.value5);
+  Sequence5(this.first, this.second, this.third, this.fourth, this.fifth);
 
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
-  final T5 value5;
+  final T1 first;
+  final T2 second;
+  final T3 third;
+  final T4 fourth;
+  final T5 fifth;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
   R map<R>(R Function(T1, T2, T3, T4, T5) callback) =>
-      callback(value1, value2, value3, value4, value5);
+      callback(first, second, third, fourth, fifth);
 
   @override
-  int get hashCode => Object.hash(value1, value2, value3, value4, value5);
+  int get hashCode => Object.hash(first, second, third, fourth, fifth);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence5<T1, T2, T3, T4, T5> &&
-      value1 == other.value1 &&
-      value2 == other.value2 &&
-      value3 == other.value3 &&
-      value4 == other.value4 &&
-      value5 == other.value5;
+      first == other.first &&
+      second == other.second &&
+      third == other.third &&
+      fourth == other.fourth &&
+      fifth == other.fifth;
 
   @override
   String toString() =>
-      '${super.toString()}($value1, $value2, $value3, $value4, $value5)';
+      '${super.toString()}($first, $second, $third, $fourth, $fifth)';
 }
 
 extension ParserSequenceExtension5<T1, T2, T3, T4, T5>

@@ -81,31 +81,30 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
 /// Immutable typed sequence with 4 values.
 @immutable
 class Sequence4<T1, T2, T3, T4> {
-  Sequence4(this.value1, this.value2, this.value3, this.value4);
+  Sequence4(this.first, this.second, this.third, this.fourth);
 
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
+  final T1 first;
+  final T2 second;
+  final T3 third;
+  final T4 fourth;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
   R map<R>(R Function(T1, T2, T3, T4) callback) =>
-      callback(value1, value2, value3, value4);
+      callback(first, second, third, fourth);
 
   @override
-  int get hashCode => Object.hash(value1, value2, value3, value4);
+  int get hashCode => Object.hash(first, second, third, fourth);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence4<T1, T2, T3, T4> &&
-      value1 == other.value1 &&
-      value2 == other.value2 &&
-      value3 == other.value3 &&
-      value4 == other.value4;
+      first == other.first &&
+      second == other.second &&
+      third == other.third &&
+      fourth == other.fourth;
 
   @override
-  String toString() =>
-      '${super.toString()}($value1, $value2, $value3, $value4)';
+  String toString() => '${super.toString()}($first, $second, $third, $fourth)';
 }
 
 extension ParserSequenceExtension4<T1, T2, T3, T4>

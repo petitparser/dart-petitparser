@@ -73,27 +73,27 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
 /// Immutable typed sequence with 3 values.
 @immutable
 class Sequence3<T1, T2, T3> {
-  Sequence3(this.value1, this.value2, this.value3);
+  Sequence3(this.first, this.second, this.third);
 
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
+  final T1 first;
+  final T2 second;
+  final T3 third;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
-  R map<R>(R Function(T1, T2, T3) callback) => callback(value1, value2, value3);
+  R map<R>(R Function(T1, T2, T3) callback) => callback(first, second, third);
 
   @override
-  int get hashCode => Object.hash(value1, value2, value3);
+  int get hashCode => Object.hash(first, second, third);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence3<T1, T2, T3> &&
-      value1 == other.value1 &&
-      value2 == other.value2 &&
-      value3 == other.value3;
+      first == other.first &&
+      second == other.second &&
+      third == other.third;
 
   @override
-  String toString() => '${super.toString()}($value1, $value2, $value3)';
+  String toString() => '${super.toString()}($first, $second, $third)';
 }
 
 extension ParserSequenceExtension3<T1, T2, T3>

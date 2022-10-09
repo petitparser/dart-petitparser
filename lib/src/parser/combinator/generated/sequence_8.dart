@@ -125,41 +125,41 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
 /// Immutable typed sequence with 8 values.
 @immutable
 class Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> {
-  Sequence8(this.value1, this.value2, this.value3, this.value4, this.value5,
-      this.value6, this.value7, this.value8);
+  Sequence8(this.first, this.second, this.third, this.fourth, this.fifth,
+      this.sixth, this.seventh, this.eighth);
 
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
-  final T5 value5;
-  final T6 value6;
-  final T7 value7;
-  final T8 value8;
+  final T1 first;
+  final T2 second;
+  final T3 third;
+  final T4 fourth;
+  final T5 fifth;
+  final T6 sixth;
+  final T7 seventh;
+  final T8 eighth;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback) =>
-      callback(value1, value2, value3, value4, value5, value6, value7, value8);
+      callback(first, second, third, fourth, fifth, sixth, seventh, eighth);
 
   @override
-  int get hashCode => Object.hash(
-      value1, value2, value3, value4, value5, value6, value7, value8);
+  int get hashCode =>
+      Object.hash(first, second, third, fourth, fifth, sixth, seventh, eighth);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> &&
-      value1 == other.value1 &&
-      value2 == other.value2 &&
-      value3 == other.value3 &&
-      value4 == other.value4 &&
-      value5 == other.value5 &&
-      value6 == other.value6 &&
-      value7 == other.value7 &&
-      value8 == other.value8;
+      first == other.first &&
+      second == other.second &&
+      third == other.third &&
+      fourth == other.fourth &&
+      fifth == other.fifth &&
+      sixth == other.sixth &&
+      seventh == other.seventh &&
+      eighth == other.eighth;
 
   @override
   String toString() =>
-      '${super.toString()}($value1, $value2, $value3, $value4, $value5, $value6, $value7, $value8)';
+      '${super.toString()}($first, $second, $third, $fourth, $fifth, $sixth, $seventh, $eighth)';
 }
 
 extension ParserSequenceExtension8<T1, T2, T3, T4, T5, T6, T7, T8>

@@ -115,39 +115,39 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
 /// Immutable typed sequence with 7 values.
 @immutable
 class Sequence7<T1, T2, T3, T4, T5, T6, T7> {
-  Sequence7(this.value1, this.value2, this.value3, this.value4, this.value5,
-      this.value6, this.value7);
+  Sequence7(this.first, this.second, this.third, this.fourth, this.fifth,
+      this.sixth, this.seventh);
 
-  final T1 value1;
-  final T2 value2;
-  final T3 value3;
-  final T4 value4;
-  final T5 value5;
-  final T6 value6;
-  final T7 value7;
+  final T1 first;
+  final T2 second;
+  final T3 third;
+  final T4 fourth;
+  final T5 fifth;
+  final T6 sixth;
+  final T7 seventh;
 
   /// Converts this sequence to a new type [R] with the provided [callback].
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7) callback) =>
-      callback(value1, value2, value3, value4, value5, value6, value7);
+      callback(first, second, third, fourth, fifth, sixth, seventh);
 
   @override
   int get hashCode =>
-      Object.hash(value1, value2, value3, value4, value5, value6, value7);
+      Object.hash(first, second, third, fourth, fifth, sixth, seventh);
 
   @override
   bool operator ==(Object other) =>
       other is Sequence7<T1, T2, T3, T4, T5, T6, T7> &&
-      value1 == other.value1 &&
-      value2 == other.value2 &&
-      value3 == other.value3 &&
-      value4 == other.value4 &&
-      value5 == other.value5 &&
-      value6 == other.value6 &&
-      value7 == other.value7;
+      first == other.first &&
+      second == other.second &&
+      third == other.third &&
+      fourth == other.fourth &&
+      fifth == other.fifth &&
+      sixth == other.sixth &&
+      seventh == other.seventh;
 
   @override
   String toString() =>
-      '${super.toString()}($value1, $value2, $value3, $value4, $value5, $value6, $value7)';
+      '${super.toString()}($first, $second, $third, $fourth, $fifth, $sixth, $seventh)';
 }
 
 extension ParserSequenceExtension7<T1, T2, T3, T4, T5, T6, T7>
