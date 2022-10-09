@@ -1,7 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'parser_test.dart';
+import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
@@ -442,7 +442,7 @@ void main() {
   group('definition parser', () {
     final definition = ExpressionGrammarDefinition();
     final parser = GrammarParser(definition);
-    expectCommon(parser);
+    expectParserInvariants(parser);
     test('expression', () {
       expect(parser, isParseSuccess('1', isNotNull));
       expect(parser, isParseSuccess('12', isNotNull));

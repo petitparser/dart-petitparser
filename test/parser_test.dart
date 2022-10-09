@@ -1,8 +1,9 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'package:petitparser/petitparser.dart';
-import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide anyOf;
 
+import 'generated/sequence_map_test.dart' as sequence_map_test;
+import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 TypeMatcher<SeparatedList<R, S>> isSeparatedList<R, S>({
@@ -13,60 +14,10 @@ TypeMatcher<SeparatedList<R, S>> isSeparatedList<R, S>({
         .having((list) => list.elements, 'elements', elements)
         .having((list) => list.separators, 'separators', separators);
 
-void expectCommon(Parser parser) {
-  test('copy', () {
-    final copy = parser.copy();
-    expect(copy, isNot(same(parser)));
-    expect(copy.toString(), parser.toString());
-    expect(copy.runtimeType, parser.runtimeType);
-    expect(copy.children,
-        pairwiseCompare(parser.children, identical, 'same children'));
-  });
-  test('transform', () {
-    final copy = transformParser(parser, <T>(parser) => parser);
-    expect(copy, isNot(same(parser)));
-    expect(copy.toString(), parser.toString());
-    expect(copy.runtimeType, parser.runtimeType);
-    expect(
-        copy.children,
-        pairwiseCompare(parser.children, (parser, copy) {
-          expect(copy, isNot(same(parser)));
-          expect(copy.toString(), parser.toString());
-          expect(copy.runtimeType, parser.runtimeType);
-          return true;
-        }, 'same children'));
-  });
-  test('isEqualTo', () {
-    final copy = parser.copy();
-    expect(copy.isEqualTo(copy), isTrue);
-    expect(parser.isEqualTo(parser), isTrue);
-    expect(copy.isEqualTo(parser), isTrue);
-    expect(parser.isEqualTo(copy), isTrue);
-  });
-  test('replace', () {
-    final copy = parser.copy();
-    final replaced = <Parser>[];
-    for (var i = 0; i < copy.children.length; i++) {
-      final source = copy.children[i];
-      final target = source.copy();
-      expect(source, isNot(same(target)));
-      copy.replace(source, target);
-      expect(copy.children[i], same(target));
-      replaced.add(target);
-    }
-    expect(copy.children,
-        pairwiseCompare(replaced, identical, 'replaced children'));
-  });
-  test('toString', () {
-    expect(parser.toString(),
-        stringContainsInOrder([parser.runtimeType.toString()]));
-  });
-}
-
 void main() {
   group('action', () {
     group('cast', () {
-      expectCommon(any().cast());
+      expectParserInvariants(any().cast());
       test('default', () {
         final parser = digit().map(int.parse).cast<num>();
         expect(parser, isParseSuccess('1', 1));
@@ -74,7 +25,7 @@ void main() {
       });
     });
     group('castList', () {
-      expectCommon(any().star().castList());
+      expectParserInvariants(any().star().castList());
       test('default', () {
         final parser = digit().map(int.parse).repeat(3).castList<num>();
         expect(parser, isParseSuccess('123', <num>[1, 2, 3]));
@@ -83,7 +34,7 @@ void main() {
       });
     });
     group('callCC', () {
-      expectCommon(
+      expectParserInvariants(
           any().callCC((continuation, context) => continuation(context)));
       test('delegation', () {
         final parser =
@@ -130,7 +81,7 @@ void main() {
       });
     });
     group('flatten', () {
-      expectCommon(any().flatten());
+      expectParserInvariants(any().flatten());
       test('default', () {
         final parser = digit().repeat(2, unbounded).flatten();
         expect(parser, isParseFailure('', message: 'digit expected'));
@@ -155,7 +106,7 @@ void main() {
       });
     });
     group('where', () {
-      expectCommon(any().where((value) => true));
+      expectParserInvariants(any().where((value) => true));
       test('default', () {
         final parser = any().where((value) => value == '*');
         expect(parser, isParseSuccess('*', '*'));
@@ -193,7 +144,7 @@ void main() {
       });
     });
     group('map', () {
-      expectCommon(any().map((a) => a));
+      expectParserInvariants(any().map((a) => a));
       test('default', () {
         final parser =
             digit().map((each) => each.codeUnitAt(0) - '0'.codeUnitAt(0));
@@ -205,7 +156,7 @@ void main() {
       });
     });
     group('permute', () {
-      expectCommon(any().star().permute([-1, 1]));
+      expectParserInvariants(any().star().permute([-1, 1]));
       test('from start', () {
         final parser = digit().seq(letter()).permute([1, 0]);
         expect(parser, isParseSuccess('1a', ['a', '1']));
@@ -238,7 +189,7 @@ void main() {
       });
     });
     group('pick', () {
-      expectCommon(any().star().pick(-1));
+      expectParserInvariants(any().star().pick(-1));
       test('from start', () {
         final parser = digit().seq(letter()).pick(1);
         expect(parser, isParseSuccess('1a', 'a'));
@@ -261,7 +212,7 @@ void main() {
       });
     });
     group('token', () {
-      expectCommon(any().token());
+      expectParserInvariants(any().token());
       test('default', () {
         final parser = digit().plus().token();
         expect(parser, isParseFailure('', message: 'digit expected'));
@@ -410,7 +361,7 @@ void main() {
       });
     });
     group('trim', () {
-      expectCommon(any().trim(char('a'), char('b')));
+      expectParserInvariants(any().trim(char('a'), char('b')));
       test('default', () {
         final parser = char('a').trim();
         expect(parser, isParseSuccess('a', 'a'));
@@ -467,7 +418,7 @@ void main() {
   group('character', () {
     group('anyOf', () {
       final parser = anyOf('uncopyrightable');
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('c', 'c'));
         expect(parser, isParseSuccess('g', 'g'));
@@ -484,7 +435,7 @@ void main() {
     });
     group('noneOf', () {
       final parser = noneOf('uncopyrightable');
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('x', 'x'));
         expect(parser,
@@ -508,7 +459,7 @@ void main() {
       });
     });
     group('char', () {
-      expectCommon(char('a'));
+      expectParserInvariants(char('a'));
       test('with string', () {
         final parser = char('a');
         expect(parser, isParseSuccess('a', 'a'));
@@ -546,7 +497,7 @@ void main() {
       });
     });
     group('charIgnoringCase', () {
-      expectCommon(charIgnoringCase('a'));
+      expectParserInvariants(charIgnoringCase('a'));
       test('with lowercase string', () {
         final parser = charIgnoringCase('a');
         expect(parser, isParseSuccess('a', 'a'));
@@ -586,7 +537,7 @@ void main() {
     });
     group('digit', () {
       final parser = digit();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('1', '1'));
         expect(parser, isParseSuccess('9', '9'));
@@ -596,7 +547,7 @@ void main() {
     });
     group('letter', () {
       final parser = letter();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('a', 'a'));
         expect(parser, isParseSuccess('X', 'X'));
@@ -606,7 +557,7 @@ void main() {
     });
     group('lowercase', () {
       final parser = lowercase();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('a', 'a'));
         expect(parser, isParseSuccess('z', 'z'));
@@ -619,7 +570,7 @@ void main() {
       });
     });
     group('pattern', () {
-      expectCommon(pattern('^ad-f'));
+      expectParserInvariants(pattern('^ad-f'));
       test('with single', () {
         final parser = pattern('abc');
         expect(parser, isParseSuccess('a', 'a'));
@@ -722,7 +673,7 @@ void main() {
         expect(() => pattern('c-a'), throwsArgumentError);
       });
       group('ignore case', () {
-        expectCommon(patternIgnoreCase('^ad-f'));
+        expectParserInvariants(patternIgnoreCase('^ad-f'));
         test('with single', () {
           final parser = patternIgnoreCase('abc');
           expect(parser, isParseSuccess('a', 'a'));
@@ -969,7 +920,7 @@ void main() {
       });
       group('large ranges', () {
         final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('mathematical symbols', () {
           expect(parser, isParseSuccess('∉', '∉'));
           expect(parser, isParseSuccess('⟃', '⟃'));
@@ -988,7 +939,7 @@ void main() {
       });
       group('without anything', () {
         final parser = pattern('');
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('test', () {
           for (var i = 0; i <= 0xffff; i++) {
             final character = String.fromCharCode(i);
@@ -998,7 +949,7 @@ void main() {
       });
       group('with everything', () {
         final parser = pattern('\x00-\uffff');
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('test', () {
           for (var i = 0; i <= 0xffff; i++) {
             final character = String.fromCharCode(i);
@@ -1009,7 +960,7 @@ void main() {
     });
     group('range', () {
       final parser = range('e', 'o');
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('e', 'e'));
         expect(parser, isParseSuccess('i', 'i'));
@@ -1024,7 +975,7 @@ void main() {
     });
     group('uppercase', () {
       final parser = uppercase();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('A', 'A'));
         expect(parser, isParseSuccess('Z', 'Z'));
@@ -1038,7 +989,7 @@ void main() {
     });
     group('whitespace', () {
       final parser = whitespace();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess(' ', ' '));
         expect(parser, isParseSuccess('\t', '\t'));
@@ -1088,7 +1039,7 @@ void main() {
     });
     group('word', () {
       final parser = word();
-      expectCommon(parser);
+      expectParserInvariants(parser);
       test('default', () {
         expect(parser, isParseSuccess('a', 'a'));
         expect(parser, isParseSuccess('z', 'z'));
@@ -1105,7 +1056,7 @@ void main() {
   });
   group('combinator', () {
     group('and', () {
-      expectCommon(any().and());
+      expectParserInvariants(any().and());
       test('default', () {
         final parser = char('a').and();
         expect(parser, isParseSuccess('a', 'a', position: 0));
@@ -1114,7 +1065,7 @@ void main() {
       });
     });
     group('choice', () {
-      expectCommon(any().or(word()));
+      expectParserInvariants(any().or(word()));
       test('operator', () {
         final parser = char('a') | char('b');
         expect(parser, isParseSuccess('a', 'a'));
@@ -1312,7 +1263,7 @@ void main() {
       });
     });
     group('not', () {
-      expectCommon(any().not());
+      expectParserInvariants(any().not());
       test('default', () {
         final parser = char('a').not('not "a" expected');
         expect(parser, isParseFailure('a', message: 'not "a" expected'));
@@ -1337,7 +1288,7 @@ void main() {
       });
     });
     group('optional', () {
-      expectCommon(any().optional());
+      expectParserInvariants(any().optional());
       test('without default', () {
         final parser = char('a').optional();
         expect(parser, isParseSuccess('a', 'a'));
@@ -1352,7 +1303,7 @@ void main() {
       });
     });
     group('sequence', () {
-      expectCommon(any().seq(word()));
+      expectParserInvariants(any().seq(word()));
       test('operator', () {
         final parser = char('a') & char('b');
         expect(parser, isParseSuccess('ab', ['a', 'b']));
@@ -1388,8 +1339,9 @@ void main() {
         expect(parser, isParseFailure('abx', position: 2));
       });
     });
-    group('setable', () {
-      expectCommon(any().settable());
+    group('sequence map', sequence_map_test.main);
+    group('settable', () {
+      expectParserInvariants(any().settable());
       test('default', () {
         final parser = char('a').settable();
         expect(parser, isParseSuccess('a', 'a'));
@@ -1408,7 +1360,7 @@ void main() {
       final inner = digit();
       group('none', () {
         final parser = inner.skip();
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('default', () {
           expect(parser, same(inner));
           expect(parser, isParseSuccess('1', '1'));
@@ -1418,7 +1370,7 @@ void main() {
       });
       group('before', () {
         final parser = inner.skip(before: char('*'));
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('default', () {
           expect(parser, isParseSuccess('*1', '1'));
           expect(parser, isParseSuccess('*2', '2'));
@@ -1432,7 +1384,7 @@ void main() {
       });
       group('after', () {
         final parser = inner.skip(after: char('!'));
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('default', () {
           expect(parser, isParseSuccess('1!', '1'));
           expect(parser, isParseSuccess('2!', '2'));
@@ -1445,7 +1397,7 @@ void main() {
       });
       group('before & after', () {
         final parser = inner.skip(before: char('*'), after: char('!'));
-        expectCommon(parser);
+        expectParserInvariants(parser);
         test('default', () {
           expect(parser, isParseSuccess('*1!', '1'));
           expect(parser, isParseSuccess('*2!', '2'));
@@ -1464,7 +1416,7 @@ void main() {
   });
   group('misc', () {
     group('end', () {
-      expectCommon(endOfInput());
+      expectParserInvariants(endOfInput());
       test('default', () {
         final parser = char('a').end();
         expect(parser, isParseFailure('', message: '"a" expected'));
@@ -1476,7 +1428,7 @@ void main() {
       });
     });
     group('epsilon', () {
-      expectCommon(epsilon());
+      expectParserInvariants(epsilon());
       test('default', () {
         final parser = epsilon();
         expect(parser, isParseSuccess('', isNull));
@@ -1484,7 +1436,7 @@ void main() {
       });
     });
     group('failure', () {
-      expectCommon(failure());
+      expectParserInvariants(failure());
       test('default', () {
         final parser = failure('failure');
         expect(parser, isParseFailure('', message: 'failure'));
@@ -1492,7 +1444,7 @@ void main() {
       });
     });
     group('labeled', () {
-      expectCommon(any().labeled('anything'));
+      expectParserInvariants(any().labeled('anything'));
       test('default', () {
         final parser = char('*').labeled('asterisk');
         expect(parser.label, 'asterisk');
@@ -1501,7 +1453,7 @@ void main() {
       });
     });
     group('position', () {
-      expectCommon(position());
+      expectParserInvariants(position());
       test('default', () {
         final parser = (any().star() & position()).pick(-1);
         expect(parser, isParseSuccess('', 0));
@@ -1513,7 +1465,7 @@ void main() {
   });
   group('predicate', () {
     group('any', () {
-      expectCommon(any());
+      expectParserInvariants(any());
       test('default', () {
         final parser = any();
         expect(parser, isParseSuccess('a', 'a'));
@@ -1522,7 +1474,7 @@ void main() {
       });
     });
     group('pattern', () {
-      expectCommon(PatternParser('42', 'number expected'));
+      expectParserInvariants(PatternParser('42', 'number expected'));
       test('string', () {
         final parser = PatternParser('42', 'number expected');
         expect(parser,
@@ -1587,7 +1539,7 @@ void main() {
       });
     });
     group('string', () {
-      expectCommon(string('foo'));
+      expectParserInvariants(string('foo'));
       test('default', () {
         final parser = string('foo');
         expect(parser, isParseSuccess('foo', 'foo'));
@@ -1640,7 +1592,7 @@ void main() {
       });
     });
     group('stringIgnoreCase', () {
-      expectCommon(stringIgnoreCase('foo'));
+      expectParserInvariants(stringIgnoreCase('foo'));
       test('default', () {
         final parser = stringIgnoreCase('foo');
         expect(parser, isParseSuccess('foo', 'foo'));
@@ -1657,7 +1609,7 @@ void main() {
   });
   group('repeater', () {
     group('greedy', () {
-      expectCommon(any().starGreedy(digit()));
+      expectParserInvariants(any().starGreedy(digit()));
       test('star', () {
         final parser = word().starGreedy(digit());
         expect(parser, isParseFailure('', message: 'digit expected'));
@@ -1766,7 +1718,7 @@ void main() {
       });
     });
     group('lazy', () {
-      expectCommon(any().starLazy(digit()));
+      expectParserInvariants(any().starLazy(digit()));
       test('star', () {
         final parser = word().starLazy(digit());
         expect(parser, isParseFailure(''));
@@ -1863,7 +1815,7 @@ void main() {
       });
     });
     group('possessive', () {
-      expectCommon(any().star());
+      expectParserInvariants(any().star());
       test('star', () {
         final parser = char('a').star();
         expect(parser, isParseSuccess('', []));
@@ -1914,7 +1866,7 @@ void main() {
       });
     });
     group('separated', () {
-      expectCommon(digit().starSeparated(letter()));
+      expectParserInvariants(digit().starSeparated(letter()));
       test('star', () {
         final parser = digit().starSeparated(letter());
         expect(parser, isParseSuccess('', isSeparatedList()));
@@ -2154,7 +2106,7 @@ void main() {
       });
     });
     group('separated by', () {
-      expectCommon(any().separatedBy(letter()));
+      expectParserInvariants(any().separatedBy(letter()));
       group('include separators', () {
         test('default', () {
           final parser = char('a').separatedBy(char('b'));
