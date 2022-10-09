@@ -1,3 +1,4 @@
+import '../../../petitparser.dart';
 import '../../context/context.dart';
 import '../../context/failure.dart';
 import '../../context/result.dart';
@@ -25,7 +26,7 @@ extension NotParserExtension<T> on Parser<T> {
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
   Parser<String> neg([String message = 'input not expected']) =>
-      seqMap2(not(message), any(), (first, second) => second);
+      seq2(not(message), any()).map2((_, value) => value);
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,

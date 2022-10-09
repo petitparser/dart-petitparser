@@ -8,10 +8,12 @@ import '../utils/matchers.dart';
 
 void main() {
   group('seqMap2', () {
-    final parser = seqMap2(char('a'), char('b'), (a, b) => '$a$b');
+    final parser = seq2(char('a'), char('b'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('ab', 'ab'));
+      final mappedParser = parser.map2((a, b) => '$a$b');
+      expect(mappedParser, isParseSuccess('ab', 'ab'));
+      expect(mappedParser, isParseSuccess('ab*', 'ab', position: 2));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -24,11 +26,12 @@ void main() {
     });
   });
   group('seqMap3', () {
-    final parser =
-        seqMap3(char('a'), char('b'), char('c'), (a, b, c) => '$a$b$c');
+    final parser = seq3(char('a'), char('b'), char('c'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abc', 'abc'));
+      final mappedParser = parser.map3((a, b, c) => '$a$b$c');
+      expect(mappedParser, isParseSuccess('abc', 'abc'));
+      expect(mappedParser, isParseSuccess('abc*', 'abc', position: 3));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -47,11 +50,12 @@ void main() {
     });
   });
   group('seqMap4', () {
-    final parser = seqMap4(
-        char('a'), char('b'), char('c'), char('d'), (a, b, c, d) => '$a$b$c$d');
+    final parser = seq4(char('a'), char('b'), char('c'), char('d'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcd', 'abcd'));
+      final mappedParser = parser.map4((a, b, c, d) => '$a$b$c$d');
+      expect(mappedParser, isParseSuccess('abcd', 'abcd'));
+      expect(mappedParser, isParseSuccess('abcd*', 'abcd', position: 4));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -76,11 +80,12 @@ void main() {
     });
   });
   group('seqMap5', () {
-    final parser = seqMap5(char('a'), char('b'), char('c'), char('d'),
-        char('e'), (a, b, c, d, e) => '$a$b$c$d$e');
+    final parser = seq5(char('a'), char('b'), char('c'), char('d'), char('e'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcde', 'abcde'));
+      final mappedParser = parser.map5((a, b, c, d, e) => '$a$b$c$d$e');
+      expect(mappedParser, isParseSuccess('abcde', 'abcde'));
+      expect(mappedParser, isParseSuccess('abcde*', 'abcde', position: 5));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -111,11 +116,13 @@ void main() {
     });
   });
   group('seqMap6', () {
-    final parser = seqMap6(char('a'), char('b'), char('c'), char('d'),
-        char('e'), char('f'), (a, b, c, d, e, f) => '$a$b$c$d$e$f');
+    final parser =
+        seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdef', 'abcdef'));
+      final mappedParser = parser.map6((a, b, c, d, e, f) => '$a$b$c$d$e$f');
+      expect(mappedParser, isParseSuccess('abcdef', 'abcdef'));
+      expect(mappedParser, isParseSuccess('abcdef*', 'abcdef', position: 6));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -152,18 +159,14 @@ void main() {
     });
   });
   group('seqMap7', () {
-    final parser = seqMap7(
-        char('a'),
-        char('b'),
-        char('c'),
-        char('d'),
-        char('e'),
-        char('f'),
-        char('g'),
-        (a, b, c, d, e, f, g) => '$a$b$c$d$e$f$g');
+    final parser = seq7(char('a'), char('b'), char('c'), char('d'), char('e'),
+        char('f'), char('g'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefg', 'abcdefg'));
+      final mappedParser =
+          parser.map7((a, b, c, d, e, f, g) => '$a$b$c$d$e$f$g');
+      expect(mappedParser, isParseSuccess('abcdefg', 'abcdefg'));
+      expect(mappedParser, isParseSuccess('abcdefg*', 'abcdefg', position: 7));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -206,19 +209,15 @@ void main() {
     });
   });
   group('seqMap8', () {
-    final parser = seqMap8(
-        char('a'),
-        char('b'),
-        char('c'),
-        char('d'),
-        char('e'),
-        char('f'),
-        char('g'),
-        char('h'),
-        (a, b, c, d, e, f, g, h) => '$a$b$c$d$e$f$g$h');
+    final parser = seq8(char('a'), char('b'), char('c'), char('d'), char('e'),
+        char('f'), char('g'), char('h'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', 'abcdefgh'));
+      final mappedParser =
+          parser.map8((a, b, c, d, e, f, g, h) => '$a$b$c$d$e$f$g$h');
+      expect(mappedParser, isParseSuccess('abcdefgh', 'abcdefgh'));
+      expect(
+          mappedParser, isParseSuccess('abcdefgh*', 'abcdefgh', position: 8));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -267,20 +266,15 @@ void main() {
     });
   });
   group('seqMap9', () {
-    final parser = seqMap9(
-        char('a'),
-        char('b'),
-        char('c'),
-        char('d'),
-        char('e'),
-        char('f'),
-        char('g'),
-        char('h'),
-        char('i'),
-        (a, b, c, d, e, f, g, h, i) => '$a$b$c$d$e$f$g$h$i');
+    final parser = seq9(char('a'), char('b'), char('c'), char('d'), char('e'),
+        char('f'), char('g'), char('h'), char('i'));
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', 'abcdefghi'));
+      final mappedParser =
+          parser.map9((a, b, c, d, e, f, g, h, i) => '$a$b$c$d$e$f$g$h$i');
+      expect(mappedParser, isParseSuccess('abcdefghi', 'abcdefghi'));
+      expect(
+          mappedParser, isParseSuccess('abcdefghi*', 'abcdefghi', position: 9));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));

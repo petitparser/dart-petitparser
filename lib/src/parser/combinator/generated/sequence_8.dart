@@ -1,16 +1,44 @@
 // AUTO-GENERATED CODE: DO NOT EDIT
 
+import 'package:meta/meta.dart';
+
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// A parser that consumes a sequence of 8 typed parsers and combines
-/// the successful parse with a [callback] to a result of type [R].
-class SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R> extends Parser<R>
+/// Creates a parser that consumes a sequence of 8 parsers and returns a
+/// typed sequence [Sequence8].
+Parser<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>>
+    seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+  Parser<R6> parser6,
+  Parser<R7> parser7,
+  Parser<R8> parser8,
+) =>
+        SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
+          parser1,
+          parser2,
+          parser3,
+          parser4,
+          parser5,
+          parser6,
+          parser7,
+          parser8,
+        );
+
+/// A parser that consumes a sequence of 8 typed parsers and returns a typed
+/// sequence [Sequence8].
+class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
+    extends Parser<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>>
     implements SequentialParser {
-  SequenceMapParser8(this.parser1, this.parser2, this.parser3, this.parser4,
-      this.parser5, this.parser6, this.parser7, this.parser8, this.callback);
+  SequenceParser8(this.parser1, this.parser2, this.parser3, this.parser4,
+      this.parser5, this.parser6, this.parser7, this.parser8);
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -20,10 +48,9 @@ class SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R> extends Parser<R>
   Parser<R6> parser6;
   Parser<R7> parser7;
   Parser<R8> parser8;
-  final R Function(R1, R2, R3, R4, R5, R6, R7, R8) callback;
 
   @override
-  Result<R> parseOn(Context context) {
+  Result<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
@@ -40,7 +67,7 @@ class SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R> extends Parser<R>
     if (result7.isFailure) return result7.failure(result7.message);
     final result8 = parser8.parseOn(result7);
     if (result8.isFailure) return result8.failure(result8.message);
-    return result8.success(callback(
+    return result8.success(Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>(
         result1.value,
         result2.value,
         result3.value,
@@ -90,7 +117,58 @@ class SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R> extends Parser<R>
   }
 
   @override
-  SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R> copy() =>
-      SequenceMapParser8<R1, R2, R3, R4, R5, R6, R7, R8, R>(parser1, parser2,
-          parser3, parser4, parser5, parser6, parser7, parser8, callback);
+  SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8> copy() =>
+      SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(parser1, parser2, parser3,
+          parser4, parser5, parser6, parser7, parser8);
+}
+
+/// Immutable typed sequence with 8 values.
+@immutable
+class Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> {
+  Sequence8(this.value1, this.value2, this.value3, this.value4, this.value5,
+      this.value6, this.value7, this.value8);
+
+  final T1 value1;
+  final T2 value2;
+  final T3 value3;
+  final T4 value4;
+  final T5 value5;
+  final T6 value6;
+  final T7 value7;
+  final T8 value8;
+
+  @override
+  int get hashCode => Object.hash(
+      value1, value2, value3, value4, value5, value6, value7, value8);
+
+  @override
+  bool operator ==(Object other) =>
+      other is Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> &&
+      value1 == other.value1 &&
+      value2 == other.value2 &&
+      value3 == other.value3 &&
+      value4 == other.value4 &&
+      value5 == other.value5 &&
+      value6 == other.value6 &&
+      value7 == other.value7 &&
+      value8 == other.value8;
+
+  @override
+  String toString() =>
+      '${super.toString()}($value1, $value2, $value3, $value4, $value5, $value6, $value7, $value8)';
+}
+
+extension ParserSequenceExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
+    on Parser<Sequence8<T1, T2, T3, T4, T5, T6, T7, T8>> {
+  /// Maps a typed sequence to [R] using the provided [callback].
+  Parser<R> map8<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback) =>
+      map((sequence) => callback(
+          sequence.value1,
+          sequence.value2,
+          sequence.value3,
+          sequence.value4,
+          sequence.value5,
+          sequence.value6,
+          sequence.value7,
+          sequence.value8));
 }

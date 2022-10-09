@@ -2,7 +2,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide anyOf;
 
-import 'generated/sequence_map_test.dart' as sequence_map_test;
+import 'generated/sequence_test.dart' as sequence_test;
 import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
@@ -1339,7 +1339,7 @@ void main() {
         expect(parser, isParseFailure('abx', position: 2));
       });
     });
-    group('sequence map', sequence_map_test.main);
+    group('sequence (typed)', sequence_test.main);
     group('settable', () {
       expectParserInvariants(any().settable());
       test('default', () {

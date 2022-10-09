@@ -11,8 +11,8 @@ extension SkipParserExtension<T> on Parser<T> {
   Parser<T> skip({Parser<void>? before, Parser<void>? after}) => before == null
       ? after == null
           ? this
-          : seqMap2(this, after, (value, _) => value)
+          : seq2(this, after).map2((value, _) => value)
       : after == null
-          ? seqMap2(before, this, (_, value) => value)
-          : seqMap3(before, this, after, (_, value, __) => value);
+          ? seq2(before, this).map2((_, value) => value)
+          : seq3(before, this, after).map3((_, value, __) => value);
 }

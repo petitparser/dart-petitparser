@@ -28,7 +28,7 @@ class ExpressionGroup<T> {
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<L, R>(Parser<L> left, Parser<R> right,
           T Function(L left, T value, R right) callback) =>
-      _wrapper.add(seqMap3(left, _loopback, right, callback));
+      _wrapper.add(seq3(left, _loopback, right).map3(callback));
 
   Parser<T> _buildWrapper(Parser<T> inner) =>
       _buildChoice([..._wrapper, inner]);
@@ -45,11 +45,8 @@ class ExpressionGroup<T> {
     if (_prefix.isEmpty) {
       return inner;
     } else {
-      return seqMap2(
-          _buildChoice(_prefix).star(),
-          inner,
-          (prefix, value) =>
-              prefix.reversed.fold(value, (each, result) => result(each)));
+      return seq2(_buildChoice(_prefix).star(), inner).map2((prefix, value) =>
+          prefix.reversed.fold(value, (each, result) => result(each)));
     }
   }
 
@@ -65,11 +62,8 @@ class ExpressionGroup<T> {
     if (_postfix.isEmpty) {
       return inner;
     } else {
-      return seqMap2(
-          inner,
-          _buildChoice(_postfix).star(),
-          (value, postfix) =>
-              postfix.fold(value, (each, result) => result(each)));
+      return seq2(inner, _buildChoice(_postfix).star()).map2((value, postfix) =>
+          postfix.fold(value, (each, result) => result(each)));
     }
   }
 

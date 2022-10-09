@@ -30,11 +30,14 @@ extension SeparatedByParserExtension<T> on Parser<T> {
     bool optionalSeparatorAtStart = false,
     bool optionalSeparatorAtEnd = false,
   }) =>
-      seqMap4(
-        optionalSeparatorAtStart ? separator.optional() : epsilonWith(null),
-        this,
-        [separator, this].toSequenceParser().star(),
-        optionalSeparatorAtEnd ? separator.optional() : epsilonWith(null),
+      seq4(
+              optionalSeparatorAtStart
+                  ? separator.optional()
+                  : epsilonWith(null),
+              this,
+              [separator, this].toSequenceParser().star(),
+              optionalSeparatorAtEnd ? separator.optional() : epsilonWith(null))
+          .map4(
         (separatorAtStart, firstElement, otherElements, separatorAtEnd) {
           final result = <R>[];
           if (includeSeparators &&

@@ -9,10 +9,10 @@ final File exportFile = File('lib/src/parser/combinator/sequence_map.dart');
 
 /// Implementation file.
 File implementationFile(int i) =>
-    File('lib/src/parser/combinator/generated/sequence_map_$i.dart');
+    File('lib/src/parser/combinator/generated/sequence_$i.dart');
 
 /// Test file.
-final File testFile = File('test/generated/sequence_map_test.dart');
+final File testFile = File('test/generated/sequence_test.dart');
 
 /// Pretty prints and cleans up a dart file.
 Future<void> format(File file) async =>
@@ -21,9 +21,6 @@ Future<void> format(File file) async =>
 /// Generate the variable names.
 List<String> generateValues(String prefix, int i) =>
     List.generate(i, (i) => '$prefix${i + 1}');
-
-/// Generate the type names.
-List<String> generateTypes(int i) => List.generate(i, (i) => 'R${i + 1}');
 
 void generateWarning(StringSink out) {
   out.writeln('// AUTO-GENERATED CODE: DO NOT EDIT');
@@ -34,26 +31,8 @@ Future<void> generateExport() async {
   final file = exportFile;
   final out = file.openWrite();
   generateWarning(out);
-  out.writeln('import \'../../core/parser.dart\';');
   for (var i = min; i <= max; i++) {
-    out.writeln('import \'generated/sequence_map_$i.dart\';');
-  }
-  out.writeln();
-  for (var i = min; i <= max; i++) {
-    final resultTypes = generateTypes(i);
-    final parserNames = generateValues('parser', i);
-    out.writeln('/// Creates a parser that consumes a sequence of $i typed '
-        'parsers and combines');
-    out.writeln('/// the successful parse with a [callback] to a result of '
-        'type [R].');
-    out.writeln('Parser<R> seqMap$i<${resultTypes.join(', ')}, R>(');
-    for (var j = 0; j < i; j++) {
-      out.writeln('Parser<${resultTypes[j]}> ${parserNames[j]}, ');
-    }
-    out.writeln('R Function(${resultTypes.join(', ')}) callback,');
-    out.writeln(') => SequenceMapParser$i<${resultTypes.join(', ')}, R>(');
-    out.writeln('${parserNames.join(', ')}, callback);');
-    out.writeln();
+    out.writeln('export \'generated/sequence_$i.dart\';');
   }
   await out.close();
   await format(file);
@@ -62,46 +41,64 @@ Future<void> generateExport() async {
 Future<void> generateImplementation(int index) async {
   final file = implementationFile(index);
   final out = file.openWrite();
-  final resultTypes = generateTypes(index);
   final parserNames = generateValues('parser', index);
+  final resultTypes = generateValues('R', index);
   final resultNames = generateValues('result', index);
-  final className = 'SequenceMapParser$index<${resultTypes.join(', ')}, R>';
+  final valueTypes = generateValues('T', index);
+  final valueNames = generateValues('value', index);
+
   generateWarning(out);
+  out.writeln('import \'package:meta/meta.dart\';');
+  out.writeln();
   out.writeln('import \'../../../context/context.dart\';');
   out.writeln('import \'../../../context/result.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
+  out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
-  out.writeln('/// A parser that consumes a sequence of $index typed parsers '
-      'and combines');
-  out.writeln('/// the successful parse with a [callback] to a result of type '
-      '[R].');
-  out.writeln('class $className '
-      'extends Parser<R> '
-      'implements SequentialParser {');
-  out.writeln('SequenceMapParser$index(');
+
+  // Constructor function
+  out.writeln('/// Creates a parser that consumes a sequence of $index parsers '
+      'and returns a ');
+  out.writeln('/// typed sequence [Sequence$index].');
+  out.writeln('Parser<Sequence$index<${resultTypes.join(', ')}>> '
+      'seq$index<${resultTypes.join(', ')}>(');
   for (var i = 0; i < index; i++) {
-    out.writeln('this.${parserNames[i]},');
+    out.writeln('Parser<${resultTypes[i]}> ${parserNames[i]},');
   }
-  out.writeln('this.callback');
+  out.writeln(') => SequenceParser$index<${resultTypes.join(', ')}>(');
+  for (var i = 0; i < index; i++) {
+    out.writeln('${parserNames[i]},');
+  }
   out.writeln(');');
+  out.writeln();
+
+  // Parser implementation.
+  out.writeln('/// A parser that consumes a sequence of $index typed parsers '
+      'and returns a typed ');
+  out.writeln('/// sequence [Sequence$index].');
+  out.writeln('class SequenceParser$index<${resultTypes.join(', ')}> '
+      'extends Parser<Sequence$index<${resultTypes.join(', ')}>> '
+      'implements SequentialParser {');
+  out.writeln('SequenceParser$index('
+      '${parserNames.map((each) => 'this.$each').join(', ')});');
   out.writeln();
   for (var i = 0; i < index; i++) {
     out.writeln('Parser<${resultTypes[i]}> ${parserNames[i]};');
   }
-  out.writeln('final R Function(${resultTypes.join(', ')}) callback;');
   out.writeln();
   out.writeln('@override');
-  out.writeln('Result<R> parseOn(Context context) {');
+  out.writeln('Result<Sequence$index<${resultTypes.join(', ')}>> '
+      'parseOn(Context context) {');
   for (var i = 0; i < index; i++) {
     out.writeln('final ${resultNames[i]} = ${parserNames[i]}'
         '.parseOn(${i == 0 ? 'context' : resultNames[i - 1]});');
     out.writeln('if (${resultNames[i]}.isFailure) '
         'return ${resultNames[i]}.failure(${resultNames[i]}.message);');
   }
-  out.writeln('return ${resultNames[index - 1]}.success(callback('
-      '${resultNames.map((each) => '$each.value').join(', ')}'
-      '));');
+  out.writeln('return ${resultNames[index - 1]}.success('
+      'Sequence$index<${resultTypes.join(', ')}>'
+      '(${resultNames.map((each) => '$each.value').join(', ')}));');
   out.writeln('}');
   out.writeln();
   out.writeln('@override');
@@ -126,9 +123,48 @@ Future<void> generateImplementation(int index) async {
   out.writeln('}');
   out.writeln();
   out.writeln('@override');
-  out.writeln('$className copy() => $className(${parserNames.join(', ')}, '
-      'callback);');
+  out.writeln('SequenceParser$index<${resultTypes.join(', ')}> copy() => '
+      'SequenceParser$index<${resultTypes.join(', ')}>'
+      '(${parserNames.join(', ')});');
   out.writeln('}');
+  out.writeln();
+
+  /// Data class implementation.
+  out.writeln('/// Immutable typed sequence with $index values.');
+  out.writeln('@immutable');
+  out.writeln('class Sequence$index<${valueTypes.join(', ')}> {');
+  out.writeln('Sequence$index('
+      '${valueNames.map((each) => 'this.$each').join(', ')});');
+  out.writeln();
+  for (var i = 0; i < index; i++) {
+    out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
+  }
+  out.writeln();
+  out.writeln('@override');
+  out.writeln('int get hashCode => Object.hash(${valueNames.join(', ')});');
+  out.writeln();
+  out.writeln('@override');
+  out.writeln('bool operator ==(Object other) => '
+      'other is Sequence$index<${valueTypes.join(', ')}> && '
+      '${valueNames.map((each) => '$each == other.$each').join(' && ')};');
+  out.writeln();
+  out.writeln('@override');
+  out.writeln('String toString() => \'\${super.toString()}'
+      '(${valueNames.map((each) => '\$$each').join(', ')})\';');
+  out.writeln('}');
+  out.writeln();
+
+  // Mapping extension.
+  out.writeln(
+      'extension ParserSequenceExtension$index<${valueTypes.join(', ')}>'
+      ' on Parser<Sequence$index<${valueTypes.join(', ')}>> {');
+  out.writeln('/// Maps a typed sequence to [R] using the provided [callback].');
+  out.writeln(
+      'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
+      'map((sequence) => callback(${valueNames.map((each) => 'sequence.$each').join(', ')}));');
+  out.writeln('}');
+  out.writeln();
+
   await out.close();
   await format(file);
 }
@@ -149,13 +185,16 @@ Future<void> generateTest() async {
         List.generate(i, (i) => String.fromCharCode('a'.codeUnitAt(0) + i));
     final string = chars.join();
     out.writeln('group(\'seqMap$i\', () {');
-    out.writeln('final parser = seqMap$i('
-        '${chars.map((each) => 'char(\'$each\')').join(', ')}, '
-        '(${chars.join(', ')}) => '
-        '\'${chars.map((each) => '\$$each').join()}\');');
+    out.writeln('final parser = seq$i('
+        '${chars.map((each) => 'char(\'$each\')').join(',')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, isParseSuccess(\'$string\', \'$string\'));');
+    out.writeln('final mappedParser = parser.map$i((${chars.join(',')}) => '
+        '\'${chars.map((each) => '\$$each').join()}\');');
+    out.writeln(
+        'expect(mappedParser, isParseSuccess(\'$string\', \'$string\'));');
+    out.writeln(
+        'expect(mappedParser, isParseSuccess(\'$string*\', \'$string\', position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
