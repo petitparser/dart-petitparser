@@ -88,6 +88,10 @@ class Sequence4<T1, T2, T3, T4> {
   final T3 value3;
   final T4 value4;
 
+  /// Converts this sequence to a new type [R] with the provided [callback].
+  R map<R>(R Function(T1, T2, T3, T4) callback) =>
+      callback(value1, value2, value3, value4);
+
   @override
   int get hashCode => Object.hash(value1, value2, value3, value4);
 
@@ -108,6 +112,5 @@ extension ParserSequenceExtension4<T1, T2, T3, T4>
     on Parser<Sequence4<T1, T2, T3, T4>> {
   /// Maps a typed sequence to [R] using the provided [callback].
   Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback) =>
-      map((sequence) => callback(
-          sequence.value1, sequence.value2, sequence.value3, sequence.value4));
+      map((sequence) => sequence.map(callback));
 }

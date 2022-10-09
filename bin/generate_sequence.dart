@@ -140,6 +140,10 @@ Future<void> generateImplementation(int index) async {
     out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
   }
   out.writeln();
+  out.writeln('/// Converts this sequence to a new type [R] with the provided [callback].');
+  out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
+      'callback(${valueNames.join(', ')});');
+  out.writeln();
   out.writeln('@override');
   out.writeln('int get hashCode => Object.hash(${valueNames.join(', ')});');
   out.writeln();
@@ -161,7 +165,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Maps a typed sequence to [R] using the provided [callback].');
   out.writeln(
       'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
-      'map((sequence) => callback(${valueNames.map((each) => 'sequence.$each').join(', ')}));');
+      'map((sequence) => sequence.map(callback));');
   out.writeln('}');
   out.writeln();
 

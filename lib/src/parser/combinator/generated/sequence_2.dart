@@ -68,6 +68,9 @@ class Sequence2<T1, T2> {
   final T1 value1;
   final T2 value2;
 
+  /// Converts this sequence to a new type [R] with the provided [callback].
+  R map<R>(R Function(T1, T2) callback) => callback(value1, value2);
+
   @override
   int get hashCode => Object.hash(value1, value2);
 
@@ -84,5 +87,5 @@ class Sequence2<T1, T2> {
 extension ParserSequenceExtension2<T1, T2> on Parser<Sequence2<T1, T2>> {
   /// Maps a typed sequence to [R] using the provided [callback].
   Parser<R> map2<R>(R Function(T1, T2) callback) =>
-      map((sequence) => callback(sequence.value1, sequence.value2));
+      map((sequence) => sequence.map(callback));
 }
