@@ -41,7 +41,7 @@ It is also possible to more selectively import only certain parts of this librar
 Writing grammars with PetitParser is as simple as writing Dart code. For example, the following code creates a parser that can read identifiers (a letter followed by zero or more letter or digits):
 
 ```dart
-final id = letter() & (letter() | digit()).star();
+final id = letter() & (letter() | digit()).star();  // (0): Parser<List<dynamic>>
 ```
 
 If you inspect the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
@@ -53,15 +53,15 @@ If you inspect the object `id` in the debugger, you'll notice that the code abov
       - CharacterParser: This parser accepts a single letter.
       - CharacterParser: This parser accepts a single digit.
 
-The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. Both of the following parsers accept the same inputs as the parser above:
+The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. All of the following parsers accept the same inputs as the parser above:
 
 ```dart
-final id1 = letter().seq(letter().or(digit()).star());
-final id2 = [letter(), [letter(), digit()].toChoiceParser().star()].toSequenceParser();
+final id1 = letter().seq(letter().or(digit()).star());  // (1): Parser<List<dynamic>>
+final id2 = [letter(), [letter(), digit()].toChoiceParser().star()].toSequenceParser();  // (2): Parser<List<Object>>
+final id3 = seq2(letter(), [letter(), digit()].toChoiceParser().star());  // (3): Parser<Sequence2<String, List<String>>>
 ```
 
-Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators or chained function calls is `Parser<dynamic>`. The last variation created from lists has more specific type information.
-
+Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't loose type information and produces a sequence (tuple) with two typed elements `String` and `List<String>`.
 
 ### Parsing Some Input
 
@@ -121,8 +121,8 @@ final id = letter() & pattern('a-zA-Z0-9').star();
 
 The next set of parsers are used to combine other parsers together:
 
-- `p1 & p2`, `p1.seq(p2)`, or `[p1, p2].toSequenceParser()` parse *p1* followed by *p2* (sequence).
-- `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice).
+- `p1 & p2`, `p1.seq(p2)`, `[p1, p2].toSequenceParser()`, or `seq2(p1, p2)` parse *p1* followed by *p2* (sequence). The first two produce a result of type `List<dynamic>`, the third one a `List<P1 & P2>`, and the last one a `Sequence2<P1, P2>`.
+- `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice). The first two produce a result of type `dynamic`, the last one a result of type `P1 & P2`.
 - `p.star()` parses *p* zero or more times.
 - `p.plus()` parses *p* one or more times.
 - `p.optional()` parses *p*, if possible.

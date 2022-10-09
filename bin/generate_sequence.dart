@@ -153,7 +153,8 @@ Future<void> generateImplementation(int index) async {
     out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
   }
   out.writeln();
-  out.writeln('/// Converts this sequence to a new type [R] with the provided [callback].');
+  out.writeln('/// Converts this sequence to a new type [R] with the provided '
+      '[callback].');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln();
@@ -175,7 +176,8 @@ Future<void> generateImplementation(int index) async {
   out.writeln(
       'extension ParserSequenceExtension$index<${valueTypes.join(', ')}>'
       ' on Parser<Sequence$index<${valueTypes.join(', ')}>> {');
-  out.writeln('/// Maps a typed sequence to [R] using the provided [callback].');
+  out.writeln('/// Maps a typed sequence to [R] using the provided '
+      '[callback].');
   out.writeln(
       'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'map((sequence) => sequence.map(callback));');

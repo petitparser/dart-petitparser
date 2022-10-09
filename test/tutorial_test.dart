@@ -8,19 +8,12 @@ import 'package:test/test.dart';
 class ExpressionDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(term).end();
-
   Parser term() => ref0(add) | ref0(prod);
-
   Parser add() => ref0(prod) & char('+').trim() & ref0(term);
-
   Parser prod() => ref0(mul) | ref0(prim);
-
   Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
-
   Parser prim() => ref0(parens) | ref0(number);
-
   Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
-
   Parser number() => digit().plus().flatten().trim();
 }
 
@@ -28,14 +21,11 @@ class EvaluatorDefinition extends ExpressionDefinition {
   @override
   Parser add() =>
       super.add().castList<num>().map((values) => values[0] + values[2]);
-
   @override
   Parser mul() =>
       super.mul().castList<num>().map((values) => values[0] * values[2]);
-
   @override
   Parser parens() => super.parens().castList<num>().pick(1);
-
   @override
   Parser number() => super.number().map((value) => int.parse(value));
 }
@@ -98,18 +88,20 @@ void main() {
     expect(id.accept('foo'), isTrue);
     expect(id.accept('123'), isFalse);
   });
-  test('simple grammar (chained functions)', () {
-    final id = letter().seq(letter().or(digit()).star());
+  test('simple grammar (typed functions)', () {
+    final id = seq2(letter(), [letter(), digit()].toChoiceParser().star());
     final id1 = id.parse('yeah');
     final id2 = id.parse('f12');
-    expect(id1.value, [
-      'y',
-      ['e', 'a', 'h']
-    ]);
-    expect(id2.value, [
-      'f',
-      ['1', '2']
-    ]);
+    expect(
+        id1.value,
+        isA<Sequence2>()
+            .having((sequence) => sequence.first, 'first', 'y')
+            .having((sequence) => sequence.second, 'second', ['e', 'a', 'h']));
+    expect(
+        id2.value,
+        isA<Sequence2>()
+            .having((sequence) => sequence.first, 'first', 'f')
+            .having((sequence) => sequence.second, 'second', ['1', '2']));
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
     expect(id3.position, 0);
