@@ -29,7 +29,8 @@ extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
 }
 
 /// A parser that parses a sequence of parsers.
-class SequenceParser<T> extends ListParser<T, List<T>> implements SequentialParser {
+class SequenceParser<T> extends ListParser<T, List<T>>
+    implements SequentialParser {
   SequenceParser(super.children);
 
   @override
