@@ -198,17 +198,17 @@ Future<void> generateTest() async {
     final chars =
         List.generate(i, (i) => String.fromCharCode('a'.codeUnitAt(0) + i));
     final string = chars.join();
-    out.writeln('group(\'seqMap$i\', () {');
+
+    out.writeln('group(\'seq$i\', () {');
     out.writeln('final parser = seq$i('
-        '${chars.map((each) => 'char(\'$each\')').join(',')});');
+        '${chars.map((each) => 'char(\'$each\')').join(', ')});');
+    out.writeln('final sequence = Sequence$i('
+        '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('final mappedParser = parser.map$i((${chars.join(',')}) => '
-        '\'${chars.map((each) => '\$$each').join()}\');');
-    out.writeln(
-        'expect(mappedParser, isParseSuccess(\'$string\', \'$string\'));');
-    out.writeln(
-        'expect(mappedParser, isParseSuccess(\'$string*\', \'$string\', position: $i));');
+    out.writeln('expect(parser, isParseSuccess(\'$string\', sequence));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', sequence, position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
@@ -222,6 +222,70 @@ Future<void> generateTest() async {
           'position: $j));');
       out.writeln('});');
     }
+    out.writeln('});');
+
+    out.writeln('group(\'map$i\', () {');
+    out.writeln('final parser = seq$i('
+        '${chars.map((each) => 'char(\'$each\')').join(', ')})'
+        '.map$i((${chars.join(', ')}) => '
+        '\'${chars.map((each) => '\$$each').join()}\');');
+    out.writeln('expectParserInvariants(parser);');
+    out.writeln('test(\'success\', () {');
+    out.writeln('expect(parser, isParseSuccess(\'$string\', \'$string\'));');
+    out.writeln(
+        'expect(parser, isParseSuccess(\'$string*\', \'$string\', position: $i));');
+    out.writeln('});');
+    for (var j = 0; j < i; j++) {
+      out.writeln('test(\'failure at $j\', () {');
+      out.writeln('expect(parser, isParseFailure(\''
+          '${string.substring(0, j)}\', '
+          'message: \'"${chars[j]}" expected\', '
+          'position: $j));');
+      out.writeln('expect(parser, isParseFailure(\''
+          '${string.substring(0, j)}*\', '
+          'message: \'"${chars[j]}" expected\', '
+          'position: $j));');
+      out.writeln('});');
+    }
+    out.writeln('});');
+
+    out.writeln('group(\'Sequence$i\', () {');
+    out.writeln('final sequence = Sequence$i('
+        '${chars.map((each) => '\'$each\'').join(', ')});');
+    out.writeln('final other = Sequence$i('
+        '${chars.reversed.map((each) => '\'$each\'').join(', ')});');
+    out.writeln('test(\'accessors\', () {');
+    for (var j = 0; j < i; j++) {
+      out.writeln('expect(sequence.${ordinals[j]}, \'${chars[j]}\');');
+    }
+    out.writeln('expect(sequence.last, \'${chars[i - 1]}\');');
+    out.writeln('});');
+    out.writeln('test(\'map\', () {');
+    out.writeln('expect(sequence.map((${chars.join(', ')}) {');
+    for (var j = 0; j < i; j++) {
+      out.writeln('expect(${chars[j]}, \'${chars[j]}\');');
+    }
+    out.writeln('return 42;');
+    out.writeln('}), 42);');
+    out.writeln('});');
+    out.writeln('test(\'equals\', () {');
+    out.writeln('expect(sequence, sequence);');
+    out.writeln('expect(sequence, isNot(other));');
+    out.writeln('expect(other, isNot(sequence));');
+    out.writeln('expect(other, other);');
+    out.writeln('});');
+    out.writeln('test(\'hashCode\', () {');
+    out.writeln('expect(sequence.hashCode, sequence.hashCode);');
+    out.writeln('expect(sequence.hashCode, isNot(other.hashCode));');
+    out.writeln('expect(other.hashCode, isNot(sequence.hashCode));');
+    out.writeln('expect(other.hashCode, other.hashCode);');
+    out.writeln('});');
+    out.writeln('test(\'toString\', () {');
+    out.writeln('expect(sequence.toString(), '
+        'endsWith(\'(${chars.join(', ')})\'));');
+    out.writeln('expect(other.toString(), '
+        'endsWith(\'(${chars.reversed.join(', ')})\'));');
+    out.writeln('});');
     out.writeln('});');
   }
   out.writeln('}');
