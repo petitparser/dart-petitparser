@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -63,12 +64,23 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
 /// Immutable typed sequence with 2 values.
 @immutable
 class Sequence2<T1, T2> {
+  /// Constructs a sequence with 2 typed values.
   Sequence2(this.first, this.second);
 
+  /// Returns the first element of this sequence.
   final T1 first;
+
+  /// Returns the second element of this sequence.
   final T2 second;
 
+  /// Returns the last (or second) element of this sequence.
+  @inlineVm
+  @inlineJs
+  T2 get last => second;
+
   /// Converts this sequence to a new type [R] with the provided [callback].
+  @inlineVm
+  @inlineJs
   R map<R>(R Function(T1, T2) callback) => callback(first, second);
 
   @override

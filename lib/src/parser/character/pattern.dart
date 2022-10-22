@@ -10,7 +10,6 @@ import 'code.dart';
 import 'not.dart';
 import 'optimize.dart';
 import 'parser.dart';
-import 'predicate.dart';
 import 'range.dart';
 
 /// Returns a parser that accepts a single character of a given character set
@@ -57,27 +56,18 @@ Parser<String> patternIgnoreCase(String element, [String? message]) {
 }
 
 /// Parser that reads a single character.
-final Parser<RangeCharPredicate> _single =
-    any().map((element) => RangeCharPredicate(
-          toCharCode(element),
-          toCharCode(element),
-        ));
+final _single = any().map(
+    (element) => RangeCharPredicate(toCharCode(element), toCharCode(element)));
 
 /// Parser that reads a character range.
-final Parser<RangeCharPredicate> _range =
-    any().seq(char('-')).seq(any()).map((elements) => RangeCharPredicate(
-          toCharCode(elements[0]),
-          toCharCode(elements[2]),
-        ));
+final _range = seq3(any(), char('-'), any()).map3((start, _, stop) =>
+    RangeCharPredicate(toCharCode(start), toCharCode(stop)));
 
 /// Parser that reads a sequence of single characters or ranges.
-final Parser<CharacterPredicate> _sequence = _range.or(_single).star().map(
+final _sequence = _range.or(_single).star().map(
     (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
 
 /// Parser that reads a possibly negated sequence of predicates.
-final Parser<CharacterPredicate> _pattern = char('^')
-    .optional()
-    .seq(_sequence)
-    .map((predicates) => predicates[0] == null
-        ? predicates[1]
-        : NotCharacterPredicate(predicates[1]));
+final _pattern = seq2(char('^').optional(), _sequence).map2(
+    (negation, sequence) =>
+        negation == null ? sequence : NotCharacterPredicate(sequence));

@@ -4,7 +4,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../predicate/any.dart';
 import 'delegate.dart';
-import 'sequence_map.dart';
+import 'sequence.dart';
 
 extension NotParserExtension<T> on Parser<T> {
   /// Returns a parser (logical not-predicate) that succeeds with the [Failure]

@@ -17,9 +17,6 @@ const ordinals = [
   'ninth',
 ];
 
-/// Export file.
-final File exportFile = File('lib/src/parser/combinator/sequence_map.dart');
-
 /// Implementation file.
 File implementationFile(int i) =>
     File('lib/src/parser/combinator/generated/sequence_$i.dart');
@@ -40,17 +37,6 @@ void generateWarning(StringSink out) {
   out.writeln();
 }
 
-Future<void> generateExport() async {
-  final file = exportFile;
-  final out = file.openWrite();
-  generateWarning(out);
-  for (var i = min; i <= max; i++) {
-    out.writeln('export \'generated/sequence_$i.dart\';');
-  }
-  await out.close();
-  await format(file);
-}
-
 Future<void> generateImplementation(int index) async {
   final file = implementationFile(index);
   final out = file.openWrite();
@@ -66,6 +52,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../../context/context.dart\';');
   out.writeln('import \'../../../context/result.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
+  out.writeln('import \'../../../shared/annotations.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
@@ -146,15 +133,23 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Immutable typed sequence with $index values.');
   out.writeln('@immutable');
   out.writeln('class Sequence$index<${valueTypes.join(', ')}> {');
+  out.writeln('/// Constructs a sequence with $index typed values.');
   out.writeln('Sequence$index('
       '${valueNames.map((each) => 'this.$each').join(', ')});');
   out.writeln();
   for (var i = 0; i < index; i++) {
+    out.writeln('/// Returns the ${valueNames[i]} element of this sequence.');
     out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
+    out.writeln();
   }
+  out.writeln('/// Returns the last (or ${valueNames.last}) element of this '
+      'sequence.');
+  out.writeln('@inlineVm @inlineJs');
+  out.writeln('${valueTypes.last} get last => ${valueNames.last};');
   out.writeln();
   out.writeln('/// Converts this sequence to a new type [R] with the provided '
       '[callback].');
+  out.writeln('@inlineVm @inlineJs');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln();
@@ -235,7 +230,6 @@ Future<void> generateTest() async {
 }
 
 Future<void> main() => Future.wait([
-      generateExport(),
       for (var i = min; i <= max; i++) generateImplementation(i),
       generateTest(),
     ]);

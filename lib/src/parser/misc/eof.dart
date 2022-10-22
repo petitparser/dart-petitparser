@@ -1,7 +1,7 @@
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../combinator/sequence_map.dart';
+import '../combinator/sequence.dart';
 
 extension EndOfInputParserExtension<T> on Parser<T> {
   /// Returns a parser that succeeds only if the receiver consumes the complete

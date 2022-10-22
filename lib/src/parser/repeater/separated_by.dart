@@ -1,7 +1,6 @@
 import '../../core/parser.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
-import '../combinator/sequence_map.dart';
 import '../misc/epsilon.dart';
 import '../repeater/possessive.dart';
 
@@ -34,7 +33,7 @@ extension SeparatedByParserExtension<T> on Parser<T> {
                   ? separator.optional()
                   : epsilonWith(null),
               this,
-              [separator, this].toSequenceParser().star(),
+              seq2(separator, this).star(),
               optionalSeparatorAtEnd ? separator.optional() : epsilonWith(null))
           .map4(
         (separatorAtStart, firstElement, otherElements, separatorAtEnd) {
@@ -47,9 +46,9 @@ extension SeparatedByParserExtension<T> on Parser<T> {
           result.add(firstElement as R);
           for (var tuple in otherElements) {
             if (includeSeparators) {
-              result.add(tuple[0]);
+              result.add(tuple.first);
             }
-            result.add(tuple[1]);
+            result.add(tuple.second as R);
           }
           if (includeSeparators &&
               optionalSeparatorAtEnd &&

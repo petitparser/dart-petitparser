@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -81,14 +82,29 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
 /// Immutable typed sequence with 4 values.
 @immutable
 class Sequence4<T1, T2, T3, T4> {
+  /// Constructs a sequence with 4 typed values.
   Sequence4(this.first, this.second, this.third, this.fourth);
 
+  /// Returns the first element of this sequence.
   final T1 first;
+
+  /// Returns the second element of this sequence.
   final T2 second;
+
+  /// Returns the third element of this sequence.
   final T3 third;
+
+  /// Returns the fourth element of this sequence.
   final T4 fourth;
 
+  /// Returns the last (or fourth) element of this sequence.
+  @inlineVm
+  @inlineJs
+  T4 get last => fourth;
+
   /// Converts this sequence to a new type [R] with the provided [callback].
+  @inlineVm
+  @inlineJs
   R map<R>(R Function(T1, T2, T3, T4) callback) =>
       callback(first, second, third, fourth);
 

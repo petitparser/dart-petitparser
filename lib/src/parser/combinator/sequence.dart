@@ -4,6 +4,15 @@ import '../../core/parser.dart';
 import '../utils/sequential.dart';
 import 'list.dart';
 
+export 'generated/sequence_2.dart';
+export 'generated/sequence_3.dart';
+export 'generated/sequence_4.dart';
+export 'generated/sequence_5.dart';
+export 'generated/sequence_6.dart';
+export 'generated/sequence_7.dart';
+export 'generated/sequence_8.dart';
+export 'generated/sequence_9.dart';
+
 extension SequenceParserExtension on Parser {
   /// Returns a parser that accepts the receiver followed by [other]. The
   /// resulting parser returns a list of the parse result of the receiver

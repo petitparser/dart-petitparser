@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/choice.dart';
-import '../parser/combinator/sequence_map.dart';
+import '../parser/combinator/sequence.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
 import 'result.dart';

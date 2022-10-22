@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -73,13 +74,26 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
 /// Immutable typed sequence with 3 values.
 @immutable
 class Sequence3<T1, T2, T3> {
+  /// Constructs a sequence with 3 typed values.
   Sequence3(this.first, this.second, this.third);
 
+  /// Returns the first element of this sequence.
   final T1 first;
+
+  /// Returns the second element of this sequence.
   final T2 second;
+
+  /// Returns the third element of this sequence.
   final T3 third;
 
+  /// Returns the last (or third) element of this sequence.
+  @inlineVm
+  @inlineJs
+  T3 get last => third;
+
   /// Converts this sequence to a new type [R] with the provided [callback].
+  @inlineVm
+  @inlineJs
   R map<R>(R Function(T1, T2, T3) callback) => callback(first, second, third);
 
   @override

@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../context/context.dart';
 import '../../../context/result.dart';
 import '../../../core/parser.dart';
+import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -106,17 +107,36 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
 /// Immutable typed sequence with 6 values.
 @immutable
 class Sequence6<T1, T2, T3, T4, T5, T6> {
+  /// Constructs a sequence with 6 typed values.
   Sequence6(
       this.first, this.second, this.third, this.fourth, this.fifth, this.sixth);
 
+  /// Returns the first element of this sequence.
   final T1 first;
+
+  /// Returns the second element of this sequence.
   final T2 second;
+
+  /// Returns the third element of this sequence.
   final T3 third;
+
+  /// Returns the fourth element of this sequence.
   final T4 fourth;
+
+  /// Returns the fifth element of this sequence.
   final T5 fifth;
+
+  /// Returns the sixth element of this sequence.
   final T6 sixth;
 
+  /// Returns the last (or sixth) element of this sequence.
+  @inlineVm
+  @inlineJs
+  T6 get last => sixth;
+
   /// Converts this sequence to a new type [R] with the provided [callback].
+  @inlineVm
+  @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5, T6) callback) =>
       callback(first, second, third, fourth, fifth, sixth);
 

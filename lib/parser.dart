@@ -30,7 +30,6 @@ export 'src/parser/combinator/list.dart';
 export 'src/parser/combinator/not.dart';
 export 'src/parser/combinator/optional.dart';
 export 'src/parser/combinator/sequence.dart';
-export 'src/parser/combinator/sequence_map.dart';
 export 'src/parser/combinator/settable.dart';
 export 'src/parser/combinator/skip.dart';
 export 'src/parser/misc/eof.dart';

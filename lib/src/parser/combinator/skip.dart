@@ -1,5 +1,5 @@
 import '../../core/parser.dart';
-import 'sequence_map.dart';
+import 'sequence.dart';
 
 extension SkipParserExtension<T> on Parser<T> {
   /// Returns a parser that consumes input [before] and [after] the receiver,
