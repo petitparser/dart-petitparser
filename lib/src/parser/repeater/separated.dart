@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
+import '../utils/sequential.dart';
 import 'repeating.dart';
 import 'unbounded.dart';
 
@@ -46,7 +47,8 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
 /// A parser that consumes the [delegate] between [min] and [max] times
 /// separated by the [separator] parser.
 class SeparatedRepeatingParser<R, S>
-    extends RepeatingParser<R, SeparatedList<R, S>> {
+    extends RepeatingParser<R, SeparatedList<R, S>>
+    implements SequentialParser {
   SeparatedRepeatingParser(
       super.delegate, this.separator, super.min, super.max);
 

@@ -6,11 +6,13 @@ import '../../parser/action/map.dart';
 import '../../parser/action/permute.dart';
 import '../../parser/action/pick.dart';
 import '../../parser/action/token.dart';
+import '../../parser/action/where.dart';
 import '../../parser/combinator/choice.dart';
 import '../../parser/combinator/settable.dart';
 import '../../parser/misc/failure.dart';
 import '../../parser/repeater/repeating.dart';
 import '../../parser/utils/resolvable.dart';
+import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
 import 'utilities.dart';
@@ -161,12 +163,17 @@ class NullableRepeater extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is RepeatingParser && analyzer.isNullable(parser.delegate)) {
-      callback(LinterIssue(
-          this,
-          parser,
-          'A repeater that delegates to a nullable parser causes an infinite '
-          'loop when parsing.'));
+    if (parser is RepeatingParser) {
+      final isNullable = parser is SequentialParser
+          ? parser.children.every((each) => analyzer.isNullable(each))
+          : analyzer.isNullable(parser.delegate);
+      if (isNullable) {
+        callback(LinterIssue(
+            this,
+            parser,
+            'A repeater that delegates to a nullable parser causes an infinite '
+            'loop when parsing.'));
+      }
     }
   }
 }
@@ -202,7 +209,8 @@ class UnusedResult extends LinterRule {
               parser is MapParser ||
               parser is PermuteParser ||
               parser is PickParser ||
-              parser is TokenParser)
+              parser is TokenParser ||
+              parser is WhereParser)
           .toSet();
       if (ignoredResults.isNotEmpty) {
         final path = analyzer.findPath(

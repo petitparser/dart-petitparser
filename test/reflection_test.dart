@@ -757,6 +757,19 @@ void main() {
         expect(result.title, 'Unused result');
       });
     });
+    group('regressions', () {
+      test('separatedBy and nullable repeater', () {
+        const rules = [NullableRepeater()];
+        // Both repeater and separator are nullable, this might cause an
+        // infinite loop.
+        expect(linter(epsilon().starSeparated(epsilon()), rules: rules),
+            hasLength(1));
+        // If either the repeater or the separator is non-nullable, everything
+        // is fine.
+        expect(linter(epsilon().starSeparated(any()), rules: rules), isEmpty);
+        expect(linter(any().starSeparated(epsilon()), rules: rules), isEmpty);
+      });
+    });
   });
   group('transform', () {
     test('copy', () {
