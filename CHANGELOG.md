@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.1.0 (unpublished)
+## 5.1.0
 
 - Dart 2.18 requirement.
 - Add `seq2`, `seq3`, ... combinator functions returning strongly typed sequences of `Sequence2<R1, R2>`, `Sequence3<R1, R2, R3>`, ...
