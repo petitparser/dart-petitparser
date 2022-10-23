@@ -34,7 +34,7 @@ import 'package:petitparser/petitparser.dart';
 
 It is also possible to more selectively import only certain parts of this library, i.e. `package:petitparser/core.dart` and `package:petitparser/parser.dart` for core infrastructure and the basic parsers.
 
-:warning: This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of its functionality.
+:warning: This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of the functionality.
 
 ### Writing a Simple Grammar
 
@@ -101,7 +101,11 @@ print(id.accept('123'));                // false
 
 ### Different Kinds of Parsers
 
-PetitParser provides a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. Terminal parsers are the simplest. We've already seen a few of those:
+PetitParser provides a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. 
+
+#### Terminal Parsers
+
+Terminal parsers are the simplest. We've already seen a few of those:
 
 - `any()` parses any character.
 - `char('a')` (or `'a'.toParser()`) parses the character *a*.
@@ -113,22 +117,38 @@ PetitParser provides a large set of ready-made parser that you can compose to co
 - `stringIgnoreCase('abc')` (or `'abc'.toParser(caseInsensitive: true)`) parses the strings *Abc*, *aBC*, ...
 - `word()` parses a single letter, digit, or the underscore character.
 
-So instead of using the letter and digit predicate above, we could have written our identifier parser like this:
+So instead of using the letter and digit predicate above, we could have written our identifier parser using one of the equivalent variations below:
 
 ```dart
-final id = letter() & pattern('a-zA-Z0-9').star();
+final id1 = letter() & word().star();
+final id2 = letter() & pattern('a-zA-Z0-9').star();
 ```
+
+#### Combinator Parsers
 
 The next set of parsers are used to combine other parsers together:
 
 - `p1 & p2`, `p1.seq(p2)`, `[p1, p2].toSequenceParser()`, or `seq2(p1, p2)` parse *p1* followed by *p2* (sequence). The first two produce a result of type `List<dynamic>`, the third one a `List<P1 & P2>`, and the last one a `Sequence2<P1, P2>`.
 - `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice). The first two produce a result of type `dynamic`, the last one a result of type `P1 & P2`.
+
+The following parsers repeat another parser a configured amount of times, and produce a list of parsed results. Check the documentation for other repeaters that are lazy or greedy, and that can handle separators.
+
 - `p.star()` parses *p* zero or more times.
 - `p.plus()` parses *p* one or more times.
+- `p.times(n)` parsers *p* exactly _n_ times.
+- `p.repeat(n, m)` parses *p* between _n_ and _m_ times.
+
+A variation of the parsers above is the optional operator, it produces the value of *p* or *null*.
+
 - `p.optional()` parses *p*, if possible.
+
+More complicated combinators that can come in handy at times are:
+
 - `p.and()` parses *p*, but does not consume its input.
 - `p.not()` parses *p* and succeed when p fails, but does not consume its input.
 - `p.end()` parses *p* and succeed at the end of the input.
+
+#### Transforming Parsers
 
 The last type of parsers are actions or transformations we can use as follows:
 
@@ -228,7 +248,7 @@ class ExpressionDefinition extends GrammarDefinition {
 To create a parser with all the references correctly resolved call `build()`.
 
 ```dart
-final definition = new ExpressionDefinition();
+final definition = ExpressionDefinition();
 final parser = definition.build();
 parser.parse('1 + 2 * 3');              // ['1', '+', ['2', '+', '3']]
 ```
@@ -249,7 +269,7 @@ class EvaluatorDefinition extends ExpressionDefinition {
 Similarly, build the evaluator parser like so:
 
 ```dart
-final definition = new EvaluatorDefinition();
+final definition = EvaluatorDefinition();
 final parser = definition.build();
 parser.parse('1 + 2 * 3');              // 7
 ```
@@ -259,7 +279,7 @@ parser.parse('1 + 2 * 3');              // 7
 To use just a part of the parser you can specify the start production when building. For example, to reuse the number parser one would write:
 
 ```dart
-final definition = new EvaluatorDefinition();
+final definition = EvaluatorDefinition();
 final parser = definition.build(start: definition.number);
 parser.parse('42');                     // 42
 ```
@@ -339,7 +359,7 @@ Accessing and testing individual productions is simple: If you organize your gra
 
 ```dart
 test('number parsing', () {
-  final definition = new EvaluatorDefinition();
+  final definition = EvaluatorDefinition();
   final parser = definition.build(start: definition.number);
   expect(parser.parse('42').value, 42);
 });
@@ -351,7 +371,7 @@ To run the linter as part of your tests include the package `petitparser/reflect
 
 ```dart
 test('detect common problems', () {
-  final definition = new EvaluatorDefinition();
+  final definition = EvaluatorDefinition();
   final parser = definition.build();
   expect(linter(parser), isEmpty);
 });

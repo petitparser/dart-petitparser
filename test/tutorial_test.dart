@@ -108,9 +108,14 @@ void main() {
     expect(id.accept('foo'), isTrue);
     expect(id.accept('123'), isFalse);
   });
-  test('different parsers', () {
-    final id = (pattern('a-zA-Z') & pattern('a-zA-Z0-9').star()).flatten();
-    final matches = id.allMatches('foo 123 bar4');
+  test('different parsers (word)', () {
+    final id1 = letter() & word().star();
+    final matches = id1.flatten().allMatches('foo 123 bar4');
+    expect(matches, ['foo', 'bar4']);
+  });
+  test('different parsers (pattern)', () {
+    final id2 = letter() & pattern('a-zA-Z0-9').star();
+    final matches = id2.flatten().allMatches('foo 123 bar4');
     expect(matches, ['foo', 'bar4']);
   });
   test('complicated grammar', () {
