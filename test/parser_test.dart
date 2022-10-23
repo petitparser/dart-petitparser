@@ -1452,6 +1452,17 @@ void main() {
         expect(parser, isParseFailure('a', message: '"*" expected'));
       });
     });
+    group('newline', () {
+      expectParserInvariants(newline());
+      test('default', () {
+        final parser = newline();
+        expect(parser, isParseSuccess('\n', '\n'));
+        expect(parser, isParseSuccess('\r\n', '\r\n'));
+        expect(parser, isParseSuccess('\r', '\r'));
+        expect(parser, isParseFailure('', message: 'newline expected'));
+        expect(parser, isParseFailure('\f', message: 'newline expected'));
+      });
+    });
     group('position', () {
       expectParserInvariants(position());
       test('default', () {

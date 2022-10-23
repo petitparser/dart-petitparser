@@ -6,6 +6,7 @@
 - Add `seq2`, `seq3`, ... combinator functions returning strongly typed sequences of `Sequence2<R1, R2>`, `Sequence3<R1, R2, R3>`, ...
 - Add `Parser.starSeparated`, `Parser.plusSeparated`, `Parser.timesSeparated`, and `Parser.repeatSeparated` returning `SeparatedList` with the strongly typed elements and separators. Deprecate the dynamically typed `Parser.separatedBy`.
 - Add `Parser.matchesAll` that creates a lazy iterable over the (overlapping or non-overlapping) successful parse results. Deprecate `matches` and `matchesSkipping`.
+- Add a native platform independent `newline` parser.
 - Add a section on debugging to the [tutorial](https://github.com/petitparser/dart-petitparser#debugging-your-grammars).
 - Remove the deprecated `ref0`, `ref1`, ... instance methods, these methods are globally defined since 4.2.0.
 - Make `GrammarDefinition` and `GrammarDefinition.start()` optionally typed.

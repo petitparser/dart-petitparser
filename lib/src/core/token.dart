@@ -4,10 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../matcher/matches.dart';
 import '../parser/action/token.dart';
-import '../parser/character/char.dart';
-import '../parser/combinator/choice.dart';
-import '../parser/combinator/optional.dart';
-import '../parser/combinator/sequence.dart';
+import '../parser/misc/newline.dart';
 import 'parser.dart';
 
 /// A token represents a parsed part of the input stream.
@@ -85,9 +82,8 @@ class Token<T> {
   }
 
   /// Returns a parser that detects newlines platform independently.
-  static Parser newlineParser() => _newlineParser;
-  static final Parser _newlineParser =
-      char('\n') | (char('\r') & char('\n').optional());
+  static Parser<String> newlineParser() => _newlineParser;
+  static final Parser<String> _newlineParser = newline();
 
   /// Converts the [position] index in a [buffer] to a line and column tuple.
   static List<int> lineAndColumnOf(String buffer, int position) {

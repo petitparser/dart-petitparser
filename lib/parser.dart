@@ -36,6 +36,7 @@ export 'src/parser/misc/eof.dart';
 export 'src/parser/misc/epsilon.dart';
 export 'src/parser/misc/failure.dart';
 export 'src/parser/misc/label.dart';
+export 'src/parser/misc/newline.dart';
 export 'src/parser/misc/position.dart';
 export 'src/parser/predicate/any.dart';
 export 'src/parser/predicate/pattern.dart';
