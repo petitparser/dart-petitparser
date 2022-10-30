@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import 'iterable.dart';
 
@@ -10,6 +12,7 @@ typedef TransformationHandler = Parser<T> Function<T>(Parser<T> parser);
 /// The implementation first creates a copy of each parser reachable in the
 /// input grammar; then the resulting grammar is traversed until all references
 /// to old parsers are replaced with the transformed ones.
+@useResult
 Parser<T> transformParser<T>(Parser<T> parser, TransformationHandler handler) {
   final mapping = Map<Parser, Parser>.identity();
   for (final each in allParser(parser)) {

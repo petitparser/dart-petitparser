@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import '../parser/combinator/settable.dart';
 import 'transform.dart';
 
 /// Returns a copy of [parser] with all settable parsers removed.
+@useResult
 @Deprecated('Use `resolve(Parser)` instead.')
 Parser<T> removeSettables<T>(Parser<T> parser) {
   return transformParser(parser, <R>(each) {
@@ -14,6 +17,7 @@ Parser<T> removeSettables<T>(Parser<T> parser) {
 }
 
 /// Returns a copy of [parser] with all duplicates parsers collapsed.
+@useResult
 Parser<T> removeDuplicates<T>(Parser<T> parser) {
   final uniques = <Parser>{};
   return transformParser(parser, <R>(source) {

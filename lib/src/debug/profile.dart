@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
@@ -24,6 +26,7 @@ import '../shared/types.dart';
 ///
 /// The optional [output] callback can be used to receive [ProfileFrame]
 /// objects with the full profiling information at the end of the parse.
+@useResult
 Parser<T> profile<T>(Parser<T> root,
     {VoidCallback<ProfileFrame> output = print, Predicate<Parser>? predicate}) {
   final frames = <ProfileFrame>[];

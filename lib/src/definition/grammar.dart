@@ -71,6 +71,7 @@ abstract class GrammarDefinition<R> {
   /// The optional [start] reference specifies a different starting production
   /// into the grammar. The optional [arguments] list parametrizes the called
   /// production.
+  @useResult
   Parser<T> build<T>({Function? start, List<Object> arguments = const []}) {
     if (start != null) {
       return resolve(Function.apply(start, arguments));

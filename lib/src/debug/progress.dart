@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../context/context.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
@@ -27,6 +29,7 @@ import '../shared/types.dart';
 ///
 /// The optional [output] callback can be used to continuously receive
 /// [ProgressFrame] updates with the current progress information.
+@useResult
 Parser<T> progress<T>(Parser<T> root,
     {VoidCallback<ProgressFrame> output = print,
     Predicate<Parser>? predicate}) {

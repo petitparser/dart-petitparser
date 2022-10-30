@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import 'internal/reference.dart';
 import 'internal/undefined.dart';
@@ -11,6 +13,7 @@ import 'resolve.dart';
 /// using one of the strongly typed alternatives [ref0], [ref1], [ref2], ...
 /// instead.
 @Deprecated('Use [ref0], [ref1], [ref2], ... instead.')
+@useResult
 Parser<T> ref<T>(
   Function function, [
   dynamic arg1 = undefined,
@@ -37,12 +40,14 @@ Parser<T> ref<T>(
 ///
 /// If you function takes arguments, consider one of the typed alternatives
 /// [ref1], [ref2], [ref3], ... instead.
+@useResult
 Parser<T> ref0<T>(Parser<T> Function() function) =>
     ReferenceParser<T>(function, const []);
 
 /// Reference to a production [function] parametrized with 1 argument.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref1<T, A1>(
   Parser<T> Function(A1) function,
   A1 arg1,
@@ -52,6 +57,7 @@ Parser<T> ref1<T, A1>(
 /// Reference to a production [function] parametrized with 2 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref2<T, A1, A2>(
   Parser<T> Function(A1, A2) function,
   A1 arg1,
@@ -62,6 +68,7 @@ Parser<T> ref2<T, A1, A2>(
 /// Reference to a production [function] parametrized with 3 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref3<T, A1, A2, A3>(
   Parser<T> Function(A1, A2, A3) function,
   A1 arg1,
@@ -73,6 +80,7 @@ Parser<T> ref3<T, A1, A2, A3>(
 /// Reference to a production [function] parametrized with 4 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref4<T, A1, A2, A3, A4>(
   Parser<T> Function(A1, A2, A3, A4) function,
   A1 arg1,
@@ -85,6 +93,7 @@ Parser<T> ref4<T, A1, A2, A3, A4>(
 /// Reference to a production [function] parametrized with 5 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref5<T, A1, A2, A3, A4, A5>(
   Parser<T> Function(A1, A2, A3, A4, A5) function,
   A1 arg1,
@@ -98,6 +107,7 @@ Parser<T> ref5<T, A1, A2, A3, A4, A5>(
 /// Reference to a production [function] parametrized with 6 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref6<T, A1, A2, A3, A4, A5, A6>(
   Parser<T> Function(A1, A2, A3, A4, A5, A6) function,
   A1 arg1,
@@ -112,6 +122,7 @@ Parser<T> ref6<T, A1, A2, A3, A4, A5, A6>(
 /// Reference to a production [function] parametrized with 7 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref7<T, A1, A2, A3, A4, A5, A6, A7>(
   Parser<T> Function(A1, A2, A3, A4, A5, A6, A7) function,
   A1 arg1,
@@ -127,6 +138,7 @@ Parser<T> ref7<T, A1, A2, A3, A4, A5, A6, A7>(
 /// Reference to a production [function] parametrized with 8 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref8<T, A1, A2, A3, A4, A5, A6, A7, A8>(
   Parser<T> Function(A1, A2, A3, A4, A5, A6, A7, A8) function,
   A1 arg1,
@@ -144,6 +156,7 @@ Parser<T> ref8<T, A1, A2, A3, A4, A5, A6, A7, A8>(
 /// Reference to a production [function] parametrized with 9 arguments.
 ///
 /// See [ref0] for a detailed description.
+@useResult
 Parser<T> ref9<T, A1, A2, A3, A4, A5, A6, A7, A8, A9>(
   Parser<T> Function(A1, A2, A3, A4, A5, A6, A7, A8, A9) function,
   A1 arg1,

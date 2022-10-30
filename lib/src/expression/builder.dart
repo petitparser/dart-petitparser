@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../core/parser.dart';
 import '../definition/resolve.dart';
 import '../parser/combinator/settable.dart';
@@ -65,6 +67,7 @@ class ExpressionBuilder<T> {
   final SettableParser<T> _loopback = undefined();
 
   /// Creates a new group of operators that share the same priority.
+  @useResult
   ExpressionGroup<T> group() {
     final group = ExpressionGroup<T>(_loopback);
     _groups.add(group);
@@ -72,6 +75,7 @@ class ExpressionBuilder<T> {
   }
 
   /// Builds the expression parser.
+  @useResult
   Parser<T> build() {
     final parser = _groups.fold<Parser<T>>(
       failure('Highest priority group should define a primitive parser.'),

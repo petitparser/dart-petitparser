@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../context/context.dart';
 import '../context/result.dart';
 import '../core/parser.dart';
@@ -32,6 +34,7 @@ import '../shared/types.dart';
 ///
 /// The optional [output] callback can be used to continuously receive
 /// [TraceEvent] objects with current enter and exit data.
+@useResult
 Parser<T> trace<T>(Parser<T> root,
     {VoidCallback<TraceEvent> output = print, Predicate<Parser>? predicate}) {
   TraceEvent? parent;
