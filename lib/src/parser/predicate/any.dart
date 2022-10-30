@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -6,6 +8,7 @@ import '../../core/parser.dart';
 ///
 /// For example, `any()` succeeds and consumes any given letter. It only
 /// fails for an empty input.
+@useResult
 Parser<String> any([String message = 'input expected']) => AnyParser(message);
 
 /// A parser that accepts any input element.

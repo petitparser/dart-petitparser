@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -12,6 +14,7 @@ extension TokenParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().plus().token()` returns the token
   /// `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.
+  @useResult
   Parser<Token<T>> token() => TokenParser<T>(this);
 }
 

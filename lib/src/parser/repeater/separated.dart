@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -17,6 +19,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// parser that consumes input like `'1,2;3'` and that returns a
   /// [SeparatedList] with elements `['1', '2', '3']` as well as the separators
   /// [`,`, `;`].
+  @useResult
   Parser<SeparatedList<R, S>> starSeparated<S>(Parser<S> separator) =>
       repeatSeparated<S>(separator, 0, unbounded);
 
@@ -24,6 +27,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// by the [separator] parser. The resulting parser returns a [SeparatedList]
   /// containing collections of both the elements of type [R] as well as the
   /// separators of type [S].
+  @useResult
   Parser<SeparatedList<R, S>> plusSeparated<S>(Parser<S> separator) =>
       repeatSeparated<S>(separator, 1, unbounded);
 
@@ -31,6 +35,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// by the [separator] parser. The resulting parser returns a [SeparatedList]
   /// containing collections of both the elements of type [R] as well as the
   /// separators of type [S].
+  @useResult
   Parser<SeparatedList<R, S>> timesSeparated<S>(
           Parser<S> separator, int count) =>
       repeatSeparated<S>(separator, count, count);
@@ -39,6 +44,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// separated by the [separator] parser. The resulting parser returns a
   /// [SeparatedList] containing collections of both the elements of type [R] as
   /// well as the separators of type [S].
+  @useResult
   Parser<SeparatedList<R, S>> repeatSeparated<S>(
           Parser<S> separator, int min, int max) =>
       SeparatedRepeatingParser<R, S>(this, separator, min, max);

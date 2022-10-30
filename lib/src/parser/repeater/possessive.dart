@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -14,6 +16,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().star()` accepts the empty string or
   /// any sequence of letters and returns a possibly empty list of the parsed
   /// letters.
+  @useResult
   Parser<List<T>> star() => repeat(0, unbounded);
 
   /// Returns a parser that accepts the receiver one or more times. The
@@ -24,6 +27,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().plus()` accepts any sequence of
   /// letters and returns a list of the parsed letters.
+  @useResult
   Parser<List<T>> plus() => repeat(1, unbounded);
 
   /// Returns a parser that accepts the receiver exactly [count] times. The
@@ -31,6 +35,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().times(2)` accepts two letters and
   /// returns a list of the two parsed letters.
+  @useResult
   Parser<List<T>> times(int count) => repeat(count, count);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
@@ -41,6 +46,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().repeat(2, 4)` accepts a sequence of
   /// two, three, or four letters and returns the accepted letters as a list.
+  @useResult
   Parser<List<T>> repeat(int min, [int? max]) =>
       PossessiveRepeatingParser<T>(this, min, max ?? min);
 }

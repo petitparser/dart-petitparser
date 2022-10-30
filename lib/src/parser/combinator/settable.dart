@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -12,6 +14,7 @@ extension SettableParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().settable()` behaves exactly the same
   /// as `letter()`, but it can be replaced with another parser using
   /// [SettableParser.set].
+  @useResult
   SettableParser<T> settable() => SettableParser<T>(this);
 }
 

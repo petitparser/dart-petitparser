@@ -61,6 +61,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Creates a parser that consumes a sequence of $index parsers '
       'and returns a ');
   out.writeln('/// typed sequence [Sequence$index].');
+  out.writeln('@useResult');
   out.writeln('Parser<Sequence$index<${resultTypes.join(', ')}>> '
       'seq$index<${resultTypes.join(', ')}>(');
   for (var i = 0; i < index; i++) {

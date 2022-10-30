@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -6,9 +8,11 @@ import '../../core/parser.dart';
 ///
 /// For example, `char('a').or(epsilon())` is equivalent to
 /// `char('a').optional()`.
+@useResult
 Parser<void> epsilon() => epsilonWith<void>(null);
 
 /// Returns a parser that consumes nothing and succeeds with [result].
+@useResult
 Parser<R> epsilonWith<R>(R result) => EpsilonParser<R>(result);
 
 /// A parser that consumes nothing and succeeds.

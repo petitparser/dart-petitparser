@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -16,6 +18,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [starGreedy] for the greedy and less efficient variation of
   /// this combinator.
+  @useResult
   Parser<List<T>> starLazy(Parser<void> limit) =>
       repeatLazy(limit, 0, unbounded);
 
@@ -28,6 +31,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// See [plusGreedy] for the greedy and less efficient variation of
   /// this combinator.
+  @useResult
   Parser<List<T>> plusLazy(Parser<void> limit) =>
       repeatLazy(limit, 1, unbounded);
 
@@ -37,6 +41,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   ///
   /// This is the more generic variation of the [starLazy] and [plusLazy]
   /// combinators.
+  @useResult
   Parser<List<T>> repeatLazy(Parser<void> limit, int min, int max) =>
       LazyRepeatingParser<T>(this, limit, min, max);
 }

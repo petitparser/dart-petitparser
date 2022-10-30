@@ -11,6 +11,7 @@ import '../../utils/sequential.dart';
 
 /// Creates a parser that consumes a sequence of 9 parsers and returns a
 /// typed sequence [Sequence9].
+@useResult
 Parser<Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>>
     seq9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
   Parser<R1> parser1,

@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -11,6 +13,7 @@ extension AndParserExtension<T> on Parser<T> {
   /// identifiers that start with an underscore character. Since the predicate
   /// does not consume accepted input, the parser `identifier` is given the
   /// ability to process the complete identifier.
+  @useResult
   Parser<T> and() => AndParser<T>(this);
 }
 

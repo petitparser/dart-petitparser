@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -29,6 +31,7 @@ extension ContinuationParserExtension<T> on Parser<T> {
   ///       return result;
   ///     });
   ///
+  @useResult
   Parser<R> callCC<R>(ContinuationHandler<T, R> handler) =>
       ContinuationParser<T, R>(this, handler);
 }

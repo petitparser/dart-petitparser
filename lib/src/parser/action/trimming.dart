@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -15,6 +17,7 @@ extension TrimmingParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
+  @useResult
   Parser<T> trim([Parser<void>? left, Parser<void>? right]) =>
       TrimmingParser<T>(this, left ??= whitespace(), right ??= left);
 }

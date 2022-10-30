@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/failure.dart';
 import '../../context/result.dart';
@@ -25,6 +27,7 @@ extension ChoiceParserExtension on Parser {
   /// Due to https://github.com/dart-lang/language/issues/1557 the resulting
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
+  @useResult
   ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) {
     final self = this;
     return self is ChoiceParser
@@ -35,6 +38,7 @@ extension ChoiceParserExtension on Parser {
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [or] for details.
+  @useResult
   ChoiceParser operator |(Parser other) => or(other);
 }
 

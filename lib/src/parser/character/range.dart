@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import 'code.dart';
 import 'parser.dart';
@@ -5,6 +7,7 @@ import 'predicate.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
+@useResult
 Parser<String> range(String start, String stop, [String? message]) =>
     CharacterParser(
         RangeCharPredicate(toCharCode(start), toCharCode(stop)),

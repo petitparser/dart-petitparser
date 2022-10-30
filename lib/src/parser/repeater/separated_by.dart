@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
@@ -22,6 +24,7 @@ extension SeparatedByParserExtension<T> on Parser<T> {
   /// separators: `['1', '-', '2', '-', '3']`.
   @Deprecated('Use `plusSeparated` for a better optimized and strongly typed '
       'implementation that provides the elements and separators separately')
+  @useResult
   Parser<List<R>> separatedBy<R>(
     Parser separator, {
     bool includeSeparators = true,

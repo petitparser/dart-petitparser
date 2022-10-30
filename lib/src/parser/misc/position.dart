@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
 
 /// Returns a parser that reports the current input position.
+@useResult
 Parser position() => PositionParser();
 
 /// A parser that reports the current input position.

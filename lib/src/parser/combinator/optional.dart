@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -10,6 +12,7 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().optional()` accepts a letter as input
   /// and returns that letter. When given something else the parser succeeds as
   /// well, does not consume anything and returns `null`.
+  @useResult
   Parser<T?> optional() => OptionalParser<T?>(this, null);
 
   /// Returns new parser that accepts the receiver, if possible. The resulting
@@ -18,6 +21,7 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().optionalWith('!')` accepts a letter as
   /// input and returns that letter. When given something else the parser
   /// succeeds as well, does not consume anything and returns `'!'`.
+  @useResult
   Parser<T> optionalWith(T value) => OptionalParser<T>(this, value);
 }
 

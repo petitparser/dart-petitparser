@@ -19,12 +19,14 @@ class Context {
   /// Returns a result indicating a parse success.
   @inlineVm
   @inlineJs
+  @useResult
   Success<R> success<R>(R result, [int? position]) =>
       Success<R>(buffer, position ?? this.position, result);
 
   /// Returns a result indicating a parse failure.
   @inlineVm
   @inlineJs
+  @useResult
   Failure<R> failure<R>(String message, [int? position]) =>
       Failure<R>(buffer, position ?? this.position, message);
 

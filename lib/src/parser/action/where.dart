@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -29,6 +31,7 @@ extension WhereParserExtension<T> on Parser<T> {
   ///     parser.parse('aa');   // ==> Success: ['a', 'a']
   ///     parser.parse('ab');   // ==> Failure: characters do not match
   ///
+  @useResult
   Parser<T> where(Predicate<T> predicate,
           {Callback<T, String>? failureMessage,
           Callback<T, int>? failurePosition}) =>

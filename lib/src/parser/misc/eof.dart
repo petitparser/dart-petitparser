@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -10,11 +12,13 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().end()` succeeds on the input `'a'`
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
+  @useResult
   Parser<T> end([String message = 'end of input expected']) =>
       seq2(this, endOfInput(message)).map2((value, _) => value);
 }
 
 /// Returns a parser that succeeds at the end of input.
+@useResult
 Parser<void> endOfInput([String message = 'end of input expected']) =>
     EndOfInputParser(message);
 

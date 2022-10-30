@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.2.0 (unpublished)
+
+- Add `@useResult` to parser constructors to avoid bugs when using the old parser instance.
+
 ## 5.1.0
 
 - Dart 2.18 requirement.

@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import 'sequence.dart';
 
@@ -8,6 +10,7 @@ extension SkipParserExtension<T> on Parser<T> {
   ///
   /// For example, the parser `digit().skip(char('['), char(']'))`
   /// returns `'3'` for the input `'[3]'`.
+  @useResult
   Parser<T> skip({Parser<void>? before, Parser<void>? after}) => before == null
       ? after == null
           ? this

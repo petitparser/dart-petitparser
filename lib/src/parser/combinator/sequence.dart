@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -23,12 +25,14 @@ extension SequenceParserExtension on Parser {
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `['a', '1', 'b']`.
+  @useResult
   Parser<List> seq(Parser other) => this is SequenceParser
       ? SequenceParser([...children, other])
       : SequenceParser([this, other]);
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [seq] for details.
+  @useResult
   Parser<List> operator &(Parser other) => seq(other);
 }
 

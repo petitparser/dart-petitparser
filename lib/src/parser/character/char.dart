@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import 'code.dart';
 import 'optimize.dart';
@@ -6,11 +8,13 @@ import 'predicate.dart';
 import 'range.dart';
 
 /// Returns a parser that accepts a specific character only.
+@useResult
 Parser<String> char(String char, [String? message]) => CharacterParser(
     SingleCharPredicate(toCharCode(char)),
     message ?? '"${toReadableString(char)}" expected');
 
 /// Returns a parser that accepts a case-insensitive specific character only.
+@useResult
 Parser<String> charIgnoringCase(String char, [String? message]) {
   final lowerCase = toCharCode(char.toLowerCase());
   final upperCase = toCharCode(char.toUpperCase());

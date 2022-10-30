@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/failure.dart';
 import '../../context/result.dart';
@@ -15,6 +17,7 @@ extension NotParserExtension<T> on Parser<T> {
   /// `char('_')` accepts the input, the negation and subsequently the
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
+  @useResult
   Parser<Failure<T>> not([String message = 'success not expected']) =>
       NotParser(this, message);
 
@@ -24,6 +27,7 @@ extension NotParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().neg()` accepts any input but a letter.
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
+  @useResult
   Parser<String> neg([String message = 'input not expected']) =>
       seq2(not(message), any()).map2((_, value) => value);
 }

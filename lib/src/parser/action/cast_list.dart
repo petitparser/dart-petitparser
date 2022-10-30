@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -6,6 +8,7 @@ import '../combinator/delegate.dart';
 extension CastListParserExtension<T> on Parser<T> {
   /// Returns a parser that casts itself to `Parser<List<R>>`. Assumes this
   /// parser to be of type `Parser<List>`.
+  @useResult
   Parser<List<R>> castList<R>() => CastListParser<T, R>(this);
 }
 

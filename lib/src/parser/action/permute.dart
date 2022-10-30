@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -11,6 +13,7 @@ extension PermuteParserExtension<T> on Parser<List<T>> {
   /// For example, the parser `letter().star().permute([0, -1])` returns the
   /// first and last letter parsed. For the input `'abc'` it returns
   /// `['a', 'c']`.
+  @useResult
   Parser<List<T>> permute(List<int> indexes) => PermuteParser<T>(this, indexes);
 }
 

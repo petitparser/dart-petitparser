@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -11,6 +13,7 @@ extension MapParserExtension<T> on Parser<T> {
   /// For example, the parser `digit().map((char) => int.parse(char))` returns
   /// the number `1` for the input string `'1'`. If the delegate fails, the
   /// production action is not executed and the failure is passed on.
+  @useResult
   Parser<R> map<R>(
     Callback<T, R> callback, {
     @Deprecated('All callbacks are considered to have side-effects.')

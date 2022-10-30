@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import '../../../parser.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 
 /// Returns a parser that detects newlines platform independently.
+@useResult
 Parser<String> newline([String message = 'newline expected']) =>
     NewlineParser(message);
 

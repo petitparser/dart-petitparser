@@ -11,6 +11,7 @@ import '../../utils/sequential.dart';
 
 /// Creates a parser that consumes a sequence of 4 parsers and returns a
 /// typed sequence [Sequence4].
+@useResult
 Parser<Sequence4<R1, R2, R3, R4>> seq4<R1, R2, R3, R4>(
   Parser<R1> parser1,
   Parser<R2> parser2,

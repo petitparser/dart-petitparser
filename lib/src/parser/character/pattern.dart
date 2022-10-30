@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import '../action/map.dart';
 import '../combinator/choice.dart';
@@ -23,6 +25,7 @@ import 'range.dart';
 /// either '1', '2', or '3'; and fails for any other character. The parser
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
+@useResult
 Parser<String> pattern(String element, [String? message]) => CharacterParser(
     _pattern.parse(element).value,
     message ?? '[${toReadableString(element)}] expected');
@@ -38,6 +41,7 @@ Parser<String> pattern(String element, [String? message]) => CharacterParser(
 /// `patternIgnoreCase('a-c')` accepts 'a', 'b', 'c' and 'A', 'B', 'C'; and
 /// fails for any other character. The parser `patternIgnoreCase('^A') accepts
 /// any character, but fails for the characters 'a' or 'A'.
+@useResult
 Parser<String> patternIgnoreCase(String element, [String? message]) {
   var normalized = element;
   final isNegated = normalized.startsWith('^');

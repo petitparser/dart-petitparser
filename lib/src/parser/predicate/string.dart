@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
 import '../character/char.dart';
 import '../character/pattern.dart';
@@ -6,6 +8,7 @@ import 'predicate.dart';
 
 extension PredicateStringExtension on String {
   /// Converts this string to a corresponding parser.
+  @useResult
   Parser<String> toParser({
     bool isPattern = false,
     bool caseInsensitive = false,
@@ -35,6 +38,7 @@ extension PredicateStringExtension on String {
 ///
 /// For example, `string('foo')` `succeeds and consumes the input string
 /// `'foo'`. Fails for any other input.`
+@useResult
 Parser<String> string(String element, [String? message]) => predicate(
     element.length,
     (each) => element == each,
@@ -44,6 +48,7 @@ Parser<String> string(String element, [String? message]) => predicate(
 ///
 /// For example, `stringIgnoreCase('foo')` succeeds and consumes the input
 /// string `'Foo'` or `'FOO'`. Fails for any other input.
+@useResult
 Parser<String> stringIgnoreCase(String element, [String? message]) {
   final lowerElement = element.toLowerCase();
   return predicate(element.length, (each) => lowerElement == each.toLowerCase(),

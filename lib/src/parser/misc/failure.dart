@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -5,6 +7,7 @@ import '../../core/parser.dart';
 /// Returns a parser that consumes nothing and fails.
 ///
 /// For example, `failure()` always fails, no matter what input it is given.
+@useResult
 Parser<R> failure<R>([String message = 'unable to parse']) =>
     FailureParser<R>(message);
 

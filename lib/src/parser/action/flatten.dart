@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -14,6 +16,7 @@ extension FlattenParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().plus().flatten()` returns `'abc'`
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
+  @useResult
   Parser<String> flatten([String? message]) => FlattenParser<T>(this, message);
 }
 

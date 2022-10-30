@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
@@ -10,6 +12,7 @@ extension PickParserExtension<T> on Parser<List<T>> {
   ///
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
+  @useResult
   Parser<T> pick(int index) => PickParser<T>(this, index);
 }
 
