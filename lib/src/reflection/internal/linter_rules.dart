@@ -47,14 +47,7 @@ class NestedChoice extends LinterRule {
               parser,
               'The choice at index $i is another choice that adds unnecessary '
               'overhead that can be avoided by flattening it into the '
-              'parent.',
-              () => analyzer.replaceAll(
-                  parser,
-                  parser.captureResultGeneric(<T>(_) => <Parser<T>>[
-                        ...children.sublist(0, i).cast<Parser<T>>(),
-                        ...children[i].children.cast<Parser<T>>(),
-                        ...children.sublist(i + 1).cast<Parser<T>>(),
-                      ].toChoiceParser()))));
+              'parent.'));
         }
       }
     }
@@ -122,13 +115,7 @@ class RepeatedChoice extends LinterRule {
                 parser,
                 'The choices at index $i and $j are identical '
                 '(${children[i]}). The second choice can never succeed and '
-                'can therefore be removed.',
-                () => analyzer.replaceAll(
-                    parser,
-                    parser.captureResultGeneric(<T>(_) => <Parser<T>>[
-                          ...children.sublist(0, i).cast<Parser<T>>(),
-                          ...children.sublist(i + 1).cast<Parser<T>>(),
-                        ].toChoiceParser()))));
+                'can therefore be removed.'));
           }
         }
       }
@@ -149,8 +136,7 @@ class UnnecessaryResolvable extends LinterRule {
           'Resolvable parsers are used during construction of recursive '
           'grammars. While they typically dispatch to their delegate, '
           'they add unnecessary overhead and can be avoided by removing '
-          'them before parsing using `resolve(parser)`.',
-          () => analyzer.replaceAll(parser, parser.resolve())));
+          'them before parsing using `resolve(parser)`.'));
     }
   }
 }
@@ -169,9 +155,7 @@ class UnreachableChoice extends LinterRule {
               parser,
               'The choice at index $i is nullable (${children[i]}), thus the '
               'choices after that (${children.sublist(i + 1).join(', ')}) '
-              'can never be reached and can be removed.',
-              () => analyzer.replaceAll(
-                  parser, children.sublist(0, i + 1).toChoiceParser())));
+              'can never be reached and can be removed.'));
         }
       }
     }

@@ -35,7 +35,7 @@ abstract class LinterRule {
 @immutable
 class LinterIssue {
   /// Constructs a new linter rule.
-  const LinterIssue(this.rule, this.parser, this.description, [this.fixer]);
+  const LinterIssue(this.rule, this.parser, this.description);
 
   /// Rule that identified the issue.
   final LinterRule rule;
@@ -51,9 +51,6 @@ class LinterIssue {
 
   /// Detailed explanation of the issue.
   final String description;
-
-  /// Optional function to fix the issue in-place.
-  final void Function()? fixer;
 
   @override
   String toString() => 'LinterIssue(type: $type, title: $title, '

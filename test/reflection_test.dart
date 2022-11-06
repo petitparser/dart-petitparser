@@ -623,7 +623,6 @@ void main() {
             .having((issue) => issue.title, 'title', 'Fake Rule')
             .having((issue) => issue.parser, 'parser', same(input))
             .having((issue) => issue.description, 'description', 'Described')
-            .having((issue) => issue.fixer, 'fixer', isNull)
             .having(
                 (issue) => issue.toString(),
                 'toString',
@@ -655,13 +654,6 @@ void main() {
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.info);
         expect(result.title, 'Nested choice');
-        result.fixer!();
-        expect(
-            parser.children[0].children,
-            pairwiseCompare<Parser, Parser>(
-                [char('1'), char('2'), char('3'), char('4')],
-                (a, b) => a.isEqualTo(b),
-                'Equal parsers'));
       });
       test('nullable repeater', () {
         final parser = epsilon().star().optional();
@@ -700,13 +692,6 @@ void main() {
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.warning);
         expect(result.title, 'Repeated choice');
-        result.fixer!();
-        expect(
-            parser.children[0].children,
-            pairwiseCompare<Parser, Parser>(
-                [char('1'), char('3'), char('2'), char('4')],
-                (a, b) => a.isEqualTo(b),
-                'Equal parsers'));
       });
       test('unnecessary resolvable', () {
         final parser = char('a').settable().optional();
@@ -716,8 +701,6 @@ void main() {
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.warning);
         expect(result.title, 'Unnecessary resolvable');
-        result.fixer!();
-        expect(parser.isEqualTo(char('a').optional()), isTrue);
       });
       test('unreachable choice', () {
         final parser = [
@@ -732,11 +715,6 @@ void main() {
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.warning);
         expect(result.title, 'Unreachable choice');
-        result.fixer!();
-        expect(
-            parser.children[0].children,
-            pairwiseCompare<Parser, Parser>([char('1'), char('2'), epsilon()],
-                (a, b) => a.isEqualTo(b), 'Equal parsers'));
       });
       test('unresolved settable', () {
         final parser = undefined().optional();
