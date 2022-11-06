@@ -633,106 +633,188 @@ void main() {
       expect(called, results);
     });
     group('rules', () {
-      test('left recursion', () {
-        final parser = createSelfReference().optional();
-        final results = linter(parser, rules: const [LeftRecursion()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.error);
-        expect(result.title, 'Left recursion');
+      group('left recursion', () {
+        test('with issue', () {
+          final parser = createSelfReference();
+          final results = linter(parser, rules: const [LeftRecursion()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser.children[0]);
+          expect(result.type, LinterType.error);
+          expect(result.title, 'Left recursion');
+        });
+        test('without issue', () {
+          final parser = digit();
+          final results = linter(parser, rules: const [LeftRecursion()]);
+          expect(results, isEmpty);
+        });
       });
-      test('nested choice', () {
-        final parser = [
-          char('1'),
-          [char('2'), char('3')].toChoiceParser(),
-          char('4'),
-        ].toChoiceParser().optional();
-        final results = linter(parser, rules: const [NestedChoice()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.info);
-        expect(result.title, 'Nested choice');
+      group('nested choice', () {
+        test('with issue', () {
+          final parser = [
+            char('1'),
+            [char('2'), char('3')].toChoiceParser(),
+            char('4'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [NestedChoice()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Nested choice');
+        });
+        test('without issue', () {
+          final parser = [
+            char('1'),
+            [char('2'), char('3')].toChoiceParser().flatten(),
+            char('4'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [NestedChoice()]);
+          expect(results, isEmpty);
+        });
       });
-      test('nullable repeater', () {
-        final parser = epsilon().star().optional();
-        final results = linter(parser, rules: const [NullableRepeater()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.error);
-        expect(result.title, 'Nullable repeater');
+      group('nullable repeater', () {
+        test('with issue', () {
+          final parser = epsilon().star().optional();
+          final results = linter(parser, rules: const [NullableRepeater()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser.children[0]);
+          expect(result.type, LinterType.error);
+          expect(result.title, 'Nullable repeater');
+        });
+        test('without issue', () {
+          final parser = digit().star().optional();
+          final results = linter(parser, rules: const [NullableRepeater()]);
+          expect(results, isEmpty);
+        });
       });
-      test('overlapping choice', () {
-        final parser = [
-          char('1'),
-          char('2') & char('a'),
-          char('2') & char('b'),
-          char('3'),
-        ].toChoiceParser().optional();
-        final results = linter(parser, rules: const [OverlappingChoice()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.info);
-        expect(result.title, 'Overlapping choice');
+      group('overlapping choice', () {
+        test('with issue', () {
+          final parser = [
+            char('1'),
+            char('2') & char('a'),
+            char('2') & char('b'),
+            char('3'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [OverlappingChoice()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Overlapping choice');
+        });
+        test('without issue', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            char('3'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [OverlappingChoice()]);
+          expect(results, isEmpty);
+        });
       });
-      test('repeated choice', () {
-        final parser = [
-          char('1'),
-          char('2'),
-          char('3'),
-          char('2'),
-          char('4'),
-        ].toChoiceParser().optional();
-        final results = linter(parser, rules: const [RepeatedChoice()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.warning);
-        expect(result.title, 'Repeated choice');
+      group('repeated choice', () {
+        test('with issue', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            char('3'),
+            char('2'),
+            char('4'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [RepeatedChoice()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Repeated choice');
+        });
+        test('without issue', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            char('3'),
+            char('4'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [RepeatedChoice()]);
+          expect(results, isEmpty);
+        });
       });
-      test('unnecessary resolvable', () {
-        final parser = char('a').settable().optional();
-        final results = linter(parser, rules: const [UnnecessaryResolvable()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.warning);
-        expect(result.title, 'Unnecessary resolvable');
+      group('unnecessary resolvable', () {
+        test('with issue', () {
+          final parser = char('a').settable();
+          final results =
+              linter(parser, rules: const [UnnecessaryResolvable()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Unnecessary resolvable');
+        });
+        test('without issue', () {
+          final parser = char('a');
+          final results =
+              linter(parser, rules: const [UnnecessaryResolvable()]);
+          expect(results, isEmpty);
+        });
       });
-      test('unreachable choice', () {
-        final parser = [
-          char('1'),
-          char('2'),
-          epsilon(),
-          char('3'),
-        ].toChoiceParser().optional();
-        final results = linter(parser, rules: const [UnreachableChoice()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.warning);
-        expect(result.title, 'Unreachable choice');
+      group('unreachable choice', () {
+        test('with issue', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            epsilon(),
+            char('3'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [UnreachableChoice()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Unreachable choice');
+        });
+        test('without issue', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            char('3'),
+          ].toChoiceParser();
+          final results = linter(parser, rules: const [UnreachableChoice()]);
+          expect(results, isEmpty);
+        });
       });
-      test('unresolved settable', () {
-        final parser = undefined().optional();
-        final results = linter(parser, rules: const [UnresolvedSettable()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.error);
-        expect(result.title, 'Unresolved settable');
+      group('unresolved settable', () {
+        test('with issue', () {
+          final parser = undefined();
+          final results = linter(parser, rules: const [UnresolvedSettable()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.error);
+          expect(result.title, 'Unresolved settable');
+        });
+        test('without issue', () {
+          final parser = digit().settable();
+          final results = linter(parser, rules: const [UnresolvedSettable()]);
+          expect(results, isEmpty);
+        });
       });
-      test('unused result', () {
-        final parser = digit().map(int.parse).star().flatten();
-        final results = linter(parser, rules: const [UnusedResult()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser);
-        expect(result.type, LinterType.info);
-        expect(result.title, 'Unused result');
+      group('unused result', () {
+        test('with issue', () {
+          final parser = digit().map(int.parse).star().flatten();
+          final results = linter(parser, rules: const [UnusedResult()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Unused result');
+        });
+        test('without issue', () {
+          final parser = digit().star().flatten();
+          final results = linter(parser, rules: const [UnusedResult()]);
+          expect(results, isEmpty);
+        });
       });
     });
     group('regressions', () {
