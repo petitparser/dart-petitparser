@@ -141,6 +141,23 @@ class UnnecessaryResolvable extends LinterRule {
   }
 }
 
+class UnoptimizedFlatten extends LinterRule {
+  const UnoptimizedFlatten() : super(LinterType.info, 'Unoptimized flatten');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is FlattenParser && parser.message == null) {
+      callback(LinterIssue(
+          this,
+          parser,
+          'A flatten parser without an error message is unable to switch '
+          'to the fast parsing mode. This can lead to inefficient parsers '
+          'and can usually easily fixed by providing an error message '
+          'that should be used in case the delegate fails to parse.'));
+    }
+  }
+}
+
 class UnreachableChoice extends LinterRule {
   const UnreachableChoice() : super(LinterType.warning, 'Unreachable choice');
 

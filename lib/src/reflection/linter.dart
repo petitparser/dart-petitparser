@@ -69,6 +69,7 @@ const allLinterRules = [
   OverlappingChoice(),
   RepeatedChoice(),
   UnnecessaryResolvable(),
+  UnoptimizedFlatten(),
   UnreachableChoice(),
   UnresolvedSettable(),
   UnusedResult(),
