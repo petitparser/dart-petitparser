@@ -634,25 +634,14 @@ void main() {
       expect(called, results);
     });
     group('rules', () {
-      test('unresolved settable', () {
-        final parser = undefined().optional();
-        final results = linter(parser, rules: const [UnresolvedSettable()]);
+      test('left recursion', () {
+        final parser = createSelfReference().optional();
+        final results = linter(parser, rules: const [LeftRecursion()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.error);
-        expect(result.title, 'Unresolved settable');
-      });
-      test('unnecessary resolvable', () {
-        final parser = char('a').settable().optional();
-        final results = linter(parser, rules: const [UnnecessaryResolvable()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.warning);
-        expect(result.title, 'Unnecessary resolvable');
-        result.fixer!();
-        expect(parser.isEqualTo(char('a').optional()), isTrue);
+        expect(result.title, 'Left recursion');
       });
       test('nested choice', () {
         final parser = [
@@ -673,6 +662,29 @@ void main() {
                 [char('1'), char('2'), char('3'), char('4')],
                 (a, b) => a.isEqualTo(b),
                 'Equal parsers'));
+      });
+      test('nullable repeater', () {
+        final parser = epsilon().star().optional();
+        final results = linter(parser, rules: const [NullableRepeater()]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.error);
+        expect(result.title, 'Nullable repeater');
+      });
+      test('overlapping choice', () {
+        final parser = [
+          char('1'),
+          char('2') & char('a'),
+          char('2') & char('b'),
+          char('3'),
+        ].toChoiceParser().optional();
+        final results = linter(parser, rules: const [OverlappingChoice()]);
+        expect(results, hasLength(1));
+        final result = results[0];
+        expect(result.parser, parser.children[0]);
+        expect(result.type, LinterType.info);
+        expect(result.title, 'Overlapping choice');
       });
       test('repeated choice', () {
         final parser = [
@@ -696,19 +708,16 @@ void main() {
                 (a, b) => a.isEqualTo(b),
                 'Equal parsers'));
       });
-      test('overlapping choice', () {
-        final parser = [
-          char('1'),
-          char('2') & char('a'),
-          char('2') & char('b'),
-          char('3'),
-        ].toChoiceParser().optional();
-        final results = linter(parser, rules: const [OverlappingChoice()]);
+      test('unnecessary resolvable', () {
+        final parser = char('a').settable().optional();
+        final results = linter(parser, rules: const [UnnecessaryResolvable()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.info);
-        expect(result.title, 'Overlapping choice');
+        expect(result.type, LinterType.warning);
+        expect(result.title, 'Unnecessary resolvable');
+        result.fixer!();
+        expect(parser.isEqualTo(char('a').optional()), isTrue);
       });
       test('unreachable choice', () {
         final parser = [
@@ -729,23 +738,14 @@ void main() {
             pairwiseCompare<Parser, Parser>([char('1'), char('2'), epsilon()],
                 (a, b) => a.isEqualTo(b), 'Equal parsers'));
       });
-      test('nullable repeater', () {
-        final parser = epsilon().star().optional();
-        final results = linter(parser, rules: const [NullableRepeater()]);
+      test('unresolved settable', () {
+        final parser = undefined().optional();
+        final results = linter(parser, rules: const [UnresolvedSettable()]);
         expect(results, hasLength(1));
         final result = results[0];
         expect(result.parser, parser.children[0]);
         expect(result.type, LinterType.error);
-        expect(result.title, 'Nullable repeater');
-      });
-      test('left recursion', () {
-        final parser = createSelfReference().optional();
-        final results = linter(parser, rules: const [LeftRecursion()]);
-        expect(results, hasLength(1));
-        final result = results[0];
-        expect(result.parser, parser.children[0]);
-        expect(result.type, LinterType.error);
-        expect(result.title, 'Left recursion');
+        expect(result.title, 'Unresolved settable');
       });
       test('unused result', () {
         final parser = digit().map(int.parse).star().flatten();

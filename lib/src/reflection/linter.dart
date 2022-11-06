@@ -66,14 +66,14 @@ typedef LinterCallback = void Function(LinterIssue issue);
 
 /// All default linter rules to be run.
 const allLinterRules = [
-  UnresolvedSettable(),
-  UnnecessaryResolvable(),
-  RepeatedChoice(),
-  UnreachableChoice(),
-  NullableRepeater(),
   LeftRecursion(),
   NestedChoice(),
+  NullableRepeater(),
   OverlappingChoice(),
+  RepeatedChoice(),
+  UnnecessaryResolvable(),
+  UnreachableChoice(),
+  UnresolvedSettable(),
   UnusedResult(),
 ];
 

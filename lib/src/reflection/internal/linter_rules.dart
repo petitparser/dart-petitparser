@@ -17,37 +17,18 @@ import '../analyzer.dart';
 import '../linter.dart';
 import 'utilities.dart';
 
-class UnresolvedSettable extends LinterRule {
-  const UnresolvedSettable() : super(LinterType.error, 'Unresolved settable');
+class LeftRecursion extends LinterRule {
+  const LeftRecursion() : super(LinterType.error, 'Left recursion');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is SettableParser && parser.delegate is FailureParser) {
+    if (analyzer.cycleSet(parser).isNotEmpty) {
       callback(LinterIssue(
           this,
           parser,
-          'This error is typically a bug in the code where a recursive '
-          'grammar was created with `undefined()` that has not been '
-          'resolved.'));
-    }
-  }
-}
-
-class UnnecessaryResolvable extends LinterRule {
-  const UnnecessaryResolvable()
-      : super(LinterType.warning, 'Unnecessary resolvable');
-
-  @override
-  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ResolvableParser) {
-      callback(LinterIssue(
-          this,
-          parser,
-          'Resolvable parsers are used during construction of recursive '
-          'grammars. While they typically dispatch to their delegate, '
-          'they add unnecessary overhead and can be avoided by removing '
-          'them before parsing using `resolve(parser)`.',
-          () => analyzer.replaceAll(parser, parser.resolve())));
+          'The parsers directly or indirectly refers to itself without '
+          'consuming input: ${analyzer.cycleSet(parser)}. This causes an '
+          'infinite loop when parsing.'));
     }
   }
 }
@@ -74,6 +55,52 @@ class NestedChoice extends LinterRule {
                         ...children[i].children.cast<Parser<T>>(),
                         ...children.sublist(i + 1).cast<Parser<T>>(),
                       ].toChoiceParser()))));
+        }
+      }
+    }
+  }
+}
+
+class NullableRepeater extends LinterRule {
+  const NullableRepeater() : super(LinterType.error, 'Nullable repeater');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is RepeatingParser) {
+      final isNullable = parser is SequentialParser
+          ? parser.children.every((each) => analyzer.isNullable(each))
+          : analyzer.isNullable(parser.delegate);
+      if (isNullable) {
+        callback(LinterIssue(
+            this,
+            parser,
+            'A repeater that delegates to a nullable parser causes an infinite '
+            'loop when parsing.'));
+      }
+    }
+  }
+}
+
+class OverlappingChoice extends LinterRule {
+  const OverlappingChoice() : super(LinterType.info, 'Overlapping choice');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is ChoiceParser) {
+      final children = parser.children;
+      for (var i = 0; i < children.length; i++) {
+        final firstI = analyzer.firstSet(children[i]);
+        for (var j = i + 1; j < children.length; j++) {
+          final firstJ = analyzer.firstSet(children[j]);
+          if (isParserIterableEqual(firstI, firstJ)) {
+            callback(LinterIssue(
+                this,
+                parser,
+                'The choices at index $i and $j have overlapping first-sets '
+                '(${firstI.join(', ')}), which can be an indication of '
+                'an inefficient grammar. If possible, try extracting '
+                'common prefixes from choices.'));
+          }
         }
       }
     }
@@ -109,28 +136,21 @@ class RepeatedChoice extends LinterRule {
   }
 }
 
-class OverlappingChoice extends LinterRule {
-  const OverlappingChoice() : super(LinterType.info, 'Overlapping choice');
+class UnnecessaryResolvable extends LinterRule {
+  const UnnecessaryResolvable()
+      : super(LinterType.warning, 'Unnecessary resolvable');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ChoiceParser) {
-      final children = parser.children;
-      for (var i = 0; i < children.length; i++) {
-        final firstI = analyzer.firstSet(children[i]);
-        for (var j = i + 1; j < children.length; j++) {
-          final firstJ = analyzer.firstSet(children[j]);
-          if (isParserIterableEqual(firstI, firstJ)) {
-            callback(LinterIssue(
-                this,
-                parser,
-                'The choices at index $i and $j have overlapping first-sets '
-                '(${firstI.join(', ')}), which can be an indication of '
-                'an inefficient grammar. If possible, try extracting '
-                'common prefixes from choices.'));
-          }
-        }
-      }
+    if (parser is ResolvableParser) {
+      callback(LinterIssue(
+          this,
+          parser,
+          'Resolvable parsers are used during construction of recursive '
+          'grammars. While they typically dispatch to their delegate, '
+          'they add unnecessary overhead and can be avoided by removing '
+          'them before parsing using `resolve(parser)`.',
+          () => analyzer.replaceAll(parser, parser.resolve())));
     }
   }
 }
@@ -158,38 +178,18 @@ class UnreachableChoice extends LinterRule {
   }
 }
 
-class NullableRepeater extends LinterRule {
-  const NullableRepeater() : super(LinterType.error, 'Nullable repeater');
+class UnresolvedSettable extends LinterRule {
+  const UnresolvedSettable() : super(LinterType.error, 'Unresolved settable');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is RepeatingParser) {
-      final isNullable = parser is SequentialParser
-          ? parser.children.every((each) => analyzer.isNullable(each))
-          : analyzer.isNullable(parser.delegate);
-      if (isNullable) {
-        callback(LinterIssue(
-            this,
-            parser,
-            'A repeater that delegates to a nullable parser causes an infinite '
-            'loop when parsing.'));
-      }
-    }
-  }
-}
-
-class LeftRecursion extends LinterRule {
-  const LeftRecursion() : super(LinterType.error, 'Left recursion');
-
-  @override
-  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (analyzer.cycleSet(parser).isNotEmpty) {
+    if (parser is SettableParser && parser.delegate is FailureParser) {
       callback(LinterIssue(
           this,
           parser,
-          'The parsers directly or indirectly refers to itself without '
-          'consuming input: ${analyzer.cycleSet(parser)}. This causes an '
-          'infinite loop when parsing.'));
+          'This error is typically a bug in the code where a recursive '
+          'grammar was created with `undefined()` that has not been '
+          'resolved.'));
     }
   }
 }
