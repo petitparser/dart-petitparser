@@ -19,7 +19,8 @@ class ExpressionGroup<T> {
   /// Defines a new primitive or literal [parser].
   void primitive(Parser<T> parser) => _primitive.add(parser);
 
-  Parser<T> _buildPrimitive(Parser<T> inner) => _buildChoice(_primitive, inner);
+  Parser<T> _buildPrimitive(Parser<T> inner) =>
+      _primitive.isEmpty ? inner : _buildChoice(_primitive);
 
   final List<Parser<T>> _primitive = [];
 
@@ -41,14 +42,10 @@ class ExpressionGroup<T> {
       _prefix.add(parser
           .map((operator) => ExpressionResultPrefix<T, O>(operator, callback)));
 
-  Parser<T> _buildPrefix(Parser<T> inner) {
-    if (_prefix.isEmpty) {
-      return inner;
-    } else {
-      return seq2(_buildChoice(_prefix).star(), inner).map2((prefix, value) =>
-          prefix.reversed.fold(value, (each, result) => result(each)));
-    }
-  }
+  Parser<T> _buildPrefix(Parser<T> inner) => _prefix.isEmpty
+      ? inner
+      : seq2(_buildChoice(_prefix).star(), inner).map2((prefix, value) =>
+          prefix.reversed.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPrefix<T, void>>> _prefix = [];
 
@@ -58,14 +55,10 @@ class ExpressionGroup<T> {
       _postfix.add(parser.map(
           (operator) => ExpressionResultPostfix<T, O>(operator, callback)));
 
-  Parser<T> _buildPostfix(Parser<T> inner) {
-    if (_postfix.isEmpty) {
-      return inner;
-    } else {
-      return seq2(inner, _buildChoice(_postfix).star()).map2((value, postfix) =>
-          postfix.fold(value, (each, result) => result(each)));
-    }
-  }
+  Parser<T> _buildPostfix(Parser<T> inner) => _postfix.isEmpty
+      ? inner
+      : seq2(inner, _buildChoice(_postfix).star()).map2((value, postfix) =>
+          postfix.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPostfix<T, void>>> _postfix = [];
 
@@ -76,15 +69,10 @@ class ExpressionGroup<T> {
       _right.add(parser
           .map((operator) => ExpressionResultInfix<T, O>(operator, callback)));
 
-  Parser<T> _buildRight(Parser<T> inner) {
-    if (_right.isEmpty) {
-      return inner;
-    } else {
-      return inner
-          .plusSeparated(_buildChoice(_right))
-          .map((sequence) => sequence.foldRight((a, b, c) => b(a, c)));
-    }
-  }
+  Parser<T> _buildRight(Parser<T> inner) => _right.isEmpty
+      ? inner
+      : inner.plusSeparated(_buildChoice(_right)).map((sequence) => sequence
+          .foldRight((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _right = [];
 
@@ -95,15 +83,10 @@ class ExpressionGroup<T> {
       _left.add(parser
           .map((operator) => ExpressionResultInfix<T, O>(operator, callback)));
 
-  Parser<T> _buildLeft(Parser<T> inner) {
-    if (_left.isEmpty) {
-      return inner;
-    } else {
-      return inner
-          .plusSeparated(_buildChoice(_left))
-          .map((sequence) => sequence.foldLeft((a, b, c) => b(a, c)));
-    }
-  }
+  Parser<T> _buildLeft(Parser<T> inner) => _left.isEmpty
+      ? inner
+      : inner.plusSeparated(_buildChoice(_left)).map((sequence) =>
+          sequence.foldLeft((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
@@ -114,12 +97,5 @@ class ExpressionGroup<T> {
 }
 
 // Internal helper to build an optimal choice parser.
-Parser<T> _buildChoice<T>(List<Parser<T>> parsers, [Parser<T>? otherwise]) {
-  if (parsers.isEmpty) {
-    return otherwise!;
-  } else if (parsers.length == 1) {
-    return parsers.first;
-  } else {
-    return parsers.toChoiceParser();
-  }
-}
+Parser<T> _buildChoice<T>(List<Parser<T>> parsers) =>
+    parsers.length == 1 ? parsers.first : parsers.toChoiceParser();
