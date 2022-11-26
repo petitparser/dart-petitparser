@@ -5,4 +5,4 @@ For more complicated examples see the official [example repository](https://gith
  
 This directory contains the command-line calculator that is described in the introductory tutorial:
  
-    dart petitparser/example/calc.dart "1 + 2 * 3"
+    dart example/calc.dart "1 + 2 * 3"
