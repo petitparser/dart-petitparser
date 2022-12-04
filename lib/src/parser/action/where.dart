@@ -1,7 +1,9 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
+import '../../context/failure.dart';
 import '../../context/result.dart';
+import '../../context/success.dart';
 import '../../core/parser.dart';
 import '../../shared/types.dart';
 import '../combinator/delegate.dart';
@@ -27,47 +29,57 @@ extension WhereParserExtension<T> on Parser<T> {
   ///     final inner = any() & any();
   ///     final parser = inner.where(
   ///         (value) => value[0] == value[1],
-  ///         failureMessage: (value) => 'characters do not match');
+  ///         failureFactory: (context, success) =>
+  ///             context.failure('characters do not match'));
   ///     parser.parse('aa');   // ==> Success: ['a', 'a']
   ///     parser.parse('ab');   // ==> Failure: characters do not match
   ///
   @useResult
-  Parser<T> where(Predicate<T> predicate,
-          {Callback<T, String>? failureMessage,
-          Callback<T, int>? failurePosition}) =>
-      WhereParser<T>(this, predicate, failureMessage, failurePosition);
+  Parser<T> where(
+    Predicate<T> predicate, {
+    FailureFactory<T>? failureFactory,
+    @Deprecated('Use `failureFactory` instead')
+        Callback<T, String>? failureMessage,
+    @Deprecated('Use `failureFactory` instead')
+        Callback<T, int>? failurePosition,
+  }) =>
+      WhereParser<T>(
+          this,
+          predicate,
+          failureFactory ??
+              ((failureMessage != null || failurePosition != null)
+                  ? (context, success) => context.failure(
+                      failureMessage?.call(success.value) ??
+                          'unexpected "${success.value}"',
+                      failurePosition?.call(success.value))
+                  : (context, success) =>
+                      context.failure('unexpected "${success.value}"')));
 }
 
+typedef FailureFactory<T> = Failure<T> Function(
+    Context context, Success<T> success);
+
 class WhereParser<T> extends DelegateParser<T, T> {
-  WhereParser(
-      super.parser, this.predicate, this.failureMessage, this.failurePosition);
+  WhereParser(super.parser, this.predicate, this.failureFactory);
 
   final Predicate<T> predicate;
-  final Callback<T, String>? failureMessage;
-  final Callback<T, int>? failurePosition;
+  final FailureFactory<T> failureFactory;
 
   @override
   Result<T> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      final value = result.value;
-      if (!predicate(value)) {
-        return context.failure(
-            failureMessage?.call(value) ?? 'unexpected "$value"',
-            failurePosition?.call(value));
-      }
+    if (result is Success<T> && !predicate(result.value)) {
+      return failureFactory(context, result);
     }
     return result;
   }
 
   @override
-  Parser<T> copy() =>
-      WhereParser<T>(delegate, predicate, failureMessage, failurePosition);
+  Parser<T> copy() => WhereParser<T>(delegate, predicate, failureFactory);
 
   @override
   bool hasEqualProperties(WhereParser<T> other) =>
       super.hasEqualProperties(other) &&
       predicate == other.predicate &&
-      failureMessage == other.failureMessage &&
-      failurePosition == other.failurePosition;
+      failureFactory == other.failureFactory;
 }

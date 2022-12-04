@@ -285,7 +285,7 @@ void main() {
     });
   });
   group('github.com/petitparser/dart-petitparser/issues/112', () {
-    final inner = digit() & digit();
+    final inner = digit().repeat(2);
     test('original', () {
       final parser = inner.callCC((continuation, context) {
         final result = continuation(context);
@@ -305,7 +305,8 @@ void main() {
     });
     test('where', () {
       final parser = inner.where((value) => value[0] == value[1],
-          failureMessage: (value) => 'values do not match');
+          failureFactory: (context, success) =>
+              context.failure('values do not match'));
       expect(parser, isParseSuccess('11', ['1', '1']));
       expect(parser, isParseSuccess('22', ['2', '2']));
       expect(parser, isParseSuccess('33', ['3', '3']));
