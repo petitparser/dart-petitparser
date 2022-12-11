@@ -118,7 +118,7 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
 @immutable
 class Sequence7<T1, T2, T3, T4, T5, T6, T7> {
   /// Constructs a sequence with 7 typed values.
-  Sequence7(this.first, this.second, this.third, this.fourth, this.fifth,
+  const Sequence7(this.first, this.second, this.third, this.fourth, this.fifth,
       this.sixth, this.seventh);
 
   /// Returns the first element of this sequence.

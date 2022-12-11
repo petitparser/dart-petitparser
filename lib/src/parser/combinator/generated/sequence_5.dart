@@ -94,7 +94,7 @@ class SequenceParser5<R1, R2, R3, R4, R5>
 @immutable
 class Sequence5<T1, T2, T3, T4, T5> {
   /// Constructs a sequence with 5 typed values.
-  Sequence5(this.first, this.second, this.third, this.fourth, this.fifth);
+  const Sequence5(this.first, this.second, this.third, this.fourth, this.fifth);
 
   /// Returns the first element of this sequence.
   final T1 first;

@@ -76,7 +76,7 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
 @immutable
 class Sequence3<T1, T2, T3> {
   /// Constructs a sequence with 3 typed values.
-  Sequence3(this.first, this.second, this.third);
+  const Sequence3(this.first, this.second, this.third);
 
   /// Returns the first element of this sequence.
   final T1 first;

@@ -84,7 +84,7 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
 @immutable
 class Sequence4<T1, T2, T3, T4> {
   /// Constructs a sequence with 4 typed values.
-  Sequence4(this.first, this.second, this.third, this.fourth);
+  const Sequence4(this.first, this.second, this.third, this.fourth);
 
   /// Returns the first element of this sequence.
   final T1 first;

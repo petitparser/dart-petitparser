@@ -66,7 +66,7 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
 @immutable
 class Sequence2<T1, T2> {
   /// Constructs a sequence with 2 typed values.
-  Sequence2(this.first, this.second);
+  const Sequence2(this.first, this.second);
 
   /// Returns the first element of this sequence.
   final T1 first;

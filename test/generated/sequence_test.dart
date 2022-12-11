@@ -9,7 +9,7 @@ import '../utils/matchers.dart';
 void main() {
   group('seq2', () {
     final parser = seq2(char('a'), char('b'));
-    final sequence = Sequence2('a', 'b');
+    const sequence = Sequence2('a', 'b');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('ab', sequence));
@@ -43,8 +43,8 @@ void main() {
     });
   });
   group('Sequence2', () {
-    final sequence = Sequence2('a', 'b');
-    final other = Sequence2('b', 'a');
+    const sequence = Sequence2('a', 'b');
+    const other = Sequence2('b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -76,7 +76,7 @@ void main() {
   });
   group('seq3', () {
     final parser = seq3(char('a'), char('b'), char('c'));
-    final sequence = Sequence3('a', 'b', 'c');
+    const sequence = Sequence3('a', 'b', 'c');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abc', sequence));
@@ -123,8 +123,8 @@ void main() {
     });
   });
   group('Sequence3', () {
-    final sequence = Sequence3('a', 'b', 'c');
-    final other = Sequence3('c', 'b', 'a');
+    const sequence = Sequence3('a', 'b', 'c');
+    const other = Sequence3('c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -158,7 +158,7 @@ void main() {
   });
   group('seq4', () {
     final parser = seq4(char('a'), char('b'), char('c'), char('d'));
-    final sequence = Sequence4('a', 'b', 'c', 'd');
+    const sequence = Sequence4('a', 'b', 'c', 'd');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcd', sequence));
@@ -217,8 +217,8 @@ void main() {
     });
   });
   group('Sequence4', () {
-    final sequence = Sequence4('a', 'b', 'c', 'd');
-    final other = Sequence4('d', 'c', 'b', 'a');
+    const sequence = Sequence4('a', 'b', 'c', 'd');
+    const other = Sequence4('d', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -254,7 +254,7 @@ void main() {
   });
   group('seq5', () {
     final parser = seq5(char('a'), char('b'), char('c'), char('d'), char('e'));
-    final sequence = Sequence5('a', 'b', 'c', 'd', 'e');
+    const sequence = Sequence5('a', 'b', 'c', 'd', 'e');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcde', sequence));
@@ -325,8 +325,8 @@ void main() {
     });
   });
   group('Sequence5', () {
-    final sequence = Sequence5('a', 'b', 'c', 'd', 'e');
-    final other = Sequence5('e', 'd', 'c', 'b', 'a');
+    const sequence = Sequence5('a', 'b', 'c', 'd', 'e');
+    const other = Sequence5('e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -365,7 +365,7 @@ void main() {
   group('seq6', () {
     final parser =
         seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'));
-    final sequence = Sequence6('a', 'b', 'c', 'd', 'e', 'f');
+    const sequence = Sequence6('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdef', sequence));
@@ -449,8 +449,8 @@ void main() {
     });
   });
   group('Sequence6', () {
-    final sequence = Sequence6('a', 'b', 'c', 'd', 'e', 'f');
-    final other = Sequence6('f', 'e', 'd', 'c', 'b', 'a');
+    const sequence = Sequence6('a', 'b', 'c', 'd', 'e', 'f');
+    const other = Sequence6('f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -491,7 +491,7 @@ void main() {
   group('seq7', () {
     final parser = seq7(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'));
-    final sequence = Sequence7('a', 'b', 'c', 'd', 'e', 'f', 'g');
+    const sequence = Sequence7('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefg', sequence));
@@ -587,8 +587,8 @@ void main() {
     });
   });
   group('Sequence7', () {
-    final sequence = Sequence7('a', 'b', 'c', 'd', 'e', 'f', 'g');
-    final other = Sequence7('g', 'f', 'e', 'd', 'c', 'b', 'a');
+    const sequence = Sequence7('a', 'b', 'c', 'd', 'e', 'f', 'g');
+    const other = Sequence7('g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -631,7 +631,7 @@ void main() {
   group('seq8', () {
     final parser = seq8(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'), char('h'));
-    final sequence = Sequence8('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+    const sequence = Sequence8('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefgh', sequence));
@@ -739,8 +739,8 @@ void main() {
     });
   });
   group('Sequence8', () {
-    final sequence = Sequence8('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
-    final other = Sequence8('h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
+    const sequence = Sequence8('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+    const other = Sequence8('h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');
@@ -785,7 +785,7 @@ void main() {
   group('seq9', () {
     final parser = seq9(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'), char('h'), char('i'));
-    final sequence = Sequence9('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
+    const sequence = Sequence9('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefghi', sequence));
@@ -905,8 +905,8 @@ void main() {
     });
   });
   group('Sequence9', () {
-    final sequence = Sequence9('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
-    final other = Sequence9('i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
+    const sequence = Sequence9('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
+    const other = Sequence9('i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(sequence.first, 'a');
       expect(sequence.second, 'b');

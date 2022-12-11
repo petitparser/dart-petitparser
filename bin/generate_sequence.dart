@@ -1,8 +1,8 @@
 import 'dart:io';
 
 /// Number of parsers that can be combined.
-final int min = 2;
-final int max = 9;
+const int min = 2;
+const int max = 9;
 
 /// Ordinal numbers for the sequence.
 const ordinals = [
@@ -135,7 +135,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('@immutable');
   out.writeln('class Sequence$index<${valueTypes.join(', ')}> {');
   out.writeln('/// Constructs a sequence with $index typed values.');
-  out.writeln('Sequence$index('
+  out.writeln('const Sequence$index('
       '${valueNames.map((each) => 'this.$each').join(', ')});');
   out.writeln();
   for (var i = 0; i < index; i++) {
@@ -203,7 +203,7 @@ Future<void> generateTest() async {
     out.writeln('group(\'seq$i\', () {');
     out.writeln('final parser = seq$i('
         '${chars.map((each) => 'char(\'$each\')').join(', ')});');
-    out.writeln('final sequence = Sequence$i('
+    out.writeln('const sequence = Sequence$i('
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
@@ -251,9 +251,9 @@ Future<void> generateTest() async {
     out.writeln('});');
 
     out.writeln('group(\'Sequence$i\', () {');
-    out.writeln('final sequence = Sequence$i('
+    out.writeln('const sequence = Sequence$i('
         '${chars.map((each) => '\'$each\'').join(', ')});');
-    out.writeln('final other = Sequence$i('
+    out.writeln('const other = Sequence$i('
         '${chars.reversed.map((each) => '\'$each\'').join(', ')});');
     out.writeln('test(\'accessors\', () {');
     for (var j = 0; j < i; j++) {

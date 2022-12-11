@@ -128,7 +128,7 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
 @immutable
 class Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> {
   /// Constructs a sequence with 8 typed values.
-  Sequence8(this.first, this.second, this.third, this.fourth, this.fifth,
+  const Sequence8(this.first, this.second, this.third, this.fourth, this.fifth,
       this.sixth, this.seventh, this.eighth);
 
   /// Returns the first element of this sequence.

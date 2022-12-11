@@ -109,7 +109,7 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
 @immutable
 class Sequence6<T1, T2, T3, T4, T5, T6> {
   /// Constructs a sequence with 6 typed values.
-  Sequence6(
+  const Sequence6(
       this.first, this.second, this.third, this.fourth, this.fifth, this.sixth);
 
   /// Returns the first element of this sequence.
