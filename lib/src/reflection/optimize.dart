@@ -6,7 +6,7 @@ import 'transform.dart';
 
 /// Returns a copy of [parser] with all settable parsers removed.
 @useResult
-@Deprecated('Use `resolve(Parser)` instead.')
+@Deprecated('Use `resolve` instead')
 Parser<T> removeSettables<T>(Parser<T> parser) {
   return transformParser(parser, <R>(each) {
     while (each is SettableParser) {

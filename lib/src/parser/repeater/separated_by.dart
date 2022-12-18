@@ -22,8 +22,9 @@ extension SeparatedByParserExtension<T> on Parser<T> {
   /// For example, the parser `digit().separatedBy(char('-'))` returns a parser
   /// that consumes input like `'1-2-3'` and returns a list of the elements and
   /// separators: `['1', '-', '2', '-', '3']`.
-  @Deprecated('Use `plusSeparated` for a better optimized and strongly typed '
-      'implementation that provides the elements and separators separately')
+  @Deprecated('Use `SeparatedRepeatingParserExtension.plusSeparated` for a '
+      'better optimized and strongly typed implementation that provides the '
+      'elements and separators separately')
   @useResult
   Parser<List<R>> separatedBy<R>(
     Parser separator, {

@@ -25,7 +25,8 @@ extension MatchesParserExtension<T> on Parser<T> {
   ///
   /// For example, `letter().plus().flatten().matches('abc de')` results in the
   /// list `['abc', 'bc', 'c', 'de', 'e']`.
-  @Deprecated('Use `allMatches(input, overlapping: true)` instead.')
+  @Deprecated('Use `MatchesParserExtension.allMatches(input, '
+      'overlapping: true)` instead')
   List<T> matches(String input) =>
       allMatches(input, overlapping: true).toList();
 
@@ -33,7 +34,8 @@ extension MatchesParserExtension<T> on Parser<T> {
   ///
   /// For example, `letter().plus().flatten().matchesSkipping('abc de')` results
   /// in the list `['abc', 'de']`.
-  @Deprecated('Use `allMatches(input, overlapping: false)` instead.')
+  @Deprecated('Use `MatchesParserExtension.allMatches(input, '
+      'overlapping: false)` instead')
   List<T> matchesSkipping(String input) =>
       allMatches(input, overlapping: false).toList();
 }
