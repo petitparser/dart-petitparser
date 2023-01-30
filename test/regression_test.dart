@@ -382,4 +382,55 @@ void main() {
           ]));
     });
   });
+  group('https://stackoverflow.com/questions/75278583', () {
+    final primitive =
+        (uppercase() & char('|') & digit().plus() & char('|') & uppercase())
+            .flatten()
+            .trim();
+    final parsers = {
+      'poster': (() {
+        final inner = undefined();
+        final paren = char('(').trim() & inner.star() & char(')').trim();
+        inner.set(paren | pattern('^)'));
+        return inner.end();
+      })(),
+      'improved': (() {
+        final outer = undefined();
+        final inner = undefined();
+        final operator = string('&&') | string('||');
+        outer.set(inner.separatedBy(operator));
+        final paren = char('(').trim() & outer & char(')').trim();
+        inner.set(paren | primitive);
+        return outer.end();
+      })(),
+      'expression': (() {
+        final builder = ExpressionBuilder();
+        builder.group().primitive(primitive);
+        builder.group().wrapper(
+            char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
+        builder.group()
+          ..left(string('&&').trim(), (a, op, b) => [a, '&&', b])
+          ..left(string('||').trim(), (a, op, b) => [a, '||', b]);
+        return builder.build().end();
+      })(),
+    };
+    final inputs = {
+      'single': '(S|69|L)',
+      '&&': '(S|69|L && S|69|L)',
+      '||': '(S|69|L || S|69|L)',
+      'short': '((S|69|L || S|69|L) || S|69|L)',
+      'long': '(((S|69|L || S|69|R || S|72|L || S|72|R) && ((S|62|L && (S|78|L '
+          '|| S|55|L) && (S|77|L || S|1|L)) || (S|62|R && (S|78|R || S|55|R) &&'
+          ' (S|77|R || S|1|R)))) && (M|34|L || M|34|R) && (((M|40|L && M|39|L &'
+          '& M|36|L) || (M|40|R && M|39|R && M|36|R)) || ((M|38|L && M|36|L && '
+          'M|37|L) || (M|38|R && M|36|R && M|37|R))))',
+    };
+    for (final input in inputs.entries) {
+      for (final parser in parsers.entries) {
+        test('${parser.key} with ${input.key}', () {
+          expect(parser.value.accept(input.value), isTrue);
+        });
+      }
+    }
+  });
 }
