@@ -52,6 +52,6 @@ class Indent {
   /// A parser that decreases the current indentation and returns it, but does
   /// not consume anything.
   late Parser<String> decrease = epsilon()
-      .where((value) => stack.isNotEmpty)
-      .map((value) => current = stack.removeLast());
+      .where((_) => stack.isNotEmpty)
+      .map((_) => current = stack.removeLast());
 }

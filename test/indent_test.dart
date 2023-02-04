@@ -2,6 +2,7 @@ import 'package:petitparser/core.dart';
 import 'package:petitparser/definition.dart';
 import 'package:petitparser/indent.dart';
 import 'package:petitparser/parser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 import 'utils/matchers.dart';
@@ -64,6 +65,9 @@ void main() {
     tearDown(() {
       expect(definition.indent.stack, isEmpty);
       expect(definition.indent.current, '');
+    });
+    test('linter', () {
+      expect(linter(parser), isEmpty);
     });
     test('empty', () {
       expect(parser, isParseSuccess('', []));
