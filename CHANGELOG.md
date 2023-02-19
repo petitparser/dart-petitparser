@@ -1,8 +1,9 @@
 # Changelog
 
-## 5.2.0 (unpublished)
+## 5.2.0
 
 - Add `@useResult` to parser constructors to avoid bugs when using the old parser instance.
+- Add a linter rule to detect unoptimized flatten parsers.
 
 ## 5.1.0
 
