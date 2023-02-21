@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
 import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';
@@ -90,10 +89,13 @@ void main() {
     }
 
     Parser<List<T>> typeParam<T>(Parser<T> parser) =>
+        // ignore: deprecated_member_use_from_same_package
         parser.separatedBy<T>(char(','), includeSeparators: false);
     Parser<List<T>> castList<T>(Parser<T> parser) =>
+        // ignore: deprecated_member_use_from_same_package
         parser.separatedBy(char(','), includeSeparators: false).castList<T>();
     Parser<List<T>> smartCompiler<T>(Parser<T> parser) =>
+        // ignore: deprecated_member_use_from_same_package
         parser.separatedBy(char(','), includeSeparators: false);
 
     testWith('with list created using desired type', typeParam);
@@ -187,7 +189,7 @@ void main() {
   });
   test('function evaluator', () {
     final builder = ExpressionBuilder<Evaluator>();
-    builder.group()
+    builder
       ..primitive(digit()
           .plus()
           .seq(char('.').seq(digit().plus()).optional())
@@ -197,8 +199,10 @@ void main() {
         final number = num.parse(a);
         return (num value) => number;
       }))
-      ..primitive(char('x').trim().map((_) => (value) => value))
-      ..wrapper(char('(').trim(), char(')').trim(), (_, a, __) => a);
+      ..primitive(char('x').trim().map((_) => (value) => value));
+    builder
+        .group()
+        .wrapper(char('(').trim(), char(')').trim(), (_, a, __) => a);
     // negation is a prefix operator
     builder
         .group()
@@ -398,14 +402,14 @@ void main() {
         final outer = undefined();
         final inner = undefined();
         final operator = string('&&') | string('||');
-        outer.set(inner.separatedBy(operator));
+        outer.set(inner.plusSeparated(operator));
         final paren = char('(').trim() & outer & char(')').trim();
         inner.set(paren | primitive);
         return outer.end();
       })(),
       'expression': (() {
         final builder = ExpressionBuilder();
-        builder.group().primitive(primitive);
+        builder.primitive(primitive);
         builder.group().wrapper(
             char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
         builder.group()
@@ -432,5 +436,19 @@ void main() {
         });
       }
     }
+  });
+  group('https://stackoverflow.com/questions/75503464', () {
+    // final builder = ExpressionBuilder();
+    // final primitive =
+    //     (uppercase() & char('|') & digit().plus() & char('|') & uppercase())
+    //         .flatten()
+    //         .trim();
+    // builder.group().primitive(primitive);
+    // builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
+    // builder.group()
+    //   ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
+    //   ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
+    // final parser = builder.build().end();
+    // final result = parser.parse(testString);
   });
 }

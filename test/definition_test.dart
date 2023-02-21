@@ -77,21 +77,27 @@ class UntypedReferencesGrammarDefinition extends GrammarDefinition {
       ].toSequenceParser();
 }
 
-// ignore_for_file: deprecated_member_use_from_same_package
 class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
+  // ignore: deprecated_member_use_from_same_package
   Parser start() => ref(f0);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f0() => ref(f1, 1);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f1(int a1) => ref(f2, a1, 2);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f2(int a1, int a2) => ref(f3, a1, a2, 3);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f3(int a1, int a2, int a3) => ref(f4, a1, a2, a3, 4);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f4(int a1, int a2, int a3, int a4) => ref(f5, a1, a2, a3, a4, 5);
 
+  // ignore: deprecated_member_use_from_same_package
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
         a1.toString().toParser(),
         a2.toString().toParser(),
@@ -143,14 +149,15 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 
   Parser terms() => ref0(addition) | ref0(factors);
 
-  Parser addition() => ref0(factors).separatedBy(token(char('+') | char('-')));
+  Parser addition() =>
+      ref0(factors).plusSeparated(token(char('+') | char('-')));
 
   Parser factors() => ref0(multiplication) | ref0(power);
 
   Parser multiplication() =>
-      ref0(power).separatedBy(token(char('*') | char('/')));
+      ref0(power).plusSeparated(token(char('*') | char('/')));
 
-  Parser power() => ref0(primary).separatedBy(char('^').trim());
+  Parser power() => ref0(primary).plusSeparated(char('^').trim());
 
   Parser primary() => ref0(number) | ref0(parentheses);
 
@@ -179,7 +186,8 @@ void main() {
         .trim();
     Parser<num> number() => ref0(numberToken).map(num.parse);
     Parser<List<num>> numberList([String separator = ',']) => ref0(number)
-        .separatedBy(separator.toParser(), includeSeparators: false);
+        .plusSeparated(separator.toParser())
+        .map((list) => list.elements);
 
     test('reference without parameters', () {
       final firstReference = ref0(number);
@@ -247,21 +255,36 @@ void main() {
               .toSequenceParser();
       Parser<List<String>> f8(
               int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) =>
+          // ignore: deprecated_member_use_from_same_package
           ref(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
       Parser<List<String>> f7(
               int a1, int a2, int a3, int a4, int a5, int a6, int a7) =>
+          // ignore: deprecated_member_use_from_same_package
           ref(f8, a1, a2, a3, a4, a5, a6, a7, 8);
       Parser<List<String>> f6(int a1, int a2, int a3, int a4, int a5, int a6) =>
+          // ignore: deprecated_member_use_from_same_package
           ref(f7, a1, a2, a3, a4, a5, a6, 7);
       Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) =>
+          // ignore: deprecated_member_use_from_same_package
           ref(f6, a1, a2, a3, a4, a5, 6);
       Parser<List<String>> f4(int a1, int a2, int a3, int a4) =>
+          // ignore: deprecated_member_use_from_same_package
           ref(f5, a1, a2, a3, a4, 5);
-      Parser<List<String>> f3(int a1, int a2, int a3) => ref(f4, a1, a2, a3, 4);
-      Parser<List<String>> f2(int a1, int a2) => ref(f3, a1, a2, 3);
-      Parser<List<String>> f1(int a1) => ref(f2, a1, 2);
-      Parser<List<String>> f0() => ref(f1, 1);
-      Parser<List<String>> start() => ref(f0);
+      Parser<List<String>> f3(int a1, int a2, int a3) =>
+          // ignore: deprecated_member_use_from_same_package
+          ref(f4, a1, a2, a3, 4);
+      Parser<List<String>> f2(int a1, int a2) =>
+          // ignore: deprecated_member_use_from_same_package
+          ref(f3, a1, a2, 3);
+      Parser<List<String>> f1(int a1) =>
+          // ignore: deprecated_member_use_from_same_package
+          ref(f2, a1, 2);
+      Parser<List<String>> f0() =>
+          // ignore: deprecated_member_use_from_same_package
+          ref(f1, 1);
+      Parser<List<String>> start() =>
+          // ignore: deprecated_member_use_from_same_package
+          ref(f0);
       expect(
           resolve(start()), isParseSuccess('123456789', '123456789'.split('')));
     });
@@ -441,6 +464,7 @@ void main() {
   });
   group('definition parser', () {
     final definition = ExpressionGrammarDefinition();
+    // ignore: deprecated_member_use_from_same_package
     final parser = GrammarParser(definition);
     expectParserInvariants(parser);
     test('expression', () {

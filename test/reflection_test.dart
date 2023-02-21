@@ -87,7 +87,6 @@ class PluggableLinterRule extends LinterRule {
       _run(this, analyzer, parser, callback);
 }
 
-// ignore_for_file: deprecated_member_use_from_same_package
 void main() {
   group('analyzer', () {
     test('root', () {
@@ -927,19 +926,22 @@ void main() {
     });
   });
   group('optimize', () {
-    group('remove settables', () {
-      test('basic settables', () {
+    group('remove settable (deprecated)', () {
+      test('basic settable', () {
         final input = lowercase().settable();
+        // ignore: deprecated_member_use_from_same_package
         final output = removeSettables(input);
         expect(output.isEqualTo(lowercase()), isTrue);
       });
-      test('nested settables', () {
+      test('nested settable', () {
         final input = lowercase().settable().star();
+        // ignore: deprecated_member_use_from_same_package
         final output = removeSettables(input);
         expect(output.isEqualTo(lowercase().star()), isTrue);
       });
-      test('double settables', () {
+      test('double settable', () {
         final input = lowercase().settable().settable();
+        // ignore: deprecated_member_use_from_same_package
         final output = removeSettables(input);
         expect(output.isEqualTo(lowercase()), isTrue);
       });
