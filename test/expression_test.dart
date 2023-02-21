@@ -8,12 +8,12 @@ import 'utils/matchers.dart';
 
 Parser buildParser() {
   final builder = ExpressionBuilder();
+  builder.primitive(digit()
+      .plus()
+      .seq(char('.').seq(digit().plus()).optional())
+      .flatten('number expected')
+      .trim());
   builder.group()
-    ..primitive(digit()
-        .plus()
-        .seq(char('.').seq(digit().plus()).optional())
-        .flatten('number expected')
-        .trim())
     ..wrapper(char('(').trim(), char(')').trim(),
         (left, value, right) => [left, value, right])
     ..wrapper(string('sqrt(').trim(), char(')').trim(),
@@ -34,13 +34,13 @@ Parser buildParser() {
 
 Parser<num> buildEvaluator() {
   final builder = ExpressionBuilder<num>();
+  builder.primitive(digit()
+      .plus()
+      .seq(char('.').seq(digit().plus()).optional())
+      .flatten('number expected')
+      .trim()
+      .map(num.parse));
   builder.group()
-    ..primitive(digit()
-        .plus()
-        .seq(char('.').seq(digit().plus()).optional())
-        .flatten('number expected')
-        .trim()
-        .map(num.parse))
     ..wrapper(char('(').trim(), char(')').trim(), (left, value, right) => value)
     ..wrapper(string('sqrt(').trim(), char(')').trim(),
         (left, value, right) => math.sqrt(value));
@@ -566,6 +566,43 @@ void main() {
       expect(evaluator, isParseSuccess('2 + 3 * 4', closeTo(14, epsilon)));
       expect(evaluator, isParseSuccess('6 / 3 + 4', closeTo(6, epsilon)));
       expect(evaluator, isParseSuccess('2 + 6 / 2', closeTo(5, epsilon)));
+    });
+  });
+  group('builder', () {
+    test('empty', () {
+      final builder = ExpressionBuilder<String>();
+      expect(
+          () => builder.build(),
+          throwsA(isA<AssertionError>().having((exception) => exception.message,
+              'message', 'At least one primitive parser expected')));
+    });
+    test('missing primitive', () {
+      final builder = ExpressionBuilder<String>();
+      builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
+      expect(
+          () => builder.build(),
+          throwsA(isA<AssertionError>().having((exception) => exception.message,
+              'message', 'At least one primitive parser expected')));
+    });
+    test('primitive', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(digit());
+      builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
+      final parser = builder.build();
+      expect(parser, isParseSuccess('2', '2'));
+      expect(parser, isParseSuccess('(2)', '[2]'));
+      expect(parser, isParseSuccess('((2))', '[[2]]'));
+    });
+    test('primitive on group', () {
+      final builder = ExpressionBuilder<String>();
+      builder.group()
+        // ignore: deprecated_member_use_from_same_package
+        ..primitive(digit())
+        ..wrapper(char('('), char(')'), (l, v, r) => '[$v]');
+      final parser = builder.build();
+      expect(parser, isParseSuccess('2', '2'));
+      expect(parser, isParseSuccess('(2)', '[2]'));
+      expect(parser, isParseSuccess('((2))', '[[2]]'));
     });
   });
   test('linter', () {

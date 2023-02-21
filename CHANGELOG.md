@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.0 (Unpublished)
+
+- Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
+
 ## 5.2.0
 
 - Add `@useResult` to parser constructors to avoid bugs when using the old parser instance.

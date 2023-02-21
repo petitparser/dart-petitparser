@@ -3,51 +3,55 @@ import 'package:meta/meta.dart';
 import '../core/parser.dart';
 import '../definition/resolve.dart';
 import '../parser/combinator/settable.dart';
-import '../parser/misc/failure.dart';
 import 'group.dart';
+import 'utils.dart';
 
 /// A builder that allows the simple definition of expression grammars with
 /// prefix, postfix, and left- and right-associative infix operators.
 ///
-/// The following code creates the empty expression builder that produces
-/// values of type [num]:
+/// The following code creates the empty expression builder producing values of
+/// type [num]:
 ///
-///     final builder = new ExpressionBuilder<num>();
+///     final builder = ExpressionBuilder<num>();
+///
+/// Every [ExpressionBuilder] needs to define at least one primitive type to
+/// parse. In this example these are the literal numbers. The mapping function
+/// converts the string input into an actual number.
+///
+///     builder.primitive(digit()
+///         .plus()
+///         .seq(char('.').seq(digit().plus()).optional())
+///         .flatten()
+///         .trim()
+///         .map(num.parse));
 ///
 /// Then we define the operator-groups in descending precedence. The highest
-/// precedence have the literal numbers themselves:
+/// precedence have parentheses. The mapping function receives both the opening
+/// parenthesis, the value, and the closing parenthesis as arguments:
 ///
+///     builder.group().wrapper(
+///         char('(').trim(), char(')').trim(), (left, value, right) => value);
+///
+/// Then come the normal arithmetic operators. We are using [cascade
+/// notation](https://dart.dev/guides/language/language-tour#cascade-notation)
+/// to define multiple operators on the same precedence-group. The mapping
+/// functions receive both, the terms and the parsed operator in the order they
+/// appear in the parsed input:
+///
+///     // Negation is a prefix operator.
+///     builder.group().prefix(char('-').trim(), (operator, value) => -value);
+///
+///     // Power is right-associative.
+///     builder.group().right(char('^').trim(), (left, operator, right) => math.pow(left, right));
+///
+///     // Multiplication and addition are left-associative, multiplication has
+///     // higher priority than addition.
 ///     builder.group()
-///       ..primitive(digit().plus()
-///         .seq(char('.').seq(digit().plus()).optional())
-///         .flatten().trim().map(num.parse));
-///
-/// If we want to support parenthesis we can add a wrapper. The callback
-/// specifies how the value is extracted from the parse result:
-///
-///     build.group()
-///       ..wrapper(char('(').trim(), char(')').trim(),
-///           (left, value, right) => value);
-///
-/// Then come the normal arithmetic operators. Note, that the callback blocks
-/// receive both, the values as well as the parsed operator in the order they
-/// appear in the parse input.
-///
-///     // negation is a prefix operator
+///       ..left(char('*').trim(), (left, operator, right) => left * right)
+///       ..left(char('/').trim(), (left, operator, right) => left / right);
 ///     builder.group()
-///       ..prefix(char('-').trim(), (op, a) => -a);
-///
-///     // power is right-associative
-///     builder.group()
-///       ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
-///
-///     // multiplication and addition is left-associative
-///     builder.group()
-///       ..left(char('*').trim(), (a, op, b) => a * b)
-///       ..left(char('/').trim(), (a, op, b) => a / b);
-///     builder.group()
-///       ..left(char('+').trim(), (a, op, b) => a + b)
-///       ..left(char('-').trim(), (a, op, b) => a - b);
+///       ..left(char('+').trim(), (left, operator, right) => left + right)
+///       ..left(char('-').trim(), (left, operator, right) => left - right);
 ///
 /// Finally we can build the parser:
 ///
@@ -63,8 +67,12 @@ import 'group.dart';
 ///     parser.parse('2^2^3');   // 256
 ///
 class ExpressionBuilder<T> {
+  final List<Parser<T>> _primitives = [];
   final List<ExpressionGroup<T>> _groups = [];
   final SettableParser<T> _loopback = undefined();
+
+  /// Defines a new primitive, value, or literal) [parser].
+  void primitive(Parser<T> parser) => _primitives.add(parser);
 
   /// Creates a new group of operators that share the same priority.
   @useResult
@@ -77,9 +85,14 @@ class ExpressionBuilder<T> {
   /// Builds the expression parser.
   @useResult
   Parser<T> build() {
+    final primitives = <Parser<T>>[
+      ..._primitives,
+      ..._groups.expand((group) => group.primitives),
+    ];
+    assert(primitives.isNotEmpty, 'At least one primitive parser expected');
     final parser = _groups.fold<Parser<T>>(
-      failure('Highest priority group should define a primitive parser.'),
-      (a, b) => b.build(a),
+      buildChoice(primitives),
+      (parser, group) => group.build(parser),
     );
     _loopback.set(parser);
     return resolve(parser);

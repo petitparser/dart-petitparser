@@ -198,25 +198,27 @@ void main() {
   });
   test('expression builder', () {
     final builder = ExpressionBuilder<num>();
+    builder.primitive(digit()
+        .plus()
+        .seq(char('.').seq(digit().plus()).optional())
+        .flatten()
+        .trim()
+        .map(num.parse));
+    builder.group().wrapper(
+        char('(').trim(), char(')').trim(), (left, value, right) => value);
+    // Negation is a prefix operator.
+    builder.group().prefix(char('-').trim(), (operator, value) => -value);
+    // Power is right-associative.
+    builder.group().right(
+        char('^').trim(), (left, operator, right) => math.pow(left, right));
+    // Multiplication and addition are left-associative, multiplication has
+    // higher priority than addition.
     builder.group()
-      ..primitive(digit()
-          .plus()
-          .seq(char('.').seq(digit().plus()).optional())
-          .flatten()
-          .trim()
-          .map(num.parse))
-      ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
-    // Negation is a prefix operator
-    builder.group().prefix(char('-').trim(), (op, a) => -a);
-    // Power is right-associative
-    builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
-    // Multiplication and addition are left-associative
+      ..left(char('*').trim(), (left, operator, right) => left * right)
+      ..left(char('/').trim(), (left, operator, right) => left / right);
     builder.group()
-      ..left(char('*').trim(), (a, op, b) => a * b)
-      ..left(char('/').trim(), (a, op, b) => a / b);
-    builder.group()
-      ..left(char('+').trim(), (a, op, b) => a + b)
-      ..left(char('-').trim(), (a, op, b) => a - b);
+      ..left(char('+').trim(), (left, operator, right) => left + right)
+      ..left(char('-').trim(), (left, operator, right) => left - right);
     final parser = builder.build().end();
     expect(parser.parse('-8').value, -8);
     expect(parser.parse('1+2*3').value, 7);

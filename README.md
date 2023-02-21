@@ -297,37 +297,42 @@ The following code creates the empty expression builder producing values of type
 final builder = ExpressionBuilder<num>();
 ```
 
-Then we define the operator-groups in descending precedence. The highest precedence are the literal numbers themselves. This time we accept floating-point numbers, not just integers. In the same group we add support for the parenthesis:
+Every `ExpressionBuilder` needs to define at least one primitive type to parse. In this example these are the literal numbers. This time we accept floating-point numbers, not just integers. The mapping function converts the string input into an actual number.
 
 ```dart
-builder.group()
-  ..primitive(digit()
-      .plus()
-      .seq(char('.').seq(digit().plus()).optional())
-      .flatten()
-      .trim()
-      .map(num.parse))
-  ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
+builder.primitive(digit()
+    .plus()
+    .seq(char('.').seq(digit().plus()).optional())
+    .flatten()
+    .trim()
+    .map(num.parse));
 ```
 
-Then come the normal arithmetic operators. Note, that the action blocks receive both, the terms and the parsed operator in the order they appear in the parsed input:
+Then we define the operator-groups in descending precedence. The highest precedence have parentheses. The mapping function receives both the opening parenthesis, the value, and the closing parenthesis as arguments:
 
 ```dart
-// Negation is a prefix operator
-builder.group()
-  ..prefix(char('-').trim(), (op, a) => -a);
+builder.group().wrapper(
+    char('(').trim(), char(')').trim(), (left, value, right) => value);
+```
 
-// Power is right-associative
-builder.group()
-  ..right(char('^').trim(), (a, op, b) => math.pow(a, b));
+Then come the normal arithmetic operators. We are using [cascade notation](https://dart.dev/guides/language/language-tour#cascade-notation) to define multiple operators on the same precedence-group. The mapping functions receive both, the terms and the parsed operator in the order they appear in the parsed input:
 
-// Multiplication and addition are left-associative
+```dart
+// Negation is a prefix operator.
+builder.group().prefix(char('-').trim(), (operator, value) => -value);
+
+// Power is right-associative.
+builder.group().right(
+    char('^').trim(), (left, operator, right) => math.pow(left, right));
+
+// Multiplication and addition are left-associative, multiplication has
+// higher priority than addition.
 builder.group()
-  ..left(char('*').trim(), (a, op, b) => a * b)
-  ..left(char('/').trim(), (a, op, b) => a / b);
+  ..left(char('*').trim(), (left, operator, right) => left * right)
+  ..left(char('/').trim(), (left, operator, right) => left / right);
 builder.group()
-  ..left(char('+').trim(), (a, op, b) => a + b)
-  ..left(char('-').trim(), (a, op, b) => a - b);
+  ..left(char('+').trim(), (left, operator, right) => left + right)
+  ..left(char('-').trim(), (left, operator, right) => left - right);
 ```
 
 Finally, we can build the parser:
