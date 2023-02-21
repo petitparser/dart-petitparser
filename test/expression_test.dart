@@ -573,7 +573,7 @@ void main() {
       final builder = ExpressionBuilder<String>();
       expect(
           () => builder.build(),
-          throwsA(isA<AssertionError>().having((exception) => exception.message,
+          throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
     });
     test('missing primitive', () {
@@ -581,7 +581,7 @@ void main() {
       builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
       expect(
           () => builder.build(),
-          throwsA(isA<AssertionError>().having((exception) => exception.message,
+          throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
     });
     test('primitive', () {

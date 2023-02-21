@@ -50,13 +50,9 @@ extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<T> extends ListParser<T, T> {
-  ChoiceParser(Iterable<Parser<T>> children, {FailureJoiner<T>? failureJoiner})
-      : failureJoiner = failureJoiner ?? selectLast,
-        super(children) {
-    if (children.isEmpty) {
-      throw ArgumentError('Choice parser cannot be empty.');
-    }
-  }
+  ChoiceParser(super.children, {FailureJoiner<T>? failureJoiner})
+      : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
+        failureJoiner = failureJoiner ?? selectLast;
 
   /// Strategy to join multiple parse errors.
   final FailureJoiner<T> failureJoiner;

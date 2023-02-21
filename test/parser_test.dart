@@ -497,7 +497,7 @@ void main() {
         expect(parser, isParseFailure('', message: 'lowercase a'));
       });
       test('char invalid', () {
-        expect(() => char('ab'), throwsArgumentError);
+        expect(() => char('ab'), throwsA(isAssertionError));
       });
       <String, String>{
         '\\x00': '\x00',
@@ -556,7 +556,7 @@ void main() {
             isParseFailure('', message: '"1" (case-insensitive) expected'));
       });
       test('char invalid', () {
-        expect(() => charIgnoringCase('ab'), throwsArgumentError);
+        expect(() => charIgnoringCase('ab'), throwsA(isAssertionError));
       });
     });
     group('digit', () {
@@ -694,7 +694,7 @@ void main() {
         expect(parser, isParseFailure('', message: '[^a-] expected'));
       });
       test('with error', () {
-        expect(() => pattern('c-a'), throwsArgumentError);
+        expect(() => pattern('c-a'), throwsA(isAssertionError));
       });
       group('ignore case', () {
         expectParserInvariants(patternIgnoreCase('^ad-f'));
@@ -939,7 +939,7 @@ void main() {
               isParseFailure('', message: '[^a-] (case-insensitive) expected'));
         });
         test('with error', () {
-          expect(() => patternIgnoreCase('c-a'), throwsArgumentError);
+          expect(() => patternIgnoreCase('c-a'), throwsA(isAssertionError));
         });
       });
       group('large ranges', () {
@@ -994,7 +994,7 @@ void main() {
         expect(parser, isParseFailure('', message: '[e-o] expected'));
       });
       test('invalid', () {
-        expect(() => range('o', 'e'), throwsArgumentError);
+        expect(() => range('o', 'e'), throwsA(isAssertionError));
       });
     });
     group('uppercase', () {
@@ -1120,7 +1120,7 @@ void main() {
         expect(parser, isParseFailure('', message: '"c" expected'));
       });
       test('empty', () {
-        expect(() => <Parser>[].toChoiceParser(), throwsArgumentError);
+        expect(() => <Parser>[].toChoiceParser(), throwsA(isAssertionError));
       });
       group('types', () {
         test('same', () {
@@ -1888,8 +1888,14 @@ void main() {
         expect(parser, isParseSuccess(input.join(), input));
       });
       test('repeat erroneous', () {
-        expect(() => char('a').repeat(-1, 1), throwsArgumentError);
-        expect(() => char('a').repeat(2, 1), throwsArgumentError);
+        expect(
+            () => char('a').repeat(-1, 1),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', 'min must be at least 0, but got -1')));
+        expect(
+            () => char('a').repeat(2, 1),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', 'max must be at least 2, but got 1')));
       });
       test('times', () {
         final parser = char('a').times(2);

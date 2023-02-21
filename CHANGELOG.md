@@ -3,6 +3,7 @@
 ## 5.3.0 (Unpublished)
 
 - Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
+- Replace various uses of exception throwing with assertions, which yields code the compiler can optimize better.
 
 ## 5.2.0
 
