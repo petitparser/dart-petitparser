@@ -5,6 +5,16 @@ import 'package:test/test.dart' as test show predicate;
 /// Returns a [Matcher] that asserts on a [ParserException].
 const isParserException = TypeMatcher<ParserException>();
 
+/// Returns [true], if assertions are enabled.
+bool hasAssertionsEnabled() {
+  try {
+    assert(false);
+    return false;
+  } catch (exception) {
+    return true;
+  }
+}
+
 /// Returns a [Matcher] that asserts on a [AssertionError].
 const isAssertionError = TypeMatcher<AssertionError>();
 

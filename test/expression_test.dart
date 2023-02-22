@@ -575,7 +575,7 @@ void main() {
           () => builder.build(),
           throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
-    });
+    }, skip: !hasAssertionsEnabled());
     test('missing primitive', () {
       final builder = ExpressionBuilder<String>();
       builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
@@ -583,7 +583,7 @@ void main() {
           () => builder.build(),
           throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
-    });
+    }, skip: !hasAssertionsEnabled());
     test('primitive', () {
       final builder = ExpressionBuilder<String>();
       builder.primitive(digit());

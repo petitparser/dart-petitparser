@@ -504,7 +504,7 @@ void main() {
       });
       test('char invalid', () {
         expect(() => char('ab'), throwsA(isAssertionError));
-      });
+      }, skip: !hasAssertionsEnabled());
       <String, String>{
         '\\x00': '\x00',
         '\\b': '\b',
@@ -563,7 +563,7 @@ void main() {
       });
       test('char invalid', () {
         expect(() => charIgnoringCase('ab'), throwsA(isAssertionError));
-      });
+      }, skip: !hasAssertionsEnabled());
     });
     group('digit', () {
       final parser = digit();
@@ -701,7 +701,7 @@ void main() {
       });
       test('with error', () {
         expect(() => pattern('c-a'), throwsA(isAssertionError));
-      });
+      }, skip: !hasAssertionsEnabled());
       group('ignore case', () {
         expectParserInvariants(patternIgnoreCase('^ad-f'));
         test('with single', () {
@@ -946,7 +946,7 @@ void main() {
         });
         test('with error', () {
           expect(() => patternIgnoreCase('c-a'), throwsA(isAssertionError));
-        });
+        }, skip: !hasAssertionsEnabled());
       });
       group('large ranges', () {
         final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
@@ -1001,7 +1001,7 @@ void main() {
       });
       test('invalid', () {
         expect(() => range('o', 'e'), throwsA(isAssertionError));
-      });
+      }, skip: !hasAssertionsEnabled());
     });
     group('uppercase', () {
       final parser = uppercase();
@@ -1127,7 +1127,7 @@ void main() {
       });
       test('empty', () {
         expect(() => <Parser>[].toChoiceParser(), throwsA(isAssertionError));
-      });
+      }, skip: !hasAssertionsEnabled());
       group('types', () {
         test('same', () {
           final first = any();
@@ -1902,7 +1902,7 @@ void main() {
             () => char('a').repeat(2, 1),
             throwsA(isAssertionError.having((exception) => exception.message,
                 'message', 'max must be at least 2, but got 1')));
-      });
+      }, skip: !hasAssertionsEnabled());
       test('times', () {
         final parser = char('a').times(2);
         expect(parser, isParseFailure('', message: '"a" expected'));
