@@ -1,8 +1,7 @@
 /// Converts an object to a character code.
-int toCharCode(String element) {
-  final value = element.toString();
-  assert(value.length == 1, '"$value" is not a valid character');
-  return value.codeUnitAt(0);
+int toCharCode(String char) {
+  assert(char.length == 1, '"$char" is not a valid character');
+  return char.codeUnitAt(0);
 }
 
 /// Converts a character to a readable string.
