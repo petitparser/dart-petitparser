@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import '../../shared/annotations.dart';
 import 'predicate.dart';
 import 'range.dart';
 
@@ -26,6 +27,8 @@ class LookupCharPredicate implements CharacterPredicate {
   bool test(int value) =>
       start <= value && value <= stop && _testBit(value - start);
 
+  @inlineJs
+  @inlineVm
   bool _testBit(int value) =>
       (bits[value >> shift] & mask[value & offset]) != 0;
 
