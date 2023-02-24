@@ -104,5 +104,5 @@ class Analyzer {
 
   /// A unique parser used as a marker in [firstSet] and [followSet]
   /// computations.
-  static final EpsilonParser sentinel = EpsilonParser<void>(null);
+  static final sentinel = EpsilonParser<void>(null);
 }

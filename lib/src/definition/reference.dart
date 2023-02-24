@@ -4,6 +4,12 @@ import '../core/parser.dart';
 import 'internal/reference.dart';
 import 'resolve.dart';
 
+/// Creates a [parser] from a [function] without arguments.
+///
+/// See [ref0] for details.
+@useResult
+Parser<T> ref<T>(Parser<T> Function() function) => ref0(function);
+
 /// Creates a [Parser] from a [function] without arguments.
 ///
 /// Reference parsers behave like normal parsers during construction, but can

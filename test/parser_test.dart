@@ -16,7 +16,7 @@ TypeMatcher<SeparatedList<R, S>> isSeparatedList<R, S>({
 void main() {
   group('action', () {
     group('cast', () {
-      expectParserInvariants(any().cast());
+      expectParserInvariants(any().cast<String>());
       test('default', () {
         final parser = digit().map(int.parse).cast<num>();
         expect(parser, isParseSuccess('1', 1));
@@ -24,7 +24,7 @@ void main() {
       });
     });
     group('castList', () {
-      expectParserInvariants(any().star().castList());
+      expectParserInvariants(any().star().castList<String>());
       test('default', () {
         final parser = digit().map(int.parse).repeat(3).castList<num>();
         expect(parser, isParseSuccess('123', <num>[1, 2, 3]));

@@ -43,19 +43,19 @@ class SequenceParser5<R1, R2, R3, R4, R5>
   void parseOn(Context context) {
     parser1.parseOn(context);
     if (!context.isSuccess) return;
-    final R1 result1 = context.value;
+    final result1 = context.value as R1;
     parser2.parseOn(context);
     if (!context.isSuccess) return;
-    final R2 result2 = context.value;
+    final result2 = context.value as R2;
     parser3.parseOn(context);
     if (!context.isSuccess) return;
-    final R3 result3 = context.value;
+    final result3 = context.value as R3;
     parser4.parseOn(context);
     if (!context.isSuccess) return;
-    final R4 result4 = context.value;
+    final result4 = context.value as R4;
     parser5.parseOn(context);
     if (!context.isSuccess) return;
-    final R5 result5 = context.value;
+    final result5 = context.value as R5;
     context.value = Sequence5<R1, R2, R3, R4, R5>(
         result1, result2, result3, result4, result5);
   }

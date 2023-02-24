@@ -193,7 +193,7 @@ void main() {
   });
   test('number definition', () {
     final definition = EvaluatorDefinition();
-    final parser = definition.build(start: definition.number);
+    final parser = definition.buildFrom(definition.number());
     expect(parser.parse('42').value, 42);
   });
   test('expression builder', () {
@@ -228,7 +228,7 @@ void main() {
   });
   test('number parsing', () {
     final definition = EvaluatorDefinition();
-    final parser = definition.build(start: definition.number);
+    final parser = definition.buildFrom(definition.number());
     expect(parser.parse('42').value, 42);
   });
   test('detect common problems', () {

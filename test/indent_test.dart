@@ -70,15 +70,15 @@ void main() {
       expect(linter(parser), isEmpty);
     });
     test('empty', () {
-      expect(parser, isParseSuccess('', []));
+      expect(parser, isParseSuccess('', isEmpty));
 
-      expect(parser, isParseSuccess('\n', []));
-      expect(parser, isParseSuccess('\n\r', []));
-      expect(parser, isParseSuccess('\r', []));
+      expect(parser, isParseSuccess('\n', isEmpty));
+      expect(parser, isParseSuccess('\n\r', isEmpty));
+      expect(parser, isParseSuccess('\r', isEmpty));
 
-      expect(parser, isParseSuccess('\n\n', []));
-      expect(parser, isParseSuccess('\n\r\n\r', []));
-      expect(parser, isParseSuccess('\r\r', []));
+      expect(parser, isParseSuccess('\n\n', isEmpty));
+      expect(parser, isParseSuccess('\n\r\n\r', isEmpty));
+      expect(parser, isParseSuccess('\r\r', isEmpty));
     });
     test('newline before', () {
       expect(parser, isParseSuccess('\na', ['a']));

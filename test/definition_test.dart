@@ -279,10 +279,6 @@ void main() {
       final parser = untypedReferenceDefinition.build();
       expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
     });
-    test('invalid building', () {
-      expect(() => grammarDefinition.build(arguments: [1, 2, 3]),
-          throwsStateError);
-    });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
       expect(() => reference.copy(), throwsUnsupportedError);
@@ -323,31 +319,30 @@ void main() {
     });
     test('direct recursion', () {
       expect(
-          () =>
-              buggedDefinition.build(start: buggedDefinition.directRecursion1),
+          () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
           throwsStateError);
     });
     test('indirect recursion', () {
       expect(
-          () => buggedDefinition.build(
-              start: buggedDefinition.indirectRecursion1),
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
           throwsStateError);
       expect(
-          () => buggedDefinition.build(
-              start: buggedDefinition.indirectRecursion2),
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
           throwsStateError);
       expect(
-          () => buggedDefinition.build(
-              start: buggedDefinition.indirectRecursion3),
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion3()),
           throwsStateError);
     });
     test('delegation', () {
-      expect(buggedDefinition.build(start: buggedDefinition.delegation1),
-          isA<EpsilonParser>());
-      expect(buggedDefinition.build(start: buggedDefinition.delegation2),
-          isA<EpsilonParser>());
-      expect(buggedDefinition.build(start: buggedDefinition.delegation3),
-          isA<EpsilonParser>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
+          isA<EpsilonParser<void>>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
+          isA<EpsilonParser<void>>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
+          isA<EpsilonParser<void>>());
     });
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();

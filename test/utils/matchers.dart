@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide predicate;
 import 'package:test/test.dart' as test show predicate;
@@ -26,7 +27,7 @@ Matcher isParserEqual<T>(Parser<T> parser) => test.predicate(
     'structurally equal');
 
 /// Returns a [Mater] that asserts on the [Context].
-TypeMatcher isContext({
+TypeMatcher<Context> isContext({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic isSuccess = anything,
@@ -44,7 +45,8 @@ TypeMatcher isContext({
 
 /// Returns a [Matcher] that asserts the context under test is a [Success].
 /// Optionally also asserts [position] and [value].
-TypeMatcher<Success<T>> isSuccess<T>({
+@optionalTypeArgs
+Matcher isSuccess<T>({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic value = anything,
@@ -56,7 +58,8 @@ TypeMatcher<Success<T>> isSuccess<T>({
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
-TypeMatcher<Failure<T>> isFailure<T>({
+@optionalTypeArgs
+Matcher isFailure<T>({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic message = anything,
@@ -69,6 +72,7 @@ TypeMatcher<Failure<T>> isFailure<T>({
 /// Returns a [Matcher] that asserts the parser under test yields a successful
 /// parse [result] for the given [input]. If no [position] is provided, assert
 /// that the parsing fails at the end of the input.
+@optionalTypeArgs
 Matcher isParseSuccess<T>(
   String input,
   dynamic result, {
@@ -90,6 +94,7 @@ Matcher isParseSuccess<T>(
 /// failure for the given [input]. If no [position] is provided, assert that
 /// parsing fails at the beginning of the input. An optional [message] can be
 /// provided to assert on the error message.
+@optionalTypeArgs
 Matcher isParseFailure<T>(
   String input, {
   dynamic position = 0,

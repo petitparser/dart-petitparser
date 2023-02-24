@@ -67,18 +67,8 @@ abstract class GrammarDefinition<R> {
   Parser<R> start();
 
   /// Builds a composite parser from this definition.
-  ///
-  /// The optional [start] reference specifies a different starting production
-  /// into the grammar. The optional [arguments] list parametrizes the called
-  /// production.
-  @useResult
-  Parser<T> build<T>({Function? start, List<Object> arguments = const []}) {
-    if (start != null) {
-      return resolve(Function.apply(start, arguments));
-    } else if (arguments.isEmpty) {
-      return resolve(this.start() as Parser<T>);
-    } else {
-      throw StateError('Invalid arguments passed.');
-    }
-  }
+  Parser<R> build() => buildFrom(start());
+
+  /// Builds a composite parser starting at the specified function.
+  Parser<T> buildFrom<T>(Parser<T> parser) => resolve(parser);
 }

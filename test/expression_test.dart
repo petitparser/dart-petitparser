@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'utils/matchers.dart';
 
 Parser buildParser() {
-  final builder = ExpressionBuilder();
+  final builder = ExpressionBuilder<Object>();
   builder.primitive(digit()
       .plus()
       .seq(char('.').seq(digit().plus()).optional())

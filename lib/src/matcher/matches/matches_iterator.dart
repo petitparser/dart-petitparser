@@ -13,7 +13,7 @@ class MatchesIterator<T> extends Iterator<T> {
   int start;
 
   @override
-  late T current;
+  T get current => context.value as T;
 
   @override
   bool moveNext() {
@@ -21,7 +21,6 @@ class MatchesIterator<T> extends Iterator<T> {
       context.position = start;
       parser.parseOn(context);
       if (context.isSuccess) {
-        current = context.value;
         if (overlapping || start == context.position) {
           start++;
         } else {

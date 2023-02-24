@@ -47,10 +47,13 @@ class WhereParser<T> extends DelegateParser<T, T> {
   void parseOn(Context context) {
     final position = context.position;
     delegate.parseOn(context);
-    if (context.isSuccess && !predicate(context.value)) {
-      context.isSuccess = false;
-      context.position = position;
-      context.message = messageBuilder(context.value);
+    if (context.isSuccess) {
+      final value = context.value as T;
+      if (!predicate(value)) {
+        context.isSuccess = false;
+        context.position = position;
+        context.message = messageBuilder(value);
+      }
     }
   }
 

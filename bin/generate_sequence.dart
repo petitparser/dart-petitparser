@@ -50,7 +50,6 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'package:meta/meta.dart\';');
   out.writeln();
   out.writeln('import \'../../../context/context.dart\';');
-  out.writeln('import \'../../../context/result.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
   out.writeln('import \'../../../shared/annotations.dart\';');
   out.writeln('import \'../../action/map.dart\';');
@@ -93,7 +92,8 @@ Future<void> generateImplementation(int index) async {
   for (var i = 0; i < index; i++) {
     out.writeln('${parserNames[i]}.parseOn(context);');
     out.writeln('if (!context.isSuccess) return;');
-    out.writeln('final ${resultTypes[i]} ${resultNames[i]} = context.value;');
+    out.writeln(
+        'final ${resultNames[i]} = context.value as ${resultTypes[i]};');
   }
   out.writeln('context.value = Sequence$index<${resultTypes.join(', ')}>'
       '(${resultNames.join(', ')});');

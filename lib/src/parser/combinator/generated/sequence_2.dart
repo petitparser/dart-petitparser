@@ -33,10 +33,10 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
   void parseOn(Context context) {
     parser1.parseOn(context);
     if (!context.isSuccess) return;
-    final R1 result1 = context.value;
+    final result1 = context.value as R1;
     parser2.parseOn(context);
     if (!context.isSuccess) return;
-    final R2 result2 = context.value;
+    final result2 = context.value as R2;
     context.value = Sequence2<R1, R2>(result1, result2);
   }
 

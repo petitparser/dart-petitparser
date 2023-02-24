@@ -54,28 +54,28 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
   void parseOn(Context context) {
     parser1.parseOn(context);
     if (!context.isSuccess) return;
-    final R1 result1 = context.value;
+    final result1 = context.value as R1;
     parser2.parseOn(context);
     if (!context.isSuccess) return;
-    final R2 result2 = context.value;
+    final result2 = context.value as R2;
     parser3.parseOn(context);
     if (!context.isSuccess) return;
-    final R3 result3 = context.value;
+    final result3 = context.value as R3;
     parser4.parseOn(context);
     if (!context.isSuccess) return;
-    final R4 result4 = context.value;
+    final result4 = context.value as R4;
     parser5.parseOn(context);
     if (!context.isSuccess) return;
-    final R5 result5 = context.value;
+    final result5 = context.value as R5;
     parser6.parseOn(context);
     if (!context.isSuccess) return;
-    final R6 result6 = context.value;
+    final result6 = context.value as R6;
     parser7.parseOn(context);
     if (!context.isSuccess) return;
-    final R7 result7 = context.value;
+    final result7 = context.value as R7;
     parser8.parseOn(context);
     if (!context.isSuccess) return;
-    final R8 result8 = context.value;
+    final result8 = context.value as R8;
     context.value = Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>(
         result1, result2, result3, result4, result5, result6, result7, result8);
   }

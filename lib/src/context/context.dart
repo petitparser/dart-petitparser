@@ -1,3 +1,4 @@
+import '../shared/annotations.dart';
 import 'failure.dart';
 import 'result.dart';
 import 'success.dart';
@@ -24,6 +25,8 @@ class Context {
   bool isCut = true;
 
   // Marks the context as a success.
+  @inlineVm
+  @inlineJs
   void success(dynamic value, {int? position}) {
     isSuccess = true;
     this.value = value;
@@ -31,6 +34,8 @@ class Context {
   }
 
   // Marks the context as a failure.
+  @inlineVm
+  @inlineJs
   void failure(String message, {int? position}) {
     isSuccess = false;
     this.message = message;
@@ -38,6 +43,8 @@ class Context {
   }
 
   // Converts the current state of the context to a [Result].
+  @inlineVm
+  @inlineJs
   Result<T> toResult<T>() => isSuccess
       ? Success<T>(buffer, position, value)
       : Failure<T>(buffer, position, message);

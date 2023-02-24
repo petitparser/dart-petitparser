@@ -58,8 +58,8 @@ Map<Symbol, Parser> createRecursive() {
 }
 
 // A parser that references itself.
-Parser createSelfReference() {
-  final parser = undefined();
+Parser<void> createSelfReference() {
+  final parser = undefined<void>();
   parser.set(parser);
   return parser;
 }
@@ -127,8 +127,8 @@ void main() {
       });
       test('recursive', () {
         final inner1 = char('a');
-        final inner2 = undefined();
-        final parser = inner1 | inner2;
+        final inner2 = undefined<String>();
+        final parser = [inner1, inner2].toChoiceParser();
         inner2.set(parser);
         final analyzer = Analyzer(parser);
         expect(analyzer.allChildren(parser), {inner1, inner2, parser});
@@ -189,11 +189,11 @@ void main() {
         expect(path.source, parser);
         expect(path.target, parser);
         expect(path.parsers, [parser]);
-        expect(path.indexes, []);
+        expect(path.indexes, isEmpty);
         final paths = analyzer.findAllPathsTo(parser, parser).toList();
         expect(paths, hasLength(1));
         expect(paths[0].parsers, [parser]);
-        expect(paths[0].indexes, []);
+        expect(paths[0].indexes, isEmpty);
       });
       test('choice', () {
         final terminal = char('a');
