@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'repeating.dart';
 import 'unbounded.dart';
@@ -57,49 +56,25 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
   PossessiveRepeatingParser(super.parser, super.min, super.max);
 
   @override
-  Result<List<R>> parseOn(Context context) {
+  void parseOn(Context context) {
     final elements = <R>[];
-    var current = context;
     while (elements.length < min) {
-      final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
-      elements.add(result.value);
-      current = result;
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      elements.add(context.value);
     }
     while (elements.length < max) {
-      final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return current.success(elements);
+      final position = context.position;
+      delegate.parseOn(context);
+      if (!context.isSuccess) {
+        context.isSuccess = true;
+        context.position = position;
+        context.value = elements;
+        return;
       }
-      elements.add(result.value);
-      current = result;
+      elements.add(context.value);
     }
-    return current.success(elements);
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    var count = 0;
-    var current = position;
-    while (count < min) {
-      final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
-      }
-      current = result;
-      count++;
-    }
-    while (count < max) {
-      final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return current;
-      }
-      current = result;
-      count++;
-    }
-    return current;
+    context.value = elements;
   }
 
   @override

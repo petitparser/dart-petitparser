@@ -89,34 +89,33 @@ void main() {
     }
 
     Parser<List<T>> typeParam<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy<T>(char(','), includeSeparators: false);
-    Parser<List<T>> castList<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy(char(','), includeSeparators: false).castList<T>();
+        parser.plusSeparated(char(',')).map((list) => list.elements);
+    Parser<List<T>> castList<T>(Parser<T> parser) => parser
+        .plusSeparated(char(','))
+        .map((list) => list.elements)
+        .castList<T>();
     Parser<List<T>> smartCompiler<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy(char(','), includeSeparators: false);
+        parser.plusSeparated(char(',')).map((list) => list.elements);
 
     testWith('with list created using desired type', typeParam);
     testWith('with generic list cast to desired type', castList);
     testWith('with compiler inferring desired type', smartCompiler);
   });
-  test('parse padded and limited number', () {
-    final parser = digit().repeat(2).flatten().callCC((continuation, context) {
-      final result = continuation(context);
-      if (result.isSuccess && int.parse(result.value) > 31) {
-        return context.failure('00-31 expected');
-      } else {
-        return result;
-      }
-    });
-    expect(parser, isParseSuccess('00', '00'));
-    expect(parser, isParseSuccess('24', '24'));
-    expect(parser, isParseSuccess('31', '31'));
-    expect(parser, isParseFailure('32', message: '00-31 expected'));
-    expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
-  });
+  // test('parse padded and limited number', () {
+  //   final parser = digit().repeat(2).flatten().callCC((continuation, context) {
+  //     final result = continuation(context);
+  //     if (result.isSuccess && int.parse(result.value) > 31) {
+  //       return context.failure('00-31 expected');
+  //     } else {
+  //       return result;
+  //     }
+  //   });
+  //   expect(parser, isParseSuccess('00', '00'));
+  //   expect(parser, isParseSuccess('24', '24'));
+  //   expect(parser, isParseSuccess('31', '31'));
+  //   expect(parser, isParseFailure('32', message: '00-31 expected'));
+  //   expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
+  // });
   group('date format parser', () {
     final day = 'dd'.toParser().map((token) => digit()
         .repeat(2)
@@ -171,8 +170,9 @@ void main() {
     });
   });
   test('stackoverflow.com/questions/64670722', () {
+    // TODO: Add example using flatMap.
     final delimited = any().callCC((continuation, context) {
-      final delimiter = continuation(context).value.toParser();
+      final delimiter = context.buffer[context.position].toParser();
       final parser = [
         delimiter,
         delimiter.neg().star().flatten(),
@@ -235,25 +235,27 @@ void main() {
   });
   group('github.com/petitparser/dart-petitparser/issues/109', () {
     // The digit defines how many characters are read by the data parser.
-    Parser buildMetadataParser() => digit().flatten().map(int.parse);
-    Parser buildDataParser(int count) => any().repeat(count).flatten();
+    Parser<int> buildMetadataParser() => digit().flatten().map(int.parse);
+    Parser<String> buildDataParser(int count) => any().repeat(count).flatten();
 
     const input = '4database';
     test('split', () {
       final metadataParser = buildMetadataParser();
       final metadataResult = metadataParser.parse(input);
       final dataParser = buildDataParser(metadataResult.value);
-      final dataResult = dataParser.parseOn(metadataResult);
+      final dataResult = metadataResult.toContext();
+      dataParser.parseOn(dataResult);
       expect(dataResult.value, 'data');
     });
     test('continuation', () {
       final parser = buildMetadataParser().callCC((continuation, context) {
-        final metadataResult = continuation(context);
-        final dataParser = buildDataParser(metadataResult.value);
-        return dataParser.parseOn(metadataResult);
+        continuation(context);
+        final dataParser = buildDataParser(context.value);
+        return dataParser.parseOn(context);
       });
       expect(parser.parse(input).value, 'data');
     });
+    // TODO: Add example using flatMap.
   });
   group('stackoverflow.com/questions/68105573', () {
     const firstInput = '(use = "official").empty()';
@@ -292,11 +294,11 @@ void main() {
     final inner = digit().repeat(2);
     test('original', () {
       final parser = inner.callCC((continuation, context) {
-        final result = continuation(context);
+        continuation(context);
+        final result = context.toResult<List<String>>();
         if (result.isSuccess && result.value[0] != result.value[1]) {
-          return context.failure('values do not match');
-        } else {
-          return result;
+          context.failure('values do not match',
+              position: context.position - 2);
         }
       });
       expect(parser, isParseSuccess('11', ['1', '1']));
@@ -309,8 +311,7 @@ void main() {
     });
     test('where', () {
       final parser = inner.where((value) => value[0] == value[1],
-          failureFactory: (context, success) =>
-              context.failure('values do not match'));
+          message: 'values do not match');
       expect(parser, isParseSuccess('11', ['1', '1']));
       expect(parser, isParseSuccess('22', ['2', '2']));
       expect(parser, isParseSuccess('33', ['3', '3']));

@@ -123,19 +123,15 @@ void main() {
         isTraceEvent(parser: 'SequenceParser', level: 0),
         isTraceEvent(parser: 'letter expected', level: 1),
         isTraceEvent(
-            parser: 'letter expected',
-            level: 1,
-            result: isSuccessContext(value: 'a')),
+            parser: 'letter expected', level: 1, result: isSuccess(value: 'a')),
         isTraceEvent(parser: '[0..*]', level: 1),
         isTraceEvent(parser: 'letter or digit expected', level: 2),
         isTraceEvent(
             parser: 'letter or digit expected',
             level: 2,
-            result: isFailureContext(message: 'letter or digit expected')),
-        isTraceEvent(
-            parser: '[0..*]', level: 1, result: isSuccessContext(value: [])),
-        isTraceEvent(
-            parser: 'SequenceParser', level: 0, result: isSuccessContext()),
+            result: isFailure(message: 'letter or digit expected')),
+        isTraceEvent(parser: '[0..*]', level: 1, result: isSuccess(value: [])),
+        isTraceEvent(parser: 'SequenceParser', level: 0, result: isSuccess()),
       ]);
     });
     test('labeled', () {
@@ -145,13 +141,12 @@ void main() {
       expect(parser.parse('ab123').isSuccess, isTrue);
       expect(events, [
         isTraceEvent(parser: 'first', level: 0),
-        isTraceEvent(
-            parser: 'first', level: 0, result: isSuccessContext(value: 'a')),
+        isTraceEvent(parser: 'first', level: 0, result: isSuccess(value: 'a')),
         isTraceEvent(parser: 'remaining', level: 0),
         isTraceEvent(
             parser: 'remaining',
             level: 0,
-            result: isSuccessContext(value: 'b123'.split(''))),
+            result: isSuccess(value: 'b123'.split(''))),
       ]);
     });
     test('failure', () {
@@ -164,11 +159,11 @@ void main() {
         isTraceEvent(
             parser: 'letter expected',
             level: 1,
-            result: isFailureContext(message: 'letter expected')),
+            result: isFailure(message: 'letter expected')),
         isTraceEvent(
             parser: 'SequenceParser',
             level: 0,
-            result: isFailureContext(message: 'letter expected')),
+            result: isFailure(message: 'letter expected')),
       ]);
     });
   });

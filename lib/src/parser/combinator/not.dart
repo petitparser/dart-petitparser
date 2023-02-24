@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
 import '../../context/failure.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../predicate/any.dart';
 import 'delegate.dart';
@@ -41,19 +40,18 @@ class NotParser<R> extends DelegateParser<R, Failure<R>> {
   final String message;
 
   @override
-  Result<Failure<R>> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isFailure) {
-      return context.success(result as Failure<R>);
+  void parseOn(Context context) {
+    final position = context.position;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.isSuccess = false;
+      context.message = message;
     } else {
-      return context.failure(message);
+      context.isSuccess = true;
+      context.value =
+          Failure<R>(context.buffer, context.position, context.message);
     }
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    final result = delegate.fastParseOn(buffer, position);
-    return result < 0 ? position : -1;
+    context.position = position;
   }
 
   @override

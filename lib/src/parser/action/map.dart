@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../../shared/types.dart';
 import '../combinator/delegate.dart';
@@ -14,12 +13,7 @@ extension MapParserExtension<T> on Parser<T> {
   /// the number `1` for the input string `'1'`. If the delegate fails, the
   /// production action is not executed and the failure is passed on.
   @useResult
-  Parser<R> map<R>(
-    Callback<T, R> callback, {
-    @Deprecated('All callbacks are considered to have side-effects')
-        bool hasSideEffects = true,
-  }) =>
-      MapParser<T, R>(this, callback);
+  Parser<R> map<R>(Callback<T, R> callback) => MapParser<T, R>(this, callback);
 }
 
 /// A parser that performs a transformation with a given function on the
@@ -31,12 +25,10 @@ class MapParser<T, R> extends DelegateParser<T, R> {
   final Callback<T, R> callback;
 
   @override
-  Result<R> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return result.success(callback(result.value));
-    } else {
-      return result.failure(result.message);
+  void parseOn(Context context) {
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.value = callback(context.value);
     }
   }
 

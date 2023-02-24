@@ -2,9 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
 import '../../context/failure.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../utils/failure_joiner.dart';
 import 'list.dart';
 
 extension ChoiceParserExtension on Parser {
@@ -28,12 +26,11 @@ extension ChoiceParserExtension on Parser {
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
   @useResult
-  ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) {
+  ChoiceParser or(Parser other) {
     final self = this;
     return self is ChoiceParser
-        ? ChoiceParser([...self.children, other],
-            failureJoiner: failureJoiner ?? self.failureJoiner)
-        : ChoiceParser([this, other], failureJoiner: failureJoiner);
+        ? ChoiceParser([...self.children, other])
+        : ChoiceParser([this, other]);
   }
 
   /// Convenience operator returning a parser that accepts the receiver or
@@ -44,54 +41,31 @@ extension ChoiceParserExtension on Parser {
 
 extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  ChoiceParser<T> toChoiceParser({FailureJoiner<T>? failureJoiner}) =>
-      ChoiceParser<T>(this, failureJoiner: failureJoiner);
+  ChoiceParser<T> toChoiceParser() => ChoiceParser<T>(this);
 }
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<T> extends ListParser<T, T> {
-  ChoiceParser(super.children, {FailureJoiner<T>? failureJoiner})
-      : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
-        failureJoiner = failureJoiner ?? selectLast;
-
-  /// Strategy to join multiple parse errors.
-  final FailureJoiner<T> failureJoiner;
-
-  /// Switches the failure joining strategy.
-  ChoiceParser<T> withFailureJoiner(FailureJoiner<T> failureJoiner) =>
-      ChoiceParser<T>(children, failureJoiner: failureJoiner);
+  ChoiceParser(super.children)
+      : assert(children.isNotEmpty, 'Choice parser cannot be empty');
 
   @override
-  Result<T> parseOn(Context context) {
-    Failure<T>? failure;
+  void parseOn(Context context) {
+    final position = context.position;
+    final isCut = context.isCut;
     for (var i = 0; i < children.length; i++) {
-      final result = children[i].parseOn(context);
-      if (result is Failure<T>) {
-        failure = failure == null ? result : failureJoiner(failure, result);
-      } else {
-        return result;
+      context.position = position;
+      context.isCut = false;
+      children[i].parseOn(context);
+      if (context.isSuccess) {
+        context.isCut |= isCut;
+        return;
+      } else if (context.isCut) {
+        return;
       }
     }
-    return failure!;
   }
 
   @override
-  int fastParseOn(String buffer, int position) {
-    var result = -1;
-    for (var i = 0; i < children.length; i++) {
-      result = children[i].fastParseOn(buffer, position);
-      if (result >= 0) {
-        return result;
-      }
-    }
-    return result;
-  }
-
-  @override
-  bool hasEqualProperties(ChoiceParser<T> other) =>
-      super.hasEqualProperties(other) && failureJoiner == other.failureJoiner;
-
-  @override
-  ChoiceParser<T> copy() =>
-      ChoiceParser<T>(children, failureJoiner: failureJoiner);
+  ChoiceParser<T> copy() => ChoiceParser<T>(children);
 }

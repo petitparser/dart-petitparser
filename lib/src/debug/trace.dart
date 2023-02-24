@@ -43,10 +43,9 @@ Parser<T> trace<T>(Parser<T> root,
       return parser.callCC((continuation, context) {
         final currentParent = parent;
         output(parent = _TraceEvent(currentParent, parser, context));
-        final result = continuation(context);
-        output(_TraceEvent(currentParent, parser, context, result));
+        continuation(context);
+        output(_TraceEvent(currentParent, parser, context, context.toResult()));
         parent = currentParent;
-        return result;
       });
     } else {
       return parser;

@@ -16,22 +16,55 @@ bool hasAssertionsEnabled() {
 }
 
 /// Returns a [Matcher] that asserts on a [AssertionError].
-const isAssertionError = TypeMatcher<AssertionError>();
+final isAssertionError = hasAssertionsEnabled()
+    ? const TypeMatcher<AssertionError>()
+    : throw UnsupportedError('Assertions are disabled');
 
 /// Returns a [Matcher] that asserts two parsers are structurally equivalent.
 Matcher isParserEqual<T>(Parser<T> parser) => test.predicate(
     (actual) => actual is Parser<T> && actual.isEqualTo(parser),
     'structurally equal');
 
+/// Returns a [Mater] that asserts on the [Context].
+TypeMatcher isContext({
+  dynamic buffer = anything,
+  dynamic position = anything,
+  dynamic isSuccess = anything,
+  dynamic value = anything,
+  dynamic message = anything,
+  dynamic isCut = anything,
+}) =>
+    isA<Context>()
+        .having((context) => context.buffer, 'buffer', buffer)
+        .having((context) => context.position, 'position', position)
+        .having((context) => context.isSuccess, 'value', isSuccess)
+        .having((context) => context.value, 'value', value)
+        .having((context) => context.message, 'value', message)
+        .having((context) => context.isCut, 'value', isCut);
+
 /// Returns a [Matcher] that asserts the context under test is a [Success].
 /// Optionally also asserts [position] and [value].
-TypeMatcher<Success<T>> isSuccessContext<T>({
+TypeMatcher<Success<T>> isSuccess<T>({
+  dynamic buffer = anything,
   dynamic position = anything,
   dynamic value = anything,
 }) =>
     isA<Success<T>>()
-        .having((context) => context.value, 'value', value)
-        .having((context) => context.position, 'position', position);
+        .having((success) => success.buffer, 'buffer', buffer)
+        .having((success) => success.value, 'value', value)
+        .having((success) => success.position, 'position', position);
+
+/// Returns a [Matcher] that asserts the context under test is a [Failure].
+/// Optionally also asserts [position] and [message].
+TypeMatcher<Failure<T>> isFailure<T>({
+  dynamic buffer = anything,
+  dynamic position = anything,
+  dynamic message = anything,
+}) =>
+    isA<Failure<T>>()
+        .having((failure) => failure.buffer, 'buffer', buffer)
+        .having((failure) => failure.position, 'position', position)
+        .having((failure) => failure.message, 'message', message);
 
 /// Returns a [Matcher] that asserts the parser under test yields a successful
 /// parse [result] for the given [input]. If no [position] is provided, assert
@@ -45,23 +78,13 @@ Matcher isParseSuccess<T>(
         .having(
             (parser) => parser.parse(input),
             'parse',
-            isSuccessContext<T>(
-                value: result, position: position ?? input.length))
-        .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn',
-            position ?? input.length)
+            isSuccess<T>(
+                buffer: input,
+                value: result,
+                position: position ?? input.length))
         .having((parser) => parser.accept(input), 'accept', isTrue)
         .having(
             (parser) => parser.allMatches(input).first, 'allMatches', result);
-
-/// Returns a [Matcher] that asserts the context under test is a [Failure].
-/// Optionally also asserts [position] and [message].
-TypeMatcher<Failure<T>> isFailureContext<T>({
-  dynamic position = anything,
-  dynamic message = anything,
-}) =>
-    isA<Failure<T>>()
-        .having((context) => context.message, 'message', message)
-        .having((context) => context.position, 'position', position);
 
 /// Returns a [Matcher] that asserts the parser under test yields a parse
 /// failure for the given [input]. If no [position] is provided, assert that
@@ -74,8 +97,7 @@ Matcher isParseFailure<T>(
 }) =>
     isA<Parser<T>>()
         .having((parser) => parser.parse(input), 'parse',
-            isFailureContext<T>(position: position, message: message))
-        .having((parser) => parser.fastParseOn(input, 0), 'fastParseOn', -1)
+            isFailure<T>(buffer: input, position: position, message: message))
         .having((parser) => parser.accept(input), 'accept', isFalse);
 
 /// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].

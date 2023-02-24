@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'delegate.dart';
 
@@ -33,19 +32,19 @@ class OptionalParser<R> extends DelegateParser<R, R> {
   final R otherwise;
 
   @override
-  Result<R> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return result;
-    } else {
-      return context.success(otherwise);
+  void parseOn(Context context) {
+    final position = context.position;
+    final isCut = context.isCut;
+    context.isCut = false;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.isCut |= isCut;
+    } else if (!context.isCut) {
+      context.isSuccess = true;
+      context.position = position;
+      context.value = otherwise;
+      context.isCut |= isCut;
     }
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    final result = delegate.fastParseOn(buffer, position);
-    return result < 0 ? position : result;
   }
 
   @override

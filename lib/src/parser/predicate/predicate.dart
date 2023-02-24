@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../../shared/types.dart';
 
@@ -27,24 +26,20 @@ class PredicateParser extends Parser<String> {
   final String message;
 
   @override
-  Result<String> parseOn(Context context) {
+  void parseOn(Context context) {
     final start = context.position;
     final stop = start + length;
     if (stop <= context.buffer.length) {
       final result = context.buffer.substring(start, stop);
       if (predicate(result)) {
-        return context.success(result, stop);
+        context.isSuccess = true;
+        context.value = result;
+        context.position = stop;
+        return;
       }
     }
-    return context.failure(message);
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    final stop = position + length;
-    return stop <= buffer.length && predicate(buffer.substring(position, stop))
-        ? stop
-        : -1;
+    context.isSuccess = false;
+    context.message = message;
   }
 
   @override

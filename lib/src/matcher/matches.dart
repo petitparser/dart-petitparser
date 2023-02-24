@@ -20,22 +20,4 @@ extension MatchesParserExtension<T> on Parser<T> {
   Iterable<T> allMatches(String input,
           {int start = 0, bool overlapping = false}) =>
       MatchesIterable<T>(this, input, start, overlapping);
-
-  /// Returns a list of all successful overlapping parses of [input].
-  ///
-  /// For example, `letter().plus().flatten().matches('abc de')` results in the
-  /// list `['abc', 'bc', 'c', 'de', 'e']`.
-  @Deprecated('Use `MatchesParserExtension.allMatches(input, '
-      'overlapping: true)` instead')
-  List<T> matches(String input) =>
-      allMatches(input, overlapping: true).toList();
-
-  /// Returns a list of all successful non-overlapping parses of [input].
-  ///
-  /// For example, `letter().plus().flatten().matchesSkipping('abc de')` results
-  /// in the list `['abc', 'de']`.
-  @Deprecated('Use `MatchesParserExtension.allMatches(input, '
-      'overlapping: false)` instead')
-  List<T> matchesSkipping(String input) =>
-      allMatches(input, overlapping: false).toList();
 }

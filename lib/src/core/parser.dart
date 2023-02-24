@@ -10,31 +10,6 @@ import '../context/success.dart';
 abstract class Parser<R> {
   Parser();
 
-  /// Primitive method doing the actual parsing.
-  ///
-  /// The method is overridden in concrete subclasses to implement the
-  /// parser specific logic. The methods takes a parse [context] and
-  /// returns the resulting context, which is either a [Success] or
-  /// [Failure] context.
-  Result<R> parseOn(Context context);
-
-  /// Primitive method doing the actual parsing.
-  ///
-  /// This method is an optimized version of [Parser.parseOn] that is getting
-  /// its speed advantage by avoiding any unnecessary memory allocations.
-  ///
-  /// The method is overridden in most concrete subclasses to implement the
-  /// optimized logic. As an input the method takes a [buffer] and the current
-  /// [position] in that buffer. It returns a new (positive) position in case
-  /// of a successful parse, or `-1` in case of a failure.
-  ///
-  /// Subclasses don't necessarily have to override this method, since it is
-  /// emulated using its slower brother.
-  int fastParseOn(String buffer, int position) {
-    final result = parseOn(Context(buffer, position));
-    return result.isSuccess ? result.position : -1;
-  }
-
   /// Returns the parse result of the [input].
   ///
   /// The implementation creates a default parse context on the input and calls
@@ -48,7 +23,17 @@ abstract class Parser<R> {
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
   @nonVirtual
-  Result<R> parse(String input) => parseOn(Context(input, 0));
+  Result<R> parse(String input) {
+    final context = Context(input);
+    parseOn(context);
+    return context.toResult<R>();
+  }
+
+  /// Primitive method doing the actual parsing.
+  ///
+  /// The method is overridden in concrete subclasses to implement the
+  /// parser specific logic. The methods takes the mutable parse [context].
+  void parseOn(Context context);
 
   /// Returns a shallow copy of the receiver.
   ///

@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
@@ -25,20 +24,13 @@ class PickParser<R> extends DelegateParser<List<R>, R> {
   final int index;
 
   @override
-  Result<R> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      final value = result.value;
-      final picked = value[index < 0 ? value.length + index : index];
-      return result.success(picked);
-    } else {
-      return result.failure(result.message);
+  void parseOn(Context context) {
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      final value = context.value as List<R>;
+      context.value = value[index < 0 ? value.length + index : index];
     }
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
 
   @override
   PickParser<R> copy() => PickParser<R>(delegate, index);

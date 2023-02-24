@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../context/context.dart';
+import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
@@ -36,8 +36,8 @@ Parser<T> progress<T>(Parser<T> root,
   return transformParser(root, <T>(parser) {
     if (predicate == null || predicate(parser)) {
       return parser.callCC((continuation, context) {
-        output(_ProgressFrame(parser, context));
-        return continuation(context);
+        output(_ProgressFrame(parser, context.toResult()));
+        continuation(context);
       });
     } else {
       return parser;
@@ -51,20 +51,20 @@ abstract class ProgressFrame {
   Parser get parser;
 
   /// Returns the activation context of this frame.
-  Context get context;
+  Result get result;
 
   /// Returns the current position in the input.
-  int get position => context.position;
+  int get position => result.position;
 }
 
 class _ProgressFrame extends ProgressFrame {
-  _ProgressFrame(this.parser, this.context);
+  _ProgressFrame(this.parser, this.result);
 
   @override
   final Parser parser;
 
   @override
-  final Context context;
+  final Result result;
 
   @override
   String toString() => '${'*' * (1 + position)} $parser';

@@ -1,20 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import '../parser/combinator/settable.dart';
 import 'transform.dart';
-
-/// Returns a copy of [parser] with all settable parsers removed.
-@useResult
-@Deprecated('Use `resolve` instead')
-Parser<T> removeSettables<T>(Parser<T> parser) {
-  return transformParser(parser, <R>(each) {
-    while (each is SettableParser) {
-      each = each.children.first as Parser<R>;
-    }
-    return each;
-  });
-}
 
 /// Returns a copy of [parser] with all duplicates parsers collapsed.
 @useResult

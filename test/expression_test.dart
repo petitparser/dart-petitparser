@@ -593,17 +593,6 @@ void main() {
       expect(parser, isParseSuccess('(2)', '[2]'));
       expect(parser, isParseSuccess('((2))', '[[2]]'));
     });
-    test('primitive on group', () {
-      final builder = ExpressionBuilder<String>();
-      builder.group()
-        // ignore: deprecated_member_use_from_same_package
-        ..primitive(digit())
-        ..wrapper(char('('), char(')'), (l, v, r) => '[$v]');
-      final parser = builder.build();
-      expect(parser, isParseSuccess('2', '2'));
-      expect(parser, isParseSuccess('(2)', '[2]'));
-      expect(parser, isParseSuccess('((2))', '[[2]]'));
-    });
   });
   test('linter', () {
     expect(linter(parser), isEmpty);

@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 
 /// Returns a parser that consumes nothing and succeeds.
@@ -23,10 +22,10 @@ class EpsilonParser<R> extends Parser<R> {
   final R result;
 
   @override
-  Result<R> parseOn(Context context) => context.success(result);
-
-  @override
-  int fastParseOn(String buffer, int position) => position;
+  void parseOn(Context context) {
+    context.isSuccess = true;
+    context.value = result;
+  }
 
   @override
   EpsilonParser<R> copy() => EpsilonParser<R>(result);

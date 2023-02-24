@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../../parser/utils/labeled.dart';
 import '../combinator/delegate.dart';
@@ -23,11 +22,7 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   final String label;
 
   @override
-  Result<R> parseOn(Context context) => delegate.parseOn(context);
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
+  void parseOn(Context context) => delegate.parseOn(context);
 
   @override
   LabelParser<R> copy() => LabelParser<R>(delegate, label);

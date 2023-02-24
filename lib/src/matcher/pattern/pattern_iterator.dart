@@ -1,13 +1,16 @@
+import '../../context/context.dart';
 import '../../core/parser.dart';
 import 'parser_match.dart';
 import 'parser_pattern.dart';
 
 class PatternIterator extends Iterator<ParserMatch> {
-  PatternIterator(this.pattern, this.parser, this.input, this.start);
+  PatternIterator(this.pattern, this.parser, this.input, this.start)
+      : context = Context(input, position: start);
 
   final ParserPattern pattern;
   final Parser parser;
   final String input;
+  final Context context;
   int start;
 
   @override
@@ -16,17 +19,18 @@ class PatternIterator extends Iterator<ParserMatch> {
   @override
   bool moveNext() {
     while (start <= input.length) {
-      final end = parser.fastParseOn(input, start);
-      if (end < 0) {
-        start++;
-      } else {
-        current = ParserMatch(pattern, input, start, end);
-        if (start == end) {
+      context.position = start;
+      parser.parseOn(context);
+      if (context.isSuccess) {
+        current = ParserMatch(pattern, input, start, context.position);
+        if (start == context.position) {
           start++;
         } else {
-          start = end;
+          start = context.position;
         }
         return true;
+      } else {
+        start++;
       }
     }
     return false;

@@ -1,5 +1,4 @@
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'predicate.dart';
 
@@ -14,21 +13,19 @@ class CharacterParser extends Parser<String> {
   final String message;
 
   @override
-  Result<String> parseOn(Context context) {
+  void parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
     if (position < buffer.length &&
         predicate.test(buffer.codeUnitAt(position))) {
-      return context.success(buffer[position], position + 1);
+      context.isSuccess = true;
+      context.value = buffer[position];
+      context.position = position + 1;
+    } else {
+      context.isSuccess = false;
+      context.message = message;
     }
-    return context.failure(message);
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      position < buffer.length && predicate.test(buffer.codeUnitAt(position))
-          ? position + 1
-          : -1;
 
   @override
   String toString() => '${super.toString()}[$message]';

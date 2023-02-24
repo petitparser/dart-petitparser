@@ -1,5 +1,4 @@
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 
 /// A parser that uses a [Pattern] matcher for parsing.
@@ -17,17 +16,16 @@ class PatternParser extends Parser<Match> {
   final String message;
 
   @override
-  Result<Match> parseOn(Context context) {
+  void parseOn(Context context) {
     final result = pattern.matchAsPrefix(context.buffer, context.position);
-    return result != null
-        ? context.success(result, result.end)
-        : context.failure(message);
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    final result = pattern.matchAsPrefix(buffer, position);
-    return result != null ? result.end : -1;
+    if (result != null) {
+      context.isSuccess = true;
+      context.value = result;
+      context.position = result.end;
+    } else {
+      context.isSuccess = false;
+      context.message = message;
+    }
   }
 
   @override

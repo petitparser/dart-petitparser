@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
@@ -29,29 +28,16 @@ class FlattenParser<T> extends DelegateParser<T, String> {
   final String? message;
 
   @override
-  Result<String> parseOn(Context context) {
-    // If we have a message we can switch to fast mode.
-    if (message != null) {
-      final position = delegate.fastParseOn(context.buffer, context.position);
-      if (position < 0) {
-        return context.failure(message!);
-      }
-      final output = context.buffer.substring(context.position, position);
-      return context.success(output, position);
-    } else {
-      final result = delegate.parseOn(context);
-      if (result.isSuccess) {
-        final output =
-            context.buffer.substring(context.position, result.position);
-        return result.success(output);
-      }
-      return result.failure(result.message);
+  void parseOn(Context context) {
+    final position = context.position;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.value = context.buffer.substring(position, context.position);
+    } else if (message != null) {
+      context.position = position;
+      context.message = message!;
     }
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
 
   @override
   bool hasEqualProperties(FlattenParser<T> other) =>

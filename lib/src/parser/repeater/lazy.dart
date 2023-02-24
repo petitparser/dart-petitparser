@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'greedy.dart';
 import 'limited.dart';
@@ -53,62 +52,34 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   LazyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
-  Result<List<R>> parseOn(Context context) {
-    var current = context;
+  void parseOn(Context context) {
     final elements = <R>[];
     while (elements.length < min) {
-      final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
-      elements.add(result.value);
-      current = result;
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      elements.add(context.value);
     }
     for (;;) {
-      final limiter = limit.parseOn(current);
-      if (limiter.isSuccess) {
-        return current.success(elements);
-      } else {
-        if (elements.length >= max) {
-          return limiter.failure(limiter.message);
-        }
-        final result = delegate.parseOn(current);
-        if (result.isFailure) {
-          return limiter.failure(limiter.message);
-        }
-        elements.add(result.value);
-        current = result;
+      final position = context.position;
+      limit.parseOn(context);
+      if (context.isSuccess) {
+        context.position = position;
+        context.value = elements;
+        return;
       }
-    }
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    var count = 0;
-    var current = position;
-    while (count < min) {
-      final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
+      if (elements.length >= max) {
+        return;
       }
-      current = result;
-      count++;
-    }
-    for (;;) {
-      final limiter = limit.fastParseOn(buffer, current);
-      if (limiter >= 0) {
-        return current;
-      } else {
-        if (count >= max) {
-          return -1;
-        }
-        final result = delegate.fastParseOn(buffer, current);
-        if (result < 0) {
-          return -1;
-        }
-        current = result;
-        count++;
+      final limitPosition = context.position;
+      final limitMessage = context.message;
+      context.position = position;
+      delegate.parseOn(context);
+      if (!context.isSuccess) {
+        context.position = limitPosition;
+        context.message = limitMessage;
+        return;
       }
+      elements.add(context.value);
     }
   }
 

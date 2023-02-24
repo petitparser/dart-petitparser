@@ -3,7 +3,6 @@
 import 'package:meta/meta.dart';
 
 import '../../../context/context.dart';
-import '../../../context/result.dart';
 import '../../../core/parser.dart';
 import '../../../shared/annotations.dart';
 import '../../action/map.dart';
@@ -31,21 +30,14 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
   Parser<R2> parser2;
 
   @override
-  Result<Sequence2<R1, R2>> parseOn(Context context) {
-    final result1 = parser1.parseOn(context);
-    if (result1.isFailure) return result1.failure(result1.message);
-    final result2 = parser2.parseOn(result1);
-    if (result2.isFailure) return result2.failure(result2.message);
-    return result2.success(Sequence2<R1, R2>(result1.value, result2.value));
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    position = parser1.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser2.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    return position;
+  void parseOn(Context context) {
+    parser1.parseOn(context);
+    if (!context.isSuccess) return;
+    final R1 result1 = context.value;
+    parser2.parseOn(context);
+    if (!context.isSuccess) return;
+    final R2 result2 = context.value;
+    context.value = Sequence2<R1, R2>(result1, result2);
   }
 
   @override

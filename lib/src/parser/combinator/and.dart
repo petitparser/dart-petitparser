@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'delegate.dart';
 
@@ -23,19 +22,12 @@ class AndParser<R> extends DelegateParser<R, R> {
   AndParser(super.delegate);
 
   @override
-  Result<R> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return context.success(result.value);
-    } else {
-      return result;
+  void parseOn(Context context) {
+    final position = context.position;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.position = position;
     }
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    final result = delegate.fastParseOn(buffer, position);
-    return result < 0 ? -1 : position;
   }
 
   @override

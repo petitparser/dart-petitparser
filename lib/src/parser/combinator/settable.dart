@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 import '../misc/failure.dart';
@@ -42,11 +41,7 @@ class SettableParser<R> extends DelegateParser<R, R>
   Parser<R> resolve() => delegate;
 
   @override
-  Result<R> parseOn(Context context) => delegate.parseOn(context);
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
+  void parseOn(Context context) => delegate.parseOn(context);
 
   @override
   SettableParser<R> copy() => SettableParser<R>(delegate);

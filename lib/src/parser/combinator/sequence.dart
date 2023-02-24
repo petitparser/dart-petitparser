@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../utils/sequential.dart';
 import 'list.dart';
@@ -47,29 +46,18 @@ class SequenceParser<T> extends ListParser<T, List<T>>
   SequenceParser(super.children);
 
   @override
-  Result<List<T>> parseOn(Context context) {
-    var current = context;
-    final elements = <T>[];
+  void parseOn(Context context) {
+    final result = <T>[];
     for (var i = 0; i < children.length; i++) {
-      final result = children[i].parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
-      elements.add(result.value);
-      current = result;
-    }
-    return current.success(elements);
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    for (var i = 0; i < children.length; i++) {
-      position = children[i].fastParseOn(buffer, position);
-      if (position < 0) {
-        return position;
+      children[i].parseOn(context);
+      if (context.isSuccess) {
+        result.add(context.value);
+      } else {
+        return;
       }
     }
-    return position;
+    context.isSuccess = true;
+    context.value = result;
   }
 
   @override

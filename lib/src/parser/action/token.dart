@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../../core/token.dart';
 import '../combinator/delegate.dart';
@@ -23,20 +22,14 @@ class TokenParser<R> extends DelegateParser<R, Token<R>> {
   TokenParser(super.delegate);
 
   @override
-  Result<Token<R>> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      final token = Token<R>(
-          result.value, context.buffer, context.position, result.position);
-      return result.success(token);
-    } else {
-      return result.failure(result.message);
+  void parseOn(Context context) {
+    final position = context.position;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.value =
+          Token<R>(context.value, context.buffer, position, context.position);
     }
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
 
   @override
   TokenParser<R> copy() => TokenParser<R>(delegate);

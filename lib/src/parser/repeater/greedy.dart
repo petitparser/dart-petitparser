@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'lazy.dart';
 import 'limited.dart';
@@ -53,75 +52,35 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   GreedyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
-  Result<List<R>> parseOn(Context context) {
-    var current = context;
+  void parseOn(Context context) {
     final elements = <R>[];
     while (elements.length < min) {
-      final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
-      elements.add(result.value);
-      current = result;
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      elements.add(context.value);
     }
-    final contexts = <Context>[current];
+    final positions = <int>[context.position];
     while (elements.length < max) {
-      final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        break;
-      }
-      elements.add(result.value);
-      contexts.add(current = result);
+      delegate.parseOn(context);
+      if (!context.isSuccess) break;
+      elements.add(context.value);
+      positions.add(context.position);
     }
     for (;;) {
-      final limiter = limit.parseOn(contexts.last);
-      if (limiter.isSuccess) {
-        return contexts.last.success(elements);
+      context.position = positions.last;
+      limit.parseOn(context);
+      if (context.isSuccess) {
+        context.position = positions.last;
+        context.value = elements;
+        return;
       }
       if (elements.isEmpty) {
-        return limiter.failure(limiter.message);
-      }
-      contexts.removeLast();
-      elements.removeLast();
-      if (contexts.isEmpty) {
-        return limiter.failure(limiter.message);
-      }
-    }
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    var count = 0;
-    var current = position;
-    while (count < min) {
-      final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
-      }
-      current = result;
-      count++;
-    }
-    final positions = <int>[current];
-    while (count < max) {
-      final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        break;
-      }
-      positions.add(current = result);
-      count++;
-    }
-    for (;;) {
-      final limiter = limit.fastParseOn(buffer, positions.last);
-      if (limiter >= 0) {
-        return positions.last;
-      }
-      if (count == 0) {
-        return -1;
+        return;
       }
       positions.removeLast();
-      count--;
+      elements.removeLast();
       if (positions.isEmpty) {
-        return -1;
+        return;
       }
     }
   }

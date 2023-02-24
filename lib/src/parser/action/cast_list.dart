@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
@@ -17,18 +16,12 @@ class CastListParser<T, R> extends DelegateParser<T, List<R>> {
   CastListParser(super.delegate);
 
   @override
-  Result<List<R>> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return result.success((result.value as List).cast<R>());
-    } else {
-      return result.failure(result.message);
+  void parseOn(Context context) {
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.value = (context.value as List).cast<R>();
     }
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
 
   @override
   CastListParser<T, R> copy() => CastListParser<T, R>(delegate);

@@ -3,7 +3,6 @@
 import 'package:meta/meta.dart';
 
 import '../../../context/context.dart';
-import '../../../context/result.dart';
 import '../../../core/parser.dart';
 import '../../../shared/annotations.dart';
 import '../../action/map.dart';
@@ -52,53 +51,33 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
   Parser<R8> parser8;
 
   @override
-  Result<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>> parseOn(Context context) {
-    final result1 = parser1.parseOn(context);
-    if (result1.isFailure) return result1.failure(result1.message);
-    final result2 = parser2.parseOn(result1);
-    if (result2.isFailure) return result2.failure(result2.message);
-    final result3 = parser3.parseOn(result2);
-    if (result3.isFailure) return result3.failure(result3.message);
-    final result4 = parser4.parseOn(result3);
-    if (result4.isFailure) return result4.failure(result4.message);
-    final result5 = parser5.parseOn(result4);
-    if (result5.isFailure) return result5.failure(result5.message);
-    final result6 = parser6.parseOn(result5);
-    if (result6.isFailure) return result6.failure(result6.message);
-    final result7 = parser7.parseOn(result6);
-    if (result7.isFailure) return result7.failure(result7.message);
-    final result8 = parser8.parseOn(result7);
-    if (result8.isFailure) return result8.failure(result8.message);
-    return result8.success(Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>(
-        result1.value,
-        result2.value,
-        result3.value,
-        result4.value,
-        result5.value,
-        result6.value,
-        result7.value,
-        result8.value));
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    position = parser1.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser2.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser3.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser4.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser5.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser6.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser7.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser8.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    return position;
+  void parseOn(Context context) {
+    parser1.parseOn(context);
+    if (!context.isSuccess) return;
+    final R1 result1 = context.value;
+    parser2.parseOn(context);
+    if (!context.isSuccess) return;
+    final R2 result2 = context.value;
+    parser3.parseOn(context);
+    if (!context.isSuccess) return;
+    final R3 result3 = context.value;
+    parser4.parseOn(context);
+    if (!context.isSuccess) return;
+    final R4 result4 = context.value;
+    parser5.parseOn(context);
+    if (!context.isSuccess) return;
+    final R5 result5 = context.value;
+    parser6.parseOn(context);
+    if (!context.isSuccess) return;
+    final R6 result6 = context.value;
+    parser7.parseOn(context);
+    if (!context.isSuccess) return;
+    final R7 result7 = context.value;
+    parser8.parseOn(context);
+    if (!context.isSuccess) return;
+    final R8 result8 = context.value;
+    context.value = Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>(
+        result1, result2, result3, result4, result5, result6, result7, result8);
   }
 
   @override

@@ -926,26 +926,6 @@ void main() {
     });
   });
   group('optimize', () {
-    group('remove settable (deprecated)', () {
-      test('basic settable', () {
-        final input = lowercase().settable();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase()), isTrue);
-      });
-      test('nested settable', () {
-        final input = lowercase().settable().star();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase().star()), isTrue);
-      });
-      test('double settable', () {
-        final input = lowercase().settable().settable();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase()), isTrue);
-      });
-    });
     test('remove duplicate', () {
       final input = lowercase() & lowercase();
       final output = removeDuplicates(input);

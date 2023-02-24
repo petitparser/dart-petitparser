@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 
 /// Returns a parser that consumes nothing and fails.
@@ -19,10 +18,10 @@ class FailureParser<R> extends Parser<R> {
   final String message;
 
   @override
-  Result<R> parseOn(Context context) => context.failure<R>(message);
-
-  @override
-  int fastParseOn(String buffer, int position) => -1;
+  void parseOn(Context context) {
+    context.isSuccess = false;
+    context.message = message;
+  }
 
   @override
   String toString() => '${super.toString()}[$message]';

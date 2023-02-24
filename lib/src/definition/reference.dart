@@ -2,35 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
 import 'internal/reference.dart';
-import 'internal/undefined.dart';
 import 'resolve.dart';
-
-/// Creates a [Parser] from a [function] reference, possibly with the given
-/// arguments [arg1], [arg2], [arg3], ...
-///
-/// This method doesn't work well in strong mode as it perform type checks at
-/// runtime only. Depending on the argument count of your function consider
-/// using one of the strongly typed alternatives [ref0], [ref1], [ref2], ...
-/// instead.
-@Deprecated('Use `ref0`, `ref1`, `ref2`, ... instead')
-@useResult
-Parser<T> ref<T>(
-  Function function, [
-  dynamic arg1 = undefined,
-  dynamic arg2 = undefined,
-  dynamic arg3 = undefined,
-  dynamic arg4 = undefined,
-  dynamic arg5 = undefined,
-  dynamic arg6 = undefined,
-  dynamic arg7 = undefined,
-  dynamic arg8 = undefined,
-  dynamic arg9 = undefined,
-]) {
-  final arguments = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]
-      .takeWhile((each) => each != undefined)
-      .toList(growable: false);
-  return ReferenceParser<T>(function, arguments);
-}
 
 /// Creates a [Parser] from a [function] without arguments.
 ///

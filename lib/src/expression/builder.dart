@@ -85,13 +85,9 @@ class ExpressionBuilder<T> {
   /// Builds the expression parser.
   @useResult
   Parser<T> build() {
-    final primitives = <Parser<T>>[
-      ..._primitives,
-      ..._groups.expand((group) => group.primitives),
-    ];
-    assert(primitives.isNotEmpty, 'At least one primitive parser expected');
+    assert(_primitives.isNotEmpty, 'At least one primitive parser expected');
     final parser = _groups.fold<Parser<T>>(
-      buildChoice(primitives),
+      buildChoice(_primitives),
       (parser, group) => group.build(parser),
     );
     _loopback.set(parser);

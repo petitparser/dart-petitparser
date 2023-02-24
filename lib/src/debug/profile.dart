@@ -37,9 +37,8 @@ Parser<T> profile<T>(Parser<T> root,
       return parser.callCC((continuation, context) {
         frame.count++;
         frame.stopwatch.start();
-        final result = continuation(context);
+        continuation(context);
         frame.stopwatch.stop();
-        return result;
       });
     } else {
       return parser;

@@ -89,26 +89,14 @@ Future<void> generateImplementation(int index) async {
   }
   out.writeln();
   out.writeln('@override');
-  out.writeln('Result<Sequence$index<${resultTypes.join(', ')}>> '
-      'parseOn(Context context) {');
+  out.writeln('void parseOn(Context context) {');
   for (var i = 0; i < index; i++) {
-    out.writeln('final ${resultNames[i]} = ${parserNames[i]}'
-        '.parseOn(${i == 0 ? 'context' : resultNames[i - 1]});');
-    out.writeln('if (${resultNames[i]}.isFailure) '
-        'return ${resultNames[i]}.failure(${resultNames[i]}.message);');
+    out.writeln('${parserNames[i]}.parseOn(context);');
+    out.writeln('if (!context.isSuccess) return;');
+    out.writeln('final ${resultTypes[i]} ${resultNames[i]} = context.value;');
   }
-  out.writeln('return ${resultNames[index - 1]}.success('
-      'Sequence$index<${resultTypes.join(', ')}>'
-      '(${resultNames.map((each) => '$each.value').join(', ')}));');
-  out.writeln('}');
-  out.writeln();
-  out.writeln('@override');
-  out.writeln('int fastParseOn(String buffer, int position) {');
-  for (var i = 0; i < index; i++) {
-    out.writeln('position = ${parserNames[i]}.fastParseOn(buffer, position);');
-    out.writeln('if (position < 0) return -1;');
-  }
-  out.writeln('return position;');
+  out.writeln('context.value = Sequence$index<${resultTypes.join(', ')}>'
+      '(${resultNames.join(', ')});');
   out.writeln('}');
   out.writeln();
   out.writeln('@override');

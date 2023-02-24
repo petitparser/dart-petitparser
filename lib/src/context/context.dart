@@ -1,38 +1,48 @@
-import 'package:meta/meta.dart';
-
-import '../core/token.dart';
-import '../shared/annotations.dart';
 import 'failure.dart';
+import 'result.dart';
 import 'success.dart';
 
-/// An immutable parse context.
-@immutable
 class Context {
-  const Context(this.buffer, this.position);
+  Context(this.buffer, {this.position = 0});
 
-  /// The buffer we are working on.
+  /// The input the parser is being run on.
   final String buffer;
 
-  /// The current position in the [buffer].
-  final int position;
+  /// The current position in the parser input.
+  int position;
 
-  /// Returns a result indicating a parse success.
-  @inlineVm
-  @inlineJs
-  @useResult
-  Success<R> success<R>(R result, [int? position]) =>
-      Success<R>(buffer, position ?? this.position, result);
+  /// Whether or not the parse is currently successful.
+  bool isSuccess = true;
 
-  /// Returns a result indicating a parse failure.
-  @inlineVm
-  @inlineJs
-  @useResult
-  Failure<R> failure<R>(String message, [int? position]) =>
-      Failure<R>(buffer, position ?? this.position, message);
+  /// The currently successful read value.
+  dynamic value;
 
-  /// Returns the current line:column position in the [buffer].
-  String toPositionString() => Token.positionString(buffer, position);
+  /// The currently read error.
+  String message = '';
+
+  /// Whether or not the parse is prevented from backtracking.
+  bool isCut = true;
+
+  // Marks the context as a success.
+  void success(dynamic value, {int? position}) {
+    isSuccess = true;
+    this.value = value;
+    if (position != null) this.position = position;
+  }
+
+  // Marks the context as a failure.
+  void failure(String message, {int? position}) {
+    isSuccess = false;
+    this.message = message;
+    if (position != null) this.position = position;
+  }
+
+  // Converts the current state of the context to a [Result].
+  Result<T> toResult<T>() => isSuccess
+      ? Success<T>(buffer, position, value)
+      : Failure<T>(buffer, position, message);
 
   @override
-  String toString() => 'Context[${toPositionString()}]';
+  String toString() => 'Context{position: $position, isSuccess: $isSuccess, '
+      'value: $value, message: $message, isCut: $isCut}';
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.0 (Unpublished)
+
+- Changed execution model of PetitParser.
+
 ## 5.3.0 (Unpublished)
 
 - Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.

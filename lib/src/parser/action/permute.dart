@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
@@ -26,22 +25,15 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
   final List<int> indexes;
 
   @override
-  Result<List<R>> parseOn(Context context) {
-    final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      final value = result.value;
-      final values = indexes
+  void parseOn(Context context) {
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      final value = context.value as List<R>;
+      context.value = indexes
           .map((index) => value[index < 0 ? value.length + index : index])
           .toList(growable: false);
-      return result.success(values);
-    } else {
-      return result.failure(result.message);
     }
   }
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
 
   @override
   PermuteParser<R> copy() => PermuteParser<R>(delegate, indexes);

@@ -3,7 +3,6 @@
 import 'package:meta/meta.dart';
 
 import '../../../context/context.dart';
-import '../../../context/result.dart';
 import '../../../core/parser.dart';
 import '../../../shared/annotations.dart';
 import '../../action/map.dart';
@@ -34,26 +33,17 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
   Parser<R3> parser3;
 
   @override
-  Result<Sequence3<R1, R2, R3>> parseOn(Context context) {
-    final result1 = parser1.parseOn(context);
-    if (result1.isFailure) return result1.failure(result1.message);
-    final result2 = parser2.parseOn(result1);
-    if (result2.isFailure) return result2.failure(result2.message);
-    final result3 = parser3.parseOn(result2);
-    if (result3.isFailure) return result3.failure(result3.message);
-    return result3.success(
-        Sequence3<R1, R2, R3>(result1.value, result2.value, result3.value));
-  }
-
-  @override
-  int fastParseOn(String buffer, int position) {
-    position = parser1.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser2.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    position = parser3.fastParseOn(buffer, position);
-    if (position < 0) return -1;
-    return position;
+  void parseOn(Context context) {
+    parser1.parseOn(context);
+    if (!context.isSuccess) return;
+    final R1 result1 = context.value;
+    parser2.parseOn(context);
+    if (!context.isSuccess) return;
+    final R2 result2 = context.value;
+    parser3.parseOn(context);
+    if (!context.isSuccess) return;
+    final R3 result3 = context.value;
+    context.value = Sequence3<R1, R2, R3>(result1, result2, result3);
   }
 
   @override

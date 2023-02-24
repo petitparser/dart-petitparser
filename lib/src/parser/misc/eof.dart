@@ -1,11 +1,10 @@
 import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
-import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/sequence.dart';
 
-extension EndOfInputParserExtension<T> on Parser<T> {
+extension EndOfInputParserExtension<R> on Parser<R> {
   /// Returns a parser that succeeds only if the receiver consumes the complete
   /// input, otherwise return a failure with the optional [message].
   ///
@@ -13,7 +12,7 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   @useResult
-  Parser<T> end([String message = 'end of input expected']) =>
+  Parser<R> end([String message = 'end of input expected']) =>
       seq2(this, endOfInput(message)).map2((value, _) => value);
 }
 
@@ -30,14 +29,15 @@ class EndOfInputParser extends Parser<void> {
   final String message;
 
   @override
-  Result<void> parseOn(Context context) =>
-      context.position < context.buffer.length
-          ? context.failure(message)
-          : context.success(null);
-
-  @override
-  int fastParseOn(String buffer, int position) =>
-      position < buffer.length ? -1 : position;
+  void parseOn(Context context) {
+    if (context.position < context.buffer.length) {
+      context.isSuccess = false;
+      context.message = message;
+    } else {
+      context.isSuccess = true;
+      context.value = null;
+    }
+  }
 
   @override
   String toString() => '${super.toString()}[$message]';

@@ -1,9 +1,21 @@
-import '../core/exception.dart';
-import 'context.dart';
+import 'package:meta/meta.dart';
 
-/// An immutable parse result.
-abstract class Result<R> extends Context {
-  const Result(super.buffer, super.position);
+import '../core/exception.dart';
+import '../core/token.dart';
+import 'context.dart';
+import 'failure.dart';
+import 'success.dart';
+
+/// An immutable parse result that is either a [Success] or a [Failure].
+@immutable
+abstract class Result<T> {
+  const Result(this.buffer, this.position);
+
+  /// The input buffer of this result.
+  final String buffer;
+
+  /// The position in the parser input.
+  final int position;
 
   /// Returns `true` if this result indicates a parse success.
   bool get isSuccess => false;
@@ -13,12 +25,15 @@ abstract class Result<R> extends Context {
 
   /// Returns the parsed value of this result, or throws a [ParserException]
   /// if this is a parse failure.
-  R get value;
+  T get value;
 
   /// Returns the error message of this result, or throws an [UnsupportedError]
-  /// if this is a parse success.
+  /// if this is a [Success].
   String get message;
 
-  /// Transforms the result with a [callback].
-  Result<T> map<T>(T Function(R element) callback);
+  /// Converts a result back into a [Context].
+  Context toContext() => Context(buffer, position: position);
+
+  /// Returns the current line:column position in the [buffer].
+  String toPositionString() => Token.positionString(buffer, position);
 }
