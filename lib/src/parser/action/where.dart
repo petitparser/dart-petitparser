@@ -46,7 +46,10 @@ class WhereParser<T> extends DelegateParser<T, T> {
   @override
   void parseOn(Context context) {
     final position = context.position;
+    final isSkip = context.isSkip;
+    context.isSkip = false;
     delegate.parseOn(context);
+    context.isSkip = isSkip;
     if (context.isSuccess) {
       final value = context.value as T;
       if (!predicate(value)) {

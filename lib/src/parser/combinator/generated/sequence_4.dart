@@ -37,20 +37,31 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
 
   @override
   void parseOn(Context context) {
-    parser1.parseOn(context);
-    if (!context.isSuccess) return;
-    final result1 = context.value as R1;
-    parser2.parseOn(context);
-    if (!context.isSuccess) return;
-    final result2 = context.value as R2;
-    parser3.parseOn(context);
-    if (!context.isSuccess) return;
-    final result3 = context.value as R3;
-    parser4.parseOn(context);
-    if (!context.isSuccess) return;
-    final result4 = context.value as R4;
-    context.value =
-        Sequence4<R1, R2, R3, R4>(result1, result2, result3, result4);
+    if (context.isSkip) {
+      parser1.parseOn(context);
+      if (!context.isSuccess) return;
+      parser2.parseOn(context);
+      if (!context.isSuccess) return;
+      parser3.parseOn(context);
+      if (!context.isSuccess) return;
+      parser4.parseOn(context);
+      if (!context.isSuccess) return;
+    } else {
+      parser1.parseOn(context);
+      if (!context.isSuccess) return;
+      final result1 = context.value as R1;
+      parser2.parseOn(context);
+      if (!context.isSuccess) return;
+      final result2 = context.value as R2;
+      parser3.parseOn(context);
+      if (!context.isSuccess) return;
+      final result3 = context.value as R3;
+      parser4.parseOn(context);
+      if (!context.isSuccess) return;
+      final result4 = context.value as R4;
+      context.value =
+          Sequence4<R1, R2, R3, R4>(result1, result2, result3, result4);
+    }
   }
 
   @override

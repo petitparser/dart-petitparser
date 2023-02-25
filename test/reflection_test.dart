@@ -758,22 +758,6 @@ void main() {
           expect(results, isEmpty);
         });
       });
-      group('unnecessary resolvable', () {
-        test('with issue', () {
-          final parser = digit().flatten();
-          final results = linter(parser, rules: const [UnoptimizedFlatten()]);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Unoptimized flatten');
-        });
-        test('without issue', () {
-          final parser = digit().flatten('digit expected');
-          final results = linter(parser, rules: const [UnoptimizedFlatten()]);
-          expect(results, isEmpty);
-        });
-      });
       group('unreachable choice', () {
         test('with issue', () {
           final parser = [
@@ -825,7 +809,6 @@ void main() {
           expect(result.parser, cutter);
           expect(result.type, LinterType.info);
           expect(result.title, 'Unused cut');
-          print(result.description);
         });
         test('with issue (used and not used)', () {
           final cutter = cut();
@@ -836,7 +819,6 @@ void main() {
           expect(result.parser, cutter);
           expect(result.type, LinterType.info);
           expect(result.title, 'Unused cut');
-          print(result.description);
         });
         test('without issue', () {
           final parser = cut().optional();

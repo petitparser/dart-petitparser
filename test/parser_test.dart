@@ -111,6 +111,14 @@ void main() {
         expect(parser, isParseSuccess('123', '123'));
         expect(parser, isParseSuccess('1234', '1234'));
       });
+
+      test('nested', () {
+        final parser =
+            digit().star().flatten().plusSeparated(char(',')).flatten();
+        expect(parser, isParseSuccess('1', '1'));
+        expect(parser, isParseSuccess('1,12', '1,12'));
+        expect(parser, isParseSuccess('1,12,123', '1,12,123'));
+      });
     });
     group('where', () {
       expectParserInvariants(any().where((value) => true));
@@ -1323,6 +1331,16 @@ void main() {
         final parser = failure('failure');
         expect(parser, isParseFailure('', message: 'failure'));
         expect(parser, isParseFailure('a', message: 'failure'));
+      });
+    });
+    group('failure message', () {
+      expectParserInvariants(digit().failure('NaN'));
+      test('default', () {
+        final parser = digit().repeat(2).failure('NaN');
+        expect(parser, isParseFailure('', message: 'NaN'));
+        expect(parser, isParseFailure('a', message: 'NaN'));
+        expect(parser, isParseFailure('1a', message: 'NaN'));
+        expect(parser, isParseSuccess('12', ['1', '2']));
       });
     });
     group('labeled', () {

@@ -60,7 +60,7 @@ class SeparatedRepeatingParser<R, S>
   Parser<S> separator;
 
   @override
-  void parseOn(Context context) {
+  void parseValueOn(Context context) {
     final elements = <R>[];
     final separators = <S>[];
     while (elements.length < min) {
@@ -96,6 +96,38 @@ class SeparatedRepeatingParser<R, S>
       elements.add(context.value);
     }
     context.value = SeparatedList(elements, separators);
+  }
+
+  @override
+  void parseSkipOn(Context context) {
+    var count = 0;
+    while (count < min) {
+      if (count > 0) {
+        separator.parseOn(context);
+        if (!context.isSuccess) return;
+      }
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      count++;
+    }
+    while (count < max) {
+      final position = context.position;
+      if (count > 0) {
+        separator.parseOn(context);
+        if (!context.isSuccess) {
+          context.isSuccess = true;
+          context.position = position;
+          return;
+        }
+      }
+      delegate.parseOn(context);
+      if (!context.isSuccess) {
+        context.isSuccess = true;
+        context.position = position;
+        return;
+      }
+      count++;
+    }
   }
 
   @override

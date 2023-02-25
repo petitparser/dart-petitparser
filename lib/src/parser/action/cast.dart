@@ -17,7 +17,7 @@ class CastParser<T, R> extends DelegateParser<T, R> {
   @override
   void parseOn(Context context) {
     delegate.parseOn(context);
-    if (context.isSuccess) {
+    if (context.isSuccess && !context.isSkip) {
       context.value = context.value as R;
     }
   }

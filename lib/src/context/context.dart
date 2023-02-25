@@ -1,4 +1,3 @@
-import '../shared/annotations.dart';
 import 'failure.dart';
 import 'result.dart';
 import 'success.dart';
@@ -10,6 +9,7 @@ class Context {
     this.isSuccess = true,
     this.value,
     this.message = '',
+    this.isSkip = false,
     this.isCut = true,
   });
 
@@ -28,44 +28,15 @@ class Context {
   /// The currently read error.
   String message;
 
-  /// Whether or not the parse is prevented from backtracking.
+  /// If `true`, the calling parser is ignoring the returned [value] of called
+  /// children. Children might decide to skip creating costly values.
+  bool isSkip;
+
+  /// If `true`, a called parser desired to abort backtracking at the next
+  /// error.
   bool isCut;
 
-  // Marks the context as a success.
-  @inlineVm
-  @inlineJs
-  void success(dynamic value, {int? position, bool? isCut}) {
-    isSuccess = true;
-    this.value = value;
-    if (position != null) this.position = position;
-    if (isCut != null) this.isCut = isCut;
-  }
-
-  // Marks the context as a failure.
-  @inlineVm
-  @inlineJs
-  void failure(String message, {int? position, bool? isCut}) {
-    isSuccess = false;
-    this.message = message;
-    if (position != null) this.position = position;
-    if (isCut != null) this.isCut = isCut;
-  }
-
-  /// Returns a shallow copy of this instance.
-  @inlineVm
-  @inlineJs
-  Context copy() => Context(
-        buffer,
-        position: position,
-        isSuccess: isSuccess,
-        value: value,
-        message: message,
-        isCut: isCut,
-      );
-
   /// Converts the current state of the context to a [Result].
-  @inlineVm
-  @inlineJs
   Result<T> toResult<T>() => isSuccess
       ? Success<T>(buffer, position, value)
       : Failure<T>(buffer, position, message);

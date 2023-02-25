@@ -49,6 +49,8 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   @inlineVm
   @inlineJs
   void _trim(Parser parser, Context context) {
+    final isSkip = context.isSkip;
+    context.isSkip = true;
     for (;;) {
       final position = context.position;
       parser.parseOn(context);
@@ -58,6 +60,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
         break;
       }
     }
+    context.isSkip = isSkip;
   }
 
   @override

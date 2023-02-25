@@ -89,6 +89,12 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
   out.writeln('@override');
   out.writeln('void parseOn(Context context) {');
+  out.writeln('if (context.isSkip) {');
+  for (var i = 0; i < index; i++) {
+    out.writeln('${parserNames[i]}.parseOn(context);');
+    out.writeln('if (!context.isSuccess) return;');
+  }
+  out.writeln('} else {');
   for (var i = 0; i < index; i++) {
     out.writeln('${parserNames[i]}.parseOn(context);');
     out.writeln('if (!context.isSuccess) return;');
@@ -97,6 +103,7 @@ Future<void> generateImplementation(int index) async {
   }
   out.writeln('context.value = Sequence$index<${resultTypes.join(', ')}>'
       '(${resultNames.join(', ')});');
+  out.writeln('}');
   out.writeln('}');
   out.writeln();
   out.writeln('@override');

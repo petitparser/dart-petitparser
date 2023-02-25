@@ -56,7 +56,7 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
   PossessiveRepeatingParser(super.parser, super.min, super.max);
 
   @override
-  void parseOn(Context context) {
+  void parseValueOn(Context context) {
     final elements = <R>[];
     while (elements.length < min) {
       delegate.parseOn(context);
@@ -81,6 +81,33 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
       }
     }
     context.value = elements;
+    context.isCut |= isCut;
+  }
+
+  @override
+  void parseSkipOn(Context context) {
+    var count = 0;
+    while (count < min) {
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      count++;
+    }
+    final isCut = context.isCut;
+    while (count < max) {
+      final position = context.position;
+      context.isCut = false;
+      delegate.parseOn(context);
+      if (context.isSuccess) {
+        count++;
+      } else if (context.isCut) {
+        return;
+      } else {
+        context.isSuccess = true;
+        context.position = position;
+        context.isCut |= isCut;
+        return;
+      }
+    }
     context.isCut |= isCut;
   }
 

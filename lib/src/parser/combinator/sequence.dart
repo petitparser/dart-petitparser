@@ -47,17 +47,25 @@ class SequenceParser<T> extends ListParser<T, List<T>>
 
   @override
   void parseOn(Context context) {
-    final result = <T>[];
-    for (var i = 0; i < children.length; i++) {
-      children[i].parseOn(context);
-      if (context.isSuccess) {
-        result.add(context.value);
-      } else {
-        return;
+    if (context.isSkip) {
+      for (var i = 0; i < children.length; i++) {
+        children[i].parseOn(context);
+        if (!context.isSuccess) return;
       }
+      context.isSuccess = true;
+    } else {
+      final result = <T>[];
+      for (var i = 0; i < children.length; i++) {
+        children[i].parseOn(context);
+        if (context.isSuccess) {
+          result.add(context.value);
+        } else {
+          return;
+        }
+      }
+      context.isSuccess = true;
+      context.value = result;
     }
-    context.isSuccess = true;
-    context.value = result;
   }
 
   @override

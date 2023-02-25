@@ -7,7 +7,7 @@ extension AcceptParser<T> on Parser<T> {
   /// For example, `letter().plus().accept('abc')` returns `true`, and
   /// `letter().plus().accept('123')` returns `false`.
   bool accept(String input) {
-    final context = Context(input);
+    final context = Context(input, isSkip: true);
     parseOn(context);
     return context.isSuccess;
   }
