@@ -25,7 +25,7 @@ Matcher isParserEqual<T>(Parser<T> parser) => test.predicate(
 
 /// Returns a [Matcher] that asserts the context under test is a [Success].
 /// Optionally also asserts [position] and [value].
-TypeMatcher<Success<T>> isSuccessContext<T>({
+Matcher isSuccessContext<T>({
   dynamic position = anything,
   dynamic value = anything,
 }) =>
@@ -55,7 +55,7 @@ Matcher isParseSuccess<T>(
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
-TypeMatcher<Failure<T>> isFailureContext<T>({
+Matcher isFailureContext<T>({
   dynamic position = anything,
   dynamic message = anything,
 }) =>
