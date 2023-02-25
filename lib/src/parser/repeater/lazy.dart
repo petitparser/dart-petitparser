@@ -59,27 +59,33 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       if (!context.isSuccess) return;
       elements.add(context.value);
     }
+    final isCut = context.isCut;
     for (;;) {
       final position = context.position;
+      context.isCut = false;
       limit.parseOn(context);
       if (context.isSuccess) {
         context.position = position;
         context.value = elements;
+        context.isCut |= isCut;
         return;
-      }
-      if (elements.length >= max) {
+      } else if (context.isCut || elements.length >= max) {
         return;
       }
       final limitPosition = context.position;
       final limitMessage = context.message;
       context.position = position;
+      context.isCut = false;
       delegate.parseOn(context);
-      if (!context.isSuccess) {
+      if (context.isSuccess) {
+        elements.add(context.value);
+      } else if (context.isCut) {
+        return;
+      } else {
         context.position = limitPosition;
         context.message = limitMessage;
         return;
       }
-      elements.add(context.value);
     }
   }
 

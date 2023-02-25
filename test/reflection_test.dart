@@ -815,6 +815,35 @@ void main() {
           expect(results, isEmpty);
         });
       });
+      group('unused cut', () {
+        test('with issue', () {
+          final cutter = cut();
+          final parser = seq2(digit(), cutter);
+          final results = linter(parser, rules: const [UnusedCut()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, cutter);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Unused cut');
+          print(result.description);
+        });
+        test('with issue (used and not used)', () {
+          final cutter = cut();
+          final parser = seq3(digit(), cutter, cutter.optional());
+          final results = linter(parser, rules: const [UnusedCut()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, cutter);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Unused cut');
+          print(result.description);
+        });
+        test('without issue', () {
+          final parser = cut().optional();
+          final results = linter(parser, rules: const [UnusedCut()]);
+          expect(results, isEmpty);
+        });
+      });
       group('unused result', () {
         test('with issue', () {
           final parser = digit().map(int.parse).star().flatten();

@@ -63,18 +63,25 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
       if (!context.isSuccess) return;
       elements.add(context.value);
     }
+    final isCut = context.isCut;
     while (elements.length < max) {
       final position = context.position;
+      context.isCut = false;
       delegate.parseOn(context);
-      if (!context.isSuccess) {
+      if (context.isSuccess) {
+        elements.add(context.value);
+      } else if (context.isCut) {
+        return;
+      } else {
         context.isSuccess = true;
         context.position = position;
         context.value = elements;
+        context.isCut |= isCut;
         return;
       }
-      elements.add(context.value);
     }
     context.value = elements;
+    context.isCut |= isCut;
   }
 
   @override

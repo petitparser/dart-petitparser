@@ -8,9 +8,14 @@ import '../../parser/action/pick.dart';
 import '../../parser/action/token.dart';
 import '../../parser/action/where.dart';
 import '../../parser/combinator/choice.dart';
+import '../../parser/combinator/optional.dart';
 import '../../parser/combinator/settable.dart';
+import '../../parser/misc/cut.dart';
 import '../../parser/misc/failure.dart';
+import '../../parser/repeater/lazy.dart';
+import '../../parser/repeater/possessive.dart';
 import '../../parser/repeater/repeating.dart';
+import '../../parser/repeater/separated.dart';
 import '../../parser/utils/resolvable.dart';
 import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
@@ -195,6 +200,45 @@ class UnresolvedSettable extends LinterRule {
   }
 }
 
+class UnusedCut extends LinterRule {
+  const UnusedCut() : super(LinterType.info, 'Unused cut');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is CutParser) {
+      final paths = analyzer.findAllPathsTo(analyzer.root, parser).toList();
+      final noBacktrackPaths =
+          paths.where((path) => !path.parsers.any(isBacktracking)).toList();
+      if (noBacktrackPaths.isNotEmpty) {
+        final backtrackPath =
+            paths.where((path) => path.parsers.any(isBacktracking)).toList();
+        callback(LinterIssue(
+            this,
+            parser,
+            [
+              'The cut parsers prevents backtracking from happening.',
+              if (backtrackPath.isEmpty)
+                'Yet, this parser is only called through paths that do not '
+                    'backtrack: ${noBacktrackPaths.first.description}.'
+              else
+                'While this parser is called through at least one path that '
+                    'backtracks: ${backtrackPath.first.description}; it is '
+                    'also called through at least one path that does not: '
+                    '${noBacktrackPaths.first.description}.',
+              'This might point to an inefficient grammar or a possible bug.'
+            ].join(' ')));
+      }
+    }
+  }
+
+  bool isBacktracking(Parser parser) =>
+      parser is ChoiceParser ||
+      parser is OptionalParser ||
+      parser is PossessiveRepeatingParser ||
+      parser is LazyRepeatingParser ||
+      parser is SeparatedRepeatingParser;
+}
+
 class UnusedResult extends LinterRule {
   const UnusedResult() : super(LinterType.info, 'Unused result');
 
@@ -202,24 +246,10 @@ class UnusedResult extends LinterRule {
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser is FlattenParser) {
       final deepChildren = analyzer.allChildren(parser);
-      final ignoredResults = deepChildren
-          .where((parser) =>
-              parser is CastParser ||
-              parser is CastListParser ||
-              parser is FlattenParser ||
-              parser is MapParser ||
-              parser is PermuteParser ||
-              parser is PickParser ||
-              parser is TokenParser ||
-              parser is WhereParser)
-          .toSet();
+      final ignoredResults = deepChildren.where(isResultProducing).toSet();
       if (ignoredResults.isNotEmpty) {
         final path = analyzer.findPath(
             parser, (path) => ignoredResults.contains(path.target))!;
-        final description = [
-          for (var i = 0; i < path.indexes.length; i++)
-            '${path.indexes[i]}: ${path.parsers[i + 1]}'
-        ].join(', ');
         callback(LinterIssue(
             this,
             parser,
@@ -227,9 +257,19 @@ class UnusedResult extends LinterRule {
             'instead returns the consumed input. Yet this flatten parser '
             'refers (indirectly) to one or more other parsers that explicitly '
             'produce a result which is then ignored when called from this '
-            'context: $description. This might point to an inefficient grammar '
-            'or a possible bug.'));
+            'context: ${path.description}. This might point to an inefficient '
+            'grammar or a possible bug.'));
       }
     }
   }
+
+  bool isResultProducing(Parser parser) =>
+      parser is CastParser ||
+      parser is CastListParser ||
+      parser is FlattenParser ||
+      parser is MapParser ||
+      parser is PermuteParser ||
+      parser is PickParser ||
+      parser is TokenParser ||
+      parser is WhereParser;
 }

@@ -1096,6 +1096,20 @@ void main() {
         expect(parser, isParseFailure('d', message: '"c" expected'));
         expect(parser, isParseFailure('', message: '"c" expected'));
       });
+      test('cut', () {
+        final parser = [
+          seq3(char('a'), cut(), char('1')),
+          seq3(char('b'), cut(), char('2')),
+        ].toChoiceParser().flatten();
+        expect(parser, isParseSuccess('a1', 'a1'));
+        expect(parser, isParseSuccess('b2', 'b2'));
+        expect(
+            parser, isParseFailure('a2', message: '"1" expected', position: 1));
+        expect(
+            parser, isParseFailure('b1', message: '"2" expected', position: 1));
+        expect(
+            parser, isParseFailure('c', message: '"b" expected', position: 0));
+      });
       test('empty', () {
         expect(() => <Parser>[].toChoiceParser(), throwsA(isAssertionError));
       }, skip: !hasAssertionsEnabled());
@@ -1160,6 +1174,14 @@ void main() {
         expect(parser, isParseSuccess('a', 'a'));
         expect(parser, isParseSuccess('b', '0', position: 0));
         expect(parser, isParseSuccess('', '0'));
+      });
+      test('cut', () {
+        final parser = seq3(char('a'), cut(), char('1')).optional().flatten();
+        expect(parser, isParseSuccess('', ''));
+        expect(parser, isParseSuccess('a1', 'a1'));
+        expect(
+            parser, isParseFailure('a2', message: '"1" expected', position: 1));
+        expect(parser, isParseSuccess('b', '', position: 0));
       });
     });
     group('sequence', () {
@@ -1332,6 +1354,9 @@ void main() {
         expect(parser, isParseSuccess('aa', 2));
         expect(parser, isParseSuccess('aaa', 3));
       });
+    });
+    group('cut', () {
+      expectParserInvariants(cut());
     });
   });
   group('predicate', () {
@@ -1587,6 +1612,9 @@ void main() {
             isParseSuccess('${inputDigit.join()}1', inputDigit,
                 position: inputDigit.length));
       });
+      group('cut', () {
+        // TODO: Not clear what the semantics of a cut in a greedy parser are?
+      });
     });
     group('lazy', () {
       expectParserInvariants(any().starLazy(digit()));
@@ -1684,6 +1712,72 @@ void main() {
             isParseSuccess('${input.join()}1111', input,
                 position: input.length));
       });
+      group('cut', () {
+        test('none', () {
+          final parser = seq2(char('a'), char('b'))
+              .flatten()
+              .starLazy(seq2(char('1'), char('2')).flatten());
+          expect(
+              parser, isParseFailure('', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('1', message: '"2" expected', position: 1));
+          expect(parser,
+              isParseFailure('a', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('ab', message: '"1" expected', position: 2));
+          expect(parser,
+              isParseFailure('ab1', message: '"2" expected', position: 3));
+          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+        });
+        test('on repeater', () {
+          final parser = seq3(char('a'), cut(), char('b'))
+              .flatten()
+              .starLazy(seq2(char('1'), char('2')).flatten());
+          expect(
+              parser, isParseFailure('', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('1', message: '"2" expected', position: 1));
+          expect(parser,
+              isParseFailure('a', message: '"b" expected', position: 1));
+          expect(parser,
+              isParseFailure('ab', message: '"1" expected', position: 2));
+          expect(parser,
+              isParseFailure('ab1', message: '"2" expected', position: 3));
+          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+        });
+        test('on limiter', () {
+          final parser = seq2(char('a'), char('b'))
+              .flatten()
+              .starLazy(seq3(char('1'), cut(), char('2')).flatten());
+          expect(
+              parser, isParseFailure('', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('1', message: '"2" expected', position: 1));
+          expect(parser,
+              isParseFailure('a', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('ab', message: '"1" expected', position: 2));
+          expect(parser,
+              isParseFailure('ab1', message: '"2" expected', position: 3));
+          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+        });
+        test('on both', () {
+          final parser = seq3(char('a'), cut(), char('b'))
+              .flatten()
+              .starLazy(seq3(char('1'), cut(), char('2')).flatten());
+          expect(
+              parser, isParseFailure('', message: '"1" expected', position: 0));
+          expect(parser,
+              isParseFailure('1', message: '"2" expected', position: 1));
+          expect(parser,
+              isParseFailure('a', message: '"b" expected', position: 1));
+          expect(parser,
+              isParseFailure('ab', message: '"1" expected', position: 2));
+          expect(parser,
+              isParseFailure('ab1', message: '"2" expected', position: 3));
+          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+        });
+      });
     });
     group('possessive', () {
       expectParserInvariants(any().star());
@@ -1740,6 +1834,26 @@ void main() {
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
         expect(parser, isParseSuccess('aa', ['a', 'a']));
         expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+      });
+      group('cut', () {
+        test('none', () {
+          final parser = seq2(char('a'), char('b')).flatten().star();
+          expect(parser, isParseSuccess('', isEmpty));
+          expect(parser, isParseSuccess('', isEmpty, position: 0));
+          expect(parser, isParseSuccess('ab', ['ab']));
+          expect(parser, isParseSuccess('aba', ['ab'], position: 2));
+          expect(parser, isParseSuccess('abab', ['ab', 'ab']));
+        });
+        test('on repeater', () {
+          final parser = seq3(char('a'), cut(), char('b')).flatten().star();
+          expect(parser, isParseSuccess('', isEmpty));
+          expect(parser,
+              isParseFailure('a', message: '"b" expected', position: 1));
+          expect(parser, isParseSuccess('ab', ['ab']));
+          expect(parser,
+              isParseFailure('aba', message: '"b" expected', position: 3));
+          expect(parser, isParseSuccess('abab', ['ab', 'ab']));
+        });
       });
     });
     group('separated', () {

@@ -72,6 +72,7 @@ const allLinterRules = [
   UnoptimizedFlatten(),
   UnreachableChoice(),
   UnresolvedSettable(),
+  UnusedCut(),
   UnusedResult(),
 ];
 
