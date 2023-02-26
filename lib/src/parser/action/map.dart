@@ -13,26 +13,26 @@ extension MapParserExtension<T> on Parser<T> {
   /// the number `1` for the input string `'1'`. If the delegate fails, the
   /// production action is not executed and the failure is passed on.
   @useResult
-  Parser<R> map<R>(Callback<T, R> callback, {bool hasSideEffect = false}) =>
-      MapParser<T, R>(this, callback, hasSideEffect);
+  Parser<R> map<R>(Callback<T, R> callback, {bool hasSideEffects = false}) =>
+      MapParser<T, R>(this, callback, hasSideEffects);
 }
 
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
 class MapParser<T, R> extends DelegateParser<T, R> {
-  MapParser(super.delegate, this.callback, this.hasSideEffect);
+  MapParser(super.delegate, this.callback, this.hasSideEffects);
 
   /// The production action to be called.
   final Callback<T, R> callback;
 
   /// If `true`, executes the callback even if the calling parser is not
   /// interested in the value.
-  final bool hasSideEffect;
+  final bool hasSideEffects;
 
   @override
   void parseOn(Context context) {
     if (context.isSkip) {
-      if (hasSideEffect) {
+      if (hasSideEffects) {
         context.isSkip = false;
         delegate.parseOn(context);
         if (context.isSuccess) {
@@ -56,5 +56,5 @@ class MapParser<T, R> extends DelegateParser<T, R> {
       super.hasEqualProperties(other) && callback == other.callback;
 
   @override
-  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffect);
+  MapParser<T, R> copy() => MapParser<T, R>(delegate, callback, hasSideEffects);
 }
