@@ -56,4 +56,3 @@ class ContinuationParser<T, R> extends DelegateParser<T, R> {
   bool hasEqualProperties(ContinuationParser<T, R> other) =>
       super.hasEqualProperties(other) && handler == other.handler;
 }
-
