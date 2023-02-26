@@ -3,6 +3,8 @@ import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart' hide predicate;
 import 'package:test/test.dart' as test show predicate;
 
+import 'context.dart';
+
 /// Returns a [Matcher] that asserts on a [ParserException].
 const isParserException = TypeMatcher<ParserException>();
 
@@ -78,17 +80,21 @@ Matcher isParseSuccess<T>(
   dynamic result, {
   dynamic position,
 }) =>
-    isA<Parser<T>>()
-        .having(
-            (parser) => parser.parse(input),
-            'parse',
-            isSuccess<T>(
-                buffer: input,
-                value: result,
-                position: position ?? input.length))
-        .having((parser) => parser.accept(input), 'accept', isTrue)
-        .having(
-            (parser) => parser.allMatches(input).first, 'allMatches', result);
+    isA<Parser<T>>().having((parser) {
+      final context = DebugContext(input);
+      parser.parseOn(context);
+      return context.toResult();
+    },
+        'parse',
+        isSuccess<T>(
+            buffer: input,
+            value: result,
+            position: position ?? input.length)).having((parser) {
+      final context = DebugContext(input, isSkip: true);
+      parser.parseOn(context);
+      return context.isSuccess;
+    }, 'accept', isTrue).having(
+        (parser) => parser.allMatches(input).first, 'allMatches', result);
 
 /// Returns a [Matcher] that asserts the parser under test yields a parse
 /// failure for the given [input]. If no [position] is provided, assert that

@@ -49,7 +49,6 @@ class WhereParser<T> extends DelegateParser<T, T> {
     final isSkip = context.isSkip;
     context.isSkip = false;
     delegate.parseOn(context);
-    context.isSkip = isSkip;
     if (context.isSuccess) {
       final value = context.value as T;
       if (!predicate(value)) {
@@ -58,6 +57,7 @@ class WhereParser<T> extends DelegateParser<T, T> {
         context.message = messageBuilder(value);
       }
     }
+    context.isSkip = isSkip;
   }
 
   @override

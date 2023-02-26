@@ -35,22 +35,28 @@ class TrimmingParser<R> extends DelegateParser<R, R>
 
   @override
   void parseOn(Context context) {
-    _trim(before, context);
-    delegate.parseOn(context);
-    if (context.isSuccess) {
-      final value = context.value;
+    if (context.isSkip) {
+      _trim(before, context);
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
       _trim(after, context);
-      context.isSuccess = true;
+    } else {
+      context.isSkip = true;
+      _trim(before, context);
+      context.isSkip = false;
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      final value = context.value;
+      context.isSkip = true;
+      _trim(after, context);
+      context.isSkip = false;
       context.value = value;
-      return;
     }
   }
 
   @inlineVm
   @inlineJs
   void _trim(Parser parser, Context context) {
-    final isSkip = context.isSkip;
-    context.isSkip = true;
     for (;;) {
       final position = context.position;
       parser.parseOn(context);
@@ -60,7 +66,6 @@ class TrimmingParser<R> extends DelegateParser<R, R>
         break;
       }
     }
-    context.isSkip = isSkip;
   }
 
   @override
