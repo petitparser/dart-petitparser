@@ -19,8 +19,10 @@ class CharacterParser extends Parser<String> {
     if (position < buffer.length &&
         predicate.test(buffer.codeUnitAt(position))) {
       context.isSuccess = true;
-      context.value = buffer[position];
       context.position = position + 1;
+      if (!context.isSkip) {
+        context.value = buffer[position];
+      }
     } else {
       context.isSuccess = false;
       context.message = message;

@@ -23,8 +23,10 @@ class AnyParser extends Parser<String> {
     final position = context.position;
     if (position < buffer.length) {
       context.isSuccess = true;
-      context.value = buffer[position];
       context.position = position + 1;
+      if (!context.isSkip) {
+        context.value = buffer[position];
+      }
     } else {
       context.isSuccess = false;
       context.message = message;
