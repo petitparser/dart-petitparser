@@ -5,7 +5,7 @@ import '../../core/parser.dart';
 import '../../shared/types.dart';
 import '../combinator/delegate.dart';
 
-extension WhereParserExtension<T> on Parser<T> {
+extension WhereParserExtension<R> on Parser<R> {
   /// Returns a parser that evaluates the [predicate] with the successful
   /// parse result. If the predicate returns `true` the parser proceeds with
   /// the parse result, otherwise a parse failure is created using either
@@ -23,12 +23,12 @@ extension WhereParserExtension<T> on Parser<T> {
   ///     parser.parse('ab');   // ==> Failure: characters do not match
   ///
   @useResult
-  Parser<T> where(
-    Predicate<T> predicate, {
+  Parser<R> where(
+    Predicate<R> predicate, {
     String? message,
-    Callback<T, String>? messageBuilder,
+    Callback<R, String>? messageBuilder,
   }) =>
-      WhereParser<T>(
+      WhereParser<R>(
           this,
           predicate,
           messageBuilder ??
@@ -37,11 +37,11 @@ extension WhereParserExtension<T> on Parser<T> {
                   : (value) => message));
 }
 
-class WhereParser<T> extends DelegateParser<T, T> {
+class WhereParser<R> extends DelegateParser<R, R> {
   WhereParser(super.parser, this.predicate, this.messageBuilder);
 
-  final Predicate<T> predicate;
-  final Callback<T, String> messageBuilder;
+  final Predicate<R> predicate;
+  final Callback<R, String> messageBuilder;
 
   @override
   void parseOn(Context context) {
@@ -50,7 +50,7 @@ class WhereParser<T> extends DelegateParser<T, T> {
     context.isSkip = false;
     delegate.parseOn(context);
     if (context.isSuccess) {
-      final value = context.value as T;
+      final value = context.value as R;
       if (!predicate(value)) {
         context.isSuccess = false;
         context.position = position;
@@ -61,10 +61,10 @@ class WhereParser<T> extends DelegateParser<T, T> {
   }
 
   @override
-  Parser<T> copy() => WhereParser<T>(delegate, predicate, messageBuilder);
+  WhereParser<R> copy() => WhereParser<R>(delegate, predicate, messageBuilder);
 
   @override
-  bool hasEqualProperties(WhereParser<T> other) =>
+  bool hasEqualProperties(WhereParser<R> other) =>
       super.hasEqualProperties(other) &&
       predicate == other.predicate &&
       messageBuilder == other.messageBuilder;

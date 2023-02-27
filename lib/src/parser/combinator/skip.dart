@@ -1,9 +1,11 @@
 import 'package:meta/meta.dart';
 
+import '../../context/context.dart';
 import '../../core/parser.dart';
-import 'sequence.dart';
+import '../utils/sequential.dart';
+import 'delegate.dart';
 
-extension SkipParserExtension<T> on Parser<T> {
+extension SkipParserExtension<R> on Parser<R> {
   /// Returns a parser that consumes input [before] and [after] the receiver,
   /// but discards the parse results of [before] and [after] and only returns
   /// the result of the receiver.
@@ -11,11 +13,77 @@ extension SkipParserExtension<T> on Parser<T> {
   /// For example, the parser `digit().skip(char('['), char(']'))`
   /// returns `'3'` for the input `'[3]'`.
   @useResult
-  Parser<T> skip({Parser<void>? before, Parser<void>? after}) => before == null
-      ? after == null
+  Parser<R> skip({Parser<void>? before, Parser<void>? after}) =>
+      before == null && after == null
           ? this
-          : seq2(this, after).map2((value, _) => value)
-      : after == null
-          ? seq2(before, this).map2((_, value) => value)
-          : seq3(before, this, after).map3((_, value, __) => value);
+          : SkipParser<R>(this, before, after);
+}
+
+/// A parser that silently consumes input of another parser around
+/// its delegate.
+class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
+  SkipParser(super.delegate, this.before, this.after);
+
+  /// Parser that consumes input before the delegate.
+  Parser<void>? before;
+
+  /// Parser that consumes input after the delegate.
+  Parser<void>? after;
+
+  @override
+  void parseOn(Context context) {
+    if (context.isSkip) {
+      final beforeParser = before;
+      if (beforeParser != null) {
+        beforeParser.parseOn(context);
+        if (!context.isSuccess) return;
+      }
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      final afterParser = after;
+      if (afterParser != null) {
+        afterParser.parseOn(context);
+      }
+    } else {
+      final beforeParser = before;
+      if (beforeParser != null) {
+        context.isSkip = true;
+        beforeParser.parseOn(context);
+        context.isSkip = false;
+        if (!context.isSuccess) return;
+      }
+      delegate.parseOn(context);
+      if (!context.isSuccess) return;
+      final value = context.value;
+      final afterParser = after;
+      if (afterParser != null) {
+        context.isSkip = true;
+        afterParser.parseOn(context);
+        context.isSkip = false;
+        if (!context.isSuccess) return;
+      }
+      context.value = value;
+    }
+  }
+
+  @override
+  SkipParser<R> copy() => SkipParser<R>(delegate, before, after);
+
+  @override
+  List<Parser> get children => [
+        if (before != null) before!,
+        delegate,
+        if (after != null) after!,
+      ];
+
+  @override
+  void replace(Parser source, Parser target) {
+    super.replace(source, target);
+    if (before == source) {
+      before = target;
+    }
+    if (after == source) {
+      after = target;
+    }
+  }
 }

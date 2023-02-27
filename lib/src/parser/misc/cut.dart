@@ -2,13 +2,13 @@ import 'package:meta/meta.dart';
 
 import '../../context/context.dart';
 import '../../core/parser.dart';
-import '../combinator/generated/sequence_2.dart';
+import '../combinator/skip.dart';
 import 'epsilon.dart';
 
 extension CutParserExtension<R> on Parser<R> {
   /// Returns a parser that marks the parsed result as non-backtrackable.
   @useResult
-  Parser<R> commit() => seq2(this, cut()).map2((value, _) => value);
+  Parser<R> commit() => skip(after: cut());
 }
 
 /// Returns a parser that marks subsequent parses as non-backtrackable.

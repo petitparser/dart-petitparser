@@ -7,7 +7,7 @@ import '../character/whitespace.dart';
 import '../combinator/delegate.dart';
 import '../utils/sequential.dart';
 
-extension TrimmingParserExtension<T> on Parser<T> {
+extension TrimmingParserExtension<R> on Parser<R> {
   /// Returns a parser that consumes input before and after the receiver,
   /// discards the excess input and only returns the result of the receiver.
   /// The optional arguments are parsers that consume the excess input. By
@@ -17,8 +17,8 @@ extension TrimmingParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
   @useResult
-  Parser<T> trim([Parser<void>? left, Parser<void>? right]) =>
-      TrimmingParser<T>(this, left ??= whitespace(), right ??= left);
+  Parser<R> trim([Parser<void>? left, Parser<void>? right]) =>
+      TrimmingParser<R>(this, left ??= whitespace(), right ??= left);
 }
 
 /// A parser that silently consumes input of another parser around
@@ -58,6 +58,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   @inlineJs
   void _trim(Parser parser, Context context) {
     for (;;) {
+      assert(context.isSkip);
       final position = context.position;
       parser.parseOn(context);
       if (!context.isSuccess) {
@@ -72,10 +73,10 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   TrimmingParser<R> copy() => TrimmingParser<R>(delegate, before, after);
 
   @override
-  List<Parser> get children => [delegate, before, after];
+  List<Parser> get children => [before, delegate, after];
 
   @override
-  void replace(covariant Parser source, covariant Parser target) {
+  void replace(Parser source, Parser target) {
     super.replace(source, target);
     if (before == source) {
       before = target;

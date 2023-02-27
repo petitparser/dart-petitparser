@@ -29,16 +29,16 @@ class FlattenParser<T> extends DelegateParser<T, String> {
   @override
   void parseOn(Context context) {
     if (context.isSkip) {
-      // If we are already skipping, just continue.
-      return delegate.parseOn(context);
+      delegate.parseOn(context);
+    } else {
+      context.isSkip = true;
+      final position = context.position;
+      delegate.parseOn(context);
+      if (context.isSuccess) {
+        context.value = context.buffer.substring(position, context.position);
+      }
+      context.isSkip = false;
     }
-    final position = context.position;
-    context.isSkip = true;
-    delegate.parseOn(context);
-    if (context.isSuccess) {
-      context.value = context.buffer.substring(position, context.position);
-    }
-    context.isSkip = false;
   }
 
   @override

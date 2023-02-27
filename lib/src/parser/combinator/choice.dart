@@ -39,13 +39,13 @@ extension ChoiceParserExtension on Parser {
   ChoiceParser operator |(Parser other) => or(other);
 }
 
-extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
+extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  ChoiceParser<T> toChoiceParser() => ChoiceParser<T>(this);
+  ChoiceParser<R> toChoiceParser() => ChoiceParser<R>(this);
 }
 
 /// A parser that uses the first parser that succeeds.
-class ChoiceParser<T> extends ListParser<T, T> {
+class ChoiceParser<R> extends ListParser<R, R> {
   ChoiceParser(super.children)
       : assert(children.isNotEmpty, 'Choice parser cannot be empty');
 
@@ -67,5 +67,5 @@ class ChoiceParser<T> extends ListParser<T, T> {
   }
 
   @override
-  ChoiceParser<T> copy() => ChoiceParser<T>(children);
+  ChoiceParser<R> copy() => ChoiceParser<R>(children);
 }

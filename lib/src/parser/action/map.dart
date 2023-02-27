@@ -33,6 +33,7 @@ class MapParser<T, R> extends DelegateParser<T, R> {
   void parseOn(Context context) {
     if (context.isSkip) {
       if (hasSideEffects) {
+        // Skipping, but side-effects.
         context.isSkip = false;
         delegate.parseOn(context);
         if (context.isSuccess) {
@@ -40,10 +41,11 @@ class MapParser<T, R> extends DelegateParser<T, R> {
         }
         context.isSkip = true;
       } else {
+        // Skipping and no side-effects.
         delegate.parseOn(context);
       }
     } else {
-      // Standard behavior: transform the parsed value with the callback
+      // Standard behavior: transform the parsed value with the callback.
       delegate.parseOn(context);
       if (context.isSuccess) {
         context.value = callback(context.value);
