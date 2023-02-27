@@ -43,6 +43,21 @@ class PredicateParser extends Parser<String> {
   }
 
   @override
+  void fastParseOn(Context context) {
+    final start = context.position;
+    final stop = start + length;
+    if (stop <= context.buffer.length) {
+      if (predicate(context.buffer.substring(start, stop))) {
+        context.isSuccess = true;
+        context.position = stop;
+        return;
+      }
+    }
+    context.isSuccess = false;
+    context.message = message;
+  }
+
+  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

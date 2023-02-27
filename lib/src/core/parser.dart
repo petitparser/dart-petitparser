@@ -35,6 +35,19 @@ abstract class Parser<R> {
   /// parser specific logic. The methods takes the mutable parse [context].
   void parseOn(Context context);
 
+  /// Primitive method doing the actual parsing, but not producing an actual
+  /// parse result.
+  ///
+  /// This method is an optimized version of [parseOn] that is getting its speed
+  /// advantage by avoiding any unnecessary memory allocations.
+  ///
+  /// The method is overridden in most concrete subclasses to implement the
+  /// optimized logic. The default implementation delegates to [parseOn].
+  ///
+  /// Subclasses don't necessarily have to override this method, since it is
+  /// emulated using its slower brother.
+  void fastParseOn(Context context); // => parseOn(context);
+
   /// Returns a shallow copy of the receiver.
   ///
   /// Override this method in all subclasses, return its own type.

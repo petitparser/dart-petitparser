@@ -9,7 +9,6 @@ class Context {
     this.isSuccess = true,
     this.value,
     this.message = '',
-    this.isSkip = false,
     this.isCut = true,
   });
 
@@ -38,12 +37,6 @@ class Context {
   ///
   /// The contents of this variable is undefined if [isSuccess] is `true`.
   String message;
-
-  /// Skips the creation of read values.
-  ///
-  /// If `true`, parsers must not read [value] and might decide to skip the
-  /// creation of expensive return values.
-  bool isSkip;
 
   /// Disables backtracking of errors.
   ///

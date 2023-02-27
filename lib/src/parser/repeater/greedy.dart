@@ -52,7 +52,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   GreedyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
-  void parseValueOn(Context context) {
+  void parseOn(Context context) {
     final elements = <R>[];
     while (elements.length < min) {
       delegate.parseOn(context);
@@ -86,23 +86,23 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   }
 
   @override
-  void parseSkipOn(Context context) {
+  void fastParseOn(Context context) {
     var count = 0;
     while (count < min) {
-      delegate.parseOn(context);
+      delegate.fastParseOn(context);
       if (!context.isSuccess) return;
       count++;
     }
     final positions = <int>[context.position];
     while (count < max) {
-      delegate.parseOn(context);
+      delegate.fastParseOn(context);
       if (!context.isSuccess) break;
       count++;
       positions.add(context.position);
     }
     for (;;) {
       context.position = positions.last;
-      limit.parseOn(context);
+      limit.fastParseOn(context);
       if (context.isSuccess) {
         context.position = positions.last;
         return;

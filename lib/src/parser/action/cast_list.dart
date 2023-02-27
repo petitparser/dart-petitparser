@@ -18,10 +18,13 @@ class CastListParser<T, R> extends DelegateParser<T, List<R>> {
   @override
   void parseOn(Context context) {
     delegate.parseOn(context);
-    if (context.isSuccess && !context.isSkip) {
+    if (context.isSuccess) {
       context.value = (context.value as List).cast<R>();
     }
   }
+
+  @override
+  void fastParseOn(Context context) => delegate.fastParseOn(context);
 
   @override
   CastListParser<T, R> copy() => CastListParser<T, R>(delegate);

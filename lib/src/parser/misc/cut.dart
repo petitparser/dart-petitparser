@@ -26,5 +26,10 @@ class CutParser extends EpsilonParser<void> {
   }
 
   @override
+  void fastParseOn(Context context) {
+    context.isCut = true;
+  }
+
+  @override
   CutParser copy() => CutParser();
 }

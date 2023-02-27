@@ -35,32 +35,28 @@ class TrimmingParser<R> extends DelegateParser<R, R>
 
   @override
   void parseOn(Context context) {
-    if (context.isSkip) {
-      _trim(before, context);
-      delegate.parseOn(context);
-      if (!context.isSuccess) return;
-      _trim(after, context);
-    } else {
-      context.isSkip = true;
-      _trim(before, context);
-      context.isSkip = false;
-      delegate.parseOn(context);
-      if (!context.isSuccess) return;
-      final value = context.value;
-      context.isSkip = true;
-      _trim(after, context);
-      context.isSkip = false;
-      context.value = value;
-    }
+    _trim(before, context);
+    delegate.parseOn(context);
+    if (!context.isSuccess) return;
+    final value = context.value;
+    _trim(after, context);
+    context.value = value;
+  }
+
+  @override
+  void fastParseOn(Context context) {
+    _trim(before, context);
+    delegate.fastParseOn(context);
+    if (!context.isSuccess) return;
+    _trim(after, context);
   }
 
   @inlineVm
   @inlineJs
   void _trim(Parser parser, Context context) {
     for (;;) {
-      assert(context.isSkip);
       final position = context.position;
-      parser.parseOn(context);
+      parser.fastParseOn(context);
       if (!context.isSuccess) {
         context.isSuccess = true;
         context.position = position;

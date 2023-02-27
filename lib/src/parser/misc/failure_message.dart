@@ -34,6 +34,16 @@ class FailureMessageParser<R> extends DelegateParser<R, R> {
   }
 
   @override
+  void fastParseOn(Context context) {
+    final position = context.position;
+    delegate.fastParseOn(context);
+    if (!context.isSuccess) {
+      context.position = position;
+      context.message = message;
+    }
+  }
+
+  @override
   bool hasEqualProperties(FailureMessageParser<R> other) =>
       super.hasEqualProperties(other) && message == other.message;
 

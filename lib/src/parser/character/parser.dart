@@ -19,10 +19,22 @@ class CharacterParser extends Parser<String> {
     if (position < buffer.length &&
         predicate.test(buffer.codeUnitAt(position))) {
       context.isSuccess = true;
-      context.position = position + 1;
-      if (!context.isSkip) {
-        context.value = buffer[position];
-      }
+      context.position++;
+      context.value = buffer[position];
+    } else {
+      context.isSuccess = false;
+      context.message = message;
+    }
+  }
+
+  @override
+  void fastParseOn(Context context) {
+    final buffer = context.buffer;
+    final position = context.position;
+    if (position < buffer.length &&
+        predicate.test(buffer.codeUnitAt(position))) {
+      context.isSuccess = true;
+      context.position++;
     } else {
       context.isSuccess = false;
       context.message = message;

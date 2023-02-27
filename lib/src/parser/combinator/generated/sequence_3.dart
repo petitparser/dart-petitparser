@@ -34,25 +34,26 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
 
   @override
   void parseOn(Context context) {
-    if (context.isSkip) {
-      parser1.parseOn(context);
-      if (!context.isSuccess) return;
-      parser2.parseOn(context);
-      if (!context.isSuccess) return;
-      parser3.parseOn(context);
-      if (!context.isSuccess) return;
-    } else {
-      parser1.parseOn(context);
-      if (!context.isSuccess) return;
-      final result1 = context.value as R1;
-      parser2.parseOn(context);
-      if (!context.isSuccess) return;
-      final result2 = context.value as R2;
-      parser3.parseOn(context);
-      if (!context.isSuccess) return;
-      final result3 = context.value as R3;
-      context.value = Sequence3<R1, R2, R3>(result1, result2, result3);
-    }
+    parser1.parseOn(context);
+    if (!context.isSuccess) return;
+    final result1 = context.value as R1;
+    parser2.parseOn(context);
+    if (!context.isSuccess) return;
+    final result2 = context.value as R2;
+    parser3.parseOn(context);
+    if (!context.isSuccess) return;
+    final result3 = context.value as R3;
+    context.value = Sequence3<R1, R2, R3>(result1, result2, result3);
+  }
+
+  @override
+  void fastParseOn(Context context) {
+    parser1.fastParseOn(context);
+    if (!context.isSuccess) return;
+    parser2.fastParseOn(context);
+    if (!context.isSuccess) return;
+    parser3.fastParseOn(context);
+    if (!context.isSuccess) return;
   }
 
   @override

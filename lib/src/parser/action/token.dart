@@ -23,17 +23,16 @@ class TokenParser<R> extends DelegateParser<R, Token<R>> {
 
   @override
   void parseOn(Context context) {
-    if (context.isSkip) {
-      delegate.parseOn(context);
-    } else {
-      final position = context.position;
-      delegate.parseOn(context);
-      if (context.isSuccess) {
-        context.value =
-            Token<R>(context.value, context.buffer, position, context.position);
-      }
+    final position = context.position;
+    delegate.parseOn(context);
+    if (context.isSuccess) {
+      context.value =
+          Token<R>(context.value, context.buffer, position, context.position);
     }
   }
+
+  @override
+  void fastParseOn(Context context) => delegate.fastParseOn(context);
 
   @override
   TokenParser<R> copy() => TokenParser<R>(delegate);

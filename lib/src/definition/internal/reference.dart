@@ -17,12 +17,13 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   Parser<R> resolve() => Function.apply(function, arguments);
 
   @override
-  Result<R> parseOn(Context context) =>
-      throw UnsupportedError('References cannot be parsed.');
+  Result<R> parseOn(Context context) => _throwUnsupported();
 
   @override
-  ReferenceParser<R> copy() =>
-      throw UnsupportedError('References cannot be copied.');
+  Result<R> fastParseOn(Context context) => _throwUnsupported();
+
+  @override
+  ReferenceParser<R> copy() => _throwUnsupported();
 
   @override
   bool operator ==(Object other) {
@@ -56,3 +57,6 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   @override
   int get hashCode => function.hashCode;
 }
+
+Never _throwUnsupported() =>
+    throw UnsupportedError('Unsupported operation on parser reference');

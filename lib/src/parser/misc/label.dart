@@ -25,6 +25,9 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   void parseOn(Context context) => delegate.parseOn(context);
 
   @override
+  void fastParseOn(Context context) => delegate.fastParseOn(context);
+
+  @override
   LabelParser<R> copy() => LabelParser<R>(delegate, label);
 
   @override

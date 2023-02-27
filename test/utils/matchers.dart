@@ -90,8 +90,8 @@ Matcher isParseSuccess<T>(
             buffer: input,
             value: result,
             position: position ?? input.length)).having((parser) {
-      final context = DebugContext(input, isSkip: true);
-      parser.parseOn(context);
+      final context = DebugContext(input);
+      parser.fastParseOn(context);
       return context.isSuccess;
     }, 'accept', isTrue).having(
         (parser) => parser.allMatches(input).first, 'allMatches', result);

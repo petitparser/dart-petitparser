@@ -48,6 +48,21 @@ class OptionalParser<R> extends DelegateParser<R, R> {
   }
 
   @override
+  void fastParseOn(Context context) {
+    final position = context.position;
+    final isCut = context.isCut;
+    context.isCut = false;
+    delegate.fastParseOn(context);
+    if (context.isSuccess) {
+      context.isCut |= isCut;
+    } else if (!context.isCut) {
+      context.isSuccess = true;
+      context.position = position;
+      context.isCut |= isCut;
+    }
+  }
+
+  @override
   OptionalParser<R> copy() => OptionalParser<R>(delegate, otherwise);
 
   @override

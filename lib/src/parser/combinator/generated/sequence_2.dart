@@ -31,20 +31,21 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
 
   @override
   void parseOn(Context context) {
-    if (context.isSkip) {
-      parser1.parseOn(context);
-      if (!context.isSuccess) return;
-      parser2.parseOn(context);
-      if (!context.isSuccess) return;
-    } else {
-      parser1.parseOn(context);
-      if (!context.isSuccess) return;
-      final result1 = context.value as R1;
-      parser2.parseOn(context);
-      if (!context.isSuccess) return;
-      final result2 = context.value as R2;
-      context.value = Sequence2<R1, R2>(result1, result2);
-    }
+    parser1.parseOn(context);
+    if (!context.isSuccess) return;
+    final result1 = context.value as R1;
+    parser2.parseOn(context);
+    if (!context.isSuccess) return;
+    final result2 = context.value as R2;
+    context.value = Sequence2<R1, R2>(result1, result2);
+  }
+
+  @override
+  void fastParseOn(Context context) {
+    parser1.fastParseOn(context);
+    if (!context.isSuccess) return;
+    parser2.fastParseOn(context);
+    if (!context.isSuccess) return;
   }
 
   @override

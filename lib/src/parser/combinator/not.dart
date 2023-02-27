@@ -42,7 +42,7 @@ class NotParser<R> extends DelegateParser<R, Failure<R>> {
   @override
   void parseOn(Context context) {
     final position = context.position;
-    delegate.parseOn(context);
+    delegate.fastParseOn(context);
     if (context.isSuccess) {
       context.isSuccess = false;
       context.message = message;
@@ -50,6 +50,19 @@ class NotParser<R> extends DelegateParser<R, Failure<R>> {
       context.isSuccess = true;
       context.value =
           Failure<R>(context.buffer, context.position, context.message);
+    }
+    context.position = position;
+  }
+
+  @override
+  void fastParseOn(Context context) {
+    final position = context.position;
+    delegate.fastParseOn(context);
+    if (context.isSuccess) {
+      context.isSuccess = false;
+      context.message = message;
+    } else {
+      context.isSuccess = true;
     }
     context.position = position;
   }

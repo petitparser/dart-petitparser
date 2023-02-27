@@ -8,13 +8,11 @@ class DebugContext implements Context {
     bool isSuccess = true,
     dynamic value,
     String message = '',
-    bool isSkip = false,
     bool isCut = true,
   })  : _position = position,
         _isSuccess = isSuccess,
         _value = value,
         _message = message,
-        _isSkip = isSkip,
         _isCut = isCut;
 
   final events = <ContextEvent>[];
@@ -56,7 +54,6 @@ class DebugContext implements Context {
   @override
   dynamic get value {
     expect(isSuccess, isTrue, reason: '`value` is undefined on failure');
-    expect(isSkip, isFalse, reason: '`value`  is undefined when skipping');
     return _value;
   }
 
@@ -77,18 +74,6 @@ class DebugContext implements Context {
     expect(isSuccess, isFalse, reason: '`message` is undefined on success');
     events.add(ContextEvent(ContextEventType.message, _message, message));
     _message = message;
-  }
-
-  //// Skips the creation of read values.
-  bool _isSkip;
-
-  @override
-  bool get isSkip => _isSkip;
-
-  @override
-  set isSkip(bool isSkip) {
-    events.add(ContextEvent(ContextEventType.isSkip, _isSkip, isSkip));
-    _isSkip = isSkip;
   }
 
   /// Disables backtracking of errors.
@@ -116,7 +101,6 @@ class DebugContext implements Context {
         'isSuccess: $_isSuccess',
         'value: $_value',
         'message: $_message',
-        'isSkip: $_isSkip',
         'isCut: $_isCut}',
       ].join(', ');
 }

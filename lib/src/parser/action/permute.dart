@@ -27,13 +27,16 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
   @override
   void parseOn(Context context) {
     delegate.parseOn(context);
-    if (context.isSuccess && !context.isSkip) {
+    if (context.isSuccess) {
       final value = context.value as List<R>;
       context.value = indexes
           .map((index) => value[index < 0 ? value.length + index : index])
           .toList(growable: false);
     }
   }
+
+  @override
+  void fastParseOn(Context context) => delegate.fastParseOn(context);
 
   @override
   PermuteParser<R> copy() => PermuteParser<R>(delegate, indexes);

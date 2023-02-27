@@ -294,7 +294,6 @@ void main() {
     final inner = digit().repeat(2);
     test('original', () {
       final parser = inner.callCC((continuation, context) {
-        context.isSkip = false;
         continuation(context);
         final result = context.toResult<List<String>>();
         if (result.isSuccess && result.value[0] != result.value[1]) {
