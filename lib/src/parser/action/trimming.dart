@@ -80,7 +80,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   TrimmingParser<R> copy() => TrimmingParser<R>(delegate, left, right);
 
   @override
-  List<Parser> get children => [delegate, left, right];
+  List<Parser> get children => [left, delegate, right];
 
   @override
   void replace(covariant Parser source, covariant Parser target) {
