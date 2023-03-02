@@ -4,6 +4,7 @@ import '../context/context.dart';
 import '../context/failure.dart';
 import '../context/result.dart';
 import '../context/success.dart';
+import '../shared/annotations.dart';
 
 /// Abstract base class of all parsers that produce a parse result of type [R].
 @optionalTypeArgs
@@ -46,7 +47,7 @@ abstract class Parser<R> {
   ///
   /// Subclasses don't necessarily have to override this method, since it is
   /// emulated using its slower brother.
-  void fastParseOn(Context context); // => parseOn(context);
+  void fastParseOn(Context context) => parseOn(context);
 
   /// Returns a shallow copy of the receiver.
   ///
@@ -127,11 +128,12 @@ abstract class Parser<R> {
   @mustCallSuper
   void replace(Parser source, Parser target) {}
 
-  /// Internal helper to capture the generic type [R] of the parse result from
-  /// extension methods. This makes it possible to wrap the parser without
-  /// loosing type information.
+  /// Internal helper to capture the generic type [R] of the parse result. This
+  /// makes it possible to wrap the parser without loosing type information.
   @internal
   @nonVirtual
+  @inlineVm
+  @inlineJs
   T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
       callback<R>(this);
 }

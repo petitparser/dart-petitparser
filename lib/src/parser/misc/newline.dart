@@ -36,6 +36,7 @@ class NewlineParser extends Parser<String> {
             context.isSuccess = true;
             context.value = '\r\n';
             context.position += 2;
+            return;
           } else {
             // Commodore 8-bit machines (C64, C128), Acorn BBC, ZX Spectrum,
             // TRS-80, Apple II series, Oberon, the classic Mac OS, MIT Lisp
@@ -43,8 +44,8 @@ class NewlineParser extends Parser<String> {
             context.isSuccess = true;
             context.value = '\r';
             context.position++;
+            return;
           }
-          return;
       }
     }
     context.isSuccess = false;
@@ -66,12 +67,13 @@ class NewlineParser extends Parser<String> {
               buffer.codeUnitAt(position + 1) == 10) {
             context.isSuccess = true;
             context.position += 2;
+            return;
           } else {
             context.isSuccess = true;
             context.value = '\r';
             context.position++;
+            return;
           }
-          return;
       }
     }
     context.isSuccess = false;

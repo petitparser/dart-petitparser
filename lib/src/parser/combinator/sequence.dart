@@ -59,7 +59,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
   @override
   void fastParseOn(Context context) {
     for (var i = 0; i < children.length; i++) {
-      children[i].parseOn(context);
+      children[i].fastParseOn(context);
       if (!context.isSuccess) return;
     }
   }
