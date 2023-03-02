@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/parser.dart';
 import 'sequence.dart';
 
-extension SkipParserExtension<T> on Parser<T> {
+extension SkipParserExtension<R> on Parser<R> {
   /// Returns a parser that consumes input [before] and [after] the receiver,
   /// but discards the parse results of [before] and [after] and only returns
   /// the result of the receiver.
@@ -11,7 +11,7 @@ extension SkipParserExtension<T> on Parser<T> {
   /// For example, the parser `digit().skip(char('['), char(']'))`
   /// returns `'3'` for the input `'[3]'`.
   @useResult
-  Parser<T> skip({Parser<void>? before, Parser<void>? after}) => before == null
+  Parser<R> skip({Parser<void>? before, Parser<void>? after}) => before == null
       ? after == null
           ? this
           : seq2(this, after).map2((value, _) => value)

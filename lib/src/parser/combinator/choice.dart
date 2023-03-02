@@ -42,31 +42,31 @@ extension ChoiceParserExtension on Parser {
   ChoiceParser operator |(Parser other) => or(other);
 }
 
-extension ChoiceIterableExtension<T> on Iterable<Parser<T>> {
+extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  ChoiceParser<T> toChoiceParser({FailureJoiner<T>? failureJoiner}) =>
-      ChoiceParser<T>(this, failureJoiner: failureJoiner);
+  ChoiceParser<R> toChoiceParser({FailureJoiner<R>? failureJoiner}) =>
+      ChoiceParser<R>(this, failureJoiner: failureJoiner);
 }
 
 /// A parser that uses the first parser that succeeds.
-class ChoiceParser<T> extends ListParser<T, T> {
-  ChoiceParser(super.children, {FailureJoiner<T>? failureJoiner})
+class ChoiceParser<R> extends ListParser<R, R> {
+  ChoiceParser(super.children, {FailureJoiner<R>? failureJoiner})
       : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
         failureJoiner = failureJoiner ?? selectLast;
 
   /// Strategy to join multiple parse errors.
-  final FailureJoiner<T> failureJoiner;
+  final FailureJoiner<R> failureJoiner;
 
   /// Switches the failure joining strategy.
-  ChoiceParser<T> withFailureJoiner(FailureJoiner<T> failureJoiner) =>
-      ChoiceParser<T>(children, failureJoiner: failureJoiner);
+  ChoiceParser<R> withFailureJoiner(FailureJoiner<R> failureJoiner) =>
+      ChoiceParser<R>(children, failureJoiner: failureJoiner);
 
   @override
-  Result<T> parseOn(Context context) {
-    Failure<T>? failure;
+  Result<R> parseOn(Context context) {
+    Failure<R>? failure;
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(context);
-      if (result is Failure<T>) {
+      if (result is Failure<R>) {
         failure = failure == null ? result : failureJoiner(failure, result);
       } else {
         return result;
@@ -88,10 +88,10 @@ class ChoiceParser<T> extends ListParser<T, T> {
   }
 
   @override
-  bool hasEqualProperties(ChoiceParser<T> other) =>
+  bool hasEqualProperties(ChoiceParser<R> other) =>
       super.hasEqualProperties(other) && failureJoiner == other.failureJoiner;
 
   @override
-  ChoiceParser<T> copy() =>
-      ChoiceParser<T>(children, failureJoiner: failureJoiner);
+  ChoiceParser<R> copy() =>
+      ChoiceParser<R>(children, failureJoiner: failureJoiner);
 }

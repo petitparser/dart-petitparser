@@ -36,20 +36,20 @@ extension SequenceParserExtension on Parser {
   Parser<List> operator &(Parser other) => seq(other);
 }
 
-extension SequenceIterableExtension<T> on Iterable<Parser<T>> {
+extension SequenceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a sequence of parsers.
-  Parser<List<T>> toSequenceParser() => SequenceParser<T>(this);
+  Parser<List<R>> toSequenceParser() => SequenceParser<R>(this);
 }
 
 /// A parser that parses a sequence of parsers.
-class SequenceParser<T> extends ListParser<T, List<T>>
+class SequenceParser<R> extends ListParser<R, List<R>>
     implements SequentialParser {
   SequenceParser(super.children);
 
   @override
-  Result<List<T>> parseOn(Context context) {
+  Result<List<R>> parseOn(Context context) {
     var current = context;
-    final elements = <T>[];
+    final elements = <R>[];
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(current);
       if (result.isFailure) {
@@ -73,5 +73,5 @@ class SequenceParser<T> extends ListParser<T, List<T>>
   }
 
   @override
-  SequenceParser<T> copy() => SequenceParser<T>(children);
+  SequenceParser<R> copy() => SequenceParser<R>(children);
 }

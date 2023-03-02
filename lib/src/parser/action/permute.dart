@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension PermuteParserExtension<T> on Parser<List<T>> {
+extension PermuteParserExtension<R> on Parser<List<R>> {
   /// Returns a parser that transforms a successful parse result by returning
   /// the permuted elements at [indexes] of a list. Negative indexes can be
   /// used to access the elements from the back of the list.
@@ -14,7 +14,7 @@ extension PermuteParserExtension<T> on Parser<List<T>> {
   /// first and last letter parsed. For the input `'abc'` it returns
   /// `['a', 'c']`.
   @useResult
-  Parser<List<T>> permute(List<int> indexes) => PermuteParser<T>(this, indexes);
+  Parser<List<R>> permute(List<int> indexes) => PermuteParser<R>(this, indexes);
 }
 
 /// A parser that performs a transformation with a given function on the

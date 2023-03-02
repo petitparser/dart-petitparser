@@ -1,25 +1,25 @@
 import '../../context/failure.dart';
 
 /// Function definition that joins parse [Failure] instances.
-typedef FailureJoiner<T> = Failure<T> Function(
-    Failure<T> first, Failure<T> second);
+typedef FailureJoiner<R> = Failure<R> Function(
+    Failure<R> first, Failure<R> second);
 
 /// Reports the first parse failure observed.
-Failure<T> selectFirst<T>(Failure<T> first, Failure<T> second) => first;
+Failure<R> selectFirst<R>(Failure<R> first, Failure<R> second) => first;
 
 /// Reports the last parse failure observed (default).
-Failure<T> selectLast<T>(Failure<T> first, Failure<T> second) => second;
+Failure<R> selectLast<R>(Failure<R> first, Failure<R> second) => second;
 
 /// Reports the parser failure farthest down in the input string, preferring
 /// later failures over earlier ones.
-Failure<T> selectFarthest<T>(Failure<T> first, Failure<T> second) =>
+Failure<R> selectFarthest<R>(Failure<R> first, Failure<R> second) =>
     first.position <= second.position ? second : first;
 
 /// Reports the parser failure farthest down in the input string, joining
 /// error messages at the same position.
-Failure<T> selectFarthestJoined<T>(Failure<T> first, Failure<T> second) =>
+Failure<R> selectFarthestJoined<R>(Failure<R> first, Failure<R> second) =>
     first.position > second.position
         ? first
         : first.position < second.position
             ? second
-            : first.failure<T>('${first.message} OR ${second.message}');
+            : first.failure<R>('${first.message} OR ${second.message}');

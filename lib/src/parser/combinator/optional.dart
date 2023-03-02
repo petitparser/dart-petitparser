@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'delegate.dart';
 
-extension OptionalParserExtension<T> on Parser<T> {
+extension OptionalParserExtension<R> on Parser<R> {
   /// Returns new parser that accepts the receiver, if possible. The resulting
   /// parser returns the result of the receiver, or `null` if not applicable.
   ///
@@ -13,7 +13,7 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// and returns that letter. When given something else the parser succeeds as
   /// well, does not consume anything and returns `null`.
   @useResult
-  Parser<T?> optional() => OptionalParser<T?>(this, null);
+  Parser<R?> optional() => OptionalParser<R?>(this, null);
 
   /// Returns new parser that accepts the receiver, if possible. The resulting
   /// parser returns the result of the receiver, or [value] if not applicable.
@@ -22,7 +22,7 @@ extension OptionalParserExtension<T> on Parser<T> {
   /// input and returns that letter. When given something else the parser
   /// succeeds as well, does not consume anything and returns `'!'`.
   @useResult
-  Parser<T> optionalWith(T value) => OptionalParser<T>(this, value);
+  Parser<R> optionalWith(R value) => OptionalParser<R>(this, value);
 }
 
 /// A parser that optionally parsers its delegate, or answers `null`.

@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension PickParserExtension<T> on Parser<List<T>> {
+extension PickParserExtension<R> on Parser<List<R>> {
   /// Returns a parser that transforms a successful parse result by returning
   /// the element at [index] of a list. A negative index can be used to access
   /// the elements from the back of the list.
@@ -13,7 +13,7 @@ extension PickParserExtension<T> on Parser<List<T>> {
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.
   @useResult
-  Parser<T> pick(int index) => PickParser<T>(this, index);
+  Parser<R> pick(int index) => PickParser<R>(this, index);
 }
 
 /// A parser that performs a transformation with a given function on the

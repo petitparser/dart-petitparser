@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/sequence.dart';
 
-extension EndOfInputParserExtension<T> on Parser<T> {
+extension EndOfInputParserExtension<R> on Parser<R> {
   /// Returns a parser that succeeds only if the receiver consumes the complete
   /// input, otherwise return a failure with the optional [message].
   ///
@@ -13,7 +13,7 @@ extension EndOfInputParserExtension<T> on Parser<T> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   @useResult
-  Parser<T> end([String message = 'end of input expected']) =>
+  Parser<R> end([String message = 'end of input expected']) =>
       seq2(this, endOfInput(message)).map2((value, _) => value);
 }
 

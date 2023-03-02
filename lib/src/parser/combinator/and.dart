@@ -5,7 +5,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import 'delegate.dart';
 
-extension AndParserExtension<T> on Parser<T> {
+extension AndParserExtension<R> on Parser<R> {
   /// Returns a parser (logical and-predicate) that succeeds whenever the
   /// receiver does, but never consumes input.
   ///
@@ -14,7 +14,7 @@ extension AndParserExtension<T> on Parser<T> {
   /// does not consume accepted input, the parser `identifier` is given the
   /// ability to process the complete identifier.
   @useResult
-  Parser<T> and() => AndParser<T>(this);
+  Parser<R> and() => AndParser<R>(this);
 }
 
 /// The and-predicate, a parser that succeeds whenever its delegate does, but

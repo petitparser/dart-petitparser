@@ -8,7 +8,7 @@ import 'limited.dart';
 import 'possessive.dart';
 import 'unbounded.dart';
 
-extension LazyRepeatingParserExtension<T> on Parser<T> {
+extension LazyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
   /// reaches a [limit]. This is a lazy non-blind implementation of the [star]
   /// operator. The [limit] is not consumed.
@@ -19,7 +19,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   /// See [starGreedy] for the greedy and less efficient variation of
   /// this combinator.
   @useResult
-  Parser<List<T>> starLazy(Parser<void> limit) =>
+  Parser<List<R>> starLazy(Parser<void> limit) =>
       repeatLazy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
@@ -32,7 +32,7 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   /// See [plusGreedy] for the greedy and less efficient variation of
   /// this combinator.
   @useResult
-  Parser<List<T>> plusLazy(Parser<void> limit) =>
+  Parser<List<R>> plusLazy(Parser<void> limit) =>
       repeatLazy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
@@ -42,8 +42,8 @@ extension LazyRepeatingParserExtension<T> on Parser<T> {
   /// This is the more generic variation of the [starLazy] and [plusLazy]
   /// combinators.
   @useResult
-  Parser<List<T>> repeatLazy(Parser<void> limit, int min, int max) =>
-      LazyRepeatingParser<T>(this, limit, min, max);
+  Parser<List<R>> repeatLazy(Parser<void> limit, int min, int max) =>
+      LazyRepeatingParser<R>(this, limit, min, max);
 }
 
 /// A lazy repeating parser, commonly seen in regular expression
