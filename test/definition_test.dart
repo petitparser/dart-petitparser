@@ -359,6 +359,7 @@ void main() {
       expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
     });
     test('invalid building', () {
+      // ignore: deprecated_member_use_from_same_package
       expect(() => grammarDefinition.build(arguments: [1, 2, 3]),
           throwsStateError);
     });
@@ -403,29 +404,57 @@ void main() {
     test('direct recursion', () {
       expect(
           () =>
+              // ignore: deprecated_member_use_from_same_package
               buggedDefinition.build(start: buggedDefinition.directRecursion1),
+          throwsStateError);
+      expect(
+          () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
           throwsStateError);
     });
     test('indirect recursion', () {
       expect(
           () => buggedDefinition.build(
+              // ignore: deprecated_member_use_from_same_package
               start: buggedDefinition.indirectRecursion1),
           throwsStateError);
       expect(
-          () => buggedDefinition.build(
-              start: buggedDefinition.indirectRecursion2),
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
           throwsStateError);
       expect(
           () => buggedDefinition.build(
+              // ignore: deprecated_member_use_from_same_package
+              start: buggedDefinition.indirectRecursion2),
+          throwsStateError);
+      expect(
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
+          throwsStateError);
+      expect(
+          () => buggedDefinition.build(
+              // ignore: deprecated_member_use_from_same_package
               start: buggedDefinition.indirectRecursion3),
+          throwsStateError);
+      expect(
+          () =>
+              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion3()),
           throwsStateError);
     });
     test('delegation', () {
+      // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation1),
           isA<EpsilonParser>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
+          isA<EpsilonParser>());
+      // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation2),
           isA<EpsilonParser>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
+          isA<EpsilonParser>());
+      // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation3),
+          isA<EpsilonParser>());
+      expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
           isA<EpsilonParser>());
     });
     test('lambda example', () {
