@@ -25,7 +25,7 @@ class NewlineParser extends Parser<String> {
           // Multics, BeOS, Amiga, RISC OS.
           context.isSuccess = true;
           context.value = '\n';
-          context.position++;
+          context.position = position + 1;
           return;
         case 13:
           if (position + 1 < buffer.length &&
@@ -35,7 +35,7 @@ class NewlineParser extends Parser<String> {
             // CPC, and most other early non-Unix and non-IBM operating systems.
             context.isSuccess = true;
             context.value = '\r\n';
-            context.position += 2;
+            context.position = position + 2;
             return;
           } else {
             // Commodore 8-bit machines (C64, C128), Acorn BBC, ZX Spectrum,
@@ -43,7 +43,7 @@ class NewlineParser extends Parser<String> {
             // Machine and OS-9.
             context.isSuccess = true;
             context.value = '\r';
-            context.position++;
+            context.position = position + 1;
             return;
           }
       }
@@ -60,18 +60,17 @@ class NewlineParser extends Parser<String> {
       switch (buffer.codeUnitAt(position)) {
         case 10:
           context.isSuccess = true;
-          context.position++;
+          context.position = position + 1;
           return;
         case 13:
           if (position + 1 < buffer.length &&
               buffer.codeUnitAt(position + 1) == 10) {
             context.isSuccess = true;
-            context.position += 2;
+            context.position = position + 2;
             return;
           } else {
             context.isSuccess = true;
-            context.value = '\r';
-            context.position++;
+            context.position = position + 1;
             return;
           }
       }

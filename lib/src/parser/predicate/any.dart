@@ -23,7 +23,7 @@ class AnyParser extends Parser<String> {
     final position = context.position;
     if (position < buffer.length) {
       context.isSuccess = true;
-      context.position++;
+      context.position = position + 1;
       context.value = buffer[position];
     } else {
       context.isSuccess = false;
@@ -37,7 +37,7 @@ class AnyParser extends Parser<String> {
     final position = context.position;
     if (position < buffer.length) {
       context.isSuccess = true;
-      context.position++;
+      context.position = position + 1;
     } else {
       context.isSuccess = false;
       context.message = message;

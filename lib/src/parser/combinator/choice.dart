@@ -57,10 +57,8 @@ class ChoiceParser<R> extends ListParser<R, R> {
       context.position = position;
       context.isCut = false;
       children[i].parseOn(context);
-      if (context.isSuccess) {
+      if (context.isSuccess || context.isCut) {
         context.isCut |= isCut;
-        return;
-      } else if (context.isCut) {
         return;
       }
     }
@@ -74,14 +72,16 @@ class ChoiceParser<R> extends ListParser<R, R> {
       context.position = position;
       context.isCut = false;
       children[i].fastParseOn(context);
-      if (context.isSuccess) {
+      if (context.isSuccess || context.isCut) {
         context.isCut |= isCut;
-        return;
-      } else if (context.isCut) {
         return;
       }
     }
   }
+
+  @override
+  bool hasEqualProperties(ChoiceParser<R> other) =>
+      super.hasEqualProperties(other);
 
   @override
   ChoiceParser<R> copy() => ChoiceParser<R>(children);
