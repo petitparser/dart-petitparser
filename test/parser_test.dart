@@ -49,10 +49,10 @@ void main() {
       });
       test('resume', () {
         final continuations = <ContinuationFunction>[];
-        final results = <Result>[];
+        final results = <Context>[];
         final parser = digit().callCC((continuation, context) {
           continuations.add(continuation);
-          results.add(context.toResult());
+          results.add(context.copy());
           // we have to return something for now
           context.failure('Abort');
         });
@@ -60,17 +60,17 @@ void main() {
         expect(parser.parse('1').isSuccess, isFalse);
         expect(parser.parse('a').isSuccess, isFalse);
         // later we can execute the captured continuations
-        final context11 = results[0].toContext();
+        final context11 = results[0].copy();
         continuations[0](context11);
         expect(context11.toResult(), isSuccess());
-        final context12 = results[1].toContext();
+        final context12 = results[1].copy();
         continuations[1](context12);
         expect(context12.toResult(), isFailure());
         // of course the continuations can be resumed multiple times
-        final context21 = results[0].toContext();
+        final context21 = results[0].copy();
         continuations[0](context21);
         expect(context21.toResult(), isSuccess());
-        final context22 = results[1].toContext();
+        final context22 = results[1].copy();
         continuations[1](context22);
         expect(context22.toResult(), isFailure());
       });

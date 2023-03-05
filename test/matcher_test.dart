@@ -7,10 +7,26 @@ void main() {
     expect(parser.parse('a').isSuccess, isTrue);
     expect(parser.parse('b').isSuccess, isFalse);
   });
+  test('parse(start)', () {
+    final parser = char('b');
+    expect(parser.parse('abc', start: 0).isSuccess, isFalse);
+    expect(parser.parse('abc', start: 1).isSuccess, isTrue);
+    expect(parser.parse('abc', start: 2).isSuccess, isFalse);
+    expect(parser.parse('abc', start: 3).isSuccess, isFalse);
+    expect(parser.parse('abc', start: 4).isSuccess, isFalse);
+  });
   test('accept()', () {
     final parser = char('a');
     expect(parser.accept('a'), isTrue);
     expect(parser.accept('b'), isFalse);
+  });
+  test('accept(start)', () {
+    final parser = char('b');
+    expect(parser.accept('abc', start: 0), isFalse);
+    expect(parser.accept('abc', start: 1), isTrue);
+    expect(parser.accept('abc', start: 2), isFalse);
+    expect(parser.accept('abc', start: 3), isFalse);
+    expect(parser.accept('abc', start: 4), isFalse);
   });
   group('matches', () {
     const input = 'a123b456';

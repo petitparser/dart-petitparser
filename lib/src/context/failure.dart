@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../core/exception.dart';
-import 'context.dart';
 import 'result.dart';
 
 /// An immutable failed parse result.
@@ -17,14 +16,6 @@ class Failure<R> extends Result<R> {
 
   @override
   final String message;
-
-  @override
-  Context toContext() {
-    final context = super.toContext();
-    context.isSuccess = false;
-    context.message = message;
-    return context;
-  }
 
   @override
   String toString() => 'Failure[${toPositionString()}]: $message';

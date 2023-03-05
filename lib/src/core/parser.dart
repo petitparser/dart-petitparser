@@ -24,8 +24,8 @@ abstract class Parser<R> {
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
   @nonVirtual
-  Result<R> parse(String input) {
-    final context = Context(input);
+  Result<R> parse(String input, {int start = 0}) {
+    final context = Context(input, position: start);
     parseOn(context);
     return context.toResult<R>();
   }

@@ -243,8 +243,8 @@ void main() {
       final metadataParser = buildMetadataParser();
       final metadataResult = metadataParser.parse(input);
       final dataParser = buildDataParser(metadataResult.value);
-      final dataResult = metadataResult.toContext();
-      dataParser.parseOn(dataResult);
+      final dataResult = dataParser.parse(metadataResult.buffer,
+          start: metadataResult.position);
       expect(dataResult.value, 'data');
     });
     test('continuation', () {

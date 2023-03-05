@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../core/exception.dart';
 import '../core/token.dart';
-import 'context.dart';
 import 'failure.dart';
 import 'success.dart';
 
@@ -30,9 +29,6 @@ abstract class Result<R> {
   /// Returns the error message of this result, or throws an [UnsupportedError]
   /// if this is a [Success].
   String get message;
-
-  /// Converts a result back into a [Context].
-  Context toContext() => Context(buffer, position: position);
 
   /// Returns the current line:column position in the [buffer].
   String toPositionString() => Token.positionString(buffer, position);
