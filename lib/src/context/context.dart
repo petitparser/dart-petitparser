@@ -15,12 +15,10 @@ class Context {
 
   /// The input the parser is being run on.
   @inlineVm
-  @inlineJs
   final String buffer;
 
   /// The current position in the parser input.
   @inlineVm
-  @inlineJs
   int position;
 
   /// Whether or not the parse is currently successful.
@@ -31,7 +29,6 @@ class Context {
   /// If `false`, the parser is currently in a error state and [message] is
   /// expected to hold an explanation.
   @inlineVm
-  @inlineJs
   bool isSuccess;
 
   /// The currently successful read value.
@@ -39,14 +36,12 @@ class Context {
   /// The contents of this variable is undefined if [isSuccess] is `false`, or
   /// [isSkip] is `true`.
   @inlineVm
-  @inlineJs
   dynamic value;
 
   /// The currently read error.
   ///
   /// The contents of this variable is undefined if [isSuccess] is `true`.
   @inlineVm
-  @inlineJs
   String message;
 
   /// Disables backtracking of errors.
@@ -54,12 +49,10 @@ class Context {
   /// If `true`, parsers must refrain from backtracking and instead propagate
   /// possible new errors to the caller.
   @inlineVm
-  @inlineJs
   bool isCut;
 
   /// Converts the current state of the context to a [Result].
   @inlineVm
-  @inlineJs
   Result<R> toResult<R>() => isSuccess
       ? Success<R>(buffer, position, value)
       : Failure<R>(buffer, position, message);
