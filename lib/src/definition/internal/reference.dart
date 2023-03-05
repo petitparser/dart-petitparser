@@ -20,9 +20,6 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   Result<R> parseOn(Context context) => _throwUnsupported();
 
   @override
-  Result<R> fastParseOn(Context context) => _throwUnsupported();
-
-  @override
   ReferenceParser<R> copy() => _throwUnsupported();
 
   @override

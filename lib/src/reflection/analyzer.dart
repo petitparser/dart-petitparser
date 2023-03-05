@@ -95,13 +95,6 @@ class Analyzer {
   late final Map<Parser, List<Parser>> _cycleSet =
       computeCycleSets(parsers: _parsers, firstSets: _firstSets);
 
-  /// Helper to do a global replace of [source] with [target].
-  void replaceAll(Parser source, Parser target) {
-    for (final parent in _parsers) {
-      parent.replace(source, target);
-    }
-  }
-
   /// A unique parser used as a marker in [firstSet] and [followSet]
   /// computations.
   static final sentinel = EpsilonParser<void>(null);

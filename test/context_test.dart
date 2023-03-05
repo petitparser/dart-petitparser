@@ -33,7 +33,13 @@ void main() {
     expect(result.position, 2);
     expect(result.isSuccess, isFalse);
     expect(result.isFailure, isTrue);
-    expect(() => result.value, throwsA(isA<ParserException>()));
+    expect(
+        () => result.value,
+        throwsA(isA<ParserException>()
+            .having((e) => e.failure, 'failure', same(result))
+            .having((e) => e.message, 'message', '42 expected')
+            .having((e) => e.offset, 'offset', 2)
+            .having((e) => e.source, 'source', 'abc')));
     expect(result.message, '42 expected');
     expect(result.toString(), 'Failure[1:3]: 42 expected');
   });
