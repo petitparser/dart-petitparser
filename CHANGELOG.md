@@ -41,7 +41,6 @@
 ## 4.3.0
 
 * Dart 2.14 requirement.
-* Add a `where` parser, that allows to add additional constraints on parse results.
 * Add a `labeled` parser, that allows to add a debug label to the parser graph.
 * Extract `Predicate<T>` and `Callback<T>` function types to shared file.
 * Change debug functions to named arguments, and generate output events with first class objects instead of strings.
