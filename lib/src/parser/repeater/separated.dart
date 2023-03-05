@@ -76,8 +76,8 @@ class SeparatedRepeatingParser<R, S>
     final isCut = context.isCut;
     while (elements.length < max) {
       final position = context.position;
+      context.isCut = false;
       if (elements.isNotEmpty) {
-        context.isCut = false;
         separator.parseOn(context);
         if (context.isSuccess) {
           separators.add(context.value);
@@ -91,7 +91,6 @@ class SeparatedRepeatingParser<R, S>
           return;
         }
       }
-      context.isCut = false;
       delegate.parseOn(context);
       if (context.isSuccess) {
         elements.add(context.value);
@@ -125,8 +124,8 @@ class SeparatedRepeatingParser<R, S>
     final isCut = context.isCut;
     while (count < max) {
       final position = context.position;
+      context.isCut = false;
       if (count > 0) {
-        context.isCut = false;
         separator.fastParseOn(context);
         if (context.isSuccess) {
           /* nothing to do */
@@ -139,7 +138,6 @@ class SeparatedRepeatingParser<R, S>
           return;
         }
       }
-      context.isCut = false;
       delegate.fastParseOn(context);
       if (context.isSuccess) {
         count++;

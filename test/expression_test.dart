@@ -91,11 +91,9 @@ void main() {
     });
     test('error', () {
       expect(evaluator,
-          isParseFailure('1 +', message: 'end of input expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('1 + 2 +',
-              message: 'end of input expected', position: 6));
+          isParseFailure('1 +', message: 'number expected', position: 3));
+      expect(evaluator,
+          isParseFailure('1 + 2 +', message: 'number expected', position: 7));
     });
   });
   group('sub', () {
@@ -125,11 +123,9 @@ void main() {
     });
     test('error', () {
       expect(evaluator,
-          isParseFailure('1 -', message: 'end of input expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('1 - 2 -',
-              message: 'end of input expected', position: 6));
+          isParseFailure('1 -', message: 'number expected', position: 3));
+      expect(evaluator,
+          isParseFailure('1 - 2 -', message: 'number expected', position: 7));
     });
   });
   group('mul', () {
@@ -156,11 +152,9 @@ void main() {
     });
     test('error', () {
       expect(evaluator,
-          isParseFailure('1 *', message: 'end of input expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('1 * 2 *',
-              message: 'end of input expected', position: 6));
+          isParseFailure('1 *', message: 'number expected', position: 3));
+      expect(evaluator,
+          isParseFailure('1 * 2 *', message: 'number expected', position: 7));
     });
   });
   group('div', () {
@@ -187,11 +181,9 @@ void main() {
     });
     test('error', () {
       expect(evaluator,
-          isParseFailure('1 /', message: 'end of input expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('1 / 2 /',
-              message: 'end of input expected', position: 6));
+          isParseFailure('1 /', message: 'number expected', position: 3));
+      expect(evaluator,
+          isParseFailure('1 / 2 /', message: 'number expected', position: 7));
     });
   });
   group('pow', () {
@@ -220,11 +212,9 @@ void main() {
     });
     test('error', () {
       expect(evaluator,
-          isParseFailure('1 ^', message: 'end of input expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('1 ^ 2 ^',
-              message: 'end of input expected', position: 6));
+          isParseFailure('1 ^', message: 'number expected', position: 3));
+      expect(evaluator,
+          isParseFailure('1 ^ 2 ^', message: 'number expected', position: 7));
     });
   });
   group('parens', () {
@@ -434,10 +424,8 @@ void main() {
     });
     test('error', () {
       expect(evaluator, isParseFailure('++', message: 'number expected'));
-      expect(
-          evaluator,
-          isParseFailure('0+++',
-              message: 'end of input expected', position: 3));
+      expect(evaluator,
+          isParseFailure('0+++', message: 'number expected', position: 4));
     });
   });
   group('postfix sub', () {
@@ -500,10 +488,8 @@ void main() {
     test('error', () {
       expect(evaluator,
           isParseFailure('--', message: 'number expected', position: 2));
-      expect(
-          evaluator,
-          isParseFailure('0---',
-              message: 'end of input expected', position: 3));
+      expect(evaluator,
+          isParseFailure('0---', message: 'number expected', position: 4));
     });
   });
   group('negate', () {
