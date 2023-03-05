@@ -44,9 +44,6 @@ abstract class Parser<R> {
   ///
   /// The method is overridden in most concrete subclasses to implement the
   /// optimized logic. The default implementation delegates to [parseOn].
-  ///
-  /// Subclasses don't necessarily have to override this method, since it is
-  /// emulated using its slower brother.
   void fastParseOn(Context context) => parseOn(context);
 
   /// Returns a shallow copy of the receiver.

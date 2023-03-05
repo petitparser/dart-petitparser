@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/sequence.dart';
+import '../parser/misc/cut.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
 import 'result.dart';
@@ -21,7 +22,7 @@ class ExpressionGroup<T> {
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<L, R>(Parser<L> left, Parser<R> right,
           T Function(L left, T value, R right) callback) =>
-      _wrapper.add(seq3(left, _loopback, right).map3(callback));
+      _wrapper.add(seq3(left.commit(), _loopback, right).map3(callback));
 
   Parser<T> _buildWrapper(Parser<T> inner) => buildChoice([..._wrapper, inner]);
 
@@ -62,8 +63,9 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildRight(Parser<T> inner) => _right.isEmpty
       ? inner
-      : inner.plusSeparated(buildChoice(_right)).map((sequence) => sequence
-          .foldRight((left, result, right) => result.call(left, right)));
+      : inner.plusSeparated(buildChoice(_right).commit()).map((sequence) =>
+          sequence
+              .foldRight((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _right = [];
 
@@ -76,7 +78,7 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildLeft(Parser<T> inner) => _left.isEmpty
       ? inner
-      : inner.plusSeparated(buildChoice(_left)).map((sequence) =>
+      : inner.plusSeparated(buildChoice(_left).commit()).map((sequence) =>
           sequence.foldLeft((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
