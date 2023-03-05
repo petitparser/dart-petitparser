@@ -6,14 +6,14 @@ import 'result.dart';
 
 /// An immutable failed parse result.
 @immutable
-class Failure<T> extends Result<T> {
+class Failure<R> extends Result<R> {
   const Failure(super.buffer, super.position, this.message);
 
   @override
   bool get isFailure => true;
 
   @override
-  T get value => throw ParserException(this);
+  R get value => throw ParserException(this);
 
   @override
   final String message;

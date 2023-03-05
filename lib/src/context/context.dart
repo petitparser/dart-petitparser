@@ -10,7 +10,7 @@ class Context {
     this.isSuccess = true,
     this.value,
     this.message = '',
-    this.isCut = true,
+    this.isCut = false,
   });
 
   /// The input the parser is being run on.
@@ -60,9 +60,9 @@ class Context {
   /// Converts the current state of the context to a [Result].
   @inlineVm
   @inlineJs
-  Result<T> toResult<T>() => isSuccess
-      ? Success<T>(buffer, position, value)
-      : Failure<T>(buffer, position, message);
+  Result<R> toResult<R>() => isSuccess
+      ? Success<R>(buffer, position, value)
+      : Failure<R>(buffer, position, message);
 
   @override
   String toString() => 'Context{position: $position, isSuccess: $isSuccess, '

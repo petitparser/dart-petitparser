@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../context/context.dart';
+import '../context/context_ext.dart';
 import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
@@ -42,9 +43,10 @@ Parser<T> trace<T>(Parser<T> root,
     if (predicate == null || predicate(parser)) {
       return parser.callCC((continuation, context) {
         final currentParent = parent;
-        output(parent = _TraceEvent(currentParent, parser, context));
+        output(parent = _TraceEvent(currentParent, parser, context.copy()));
         continuation(context);
-        output(_TraceEvent(currentParent, parser, context, context.toResult()));
+        output(_TraceEvent(
+            currentParent, parser, context.copy(), context.toResult<T>()));
         parent = currentParent;
       });
     } else {
@@ -87,5 +89,7 @@ class _TraceEvent extends TraceEvent {
   final Result? result;
 
   @override
-  String toString() => '${'  ' * level}${result ?? parser}';
+  String toString() => '${'  ' * level}'
+      '${result ?? parser}'
+      '${context.isCut ? ' !!' : ''}';
 }

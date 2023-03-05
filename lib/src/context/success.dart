@@ -2,14 +2,14 @@ import 'context.dart';
 import 'result.dart';
 
 /// An immutable successful parse result.
-class Success<T> extends Result<T> {
+class Success<R> extends Result<R> {
   const Success(super.buffer, super.position, this.value);
 
   @override
   bool get isSuccess => true;
 
   @override
-  final T value;
+  final R value;
 
   @override
   String get message =>

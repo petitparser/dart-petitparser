@@ -8,7 +8,7 @@ import 'success.dart';
 
 /// An immutable parse result that is either a [Success] or a [Failure].
 @immutable
-abstract class Result<T> {
+abstract class Result<R> {
   const Result(this.buffer, this.position);
 
   /// The input buffer of this result.
@@ -25,7 +25,7 @@ abstract class Result<T> {
 
   /// Returns the parsed value of this result, or throws a [ParserException]
   /// if this is a parse failure.
-  T get value;
+  R get value;
 
   /// Returns the error message of this result, or throws an [UnsupportedError]
   /// if this is a [Success].
