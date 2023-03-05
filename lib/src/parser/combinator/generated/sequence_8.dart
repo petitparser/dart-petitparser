@@ -131,27 +131,35 @@ class Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> {
       this.sixth, this.seventh, this.eighth);
 
   /// Returns the first element of this sequence.
+  @inlineVm
   final T1 first;
 
   /// Returns the second element of this sequence.
+  @inlineVm
   final T2 second;
 
   /// Returns the third element of this sequence.
+  @inlineVm
   final T3 third;
 
   /// Returns the fourth element of this sequence.
+  @inlineVm
   final T4 fourth;
 
   /// Returns the fifth element of this sequence.
+  @inlineVm
   final T5 fifth;
 
   /// Returns the sixth element of this sequence.
+  @inlineVm
   final T6 sixth;
 
   /// Returns the seventh element of this sequence.
+  @inlineVm
   final T7 seventh;
 
   /// Returns the eighth element of this sequence.
+  @inlineVm
   final T8 eighth;
 
   /// Returns the last (or eighth) element of this sequence.

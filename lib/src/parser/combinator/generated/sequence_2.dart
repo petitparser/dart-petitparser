@@ -69,9 +69,11 @@ class Sequence2<T1, T2> {
   const Sequence2(this.first, this.second);
 
   /// Returns the first element of this sequence.
+  @inlineVm
   final T1 first;
 
   /// Returns the second element of this sequence.
+  @inlineVm
   final T2 second;
 
   /// Returns the last (or second) element of this sequence.

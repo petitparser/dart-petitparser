@@ -60,7 +60,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
       if (!context.isSuccess) {
         context.isSuccess = true;
         context.position = position;
-        return;
+        break;
       }
     }
   }

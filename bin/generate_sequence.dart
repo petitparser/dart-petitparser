@@ -136,6 +136,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
   for (var i = 0; i < index; i++) {
     out.writeln('/// Returns the ${valueNames[i]} element of this sequence.');
+    out.writeln('@inlineVm');
     out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
     out.writeln();
   }
