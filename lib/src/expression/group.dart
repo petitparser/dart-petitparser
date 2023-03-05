@@ -36,8 +36,9 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPrefix(Parser<T> inner) => _prefix.isEmpty
       ? inner
-      : seq2(buildChoice(_prefix).star(), inner).map2((prefix, value) =>
-          prefix.reversed.fold(value, (each, result) => result.call(each)));
+      : seq2(buildChoice(_prefix).commit().star(), inner).map2(
+          (prefix, value) =>
+              prefix.reversed.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPrefix<T, void>>> _prefix = [];
 
@@ -49,8 +50,9 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPostfix(Parser<T> inner) => _postfix.isEmpty
       ? inner
-      : seq2(inner, buildChoice(_postfix).star()).map2((value, postfix) =>
-          postfix.fold(value, (each, result) => result.call(each)));
+      : seq2(inner, buildChoice(_postfix).commit().star()).map2(
+          (value, postfix) =>
+              postfix.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPostfix<T, void>>> _postfix = [];
 

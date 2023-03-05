@@ -8,9 +8,8 @@ import 'utils/matchers.dart';
 
 Parser buildParser() {
   final builder = ExpressionBuilder<Object>();
-  builder.primitive(digit()
-      .plus()
-      .seq(char('.').seq(digit().plus()).optional())
+  builder.primitive(seq3(digit().plus(), cut(),
+          seq3(char('.'), cut(), digit().plus()).optional())
       .flatten('number expected')
       .trim());
   builder.group()
@@ -34,12 +33,11 @@ Parser buildParser() {
 
 Parser<num> buildEvaluator() {
   final builder = ExpressionBuilder<num>();
-  builder.primitive(digit()
-      .plus()
-      .seq(char('.').seq(digit().plus()).optional())
+  builder.primitive(seq3(digit().plus(), cut(),
+          seq3(char('.'), cut(), digit().plus()).optional())
       .flatten('number expected')
-      .trim()
-      .map(num.parse));
+      .map(num.parse)
+      .trim());
   builder.group()
     ..wrapper(char('(').trim(), char(')').trim(), (left, value, right) => value)
     ..wrapper(string('sqrt(').trim(), char(')').trim(),
@@ -523,6 +521,8 @@ void main() {
           isParseFailure('-', message: 'number expected', position: 1));
       expect(evaluator,
           isParseFailure('--', message: 'number expected', position: 2));
+      expect(evaluator,
+          isParseFailure('+2', message: 'number expected', position: 0));
     });
   });
   group('number', () {
@@ -545,7 +545,7 @@ void main() {
       expect(evaluator,
           isParseFailure('-', message: 'number expected', position: 1));
       expect(evaluator,
-          isParseFailure('0.', message: 'end of input expected', position: 1));
+          isParseFailure('0.', message: 'number expected', position: 0));
     });
   });
   group('priority', () {
