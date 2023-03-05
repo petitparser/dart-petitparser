@@ -1,7 +1,8 @@
 # Changelog
 
-## 5.3.0 (Unpublished)
+## 5.3.0
 
+- Maintenance release deprecating some old code in anticipation of the upcoming major release. 
 - Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
 - Deprecate `GrammarDefinition.build(Function, List<Object?>)`, use `buildFrom(Parser)` for a strongly typed parser instead.
 - Replace various uses of exception throwing with assertions, which yields code the compiler can optimize better.
