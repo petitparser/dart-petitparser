@@ -10,7 +10,7 @@ void main() {
     expect(context.isSuccess, isTrue);
     expect(context.value, isNull);
     expect(context.message, '');
-    expect(context.isCut, isTrue);
+    expect(context.isCut, isFalse);
     expect(context.toString(), startsWith('Context'));
   });
   test('success', () {
@@ -36,5 +36,17 @@ void main() {
     expect(() => result.value, throwsA(isA<ParserException>()));
     expect(result.message, '42 expected');
     expect(result.toString(), 'Failure[1:3]: 42 expected');
+  });
+  test('copy', () {
+    final context = Context('abc');
+    context.success(42, position: 2);
+    final copy = context.copy();
+    context.failure('42 expected', position: 2, isCut: true);
+    expect(copy.buffer, 'abc');
+    expect(copy.position, 2);
+    expect(copy.isSuccess, isTrue);
+    expect(copy.value, 42);
+    expect(copy.message, '');
+    expect(copy.isCut, isFalse);
   });
 }

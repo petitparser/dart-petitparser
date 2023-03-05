@@ -73,29 +73,41 @@ class SeparatedRepeatingParser<R, S>
       if (!context.isSuccess) return;
       elements.add(context.value);
     }
+    final isCut = context.isCut;
     while (elements.length < max) {
       final position = context.position;
       if (elements.isNotEmpty) {
+        context.isCut = false;
         separator.parseOn(context);
-        if (!context.isSuccess) {
+        if (context.isSuccess) {
+          separators.add(context.value);
+        } else if (context.isCut) {
+          return;
+        } else {
           context.isSuccess = true;
           context.position = position;
           context.value = SeparatedList(elements, separators);
+          context.isCut |= isCut;
           return;
         }
-        separators.add(context.value);
       }
+      context.isCut = false;
       delegate.parseOn(context);
-      if (!context.isSuccess) {
+      if (context.isSuccess) {
+        elements.add(context.value);
+      } else if (context.isCut) {
+        return;
+      } else {
         if (elements.isNotEmpty) separators.removeLast();
         context.isSuccess = true;
         context.position = position;
         context.value = SeparatedList(elements, separators);
+        context.isCut |= isCut;
         return;
       }
-      elements.add(context.value);
     }
     context.value = SeparatedList(elements, separators);
+    context.isCut |= isCut;
   }
 
   @override
@@ -110,24 +122,37 @@ class SeparatedRepeatingParser<R, S>
       if (!context.isSuccess) return;
       count++;
     }
+    final isCut = context.isCut;
     while (count < max) {
       final position = context.position;
       if (count > 0) {
+        context.isCut = false;
         separator.fastParseOn(context);
-        if (!context.isSuccess) {
+        if (context.isSuccess) {
+          /* nothing to do */
+        } else if (context.isCut) {
+          return;
+        } else {
           context.isSuccess = true;
           context.position = position;
+          context.isCut |= isCut;
           return;
         }
       }
+      context.isCut = false;
       delegate.fastParseOn(context);
-      if (!context.isSuccess) {
+      if (context.isSuccess) {
+        count++;
+      } else if (context.isCut) {
+        return;
+      } else {
         context.isSuccess = true;
         context.position = position;
+        context.isCut |= isCut;
         return;
       }
-      count++;
     }
+    context.isCut |= isCut;
   }
 
   @override

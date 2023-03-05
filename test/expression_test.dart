@@ -311,10 +311,18 @@ void main() {
       expect(evaluator, isParseSuccess('(2 + 6) / 2', closeTo(4, epsilon)));
     });
     test('error', () {
-      expect(evaluator, isParseFailure('(', message: 'number expected'));
-      expect(evaluator, isParseFailure('()', message: 'number expected'));
-      expect(evaluator, isParseFailure('(1', message: 'number expected'));
-      expect(evaluator, isParseFailure('((', message: 'number expected'));
+      expect(evaluator,
+          isParseFailure('(', message: 'number expected', position: 1));
+      expect(evaluator,
+          isParseFailure('()', message: 'number expected', position: 1));
+      expect(evaluator,
+          isParseFailure('(1', message: '")" expected', position: 2));
+      expect(evaluator,
+          isParseFailure('((', message: 'number expected', position: 2));
+      expect(evaluator,
+          isParseFailure('((2', message: '")" expected', position: 3));
+      expect(evaluator,
+          isParseFailure('((2)', message: '")" expected', position: 4));
     });
   });
   group('sqrt', () {
@@ -349,11 +357,22 @@ void main() {
       expect(evaluator, isParseSuccess('sqrt(sqrt(16))', closeTo(2, epsilon)));
     });
     test('error', () {
-      expect(evaluator, isParseFailure('sqrt(', message: 'number expected'));
-      expect(evaluator, isParseFailure('sqrt()', message: 'number expected'));
-      expect(evaluator, isParseFailure('sqrt(1', message: 'number expected'));
+      expect(evaluator,
+          isParseFailure('sqrt(', message: 'number expected', position: 5));
+      expect(evaluator,
+          isParseFailure('sqrt()', message: 'number expected', position: 5));
+      expect(evaluator,
+          isParseFailure('sqrt(1', message: '")" expected', position: 6));
       expect(
-          evaluator, isParseFailure('sqrt(sqrt(', message: 'number expected'));
+          evaluator,
+          isParseFailure('sqrt(sqrt(',
+              message: 'number expected', position: 10));
+      expect(evaluator,
+          isParseFailure('sqrt(sqrt(1', message: '")" expected', position: 11));
+      expect(
+          evaluator,
+          isParseFailure('sqrt(sqrt(1)',
+              message: '")" expected', position: 12));
     });
   });
   group('postfix add', () {
@@ -539,7 +558,6 @@ void main() {
       expect(evaluator, isParseFailure('', message: 'number expected'));
       expect(evaluator,
           isParseFailure('-', message: 'number expected', position: 1));
-      expect(evaluator, isParseFailure('(', message: 'number expected'));
       expect(evaluator,
           isParseFailure('0.', message: 'end of input expected', position: 1));
     });

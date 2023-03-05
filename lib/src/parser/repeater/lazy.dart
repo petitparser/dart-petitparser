@@ -70,6 +70,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
         context.isCut |= isCut;
         return;
       } else if (context.isCut || elements.length >= max) {
+        context.isCut |= isCut;
         return;
       }
       final limitPosition = context.position;
@@ -84,6 +85,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       } else {
         context.position = limitPosition;
         context.message = limitMessage;
+        context.isCut |= isCut;
         return;
       }
     }
@@ -107,6 +109,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
         context.isCut |= isCut;
         return;
       } else if (context.isCut || count >= max) {
+        context.isCut |= isCut;
         return;
       }
       final limitPosition = context.position;
@@ -121,6 +124,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       } else {
         context.position = limitPosition;
         context.message = limitMessage;
+        context.isCut |= isCut;
         return;
       }
     }

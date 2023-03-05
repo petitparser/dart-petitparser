@@ -58,10 +58,10 @@ class ChoiceParser<R> extends ListParser<R, R> {
       context.isCut = false;
       children[i].parseOn(context);
       if (context.isSuccess || context.isCut) {
-        context.isCut |= isCut;
-        return;
+        break;
       }
     }
+    context.isCut |= isCut;
   }
 
   @override
@@ -73,10 +73,10 @@ class ChoiceParser<R> extends ListParser<R, R> {
       context.isCut = false;
       children[i].fastParseOn(context);
       if (context.isSuccess || context.isCut) {
-        context.isCut |= isCut;
-        return;
+        break;
       }
     }
+    context.isCut |= isCut;
   }
 
   @override
