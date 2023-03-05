@@ -2,11 +2,17 @@
 
 ## 6.0.0 (Unpublished)
 
-- Changed execution model of PetitParser.
+- Changed execution model of PetitParser to a more efficient one using a mutable parser context.
+- The change of the execution model allowed the addition of a cut-operator, which prevents backtracking and enables  better error reporting.
+- Remove failure strategy for choice parsers, this unfortunately doesn't work well in combination with the cut operator.
+- Updated linter and debug tools accordingly.
+- Remove all previously deprecated code.
 
-## 5.3.0 (Unpublished)
+## 5.3.0
 
+- Maintenance release deprecating some old code in anticipation of the upcoming major release.
 - Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
+- Deprecate `GrammarDefinition.build(Function, List<Object?>)`, use `buildFrom(Parser)` for a strongly typed parser instead.
 - Replace various uses of exception throwing with assertions, which yields code the compiler can optimize better.
 
 ## 5.2.0
