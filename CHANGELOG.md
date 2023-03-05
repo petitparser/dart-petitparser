@@ -2,10 +2,11 @@
 
 ## 6.0.0 (Unpublished)
 
-- Changed execution model of PetitParser to a more efficient one using a mutable parser context.
-- The change of the execution model allowed the addition of a cut-operator, which prevents backtracking and enables  better error reporting.
-- Remove failure strategy for choice parsers, this unfortunately doesn't work well in combination with the cut operator.
-- Updated linter and debug tools accordingly.
+- Changed execution model of PetitParser:
+  - The new execution model is more performant (10 to 20% on large grammars), by eliminating the repeated allocation of new `Success` and `Failure` objects.
+  - Instead a shared `Context` object is passed between parsers maintaining all state, such as the input buffer, the position, the currently read value, error messages, etc.
+  - Introduce the `cut()` parser operator, which prevents backtracking of the outer choice-, optional- or repeat-parsers. This greatly simplifies error reporting.
+- Remove the rarely used failure join strategies, instead it is recommended to use the `cut()` operator.
 - Remove all previously deprecated code.
 
 ## 5.3.0
