@@ -5,7 +5,7 @@ import 'parser_pattern.dart';
 
 class PatternIterator extends Iterator<ParserMatch> {
   PatternIterator(this.pattern, this.parser, this.input, this.start)
-      : context = Context(input, position: start);
+      : context = Context(input, position: start, isSkip: true);
 
   final ParserPattern pattern;
   final Parser parser;

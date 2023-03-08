@@ -32,7 +32,7 @@ class ParserPattern implements Pattern {
   /// Returns `null` if the pattern doesn't match.
   @override
   ParserMatch? matchAsPrefix(String string, [int start = 0]) {
-    final context = Context(string, position: start);
+    final context = Context(string, position: start, isSkip: true);
     parser.parseOn(context);
     return context.isSuccess
         ? ParserMatch(this, string, start, context.position)
