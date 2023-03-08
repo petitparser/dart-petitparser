@@ -443,6 +443,49 @@ void main() {
       }
     }
   });
+  group('https://stackoverflow.com/questions/75503464', () {
+    final builder = ExpressionBuilder();
+    final primitive =
+        seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
+            .flatten('value expected')
+            .trim();
+    builder.primitive(primitive);
+    builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
+    builder.group()
+      ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
+      ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
+    final parser = builder.build().end();
+    test('success', () {
+      expect(parser, isParseSuccess('S|69|L', 'S|69|L'));
+      expect(parser, isParseSuccess('(S|69|L)', 'S|69|L'));
+      expect(parser,
+          isParseSuccess('S|69|L && S|69|R', ['&&', 'S|69|L', 'S|69|R']));
+      expect(parser,
+          isParseSuccess('S|69|L || S|69|R', ['||', 'S|69|L', 'S|69|R']));
+    });
+    test('value error', () {
+      expect(parser,
+          isParseFailure('S|fail|L', position: 0, message: 'value expected'));
+      expect(parser,
+          isParseFailure('(S|fail|L)', position: 1, message: 'value expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L && S|fail|R',
+              position: 10, message: 'value expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L || S|fail|R',
+              position: 10, message: 'value expected'));
+    });
+    test('other error', () {
+      expect(parser,
+          isParseFailure('(S|69|L', position: 7, message: '")" expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L &',
+              position: 7, message: 'end of input expected'));
+    });
+  });
   group('https://github.com/petitparser/dart-petitparser/issues/145', () {
     test('solution 1', () {
       final parser = seq3(
