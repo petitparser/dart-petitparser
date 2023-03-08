@@ -28,11 +28,6 @@ class EpsilonParser<R> extends Parser<R> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    context.isSuccess = true;
-  }
-
-  @override
   EpsilonParser<R> copy() => EpsilonParser<R>(result);
 
   @override

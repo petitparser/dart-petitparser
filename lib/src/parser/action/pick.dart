@@ -26,14 +26,11 @@ class PickParser<R> extends DelegateParser<List<R>, R> {
   @override
   void parseOn(Context context) {
     delegate.parseOn(context);
-    if (context.isSuccess) {
+    if (context.isSuccess && !context.isSkip) {
       final value = context.value as List<R>;
       context.value = value[index < 0 ? value.length + index : index];
     }
   }
-
-  @override
-  void fastParseOn(Context context) => delegate.fastParseOn(context);
 
   @override
   PickParser<R> copy() => PickParser<R>(delegate, index);

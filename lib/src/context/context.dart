@@ -10,6 +10,7 @@ class Context {
     this.isSuccess = true,
     this.value,
     this.message = '',
+    this.isSkip = false,
     this.isCut = false,
   });
 
@@ -43,6 +44,12 @@ class Context {
   /// The contents of this variable is undefined if [isSuccess] is `true`.
   @inlineVm
   String message;
+
+  /// Disables the population of [value].
+  ///
+  /// If `true`, parsers can skip the creation of values in success cases.
+  @inlineVm
+  bool isSkip;
 
   /// Disables backtracking of errors.
   ///

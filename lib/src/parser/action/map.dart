@@ -31,21 +31,22 @@ class MapParser<T, R> extends DelegateParser<T, R> {
 
   @override
   void parseOn(Context context) {
-    delegate.parseOn(context);
-    if (context.isSuccess) {
-      context.value = callback(context.value);
-    }
-  }
-
-  @override
-  void fastParseOn(Context context) {
-    if (hasSideEffects) {
-      delegate.parseOn(context);
-      if (context.isSuccess) {
-        callback(context.value);
+    if (context.isSkip) {
+      if (hasSideEffects) {
+        context.isSkip = false;
+        delegate.parseOn(context);
+        if (context.isSuccess) {
+          callback(context.value);
+        }
+        context.isSkip = true;
+      } else {
+        delegate.parseOn(context);
       }
     } else {
-      delegate.fastParseOn(context);
+      delegate.parseOn(context);
+      if (context.isSuccess) {
+        context.value = callback(context.value);
+      }
     }
   }
 

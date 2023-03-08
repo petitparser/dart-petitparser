@@ -53,32 +53,5 @@ class NewlineParser extends Parser<String> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    final buffer = context.buffer;
-    final position = context.position;
-    if (position < buffer.length) {
-      switch (buffer.codeUnitAt(position)) {
-        case 10:
-          context.isSuccess = true;
-          context.position = position + 1;
-          return;
-        case 13:
-          if (position + 1 < buffer.length &&
-              buffer.codeUnitAt(position + 1) == 10) {
-            context.isSuccess = true;
-            context.position = position + 2;
-            return;
-          } else {
-            context.isSuccess = true;
-            context.position = position + 1;
-            return;
-          }
-      }
-    }
-    context.isSuccess = false;
-    context.message = message;
-  }
-
-  @override
   NewlineParser copy() => NewlineParser(message);
 }

@@ -80,21 +80,28 @@ Matcher isParseSuccess<T>(
   dynamic result, {
   dynamic position,
 }) =>
-    isA<Parser<T>>().having((parser) {
+    isA<Parser<T>>()
+        .having(
+            (parser) => parser.parse(input),
+            'parse',
+            isSuccess<T>(
+                buffer: input,
+                value: result,
+                position: position ?? input.length))
+        .having((parser) => parser.accept(input), 'accept', isTrue)
+        .having((parser) {
       final context = DebugContext(input);
       parser.parseOn(context);
-      return context.toResult();
-    },
-        'parse',
-        isSuccess<T>(
-            buffer: input,
-            value: result,
-            position: position ?? input.length)).having((parser) {
-      final context = DebugContext(input);
-      parser.fastParseOn(context);
-      return context.isSuccess;
-    }, 'accept', isTrue).having(
-        (parser) => parser.allMatches(input).first, 'allMatches', result);
+      expect(context.isSuccess, isTrue);
+      expect(context.isSkip, isFalse);
+      return true;
+    }, 'parseOn', isTrue).having((parser) {
+      final context = DebugContext(input, isSkip: true);
+      parser.parseOn(context);
+      expect(context.isSuccess, isTrue);
+      expect(context.isSkip, isTrue);
+      return true;
+    }, 'parseOn (isSkip)', isTrue);
 
 /// Returns a [Matcher] that asserts the parser under test yields a parse
 /// failure for the given [input]. If no [position] is provided, assert that
@@ -109,7 +116,20 @@ Matcher isParseFailure<T>(
     isA<Parser<T>>()
         .having((parser) => parser.parse(input), 'parse',
             isFailure<T>(buffer: input, position: position, message: message))
-        .having((parser) => parser.accept(input), 'accept', isFalse);
+        .having((parser) => parser.accept(input), 'accept', isFalse)
+        .having((parser) {
+      final context = DebugContext(input);
+      parser.parseOn(context);
+      expect(context.isSuccess, isFalse);
+      expect(context.isSkip, isFalse);
+      return true;
+    }, 'parseOn', isTrue).having((parser) {
+      final context = DebugContext(input, isSkip: true);
+      parser.parseOn(context);
+      expect(context.isSuccess, isFalse);
+      expect(context.isSkip, isTrue);
+      return true;
+    }, 'parseOn (isSkip)', isTrue);
 
 /// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].
 Matcher isPatternMatch(

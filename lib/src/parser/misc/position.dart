@@ -18,10 +18,5 @@ class PositionParser extends Parser<int> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    context.isSuccess = true;
-  }
-
-  @override
   PositionParser copy() => PositionParser();
 }

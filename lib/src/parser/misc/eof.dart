@@ -40,16 +40,6 @@ class EndOfInputParser extends Parser<void> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    if (context.position < context.buffer.length) {
-      context.isSuccess = false;
-      context.message = message;
-    } else {
-      context.isSuccess = true;
-    }
-  }
-
-  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

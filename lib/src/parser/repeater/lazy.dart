@@ -52,7 +52,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   LazyRepeatingParser(super.parser, super.limit, super.min, super.max);
 
   @override
-  void parseOn(Context context) {
+  void fullParseOn(Context context) {
     final elements = <R>[];
     while (elements.length < min) {
       delegate.parseOn(context);
@@ -92,10 +92,10 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   }
 
   @override
-  void fastParseOn(Context context) {
+  void skipParseOn(Context context) {
     var count = 0;
     while (count < min) {
-      delegate.fastParseOn(context);
+      delegate.parseOn(context);
       if (!context.isSuccess) return;
       count++;
     }
@@ -103,7 +103,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     for (;;) {
       final position = context.position;
       context.isCut = false;
-      limit.fastParseOn(context);
+      limit.parseOn(context);
       if (context.isSuccess) {
         context.position = position;
         context.isCut |= isCut;
@@ -116,7 +116,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       final limitMessage = context.message;
       context.position = position;
       context.isCut = false;
-      delegate.fastParseOn(context);
+      delegate.parseOn(context);
       if (context.isSuccess) {
         count++;
       } else if (context.isCut) {

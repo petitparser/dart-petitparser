@@ -8,12 +8,14 @@ class DebugContext implements Context {
     bool isSuccess = true,
     dynamic value,
     String message = '',
-    bool isCut = true,
+    bool isSkip = false,
+    bool isCut = false,
   })  : _position = position,
         _isSuccess = isSuccess,
         _value = value,
         _message = message,
-        _isCut = isCut;
+        _isCut = isCut,
+        _isSkip = isSkip;
 
   final events = <ContextEvent>[];
 
@@ -29,7 +31,7 @@ class DebugContext implements Context {
 
   @override
   set position(int position) {
-    expect(position,
+    expect(_position,
         allOf(greaterThanOrEqualTo(0), lessThanOrEqualTo(buffer.length)),
         reason: 'Position is out of bounds');
     events.add(ContextEvent(ContextEventType.position, _position, position));
@@ -53,7 +55,8 @@ class DebugContext implements Context {
 
   @override
   dynamic get value {
-    expect(isSuccess, isTrue, reason: '`value` is undefined on failure');
+    expect(_isSuccess, isTrue, reason: '`value` is undefined on failure');
+    expect(_isSkip, isFalse, reason: '`value` is undefined on skip');
     return _value;
   }
 
@@ -74,6 +77,18 @@ class DebugContext implements Context {
     expect(isSuccess, isFalse, reason: '`message` is undefined on success');
     events.add(ContextEvent(ContextEventType.message, _message, message));
     _message = message;
+  }
+
+  /// Disables the population of [value].
+  bool _isSkip;
+
+  @override
+  bool get isSkip => _isSkip;
+
+  @override
+  set isSkip(bool isSkip) {
+    events.add(ContextEvent(ContextEventType.isSkip, _isSkip, isSkip));
+    _isSkip = isSkip;
   }
 
   /// Disables backtracking of errors.

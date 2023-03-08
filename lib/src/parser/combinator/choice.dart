@@ -65,21 +65,6 @@ class ChoiceParser<R> extends ListParser<R, R> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    final position = context.position;
-    final isCut = context.isCut;
-    for (var i = 0; i < children.length; i++) {
-      context.position = position;
-      context.isCut = false;
-      children[i].fastParseOn(context);
-      if (context.isSuccess || context.isCut) {
-        break;
-      }
-    }
-    context.isCut |= isCut;
-  }
-
-  @override
   bool hasEqualProperties(ChoiceParser<R> other) =>
       super.hasEqualProperties(other);
 

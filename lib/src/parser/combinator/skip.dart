@@ -32,34 +32,38 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
 
   @override
   void parseOn(Context context) {
-    final beforeParser = before;
-    if (beforeParser != null) {
-      beforeParser.fastParseOn(context);
+    if (context.isSkip) {
+      final beforeParser = before;
+      if (beforeParser != null) {
+        beforeParser.parseOn(context);
+        if (!context.isSuccess) return;
+      }
+      delegate.parseOn(context);
       if (!context.isSuccess) return;
-    }
-    delegate.parseOn(context);
-    if (!context.isSuccess) return;
-    final value = context.value;
-    final afterParser = after;
-    if (afterParser != null) {
-      afterParser.fastParseOn(context);
+      final afterParser = after;
+      if (afterParser != null) {
+        afterParser.parseOn(context);
+        if (!context.isSuccess) return;
+      }
+    } else {
+      final beforeParser = before;
+      if (beforeParser != null) {
+        context.isSkip = true;
+        beforeParser.parseOn(context);
+        context.isSkip = false;
+        if (!context.isSuccess) return;
+      }
+      delegate.parseOn(context);
       if (!context.isSuccess) return;
-    }
-    context.value = value;
-  }
-
-  @override
-  void fastParseOn(Context context) {
-    final beforeParser = before;
-    if (beforeParser != null) {
-      beforeParser.fastParseOn(context);
-      if (!context.isSuccess) return;
-    }
-    delegate.fastParseOn(context);
-    if (!context.isSuccess) return;
-    final afterParser = after;
-    if (afterParser != null) {
-      afterParser.fastParseOn(context);
+      final value = context.value;
+      final afterParser = after;
+      if (afterParser != null) {
+        context.isSkip = true;
+        afterParser.parseOn(context);
+        context.isSkip = false;
+        if (!context.isSuccess) return;
+      }
+      context.value = value;
     }
   }
 

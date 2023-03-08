@@ -46,9 +46,6 @@ class ContinuationParser<T, R> extends DelegateParser<T, R> {
   @override
   void parseOn(Context context) => handler(_parseOn, context);
 
-  @override
-  void fastParseOn(Context context) => handler(_parseOn, context);
-
   void _parseOn(Context context) => delegate.parseOn(context);
 
   @override

@@ -46,6 +46,8 @@ class WhereParser<R> extends DelegateParser<R, R> {
   @override
   void parseOn(Context context) {
     final position = context.position;
+    final isSkip = context.isSkip;
+    context.isSkip = false;
     delegate.parseOn(context);
     if (context.isSuccess) {
       final value = context.value as R;
@@ -55,20 +57,7 @@ class WhereParser<R> extends DelegateParser<R, R> {
         context.message = messageBuilder(value);
       }
     }
-  }
-
-  @override
-  void fastParseOn(Context context) {
-    final position = context.position;
-    delegate.parseOn(context);
-    if (context.isSuccess) {
-      final value = context.value as R;
-      if (!predicate(value)) {
-        context.isSuccess = false;
-        context.position = position;
-        context.message = messageBuilder(value);
-      }
-    }
+    context.isSkip = isSkip;
   }
 
   @override

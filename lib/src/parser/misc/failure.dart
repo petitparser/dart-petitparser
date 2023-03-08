@@ -24,12 +24,6 @@ class FailureParser<R> extends Parser<R> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    context.isSuccess = false;
-    context.message = message;
-  }
-
-  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

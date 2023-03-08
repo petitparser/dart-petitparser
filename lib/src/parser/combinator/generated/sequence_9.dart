@@ -55,57 +55,64 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
 
   @override
   void parseOn(Context context) {
-    parser1.parseOn(context);
-    if (!context.isSuccess) return;
-    final result1 = context.value as R1;
-    parser2.parseOn(context);
-    if (!context.isSuccess) return;
-    final result2 = context.value as R2;
-    parser3.parseOn(context);
-    if (!context.isSuccess) return;
-    final result3 = context.value as R3;
-    parser4.parseOn(context);
-    if (!context.isSuccess) return;
-    final result4 = context.value as R4;
-    parser5.parseOn(context);
-    if (!context.isSuccess) return;
-    final result5 = context.value as R5;
-    parser6.parseOn(context);
-    if (!context.isSuccess) return;
-    final result6 = context.value as R6;
-    parser7.parseOn(context);
-    if (!context.isSuccess) return;
-    final result7 = context.value as R7;
-    parser8.parseOn(context);
-    if (!context.isSuccess) return;
-    final result8 = context.value as R8;
-    parser9.parseOn(context);
-    if (!context.isSuccess) return;
-    final result9 = context.value as R9;
-    context.value = Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(result1,
-        result2, result3, result4, result5, result6, result7, result8, result9);
-  }
-
-  @override
-  void fastParseOn(Context context) {
-    parser1.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser2.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser3.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser4.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser5.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser6.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser7.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser8.fastParseOn(context);
-    if (!context.isSuccess) return;
-    parser9.fastParseOn(context);
-    if (!context.isSuccess) return;
+    if (context.isSkip) {
+      parser1.parseOn(context);
+      if (!context.isSuccess) return;
+      parser2.parseOn(context);
+      if (!context.isSuccess) return;
+      parser3.parseOn(context);
+      if (!context.isSuccess) return;
+      parser4.parseOn(context);
+      if (!context.isSuccess) return;
+      parser5.parseOn(context);
+      if (!context.isSuccess) return;
+      parser6.parseOn(context);
+      if (!context.isSuccess) return;
+      parser7.parseOn(context);
+      if (!context.isSuccess) return;
+      parser8.parseOn(context);
+      if (!context.isSuccess) return;
+      parser9.parseOn(context);
+      if (!context.isSuccess) return;
+    } else {
+      parser1.parseOn(context);
+      if (!context.isSuccess) return;
+      final result1 = context.value as R1;
+      parser2.parseOn(context);
+      if (!context.isSuccess) return;
+      final result2 = context.value as R2;
+      parser3.parseOn(context);
+      if (!context.isSuccess) return;
+      final result3 = context.value as R3;
+      parser4.parseOn(context);
+      if (!context.isSuccess) return;
+      final result4 = context.value as R4;
+      parser5.parseOn(context);
+      if (!context.isSuccess) return;
+      final result5 = context.value as R5;
+      parser6.parseOn(context);
+      if (!context.isSuccess) return;
+      final result6 = context.value as R6;
+      parser7.parseOn(context);
+      if (!context.isSuccess) return;
+      final result7 = context.value as R7;
+      parser8.parseOn(context);
+      if (!context.isSuccess) return;
+      final result8 = context.value as R8;
+      parser9.parseOn(context);
+      if (!context.isSuccess) return;
+      final result9 = context.value as R9;
+      context.value = Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+          result1,
+          result2,
+          result3,
+          result4,
+          result5,
+          result6,
+          result7,
+          result8,
+          result9);
+    }
   }
 
   @override

@@ -29,18 +29,6 @@ class PatternParser extends Parser<Match> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    final result = pattern.matchAsPrefix(context.buffer, context.position);
-    if (result != null) {
-      context.isSuccess = true;
-      context.position = result.end;
-    } else {
-      context.isSuccess = false;
-      context.message = message;
-    }
-  }
-
-  @override
   String toString() => '${super.toString()}[$message]';
 
   @override

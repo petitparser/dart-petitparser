@@ -44,8 +44,5 @@ class SettableParser<R> extends DelegateParser<R, R>
   void parseOn(Context context) => delegate.parseOn(context);
 
   @override
-  void fastParseOn(Context context) => delegate.fastParseOn(context);
-
-  @override
   SettableParser<R> copy() => SettableParser<R>(delegate);
 }

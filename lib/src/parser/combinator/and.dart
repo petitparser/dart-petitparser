@@ -31,14 +31,5 @@ class AndParser<R> extends DelegateParser<R, R> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    final position = context.position;
-    delegate.fastParseOn(context);
-    if (context.isSuccess) {
-      context.position = position;
-    }
-  }
-
-  @override
   AndParser<R> copy() => AndParser<R>(delegate);
 }

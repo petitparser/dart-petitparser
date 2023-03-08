@@ -294,12 +294,17 @@ void main() {
     final inner = digit().repeat(2);
     test('original', () {
       final parser = inner.callCC((continuation, context) {
+        final isSkip = context.isSkip;
+        context.isSkip = false;
         continuation(context);
-        final result = context.toResult<List<String>>();
-        if (result.isSuccess && result.value[0] != result.value[1]) {
-          context.failure('values do not match',
-              position: context.position - 2);
+        if (context.isSuccess) {
+          final value = context.value as List<String>;
+          if (value[0] != value[1]) {
+            context.failure('values do not match',
+                position: context.position - 2);
+          }
         }
+        context.isSkip = isSkip;
       });
       expect(parser, isParseSuccess('11', ['1', '1']));
       expect(parser, isParseSuccess('22', ['2', '2']));
@@ -437,20 +442,6 @@ void main() {
         });
       }
     }
-  });
-  group('https://stackoverflow.com/questions/75503464', () {
-    // final builder = ExpressionBuilder();
-    // final primitive =
-    //     (uppercase() & char('|') & digit().plus() & char('|') & uppercase())
-    //         .flatten()
-    //         .trim();
-    // builder.group().primitive(primitive);
-    // builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
-    // builder.group()
-    //   ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
-    //   ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
-    // final parser = builder.build().end();
-    // final result = parser.parse(testString);
   });
   group('https://github.com/petitparser/dart-petitparser/issues/145', () {
     test('solution 1', () {

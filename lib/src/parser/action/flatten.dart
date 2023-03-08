@@ -28,19 +28,18 @@ class FlattenParser<T> extends DelegateParser<T, String> {
 
   @override
   void parseOn(Context context) {
-    final position = context.position;
-    delegate.fastParseOn(context);
-    if (context.isSuccess) {
-      context.value = context.buffer.substring(position, context.position);
+    if (context.isSkip) {
+      delegate.parseOn(context);
+    } else {
+      final position = context.position;
+      context.isSkip = true;
+      delegate.parseOn(context);
+      context.isSkip = false;
+      if (context.isSuccess) {
+        context.value = context.buffer.substring(position, context.position);
+      }
     }
   }
-
-  @override
-  void fastParseOn(Context context) => delegate.fastParseOn(context);
-
-  @override
-  bool hasEqualProperties(FlattenParser<T> other) =>
-      super.hasEqualProperties(other);
 
   @override
   FlattenParser<T> copy() => FlattenParser<T>(delegate);

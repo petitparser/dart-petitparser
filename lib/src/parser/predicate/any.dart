@@ -32,19 +32,6 @@ class AnyParser extends Parser<String> {
   }
 
   @override
-  void fastParseOn(Context context) {
-    final buffer = context.buffer;
-    final position = context.position;
-    if (position < buffer.length) {
-      context.isSuccess = true;
-      context.position = position + 1;
-    } else {
-      context.isSuccess = false;
-      context.message = message;
-    }
-  }
-
-  @override
   AnyParser copy() => AnyParser(message);
 
   @override
