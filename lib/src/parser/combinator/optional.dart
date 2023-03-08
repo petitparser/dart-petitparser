@@ -40,9 +40,7 @@ class OptionalParser<R> extends DelegateParser<R, R> {
     if (!context.isSuccess && !context.isCut) {
       context.isSuccess = true;
       context.position = position;
-      if (!context.isSkip) {
-        context.value = otherwise;
-      }
+      context.value = otherwise;
     }
     context.isCut |= isCut;
   }
