@@ -130,7 +130,7 @@ void main() {
       });
       test('with message', () {
         final parser = digit().plus().flatten().map(int.parse).where(
-                (value) => value % 7 == 0,
+            (value) => value % 7 == 0,
             message: 'value not divisible by 7');
         expect(parser, isParseSuccess('7', 7));
         expect(parser, isParseSuccess('14', 14));
@@ -141,7 +141,7 @@ void main() {
       });
       test('with message builder', () {
         final parser = digit().plus().flatten().map(int.parse).where(
-                (value) => value % 7 == 0,
+            (value) => value % 7 == 0,
             messageBuilder: (value) => '"$value" not divisible by 7');
         expect(parser, isParseSuccess('7', 7));
         expect(parser, isParseSuccess('14', 14));
@@ -1195,7 +1195,8 @@ void main() {
           ChoiceStrategy.firstFailure: [
             isParseSuccess('ab12', 'ab12'),
             isParseSuccess('ac13', 'ac13'),
-            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ad14',
+                position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ab" expected'),
             isParseFailure('a', position: 1, message: 'any of "13" expected'),
             isParseFailure('ab', position: 1, message: 'any of "13" expected'),
@@ -1205,7 +1206,8 @@ void main() {
           ChoiceStrategy.lastFailure: [
             isParseSuccess('ab12', 'ab12'),
             isParseSuccess('ac13', 'ac13'),
-            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ad14',
+                position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "13" expected'),
             isParseFailure('ab', position: 1, message: 'any of "13" expected'),
@@ -1215,7 +1217,8 @@ void main() {
           ChoiceStrategy.closestFailure: [
             isParseSuccess('ab12', 'ab12'),
             isParseSuccess('ac13', 'ac13'),
-            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ad14',
+                position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "13" expected'),
             isParseFailure('ab', position: 1, message: 'any of "13" expected'),
@@ -1225,7 +1228,8 @@ void main() {
           ChoiceStrategy.farthestFailure: [
             isParseSuccess('ab12', 'ab12'),
             isParseSuccess('ac13', 'ac13'),
-            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ad14',
+                position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "13" expected'),
             isParseFailure('ab', position: 1, message: 'any of "13" expected'),
@@ -1956,11 +1960,11 @@ void main() {
       });
       test('repeat erroneous', () {
         expect(
-                () => char('a').repeat(-1, 1),
+            () => char('a').repeat(-1, 1),
             throwsA(isAssertionError.having((exception) => exception.message,
                 'message', 'min must be at least 0, but got -1')));
         expect(
-                () => char('a').repeat(2, 1),
+            () => char('a').repeat(2, 1),
             throwsA(isAssertionError.having((exception) => exception.message,
                 'message', 'max must be at least 2, but got 1')));
       }, skip: !hasAssertionsEnabled());
