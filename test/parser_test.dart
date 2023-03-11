@@ -130,7 +130,7 @@ void main() {
       });
       test('with message', () {
         final parser = digit().plus().flatten().map(int.parse).where(
-            (value) => value % 7 == 0,
+                (value) => value % 7 == 0,
             message: 'value not divisible by 7');
         expect(parser, isParseSuccess('7', 7));
         expect(parser, isParseSuccess('14', 14));
@@ -141,7 +141,7 @@ void main() {
       });
       test('with message builder', () {
         final parser = digit().plus().flatten().map(int.parse).where(
-            (value) => value % 7 == 0,
+                (value) => value % 7 == 0,
             messageBuilder: (value) => '"$value" not divisible by 7');
         expect(parser, isParseSuccess('7', 7));
         expect(parser, isParseSuccess('14', 14));
@@ -1116,7 +1116,6 @@ void main() {
           final second = any();
           expect(first, isA<Parser<String>>());
           expect(second, isA<Parser<String>>());
-          expect(ChoiceParser([first, second]), isA<Parser<String>>());
           expect([first, second].toChoiceParser(), isA<Parser<String>>());
           // TODO(renggli): https://github.com/dart-lang/language/issues/1557
           // expect(first | second, isA<Parser<String>>());
@@ -1127,12 +1126,140 @@ void main() {
           final second = any().map(double.parse);
           expect(first, isA<Parser<int>>());
           expect(second, isA<Parser<double>>());
-          expect(ChoiceParser([first, second]), isA<Parser<num>>());
           expect([first, second].toChoiceParser(), isA<Parser<num>>());
           // TODO(renggli): https://github.com/dart-lang/language/issues/1557
           // expect(first | second, isA<Parser<num>>());
           // expect(first.or(second), isA<Parser<num>>());
         });
+      });
+      group('strategy', () {
+        final choiceParsers = {
+          for (final strategy in ChoiceStrategy.values)
+            strategy: [
+              seq2(anyOf('ab').plus(), anyOf('12').plus()).flatten(),
+              seq2(anyOf('ac').plus(), anyOf('13').plus()).flatten(),
+              seq2(anyOf('ad').plus(), anyOf('14').plus()).flatten(),
+            ].toChoiceParser(strategy: strategy)
+        };
+        final choiceExpectations = <ChoiceStrategy, List<Matcher>>{
+          ChoiceStrategy.firstFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ad14', 'ad14'),
+            isParseFailure('', message: 'any of "ab" expected'),
+            isParseFailure('a', position: 1, message: 'any of "12" expected'),
+            isParseFailure('ab', position: 2, message: 'any of "12" expected'),
+            isParseFailure('ac', position: 1, message: 'any of "12" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "12" expected'),
+          ],
+          ChoiceStrategy.lastFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ad14', 'ad14'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ac', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ad', position: 2, message: 'any of "14" expected'),
+          ],
+          ChoiceStrategy.closestFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ad14', 'ad14'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ac', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "13" expected'),
+          ],
+          ChoiceStrategy.farthestFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ad14', 'ad14'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "14" expected'),
+            isParseFailure('ab', position: 2, message: 'any of "12" expected'),
+            isParseFailure('ac', position: 2, message: 'any of "13" expected'),
+            isParseFailure('ad', position: 2, message: 'any of "14" expected'),
+          ],
+        };
+        final choiceCutParsers = {
+          for (final strategy in ChoiceStrategy.values)
+            strategy: [
+              seq2(anyOf('ab').plus(), anyOf('12').plus()).flatten(),
+              seq3(anyOf('ac').plus(), cut(), anyOf('13').plus()).flatten(),
+              seq2(anyOf('ad').plus(), anyOf('14').plus()).flatten(),
+            ].toChoiceParser(strategy: strategy)
+        };
+        final choiceCutExpectations = <ChoiceStrategy, List<Matcher>>{
+          ChoiceStrategy.firstFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('', message: 'any of "ab" expected'),
+            isParseFailure('a', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ac', position: 2, message: 'any of "13" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "13" expected'),
+          ],
+          ChoiceStrategy.lastFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ac', position: 2, message: 'any of "13" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "13" expected'),
+          ],
+          ChoiceStrategy.closestFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ac', position: 2, message: 'any of "13" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "13" expected'),
+          ],
+          ChoiceStrategy.farthestFailure: [
+            isParseSuccess('ab12', 'ab12'),
+            isParseSuccess('ac13', 'ac13'),
+            isParseFailure('ad14', position: 1, message: 'any of "13" expected'),
+            isParseFailure('', message: 'any of "ad" expected'),
+            isParseFailure('a', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ab', position: 1, message: 'any of "13" expected'),
+            isParseFailure('ac', position: 2, message: 'any of "13" expected'),
+            isParseFailure('ad', position: 1, message: 'any of "13" expected'),
+          ],
+        };
+        for (final strategy in ChoiceStrategy.values) {
+          group(strategy.name, () {
+            final parser = choiceParsers[strategy]!;
+            final cutParser = choiceCutParsers[strategy]!;
+            expectParserInvariants(parser);
+            test('strategy', () {
+              expect(parser.strategy, strategy);
+              expect(cutParser.strategy, strategy);
+            });
+            test('chained', () {
+              final chained = parser.or(any());
+              expect(chained.strategy, strategy);
+            });
+            test('parsing', () {
+              var i = 0;
+              for (final expectation in choiceExpectations[strategy]!) {
+                expect(parser, expectation, reason: 'Expectation ${i++}');
+              }
+            });
+            test('parsing (cut)', () {
+              var i = 0;
+              for (final expectation in choiceCutExpectations[strategy]!) {
+                expect(cutParser, expectation, reason: 'Expectation ${i++}');
+              }
+            });
+          });
+        }
       });
     });
     group('not', () {
@@ -1829,11 +1956,11 @@ void main() {
       });
       test('repeat erroneous', () {
         expect(
-            () => char('a').repeat(-1, 1),
+                () => char('a').repeat(-1, 1),
             throwsA(isAssertionError.having((exception) => exception.message,
                 'message', 'min must be at least 0, but got -1')));
         expect(
-            () => char('a').repeat(2, 1),
+                () => char('a').repeat(2, 1),
             throwsA(isAssertionError.having((exception) => exception.message,
                 'message', 'max must be at least 2, but got 1')));
       }, skip: !hasAssertionsEnabled());
