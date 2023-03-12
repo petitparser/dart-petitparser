@@ -19,7 +19,7 @@ void main() {
       expectParserInvariants(any().cast<String>());
       test('default', () {
         final parser = digit().map(int.parse).cast<num>();
-        expect(parser, isParseSuccess('1', 1));
+        expect(parser, isParseSuccess('1', result: 1));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
     });
@@ -27,7 +27,7 @@ void main() {
       expectParserInvariants(any().star().castList<String>());
       test('default', () {
         final parser = digit().map(int.parse).repeat(3).castList<num>();
-        expect(parser, isParseSuccess('123', <num>[1, 2, 3]));
+        expect(parser, isParseSuccess('123', result: <num>[1, 2, 3]));
         expect(parser,
             isParseFailure('abc', position: 0, message: 'digit expected'));
       });
@@ -38,13 +38,13 @@ void main() {
       test('delegation', () {
         final parser =
             digit().callCC((continuation, context) => continuation(context));
-        expect(parser, isParseSuccess('1', '1'));
+        expect(parser, isParseSuccess('1', result: '1'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
       test('diversion', () {
         final parser = digit()
             .callCC((continuation, context) => letter().parseOn(context));
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('1', message: 'letter expected'));
       });
       test('resume', () {
@@ -77,8 +77,8 @@ void main() {
       test('success', () {
         final parser = digit()
             .callCC((continuation, context) => context.success('success'));
-        expect(parser, isParseSuccess('1', 'success', position: 0));
-        expect(parser, isParseSuccess('a', 'success', position: 0));
+        expect(parser, isParseSuccess('1', result: 'success', position: 0));
+        expect(parser, isParseSuccess('a', result: 'success', position: 0));
       });
       test('failure', () {
         final parser = digit()
@@ -97,9 +97,9 @@ void main() {
             isParseFailure('1', position: 1, message: 'digit expected'));
         expect(parser,
             isParseFailure('1a', position: 1, message: 'digit expected'));
-        expect(parser, isParseSuccess('12', '12'));
-        expect(parser, isParseSuccess('123', '123'));
-        expect(parser, isParseSuccess('1234', '1234'));
+        expect(parser, isParseSuccess('12', result: '12'));
+        expect(parser, isParseSuccess('123', result: '123'));
+        expect(parser, isParseSuccess('1234', result: '1234'));
       });
       test('with message', () {
         final parser = digit().repeat(2, unbounded).flatten('gimme a number');
@@ -107,24 +107,24 @@ void main() {
         expect(parser, isParseFailure('a', message: 'gimme a number'));
         expect(parser, isParseFailure('1', message: 'gimme a number'));
         expect(parser, isParseFailure('1a', message: 'gimme a number'));
-        expect(parser, isParseSuccess('12', '12'));
-        expect(parser, isParseSuccess('123', '123'));
-        expect(parser, isParseSuccess('1234', '1234'));
+        expect(parser, isParseSuccess('12', result: '12'));
+        expect(parser, isParseSuccess('123', result: '123'));
+        expect(parser, isParseSuccess('1234', result: '1234'));
       });
 
       test('nested', () {
         final parser =
             digit().star().flatten().plusSeparated(char(',')).flatten();
-        expect(parser, isParseSuccess('1', '1'));
-        expect(parser, isParseSuccess('1,12', '1,12'));
-        expect(parser, isParseSuccess('1,12,123', '1,12,123'));
+        expect(parser, isParseSuccess('1', result: '1'));
+        expect(parser, isParseSuccess('1,12', result: '1,12'));
+        expect(parser, isParseSuccess('1,12,123', result: '1,12,123'));
       });
     });
     group('where', () {
       expectParserInvariants(any().where((value) => true));
       test('default', () {
         final parser = any().where((value) => value == '*');
-        expect(parser, isParseSuccess('*', '*'));
+        expect(parser, isParseSuccess('*', result: '*'));
         expect(parser, isParseFailure('', message: 'input expected'));
         expect(parser, isParseFailure('!', message: 'unexpected "!"'));
       });
@@ -132,9 +132,9 @@ void main() {
         final parser = digit().plus().flatten().map(int.parse).where(
             (value) => value % 7 == 0,
             message: 'value not divisible by 7');
-        expect(parser, isParseSuccess('7', 7));
-        expect(parser, isParseSuccess('14', 14));
-        expect(parser, isParseSuccess('861', 861));
+        expect(parser, isParseSuccess('7', result: 7));
+        expect(parser, isParseSuccess('14', result: 14));
+        expect(parser, isParseSuccess('861', result: 861));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(
             parser, isParseFailure('865', message: 'value not divisible by 7'));
@@ -143,9 +143,9 @@ void main() {
         final parser = digit().plus().flatten().map(int.parse).where(
             (value) => value % 7 == 0,
             messageBuilder: (value) => '"$value" not divisible by 7');
-        expect(parser, isParseSuccess('7', 7));
-        expect(parser, isParseSuccess('14', 14));
-        expect(parser, isParseSuccess('861', 861));
+        expect(parser, isParseSuccess('7', result: 7));
+        expect(parser, isParseSuccess('14', result: 14));
+        expect(parser, isParseSuccess('861', result: 861));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(
             parser, isParseFailure('865', message: '"865" not divisible by 7'));
@@ -156,9 +156,9 @@ void main() {
       test('default', () {
         final parser =
             digit().map((each) => each.codeUnitAt(0) - '0'.codeUnitAt(0));
-        expect(parser, isParseSuccess('1', 1));
-        expect(parser, isParseSuccess('4', 4));
-        expect(parser, isParseSuccess('9', 9));
+        expect(parser, isParseSuccess('1', result: 1));
+        expect(parser, isParseSuccess('4', result: 4));
+        expect(parser, isParseSuccess('9', result: 9));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
@@ -179,8 +179,8 @@ void main() {
       expectParserInvariants(any().star().permute([-1, 1]));
       test('from start', () {
         final parser = digit().seq(letter()).permute([1, 0]);
-        expect(parser, isParseSuccess('1a', ['a', '1']));
-        expect(parser, isParseSuccess('2b', ['b', '2']));
+        expect(parser, isParseSuccess('1a', result: ['a', '1']));
+        expect(parser, isParseSuccess('2b', result: ['b', '2']));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'letter expected'));
@@ -189,8 +189,8 @@ void main() {
       });
       test('from end', () {
         final parser = digit().seq(letter()).permute([-1, 0]);
-        expect(parser, isParseSuccess('1a', ['a', '1']));
-        expect(parser, isParseSuccess('2b', ['b', '2']));
+        expect(parser, isParseSuccess('1a', result: ['a', '1']));
+        expect(parser, isParseSuccess('2b', result: ['b', '2']));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'letter expected'));
@@ -199,8 +199,8 @@ void main() {
       });
       test('repeated', () {
         final parser = digit().seq(letter()).permute([1, 1]);
-        expect(parser, isParseSuccess('1a', ['a', 'a']));
-        expect(parser, isParseSuccess('2b', ['b', 'b']));
+        expect(parser, isParseSuccess('1a', result: ['a', 'a']));
+        expect(parser, isParseSuccess('2b', result: ['b', 'b']));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'letter expected'));
@@ -212,8 +212,8 @@ void main() {
       expectParserInvariants(any().star().pick(-1));
       test('from start', () {
         final parser = digit().seq(letter()).pick(1);
-        expect(parser, isParseSuccess('1a', 'a'));
-        expect(parser, isParseSuccess('2b', 'b'));
+        expect(parser, isParseSuccess('1a', result: 'a'));
+        expect(parser, isParseSuccess('2b', result: 'b'));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'letter expected'));
@@ -222,8 +222,8 @@ void main() {
       });
       test('from end', () {
         final parser = digit().seq(letter()).pick(-1);
-        expect(parser, isParseSuccess('1a', 'a'));
-        expect(parser, isParseSuccess('2b', 'b'));
+        expect(parser, isParseSuccess('1a', result: 'a'));
+        expect(parser, isParseSuccess('2b', result: 'b'));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'letter expected'));
@@ -361,13 +361,13 @@ void main() {
       expectParserInvariants(any().trim(char('a'), char('b')));
       test('default', () {
         final parser = char('a').trim();
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess(' a', 'a'));
-        expect(parser, isParseSuccess('a ', 'a'));
-        expect(parser, isParseSuccess(' a ', 'a'));
-        expect(parser, isParseSuccess('  a', 'a'));
-        expect(parser, isParseSuccess('a  ', 'a'));
-        expect(parser, isParseSuccess('  a  ', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess(' a', result: 'a'));
+        expect(parser, isParseSuccess('a ', result: 'a'));
+        expect(parser, isParseSuccess(' a ', result: 'a'));
+        expect(parser, isParseSuccess('  a', result: 'a'));
+        expect(parser, isParseSuccess('a  ', result: 'a'));
+        expect(parser, isParseSuccess('  a  ', result: 'a'));
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(
@@ -377,13 +377,13 @@ void main() {
       });
       test('custom both', () {
         final parser = char('a').trim(char('*'));
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('*a', 'a'));
-        expect(parser, isParseSuccess('a*', 'a'));
-        expect(parser, isParseSuccess('*a*', 'a'));
-        expect(parser, isParseSuccess('**a', 'a'));
-        expect(parser, isParseSuccess('a**', 'a'));
-        expect(parser, isParseSuccess('**a**', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('*a', result: 'a'));
+        expect(parser, isParseSuccess('a*', result: 'a'));
+        expect(parser, isParseSuccess('*a*', result: 'a'));
+        expect(parser, isParseSuccess('**a', result: 'a'));
+        expect(parser, isParseSuccess('a**', result: 'a'));
+        expect(parser, isParseSuccess('**a**', result: 'a'));
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(
@@ -393,13 +393,13 @@ void main() {
       });
       test('custom left and right', () {
         final parser = char('a').trim(char('*'), char('#'));
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('*a', 'a'));
-        expect(parser, isParseSuccess('a#', 'a'));
-        expect(parser, isParseSuccess('*a#', 'a'));
-        expect(parser, isParseSuccess('**a', 'a'));
-        expect(parser, isParseSuccess('a##', 'a'));
-        expect(parser, isParseSuccess('**a##', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('*a', result: 'a'));
+        expect(parser, isParseSuccess('a#', result: 'a'));
+        expect(parser, isParseSuccess('*a#', result: 'a'));
+        expect(parser, isParseSuccess('**a', result: 'a'));
+        expect(parser, isParseSuccess('a##', result: 'a'));
+        expect(parser, isParseSuccess('**a##', result: 'a'));
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(
@@ -408,7 +408,7 @@ void main() {
             isParseFailure('**b', position: 2, message: '"a" expected'));
         expect(
             parser, isParseFailure('#a', position: 0, message: '"a" expected'));
-        expect(parser, isParseSuccess('a*', 'a', position: 1));
+        expect(parser, isParseSuccess('a*', result: 'a', position: 1));
       });
     });
   });
@@ -417,15 +417,15 @@ void main() {
       final parser = anyOf('uncopyrightable');
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('g', 'g'));
-        expect(parser, isParseSuccess('h', 'h'));
-        expect(parser, isParseSuccess('i', 'i'));
-        expect(parser, isParseSuccess('o', 'o'));
-        expect(parser, isParseSuccess('p', 'p'));
-        expect(parser, isParseSuccess('r', 'r'));
-        expect(parser, isParseSuccess('t', 't'));
-        expect(parser, isParseSuccess('y', 'y'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('g', result: 'g'));
+        expect(parser, isParseSuccess('h', result: 'h'));
+        expect(parser, isParseSuccess('i', result: 'i'));
+        expect(parser, isParseSuccess('o', result: 'o'));
+        expect(parser, isParseSuccess('p', result: 'p'));
+        expect(parser, isParseSuccess('r', result: 'r'));
+        expect(parser, isParseSuccess('t', result: 't'));
+        expect(parser, isParseSuccess('y', result: 'y'));
         expect(parser,
             isParseFailure('x', message: 'any of "uncopyrightable" expected'));
       });
@@ -434,7 +434,7 @@ void main() {
       final parser = noneOf('uncopyrightable');
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('x', 'x'));
+        expect(parser, isParseSuccess('x', result: 'x'));
         expect(parser,
             isParseFailure('c', message: 'none of "uncopyrightable" expected'));
         expect(parser,
@@ -459,13 +459,13 @@ void main() {
       expectParserInvariants(char('a'));
       test('with string', () {
         final parser = char('a');
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(parser, isParseFailure('', message: '"a" expected'));
       });
       test('with message', () {
         final parser = char('a', 'lowercase a');
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: 'lowercase a'));
         expect(parser, isParseFailure('', message: 'lowercase a'));
       });
@@ -488,7 +488,7 @@ void main() {
       }.forEach((key, value) {
         test('char("$key")', () {
           final parser = char(value);
-          expect(parser, isParseSuccess(value, value));
+          expect(parser, isParseSuccess(value, result: value));
           expect(parser, isParseFailure('a', message: '"$key" expected'));
         });
       });
@@ -497,8 +497,8 @@ void main() {
       expectParserInvariants(charIgnoringCase('a'));
       test('with lowercase string', () {
         final parser = charIgnoringCase('a');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('A', 'A'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
             isParseFailure('b', message: '"a" (case-insensitive) expected'));
         expect(parser,
@@ -506,8 +506,8 @@ void main() {
       });
       test('with uppercase string', () {
         final parser = charIgnoringCase('A');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('A', 'A'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
             isParseFailure('b', message: '"A" (case-insensitive) expected'));
         expect(parser,
@@ -515,14 +515,14 @@ void main() {
       });
       test('with custom message', () {
         final parser = charIgnoringCase('a', 'upper or lower');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('A', 'A'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser, isParseFailure('b', message: 'upper or lower'));
         expect(parser, isParseFailure('', message: 'upper or lower'));
       });
       test('with single char', () {
         final parser = charIgnoringCase('1');
-        expect(parser, isParseSuccess('1', '1'));
+        expect(parser, isParseSuccess('1', result: '1'));
         expect(parser,
             isParseFailure('a', message: '"1" (case-insensitive) expected'));
         expect(parser,
@@ -536,8 +536,8 @@ void main() {
       final parser = digit();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('1', '1'));
-        expect(parser, isParseSuccess('9', '9'));
+        expect(parser, isParseSuccess('1', result: '1'));
+        expect(parser, isParseSuccess('9', result: '9'));
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
@@ -546,8 +546,8 @@ void main() {
       final parser = letter();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('X', 'X'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('X', result: 'X'));
         expect(parser, isParseFailure('', message: 'letter expected'));
         expect(parser, isParseFailure('0', message: 'letter expected'));
       });
@@ -556,8 +556,8 @@ void main() {
       final parser = lowercase();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('z', 'z'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('z', result: 'z'));
         expect(
             parser, isParseFailure('', message: 'lowercase letter expected'));
         expect(
@@ -570,76 +570,76 @@ void main() {
       expectParserInvariants(pattern('^ad-f'));
       test('with single', () {
         final parser = pattern('abc');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
         expect(parser, isParseFailure('d', message: '[abc] expected'));
         expect(parser, isParseFailure('', message: '[abc] expected'));
       });
       test('with range', () {
         final parser = pattern('a-c');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
         expect(parser, isParseFailure('d', message: '[a-c] expected'));
         expect(parser, isParseFailure('', message: '[a-c] expected'));
       });
       test('with overlapping range', () {
         final parser = pattern('b-da-c');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
         expect(parser, isParseFailure('e', message: '[b-da-c] expected'));
         expect(parser, isParseFailure('', message: '[b-da-c] expected'));
       });
       test('with adjacent range', () {
         final parser = pattern('c-ea-c');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
-        expect(parser, isParseSuccess('e', 'e'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
+        expect(parser, isParseSuccess('e', result: 'e'));
         expect(parser, isParseFailure('f', message: '[c-ea-c] expected'));
         expect(parser, isParseFailure('', message: '[c-ea-c] expected'));
       });
       test('with prefix range', () {
         final parser = pattern('a-ea-c');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
-        expect(parser, isParseSuccess('e', 'e'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
+        expect(parser, isParseSuccess('e', result: 'e'));
         expect(parser, isParseFailure('f', message: '[a-ea-c] expected'));
         expect(parser, isParseFailure('', message: '[a-ea-c] expected'));
       });
       test('with postfix range', () {
         final parser = pattern('a-ec-e');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
-        expect(parser, isParseSuccess('e', 'e'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
+        expect(parser, isParseSuccess('e', result: 'e'));
         expect(parser, isParseFailure('f', message: '[a-ec-e] expected'));
         expect(parser, isParseFailure('', message: '[a-ec-e] expected'));
       });
       test('with repeated range', () {
         final parser = pattern('a-ea-e');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
-        expect(parser, isParseSuccess('e', 'e'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
+        expect(parser, isParseSuccess('e', result: 'e'));
         expect(parser, isParseFailure('f', message: '[a-ea-e] expected'));
         expect(parser, isParseFailure('', message: '[a-ea-e] expected'));
       });
       test('with composed range', () {
         final parser = pattern('ac-df-');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('c', 'c'));
-        expect(parser, isParseSuccess('d', 'd'));
-        expect(parser, isParseSuccess('f', 'f'));
-        expect(parser, isParseSuccess('-', '-'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('c', result: 'c'));
+        expect(parser, isParseSuccess('d', result: 'd'));
+        expect(parser, isParseSuccess('f', result: 'f'));
+        expect(parser, isParseSuccess('-', result: '-'));
         expect(parser, isParseFailure('b', message: '[ac-df-] expected'));
         expect(parser, isParseFailure('e', message: '[ac-df-] expected'));
         expect(parser, isParseFailure('g', message: '[ac-df-] expected'));
@@ -647,13 +647,13 @@ void main() {
       });
       test('with negated single', () {
         final parser = pattern('^a');
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('a', message: '[^a] expected'));
         expect(parser, isParseFailure('', message: '[^a] expected'));
       });
       test('with negated range', () {
         final parser = pattern('^a-c');
-        expect(parser, isParseSuccess('d', 'd'));
+        expect(parser, isParseSuccess('d', result: 'd'));
         expect(parser, isParseFailure('a', message: '[^a-c] expected'));
         expect(parser, isParseFailure('b', message: '[^a-c] expected'));
         expect(parser, isParseFailure('c', message: '[^a-c] expected'));
@@ -661,7 +661,7 @@ void main() {
       });
       test('with negate but without range', () {
         final parser = pattern('^a-');
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('a', message: '[^a-] expected'));
         expect(parser, isParseFailure('-', message: '[^a-] expected'));
         expect(parser, isParseFailure('', message: '[^a-] expected'));
@@ -673,12 +673,12 @@ void main() {
         expectParserInvariants(patternIgnoreCase('^ad-f'));
         test('with single', () {
           final parser = patternIgnoreCase('abc');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
           expect(
               parser,
               isParseFailure('d',
@@ -692,12 +692,12 @@ void main() {
         });
         test('with range', () {
           final parser = patternIgnoreCase('a-c');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
           expect(
               parser,
               isParseFailure('d',
@@ -711,14 +711,14 @@ void main() {
         });
         test('with overlapping range', () {
           final parser = patternIgnoreCase('b-da-c');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
           expect(
               parser,
               isParseFailure('e',
@@ -734,16 +734,16 @@ void main() {
         });
         test('with adjacent range', () {
           final parser = patternIgnoreCase('c-ea-c');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
-          expect(parser, isParseSuccess('e', 'e'));
-          expect(parser, isParseSuccess('E', 'E'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
+          expect(parser, isParseSuccess('e', result: 'e'));
+          expect(parser, isParseSuccess('E', result: 'E'));
           expect(
               parser,
               isParseFailure('f',
@@ -759,16 +759,16 @@ void main() {
         });
         test('with prefix range', () {
           final parser = patternIgnoreCase('a-ea-c');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
-          expect(parser, isParseSuccess('e', 'e'));
-          expect(parser, isParseSuccess('E', 'E'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
+          expect(parser, isParseSuccess('e', result: 'e'));
+          expect(parser, isParseSuccess('E', result: 'E'));
           expect(
               parser,
               isParseFailure('f',
@@ -780,16 +780,16 @@ void main() {
         });
         test('with postfix range', () {
           final parser = patternIgnoreCase('a-ec-e');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
-          expect(parser, isParseSuccess('e', 'e'));
-          expect(parser, isParseSuccess('E', 'E'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
+          expect(parser, isParseSuccess('e', result: 'e'));
+          expect(parser, isParseSuccess('E', result: 'E'));
           expect(
               parser,
               isParseFailure('f',
@@ -801,16 +801,16 @@ void main() {
         });
         test('with repeated range', () {
           final parser = patternIgnoreCase('a-ea-e');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
-          expect(parser, isParseSuccess('e', 'e'));
-          expect(parser, isParseSuccess('E', 'E'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
+          expect(parser, isParseSuccess('e', result: 'e'));
+          expect(parser, isParseSuccess('E', result: 'E'));
           expect(
               parser,
               isParseFailure('f',
@@ -822,15 +822,15 @@ void main() {
         });
         test('with composed range', () {
           final parser = patternIgnoreCase('ac-df-');
-          expect(parser, isParseSuccess('a', 'a'));
-          expect(parser, isParseSuccess('A', 'A'));
-          expect(parser, isParseSuccess('c', 'c'));
-          expect(parser, isParseSuccess('C', 'C'));
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
-          expect(parser, isParseSuccess('f', 'f'));
-          expect(parser, isParseSuccess('F', 'F'));
-          expect(parser, isParseSuccess('-', '-'));
+          expect(parser, isParseSuccess('a', result: 'a'));
+          expect(parser, isParseSuccess('A', result: 'A'));
+          expect(parser, isParseSuccess('c', result: 'c'));
+          expect(parser, isParseSuccess('C', result: 'C'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
+          expect(parser, isParseSuccess('f', result: 'f'));
+          expect(parser, isParseSuccess('F', result: 'F'));
+          expect(parser, isParseSuccess('-', result: '-'));
           expect(
               parser,
               isParseFailure('b',
@@ -850,8 +850,8 @@ void main() {
         });
         test('with negated single', () {
           final parser = patternIgnoreCase('^a');
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
           expect(parser,
               isParseFailure('a', message: '[^a] (case-insensitive) expected'));
           expect(parser,
@@ -861,8 +861,8 @@ void main() {
         });
         test('with negated range', () {
           final parser = patternIgnoreCase('^a-c');
-          expect(parser, isParseSuccess('d', 'd'));
-          expect(parser, isParseSuccess('D', 'D'));
+          expect(parser, isParseSuccess('d', result: 'd'));
+          expect(parser, isParseSuccess('D', result: 'D'));
           expect(
               parser,
               isParseFailure('a',
@@ -894,8 +894,8 @@ void main() {
         });
         test('with negate but without range', () {
           final parser = patternIgnoreCase('^a-');
-          expect(parser, isParseSuccess('b', 'b'));
-          expect(parser, isParseSuccess('B', 'B'));
+          expect(parser, isParseSuccess('b', result: 'b'));
+          expect(parser, isParseSuccess('B', result: 'B'));
           expect(
               parser,
               isParseFailure('a',
@@ -920,9 +920,9 @@ void main() {
       //   final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
       //   expectParserInvariants(parser);
       //   test('mathematical symbols', () {
-      //     expect(parser, isParseSuccess('∉', '∉'));
-      //     expect(parser, isParseSuccess('⟃', '⟃'));
-      //     expect(parser, isParseSuccess('⦻', '⦻'));
+      //     expect(parser, isParseSuccess('∉', result: '∉'));
+      //     expect(parser, isParseSuccess('⟃', result: '⟃'));
+      //     expect(parser, isParseSuccess('⦻', result: '⦻'));
       //     expect(
       //         parser,
       //         isParseFailure('a',
@@ -960,9 +960,9 @@ void main() {
       final parser = range('e', 'o');
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('e', 'e'));
-        expect(parser, isParseSuccess('i', 'i'));
-        expect(parser, isParseSuccess('o', 'o'));
+        expect(parser, isParseSuccess('e', result: 'e'));
+        expect(parser, isParseSuccess('i', result: 'i'));
+        expect(parser, isParseSuccess('o', result: 'o'));
         expect(parser, isParseFailure('p', message: '[e-o] expected'));
         expect(parser, isParseFailure('d', message: '[e-o] expected'));
         expect(parser, isParseFailure('', message: '[e-o] expected'));
@@ -975,8 +975,8 @@ void main() {
       final parser = uppercase();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('A', 'A'));
-        expect(parser, isParseSuccess('Z', 'Z'));
+        expect(parser, isParseSuccess('A', result: 'A'));
+        expect(parser, isParseSuccess('Z', result: 'Z'));
         expect(
             parser, isParseFailure('a', message: 'uppercase letter expected'));
         expect(
@@ -989,10 +989,10 @@ void main() {
       final parser = whitespace();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess(' ', ' '));
-        expect(parser, isParseSuccess('\t', '\t'));
-        expect(parser, isParseSuccess('\r', '\r'));
-        expect(parser, isParseSuccess('\f', '\f'));
+        expect(parser, isParseSuccess(' ', result: ' '));
+        expect(parser, isParseSuccess('\t', result: '\t'));
+        expect(parser, isParseSuccess('\r', result: '\r'));
+        expect(parser, isParseSuccess('\f', result: '\f'));
         expect(parser, isParseFailure('z', message: 'whitespace expected'));
         expect(parser, isParseFailure('', message: 'whitespace expected'));
       });
@@ -1030,7 +1030,7 @@ void main() {
           expect(
               parser,
               whitespace.contains(i)
-                  ? isParseSuccess(character, character)
+                  ? isParseSuccess(character, result: character)
                   : isParseFailure(character));
         }
       });
@@ -1039,13 +1039,13 @@ void main() {
       final parser = word();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('z', 'z'));
-        expect(parser, isParseSuccess('A', 'A'));
-        expect(parser, isParseSuccess('Z', 'Z'));
-        expect(parser, isParseSuccess('0', '0'));
-        expect(parser, isParseSuccess('9', '9'));
-        expect(parser, isParseSuccess('_', '_'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('z', result: 'z'));
+        expect(parser, isParseSuccess('A', result: 'A'));
+        expect(parser, isParseSuccess('Z', result: 'Z'));
+        expect(parser, isParseSuccess('0', result: '0'));
+        expect(parser, isParseSuccess('9', result: '9'));
+        expect(parser, isParseSuccess('_', result: '_'));
         expect(
             parser, isParseFailure('-', message: 'letter or digit expected'));
         expect(parser, isParseFailure(''));
@@ -1057,7 +1057,7 @@ void main() {
       expectParserInvariants(any().and());
       test('default', () {
         final parser = char('a').and();
-        expect(parser, isParseSuccess('a', 'a', position: 0));
+        expect(parser, isParseSuccess('a', result: 'a', position: 0));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(parser, isParseFailure('', message: '"a" expected'));
       });
@@ -1066,30 +1066,30 @@ void main() {
       expectParserInvariants(any().or(word()));
       test('operator', () {
         final parser = char('a') | char('b');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('c', message: '"b" expected'));
         expect(parser, isParseFailure('', message: '"b" expected'));
       });
       test('converter', () {
         final parser = [char('a'), char('b')].toChoiceParser();
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('c', message: '"b" expected'));
         expect(parser, isParseFailure('', message: '"b" expected'));
       });
       test('two', () {
         final parser = char('a').or(char('b'));
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('c', message: '"b" expected'));
         expect(parser, isParseFailure('', message: '"b" expected'));
       });
       test('three', () {
         final parser = char('a').or(char('b')).or(char('c'));
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
-        expect(parser, isParseSuccess('c', 'c'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
+        expect(parser, isParseSuccess('c', result: 'c'));
         expect(parser, isParseFailure('d', message: '"c" expected'));
         expect(parser, isParseFailure('', message: '"c" expected'));
       });
@@ -1098,8 +1098,8 @@ void main() {
           seq3(char('a'), cut(), char('1')),
           seq3(char('b'), cut(), char('2')),
         ].toChoiceParser().flatten();
-        expect(parser, isParseSuccess('a1', 'a1'));
-        expect(parser, isParseSuccess('b2', 'b2'));
+        expect(parser, isParseSuccess('a1', result: 'a1'));
+        expect(parser, isParseSuccess('b2', result: 'b2'));
         expect(
             parser, isParseFailure('a2', message: '"1" expected', position: 1));
         expect(
@@ -1143,9 +1143,9 @@ void main() {
         };
         final choiceExpectations = <ChoiceStrategy, List<Matcher>>{
           ChoiceStrategy.firstFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
-            isParseSuccess('ad14', 'ad14'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
+            isParseSuccess('ad14', result: 'ad14'),
             isParseFailure('', message: 'any of "ab" expected'),
             isParseFailure('a', position: 1, message: 'any of "12" expected'),
             isParseFailure('ab', position: 2, message: 'any of "12" expected'),
@@ -1153,9 +1153,9 @@ void main() {
             isParseFailure('ad', position: 1, message: 'any of "12" expected'),
           ],
           ChoiceStrategy.lastFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
-            isParseSuccess('ad14', 'ad14'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
+            isParseSuccess('ad14', result: 'ad14'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "14" expected'),
             isParseFailure('ab', position: 1, message: 'any of "14" expected'),
@@ -1163,9 +1163,9 @@ void main() {
             isParseFailure('ad', position: 2, message: 'any of "14" expected'),
           ],
           ChoiceStrategy.closestFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
-            isParseSuccess('ad14', 'ad14'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
+            isParseSuccess('ad14', result: 'ad14'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "14" expected'),
             isParseFailure('ab', position: 1, message: 'any of "14" expected'),
@@ -1173,9 +1173,9 @@ void main() {
             isParseFailure('ad', position: 1, message: 'any of "13" expected'),
           ],
           ChoiceStrategy.farthestFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
-            isParseSuccess('ad14', 'ad14'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
+            isParseSuccess('ad14', result: 'ad14'),
             isParseFailure('', message: 'any of "ad" expected'),
             isParseFailure('a', position: 1, message: 'any of "14" expected'),
             isParseFailure('ab', position: 2, message: 'any of "12" expected'),
@@ -1193,8 +1193,8 @@ void main() {
         };
         final choiceCutExpectations = <ChoiceStrategy, List<Matcher>>{
           ChoiceStrategy.firstFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
             isParseFailure('ad14',
                 position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ab" expected'),
@@ -1204,8 +1204,8 @@ void main() {
             isParseFailure('ad', position: 1, message: 'any of "13" expected'),
           ],
           ChoiceStrategy.lastFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
             isParseFailure('ad14',
                 position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
@@ -1215,8 +1215,8 @@ void main() {
             isParseFailure('ad', position: 1, message: 'any of "13" expected'),
           ],
           ChoiceStrategy.closestFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
             isParseFailure('ad14',
                 position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
@@ -1226,8 +1226,8 @@ void main() {
             isParseFailure('ad', position: 1, message: 'any of "13" expected'),
           ],
           ChoiceStrategy.farthestFailure: [
-            isParseSuccess('ab12', 'ab12'),
-            isParseSuccess('ac13', 'ac13'),
+            isParseSuccess('ab12', result: 'ab12'),
+            isParseSuccess('ac13', result: 'ac13'),
             isParseFailure('ad14',
                 position: 1, message: 'any of "13" expected'),
             isParseFailure('', message: 'any of "ad" expected'),
@@ -1273,19 +1273,21 @@ void main() {
         expect(parser, isParseFailure('a', message: 'not "a" expected'));
         expect(
             parser,
-            isParseSuccess('b', isFailure(position: 0, message: '"a" expected'),
+            isParseSuccess('b',
+                result: isFailure(position: 0, message: '"a" expected'),
                 position: 0));
         expect(
             parser,
-            isParseSuccess('', isFailure(position: 0, message: '"a" expected'),
+            isParseSuccess('',
+                result: isFailure(position: 0, message: '"a" expected'),
                 position: 0));
       });
       test('neg', () {
         final parser = digit().neg('no digit expected');
         expect(parser, isParseFailure('1', message: 'no digit expected'));
         expect(parser, isParseFailure('9', message: 'no digit expected'));
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess(' ', ' '));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess(' ', result: ' '));
         expect(parser, isParseFailure('', message: 'input expected'));
       });
     });
@@ -1293,30 +1295,30 @@ void main() {
       expectParserInvariants(any().optional());
       test('without default', () {
         final parser = char('a').optional();
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', isNull, position: 0));
-        expect(parser, isParseSuccess('', isNull));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: isNull, position: 0));
+        expect(parser, isParseSuccess('', result: isNull));
       });
       test('with default', () {
         final parser = char('a').optionalWith('0');
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', '0', position: 0));
-        expect(parser, isParseSuccess('', '0'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: '0', position: 0));
+        expect(parser, isParseSuccess('', result: '0'));
       });
       test('cut', () {
         final parser = seq3(char('a'), cut(), char('1')).optional().flatten();
-        expect(parser, isParseSuccess('', ''));
-        expect(parser, isParseSuccess('a1', 'a1'));
+        expect(parser, isParseSuccess('', result: ''));
+        expect(parser, isParseSuccess('a1', result: 'a1'));
         expect(
             parser, isParseFailure('a2', message: '"1" expected', position: 1));
-        expect(parser, isParseSuccess('b', '', position: 0));
+        expect(parser, isParseSuccess('b', result: '', position: 0));
       });
     });
     group('sequence', () {
       expectParserInvariants(any().seq(word()));
       test('operator', () {
         final parser = char('a') & char('b');
-        expect(parser, isParseSuccess('ab', ['a', 'b']));
+        expect(parser, isParseSuccess('ab', result: ['a', 'b']));
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('x'));
         expect(parser, isParseFailure('a', position: 1));
@@ -1324,7 +1326,7 @@ void main() {
       });
       test('converter', () {
         final parser = [char('a'), char('b')].toSequenceParser();
-        expect(parser, isParseSuccess('ab', ['a', 'b']));
+        expect(parser, isParseSuccess('ab', result: ['a', 'b']));
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('x'));
         expect(parser, isParseFailure('a', position: 1));
@@ -1332,7 +1334,7 @@ void main() {
       });
       test('two', () {
         final parser = char('a').seq(char('b'));
-        expect(parser, isParseSuccess('ab', ['a', 'b']));
+        expect(parser, isParseSuccess('ab', result: ['a', 'b']));
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('x'));
         expect(parser, isParseFailure('a', position: 1));
@@ -1340,7 +1342,7 @@ void main() {
       });
       test('three', () {
         final parser = char('a').seq(char('b')).seq(char('c'));
-        expect(parser, isParseSuccess('abc', ['a', 'b', 'c']));
+        expect(parser, isParseSuccess('abc', result: ['a', 'b', 'c']));
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('x'));
         expect(parser, isParseFailure('a', position: 1));
@@ -1354,7 +1356,7 @@ void main() {
       expectParserInvariants(any().settable());
       test('default', () {
         final parser = char('a').settable();
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(parser, isParseFailure(''));
       });
@@ -1363,7 +1365,7 @@ void main() {
         expect(parser, isParseFailure('', message: 'undefined parser'));
         expect(parser, isParseFailure('a', message: 'undefined parser'));
         parser.set(char('a'));
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
       });
     });
     group('skip', () {
@@ -1373,8 +1375,8 @@ void main() {
         expectParserInvariants(parser);
         test('default', () {
           expect(parser, same(inner));
-          expect(parser, isParseSuccess('1', '1'));
-          expect(parser, isParseSuccess('2', '2'));
+          expect(parser, isParseSuccess('1', result: '1'));
+          expect(parser, isParseSuccess('2', result: '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
         });
       });
@@ -1382,8 +1384,8 @@ void main() {
         final parser = inner.skip(before: char('*'));
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('*1', '1'));
-          expect(parser, isParseSuccess('*2', '2'));
+          expect(parser, isParseSuccess('*1', result: '1'));
+          expect(parser, isParseSuccess('*2', result: '2'));
           expect(parser, isParseFailure('', message: '"*" expected'));
           expect(parser, isParseFailure('1', message: '"*" expected'));
           expect(parser,
@@ -1396,8 +1398,8 @@ void main() {
         final parser = inner.skip(after: char('!'));
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('1!', '1'));
-          expect(parser, isParseSuccess('2!', '2'));
+          expect(parser, isParseSuccess('1!', result: '1'));
+          expect(parser, isParseSuccess('2!', result: '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
           expect(parser,
               isParseFailure('1', message: '"!" expected', position: 1));
@@ -1409,8 +1411,8 @@ void main() {
         final parser = inner.skip(before: char('*'), after: char('!'));
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('*1!', '1'));
-          expect(parser, isParseSuccess('*2!', '2'));
+          expect(parser, isParseSuccess('*1!', result: '1'));
+          expect(parser, isParseSuccess('*2!', result: '2'));
           expect(parser, isParseFailure('', message: '"*" expected'));
           expect(parser, isParseFailure('1', message: '"*" expected'));
           expect(parser, isParseFailure('1!', message: '"*" expected'));
@@ -1430,7 +1432,7 @@ void main() {
       test('default', () {
         final parser = char('a').end();
         expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(
             parser,
             isParseFailure('aa',
@@ -1441,8 +1443,8 @@ void main() {
       expectParserInvariants(epsilon());
       test('default', () {
         final parser = epsilon();
-        expect(parser, isParseSuccess('', isNull));
-        expect(parser, isParseSuccess('a', isNull, position: 0));
+        expect(parser, isParseSuccess('', result: isNull));
+        expect(parser, isParseSuccess('a', result: isNull, position: 0));
       });
     });
     group('failure', () {
@@ -1460,7 +1462,7 @@ void main() {
         expect(parser, isParseFailure('', message: 'NaN'));
         expect(parser, isParseFailure('a', message: 'NaN'));
         expect(parser, isParseFailure('1a', message: 'NaN'));
-        expect(parser, isParseSuccess('12', ['1', '2']));
+        expect(parser, isParseSuccess('12', result: ['1', '2']));
       });
     });
     group('labeled', () {
@@ -1468,7 +1470,7 @@ void main() {
       test('default', () {
         final parser = char('*').labeled('asterisk');
         expect(parser.label, 'asterisk');
-        expect(parser, isParseSuccess('*', '*'));
+        expect(parser, isParseSuccess('*', result: '*'));
         expect(parser, isParseFailure('a', message: '"*" expected'));
       });
     });
@@ -1476,9 +1478,9 @@ void main() {
       expectParserInvariants(newline());
       test('default', () {
         final parser = newline();
-        expect(parser, isParseSuccess('\n', '\n'));
-        expect(parser, isParseSuccess('\r\n', '\r\n'));
-        expect(parser, isParseSuccess('\r', '\r'));
+        expect(parser, isParseSuccess('\n', result: '\n'));
+        expect(parser, isParseSuccess('\r\n', result: '\r\n'));
+        expect(parser, isParseSuccess('\r', result: '\r'));
         expect(parser, isParseFailure('', message: 'newline expected'));
         expect(parser, isParseFailure('\f', message: 'newline expected'));
       });
@@ -1487,17 +1489,41 @@ void main() {
       expectParserInvariants(position());
       test('default', () {
         final parser = (any().star() & position()).pick(-1);
-        expect(parser, isParseSuccess('', 0));
-        expect(parser, isParseSuccess('a', 1));
-        expect(parser, isParseSuccess('aa', 2));
-        expect(parser, isParseSuccess('aaa', 3));
+        expect(parser, isParseSuccess('', result: 0));
+        expect(parser, isParseSuccess('a', result: 1));
+        expect(parser, isParseSuccess('aa', result: 2));
+        expect(parser, isParseSuccess('aaa', result: 3));
       });
     });
     group('cut', () {
-      expectParserInvariants(cut());
+      final parser = cut();
+      expectParserInvariants(parser);
+      test('updates context', () {
+        final context = Context('');
+        expect(context.isCut, isFalse);
+        parser.parseOn(context);
+        expect(context.isCut, isTrue);
+      });
     });
     group('commit', () {
-      expectParserInvariants(any().commit());
+      final parser = any().commit();
+      expectParserInvariants(parser);
+      test('updates context', () {
+        final context = Context(' ');
+        expect(context.isCut, isFalse);
+        parser.parseOn(context);
+        expect(context.isCut, isTrue);
+      });
+    });
+    group('noCut', () {
+      final parser = cut().noCut();
+      expectParserInvariants(parser);
+      test('updates context', () {
+        final context = Context('');
+        expect(context.isCut, isFalse);
+        parser.parseOn(context);
+        expect(context.isCut, isFalse);
+      });
     });
   });
   group('predicate', () {
@@ -1505,8 +1531,8 @@ void main() {
       expectParserInvariants(any());
       test('default', () {
         final parser = any();
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('b', 'b'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('b', result: 'b'));
         expect(parser, isParseFailure('', message: 'input expected'));
       });
     });
@@ -1514,8 +1540,10 @@ void main() {
       expectParserInvariants(PatternParser('42', 'number expected'));
       test('string', () {
         final parser = PatternParser('42', 'number expected');
-        expect(parser,
-            isParseSuccess('42', isPatternMatch('42', start: 0, end: 2)));
+        expect(
+            parser,
+            isParseSuccess('42',
+                result: isPatternMatch('42', start: 0, end: 2)));
         expect(parser, isParseFailure('4', message: 'number expected'));
         expect(parser, isParseFailure('43', message: 'number expected'));
       });
@@ -1523,20 +1551,21 @@ void main() {
         final parser = PatternParser(RegExp(r'\d+'), 'digits expected');
         expect(
           parser,
-          isParseSuccess('1', isPatternMatch('1', start: 0, end: 1)),
+          isParseSuccess('1', result: isPatternMatch('1', start: 0, end: 1)),
         );
         expect(
           parser,
-          isParseSuccess('12', isPatternMatch('12', start: 0, end: 2)),
+          isParseSuccess('12', result: isPatternMatch('12', start: 0, end: 2)),
         );
         expect(
           parser,
-          isParseSuccess('123', isPatternMatch('123', start: 0, end: 3)),
+          isParseSuccess('123',
+              result: isPatternMatch('123', start: 0, end: 3)),
         );
         expect(
           parser,
-          isParseSuccess('1a', isPatternMatch('1', start: 0, end: 1),
-              position: 1),
+          isParseSuccess('1a',
+              result: isPatternMatch('1', start: 0, end: 1), position: 1),
         );
         expect(parser, isParseFailure(''));
         expect(parser, isParseFailure('a'));
@@ -1547,31 +1576,38 @@ void main() {
             PatternParser(RegExp(r'(\d+)\s*,\s*(\d+)'), 'pair expected');
         expect(
           parser,
-          isParseSuccess('1,2', isPatternMatch('1,2', groups: ['1', '2'])),
+          isParseSuccess('1,2',
+              result: isPatternMatch('1,2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1, 2', isPatternMatch('1, 2', groups: ['1', '2'])),
+          isParseSuccess('1, 2',
+              result: isPatternMatch('1, 2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1 ,2', isPatternMatch('1 ,2', groups: ['1', '2'])),
+          isParseSuccess('1 ,2',
+              result: isPatternMatch('1 ,2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('1 , 2', isPatternMatch('1 , 2', groups: ['1', '2'])),
+          isParseSuccess('1 , 2',
+              result: isPatternMatch('1 , 2', groups: ['1', '2'])),
         );
         expect(
           parser,
-          isParseSuccess('12,3', isPatternMatch('12,3', groups: ['12', '3'])),
+          isParseSuccess('12,3',
+              result: isPatternMatch('12,3', groups: ['12', '3'])),
         );
         expect(
           parser,
-          isParseSuccess('12, 3', isPatternMatch('12, 3', groups: ['12', '3'])),
+          isParseSuccess('12, 3',
+              result: isPatternMatch('12, 3', groups: ['12', '3'])),
         );
         expect(
           parser,
-          isParseSuccess('12 ,3', isPatternMatch('12 ,3', groups: ['12', '3'])),
+          isParseSuccess('12 ,3',
+              result: isPatternMatch('12 ,3', groups: ['12', '3'])),
         );
       });
     });
@@ -1579,7 +1615,7 @@ void main() {
       expectParserInvariants(string('foo'));
       test('default', () {
         final parser = string('foo');
-        expect(parser, isParseSuccess('foo', 'foo'));
+        expect(parser, isParseSuccess('foo', result: 'foo'));
         expect(parser, isParseFailure('', message: '"foo" expected'));
         expect(parser, isParseFailure('f', message: '"foo" expected'));
         expect(parser, isParseFailure('fo', message: '"foo" expected'));
@@ -1587,41 +1623,41 @@ void main() {
       });
       test('convert empty', () {
         final parser = ''.toParser();
-        expect(parser, isParseSuccess('', ''));
+        expect(parser, isParseSuccess('', result: ''));
       });
       test('convert single char', () {
         final parser = 'a'.toParser();
-        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('A', message: '"a" expected'));
       });
       test('convert single char (case-insensitive)', () {
         final parser = 'a'.toParser(caseInsensitive: true);
-        expect(parser, isParseSuccess('a', 'a'));
-        expect(parser, isParseSuccess('A', 'A'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
             isParseFailure('b', message: '"a" (case-insensitive) expected'));
       });
       test('convert pattern', () {
         final parser = 'a-z'.toParser(isPattern: true);
-        expect(parser, isParseSuccess('x', 'x'));
+        expect(parser, isParseSuccess('x', result: 'x'));
         expect(parser, isParseFailure('X', message: '[a-z] expected'));
       });
       test('convert pattern (case-insensitive)', () {
         final parser = 'a-z'.toParser(isPattern: true, caseInsensitive: true);
-        expect(parser, isParseSuccess('x', 'x'));
-        expect(parser, isParseSuccess('X', 'X'));
+        expect(parser, isParseSuccess('x', result: 'x'));
+        expect(parser, isParseSuccess('X', result: 'X'));
         expect(parser,
             isParseFailure('1', message: '[a-z] (case-insensitive) expected'));
       });
       test('convert multiple chars', () {
         final parser = 'foo'.toParser();
-        expect(parser, isParseSuccess('foo', 'foo'));
+        expect(parser, isParseSuccess('foo', result: 'foo'));
         expect(parser, isParseFailure('Foo', message: '"foo" expected'));
       });
       test('convert multiple chars (case-insensitive)', () {
         final parser = 'foo'.toParser(caseInsensitive: true);
-        expect(parser, isParseSuccess('foo', 'foo'));
-        expect(parser, isParseSuccess('Foo', 'Foo'));
+        expect(parser, isParseSuccess('foo', result: 'foo'));
+        expect(parser, isParseSuccess('Foo', result: 'Foo'));
         expect(
             parser,
             isParseFailure('bar',
@@ -1632,9 +1668,9 @@ void main() {
       expectParserInvariants(stringIgnoreCase('foo'));
       test('default', () {
         final parser = stringIgnoreCase('foo');
-        expect(parser, isParseSuccess('foo', 'foo'));
-        expect(parser, isParseSuccess('FOO', 'FOO'));
-        expect(parser, isParseSuccess('fOo', 'fOo'));
+        expect(parser, isParseSuccess('foo', result: 'foo'));
+        expect(parser, isParseSuccess('FOO', result: 'FOO'));
+        expect(parser, isParseSuccess('fOo', result: 'fOo'));
         expect(parser,
             isParseFailure('', message: '"foo" (case-insensitive) expected'));
         expect(parser,
@@ -1652,21 +1688,26 @@ void main() {
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
         expect(parser, isParseFailure('ab', message: 'digit expected'));
-        expect(parser, isParseSuccess('1', [], position: 0));
-        expect(parser, isParseSuccess('a1', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('12', ['1'], position: 1));
-        expect(parser, isParseSuccess('a12', ['a', '1'], position: 2));
-        expect(parser, isParseSuccess('ab12', ['a', 'b', '1'], position: 3));
-        expect(
-            parser, isParseSuccess('abc12', ['a', 'b', 'c', '1'], position: 4));
-        expect(parser, isParseSuccess('123', ['1', '2'], position: 2));
-        expect(parser, isParseSuccess('a123', ['a', '1', '2'], position: 3));
-        expect(
-            parser, isParseSuccess('ab123', ['a', 'b', '1', '2'], position: 4));
+        expect(parser, isParseSuccess('1', result: [], position: 0));
+        expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
         expect(parser,
-            isParseSuccess('abc123', ['a', 'b', 'c', '1', '2'], position: 5));
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('12', result: ['1'], position: 1));
+        expect(parser, isParseSuccess('a12', result: ['a', '1'], position: 2));
+        expect(parser,
+            isParseSuccess('ab12', result: ['a', 'b', '1'], position: 3));
+        expect(parser,
+            isParseSuccess('abc12', result: ['a', 'b', 'c', '1'], position: 4));
+        expect(parser, isParseSuccess('123', result: ['1', '2'], position: 2));
+        expect(parser,
+            isParseSuccess('a123', result: ['a', '1', '2'], position: 3));
+        expect(parser,
+            isParseSuccess('ab123', result: ['a', 'b', '1', '2'], position: 4));
+        expect(
+            parser,
+            isParseSuccess('abc123',
+                result: ['a', 'b', 'c', '1', '2'], position: 5));
       });
       test('plus', () {
         final parser = word().plusGreedy(digit());
@@ -1677,20 +1718,25 @@ void main() {
             isParseFailure('ab', position: 1, message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'digit expected'));
-        expect(parser, isParseSuccess('a1', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('12', ['1'], position: 1));
-        expect(parser, isParseSuccess('a12', ['a', '1'], position: 2));
-        expect(parser, isParseSuccess('ab12', ['a', 'b', '1'], position: 3));
-        expect(
-            parser, isParseSuccess('abc12', ['a', 'b', 'c', '1'], position: 4));
-        expect(parser, isParseSuccess('123', ['1', '2'], position: 2));
-        expect(parser, isParseSuccess('a123', ['a', '1', '2'], position: 3));
-        expect(
-            parser, isParseSuccess('ab123', ['a', 'b', '1', '2'], position: 4));
+        expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
         expect(parser,
-            isParseSuccess('abc123', ['a', 'b', 'c', '1', '2'], position: 5));
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('12', result: ['1'], position: 1));
+        expect(parser, isParseSuccess('a12', result: ['a', '1'], position: 2));
+        expect(parser,
+            isParseSuccess('ab12', result: ['a', 'b', '1'], position: 3));
+        expect(parser,
+            isParseSuccess('abc12', result: ['a', 'b', 'c', '1'], position: 4));
+        expect(parser, isParseSuccess('123', result: ['1', '2'], position: 2));
+        expect(parser,
+            isParseSuccess('a123', result: ['a', '1', '2'], position: 3));
+        expect(parser,
+            isParseSuccess('ab123', result: ['a', 'b', '1', '2'], position: 4));
+        expect(
+            parser,
+            isParseSuccess('abc123',
+                result: ['a', 'b', 'c', '1', '2'], position: 5));
       });
       test('repeat', () {
         final parser = word().repeatGreedy(digit(), 2, 4);
@@ -1713,30 +1759,39 @@ void main() {
                 position: 1, message: 'letter or digit expected'));
         expect(parser,
             isParseFailure('a1', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(
-            parser, isParseSuccess('abcd1', ['a', 'b', 'c', 'd'], position: 4));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser,
+            isParseSuccess('abcd1', result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde1', position: 2, message: 'digit expected'));
         expect(parser,
             isParseFailure('12', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('a12', ['a', '1'], position: 2));
-        expect(parser, isParseSuccess('ab12', ['a', 'b', '1'], position: 3));
-        expect(
-            parser, isParseSuccess('abc12', ['a', 'b', 'c', '1'], position: 4));
+        expect(parser, isParseSuccess('a12', result: ['a', '1'], position: 2));
         expect(parser,
-            isParseSuccess('abcd12', ['a', 'b', 'c', 'd'], position: 4));
+            isParseSuccess('ab12', result: ['a', 'b', '1'], position: 3));
+        expect(parser,
+            isParseSuccess('abc12', result: ['a', 'b', 'c', '1'], position: 4));
+        expect(
+            parser,
+            isParseSuccess('abcd12',
+                result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde12', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('123', ['1', '2'], position: 2));
-        expect(parser, isParseSuccess('a123', ['a', '1', '2'], position: 3));
+        expect(parser, isParseSuccess('123', result: ['1', '2'], position: 2));
+        expect(parser,
+            isParseSuccess('a123', result: ['a', '1', '2'], position: 3));
+        expect(parser,
+            isParseSuccess('ab123', result: ['a', 'b', '1', '2'], position: 4));
         expect(
-            parser, isParseSuccess('ab123', ['a', 'b', '1', '2'], position: 4));
-        expect(parser,
-            isParseSuccess('abc123', ['a', 'b', 'c', '1'], position: 4));
-        expect(parser,
-            isParseSuccess('abcd123', ['a', 'b', 'c', 'd'], position: 4));
+            parser,
+            isParseSuccess('abc123',
+                result: ['a', 'b', 'c', '1'], position: 4));
+        expect(
+            parser,
+            isParseSuccess('abcd123',
+                result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde123', position: 2, message: 'digit expected'));
       });
@@ -1746,12 +1801,12 @@ void main() {
         final parser = word().repeatGreedy(digit(), 2, unbounded);
         expect(
             parser,
-            isParseSuccess('${inputLetter.join()}1', inputLetter,
-                position: inputLetter.length));
+            isParseSuccess('${inputLetter.join()}1',
+                result: inputLetter, position: inputLetter.length));
         expect(
             parser,
-            isParseSuccess('${inputDigit.join()}1', inputDigit,
-                position: inputDigit.length));
+            isParseSuccess('${inputDigit.join()}1',
+                result: inputDigit, position: inputDigit.length));
       });
       group('cut', () {
         // TODO: Not clear what the semantics of a cut in a greedy parser are?
@@ -1766,18 +1821,22 @@ void main() {
             isParseFailure('a', position: 1, message: 'digit expected'));
         expect(parser,
             isParseFailure('ab', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('1', [], position: 0));
-        expect(parser, isParseSuccess('a1', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('12', [], position: 0));
-        expect(parser, isParseSuccess('a12', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab12', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc12', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('123', [], position: 0));
-        expect(parser, isParseSuccess('a123', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab123', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc123', ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('1', result: [], position: 0));
+        expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('12', result: [], position: 0));
+        expect(parser, isParseSuccess('a12', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab12', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc12', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('123', result: [], position: 0));
+        expect(parser, isParseSuccess('a123', result: ['a'], position: 1));
+        expect(
+            parser, isParseSuccess('ab123', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc123', result: ['a', 'b', 'c'], position: 3));
       });
       test('plus', () {
         final parser = word().plusLazy(digit());
@@ -1788,17 +1847,21 @@ void main() {
             isParseFailure('ab', position: 2, message: 'digit expected'));
         expect(parser,
             isParseFailure('1', position: 1, message: 'digit expected'));
-        expect(parser, isParseSuccess('a1', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('12', ['1'], position: 1));
-        expect(parser, isParseSuccess('a12', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab12', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc12', ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('123', ['1'], position: 1));
-        expect(parser, isParseSuccess('a123', ['a'], position: 1));
-        expect(parser, isParseSuccess('ab123', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc123', ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('12', result: ['1'], position: 1));
+        expect(parser, isParseSuccess('a12', result: ['a'], position: 1));
+        expect(parser, isParseSuccess('ab12', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc12', result: ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('123', result: ['1'], position: 1));
+        expect(parser, isParseSuccess('a123', result: ['a'], position: 1));
+        expect(
+            parser, isParseSuccess('ab123', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc123', result: ['a', 'b', 'c'], position: 3));
       });
       test('repeat', () {
         final parser = word().repeatLazy(digit(), 2, 4);
@@ -1821,27 +1884,35 @@ void main() {
                 position: 1, message: 'letter or digit expected'));
         expect(parser,
             isParseFailure('a1', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('ab1', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc1', ['a', 'b', 'c'], position: 3));
-        expect(
-            parser, isParseSuccess('abcd1', ['a', 'b', 'c', 'd'], position: 4));
+        expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
+        expect(parser,
+            isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
+        expect(parser,
+            isParseSuccess('abcd1', result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde1', position: 4, message: 'digit expected'));
         expect(parser,
             isParseFailure('12', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('a12', ['a', '1'], position: 2));
-        expect(parser, isParseSuccess('ab12', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc12', ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('a12', result: ['a', '1'], position: 2));
+        expect(parser, isParseSuccess('ab12', result: ['a', 'b'], position: 2));
         expect(parser,
-            isParseSuccess('abcd12', ['a', 'b', 'c', 'd'], position: 4));
+            isParseSuccess('abc12', result: ['a', 'b', 'c'], position: 3));
+        expect(
+            parser,
+            isParseSuccess('abcd12',
+                result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde12', position: 4, message: 'digit expected'));
-        expect(parser, isParseSuccess('123', ['1', '2'], position: 2));
-        expect(parser, isParseSuccess('a123', ['a', '1'], position: 2));
-        expect(parser, isParseSuccess('ab123', ['a', 'b'], position: 2));
-        expect(parser, isParseSuccess('abc123', ['a', 'b', 'c'], position: 3));
+        expect(parser, isParseSuccess('123', result: ['1', '2'], position: 2));
+        expect(parser, isParseSuccess('a123', result: ['a', '1'], position: 2));
+        expect(
+            parser, isParseSuccess('ab123', result: ['a', 'b'], position: 2));
         expect(parser,
-            isParseSuccess('abcd123', ['a', 'b', 'c', 'd'], position: 4));
+            isParseSuccess('abc123', result: ['a', 'b', 'c'], position: 3));
+        expect(
+            parser,
+            isParseSuccess('abcd123',
+                result: ['a', 'b', 'c', 'd'], position: 4));
         expect(parser,
             isParseFailure('abcde123', position: 4, message: 'digit expected'));
       });
@@ -1850,8 +1921,8 @@ void main() {
         final parser = word().repeatLazy(digit(), 2, unbounded);
         expect(
             parser,
-            isParseSuccess('${input.join()}1111', input,
-                position: input.length));
+            isParseSuccess('${input.join()}1111',
+                result: input, position: input.length));
       });
       group('cut', () {
         test('none', () {
@@ -1868,7 +1939,7 @@ void main() {
               isParseFailure('ab', message: '"1" expected', position: 2));
           expect(parser,
               isParseFailure('ab1', message: '"2" expected', position: 3));
-          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+          expect(parser, isParseSuccess('ab12', result: ['ab'], position: 2));
         });
         test('on repeater', () {
           final parser = seq3(char('a'), cut(), char('b'))
@@ -1884,7 +1955,7 @@ void main() {
               isParseFailure('ab', message: '"1" expected', position: 2));
           expect(parser,
               isParseFailure('ab1', message: '"2" expected', position: 3));
-          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+          expect(parser, isParseSuccess('ab12', result: ['ab'], position: 2));
         });
         test('on limiter', () {
           final parser = seq2(char('a'), char('b'))
@@ -1900,7 +1971,7 @@ void main() {
               isParseFailure('ab', message: '"1" expected', position: 2));
           expect(parser,
               isParseFailure('ab1', message: '"2" expected', position: 3));
-          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+          expect(parser, isParseSuccess('ab12', result: ['ab'], position: 2));
         });
         test('on both', () {
           final parser = seq3(char('a'), cut(), char('b'))
@@ -1916,7 +1987,7 @@ void main() {
               isParseFailure('ab', message: '"1" expected', position: 2));
           expect(parser,
               isParseFailure('ab1', message: '"2" expected', position: 3));
-          expect(parser, isParseSuccess('ab12', ['ab'], position: 2));
+          expect(parser, isParseSuccess('ab12', result: ['ab'], position: 2));
         });
       });
     });
@@ -1924,39 +1995,40 @@ void main() {
       expectParserInvariants(any().star());
       test('star', () {
         final parser = char('a').star();
-        expect(parser, isParseSuccess('', []));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a', 'a']));
+        expect(parser, isParseSuccess('', result: []));
+        expect(parser, isParseSuccess('a', result: ['a']));
+        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', result: ['a', 'a', 'a']));
       });
       test('plus', () {
         final parser = char('a').plus();
         expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(parser, isParseSuccess('a', ['a']));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a', 'a']));
+        expect(parser, isParseSuccess('a', result: ['a']));
+        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', result: ['a', 'a', 'a']));
       });
       test('repeat', () {
         final parser = char('a').repeat(2, 3);
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a', 'a']));
-        expect(parser, isParseSuccess('aaaa', ['a', 'a', 'a'], position: 3));
+        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', result: ['a', 'a', 'a']));
+        expect(parser,
+            isParseSuccess('aaaa', result: ['a', 'a', 'a'], position: 3));
       });
       test('repeat exact', () {
         final parser = char('a').repeat(2);
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', result: ['a', 'a'], position: 2));
       });
       test('repeat unbounded', () {
         final input = List.filled(100000, 'a');
         final parser = char('a').repeat(2, unbounded);
-        expect(parser, isParseSuccess(input.join(), input));
+        expect(parser, isParseSuccess(input.join(), result: input));
       });
       test('repeat erroneous', () {
         expect(
@@ -1973,27 +2045,27 @@ void main() {
         expect(parser, isParseFailure('', message: '"a" expected'));
         expect(
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', result: ['a', 'a'], position: 2));
       });
       group('cut', () {
         test('none', () {
           final parser = seq2(char('a'), char('b')).flatten().star();
-          expect(parser, isParseSuccess('', isEmpty));
-          expect(parser, isParseSuccess('', isEmpty, position: 0));
-          expect(parser, isParseSuccess('ab', ['ab']));
-          expect(parser, isParseSuccess('aba', ['ab'], position: 2));
-          expect(parser, isParseSuccess('abab', ['ab', 'ab']));
+          expect(parser, isParseSuccess('', result: isEmpty));
+          expect(parser, isParseSuccess('', result: isEmpty, position: 0));
+          expect(parser, isParseSuccess('ab', result: ['ab']));
+          expect(parser, isParseSuccess('aba', result: ['ab'], position: 2));
+          expect(parser, isParseSuccess('abab', result: ['ab', 'ab']));
         });
         test('on repeater', () {
           final parser = seq3(char('a'), cut(), char('b')).flatten().star();
-          expect(parser, isParseSuccess('', isEmpty));
+          expect(parser, isParseSuccess('', result: isEmpty));
           expect(parser,
               isParseFailure('a', message: '"b" expected', position: 1));
-          expect(parser, isParseSuccess('ab', ['ab']));
+          expect(parser, isParseSuccess('ab', result: ['ab']));
           expect(parser,
               isParseFailure('aba', message: '"b" expected', position: 3));
-          expect(parser, isParseSuccess('abab', ['ab', 'ab']));
+          expect(parser, isParseSuccess('abab', result: ['ab', 'ab']));
         });
       });
     });
@@ -2001,47 +2073,47 @@ void main() {
       expectParserInvariants(digit().starSeparated(letter()));
       test('star', () {
         final parser = digit().starSeparated(letter());
-        expect(parser, isParseSuccess('', isSeparatedList()));
-        expect(parser, isParseSuccess('a', isSeparatedList(), position: 0));
-        expect(parser, isParseSuccess('1', isSeparatedList(elements: ['1'])));
+        expect(parser, isParseSuccess('', result: isSeparatedList()));
+        expect(parser,
+            isParseSuccess('a', result: isSeparatedList(), position: 0));
+        expect(parser,
+            isParseSuccess('1', result: isSeparatedList(elements: ['1'])));
         expect(
             parser,
-            isParseSuccess('1a', isSeparatedList(elements: ['1']),
-                position: 1));
+            isParseSuccess('1a',
+                result: isSeparatedList(elements: ['1']), position: 1));
         expect(
             parser,
             isParseSuccess('1a2',
-                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3',
-                isSeparatedList(
+            isParseSuccess('1a2b3',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c',
-                isSeparatedList(
+            isParseSuccess('1a2b3c',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4',
+                result: isSeparatedList(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4d',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4d',
+                result: isSeparatedList(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c']),
                 position: 7));
@@ -2050,45 +2122,44 @@ void main() {
         final parser = digit().plusSeparated(letter());
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
-        expect(parser, isParseSuccess('1', isSeparatedList(elements: ['1'])));
+        expect(parser,
+            isParseSuccess('1', result: isSeparatedList(elements: ['1'])));
         expect(
             parser,
-            isParseSuccess('1a', isSeparatedList(elements: ['1']),
-                position: 1));
+            isParseSuccess('1a',
+                result: isSeparatedList(elements: ['1']), position: 1));
         expect(
             parser,
             isParseSuccess('1a2',
-                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3',
-                isSeparatedList(
+            isParseSuccess('1a2b3',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c',
-                isSeparatedList(
+            isParseSuccess('1a2b3c',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4',
+                result: isSeparatedList(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4d',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4d',
+                result: isSeparatedList(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c']),
                 position: 7));
@@ -2107,29 +2178,25 @@ void main() {
             isParseFailure('1a2b', message: 'digit expected', position: 4));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3',
-                isSeparatedList(
+            isParseSuccess('1a2b3',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c',
-                isSeparatedList(
+            isParseSuccess('1a2b3c',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4d',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4d',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
       });
@@ -2144,37 +2211,35 @@ void main() {
         expect(
             parser,
             isParseSuccess('1a2',
-                isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result:
+                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3',
-                isSeparatedList(
+            isParseSuccess('1a2b3',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c',
-                isSeparatedList(
+            isParseSuccess('1a2b3c',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
-            isParseSuccess(
-                '1a2b3c4d',
-                isSeparatedList(
+            isParseSuccess('1a2b3c4d',
+                result: isSeparatedList(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
       });

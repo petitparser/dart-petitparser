@@ -39,6 +39,7 @@ export 'src/parser/misc/failure.dart';
 export 'src/parser/misc/failure_message.dart';
 export 'src/parser/misc/label.dart';
 export 'src/parser/misc/newline.dart';
+export 'src/parser/misc/no_cut.dart';
 export 'src/parser/misc/position.dart';
 export 'src/parser/predicate/any.dart';
 export 'src/parser/predicate/pattern.dart';

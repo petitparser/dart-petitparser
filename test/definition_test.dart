@@ -212,16 +212,17 @@ void main() {
       Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
       Parser<List<String>> f0() => ref1(f1, 1);
       Parser<List<String>> start() => ref0(f0);
-      expect(
-          resolve(start()), isParseSuccess('123456789', '123456789'.split('')));
+      expect(resolve(start()),
+          isParseSuccess('123456789', result: '123456789'.split('')));
     });
     test('resolved parser', () {
-      expect(resolve(number()), isParseSuccess('1', 1));
-      expect(resolve(numberList()), isParseSuccess('1,2', [1, 2]));
+      expect(resolve(number()), isParseSuccess('1', result: 1));
+      expect(resolve(numberList()), isParseSuccess('1,2', result: [1, 2]));
     });
     test('resolved parser with arguments', () {
-      expect(resolve(numberList()), isParseSuccess('1,2', [1, 2]));
-      expect(resolve(numberList(';')), isParseSuccess('3;4;5', [3, 4, 5]));
+      expect(resolve(numberList()), isParseSuccess('1,2', result: [1, 2]));
+      expect(
+          resolve(numberList(';')), isParseSuccess('3;4;5', result: [3, 4, 5]));
     });
     test('direct recursion', () {
       Parser<String> create() => ref0(create);
@@ -234,9 +235,9 @@ void main() {
             ref0(number).map((value) => [value]),
           ].toChoiceParser();
       final parser = resolve<List<num>>(list());
-      expect(parser, isParseSuccess('1', [1]));
-      expect(parser, isParseSuccess('1,2', [1, 2]));
-      expect(parser, isParseSuccess('1,2,2', [1, 2, 2]));
+      expect(parser, isParseSuccess('1', result: [1]));
+      expect(parser, isParseSuccess('1,2', result: [1, 2]));
+      expect(parser, isParseSuccess('1,2,2', result: [1, 2, 2]));
     });
   });
   group('definition', () {
@@ -273,11 +274,13 @@ void main() {
     });
     test('reference with multiple arguments', () {
       final parser = typedReferenceDefinition.build();
-      expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
+      expect(
+          parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
     });
     test('reference with multiple arguments (untyped)', () {
       final parser = untypedReferenceDefinition.build();
-      expect(parser, isParseSuccess('12345', ['1', '2', '3', '4', '5']));
+      expect(
+          parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
     });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
@@ -286,10 +289,10 @@ void main() {
     });
     test('grammar', () {
       final parser = grammarDefinition.build();
-      expect(parser, isParseSuccess('1,2', ['1', ',', '2']));
+      expect(parser, isParseSuccess('1,2', result: ['1', ',', '2']));
       expect(
           parser,
-          isParseSuccess('1,2,3', [
+          isParseSuccess('1,2,3', result: [
             '1',
             ',',
             ['2', ',', '3']
@@ -297,10 +300,10 @@ void main() {
     });
     test('parser', () {
       final parser = parserDefinition.build();
-      expect(parser, isParseSuccess('1,2', [1, ',', 2]));
+      expect(parser, isParseSuccess('1,2', result: [1, ',', 2]));
       expect(
           parser,
-          isParseSuccess('1,2,3', [
+          isParseSuccess('1,2,3', result: [
             1,
             ',',
             [2, ',', 3]
@@ -308,10 +311,10 @@ void main() {
     });
     test('token', () {
       final parser = tokenDefinition.build();
-      expect(parser, isParseSuccess('1, 2', ['1', ',', '2']));
+      expect(parser, isParseSuccess('1, 2', result: ['1', ',', '2']));
       expect(
           parser,
-          isParseSuccess('1, 2, 3', [
+          isParseSuccess('1, 2, 3', result: [
             '1',
             ',',
             ['2', ',', '3']
@@ -347,35 +350,35 @@ void main() {
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('x', isNotNull));
-      expect(parser, isParseSuccess('xy', isNotNull));
-      expect(parser, isParseSuccess('x12', isNotNull));
-      expect(parser, isParseSuccess('\\x.y', isNotNull));
-      expect(parser, isParseSuccess('\\x.\\y.z', isNotNull));
-      expect(parser, isParseSuccess('(x x)', isNotNull));
-      expect(parser, isParseSuccess('(x y)', isNotNull));
-      expect(parser, isParseSuccess('(x (y z))', isNotNull));
-      expect(parser, isParseSuccess('((x y) z)', isNotNull));
+      expect(parser, isParseSuccess('x', result: isNotNull));
+      expect(parser, isParseSuccess('xy', result: isNotNull));
+      expect(parser, isParseSuccess('x12', result: isNotNull));
+      expect(parser, isParseSuccess('\\x.y', result: isNotNull));
+      expect(parser, isParseSuccess('\\x.\\y.z', result: isNotNull));
+      expect(parser, isParseSuccess('(x x)', result: isNotNull));
+      expect(parser, isParseSuccess('(x y)', result: isNotNull));
+      expect(parser, isParseSuccess('(x (y z))', result: isNotNull));
+      expect(parser, isParseSuccess('((x y) z)', result: isNotNull));
     });
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('1', isNotNull));
-      expect(parser, isParseSuccess('12', isNotNull));
-      expect(parser, isParseSuccess('1.23', isNotNull));
-      expect(parser, isParseSuccess('-12.3', isNotNull));
-      expect(parser, isParseSuccess('1 + 2', isNotNull));
-      expect(parser, isParseSuccess('1 + 2 + 3', isNotNull));
-      expect(parser, isParseSuccess('1 - 2', isNotNull));
-      expect(parser, isParseSuccess('1 - 2 - 3', isNotNull));
-      expect(parser, isParseSuccess('1 * 2', isNotNull));
-      expect(parser, isParseSuccess('1 * 2 * 3', isNotNull));
-      expect(parser, isParseSuccess('1 / 2', isNotNull));
-      expect(parser, isParseSuccess('1 / 2 / 3', isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2', isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2 ^ 3', isNotNull));
-      expect(parser, isParseSuccess('1 + (2 * 3)', isNotNull));
-      expect(parser, isParseSuccess('(1 + 2) * 3', isNotNull));
+      expect(parser, isParseSuccess('1', result: isNotNull));
+      expect(parser, isParseSuccess('12', result: isNotNull));
+      expect(parser, isParseSuccess('1.23', result: isNotNull));
+      expect(parser, isParseSuccess('-12.3', result: isNotNull));
+      expect(parser, isParseSuccess('1 + 2', result: isNotNull));
+      expect(parser, isParseSuccess('1 + 2 + 3', result: isNotNull));
+      expect(parser, isParseSuccess('1 - 2', result: isNotNull));
+      expect(parser, isParseSuccess('1 - 2 - 3', result: isNotNull));
+      expect(parser, isParseSuccess('1 * 2', result: isNotNull));
+      expect(parser, isParseSuccess('1 * 2 * 3', result: isNotNull));
+      expect(parser, isParseSuccess('1 / 2', result: isNotNull));
+      expect(parser, isParseSuccess('1 / 2 / 3', result: isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2', result: isNotNull));
+      expect(parser, isParseSuccess('1 ^ 2 ^ 3', result: isNotNull));
+      expect(parser, isParseSuccess('1 + (2 * 3)', result: isNotNull));
+      expect(parser, isParseSuccess('(1 + 2) * 3', result: isNotNull));
     });
   });
 }

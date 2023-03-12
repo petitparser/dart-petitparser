@@ -203,9 +203,10 @@ Future<void> generateTest() async {
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, isParseSuccess(\'$string\', sequence));');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string*\', sequence, position: $i));');
+        'isParseSuccess(\'$string\', result: sequence));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', result: sequence, position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
@@ -228,9 +229,10 @@ Future<void> generateTest() async {
         '\'${chars.map((each) => '\$$each').join()}\');');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, isParseSuccess(\'$string\', \'$string\'));');
-    out.writeln(
-        'expect(parser, isParseSuccess(\'$string*\', \'$string\', position: $i));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string\', result: \'$string\'));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', result: \'$string\', position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');

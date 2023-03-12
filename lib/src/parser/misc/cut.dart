@@ -6,7 +6,8 @@ import '../combinator/skip.dart';
 import 'epsilon.dart';
 
 extension CutParserExtension<R> on Parser<R> {
-  /// Returns a parser that marks the parsed result as non-backtrackable.
+  /// Returns a parser that marks the parsed result as non-backtrackable, by
+  /// invoking the [cut] operator after a successful parse.
   @useResult
   Parser<R> commit() => skip(after: cut());
 }

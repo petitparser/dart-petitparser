@@ -70,59 +70,59 @@ void main() {
       expect(linter(parser), isEmpty);
     });
     test('empty', () {
-      expect(parser, isParseSuccess('', isEmpty));
+      expect(parser, isParseSuccess('', result: isEmpty));
 
-      expect(parser, isParseSuccess('\n', isEmpty));
-      expect(parser, isParseSuccess('\n\r', isEmpty));
-      expect(parser, isParseSuccess('\r', isEmpty));
+      expect(parser, isParseSuccess('\n', result: isEmpty));
+      expect(parser, isParseSuccess('\n\r', result: isEmpty));
+      expect(parser, isParseSuccess('\r', result: isEmpty));
 
-      expect(parser, isParseSuccess('\n\n', isEmpty));
-      expect(parser, isParseSuccess('\n\r\n\r', isEmpty));
-      expect(parser, isParseSuccess('\r\r', isEmpty));
+      expect(parser, isParseSuccess('\n\n', result: isEmpty));
+      expect(parser, isParseSuccess('\n\r\n\r', result: isEmpty));
+      expect(parser, isParseSuccess('\r\r', result: isEmpty));
     });
     test('newline before', () {
-      expect(parser, isParseSuccess('\na', ['a']));
-      expect(parser, isParseSuccess('\n\ra', ['a']));
-      expect(parser, isParseSuccess('\ra', ['a']));
+      expect(parser, isParseSuccess('\na', result: ['a']));
+      expect(parser, isParseSuccess('\n\ra', result: ['a']));
+      expect(parser, isParseSuccess('\ra', result: ['a']));
 
-      expect(parser, isParseSuccess('\n\na', ['a']));
-      expect(parser, isParseSuccess('\n\r\n\ra', ['a']));
-      expect(parser, isParseSuccess('\r\ra', ['a']));
+      expect(parser, isParseSuccess('\n\na', result: ['a']));
+      expect(parser, isParseSuccess('\n\r\n\ra', result: ['a']));
+      expect(parser, isParseSuccess('\r\ra', result: ['a']));
     });
     test('newline after', () {
-      expect(parser, isParseSuccess('a\n', ['a']));
-      expect(parser, isParseSuccess('a\n\r', ['a']));
-      expect(parser, isParseSuccess('a\r', ['a']));
+      expect(parser, isParseSuccess('a\n', result: ['a']));
+      expect(parser, isParseSuccess('a\n\r', result: ['a']));
+      expect(parser, isParseSuccess('a\r', result: ['a']));
 
-      expect(parser, isParseSuccess('a\n\n', ['a']));
-      expect(parser, isParseSuccess('a\n\r\n\r', ['a']));
-      expect(parser, isParseSuccess('a\r\r', ['a']));
+      expect(parser, isParseSuccess('a\n\n', result: ['a']));
+      expect(parser, isParseSuccess('a\n\r\n\r', result: ['a']));
+      expect(parser, isParseSuccess('a\r\r', result: ['a']));
     });
     test('single indent', () {
       expect(
           parser,
-          isParseSuccess('a:\n b', [
+          isParseSuccess('a:\n b', result: [
             {
               'a': ['b']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n\tb', [
+          isParseSuccess('a:\n\tb', result: [
             {
               'a': ['b']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n \tb', [
+          isParseSuccess('a:\n \tb', result: [
             {
               'a': ['b']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n\t b', [
+          isParseSuccess('a:\n\t b', result: [
             {
               'a': ['b']
             }
@@ -131,28 +131,28 @@ void main() {
     test('same indent', () {
       expect(
           parser,
-          isParseSuccess('a:\n b\n c', [
+          isParseSuccess('a:\n b\n c', result: [
             {
               'a': ['b', 'c']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n\tb\n\tc', [
+          isParseSuccess('a:\n\tb\n\tc', result: [
             {
               'a': ['b', 'c']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n \tb\n \tc', [
+          isParseSuccess('a:\n \tb\n \tc', result: [
             {
               'a': ['b', 'c']
             }
           ]));
       expect(
           parser,
-          isParseSuccess('a:\n\t b\n\t c', [
+          isParseSuccess('a:\n\t b\n\t c', result: [
             {
               'a': ['b', 'c']
             }
@@ -163,18 +163,18 @@ void main() {
       expect(parser, isParseFailure('a:\n\tb\n c', position: 6));
     });
     test('missing indent', () {
-      expect(parser, isParseSuccess('a:\nb', ['a:', 'b']));
+      expect(parser, isParseSuccess('a:\nb', result: ['a:', 'b']));
     });
     test('unexpected indent', () {
       expect(parser, isParseFailure('a\n b', position: 2));
     });
     test('same level', () {
-      expect(parser, isParseSuccess('a\nb\nc', ['a', 'b', 'c']));
+      expect(parser, isParseSuccess('a\nb\nc', result: ['a', 'b', 'c']));
     });
     test('inlined values', () {
       expect(
           parser,
-          isParseSuccess('a:1\nb: 2\nc :3', [
+          isParseSuccess('a:1\nb: 2\nc :3', result: [
             {
               'a': ['1']
             },
@@ -189,7 +189,7 @@ void main() {
     test('increasing', () {
       expect(
           parser,
-          isParseSuccess('a:\n  b:\n    c', [
+          isParseSuccess('a:\n  b:\n    c', result: [
             {
               'a': [
                 {
@@ -202,7 +202,7 @@ void main() {
     test('decreasing', () {
       expect(
           parser,
-          isParseSuccess('a:\n\tb\nc', [
+          isParseSuccess('a:\n\tb\nc', result: [
             {
               'a': ['b']
             },

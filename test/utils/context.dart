@@ -42,8 +42,8 @@ class DebugContext implements Context {
 
   @override
   set position(int position) {
-    expect(_position,
-        allOf(greaterThanOrEqualTo(0), lessThanOrEqualTo(buffer.length)),
+    expect(
+        _position, allOf(greaterThanOrEqualTo(start), lessThanOrEqualTo(end)),
         reason: 'Position is out of bounds');
     events.add(ContextEvent(ContextEventType.position, _position, position));
     _position = position;

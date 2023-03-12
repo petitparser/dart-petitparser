@@ -76,8 +76,8 @@ Matcher isFailure<T>({
 /// that the parsing fails at the end of the input.
 @optionalTypeArgs
 Matcher isParseSuccess<T>(
-  String input,
-  dynamic result, {
+  String input, {
+  dynamic result = anything,
   dynamic position,
 }) =>
     isA<Parser<T>>()
