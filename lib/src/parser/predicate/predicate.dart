@@ -29,7 +29,7 @@ class PredicateParser extends Parser<String> {
   void parseOn(Context context) {
     final start = context.position;
     final stop = start + length;
-    if (stop <= context.buffer.length) {
+    if (stop <= context.end) {
       final result = context.buffer.substring(start, stop);
       if (predicate(result)) {
         context.isSuccess = true;

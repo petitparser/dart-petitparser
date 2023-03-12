@@ -18,7 +18,7 @@ class NewlineParser extends Parser<String> {
   void parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
-    if (position < buffer.length) {
+    if (position < context.end) {
       switch (buffer.codeUnitAt(position)) {
         case 10:
           // Unix and Unix-like systems (Linux, macOS, FreeBSD, AIX, Xenix, etc.),
@@ -28,7 +28,7 @@ class NewlineParser extends Parser<String> {
           context.position = position + 1;
           return;
         case 13:
-          if (position + 1 < buffer.length &&
+          if (position + 1 < context.end &&
               buffer.codeUnitAt(position + 1) == 10) {
             // Microsoft Windows, DOS (MS-DOS, PC DOS, etc.), Atari TOS, DEC
             // TOPS-10, RT-11, CP/M, MP/M, OS/2, Symbian OS, Palm OS, Amstrad

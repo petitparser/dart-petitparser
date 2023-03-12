@@ -4,13 +4,16 @@ import 'package:test/test.dart';
 class DebugContext implements Context {
   DebugContext(
     this.buffer, {
-    int position = 0,
+    this.start = 0,
+    int? end,
+    int? position,
     bool isSuccess = true,
     dynamic value,
     String message = '',
     bool isSkip = false,
     bool isCut = false,
-  })  : _position = position,
+  })  : end = buffer.length,
+        _position = position ?? start,
         _isSuccess = isSuccess,
         _value = value,
         _message = message,
@@ -22,6 +25,14 @@ class DebugContext implements Context {
   /// The input the parser is being run on.
   @override
   final String buffer;
+
+  /// The start index in the input buffer.
+  @override
+  final int start;
+
+  /// The end index in the input buffer.
+  @override
+  final int end;
 
   /// The current position in the parser input.
   int _position;

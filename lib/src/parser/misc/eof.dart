@@ -30,7 +30,7 @@ class EndOfInputParser extends Parser<void> {
 
   @override
   void parseOn(Context context) {
-    if (context.position < context.buffer.length) {
+    if (context.position < context.end) {
       context.isSuccess = false;
       context.message = message;
     } else {

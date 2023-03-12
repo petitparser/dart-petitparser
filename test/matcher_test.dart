@@ -15,6 +15,14 @@ void main() {
     expect(parser.parse('abc', start: 3).isSuccess, isFalse);
     expect(parser.parse('abc', start: 4).isSuccess, isFalse);
   });
+  test('start, stop', () {
+    final context = Context('abcde', start: 1, end: 4);
+    expect(context.buffer, 'abcde');
+    expect(context.position, 1);
+    any().star().flatten().parseOn(context);
+    expect(context.position, 4);
+    expect(context.value, 'bcd');
+  });
   test('accept()', () {
     final parser = char('a');
     expect(parser.accept('a'), isTrue);

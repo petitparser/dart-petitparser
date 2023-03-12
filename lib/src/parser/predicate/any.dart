@@ -21,7 +21,7 @@ class AnyParser extends Parser<String> {
   void parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
-    if (position < buffer.length) {
+    if (position < context.end) {
       context.isSuccess = true;
       context.position = position + 1;
       context.value = buffer[position];

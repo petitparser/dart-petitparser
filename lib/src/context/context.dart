@@ -6,17 +6,28 @@ import 'success.dart';
 class Context {
   Context(
     this.buffer, {
-    this.position = 0,
+    this.start = 0,
+    int? end,
+    int? position,
     this.isSuccess = true,
     this.value,
     this.message = '',
     this.isSkip = false,
     this.isCut = false,
-  });
+  })  : end = end ?? buffer.length,
+        position = position ?? start;
 
   /// The input the parser is being run on.
   @inlineVm
   final String buffer;
+
+  /// The start index in the input buffer.
+  @inlineVm
+  final int start;
+
+  /// The end index in the input buffer.
+  @inlineVm
+  final int end;
 
   /// The current position in the parser input.
   @inlineVm
