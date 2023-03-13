@@ -2358,6 +2358,13 @@ void main() {
         expect(parser, isParseSuccess('aa', result: 'aa'));
         expect(parser, isParseSuccess('aaa', result: 'aa', position: 2));
       });
+      test('any', () {
+        final parser = any().plusString();
+        expect(parser, isParseFailure('', message: 'input expected'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('aa', result: 'aa'));
+        expect(parser, isParseSuccess('aaa', result: 'aaa'));
+      });
       test('fallback', () {
         final parser = char('a').settable().plusString();
         expect(parser, isParseFailure('', message: '"a" expected'));
