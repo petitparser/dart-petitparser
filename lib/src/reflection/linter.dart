@@ -63,6 +63,7 @@ typedef LinterCallback = void Function(LinterIssue issue);
 
 /// All default linter rules to be run.
 const allLinterRules = [
+  CharacterRepeater(),
   LeftRecursion(),
   NestedChoice(),
   NullableRepeater(),

@@ -29,7 +29,7 @@ class IndentList extends GrammarDefinition {
       ].toSequenceParser().map((values) => {values[0]: values[1]});
 
   Parser key() => <Parser>[
-        pattern('^ \t\r\n:').plus().flatten(),
+        pattern('^ \t\r\n:').plusString(),
         indent.parser.star(),
         char(':'),
         indent.parser.star(),

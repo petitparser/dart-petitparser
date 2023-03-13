@@ -14,7 +14,7 @@ class ExpressionDefinition extends GrammarDefinition {
   Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
   Parser prim() => ref0(parens) | ref0(number);
   Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
-  Parser number() => digit().plus().flatten().trim();
+  Parser number() => digit().plusString().trim();
 }
 
 class EvaluatorDefinition extends ExpressionDefinition {

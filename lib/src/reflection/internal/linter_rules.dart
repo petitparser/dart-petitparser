@@ -12,6 +12,8 @@ import '../../parser/combinator/optional.dart';
 import '../../parser/combinator/settable.dart';
 import '../../parser/misc/cut.dart';
 import '../../parser/misc/failure.dart';
+import '../../parser/predicate/any.dart';
+import '../../parser/predicate/single_char.dart';
 import '../../parser/repeater/lazy.dart';
 import '../../parser/repeater/possessive.dart';
 import '../../parser/repeater/repeating.dart';
@@ -21,6 +23,30 @@ import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
 import 'utilities.dart';
+
+class CharacterRepeater extends LinterRule {
+  const CharacterRepeater() : super(LinterType.warning, 'Character repeater');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is FlattenParser) {
+      final repeating = parser.delegate;
+      if (repeating is PossessiveRepeatingParser) {
+        final character = repeating.delegate;
+        if (character is SingleCharacterParser || character is AnyParser) {
+          callback(LinterIssue(
+              this,
+              parser,
+              'A flattened repeater that delegates to a character parser can '
+              'be much more efficiently implemented using `starString`, '
+              '`plusString`, `timesString`, or `repeatString` that '
+              'directly returns the underlying String instead of an '
+              'intermediate List.'));
+        }
+      }
+    }
+  }
+}
 
 class LeftRecursion extends LinterRule {
   const LeftRecursion() : super(LinterType.error, 'Left recursion');
