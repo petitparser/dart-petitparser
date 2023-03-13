@@ -6,12 +6,12 @@ import '../combinator/choice.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
 import '../predicate/any.dart';
+import '../predicate/single_char.dart';
 import '../repeater/possessive.dart';
 import 'char.dart';
 import 'code.dart';
 import 'not.dart';
 import 'optimize.dart';
-import 'parser.dart';
 import 'range.dart';
 
 /// Returns a parser that accepts a single character of a given character set
@@ -26,9 +26,9 @@ import 'range.dart';
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
 @useResult
-Parser<String> pattern(String element, [String? message]) => CharacterParser(
-    _pattern.parse(element).value,
-    message ?? '[${toReadableString(element)}] expected');
+Parser<String> pattern(String element, [String? message]) =>
+    SingleCharacterParser(_pattern.parse(element).value,
+        message ?? '[${toReadableString(element)}] expected');
 
 /// Returns a parser that accepts a single character of a given case-insensitive
 /// character set provided as a string.

@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
+import '../predicate/single_char.dart';
 import 'code.dart';
 import 'optimize.dart';
-import 'parser.dart';
 import 'predicate.dart';
 import 'range.dart';
 
 /// Returns a parser that accepts a specific character only.
 @useResult
-Parser<String> char(String char, [String? message]) => CharacterParser(
+Parser<String> char(String char, [String? message]) => SingleCharacterParser(
     SingleCharPredicate(toCharCode(char)),
     message ?? '"${toReadableString(char)}" expected');
 
@@ -18,7 +18,7 @@ Parser<String> char(String char, [String? message]) => CharacterParser(
 Parser<String> charIgnoringCase(String char, [String? message]) {
   final lowerCase = toCharCode(char.toLowerCase());
   final upperCase = toCharCode(char.toUpperCase());
-  return CharacterParser(
+  return SingleCharacterParser(
       optimizedRanges([
         RangeCharPredicate(lowerCase, lowerCase),
         RangeCharPredicate(upperCase, upperCase),

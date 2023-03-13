@@ -1,20 +1,21 @@
 import '../../core/parser.dart';
 import '../../parser/combinator/optional.dart';
+import '../../parser/misc/cut.dart';
 import '../../parser/misc/epsilon.dart';
+import '../../parser/misc/position.dart';
+import '../../parser/predicate/repeating_char.dart';
 import '../../parser/repeater/repeating.dart';
 import '../../parser/utils/sequential.dart';
 
 /// Returns `true`, if [parser] is directly nullable. This means that the parser
 /// can succeed without involving any other parsers.
-bool isNullable(Parser parser) {
-  if (parser is OptionalParser || parser is EpsilonParser) {
-    return true;
-  }
-  if (parser is RepeatingParser && parser.min == 0) {
-    return true;
-  }
-  return false;
-}
+bool isNullable(Parser parser) =>
+    parser is OptionalParser ||
+    parser is EpsilonParser ||
+    parser is CutParser ||
+    parser is PositionParser ||
+    (parser is RepeatingParser && parser.min == 0) ||
+    (parser is RepeatingCharParser && parser.min == 0);
 
 /// Returns `true`, if [parser] is a terminal or leaf parser. This means it
 /// does not delegate to any other parser.

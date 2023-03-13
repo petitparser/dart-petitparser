@@ -1,14 +1,14 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import 'parser.dart';
+import '../predicate/single_char.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any lowercase character. The accepted input is
 /// equivalent to the character-set `a-z`.
 @useResult
 Parser<String> lowercase([String message = 'lowercase letter expected']) =>
-    CharacterParser(const LowercaseCharPredicate(), message);
+    SingleCharacterParser(const LowercaseCharPredicate(), message);
 
 class LowercaseCharPredicate extends CharacterPredicate {
   const LowercaseCharPredicate();

@@ -1,10 +1,10 @@
 import '../../context/context.dart';
 import '../../core/parser.dart';
-import 'predicate.dart';
+import '../character/predicate.dart';
 
 /// Parser class for individual character classes.
-class CharacterParser extends Parser<String> {
-  CharacterParser(this.predicate, this.message);
+class SingleCharacterParser extends Parser<String> {
+  SingleCharacterParser(this.predicate, this.message);
 
   /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;
@@ -30,10 +30,10 @@ class CharacterParser extends Parser<String> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  CharacterParser copy() => CharacterParser(predicate, message);
+  SingleCharacterParser copy() => SingleCharacterParser(predicate, message);
 
   @override
-  bool hasEqualProperties(CharacterParser other) =>
+  bool hasEqualProperties(SingleCharacterParser other) =>
       super.hasEqualProperties(other) &&
       predicate.isEqualTo(other.predicate) &&
       message == other.message;

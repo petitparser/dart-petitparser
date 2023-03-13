@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import '../../context/context.dart';
 import '../../core/parser.dart';
 import '../combinator/skip.dart';
-import 'epsilon.dart';
 
 extension CutParserExtension<R> on Parser<R> {
   /// Returns a parser that marks the parsed result as non-backtrackable, by
@@ -17,8 +16,8 @@ extension CutParserExtension<R> on Parser<R> {
 Parser<void> cut() => CutParser();
 
 /// A parser that prevents backtracking before this point.
-class CutParser extends EpsilonParser<void> {
-  CutParser() : super(null);
+class CutParser extends Parser<void> {
+  CutParser();
 
   @override
   void parseOn(Context context) {
