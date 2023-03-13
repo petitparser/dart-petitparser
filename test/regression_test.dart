@@ -101,21 +101,23 @@ void main() {
     testWith('with generic list cast to desired type', castList);
     testWith('with compiler inferring desired type', smartCompiler);
   });
-  // test('parse padded and limited number', () {
-  //   final parser = digit().repeat(2).flatten().callCC((continuation, context) {
-  //     final result = continuation(context);
-  //     if (result.isSuccess && int.parse(result.value) > 31) {
-  //       return context.failure('00-31 expected');
-  //     } else {
-  //       return result;
-  //     }
-  //   });
-  //   expect(parser, isParseSuccess('00', result: '00'));
-  //   expect(parser, isParseSuccess('24', result: '24'));
-  //   expect(parser, isParseSuccess('31', result: '31'));
-  //   expect(parser, isParseFailure('32', message: '00-31 expected'));
-  //   expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
-  // });
+  test('parse padded and limited number', () {
+    final parser = digit().repeat(2).flatten().callCC((continuation, context) {
+      final isSkip = context.isSkip;
+      final position = context.position;
+      context.isSkip = false;
+      continuation(context);
+      if (context.isSuccess && int.parse(context.value) > 31) {
+        context.failure('00-31 expected', position: position);
+      }
+      context.isSkip = isSkip;
+    });
+    expect(parser, isParseSuccess('00', result: '00'));
+    expect(parser, isParseSuccess('24', result: '24'));
+    expect(parser, isParseSuccess('31', result: '31'));
+    expect(parser, isParseFailure('32', message: '00-31 expected'));
+    expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
+  });
   group('date format parser', () {
     final day = 'dd'.toParser().map((token) => digit()
         .repeat(2)
@@ -170,7 +172,6 @@ void main() {
     });
   });
   test('stackoverflow.com/questions/64670722', () {
-    // TODO: Add example using flatMap.
     final delimited = any().callCC((continuation, context) {
       final delimiter = context.buffer[context.position].toParser();
       final parser = [
@@ -255,7 +256,6 @@ void main() {
       });
       expect(parser.parse(input).value, 'data');
     });
-    // TODO: Add example using flatMap.
   });
   group('stackoverflow.com/questions/68105573', () {
     const firstInput = '(use = "official").empty()';

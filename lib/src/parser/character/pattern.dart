@@ -10,6 +10,7 @@ import '../predicate/single_char.dart';
 import '../repeater/possessive.dart';
 import 'char.dart';
 import 'code.dart';
+import 'constant.dart';
 import 'not.dart';
 import 'optimize.dart';
 import 'range.dart';
@@ -72,6 +73,9 @@ final _sequence = _range.or(_single).star().map(
     (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
 
 /// Parser that reads a possibly negated sequence of predicates.
-final _pattern = seq2(char('^').optional(), _sequence).map2(
-    (negation, sequence) =>
-        negation == null ? sequence : NotCharacterPredicate(sequence));
+final _pattern = seq2(char('^').optional(), _sequence)
+    .map2((negation, sequence) => negation == null
+        ? sequence
+        : sequence is ConstantCharPredicate
+            ? ConstantCharPredicate(!sequence.constant)
+            : NotCharacterPredicate(sequence));

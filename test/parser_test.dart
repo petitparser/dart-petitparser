@@ -666,6 +666,28 @@ void main() {
         expect(parser, isParseFailure('-', message: '[^a-] expected'));
         expect(parser, isParseFailure('', message: '[^a-] expected'));
       });
+      test('with everything', () {
+        final parser = pattern('\u0000-\uffff');
+        for (var i = 0; i <= 0xffff; i++) {
+          final input = String.fromCharCode(i);
+          expect(parser, isParseSuccess(input, result: input));
+        }
+      });
+      test('with nothing', () {
+        final parser = pattern('^\u0000-\uffff');
+        for (var i = 0; i <= 0xffff; i++) {
+          final input = String.fromCharCode(i);
+          expect(parser,
+              isParseFailure(input, message: '[^\\x00-\uffff] expected'));
+        }
+      });
+      test('with nothing (empty pattern)', () {
+        final parser = pattern('');
+        for (var i = 0; i <= 0xffff; i++) {
+          final input = String.fromCharCode(i);
+          expect(parser, isParseFailure(input, message: '[] expected'));
+        }
+      });
       test('with error', () {
         expect(() => pattern('c-a'), throwsA(isAssertionError));
       }, skip: !hasAssertionsEnabled());
@@ -915,46 +937,25 @@ void main() {
           expect(() => patternIgnoreCase('c-a'), throwsA(isAssertionError));
         }, skip: !hasAssertionsEnabled());
       });
-      // T
-      // group('large ranges', () {
-      //   final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
-      //   expectParserInvariants(parser);
-      //   test('mathematical symbols', () {
-      //     expect(parser, isParseSuccess('∉', result: '∉'));
-      //     expect(parser, isParseSuccess('⟃', result: '⟃'));
-      //     expect(parser, isParseSuccess('⦻', result: '⦻'));
-      //     expect(
-      //         parser,
-      //         isParseFailure('a',
-      //             message:
-      //                 '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected'));
-      //     expect(
-      //         parser,
-      //         isParseFailure('',
-      //             message:
-      //                 '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected'));
-      //   });
-      // });
-      // group('without anything', () {
-      //   final parser = pattern('');
-      //   expectParserInvariants(parser);
-      //   test('test', () {
-      //     for (var i = 0; i <= 0xffff; i++) {
-      //       final character = String.fromCharCode(i);
-      //       expect(parser, isParseFailure(character, message: '[] expected'));
-      //     }
-      //   });
-      // });
-      // group('with everything', () {
-      //   final parser = pattern('\x00-\uffff');
-      //   expectParserInvariants(parser);
-      //   test('test', () {
-      //     for (var i = 0; i <= 0xffff; i++) {
-      //       final character = String.fromCharCode(i);
-      //       expect(parser, isParseSuccess(character, character));
-      //     }
-      //   });
-      // });
+      group('large ranges', () {
+        final parser = pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff');
+        expectParserInvariants(parser);
+        test('mathematical symbols', () {
+          expect(parser, isParseSuccess('∉', result: '∉'));
+          expect(parser, isParseSuccess('⟃', result: '⟃'));
+          expect(parser, isParseSuccess('⦻', result: '⦻'));
+          expect(
+              parser,
+              isParseFailure('a',
+                  message:
+                      '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected'));
+          expect(
+              parser,
+              isParseFailure('',
+                  message:
+                      '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected'));
+        });
+      });
     });
     group('range', () {
       final parser = range('e', 'o');
