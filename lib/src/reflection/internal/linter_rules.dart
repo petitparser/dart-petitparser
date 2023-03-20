@@ -72,7 +72,8 @@ class NestedChoice extends LinterRule {
     if (parser is ChoiceParser) {
       final children = parser.children;
       for (var i = 0; i < children.length - 1; i++) {
-        if (children[i] is ChoiceParser) {
+        final child = children[i];
+        if (child is ChoiceParser && parser.strategy == child.strategy) {
           callback(LinterIssue(
               this,
               parser,
