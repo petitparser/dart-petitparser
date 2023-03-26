@@ -1,8 +1,8 @@
 include: package:lints/recommended.yaml
-#analyzer:
-#  language:
+analyzer:
+  language:
+    strict-inference: true
 #    strict-casts: true
-#    strict-inference: true
 #    strict-raw-types: true
 linter:
   rules:

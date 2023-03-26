@@ -591,15 +591,15 @@ void main() {
       expect(parsers, [parser1, parser2]);
     });
     test('knot', () {
-      final parser1 = undefined();
+      final parser1 = undefined<void>();
       parser1.set(parser1);
       final parsers = allParser(parser1).toList();
       expect(parsers, [parser1]);
     });
     test('looping', () {
-      final parser1 = undefined();
-      final parser2 = undefined();
-      final parser3 = undefined();
+      final parser1 = undefined<void>();
+      final parser2 = undefined<void>();
+      final parser3 = undefined<void>();
       parser1.set(parser2);
       parser2.set(parser3);
       parser3.set(parser1);
@@ -831,7 +831,7 @@ void main() {
       group('unresolved settable', () {
         const rules = [linter_rules.UnresolvedSettable()];
         test('with issue', () {
-          final parser = undefined();
+          final parser = undefined<void>();
           final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
@@ -952,7 +952,7 @@ void main() {
       expect(output.children.first, output.children.last);
     });
     test('loop (existing)', () {
-      final inner = failure().settable();
+      final inner = failure<void>().settable();
       final outer = inner.settable().settable();
       inner.set(outer);
       final output = transformParser(outer, <T>(parser) {
@@ -1127,7 +1127,7 @@ void main() {
           expect(result, same(parser.children[0]));
         });
         test('with loop', () {
-          final parser = undefined();
+          final parser = undefined<Object?>();
           parser.set(parser);
           final result = optimize(parser, rules: rules);
           expect(result, same(parser));

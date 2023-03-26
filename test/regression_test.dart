@@ -102,7 +102,8 @@ void main() {
     testWith('with compiler inferring desired type', smartCompiler);
   });
   test('parse padded and limited number', () {
-    final parser = digit().repeat(2).flatten().callCC((continuation, context) {
+    final parser =
+        digit().repeat(2).flatten().callCC<String>((continuation, context) {
       final isSkip = context.isSkip;
       final position = context.position;
       context.isSkip = false;
@@ -172,7 +173,7 @@ void main() {
     });
   });
   test('stackoverflow.com/questions/64670722', () {
-    final delimited = any().callCC((continuation, context) {
+    final delimited = any().callCC<String>((continuation, context) {
       final delimiter = context.buffer[context.position].toParser();
       final parser = [
         delimiter,
@@ -249,7 +250,8 @@ void main() {
       expect(dataResult.value, 'data');
     });
     test('continuation', () {
-      final parser = buildMetadataParser().callCC((continuation, context) {
+      final parser =
+          buildMetadataParser().callCC<String>((continuation, context) {
         continuation(context);
         final dataParser = buildDataParser(context.value);
         return dataParser.parseOn(context);
@@ -275,7 +277,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5', ')']);
     });
     test('recursive', () {
-      final inner = undefined();
+      final inner = undefined<Object?>();
       final parser =
           char('(') & inner.starLazy(char(')')).flatten() & char(')');
       inner.set(parser | any());
@@ -283,7 +285,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
     test('recursive (better)', () {
-      final inner = undefined();
+      final inner = undefined<Object?>();
       final parser = char('(') & inner.star().flatten() & char(')');
       inner.set(parser | pattern('^)'));
       expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
@@ -293,7 +295,7 @@ void main() {
   group('github.com/petitparser/dart-petitparser/issues/112', () {
     final inner = digit().repeat(2);
     test('original', () {
-      final parser = inner.callCC((continuation, context) {
+      final parser = inner.callCC<List<String>>((continuation, context) {
         final isSkip = context.isSkip;
         context.isSkip = false;
         continuation(context);
@@ -399,14 +401,14 @@ void main() {
             .trim();
     final parsers = {
       'poster': (() {
-        final inner = undefined();
+        final inner = undefined<Object?>();
         final paren = char('(').trim() & inner.star() & char(')').trim();
         inner.set(paren | pattern('^)'));
         return inner.end();
       })(),
       'improved': (() {
-        final outer = undefined();
-        final inner = undefined();
+        final outer = undefined<Object?>();
+        final inner = undefined<Object?>();
         final operator = string('&&') | string('||');
         outer.set(inner.plusSeparated(operator));
         final paren = char('(').trim() & outer & char(')').trim();
@@ -414,7 +416,7 @@ void main() {
         return outer.end();
       })(),
       'expression': (() {
-        final builder = ExpressionBuilder();
+        final builder = ExpressionBuilder<Object?>();
         builder.primitive(primitive);
         builder.group().wrapper(
             char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
@@ -444,7 +446,7 @@ void main() {
     }
   });
   group('https://stackoverflow.com/questions/75503464', () {
-    final builder = ExpressionBuilder();
+    final builder = ExpressionBuilder<Object?>();
     final primitive =
         seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
             .flatten('value expected')

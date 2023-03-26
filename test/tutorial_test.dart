@@ -119,9 +119,9 @@ void main() {
     expect(matches, ['foo', 'bar4']);
   });
   test('complicated grammar', () {
-    final term = undefined();
-    final prod = undefined();
-    final prim = undefined();
+    final term = undefined<Object?>();
+    final prod = undefined<Object?>();
+    final prim = undefined<Object?>();
     final add = (prod & char('+').trim() & term)
         .castList<num>()
         .map((values) => values[0] + values[2]);

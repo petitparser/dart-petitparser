@@ -33,24 +33,24 @@ void main() {
       });
     });
     group('callCC', () {
-      expectParserInvariants(
-          any().callCC((continuation, context) => continuation(context)));
+      expectParserInvariants(any()
+          .callCC<String>((continuation, context) => continuation(context)));
       test('delegation', () {
-        final parser =
-            digit().callCC((continuation, context) => continuation(context));
+        final parser = digit()
+            .callCC<String>((continuation, context) => continuation(context));
         expect(parser, isParseSuccess('1', result: '1'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
       test('diversion', () {
-        final parser = digit()
-            .callCC((continuation, context) => letter().parseOn(context));
+        final parser = digit().callCC<String>(
+            (continuation, context) => letter().parseOn(context));
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('1', message: 'letter expected'));
       });
       test('resume', () {
         final continuations = <ContinuationFunction>[];
         final results = <Context>[];
-        final parser = digit().callCC((continuation, context) {
+        final parser = digit().callCC<String>((continuation, context) {
           continuations.add(continuation);
           results.add(context.copy());
           // we have to return something for now
@@ -62,27 +62,27 @@ void main() {
         // later we can execute the captured continuations
         final context11 = results[0].copy();
         continuations[0](context11);
-        expect(context11.toResult(), isSuccess());
+        expect(context11.toResult<String>(), isSuccess());
         final context12 = results[1].copy();
         continuations[1](context12);
-        expect(context12.toResult(), isFailure());
+        expect(context12.toResult<String>(), isFailure());
         // of course the continuations can be resumed multiple times
         final context21 = results[0].copy();
         continuations[0](context21);
-        expect(context21.toResult(), isSuccess());
+        expect(context21.toResult<String>(), isSuccess());
         final context22 = results[1].copy();
         continuations[1](context22);
-        expect(context22.toResult(), isFailure());
+        expect(context22.toResult<String>(), isFailure());
       });
       test('success', () {
-        final parser = digit()
-            .callCC((continuation, context) => context.success('success'));
+        final parser = digit().callCC<String>(
+            (continuation, context) => context.success('success'));
         expect(parser, isParseSuccess('1', result: 'success', position: 0));
         expect(parser, isParseSuccess('a', result: 'success', position: 0));
       });
       test('failure', () {
-        final parser = digit()
-            .callCC((continuation, context) => context.failure('failure'));
+        final parser = digit().callCC<String>(
+            (continuation, context) => context.failure('failure'));
         expect(parser, isParseFailure('1', message: 'failure'));
         expect(parser, isParseFailure('a', message: 'failure'));
       });
@@ -1362,7 +1362,7 @@ void main() {
         expect(parser, isParseFailure(''));
       });
       test('undefined', () {
-        final parser = undefined();
+        final parser = undefined<String>();
         expect(parser, isParseFailure('', message: 'undefined parser'));
         expect(parser, isParseFailure('a', message: 'undefined parser'));
         parser.set(char('a'));
@@ -1449,9 +1449,9 @@ void main() {
       });
     });
     group('failure', () {
-      expectParserInvariants(failure());
+      expectParserInvariants(failure<String>());
       test('default', () {
-        final parser = failure('failure');
+        final parser = failure<String>('failure');
         expect(parser, isParseFailure('', message: 'failure'));
         expect(parser, isParseFailure('a', message: 'failure'));
       });
@@ -1689,7 +1689,7 @@ void main() {
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
         expect(parser, isParseFailure('ab', message: 'digit expected'));
-        expect(parser, isParseSuccess('1', result: [], position: 0));
+        expect(parser, isParseSuccess('1', result: isEmpty, position: 0));
         expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
         expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
         expect(parser,
@@ -1822,17 +1822,17 @@ void main() {
             isParseFailure('a', position: 1, message: 'digit expected'));
         expect(parser,
             isParseFailure('ab', position: 2, message: 'digit expected'));
-        expect(parser, isParseSuccess('1', result: [], position: 0));
+        expect(parser, isParseSuccess('1', result: isEmpty, position: 0));
         expect(parser, isParseSuccess('a1', result: ['a'], position: 1));
         expect(parser, isParseSuccess('ab1', result: ['a', 'b'], position: 2));
         expect(parser,
             isParseSuccess('abc1', result: ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('12', result: [], position: 0));
+        expect(parser, isParseSuccess('12', result: isEmpty, position: 0));
         expect(parser, isParseSuccess('a12', result: ['a'], position: 1));
         expect(parser, isParseSuccess('ab12', result: ['a', 'b'], position: 2));
         expect(parser,
             isParseSuccess('abc12', result: ['a', 'b', 'c'], position: 3));
-        expect(parser, isParseSuccess('123', result: [], position: 0));
+        expect(parser, isParseSuccess('123', result: isEmpty, position: 0));
         expect(parser, isParseSuccess('a123', result: ['a'], position: 1));
         expect(
             parser, isParseSuccess('ab123', result: ['a', 'b'], position: 2));
@@ -1996,7 +1996,7 @@ void main() {
       expectParserInvariants(any().star());
       test('star', () {
         final parser = char('a').star();
-        expect(parser, isParseSuccess('', result: []));
+        expect(parser, isParseSuccess('', result: isEmpty));
         expect(parser, isParseSuccess('a', result: ['a']));
         expect(parser, isParseSuccess('aa', result: ['a', 'a']));
         expect(parser, isParseSuccess('aaa', result: ['a', 'a', 'a']));
@@ -2074,47 +2074,53 @@ void main() {
       expectParserInvariants(digit().starSeparated(letter()));
       test('star', () {
         final parser = digit().starSeparated(letter());
-        expect(parser, isParseSuccess('', result: isSeparatedList()));
         expect(parser,
-            isParseSuccess('a', result: isSeparatedList(), position: 0));
-        expect(parser,
-            isParseSuccess('1', result: isSeparatedList(elements: ['1'])));
+            isParseSuccess('', result: isSeparatedList<String, String>()));
+        expect(
+            parser,
+            isParseSuccess('a',
+                result: isSeparatedList<String, String>(), position: 0));
+        expect(
+            parser,
+            isParseSuccess('1',
+                result: isSeparatedList<String, String>(elements: ['1'])));
         expect(
             parser,
             isParseSuccess('1a',
-                result: isSeparatedList(elements: ['1']), position: 1));
+                result: isSeparatedList<String, String>(elements: ['1']),
+                position: 1));
         expect(
             parser,
             isParseSuccess('1a2',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
             isParseSuccess('1a2b3',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
             isParseSuccess('1a2b3c',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c'])));
         expect(
             parser,
             isParseSuccess('1a2b3c4d',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c']),
                 position: 7));
@@ -2123,44 +2129,47 @@ void main() {
         final parser = digit().plusSeparated(letter());
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
-        expect(parser,
-            isParseSuccess('1', result: isSeparatedList(elements: ['1'])));
+        expect(
+            parser,
+            isParseSuccess('1',
+                result: isSeparatedList<String, String>(elements: ['1'])));
         expect(
             parser,
             isParseSuccess('1a',
-                result: isSeparatedList(elements: ['1']), position: 1));
+                result: isSeparatedList<String, String>(elements: ['1']),
+                position: 1));
         expect(
             parser,
             isParseSuccess('1a2',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
             isParseSuccess('1a2b3',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
             isParseSuccess('1a2b3c',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c'])));
         expect(
             parser,
             isParseSuccess('1a2b3c4d',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3', '4'],
                     separators: ['a', 'b', 'c']),
                 position: 7));
@@ -2256,7 +2265,7 @@ void main() {
         String combinator(String first, String separator, String second) =>
             '($first$separator$second)';
         test('elements', () {
-          expect(empty.elements, []);
+          expect(empty.elements, isEmpty);
           expect(single.elements, ['1']);
           expect(double.elements, ['1', '2']);
           expect(triple.elements, ['1', '2', '3']);
@@ -2264,15 +2273,15 @@ void main() {
           expect(mixed.elements, [1, 2, 3]);
         });
         test('separators', () {
-          expect(empty.separators, []);
-          expect(single.separators, []);
+          expect(empty.separators, isEmpty);
+          expect(single.separators, isEmpty);
           expect(double.separators, ['+']);
           expect(triple.separators, ['+', '-']);
           expect(quadruple.separators, ['+', '-', '*']);
           expect(mixed.separators, ['+', '-']);
         });
         test('sequence', () {
-          expect(empty.sequential, []);
+          expect(empty.sequential, isEmpty);
           expect(single.sequential, ['1']);
           expect(double.sequential, ['1', '+', '2']);
           expect(triple.sequential, ['1', '+', '2', '-', '3']);
