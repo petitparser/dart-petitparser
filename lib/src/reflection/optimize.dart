@@ -28,14 +28,18 @@ const allOptimizerRules = [
 
 /// Returns an optimized version of the parser.
 @useResult
-Parser<T> optimize<T>(Parser<T> parser, {List<OptimizeRule>? rules}) {
+Parser<T> optimize<T>(Parser<T> parser,
+    {ReplaceParser? callback, List<OptimizeRule>? rules}) {
   final analyzer = Analyzer(parser);
   final selectedRules = rules ?? allOptimizerRules;
   final replacements = <Parser, Parser>{};
   for (final parser in analyzer.parsers) {
     parser.captureResultGeneric(<R>(parser) {
       for (final rule in selectedRules) {
-        rule.run<R>(analyzer, parser, (a, b) => replacements[a] = b);
+        rule.run<R>(analyzer, parser, (a, b) {
+          if (callback != null) callback(a, b);
+          replacements[a] = b;
+        });
       }
     });
   }

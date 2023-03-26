@@ -990,7 +990,11 @@ void main() {
       final input = char('a') | char('b');
       final rule = PluggableOptimizeRule(
           <R>(rule, analyzer, parser, replace) => seen.add(parser));
-      final result = optimize(input, rules: [rule]);
+      final result = optimize(
+        input,
+        rules: [rule],
+        callback: (source, target) => fail('No callback expected'),
+      );
       expect(result, same(input));
       expect(seen, {input, input.children[0], input.children[1]});
     });
@@ -1000,7 +1004,10 @@ void main() {
         expect(parser, same(input));
         replace(input as Parser<R>, output as Parser<R>);
       });
-      final result = optimize(input, rules: [rule]);
+      final result = optimize(input, rules: [rule], callback: (source, target) {
+        expect(source, input);
+        expect(target, output);
+      });
       expect(result, same(output));
     });
     test('child replacement performed', () {
@@ -1011,7 +1018,10 @@ void main() {
           replace(parser, replacement as Parser<R>);
         }
       });
-      final result = optimize(input, rules: [rule]);
+      final result = optimize(input, rules: [rule], callback: (source, target) {
+        expect(source, input.children[1]);
+        expect(target, replacement);
+      });
       expect(result, same(input));
       expect(result.children[1], same(replacement));
     });
@@ -1079,7 +1089,9 @@ void main() {
             char('2'),
             char('3'),
           ].toChoiceParser();
-          final result = optimize(parser, rules: rules);
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
           expect(result, same(parser));
         });
         test('without optimization (different strategy)', () {
@@ -1091,7 +1103,9 @@ void main() {
             ].toChoiceParser(strategy: ChoiceStrategy.farthestFailure),
             char('4'),
           ].toChoiceParser();
-          final result = optimize(parser, rules: rules);
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
           expect(result, same(parser));
         });
       });
@@ -1128,7 +1142,9 @@ void main() {
         });
         test('without duplicate', () {
           final parser = lowercase() & lowercase('lower');
-          final result = optimize(parser, rules: rules);
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
           expect(result.children.first, isNot(same(result.children.last)));
         });
         test('deprecated code', () {
