@@ -47,7 +47,7 @@ void main() {
     final context = Context('abc');
     context.success(42, position: 2);
     final copy = context.copy();
-    context.failure('42 expected', position: 2, isCut: true);
+    context.failure('42 expected', position: 3);
     expect(copy.buffer, 'abc');
     expect(copy.position, 2);
     expect(copy.isSuccess, isTrue);

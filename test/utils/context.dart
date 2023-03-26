@@ -113,22 +113,6 @@ class DebugContext implements Context {
     events.add(ContextEvent(ContextEventType.isCut, _isCut, isCut));
     _isCut = isCut;
   }
-
-  /// Converts the current state of the context to a [Result].
-  @override
-  Result<T> toResult<T>() => _isSuccess
-      ? Success<T>(buffer, position, value as T)
-      : Failure<T>(buffer, position, message);
-
-  @override
-  String toString() => [
-        'DebugContext{',
-        'position: $_position',
-        'isSuccess: $_isSuccess',
-        'value: $_value',
-        'message: $_message',
-        'isCut: $_isCut}',
-      ].join(', ');
 }
 
 enum ContextEventType {

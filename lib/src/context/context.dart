@@ -1,8 +1,9 @@
 import '../shared/annotations.dart';
-import 'failure.dart';
-import 'result.dart';
-import 'success.dart';
 
+/// Mutable parse context.
+///
+/// Data holder for all the information needed during the parsing. Intentionally
+/// mutable to avoid unnecessary object allocation during the parsing.
 class Context {
   Context(
     this.buffer, {
@@ -48,7 +49,7 @@ class Context {
   /// The contents of this variable is undefined if [isSuccess] is `false`, or
   /// [isSkip] is `true`.
   @inlineVm
-  dynamic value;
+  Object? value;
 
   /// The currently read error.
   ///
@@ -68,12 +69,6 @@ class Context {
   /// possible new errors to the caller.
   @inlineVm
   bool isCut;
-
-  /// Converts the current state of the context to a [Result].
-  @inlineVm
-  Result<R> toResult<R>() => isSuccess
-      ? Success<R>(buffer, position, value as R)
-      : Failure<R>(buffer, position, message);
 
   @override
   String toString() => 'Context{position: $position, isSuccess: $isSuccess, '

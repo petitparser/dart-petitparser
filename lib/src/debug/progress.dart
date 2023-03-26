@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../context/context_ext.dart';
 import '../context/result.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
