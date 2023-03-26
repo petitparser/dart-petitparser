@@ -58,7 +58,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
       for (var i = 0; i < children.length; i++) {
         children[i].parseOn(context);
         if (!context.isSuccess) return;
-        result.add(context.value);
+        result.add(context.value as R);
       }
       context.value = result;
     }

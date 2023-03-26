@@ -27,7 +27,7 @@ class EvaluatorDefinition extends ExpressionDefinition {
   @override
   Parser parens() => super.parens().castList<num>().pick(1);
   @override
-  Parser number() => super.number().map((value) => int.parse(value));
+  Parser number() => super.number().map((value) => int.parse(value as String));
 }
 
 void main() {

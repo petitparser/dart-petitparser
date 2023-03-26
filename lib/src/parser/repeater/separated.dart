@@ -67,11 +67,11 @@ class SeparatedRepeatingParser<R, S>
       if (elements.isNotEmpty) {
         separator.parseOn(context);
         if (!context.isSuccess) return;
-        separators.add(context.value);
+        separators.add(context.value as S);
       }
       delegate.parseOn(context);
       if (!context.isSuccess) return;
-      elements.add(context.value);
+      elements.add(context.value as R);
     }
     final isCut = context.isCut;
     while (elements.length < max) {
@@ -80,7 +80,7 @@ class SeparatedRepeatingParser<R, S>
       if (elements.isNotEmpty) {
         separator.parseOn(context);
         if (context.isSuccess) {
-          separators.add(context.value);
+          separators.add(context.value as S);
         } else if (context.isCut) {
           return;
         } else {
@@ -93,7 +93,7 @@ class SeparatedRepeatingParser<R, S>
       }
       delegate.parseOn(context);
       if (context.isSuccess) {
-        elements.add(context.value);
+        elements.add(context.value as R);
       } else if (context.isCut) {
         return;
       } else {

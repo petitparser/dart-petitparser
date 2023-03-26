@@ -14,7 +14,7 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   final List arguments;
 
   @override
-  Parser<R> resolve() => Function.apply(function, arguments);
+  Parser<R> resolve() => Function.apply(function, arguments) as Parser<R>;
 
   @override
   Result<R> parseOn(Context context) => _throwUnsupported();

@@ -36,7 +36,7 @@ class MapParser<T, R> extends DelegateParser<T, R> {
         context.isSkip = false;
         delegate.parseOn(context);
         if (context.isSuccess) {
-          callback(context.value);
+          callback(context.value as T);
         }
         context.isSkip = true;
       } else {
@@ -45,7 +45,7 @@ class MapParser<T, R> extends DelegateParser<T, R> {
     } else {
       delegate.parseOn(context);
       if (context.isSuccess) {
-        context.value = callback(context.value);
+        context.value = callback(context.value as T);
       }
     }
   }

@@ -117,7 +117,7 @@ class DebugContext implements Context {
   /// Converts the current state of the context to a [Result].
   @override
   Result<T> toResult<T>() => _isSuccess
-      ? Success<T>(buffer, position, value)
+      ? Success<T>(buffer, position, value as T)
       : Failure<T>(buffer, position, message);
 
   @override

@@ -57,7 +57,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < min) {
       delegate.parseOn(context);
       if (!context.isSuccess) return;
-      elements.add(context.value);
+      elements.add(context.value as R);
     }
     final isCut = context.isCut;
     for (;;) {
@@ -79,7 +79,7 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       context.isCut = false;
       delegate.parseOn(context);
       if (context.isSuccess) {
-        elements.add(context.value);
+        elements.add(context.value as R);
       } else if (context.isCut) {
         return;
       } else {

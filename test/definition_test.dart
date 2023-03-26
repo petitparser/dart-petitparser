@@ -14,7 +14,8 @@ class ListGrammarDefinition extends GrammarDefinition {
 
 class ListParserDefinition extends ListGrammarDefinition {
   @override
-  Parser element() => super.element().map((value) => int.parse(value));
+  Parser element() =>
+      super.element().map((value) => int.parse(value as String));
 }
 
 class TokenizedListGrammarDefinition extends GrammarDefinition {
@@ -230,8 +231,8 @@ void main() {
     });
     test('reference', () {
       Parser<List<num>> list() => [
-            (ref0(number) & char(',') & ref0(list))
-                .map((values) => <num>[values[0], ...values[2]]),
+            (ref0(number) & char(',') & ref0(list)).map((List values) =>
+                <num>[values[0] as num, ...(values[2] as Iterable<num>)]),
             ref0(number).map((value) => [value]),
           ].toChoiceParser();
       final parser = resolve<List<num>>(list());

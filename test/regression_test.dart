@@ -108,7 +108,7 @@ void main() {
       final position = context.position;
       context.isSkip = false;
       continuation(context);
-      if (context.isSuccess && int.parse(context.value) > 31) {
+      if (context.isSuccess && int.parse(context.value as String) > 31) {
         context.failure('00-31 expected', position: position);
       }
       context.isSkip = isSkip;
@@ -253,7 +253,7 @@ void main() {
       final parser =
           buildMetadataParser().callCC<String>((continuation, context) {
         continuation(context);
-        final dataParser = buildDataParser(context.value);
+        final dataParser = buildDataParser(context.value as int);
         return dataParser.parseOn(context);
       });
       expect(parser.parse(input).value, 'data');

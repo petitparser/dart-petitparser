@@ -57,13 +57,13 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < min) {
       delegate.parseOn(context);
       if (!context.isSuccess) return;
-      elements.add(context.value);
+      elements.add(context.value as R);
     }
     final positions = <int>[context.position];
     while (elements.length < max) {
       delegate.parseOn(context);
       if (!context.isSuccess) break;
-      elements.add(context.value);
+      elements.add(context.value as R);
       positions.add(context.position);
     }
     for (;;) {

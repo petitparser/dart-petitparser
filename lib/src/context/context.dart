@@ -72,7 +72,7 @@ class Context {
   /// Converts the current state of the context to a [Result].
   @inlineVm
   Result<R> toResult<R>() => isSuccess
-      ? Success<R>(buffer, position, value)
+      ? Success<R>(buffer, position, value as R)
       : Failure<R>(buffer, position, message);
 
   @override

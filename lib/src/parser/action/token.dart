@@ -29,8 +29,8 @@ class TokenParser<R> extends DelegateParser<R, Token<R>> {
       final position = context.position;
       delegate.parseOn(context);
       if (context.isSuccess) {
-        context.value =
-            Token<R>(context.value, context.buffer, position, context.position);
+        context.value = Token<R>(
+            context.value as R, context.buffer, position, context.position);
       }
     }
   }

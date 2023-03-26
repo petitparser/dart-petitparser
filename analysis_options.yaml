@@ -2,7 +2,7 @@ include: package:lints/recommended.yaml
 analyzer:
   language:
     strict-inference: true
-#    strict-casts: true
+    strict-casts: true
 #    strict-raw-types: true
 linter:
   rules:

@@ -64,7 +64,7 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     while (elements.length < min) {
       delegate.parseOn(context);
       if (!context.isSuccess) return;
-      elements.add(context.value);
+      elements.add(context.value as R);
     }
     final isCut = context.isCut;
     while (elements.length < max) {
@@ -72,7 +72,7 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
       context.isCut = false;
       delegate.parseOn(context);
       if (context.isSuccess) {
-        elements.add(context.value);
+        elements.add(context.value as R);
       } else if (context.isCut) {
         return;
       } else {
