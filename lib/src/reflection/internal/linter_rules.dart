@@ -37,11 +37,11 @@ class CharacterRepeater extends LinterRule {
           callback(LinterIssue(
               this,
               parser,
-              'A flattened repeater that delegates to a character parser can '
-              'be much more efficiently implemented using `starString`, '
-              '`plusString`, `timesString`, or `repeatString` that '
-              'directly returns the underlying String instead of an '
-              'intermediate List.'));
+              'A flattened repeater ($repeating) that delegates to a character '
+              'parser ($character) can be much more efficiently implemented '
+              'using `starString`, `plusString`, `timesString`, or '
+              '`repeatString` that directly returns the underlying String '
+              'instead of an intermediate List.'));
         }
       }
     }
@@ -77,9 +77,9 @@ class NestedChoice extends LinterRule {
           callback(LinterIssue(
               this,
               parser,
-              'The choice at index $i is another choice that adds unnecessary '
-              'overhead that can be avoided by flattening it into the '
-              'parent.'));
+              'The choice at index $i is another choice ($child) that adds '
+              'unnecessary overhead that can be avoided by flattening it into '
+              'the parent.'));
         }
       }
     }
