@@ -72,7 +72,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   TrimmingParser<R> copy() => TrimmingParser<R>(delegate, before, after);
 
   @override
-  List<Parser> get children => [delegate, before, after];
+  List<Parser> get children => [before, delegate, after];
 
   @override
   void replace(Parser source, Parser target) {
