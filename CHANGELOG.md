@@ -2,11 +2,13 @@
 
 ## 6.0.0
 
+- Dart 2.19 requirement, enabled strict casts and type inference.
 - Changed execution model of PetitParser:
   - Typically the new execution model is more performant (10 to 20% on large grammars), by eliminating repeated allocations of new `Success` and `Failure` objects.
   - Instead a shared `Context` object is passed between parsers maintaining state, such as the input buffer, the position, the currently read value, error messages, etc.
   - Introduce the `cut()` parser operator, which prevents backtracking of outer choice-, optional- or repeat-parsers. This greatly simplifies error reporting.
   - Replaced the failure join strategy functions with a `ChoiceStrategy` enum: `firstFailure`, `lastFailure`, `closestFailure`, and `farthestFailure`; this works together with the new `cut()` operator.
+- Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
 - Cleanup and improve code and documentation.
 - Remove all previously deprecated code.
 
@@ -39,7 +41,6 @@
 * Moved PetitParser examples to a separate Git repository: https://github.com/petitparser/dart-petitparser-examples.
 * Add a `skip` helper that silently consumes input before and/or after another parser.
 * Make the `ExpressionBuilder<T>` statically typed. This requires existing code to specify the desired result type, and provide all reduction actions.
-* Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
 * Add `charIgnoringCase`, and provide better standard error messages for character parsers.
 * Add initial support for indentation based grammars.
 
