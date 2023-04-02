@@ -1,12 +1,13 @@
 # Changelog
 
-## 6.0.0 (Unpublished)
+## 6.0.0
 
 - Changed execution model of PetitParser:
-  - The new execution model is more performant (10 to 20% on large grammars), by eliminating the repeated allocation of new `Success` and `Failure` objects.
-  - Instead a shared `Context` object is passed between parsers maintaining all state, such as the input buffer, the position, the currently read value, error messages, etc.
-  - Introduce the `cut()` parser operator, which prevents backtracking of the outer choice-, optional- or repeat-parsers. This greatly simplifies error reporting.
-  - Replaced the failure join strategy functions with an enum `ChoiceStrategy` of `firstFailure`, `lastFailure`, `closestFailure`, and `farthestFailure`; this works together with the new `cut()` operator.
+  - Typically the new execution model is more performant (10 to 20% on large grammars), by eliminating repeated allocations of new `Success` and `Failure` objects.
+  - Instead a shared `Context` object is passed between parsers maintaining state, such as the input buffer, the position, the currently read value, error messages, etc.
+  - Introduce the `cut()` parser operator, which prevents backtracking of outer choice-, optional- or repeat-parsers. This greatly simplifies error reporting.
+  - Replaced the failure join strategy functions with a `ChoiceStrategy` enum: `firstFailure`, `lastFailure`, `closestFailure`, and `farthestFailure`; this works together with the new `cut()` operator.
+- Cleanup and improve code and documentation.
 - Remove all previously deprecated code.
 
 ## 5.3.0
