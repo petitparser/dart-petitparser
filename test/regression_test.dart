@@ -520,4 +520,20 @@ void main() {
       expect(parser.accept('*invalid *'), isFalse);
     });
   });
+  group('https://github.com/petitparser/dart-petitparser/issues/147', () {
+    final surrogatePair = seq2(
+      pattern('\uD800-\uDBFF'),
+      pattern('\uDC00-\uDFFF'),
+    ).flatten();
+    test('laughing emoji', () {
+      const input = '\u{1f606}';
+      expect(input, hasLength(2));
+      expect(surrogatePair, isParseSuccess(input, result: '😆'));
+    });
+    test('heart character', () {
+      const input = '\u2665';
+      expect(input, hasLength(1));
+      expect(surrogatePair, isParseFailure(input));
+    });
+  });
 }
