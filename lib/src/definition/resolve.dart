@@ -44,9 +44,6 @@ Parser<R> _dereference<R>(Parser<R> parser, Map<Parser, Parser> mapping) {
     }
     parser = parser.resolve();
   }
-  if (parser is ResolvableParser) {
-    throw StateError('Type error in reference parser: $parser');
-  }
   for (final reference in references) {
     mapping[reference] = parser;
   }

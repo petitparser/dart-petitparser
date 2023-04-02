@@ -160,14 +160,14 @@ void main() {
         .map((list) => list.elements);
 
     test('reference without parameters', () {
-      final firstReference = ref0(number);
-      final secondReference = ref0(number);
+      final firstReference = ref(number);
+      final secondReference = ref(number);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isTrue);
     });
     test('reference with different production', () {
-      final firstReference = ref0(number);
-      final secondReference = ref0(numberToken);
+      final firstReference = ref(number);
+      final secondReference = ref(numberToken);
       expect(firstReference, isNot(same(secondReference)));
       // ignore: unrelated_type_equality_checks
       expect(firstReference == secondReference, isFalse);
@@ -185,7 +185,7 @@ void main() {
       expect(firstReference == secondReference, isFalse);
     });
     test('reference unsupported methods', () {
-      final reference = ref0(number);
+      final reference = ref(number);
       expect(() => reference.copy(), throwsUnsupportedError);
       expect(() => reference.parse('0'), throwsUnsupportedError);
     });
@@ -250,14 +250,14 @@ void main() {
     final buggedDefinition = BuggedGrammarDefinition();
 
     test('reference without parameters', () {
-      final firstReference = ref0(grammarDefinition.start);
-      final secondReference = ref0(grammarDefinition.start);
+      final firstReference = ref(grammarDefinition.start);
+      final secondReference = ref(grammarDefinition.start);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isTrue);
     });
     test('reference with different production', () {
-      final firstReference = ref0(grammarDefinition.start);
-      final secondReference = ref0(grammarDefinition.element);
+      final firstReference = ref(grammarDefinition.start);
+      final secondReference = ref(grammarDefinition.element);
       expect(firstReference, isNot(same(secondReference)));
       expect(firstReference == secondReference, isFalse);
     });
@@ -284,7 +284,7 @@ void main() {
           parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
     });
     test('reference unsupported methods', () {
-      final reference = ref0(grammarDefinition.start);
+      final reference = ref(grammarDefinition.start);
       expect(() => reference.copy(), throwsUnsupportedError);
       expect(() => reference.parse(''), throwsUnsupportedError);
     });
