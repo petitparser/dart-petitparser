@@ -36,6 +36,9 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
   }
 
   @override
+  String toString() => '${super.toString()}[${indexes.join(', ')}]';
+
+  @override
   PermuteParser<R> copy() => PermuteParser<R>(delegate, indexes);
 
   @override

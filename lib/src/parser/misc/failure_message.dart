@@ -34,6 +34,9 @@ class FailureMessageParser<R> extends DelegateParser<R, R> {
   }
 
   @override
+  String toString() => '${super.toString()}[$message]';
+
+  @override
   bool hasEqualProperties(FailureMessageParser<R> other) =>
       super.hasEqualProperties(other) && message == other.message;
 

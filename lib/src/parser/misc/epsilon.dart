@@ -28,6 +28,9 @@ class EpsilonParser<R> extends Parser<R> {
   }
 
   @override
+  String toString() => '${super.toString()}[$result]';
+
+  @override
   EpsilonParser<R> copy() => EpsilonParser<R>(result);
 
   @override

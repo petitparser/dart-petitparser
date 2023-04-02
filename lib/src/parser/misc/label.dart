@@ -25,12 +25,12 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   void parseOn(Context context) => delegate.parseOn(context);
 
   @override
+  String toString() => '${super.toString()}[$label]';
+
+  @override
   LabelParser<R> copy() => LabelParser<R>(delegate, label);
 
   @override
   bool hasEqualProperties(LabelParser<R> other) =>
       super.hasEqualProperties(other) && label == other.label;
-
-  @override
-  String toString() => '${super.toString()}[$label]';
 }

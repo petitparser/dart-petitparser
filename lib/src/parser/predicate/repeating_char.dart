@@ -126,12 +126,12 @@ class RepeatingCharParser extends Parser<String> {
   }
 
   @override
-  RepeatingCharParser copy() =>
-      RepeatingCharParser(predicate, message, min, max);
+  String toString() =>
+      '${super.toString()}[$min..${max == unbounded ? '*' : max}, $message]';
 
   @override
-  String toString() =>
-      '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
+  RepeatingCharParser copy() =>
+      RepeatingCharParser(predicate, message, min, max);
 
   @override
   bool hasEqualProperties(RepeatingCharParser other) =>

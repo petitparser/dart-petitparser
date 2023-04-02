@@ -53,5 +53,8 @@ class NewlineParser extends Parser<String> {
   }
 
   @override
+  String toString() => '${super.toString()}[$message]';
+
+  @override
   NewlineParser copy() => NewlineParser(message);
 }

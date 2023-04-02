@@ -32,6 +32,9 @@ class AnyParser extends Parser<String> {
   }
 
   @override
+  String toString() => '${super.toString()}[$message]';
+
+  @override
   AnyParser copy() => AnyParser(message);
 
   @override

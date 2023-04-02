@@ -33,6 +33,9 @@ class PickParser<R> extends DelegateParser<List<R>, R> {
   }
 
   @override
+  String toString() => '${super.toString()}[$index]';
+
+  @override
   PickParser<R> copy() => PickParser<R>(delegate, index);
 
   @override
