@@ -8,7 +8,7 @@ import 'resolve.dart';
 ///
 /// See [ref0] for details.
 @useResult
-Parser<T> ref<T>(Parser<T> Function() function) => ref0(function);
+Parser<R> ref<R>(Parser<R> Function() function) => ref0(function);
 
 /// Creates a [Parser] from a [function] without arguments.
 ///
@@ -19,75 +19,75 @@ Parser<T> ref<T>(Parser<T> Function() function) => ref0(function);
 /// If you function takes arguments, consider one of the typed alternatives
 /// [ref1], [ref2], [ref3], ... instead.
 @useResult
-Parser<T> ref0<T>(Parser<T> Function() function) =>
-    ReferenceParser<T>(function, const []);
+Parser<R> ref0<R>(Parser<R> Function() function) =>
+    ReferenceParser<R>(function, const []);
 
 /// Reference to a production [function] parametrized with 1 argument.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref1<T, A1>(
-  Parser<T> Function(A1) function,
+Parser<R> ref1<R, A1>(
+  Parser<R> Function(A1) function,
   A1 arg1,
 ) =>
-    ReferenceParser<T>(function, [arg1]);
+    ReferenceParser<R>(function, [arg1]);
 
 /// Reference to a production [function] parametrized with 2 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref2<T, A1, A2>(
-  Parser<T> Function(A1, A2) function,
+Parser<R> ref2<R, A1, A2>(
+  Parser<R> Function(A1, A2) function,
   A1 arg1,
   A2 arg2,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2]);
+    ReferenceParser<R>(function, [arg1, arg2]);
 
 /// Reference to a production [function] parametrized with 3 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref3<T, A1, A2, A3>(
-  Parser<T> Function(A1, A2, A3) function,
+Parser<R> ref3<R, A1, A2, A3>(
+  Parser<R> Function(A1, A2, A3) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2, arg3]);
+    ReferenceParser<R>(function, [arg1, arg2, arg3]);
 
 /// Reference to a production [function] parametrized with 4 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref4<T, A1, A2, A3, A4>(
-  Parser<T> Function(A1, A2, A3, A4) function,
+Parser<R> ref4<R, A1, A2, A3, A4>(
+  Parser<R> Function(A1, A2, A3, A4) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
   A4 arg4,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2, arg3, arg4]);
+    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4]);
 
 /// Reference to a production [function] parametrized with 5 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref5<T, A1, A2, A3, A4, A5>(
-  Parser<T> Function(A1, A2, A3, A4, A5) function,
+Parser<R> ref5<R, A1, A2, A3, A4, A5>(
+  Parser<R> Function(A1, A2, A3, A4, A5) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
   A4 arg4,
   A5 arg5,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2, arg3, arg4, arg5]);
+    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5]);
 
 /// Reference to a production [function] parametrized with 6 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref6<T, A1, A2, A3, A4, A5, A6>(
-  Parser<T> Function(A1, A2, A3, A4, A5, A6) function,
+Parser<R> ref6<R, A1, A2, A3, A4, A5, A6>(
+  Parser<R> Function(A1, A2, A3, A4, A5, A6) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
@@ -95,14 +95,14 @@ Parser<T> ref6<T, A1, A2, A3, A4, A5, A6>(
   A5 arg5,
   A6 arg6,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2, arg3, arg4, arg5, arg6]);
+    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6]);
 
 /// Reference to a production [function] parametrized with 7 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref7<T, A1, A2, A3, A4, A5, A6, A7>(
-  Parser<T> Function(A1, A2, A3, A4, A5, A6, A7) function,
+Parser<R> ref7<R, A1, A2, A3, A4, A5, A6, A7>(
+  Parser<R> Function(A1, A2, A3, A4, A5, A6, A7) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
@@ -111,14 +111,14 @@ Parser<T> ref7<T, A1, A2, A3, A4, A5, A6, A7>(
   A6 arg6,
   A7 arg7,
 ) =>
-    ReferenceParser<T>(function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7]);
+    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7]);
 
 /// Reference to a production [function] parametrized with 8 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref8<T, A1, A2, A3, A4, A5, A6, A7, A8>(
-  Parser<T> Function(A1, A2, A3, A4, A5, A6, A7, A8) function,
+Parser<R> ref8<R, A1, A2, A3, A4, A5, A6, A7, A8>(
+  Parser<R> Function(A1, A2, A3, A4, A5, A6, A7, A8) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
@@ -128,15 +128,15 @@ Parser<T> ref8<T, A1, A2, A3, A4, A5, A6, A7, A8>(
   A7 arg7,
   A8 arg8,
 ) =>
-    ReferenceParser<T>(
+    ReferenceParser<R>(
         function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]);
 
 /// Reference to a production [function] parametrized with 9 arguments.
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<T> ref9<T, A1, A2, A3, A4, A5, A6, A7, A8, A9>(
-  Parser<T> Function(A1, A2, A3, A4, A5, A6, A7, A8, A9) function,
+Parser<R> ref9<R, A1, A2, A3, A4, A5, A6, A7, A8, A9>(
+  Parser<R> Function(A1, A2, A3, A4, A5, A6, A7, A8, A9) function,
   A1 arg1,
   A2 arg2,
   A3 arg3,
@@ -147,5 +147,5 @@ Parser<T> ref9<T, A1, A2, A3, A4, A5, A6, A7, A8, A9>(
   A8 arg8,
   A9 arg9,
 ) =>
-    ReferenceParser<T>(
+    ReferenceParser<R>(
         function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]);

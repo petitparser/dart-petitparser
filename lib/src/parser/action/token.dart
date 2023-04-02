@@ -5,7 +5,7 @@ import '../../core/parser.dart';
 import '../../core/token.dart';
 import '../combinator/delegate.dart';
 
-extension TokenParserExtension<T> on Parser<T> {
+extension TokenParserExtension<R> on Parser<R> {
   /// Returns a parser that returns a [Token]. The token carries the parsed
   /// value of the receiver [Token.value], as well as the consumed input
   /// [Token.input] from [Token.start] to [Token.stop] of the input being
@@ -14,7 +14,7 @@ extension TokenParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().plus().token()` returns the token
   /// `Token[start: 0, stop: 3, value: abc]` for the input `'abc'`.
   @useResult
-  Parser<Token<T>> token() => TokenParser<T>(this);
+  Parser<Token<R>> token() => TokenParser<R>(this);
 }
 
 /// A parser that creates a token of the result its delegate parses.

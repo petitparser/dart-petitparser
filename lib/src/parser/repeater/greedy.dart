@@ -7,7 +7,7 @@ import 'limited.dart';
 import 'possessive.dart';
 import 'unbounded.dart';
 
-extension GreedyRepeatingParserExtension<T> on Parser<T> {
+extension GreedyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
   /// reaches a [limit]. This is a greedy non-blind implementation of the
   /// [star] operator. The [limit] is not consumed.
@@ -18,7 +18,7 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   /// See [starLazy] for the lazy, more efficient, and generally preferred
   /// variation of this combinator.
   @useResult
-  Parser<List<T>> starGreedy(Parser<void> limit) =>
+  Parser<List<R>> starGreedy(Parser<void> limit) =>
       repeatGreedy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
@@ -31,7 +31,7 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   /// See [plusLazy] for the lazy, more efficient, and generally preferred
   /// variation of this combinator.
   @useResult
-  Parser<List<T>> plusGreedy(Parser<void> limit) =>
+  Parser<List<R>> plusGreedy(Parser<void> limit) =>
       repeatGreedy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
@@ -41,8 +41,8 @@ extension GreedyRepeatingParserExtension<T> on Parser<T> {
   /// This is the more generic variation of the [starGreedy] and [plusGreedy]
   /// combinators.
   @useResult
-  Parser<List<T>> repeatGreedy(Parser<void> limit, int min, int max) =>
-      GreedyRepeatingParser<T>(this, limit, min, max);
+  Parser<List<R>> repeatGreedy(Parser<void> limit, int min, int max) =>
+      GreedyRepeatingParser<R>(this, limit, min, max);
 }
 
 /// A greedy repeating parser, commonly seen in regular expression

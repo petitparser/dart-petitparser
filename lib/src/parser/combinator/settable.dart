@@ -6,7 +6,7 @@ import '../combinator/delegate.dart';
 import '../misc/failure.dart';
 import '../utils/resolvable.dart';
 
-extension SettableParserExtension<T> on Parser<T> {
+extension SettableParserExtension<R> on Parser<R> {
   /// Returns a parser that points to the receiver, but can be changed to point
   /// to something else at a later point in time.
   ///
@@ -14,7 +14,7 @@ extension SettableParserExtension<T> on Parser<T> {
   /// as `letter()`, but it can be replaced with another parser using
   /// [SettableParser.set].
   @useResult
-  SettableParser<T> settable() => SettableParser<T>(this);
+  SettableParser<R> settable() => SettableParser<R>(this);
 }
 
 /// Returns a parser that is not defined, but that can be set at a later

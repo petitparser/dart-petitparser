@@ -17,6 +17,7 @@ extension TrimmingParserExtension<R> on Parser<R> {
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`
   /// for the input `' ab\n'` and consumes the complete input string.
   @useResult
+  // TODO(renggli): Use skip parser!
   Parser<R> trim([Parser<void>? left, Parser<void>? right]) =>
       TrimmingParser<R>(this, left ??= whitespace(), right ??= left);
 }

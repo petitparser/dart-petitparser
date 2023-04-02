@@ -1,7 +1,7 @@
 import '../core/parser.dart';
 import 'matches/matches_iterable.dart';
 
-extension MatchesParserExtension<T> on Parser<T> {
+extension MatchesParserExtension<R> on Parser<R> {
   /// Returns a _lazy iterable_ over all non-overlapping successful parse
   /// results of type [T] over the provided [input].
   ///
@@ -17,7 +17,7 @@ extension MatchesParserExtension<T> on Parser<T> {
   /// `parser.allMatches('abc de')` results in the iterable `['abc', 'de']`; and
   /// `parser.allMatches('abc de', overlapping: true)` results in the iterable
   /// `['abc', 'bc', 'c', 'de', 'e']`.
-  Iterable<T> allMatches(String input,
+  Iterable<R> allMatches(String input,
           {int start = 0, bool overlapping = false}) =>
-      MatchesIterable<T>(this, input, start, overlapping);
+      MatchesIterable<R>(this, input, start, overlapping);
 }

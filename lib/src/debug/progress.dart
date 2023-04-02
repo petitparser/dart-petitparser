@@ -31,10 +31,10 @@ import '../shared/types.dart';
 /// The optional [output] callback can be used to continuously receive
 /// [ProgressFrame] updates with the current progress information.
 @useResult
-Parser<T> progress<T>(Parser<T> root,
+Parser<R> progress<R>(Parser<R> root,
     {VoidCallback<ProgressFrame> output = print,
     Predicate<Parser>? predicate}) {
-  return transformParser(root, <T>(parser) {
+  return transformParser(root, <R>(parser) {
     if (predicate == null || predicate(parser)) {
       return parser.callCC((continuation, context) {
         output(_ProgressFrame(parser, context.toResult()));

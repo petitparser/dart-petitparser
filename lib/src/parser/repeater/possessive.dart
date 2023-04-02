@@ -5,7 +5,7 @@ import '../../core/parser.dart';
 import 'repeating.dart';
 import 'unbounded.dart';
 
-extension PossessiveRepeatingParserExtension<T> on Parser<T> {
+extension PossessiveRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that accepts the receiver zero or more times. The
   /// resulting parser returns a list of the parse results of the receiver.
   ///
@@ -16,7 +16,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   /// any sequence of letters and returns a possibly empty list of the parsed
   /// letters.
   @useResult
-  Parser<List<T>> star() => repeat(0, unbounded);
+  Parser<List<R>> star() => repeat(0, unbounded);
 
   /// Returns a parser that accepts the receiver one or more times. The
   /// resulting parser returns a list of the parse results of the receiver.
@@ -27,7 +27,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().plus()` accepts any sequence of
   /// letters and returns a list of the parsed letters.
   @useResult
-  Parser<List<T>> plus() => repeat(1, unbounded);
+  Parser<List<R>> plus() => repeat(1, unbounded);
 
   /// Returns a parser that accepts the receiver exactly [count] times. The
   /// resulting parser returns a list of the parse results of the receiver.
@@ -38,7 +38,7 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().times(2)` accepts two letters and
   /// returns a list of the two parsed letters.
   @useResult
-  Parser<List<T>> times(int count) => repeat(count, count);
+  Parser<List<R>> times(int count) => repeat(count, count);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
   /// The resulting parser returns a list of the parse results of the receiver.
@@ -49,8 +49,8 @@ extension PossessiveRepeatingParserExtension<T> on Parser<T> {
   /// For example, the parser `letter().repeat(2, 4)` accepts a sequence of
   /// two, three, or four letters and returns the accepted letters as a list.
   @useResult
-  Parser<List<T>> repeat(int min, [int? max]) =>
-      PossessiveRepeatingParser<T>(this, min, max ?? min);
+  Parser<List<R>> repeat(int min, [int? max]) =>
+      PossessiveRepeatingParser<R>(this, min, max ?? min);
 }
 
 /// A greedy parser that repeatedly parses between 'min' and 'max' instances of

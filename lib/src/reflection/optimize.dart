@@ -28,7 +28,7 @@ const allOptimizerRules = [
 
 /// Returns an optimized version of the parser.
 @useResult
-Parser<T> optimize<T>(Parser<T> parser,
+Parser<R> optimize<R>(Parser<R> parser,
     {ReplaceParser? callback, List<OptimizeRule>? rules}) {
   final analyzer = Analyzer(parser);
   final selectedRules = rules ?? allOptimizerRules;
@@ -49,7 +49,7 @@ Parser<T> optimize<T>(Parser<T> parser,
         parser.replace(replacement.key, replacement.value);
       }
     }
-    return replacements[parser] as Parser<T>? ?? parser;
+    return replacements[parser] as Parser<R>? ?? parser;
   }
   return parser;
 }
@@ -57,5 +57,5 @@ Parser<T> optimize<T>(Parser<T> parser,
 /// Collapses all duplicate parsers in-place.
 @useResult
 @Deprecated('Use `optimize(parser, rules: const [RemoveDuplicate()])` instead')
-Parser<T> removeDuplicates<T>(Parser<T> parser) =>
+Parser<R> removeDuplicates<R>(Parser<R> parser) =>
     optimize(parser, rules: const [RemoveDuplicate()]);

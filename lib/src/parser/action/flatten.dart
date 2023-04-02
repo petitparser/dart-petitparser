@@ -23,7 +23,7 @@ extension FlattenParserExtension<R> on Parser<R> {
 
 /// A parser that discards the result of the delegate and answers the
 /// sub-string its delegate consumes.
-class FlattenParser<T> extends DelegateParser<T, String> {
+class FlattenParser<R> extends DelegateParser<R, String> {
   FlattenParser(super.delegate);
 
   @override
@@ -42,5 +42,5 @@ class FlattenParser<T> extends DelegateParser<T, String> {
   }
 
   @override
-  FlattenParser<T> copy() => FlattenParser<T>(delegate);
+  FlattenParser<R> copy() => FlattenParser<R>(delegate);
 }

@@ -6,15 +6,15 @@ import '../../core/parser.dart';
 import 'matches_iterator.dart';
 
 @immutable
-class MatchesIterable<T> extends IterableBase<T> {
+class MatchesIterable<R> extends IterableBase<R> {
   const MatchesIterable(this.parser, this.input, this.start, this.overlapping);
 
-  final Parser<T> parser;
+  final Parser<R> parser;
   final String input;
   final int start;
   final bool overlapping;
 
   @override
-  Iterator<T> get iterator =>
+  Iterator<R> get iterator =>
       MatchesIterator(parser, input, start, overlapping);
 }

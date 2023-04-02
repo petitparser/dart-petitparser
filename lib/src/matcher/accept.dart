@@ -1,7 +1,7 @@
 import '../context/context.dart';
 import '../core/parser.dart';
 
-extension AcceptParser<T> on Parser<T> {
+extension AcceptParser<R> on Parser<R> {
   /// Tests if the [input] can be successfully parsed.
   ///
   /// For example, `letter().plus().accept('abc')` returns `true`, and

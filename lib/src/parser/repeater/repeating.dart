@@ -6,7 +6,7 @@ import 'unbounded.dart';
 
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances
 /// of its delegate.
-abstract class RepeatingParser<T, R> extends DelegateParser<T, R> {
+abstract class RepeatingParser<R, S> extends DelegateParser<R, S> {
   RepeatingParser(super.parser, this.min, this.max)
       : assert(0 <= min, 'min must be at least 0, but got $min'),
         assert(min <= max, 'max must be at least $min, but got $max');
@@ -31,6 +31,6 @@ abstract class RepeatingParser<T, R> extends DelegateParser<T, R> {
       '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
 
   @override
-  bool hasEqualProperties(RepeatingParser<T, R> other) =>
+  bool hasEqualProperties(RepeatingParser<R, S> other) =>
       super.hasEqualProperties(other) && min == other.min && max == other.max;
 }

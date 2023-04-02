@@ -4,14 +4,14 @@ import '../../context/context.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension CastParserExtension<T> on Parser<T> {
+extension CastParserExtension<R> on Parser<R> {
   /// Returns a parser that casts itself to `Parser<R>`.
   @useResult
-  Parser<R> cast<R>() => CastParser<T, R>(this);
+  Parser<S> cast<S>() => CastParser<R, S>(this);
 }
 
 /// A parser that casts a `Result` to a `Result<R>`.
-class CastParser<T, R> extends DelegateParser<T, R> {
+class CastParser<R, S> extends DelegateParser<R, S> {
   CastParser(super.delegate);
 
   @override
@@ -23,5 +23,5 @@ class CastParser<T, R> extends DelegateParser<T, R> {
   }
 
   @override
-  CastParser<T, R> copy() => CastParser<T, R>(delegate);
+  CastParser<R, S> copy() => CastParser<R, S>(delegate);
 }
