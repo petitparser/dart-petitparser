@@ -1809,9 +1809,6 @@ void main() {
             isParseSuccess('${inputDigit.join()}1',
                 result: inputDigit, position: inputDigit.length));
       });
-      group('cut', () {
-        // TODO: Not clear what the semantics of a cut in a greedy parser are?
-      });
     });
     group('lazy', () {
       expectParserInvariants(any().starLazy(digit()));
