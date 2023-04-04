@@ -68,7 +68,7 @@ abstract class GrammarDefinition<R> {
 
   /// Builds a composite parser from the [start] production.
   @useResult
-  Parser<R> build() => buildFrom(start());
+  Parser<R> build() => buildFrom<R>(start());
 
   /// Builds a composite parser starting at the specified production.
   @useResult
