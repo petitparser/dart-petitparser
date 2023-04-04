@@ -2,6 +2,10 @@ import '../../context/context.dart';
 import '../../core/parser.dart';
 import '../character/predicate.dart';
 
+/// Alias for the [SingleCharacterParser].
+@Deprecated('Replace with SingleCharacterParser')
+typedef CharacterParser = SingleCharacterParser;
+
 /// Parser class for individual character classes.
 class SingleCharacterParser extends Parser<String> {
   SingleCharacterParser(this.predicate, this.message);
