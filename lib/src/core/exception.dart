@@ -17,4 +17,8 @@ class ParserException implements FormatException {
 
   @override
   String get source => failure.buffer;
+
+  @override
+  String toString() => '${super.toString()}: $message '
+      '(at ${failure.toPositionString()})';
 }

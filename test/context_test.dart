@@ -39,7 +39,9 @@ void main() {
             .having((e) => e.failure, 'failure', same(result))
             .having((e) => e.message, 'message', '42 expected')
             .having((e) => e.offset, 'offset', 2)
-            .having((e) => e.source, 'source', 'abc')));
+            .having((e) => e.source, 'source', 'abc')
+            .having((e) => e.toString(), 'toString',
+                endsWith('42 expected (at 1:3)'))));
     expect(result.message, '42 expected');
     expect(result.toString(), 'Failure[1:3]: 42 expected');
   });
