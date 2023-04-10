@@ -85,8 +85,20 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
+  /// Adds a concatenation of the expression without any separators. Evaluates
+  /// the [callback] with the list of parsed terms.
+  void concat(T Function(List<T> list) callback) {
+    assert(_concatCallback == null, 'At most one concat parser expected');
+    _concatCallback = callback;
+  }
+
+  Parser<T> _buildConcat(Parser<T> inner) =>
+      _concatCallback == null ? inner : inner.plus().map(_concatCallback!);
+
+  T Function(List<T> list)? _concatCallback;
+
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => _buildLeft(
-      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner)))));
+  Parser<T> build(Parser<T> inner) => _buildConcat(_buildLeft(
+      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner))))));
 }
