@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import '../core/parser.dart';
 import '../parser/action/map.dart';
 import '../parser/combinator/sequence.dart';
-import '../parser/misc/cut.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
 import 'result.dart';
@@ -22,7 +21,7 @@ class ExpressionGroup<T> {
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<L, R>(Parser<L> left, Parser<R> right,
           T Function(L left, T value, R right) callback) =>
-      _wrapper.add(seq3(left.commit(), _loopback, right).map3(callback));
+      _wrapper.add(seq3(left, _loopback, right).map3(callback));
 
   Parser<T> _buildWrapper(Parser<T> inner) => buildChoice([..._wrapper, inner]);
 
@@ -36,9 +35,8 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPrefix(Parser<T> inner) => _prefix.isEmpty
       ? inner
-      : seq2(buildChoice(_prefix).commit().star(), inner).map2(
-          (prefix, value) =>
-              prefix.reversed.fold(value, (each, result) => result.call(each)));
+      : seq2(buildChoice(_prefix).star(), inner).map2((prefix, value) =>
+          prefix.reversed.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPrefix<T, void>>> _prefix = [];
 
@@ -50,9 +48,8 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPostfix(Parser<T> inner) => _postfix.isEmpty
       ? inner
-      : seq2(inner, buildChoice(_postfix).commit().star()).map2(
-          (value, postfix) =>
-              postfix.fold(value, (each, result) => result.call(each)));
+      : seq2(inner, buildChoice(_postfix).star()).map2((value, postfix) =>
+          postfix.fold(value, (each, result) => result.call(each)));
 
   final List<Parser<ExpressionResultPostfix<T, void>>> _postfix = [];
 
@@ -65,9 +62,8 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildRight(Parser<T> inner) => _right.isEmpty
       ? inner
-      : inner.plusSeparated(buildChoice(_right).commit()).map((sequence) =>
-          sequence
-              .foldRight((left, result, right) => result.call(left, right)));
+      : inner.plusSeparated(buildChoice(_right)).map((sequence) => sequence
+          .foldRight((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _right = [];
 
@@ -80,25 +76,13 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildLeft(Parser<T> inner) => _left.isEmpty
       ? inner
-      : inner.plusSeparated(buildChoice(_left).commit()).map((sequence) =>
+      : inner.plusSeparated(buildChoice(_left)).map((sequence) =>
           sequence.foldLeft((left, result, right) => result.call(left, right)));
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
-  /// Adds a concatenation of the expression without any separators. Evaluates
-  /// the [callback] with the list of parsed terms.
-  void concat(T Function(List<T> list) callback) {
-    assert(_concatCallback == null, 'At most one concat parser expected');
-    _concatCallback = callback;
-  }
-
-  Parser<T> _buildConcat(Parser<T> inner) =>
-      _concatCallback == null ? inner : inner.plus().map(_concatCallback!);
-
-  T Function(List<T> list)? _concatCallback;
-
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => _buildConcat(_buildLeft(
-      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner))))));
+  Parser<T> build(Parser<T> inner) => _buildLeft(
+      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner)))));
 }
