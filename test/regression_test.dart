@@ -417,7 +417,7 @@ void main() {
       })(),
       'expression': (() {
         final builder = ExpressionBuilder<Object?>();
-        builder.primitive(primitive);
+        builder.primitive(primitive.commit());
         builder.group().wrapper(
             char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
         builder.group()
@@ -452,10 +452,12 @@ void main() {
             .flatten('value expected')
             .trim();
     builder.primitive(primitive);
-    builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
+    builder
+        .group()
+        .wrapper(char('(').commit().trim(), char(')').trim(), (l, v, r) => v);
     builder.group()
-      ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
-      ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
+      ..left(string('&&').commit().trim(), (a, op, b) => ['&&', a, b])
+      ..left(string('||').commit().trim(), (a, op, b) => ['||', a, b]);
     final parser = builder.build().end();
     test('success', () {
       expect(parser, isParseSuccess('S|69|L', result: 'S|69|L'));
