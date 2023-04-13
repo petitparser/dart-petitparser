@@ -5,6 +5,7 @@ import '../parser/action/map.dart';
 import '../parser/combinator/sequence.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
+import '../parser/repeater/unbounded.dart';
 import 'result.dart';
 import 'utils.dart';
 
@@ -81,8 +82,26 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
+  /// Adds a sequence of repeated and non-separated terms. Evaluates the
+  /// [callback] with the list of parsed terms.
+  void list(T Function(List<T> list) callback,
+      {int min = 1, int max = unbounded}) {
+    assert(_listCallback == null, 'At most one list callback can be specified');
+    _listCallback = callback;
+    _listMin = min;
+    _listMax = max;
+  }
+
+  Parser<T> _buildList(Parser<T> inner) => _listCallback == null
+      ? inner
+      : inner.repeat(_listMin, _listMax).map(_listCallback!);
+
+  T Function(List<T> list)? _listCallback;
+  int _listMin = 1;
+  int _listMax = unbounded;
+
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => _buildLeft(
-      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner)))));
+  Parser<T> build(Parser<T> inner) => _buildList(_buildLeft(
+      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner))))));
 }

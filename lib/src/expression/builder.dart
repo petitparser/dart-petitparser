@@ -71,7 +71,7 @@ class ExpressionBuilder<T> {
   final List<ExpressionGroup<T>> _groups = [];
   final SettableParser<T> _loopback = undefined();
 
-  /// Defines a new primitive, value, or literal) [parser].
+  /// Defines a new primitive, literal, or value [parser].
   void primitive(Parser<T> parser) => _primitives.add(parser);
 
   /// Creates a new group of operators that share the same priority.

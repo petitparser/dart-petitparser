@@ -607,6 +607,38 @@ void main() {
           evaluator, isParseSuccess('2 + 6 / 2', result: closeTo(5, epsilon)));
     });
   });
+  group('list', () {
+    test('default', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(any());
+      builder.group().list((list) => list.join());
+      final parser = builder.build().end();
+      expect(parser, isParseFailure(''));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseSuccess('abc', result: 'abc'));
+    });
+    test('min', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(any());
+      builder.group().list((list) => list.join(), min: 0);
+      final parser = builder.build().end();
+      expect(parser, isParseSuccess('', result: ''));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseSuccess('abc', result: 'abc'));
+    });
+    test('max', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(any());
+      builder.group().list((list) => list.join(), max: 2);
+      final parser = builder.build().end();
+      expect(parser, isParseFailure(''));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseFailure('abc', position: 2));
+    });
+  });
   group('builder', () {
     test('empty', () {
       final builder = ExpressionBuilder<String>();
@@ -660,6 +692,36 @@ void main() {
         expect(parser, isParseSuccess('abc', result: '[a[bc]]'));
         expect(parser, isParseSuccess('abcd', result: '[a[b[cd]]]'));
       });
+    });
+  });
+  group('examples', () {
+    test('regex', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(noneOf(')'));
+      builder.group()
+        ..wrapper(char('('), char(')'), (_, value, __) => '($value)')
+        ..prefix(char('!'), (_, value) => '!($value)')
+        ..postfix(char('?'), (value, _) => '($value)?')
+        ..left(char('|'), (left, _, right) => '($left|$right)')
+        ..right(char('&'), (left, _, right) => '($left&$right)')
+        ..list((list) => list.isEmpty ? '∅' : list.join(), min: 0);
+      final parser = builder.build().end();
+      expect(parser, isParseSuccess('', result: '∅'));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseSuccess('abc', result: 'abc'));
+      expect(parser, isParseSuccess('a&b', result: '(a&b)'));
+      expect(parser, isParseSuccess('a&b&c', result: '(a&(b&c))'));
+      expect(parser, isParseSuccess('a|b', result: '(a|b)'));
+      expect(parser, isParseSuccess('a|b|c', result: '((a|b)|c)'));
+      expect(parser, isParseSuccess('a?', result: '(a)?'));
+      expect(parser, isParseSuccess('ab?', result: 'a(b)?'));
+      expect(parser, isParseSuccess('!a', result: '!(a)'));
+      expect(parser, isParseSuccess('!ab', result: '!(a)b'));
+      expect(parser, isParseSuccess('()', result: '(∅)'));
+      expect(parser, isParseSuccess('(a)', result: '(a)'));
+      expect(parser, isParseSuccess('(ab)', result: '(ab)'));
+      expect(parser, isParseSuccess('(abc)', result: '(abc)'));
     });
   });
   test('linter', () {
