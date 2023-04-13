@@ -2,10 +2,10 @@ import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
 import '../parser/action/map.dart';
+import '../parser/combinator/optional.dart';
 import '../parser/combinator/sequence.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
-import '../parser/repeater/unbounded.dart';
 import 'result.dart';
 import 'utils.dart';
 
@@ -82,26 +82,21 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
-  /// Adds a sequence of repeated and non-separated terms. Evaluates the
-  /// [callback] with the list of parsed terms.
-  void list(T Function(List<T> list) callback,
-      {int min = 1, int max = unbounded}) {
-    assert(_listCallback == null, 'At most one list callback can be specified');
-    _listCallback = callback;
-    _listMin = min;
-    _listMax = max;
+  /// Makes the group optional and instead return the provided [value].
+  void optional(T value) {
+    assert(!_optional, 'At most one optional value expected');
+    _optionalValue = value;
+    _optional = true;
   }
 
-  Parser<T> _buildList(Parser<T> inner) => _listCallback == null
-      ? inner
-      : inner.repeat(_listMin, _listMax).map(_listCallback!);
+  Parser<T> _buildOptional(Parser<T> inner) =>
+      _optional ? inner.optionalWith(_optionalValue) : inner;
 
-  T Function(List<T> list)? _listCallback;
-  int _listMin = 1;
-  int _listMax = unbounded;
+  late T _optionalValue;
+  bool _optional = false;
 
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => _buildList(_buildLeft(
+  Parser<T> build(Parser<T> inner) => _buildOptional(_buildLeft(
       _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner))))));
 }
