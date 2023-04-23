@@ -54,3 +54,4 @@ export 'src/parser/repeater/unbounded.dart';
 export 'src/parser/utils/failure_joiner.dart';
 export 'src/parser/utils/labeled.dart';
 export 'src/parser/utils/resolvable.dart';
+export 'src/parser/utils/separated_list.dart';
