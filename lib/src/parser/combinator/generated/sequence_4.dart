@@ -87,15 +87,19 @@ class Sequence4<T1, T2, T3, T4> {
   const Sequence4(this.first, this.second, this.third, this.fourth);
 
   /// Returns the first element of this sequence.
+  @inlineVm
   final T1 first;
 
   /// Returns the second element of this sequence.
+  @inlineVm
   final T2 second;
 
   /// Returns the third element of this sequence.
+  @inlineVm
   final T3 third;
 
   /// Returns the fourth element of this sequence.
+  @inlineVm
   final T4 fourth;
 
   /// Returns the last (or fourth) element of this sequence.

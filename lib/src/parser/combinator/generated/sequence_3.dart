@@ -79,12 +79,15 @@ class Sequence3<T1, T2, T3> {
   const Sequence3(this.first, this.second, this.third);
 
   /// Returns the first element of this sequence.
+  @inlineVm
   final T1 first;
 
   /// Returns the second element of this sequence.
+  @inlineVm
   final T2 second;
 
   /// Returns the third element of this sequence.
+  @inlineVm
   final T3 third;
 
   /// Returns the last (or third) element of this sequence.

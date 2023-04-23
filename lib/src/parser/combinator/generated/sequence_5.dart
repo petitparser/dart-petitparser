@@ -97,18 +97,23 @@ class Sequence5<T1, T2, T3, T4, T5> {
   const Sequence5(this.first, this.second, this.third, this.fourth, this.fifth);
 
   /// Returns the first element of this sequence.
+  @inlineVm
   final T1 first;
 
   /// Returns the second element of this sequence.
+  @inlineVm
   final T2 second;
 
   /// Returns the third element of this sequence.
+  @inlineVm
   final T3 third;
 
   /// Returns the fourth element of this sequence.
+  @inlineVm
   final T4 fourth;
 
   /// Returns the fifth element of this sequence.
+  @inlineVm
   final T5 fifth;
 
   /// Returns the last (or fifth) element of this sequence.

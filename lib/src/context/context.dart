@@ -11,9 +11,11 @@ class Context {
   const Context(this.buffer, this.position);
 
   /// The buffer we are working on.
+  @inlineVm
   final String buffer;
 
   /// The current position in the [buffer].
+  @inlineVm
   final int position;
 
   /// Returns a result indicating a parse success.
