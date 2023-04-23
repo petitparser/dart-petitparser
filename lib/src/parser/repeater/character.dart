@@ -140,13 +140,13 @@ class RepeatingCharacterParser extends Parser<String> {
 
   @override
   String toString() =>
-      '${super.toString()}[$min..${max == unbounded ? '*' : max}]';
+      '${super.toString()}[$message, $min..${max == unbounded ? '*' : max}]';
 
   @override
   bool hasEqualProperties(RepeatingCharacterParser other) =>
       super.hasEqualProperties(other) &&
-      min == other.min &&
-      max == other.max &&
       predicate.isEqualTo(other.predicate) &&
-      message == other.message;
+      message == other.message &&
+      min == other.min &&
+      max == other.max;
 }
