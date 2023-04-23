@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import '../core/exception.dart';
 import '../shared/annotations.dart';
 import 'context.dart';
 
-/// An immutable parse result.
+/// An immutable parse result that is either a [Success] or a [Failure].
+@immutable
 abstract class Result<R> extends Context {
   const Result(super.buffer, super.position);
 
@@ -23,7 +26,4 @@ abstract class Result<R> extends Context {
   /// if this is a parse success.
   @inlineVm
   String get message;
-
-  /// Transforms the result with a [callback].
-  Result<T> map<T>(T Function(R element) callback);
 }

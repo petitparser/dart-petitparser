@@ -347,29 +347,6 @@ void main() {
         ];
         expect(result.map((token) => token.input), expected);
       });
-      test('map', () {
-        final expected = [
-          '49',
-          '13',
-          '49',
-          '50',
-          '13',
-          '10',
-          '49',
-          '50',
-          '51',
-          '10',
-          '49',
-          '50',
-          '51',
-          '52'
-        ];
-        expect(
-            result
-                .map((token) => token.map((value) => value.toString()))
-                .map((token) => token.value),
-            expected);
-      });
       group('join', () {
         test('normal', () {
           final joined = Token.join(result);

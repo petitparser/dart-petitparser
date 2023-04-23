@@ -49,7 +49,8 @@ abstract class Parser<R> {
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
   /// ['letter expected'].
   @nonVirtual
-  Result<R> parse(String input) => parseOn(Context(input, 0));
+  Result<R> parse(String input, {int start = 0}) =>
+      parseOn(Context(input, start));
 
   /// Returns a shallow copy of the receiver.
   ///

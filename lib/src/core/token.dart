@@ -13,13 +13,13 @@ import 'parser.dart';
 /// and the start and stop position in the input buffer. It provides many
 /// convenience methods to access the state of the token.
 @immutable
-class Token<T> {
+class Token<R> {
   /// Constructs a token from the parsed value, the input buffer, and the
   /// start and stop position in the input buffer.
   const Token(this.value, this.buffer, this.start, this.stop);
 
   /// The parsed value of the token.
-  final T value;
+  final R value;
 
   /// The parsed buffer of the token.
   final String buffer;
@@ -41,10 +41,6 @@ class Token<T> {
 
   /// The column number of this token.
   int get column => Token.lineAndColumnOf(buffer, start)[1];
-
-  /// Converts the value of the token.
-  Token<R> map<R>(R Function(T value) mapper) =>
-      Token(mapper(value), buffer, start, stop);
 
   @override
   String toString() => 'Token[${positionString(buffer, start)}]: $value';

@@ -1,7 +1,10 @@
+import 'package:meta/meta.dart';
+
 import '../core/exception.dart';
 import 'result.dart';
 
-/// An immutable parse result in case of a failed parse.
+/// An immutable failed parse result.
+@immutable
 class Failure<R> extends Result<R> {
   const Failure(super.buffer, super.position, this.message);
 
@@ -13,9 +16,6 @@ class Failure<R> extends Result<R> {
 
   @override
   final String message;
-
-  @override
-  Result<T> map<T>(T Function(R element) callback) => failure(message);
 
   @override
   String toString() => 'Failure[${toPositionString()}]: $message';

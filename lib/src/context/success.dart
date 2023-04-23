@@ -1,6 +1,9 @@
+import 'package:meta/meta.dart';
+
 import 'result.dart';
 
-/// An immutable parse result in case of a successful parse.
+/// An immutable successful parse result.
+@immutable
 class Success<R> extends Result<R> {
   const Success(super.buffer, super.position, this.value);
 
@@ -13,9 +16,6 @@ class Success<R> extends Result<R> {
   @override
   String get message =>
       throw UnsupportedError('Successful parse results do not have a message.');
-
-  @override
-  Result<T> map<T>(T Function(R element) callback) => success(callback(value));
 
   @override
   String toString() => 'Success[${toPositionString()}]: $value';
