@@ -1,8 +1,11 @@
+import 'package:meta/meta.dart';
+
 import '../context/failure.dart';
 
 /// An exception raised in case of a parse error.
+@immutable
 class ParserException implements FormatException {
-  ParserException(this.failure);
+  const ParserException(this.failure);
 
   final Failure failure;
 
@@ -16,5 +19,6 @@ class ParserException implements FormatException {
   String get source => failure.buffer;
 
   @override
-  String toString() => '${failure.message} at ${failure.toPositionString()}';
+  String toString() => '${super.toString()}: $message '
+      '(at ${failure.toPositionString()})';
 }

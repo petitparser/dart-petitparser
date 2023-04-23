@@ -59,7 +59,7 @@ void main() {
               .having((error) => error.offset, 'offset', 0)
               .having((error) => error.source, 'source', same(buffer))
               .having(
-                  (error) => error.toString(), 'toString', 'error at 1:1')));
+                  (error) => error.toString(), 'toString', endsWith('error (at 1:1)'))));
       expect(failure.message, 'error');
       expect(failure.isSuccess, isFalse);
       expect(failure.isFailure, isTrue);
@@ -77,7 +77,7 @@ void main() {
               .having((error) => error.offset, 'offset', 2)
               .having((error) => error.source, 'source', same(buffer))
               .having(
-                  (error) => error.toString(), 'toString', 'error at 2:1')));
+                  (error) => error.toString(), 'toString', endsWith('error (at 2:1)'))));
       expect(failure.message, 'error');
       expect(failure.isSuccess, isFalse);
       expect(failure.isFailure, isTrue);
@@ -97,7 +97,7 @@ void main() {
               .having((error) => error.offset, 'offset', 2)
               .having((error) => error.source, 'source', same(buffer))
               .having(
-                  (error) => error.toString(), 'toString', 'error at 2:1')));
+                  (error) => error.toString(), 'toString', endsWith('error (at 2:1)'))));
       expect(failure.message, 'error');
       expect(failure.isSuccess, isFalse);
       expect(failure.isFailure, isTrue);
