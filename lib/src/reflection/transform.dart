@@ -4,7 +4,7 @@ import '../core/parser.dart';
 import 'iterable.dart';
 
 /// A function transforming one parser to another one.
-typedef TransformationHandler = Parser<T> Function<T>(Parser<T> parser);
+typedef TransformationHandler = Parser<R> Function<R>(Parser<R> parser);
 
 /// Transforms all parsers reachable from [parser] with the given [handler].
 /// The identity function returns a copy of the the incoming parser.
@@ -13,7 +13,7 @@ typedef TransformationHandler = Parser<T> Function<T>(Parser<T> parser);
 /// input grammar; then the resulting grammar is traversed until all references
 /// to old parsers are replaced with the transformed ones.
 @useResult
-Parser<T> transformParser<T>(Parser<T> parser, TransformationHandler handler) {
+Parser<R> transformParser<R>(Parser<R> parser, TransformationHandler handler) {
   final mapping = Map<Parser, Parser>.identity();
   for (final each in allParser(parser)) {
     mapping[each] = each.copy().captureResultGeneric(handler);
@@ -30,5 +30,5 @@ Parser<T> transformParser<T>(Parser<T> parser, TransformationHandler handler) {
       }
     }
   }
-  return mapping[parser]! as Parser<T>;
+  return mapping[parser]! as Parser<R>;
 }

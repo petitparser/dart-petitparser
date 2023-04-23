@@ -1,31 +1,67 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import '../parser/combinator/settable.dart';
-import 'transform.dart';
+import 'analyzer.dart';
+import 'internal/optimize_rules.dart';
 
-/// Returns a copy of [parser] with all settable parsers removed.
+/// Function signature of a linter callback that is called whenever a linter
+/// rule identifies an issue.
+typedef ReplaceParser<R> = void Function(Parser<R> source, Parser<R> target);
+
+/// Encapsulates a single optimization rule.
+@immutable
+abstract class OptimizeRule {
+  /// Constructs a new optimization rule.
+  const OptimizeRule();
+
+  /// Executes this rule using a provided [analyzer] on a [parser].
+  void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace);
+}
+
+// All default optimizer rules to be run.
+const allOptimizerRules = [
+  CharacterRepeater(),
+  FlattenChoice(),
+  RemoveDelegate(),
+  RemoveDuplicate(),
+];
+
+/// Returns an in-place optimized version of the parser.
 @useResult
-@Deprecated('Use `resolve` instead')
-Parser<T> removeSettables<T>(Parser<T> parser) {
-  return transformParser(parser, <R>(each) {
-    while (each is SettableParser) {
-      each = each.children.first as Parser<R>;
+Parser<R> optimize<R>(Parser<R> parser,
+    {ReplaceParser? callback, List<OptimizeRule>? rules}) {
+  final analyzer = Analyzer(parser);
+  final selectedRules = rules ?? allOptimizerRules;
+  final replacements = <Parser, Parser>{};
+  for (final parser in analyzer.parsers) {
+    parser.captureResultGeneric(<R>(parser) {
+      for (final rule in selectedRules) {
+        rule.run<R>(analyzer, parser, (a, b) {
+          if (callback != null) callback(a, b);
+          replacements[a] = b;
+        });
+      }
+    });
+  }
+  if (replacements.isNotEmpty) {
+    for (final parser in analyzer.parsers) {
+      for (final replacement in replacements.entries) {
+        parser.replace(replacement.key, replacement.value);
+      }
     }
-    return each;
-  });
+    return replacements[parser] as Parser<R>? ?? parser;
+  }
+  return parser;
 }
 
-/// Returns a copy of [parser] with all duplicates parsers collapsed.
+/// Collapses all delegate parsers in-place.
 @useResult
-Parser<T> removeDuplicates<T>(Parser<T> parser) {
-  final uniques = <Parser>{};
-  return transformParser(parser, <R>(source) {
-    return uniques.firstWhere((each) {
-      return source != each && source.isEqualTo(each);
-    }, orElse: () {
-      uniques.add(source);
-      return source;
-    }) as Parser<R>;
-  });
-}
+@Deprecated('Use `optimize(parser, rules: const [RemoveDelegate()])` instead')
+Parser<R> removeSettables<R>(Parser<R> parser) =>
+    optimize(parser, rules: const [RemoveDelegate()]);
+
+/// Collapses all duplicate parsers in-place.
+@useResult
+@Deprecated('Use `optimize(parser, rules: const [RemoveDuplicate()])` instead')
+Parser<R> removeDuplicates<R>(Parser<R> parser) =>
+    optimize(parser, rules: const [RemoveDuplicate()]);

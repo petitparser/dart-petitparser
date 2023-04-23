@@ -973,9 +973,9 @@ void main() {
     });
     test('remove duplicate', () {
       final input = lowercase() & lowercase();
+      // ignore: deprecated_member_use_from_same_package
       final output = removeDuplicates(input);
       expect(input.isEqualTo(output), isTrue);
-      expect(input.children.first, isNot(input.children.last));
       expect(output.children.first, output.children.last);
     });
   });
