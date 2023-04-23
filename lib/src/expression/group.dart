@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
 import '../parser/action/map.dart';
+import '../parser/combinator/optional.dart';
 import '../parser/combinator/sequence.dart';
 import '../parser/repeater/possessive.dart';
 import '../parser/repeater/separated.dart';
@@ -89,8 +90,21 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
+  /// Makes the group optional and instead return the provided [value].
+  void optional(T value) {
+    assert(!_optional, 'At most one optional value expected');
+    _optionalValue = value;
+    _optional = true;
+  }
+
+  Parser<T> _buildOptional(Parser<T> inner) =>
+      _optional ? inner.optionalWith(_optionalValue) : inner;
+
+  late T _optionalValue;
+  bool _optional = false;
+
   // Internal helper to build the group of parsers.
   @internal
-  Parser<T> build(Parser<T> inner) => _buildLeft(
-      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner)))));
+  Parser<T> build(Parser<T> inner) => _buildOptional(_buildLeft(
+      _buildRight(_buildPostfix(_buildPrefix(_buildWrapper(inner))))));
 }

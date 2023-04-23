@@ -1,13 +1,12 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import '../parser/action/flatten.dart';
 import '../parser/action/map.dart';
 import '../parser/action/where.dart';
 import '../parser/character/pattern.dart';
 import '../parser/combinator/and.dart';
 import '../parser/misc/epsilon.dart';
-import '../parser/repeater/possessive.dart';
+import '../parser/repeater/character.dart';
 
 /// A stateful set of parsers to handled indentation based grammars.
 ///
@@ -37,21 +36,20 @@ class Indent {
   /// A parser that increases the current indentation and returns it, but does
   /// not consume anything.
   late Parser<String> increase = parser
-      .plus()
-      .flatten(message)
+      .plusString(message)
       .where((value) => value.length > current.length)
       .map((value) {
     stack.add(current);
     return current = value;
-  }).and();
+  }, hasSideEffects: true).and();
 
   /// A parser that consumes and returns the current indent.
   late Parser<String> same =
-      parser.star().flatten(message).where((value) => value == current);
+      parser.starString(message).where((value) => value == current);
 
   /// A parser that decreases the current indentation and returns it, but does
   /// not consume anything.
   late Parser<String> decrease = epsilon()
       .where((_) => stack.isNotEmpty)
-      .map((_) => current = stack.removeLast());
+      .map((_) => current = stack.removeLast(), hasSideEffects: true);
 }

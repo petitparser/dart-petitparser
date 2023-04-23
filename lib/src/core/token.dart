@@ -83,7 +83,7 @@ class Token<T> {
 
   /// Returns a parser that detects newlines platform independently.
   static Parser<String> newlineParser() => _newlineParser;
-  static final Parser<String> _newlineParser = newline();
+  static final _newlineParser = newline();
 
   /// Converts the [position] index in a [buffer] to a line and column tuple.
   static List<int> lineAndColumnOf(String buffer, int position) {

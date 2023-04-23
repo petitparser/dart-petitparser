@@ -1,17 +1,17 @@
 import '../../context/context.dart';
 import '../../core/parser.dart';
 
-class MatchesIterator<T> extends Iterator<T> {
+class MatchesIterator<R> extends Iterator<R> {
   MatchesIterator(this.parser, this.input, this.start, this.overlapping);
 
-  final Parser<T> parser;
+  final Parser<R> parser;
   final String input;
   final bool overlapping;
 
   int start;
 
   @override
-  late T current;
+  late R current;
 
   @override
   bool moveNext() {

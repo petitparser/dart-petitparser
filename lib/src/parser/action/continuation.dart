@@ -6,13 +6,13 @@ import '../../core/parser.dart';
 import '../../parser/combinator/delegate.dart';
 
 /// Handler function for the [ContinuationParser].
-typedef ContinuationHandler<T, R> = Result<R> Function(
-    ContinuationFunction<T> continuation, Context context);
+typedef ContinuationHandler<R, S> = Result<S> Function(
+    ContinuationFunction<R> continuation, Context context);
 
 /// Continuation function of the [ContinuationHandler].
-typedef ContinuationFunction<T> = Result<T> Function(Context context);
+typedef ContinuationFunction<R> = Result<R> Function(Context context);
 
-extension ContinuationParserExtension<T> on Parser<T> {
+extension ContinuationParserExtension<R> on Parser<R> {
   /// Returns a parser that when activated captures a continuation function
   /// and passes it together with the current context into the handler.
   ///
@@ -32,28 +32,28 @@ extension ContinuationParserExtension<T> on Parser<T> {
   ///     });
   ///
   @useResult
-  Parser<R> callCC<R>(ContinuationHandler<T, R> handler) =>
-      ContinuationParser<T, R>(this, handler);
+  Parser<S> callCC<S>(ContinuationHandler<R, S> handler) =>
+      ContinuationParser<R, S>(this, handler);
 }
 
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.
-class ContinuationParser<T, R> extends DelegateParser<T, R> {
+class ContinuationParser<R, S> extends DelegateParser<R, S> {
   ContinuationParser(super.delegate, this.handler);
 
   /// Activation handler of the continuation.
-  final ContinuationHandler<T, R> handler;
+  final ContinuationHandler<R, S> handler;
 
   @override
-  Result<R> parseOn(Context context) => handler(_parseDelegateOn, context);
+  Result<S> parseOn(Context context) => handler(_parseDelegateOn, context);
 
-  Result<T> _parseDelegateOn(Context context) => delegate.parseOn(context);
-
-  @override
-  ContinuationParser<T, R> copy() =>
-      ContinuationParser<T, R>(delegate, handler);
+  Result<R> _parseDelegateOn(Context context) => delegate.parseOn(context);
 
   @override
-  bool hasEqualProperties(ContinuationParser<T, R> other) =>
+  ContinuationParser<R, S> copy() =>
+      ContinuationParser<R, S>(delegate, handler);
+
+  @override
+  bool hasEqualProperties(ContinuationParser<R, S> other) =>
       super.hasEqualProperties(other) && handler == other.handler;
 }

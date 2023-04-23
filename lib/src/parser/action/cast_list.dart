@@ -5,22 +5,22 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../combinator/delegate.dart';
 
-extension CastListParserExtension<T> on Parser<T> {
+extension CastListParserExtension<R> on Parser<R> {
   /// Returns a parser that casts itself to `Parser<List<R>>`. Assumes this
   /// parser to be of type `Parser<List>`.
   @useResult
-  Parser<List<R>> castList<R>() => CastListParser<T, R>(this);
+  Parser<List<S>> castList<S>() => CastListParser<R, S>(this);
 }
 
-/// A parser that casts a `Result<List>` to a `Result<List<R>>`.
-class CastListParser<T, R> extends DelegateParser<T, List<R>> {
+/// A parser that casts a `Result<List>` to a `Result<List<S>>`.
+class CastListParser<R, S> extends DelegateParser<R, List<S>> {
   CastListParser(super.delegate);
 
   @override
-  Result<List<R>> parseOn(Context context) {
+  Result<List<S>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return result.success((result.value as List).cast<R>());
+      return result.success((result.value as List).cast<S>());
     } else {
       return result.failure(result.message);
     }
@@ -31,5 +31,5 @@ class CastListParser<T, R> extends DelegateParser<T, List<R>> {
       delegate.fastParseOn(buffer, position);
 
   @override
-  CastListParser<T, R> copy() => CastListParser<T, R>(delegate);
+  CastListParser<R, S> copy() => CastListParser<R, S>(delegate);
 }

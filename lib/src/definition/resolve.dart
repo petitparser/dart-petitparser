@@ -10,7 +10,7 @@ import 'reference.dart';
 /// of [ResolvableParser]). This includes, but is not limited to, parsers
 /// created with [ref0], [ref1], [ref2], ..., [undefined], or
 /// [SettableParserExtension],
-Parser<T> resolve<T>(Parser<T> parser) {
+Parser<R> resolve<R>(Parser<R> parser) {
   final mapping = <ResolvableParser, Parser>{};
   parser = _dereference(parser, mapping);
   final todo = <Parser>[parser];
@@ -34,18 +34,15 @@ Parser<T> resolve<T>(Parser<T> parser) {
 /// Internal helper to dereference and resolve a chain of [ResolvableParser]
 /// instances to their resolved counterpart. Throws a [StateError] if the there
 /// is a directly cyclic dependency on itself.
-Parser<T> _dereference<T>(Parser<T> parser, Map<Parser, Parser> mapping) {
-  final references = <ResolvableParser<T>>{};
-  while (parser is ResolvableParser<T>) {
+Parser<R> _dereference<R>(Parser<R> parser, Map<Parser, Parser> mapping) {
+  final references = <ResolvableParser<R>>{};
+  while (parser is ResolvableParser<R>) {
     if (mapping.containsKey(parser)) {
-      return mapping[parser]! as Parser<T>;
+      return mapping[parser]! as Parser<R>;
     } else if (!references.add(parser)) {
       throw StateError('Recursive references detected: $references');
     }
     parser = parser.resolve();
-  }
-  if (parser is ResolvableParser) {
-    throw StateError('Type error in reference parser: $parser');
   }
   for (final reference in references) {
     mapping[reference] = parser;
