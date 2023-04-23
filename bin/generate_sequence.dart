@@ -51,7 +51,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
   out.writeln('import \'../../../context/context.dart\';');
   out.writeln('import \'../../../context/result.dart\';');
-  out.writeln('import \'../../../core/parser.dart\';');
+  out.writeln('import \'../../../core/character.dart\';');
   out.writeln('import \'../../../shared/annotations.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');

@@ -1871,6 +1871,14 @@ void main() {
         expect(parser, isParseSuccess('aa', ['a', 'a']));
         expect(parser, isParseSuccess('aaa', ['a', 'a', 'a']));
       });
+      test('times', () {
+        final parser = char('a').times(2);
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(
+            parser, isParseFailure('a', position: 1, message: '"a" expected'));
+        expect(parser, isParseSuccess('aa', ['a', 'a']));
+        expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+      });
       test('repeat', () {
         final parser = char('a').repeat(2, 3);
         expect(parser, isParseFailure('', message: '"a" expected'));
@@ -1879,14 +1887,6 @@ void main() {
         expect(parser, isParseSuccess('aa', ['a', 'a']));
         expect(parser, isParseSuccess('aaa', ['a', 'a', 'a']));
         expect(parser, isParseSuccess('aaaa', ['a', 'a', 'a'], position: 3));
-      });
-      test('repeat exact', () {
-        final parser = char('a').repeat(2);
-        expect(parser, isParseFailure('', message: '"a" expected'));
-        expect(
-            parser, isParseFailure('a', position: 1, message: '"a" expected'));
-        expect(parser, isParseSuccess('aa', ['a', 'a']));
-        expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
       });
       test('repeat unbounded', () {
         final input = List.filled(100000, 'a');
@@ -1910,6 +1910,70 @@ void main() {
             parser, isParseFailure('a', position: 1, message: '"a" expected'));
         expect(parser, isParseSuccess('aa', ['a', 'a']));
         expect(parser, isParseSuccess('aaa', ['a', 'a'], position: 2));
+      });
+    });
+    group('string', () {
+      expectParserInvariants(any().starString());
+      test('star', () {
+        final parser = char('a').starString();
+        expect(parser, isParseSuccess('', ''));
+        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aaa'));
+      });
+      test('plus', () {
+        final parser = char('a').plusString();
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aaa'));
+      });
+      test('times', () {
+        final parser = char('a').timesString(2);
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(
+            parser, isParseFailure('a', position: 1, message: '"a" expected'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aa', position: 2));
+      });
+      test('repeat', () {
+        final parser = char('a').repeatString(2, 3);
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(
+            parser, isParseFailure('a', position: 1, message: '"a" expected'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aaa'));
+        expect(parser, isParseSuccess('aaaa', 'aaa', position: 3));
+      });
+      test('repeat unbounded', () {
+        final input = 'a' * 100000;
+        final parser = char('a').repeatString(2, unbounded);
+        expect(parser, isParseSuccess(input, input));
+      });
+      test('repeat erroneous', () {
+        expect(
+            () => char('a').repeatString(-1, 1),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', 'min must be at least 0, but got -1')));
+        expect(
+            () => char('a').repeatString(2, 1),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', 'max must be at least 2, but got 1')));
+      }, skip: !hasAssertionsEnabled());
+      test('times', () {
+        final parser = char('a').timesString(2);
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(
+            parser, isParseFailure('a', position: 1, message: '"a" expected'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aa', position: 2));
+      });
+      test('fallback', () {
+        final parser = char('a').settable().plusString();
+        expect(parser, isParseFailure('', message: '"a" expected'));
+        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aaa'));
       });
     });
     group('separated', () {

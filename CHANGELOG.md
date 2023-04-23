@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.4.0
+- Add an optimized `stringRepeat` parser.
+
 ## 5.3.0
 
 - Maintenance release deprecating some old code in anticipation of the upcoming major release. 

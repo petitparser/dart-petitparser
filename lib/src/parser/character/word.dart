@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import 'parser.dart';
+import '../predicate/character.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any word character (lowercase, uppercase,
@@ -9,7 +9,7 @@ import 'predicate.dart';
 /// `a-zA-Z_0-9`.
 @useResult
 Parser<String> word([String message = 'letter or digit expected']) =>
-    CharacterParser(const WordCharPredicate(), message);
+    SingleCharacterParser(const WordCharPredicate(), message);
 
 class WordCharPredicate implements CharacterPredicate {
   const WordCharPredicate();

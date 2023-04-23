@@ -47,11 +47,11 @@ final id = letter() & (letter() | digit()).star();  // (0): Parser<List<dynamic>
 If you inspect the object `id` in the debugger, you'll notice that the code above builds a tree of parser objects:
 
 - SequenceParser: This parser accepts the sequence of its child parsers.
-  - CharacterParser: This parser accepts a single letter.
+  - SingleCharacterParser: This parser accepts a single letter.
   - PossessiveRepeatingParser: This parser accepts zero or more times its child parsers.
     - ChoiceParser: This parser accepts the first of its succeeding child parsers, or otherwise fails.
-      - CharacterParser: This parser accepts a single letter.
-      - CharacterParser: This parser accepts a single digit.
+      - SingleCharacterParser: This parser accepts a single letter.
+      - SingleCharacterParser: This parser accepts a single digit.
 
 The operators `&` and `|` are overloaded and create a sequence and a choice parser respectively. In some contexts it might be more convenient to use chained function calls, or the extension methods on lists. All of the following parsers accept the same inputs as the parser above:
 
@@ -402,12 +402,12 @@ The above snippet produces the following output:
 
 ```
 Instance of 'SequenceParser<dynamic>'
-  Instance of 'CharacterParser'[letter expected]
+  Instance of 'SingleCharacterParser'[letter expected]
   Success[1:2]: f
   Instance of 'PossessiveRepeatingParser<String>'[0..*]
-    Instance of 'CharacterParser'[letter or digit expected]
+    Instance of 'SingleCharacterParser'[letter or digit expected]
     Success[1:3]: 1
-    Instance of 'CharacterParser'[letter or digit expected]
+    Instance of 'SingleCharacterParser'[letter or digit expected]
     Failure[1:3]: letter or digit expected
   Success[1:3]: [1]
 Success[1:3]: [f, [1]]
