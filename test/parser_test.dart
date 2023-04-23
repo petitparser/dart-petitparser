@@ -1968,6 +1968,13 @@ void main() {
         expect(parser, isParseSuccess('aa', 'aa'));
         expect(parser, isParseSuccess('aaa', 'aa', position: 2));
       });
+      test('any', () {
+        final parser = any().plusString();
+        expect(parser, isParseFailure('', message: 'input expected'));
+        expect(parser, isParseSuccess('a', 'a'));
+        expect(parser, isParseSuccess('aa', 'aa'));
+        expect(parser, isParseSuccess('aaa', 'aaa'));
+      });
       test('fallback', () {
         final parser = char('a').settable().plusString();
         expect(parser, isParseFailure('', message: '"a" expected'));

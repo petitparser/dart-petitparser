@@ -33,6 +33,9 @@ extension PossessiveRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that accepts the receiver exactly [count] times. The
   /// resulting parser returns a list of the parse results of the receiver.
   ///
+  /// This is a greedy and blind implementation that tries to consume as much
+  /// input as possible and that does not consider what comes afterwards.
+  ///
   /// For example, the parser `letter().times(2)` accepts two letters and
   /// returns a list of the two parsed letters.
   @useResult
