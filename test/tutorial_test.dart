@@ -27,7 +27,7 @@ class EvaluatorDefinition extends ExpressionDefinition {
   @override
   Parser parens() => super.parens().castList<num>().pick(1);
   @override
-  Parser number() => super.number().map((value) => int.parse(value));
+  Parser number() => super.number().map((value) => int.parse(value as String));
 }
 
 void main() {
@@ -119,9 +119,9 @@ void main() {
     expect(matches, ['foo', 'bar4']);
   });
   test('complicated grammar', () {
-    final term = undefined();
-    final prod = undefined();
-    final prim = undefined();
+    final term = undefined<Object?>();
+    final prod = undefined<Object?>();
+    final prim = undefined<Object?>();
     final add = (prod & char('+').trim() & term)
         .castList<num>()
         .map((values) => values[0] + values[2]);

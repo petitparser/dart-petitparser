@@ -1,6 +1,9 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
-import 'package:petitparser/src/reflection/internal/linter_rules.dart';
+import 'package:petitparser/src/reflection/internal/linter_rules.dart'
+    as linter_rules;
+import 'package:petitparser/src/reflection/internal/optimize_rules.dart'
+    as optimize_rules;
 import 'package:test/test.dart';
 
 // Güting, Erwig, Übersetzerbau, Springer (p.63)
@@ -58,8 +61,8 @@ Map<Symbol, Parser> createRecursive() {
 }
 
 // A parser that references itself.
-Parser createSelfReference() {
-  final parser = undefined();
+Parser<void> createSelfReference() {
+  final parser = undefined<void>();
   parser.set(parser);
   return parser;
 }
@@ -85,6 +88,17 @@ class PluggableLinterRule extends LinterRule {
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) =>
       _run(this, analyzer, parser, callback);
+}
+
+class PluggableOptimizeRule extends OptimizeRule {
+  const PluggableOptimizeRule(this._run);
+
+  final void Function<R>(OptimizeRule rule, Analyzer analyzer, Parser<R> parser,
+      ReplaceParser<R> replace) _run;
+
+  @override
+  void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) =>
+      _run<R>(this, analyzer, parser, replace);
 }
 
 void main() {
@@ -127,8 +141,8 @@ void main() {
       });
       test('recursive', () {
         final inner1 = char('a');
-        final inner2 = undefined();
-        final parser = inner1 | inner2;
+        final inner2 = undefined<String>();
+        final parser = [inner1, inner2].toChoiceParser();
         inner2.set(parser);
         final analyzer = Analyzer(parser);
         expect(analyzer.allChildren(parser), {inner1, inner2, parser});
@@ -189,11 +203,11 @@ void main() {
         expect(path.source, parser);
         expect(path.target, parser);
         expect(path.parsers, [parser]);
-        expect(path.indexes, []);
+        expect(path.indexes, isEmpty);
         final paths = analyzer.findAllPathsTo(parser, parser).toList();
         expect(paths, hasLength(1));
         expect(paths[0].parsers, [parser]);
-        expect(paths[0].indexes, []);
+        expect(paths[0].indexes, isEmpty);
       });
       test('choice', () {
         final terminal = char('a');
@@ -577,15 +591,15 @@ void main() {
       expect(parsers, [parser1, parser2]);
     });
     test('knot', () {
-      final parser1 = undefined();
+      final parser1 = undefined<void>();
       parser1.set(parser1);
       final parsers = allParser(parser1).toList();
       expect(parsers, [parser1]);
     });
     test('looping', () {
-      final parser1 = undefined();
-      final parser2 = undefined();
-      final parser3 = undefined();
+      final parser1 = undefined<void>();
+      final parser2 = undefined<void>();
+      final parser3 = undefined<void>();
       parser1.set(parser2);
       parser2.set(parser3);
       parser3.set(parser1);
@@ -633,18 +647,19 @@ void main() {
     });
     group('rules', () {
       group('character repetition', () {
-        test('with issue', () {
+        const rules = [linter_rules.CharacterRepeater()];
+        test('with character predicate parser', () {
           final parser = char('a').star().flatten();
-          final results = linter(parser, rules: const [CharacterRepeater()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
           expect(result.type, LinterType.warning);
           expect(result.title, 'Character repeater');
         });
-        test('with same issue', () {
+        test('with any parser', () {
           final parser = any().plus().flatten();
-          final results = linter(parser, rules: const [CharacterRepeater()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -653,14 +668,15 @@ void main() {
         });
         test('without issue', () {
           final parser = char('a').plus().token();
-          final results = linter(parser, rules: const [LeftRecursion()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('left recursion', () {
+        const rules = [linter_rules.LeftRecursion()];
         test('with issue', () {
           final parser = createSelfReference();
-          final results = linter(parser, rules: const [LeftRecursion()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser.children[0]);
@@ -669,18 +685,19 @@ void main() {
         });
         test('without issue', () {
           final parser = digit();
-          final results = linter(parser, rules: const [LeftRecursion()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('nested choice', () {
+        const rules = [linter_rules.NestedChoice()];
         test('with issue', () {
           final parser = [
             char('1'),
             [char('2'), char('3')].toChoiceParser(),
             char('4'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [NestedChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -693,14 +710,15 @@ void main() {
             [char('2'), char('3')].toChoiceParser().flatten(),
             char('4'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [NestedChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('nullable repeater', () {
+        const rules = [linter_rules.NullableRepeater()];
         test('with issue', () {
           final parser = epsilon().star().optional();
-          final results = linter(parser, rules: const [NullableRepeater()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser.children[0]);
@@ -709,11 +727,12 @@ void main() {
         });
         test('without issue', () {
           final parser = digit().star().optional();
-          final results = linter(parser, rules: const [NullableRepeater()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('overlapping choice', () {
+        const rules = [linter_rules.OverlappingChoice()];
         test('with issue', () {
           final parser = [
             char('1'),
@@ -721,7 +740,7 @@ void main() {
             char('2') & char('b'),
             char('3'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [OverlappingChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -734,11 +753,12 @@ void main() {
             char('2'),
             char('3'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [OverlappingChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('repeated choice', () {
+        const rules = [linter_rules.RepeatedChoice()];
         test('with issue', () {
           final parser = [
             char('1'),
@@ -747,7 +767,7 @@ void main() {
             char('2'),
             char('4'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [RepeatedChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -761,15 +781,15 @@ void main() {
             char('3'),
             char('4'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [RepeatedChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('unnecessary resolvable', () {
+        const rules = [linter_rules.UnnecessaryResolvable()];
         test('with issue', () {
           final parser = char('a').settable();
-          final results =
-              linter(parser, rules: const [UnnecessaryResolvable()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -778,28 +798,12 @@ void main() {
         });
         test('without issue', () {
           final parser = char('a');
-          final results =
-              linter(parser, rules: const [UnnecessaryResolvable()]);
-          expect(results, isEmpty);
-        });
-      });
-      group('unnecessary resolvable', () {
-        test('with issue', () {
-          final parser = digit().flatten();
-          final results = linter(parser, rules: const [UnoptimizedFlatten()]);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Unoptimized flatten');
-        });
-        test('without issue', () {
-          final parser = digit().flatten('digit expected');
-          final results = linter(parser, rules: const [UnoptimizedFlatten()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('unreachable choice', () {
+        const rules = [linter_rules.UnreachableChoice()];
         test('with issue', () {
           final parser = [
             char('1'),
@@ -807,7 +811,7 @@ void main() {
             epsilon(),
             char('3'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [UnreachableChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -820,14 +824,15 @@ void main() {
             char('2'),
             char('3'),
           ].toChoiceParser();
-          final results = linter(parser, rules: const [UnreachableChoice()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('unresolved settable', () {
+        const rules = [linter_rules.UnresolvedSettable()];
         test('with issue', () {
-          final parser = undefined();
-          final results = linter(parser, rules: const [UnresolvedSettable()]);
+          final parser = undefined<void>();
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -836,14 +841,15 @@ void main() {
         });
         test('without issue', () {
           final parser = digit().settable();
-          final results = linter(parser, rules: const [UnresolvedSettable()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
       group('unused result', () {
+        const rules = [linter_rules.UnusedResult()];
         test('with issue', () {
           final parser = digit().map(int.parse).star().flatten();
-          final results = linter(parser, rules: const [UnusedResult()]);
+          final results = linter(parser, rules: rules);
           expect(results, hasLength(1));
           final result = results[0];
           expect(result.parser, parser);
@@ -852,14 +858,14 @@ void main() {
         });
         test('without issue', () {
           final parser = digit().star().flatten();
-          final results = linter(parser, rules: const [UnusedResult()]);
+          final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
       });
     });
     group('regressions', () {
       test('separatedBy and nullable repeater', () {
-        const rules = [NullableRepeater()];
+        const rules = [linter_rules.NullableRepeater()];
         // Both repeater and separator are nullable, this might cause an
         // infinite loop.
         expect(linter(epsilon().starSeparated(epsilon()), rules: rules),
@@ -918,7 +924,7 @@ void main() {
       expect(output.children.first, output.children.last);
     });
     test('loop (existing)', () {
-      final inner = failure().settable();
+      final inner = failure<void>().settable();
       final outer = inner.settable().settable();
       inner.set(outer);
       final output = transformParser(outer, <T>(parser) {
@@ -951,32 +957,175 @@ void main() {
     });
   });
   group('optimize', () {
-    group('remove settable (deprecated)', () {
-      test('basic settable', () {
-        final input = lowercase().settable();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase()), isTrue);
-      });
-      test('nested settable', () {
-        final input = lowercase().settable().star();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase().star()), isTrue);
-      });
-      test('double settable', () {
-        final input = lowercase().settable().settable();
-        // ignore: deprecated_member_use_from_same_package
-        final output = removeSettables(input);
-        expect(output.isEqualTo(lowercase()), isTrue);
-      });
+    test('rules called on all parsers', () {
+      final seen = <Parser>{};
+      final input = char('a') | char('b');
+      final rule = PluggableOptimizeRule(
+          <R>(rule, analyzer, parser, replace) => seen.add(parser));
+      final result = optimize(
+        input,
+        rules: [rule],
+        callback: (source, target) => fail('No callback expected'),
+      );
+      expect(result, same(input));
+      expect(seen, {input, input.children[0], input.children[1]});
     });
-    test('remove duplicate', () {
-      final input = lowercase() & lowercase();
-      // ignore: deprecated_member_use_from_same_package
-      final output = removeDuplicates(input);
-      expect(input.isEqualTo(output), isTrue);
-      expect(output.children.first, output.children.last);
+    test('root replacement performed', () {
+      final input = 'input'.toParser(), output = 'output'.toParser();
+      final rule = PluggableOptimizeRule(<R>(rule, analyzer, parser, replace) {
+        expect(parser, same(input));
+        replace(input as Parser<R>, output as Parser<R>);
+      });
+      final result = optimize(input, rules: [rule], callback: (source, target) {
+        expect(source, input);
+        expect(target, output);
+      });
+      expect(result, same(output));
+    });
+    test('child replacement performed', () {
+      final input = char('a') | char('b'), replacement = char('c');
+      final rule = PluggableOptimizeRule(<R>(rule, analyzer, parser, replace) {
+        if (parser is SingleCharacterParser &&
+            (parser as SingleCharacterParser).message == '"b" expected') {
+          replace(parser, replacement as Parser<R>);
+        }
+      });
+      final result = optimize(input, rules: [rule], callback: (source, target) {
+        expect(source, input.children[1]);
+        expect(target, replacement);
+      });
+      expect(result, same(input));
+      expect(result.children[1], same(replacement));
+    });
+    group('rules', () {
+      group('character repeater', () {
+        const rules = [optimize_rules.CharacterRepeater()];
+        test('with predicate parser', () {
+          final character = char('a');
+          final parser = character.repeat(2, 3).flatten();
+          final result = optimize(parser, rules: rules);
+          expect(
+              result,
+              isA<RepeatingCharacterParser>()
+                  .having((p) => p.min, 'min', 2)
+                  .having((p) => p.max, 'max', 3)
+                  .having((p) => p.message, 'message', '"a" expected'));
+        });
+        test('with any parser', () {
+          final character = any();
+          final parser = character.repeat(3, 5).flatten();
+          final result = optimize(parser, rules: rules);
+          expect(
+              result,
+              isA<RepeatingCharacterParser>()
+                  .having((p) => p.min, 'min', 3)
+                  .having((p) => p.max, 'max', 5)
+                  .having((p) => p.message, 'message', 'input expected'));
+        });
+        test('without optimization', () {
+          final parser = char('a').plus().token();
+          final result = optimize(parser, rules: rules);
+          expect(result, same(parser));
+        });
+      });
+      group('nested choice', () {
+        const rules = [optimize_rules.FlattenChoice()];
+        test('with issue', () {
+          final parser = [
+            char('1'),
+            [
+              char('2'),
+              char('3'),
+            ].toChoiceParser(failureJoiner: selectFarthest),
+            char('4'),
+          ].toChoiceParser(failureJoiner: selectFarthest);
+          final result = optimize(parser, rules: rules);
+          expect(
+              result,
+              isA<ChoiceParser<String>>()
+                  .having(
+                      (p) => p.children,
+                      'children',
+                      containsAllInOrder([
+                        parser.children[0],
+                        parser.children[1].children[0],
+                        parser.children[1].children[1],
+                        parser.children[2],
+                      ]))
+                  .having((p) => p.failureJoiner, 'failureJoiner',
+                      selectFarthest<String>));
+        });
+        test('without optimization (no nesting)', () {
+          final parser = [
+            char('1'),
+            char('2'),
+            char('3'),
+          ].toChoiceParser();
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
+          expect(result, same(parser));
+        });
+        test('without optimization (different joiner)', () {
+          final parser = [
+            char('1'),
+            [
+              char('2'),
+              char('3'),
+            ].toChoiceParser(failureJoiner: selectFarthest),
+            char('4'),
+          ].toChoiceParser();
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
+          expect(result, same(parser));
+        });
+      });
+      group('remove delegate', () {
+        const rules = [optimize_rules.RemoveDelegate()];
+        test('with single settable', () {
+          final parser = char('a').settable();
+          final result = optimize(parser, rules: rules);
+          expect(result, same(parser.children[0]));
+        });
+        test('with single label', () {
+          final parser = char('a').labeled("hello");
+          final result = optimize(parser, rules: rules);
+          expect(result, same(parser.children[0]));
+        });
+        test('with repeated settable', () {
+          final parser = char('a').settable().settable();
+          final result = optimize(parser, rules: rules);
+          expect(result, same(parser.children[0]));
+        });
+        test('with loop', () {
+          final parser = undefined<Object?>();
+          parser.set(parser);
+          final result = optimize(parser, rules: rules);
+          expect(result, same(parser));
+        });
+      });
+      group('remove duplicate', () {
+        const rules = [optimize_rules.RemoveDuplicate()];
+        test('with duplicate', () {
+          final parser = lowercase() & lowercase();
+          final result = optimize(parser, rules: rules);
+          expect(result.children.first, same(result.children.last));
+        });
+        test('without duplicate', () {
+          final parser = lowercase() & lowercase('lower');
+          final result = optimize(parser,
+              rules: rules,
+              callback: (source, target) => fail('No replacement expected'));
+          expect(result.children.first, isNot(same(result.children.last)));
+        });
+        test('deprecated code', () {
+          final parser = lowercase() & lowercase();
+          // ignore: deprecated_member_use_from_same_package
+          final result = removeDuplicates(parser);
+          expect(result.children.first, same(result.children.last));
+        });
+      });
     });
   });
 }

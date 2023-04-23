@@ -130,7 +130,8 @@ void main() {
             parser: 'letter or digit expected',
             level: 2,
             result: isFailure(message: 'letter or digit expected')),
-        isTraceEvent(parser: '[0..*]', level: 1, result: isSuccess(value: [])),
+        isTraceEvent(
+            parser: '[0..*]', level: 1, result: isSuccess(value: isEmpty)),
         isTraceEvent(parser: 'SequenceParser', level: 0, result: isSuccess()),
       ]);
     });

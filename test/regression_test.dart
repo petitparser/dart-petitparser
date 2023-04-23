@@ -93,20 +93,21 @@ void main() {
         parser.separatedBy<T>(char(','), includeSeparators: false);
     Parser<List<T>> castList<T>(Parser<T> parser) =>
         // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy(char(','), includeSeparators: false).castList<T>();
+        parser.separatedBy<T>(char(','), includeSeparators: false);
     Parser<List<T>> smartCompiler<T>(Parser<T> parser) =>
         // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy(char(','), includeSeparators: false);
+        parser.separatedBy<T>(char(','), includeSeparators: false);
 
     testWith('with list created using desired type', typeParam);
     testWith('with generic list cast to desired type', castList);
     testWith('with compiler inferring desired type', smartCompiler);
   });
   test('parse padded and limited number', () {
-    final parser = digit().repeat(2).flatten().callCC((continuation, context) {
+    final parser =
+        digit().repeat(2).flatten().callCC<String>((continuation, context) {
       final result = continuation(context);
       if (result.isSuccess && int.parse(result.value) > 31) {
-        return context.failure('00-31 expected');
+        return context.failure<String>('00-31 expected');
       } else {
         return result;
       }
@@ -235,8 +236,8 @@ void main() {
   });
   group('github.com/petitparser/dart-petitparser/issues/109', () {
     // The digit defines how many characters are read by the data parser.
-    Parser buildMetadataParser() => digit().flatten().map(int.parse);
-    Parser buildDataParser(int count) => any().repeat(count).flatten();
+    Parser<int> buildMetadataParser() => digit().flatten().map(int.parse);
+    Parser<String> buildDataParser(int count) => any().repeat(count).flatten();
 
     const input = '4database';
     test('split', () {
@@ -273,7 +274,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5', ')']);
     });
     test('recursive', () {
-      final inner = undefined();
+      final inner = undefined<dynamic>();
       final parser =
           char('(') & inner.starLazy(char(')')).flatten() & char(')');
       inner.set(parser | any());
@@ -281,7 +282,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
     test('recursive (better)', () {
-      final inner = undefined();
+      final inner = undefined<dynamic>();
       final parser = char('(') & inner.star().flatten() & char(')');
       inner.set(parser | pattern('^)'));
       expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
@@ -291,7 +292,7 @@ void main() {
   group('github.com/petitparser/dart-petitparser/issues/112', () {
     final inner = digit().repeat(2);
     test('original', () {
-      final parser = inner.callCC((continuation, context) {
+      final parser = inner.callCC<Object>((continuation, context) {
         final result = continuation(context);
         if (result.isSuccess && result.value[0] != result.value[1]) {
           return context.failure('values do not match');
@@ -393,14 +394,14 @@ void main() {
             .trim();
     final parsers = {
       'poster': (() {
-        final inner = undefined();
+        final inner = undefined<dynamic>();
         final paren = char('(').trim() & inner.star() & char(')').trim();
         inner.set(paren | pattern('^)'));
         return inner.end();
       })(),
       'improved': (() {
-        final outer = undefined();
-        final inner = undefined();
+        final outer = undefined<dynamic>();
+        final inner = undefined<dynamic>();
         final operator = string('&&') | string('||');
         outer.set(inner.plusSeparated(operator));
         final paren = char('(').trim() & outer & char(')').trim();
@@ -408,7 +409,7 @@ void main() {
         return outer.end();
       })(),
       'expression': (() {
-        final builder = ExpressionBuilder();
+        final builder = ExpressionBuilder<Object>();
         builder.primitive(primitive);
         builder.group().wrapper(
             char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
@@ -438,17 +439,94 @@ void main() {
     }
   });
   group('https://stackoverflow.com/questions/75503464', () {
-    // final builder = ExpressionBuilder();
-    // final primitive =
-    //     (uppercase() & char('|') & digit().plus() & char('|') & uppercase())
-    //         .flatten()
-    //         .trim();
-    // builder.group().primitive(primitive);
-    // builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
-    // builder.group()
-    //   ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
-    //   ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
-    // final parser = builder.build().end();
-    // final result = parser.parse(testString);
+    final builder = ExpressionBuilder<Object?>();
+    final primitive =
+        seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
+            .flatten('value expected')
+            .trim();
+    builder.primitive(primitive);
+    builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
+    builder.group()
+      ..left(string('&&').trim(), (a, op, b) => ['&&', a, b])
+      ..left(string('||').trim(), (a, op, b) => ['||', a, b]);
+    final parser = builder.build().end();
+    test('success', () {
+      expect(parser, isParseSuccess('S|69|L', result: 'S|69|L'));
+      expect(parser, isParseSuccess('(S|69|L)', result: 'S|69|L'));
+      expect(
+          parser,
+          isParseSuccess('S|69|L && S|69|R',
+              result: ['&&', 'S|69|L', 'S|69|R']));
+      expect(
+          parser,
+          isParseSuccess('S|69|L || S|69|R',
+              result: ['||', 'S|69|L', 'S|69|R']));
+    });
+    test('value error', () {
+      expect(parser,
+          isParseFailure('S|fail|L', position: 0, message: 'value expected'));
+      expect(parser,
+          isParseFailure('(S|fail|L)', position: 0, message: 'value expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L && S|fail|R',
+              position: 7, message: 'end of input expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L || S|fail|R',
+              position: 7, message: 'end of input expected'));
+    });
+    test('other error', () {
+      expect(parser,
+          isParseFailure('(S|69|L', position: 0, message: 'value expected'));
+      expect(
+          parser,
+          isParseFailure('S|69|L &',
+              position: 7, message: 'end of input expected'));
+    });
+  });
+  group('https://github.com/petitparser/dart-petitparser/issues/145', () {
+    test('solution 1', () {
+      final parser = seq3(
+        char("*"),
+        seq2(
+          whitespace().not(),
+          [seq2(whitespace(), char('*')), char('*')]
+              .toChoiceParser()
+              .neg()
+              .plus(),
+        ).flatten(),
+        char("*"),
+      ).map3((_, value, __) => value);
+      expect(parser.parse('*valid*').value, 'valid');
+      expect(parser.accept('* invalid*'), isFalse);
+      expect(parser.accept('*invalid *'), isFalse);
+    });
+    test('solution 2', () {
+      final parser = seq3(
+        char("*"),
+        char('*').neg().plus().flatten(),
+        char("*"),
+      ).map3((_, value, __) => value).where((value) => value.trim() == value);
+      expect(parser.parse('*valid*').value, 'valid');
+      expect(parser.accept('* invalid*'), isFalse);
+      expect(parser.accept('*invalid *'), isFalse);
+    });
+  });
+  group('https://github.com/petitparser/dart-petitparser/issues/147', () {
+    final surrogatePair = seq2(
+      pattern('\uD800-\uDBFF'),
+      pattern('\uDC00-\uDFFF'),
+    ).flatten();
+    test('laughing emoji', () {
+      const input = '\u{1f606}';
+      expect(input, hasLength(2));
+      expect(surrogatePair, isParseSuccess(input, result: '😆'));
+    });
+    test('heart character', () {
+      const input = '\u2665';
+      expect(input, hasLength(1));
+      expect(surrogatePair, isParseFailure(input));
+    });
   });
 }

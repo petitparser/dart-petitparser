@@ -1,5 +1,7 @@
 // coverage:ignore-file
 
+import 'package:meta/meta.dart';
+
 import '../context/context.dart';
 import '../context/result.dart';
 import '../parser/combinator/delegate.dart';
@@ -7,6 +9,7 @@ import 'grammar.dart';
 
 /// A (now pointless) helper to build a parser from a {@link GrammarDefinition}.
 @Deprecated('Directly use the `GrammarDefinition` to build parsers')
+@optionalTypeArgs
 class GrammarParser<T> extends DelegateParser<T, T> {
   GrammarParser(GrammarDefinition definition) : this._(definition.build());
 

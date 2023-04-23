@@ -82,7 +82,7 @@ abstract class GrammarDefinition<R> {
     @Deprecated("Use `buildFrom(parser)`") List<Object> arguments = const [],
   }) {
     if (start != null) {
-      return resolve(Function.apply(start, arguments));
+      return resolve(Function.apply(start, arguments) as Parser<T>);
     } else if (arguments.isEmpty) {
       return resolve(this.start() as Parser<T>);
     } else {

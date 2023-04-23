@@ -45,19 +45,19 @@ extension SeparatedByParserExtension<T> on Parser<T> {
           if (includeSeparators &&
               optionalSeparatorAtStart &&
               separatorAtStart != null) {
-            result.add(separatorAtStart);
+            result.add(separatorAtStart as R);
           }
           result.add(firstElement as R);
           for (var tuple in otherElements) {
             if (includeSeparators) {
-              result.add(tuple.first);
+              result.add(tuple.first as R);
             }
             result.add(tuple.second as R);
           }
           if (includeSeparators &&
               optionalSeparatorAtEnd &&
               separatorAtEnd != null) {
-            result.add(separatorAtEnd);
+            result.add(separatorAtEnd as R);
           }
           return result;
         },

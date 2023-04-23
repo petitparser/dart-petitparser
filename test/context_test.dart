@@ -35,7 +35,7 @@ void main() {
   });
   group('failure', () {
     test('default', () {
-      final failure = context.failure('error');
+      final failure = context.failure<String>('error');
       expect(failure.buffer, buffer);
       expect(failure.position, 0);
       expect(
@@ -53,7 +53,7 @@ void main() {
       expect(failure.toString(), 'Failure[1:1]: error');
     });
     test('with position', () {
-      final failure = context.failure('error', 2);
+      final failure = context.failure<String>('error', 2);
       expect(failure.buffer, buffer);
       expect(failure.position, 2);
       expect(
