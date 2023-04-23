@@ -6,7 +6,7 @@ import '../../context/result.dart';
 import '../../core/parser.dart';
 import '../predicate/any.dart';
 import 'delegate.dart';
-import 'sequence.dart';
+import 'skip.dart';
 
 extension NotParserExtension<R> on Parser<R> {
   /// Returns a parser (logical not-predicate) that succeeds with the [Failure]
@@ -29,7 +29,7 @@ extension NotParserExtension<R> on Parser<R> {
   /// input like `'1'`, `'_'` or `'$'`.
   @useResult
   Parser<String> neg([String message = 'input not expected']) =>
-      seq2(not(message), any()).map2((_, value) => value);
+      any().skip(before: not(message));
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,

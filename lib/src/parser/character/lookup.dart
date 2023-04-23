@@ -39,9 +39,9 @@ class LookupCharPredicate implements CharacterPredicate {
       other.stop == stop &&
       other.bits == bits;
 
-  static const int shift = 5;
-  static const int offset = 31;
-  static const List<int> mask = [
+  static const shift = 5;
+  static const offset = 31;
+  static const mask = <int>[
     1,
     2,
     4,

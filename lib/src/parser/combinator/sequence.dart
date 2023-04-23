@@ -27,8 +27,8 @@ extension SequenceParserExtension on Parser {
   /// input string `'a1b'` is the list `['a', '1', 'b']`.
   @useResult
   Parser<List> seq(Parser other) => this is SequenceParser
-      ? SequenceParser([...children, other])
-      : SequenceParser([this, other]);
+      ? [...children, other].toSequenceParser()
+      : [this, other].toSequenceParser();
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [seq] for details.
@@ -38,6 +38,7 @@ extension SequenceParserExtension on Parser {
 
 extension SequenceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a sequence of parsers.
+  @useResult
   Parser<List<R>> toSequenceParser() => SequenceParser<R>(this);
 }
 
