@@ -34,11 +34,11 @@ class CharacterRepeater extends LinterRule {
           callback(LinterIssue(
               this,
               parser,
-              'A flattened repeater that delegates to a character parser can '
-              'be much more efficiently implemented using `starString`, '
-              '`plusString`, `timesString`, or `repeatString` that '
-              'directly returns the underlying String instead of an '
-              'intermediate List.'));
+              'A flattened repeater ($repeating) that delegates to a character '
+              'parser ($character) can be much more efficiently implemented '
+              'using `starString`, `plusString`, `timesString`, or '
+              '`repeatString` that directly returns the underlying String '
+              'instead of an intermediate List.'));
         }
       }
     }
@@ -69,13 +69,14 @@ class NestedChoice extends LinterRule {
     if (parser is ChoiceParser) {
       final children = parser.children;
       for (var i = 0; i < children.length - 1; i++) {
-        if (children[i] is ChoiceParser) {
+        final child = children[i];
+        if (child is ChoiceParser) {
           callback(LinterIssue(
               this,
               parser,
-              'The choice at index $i is another choice that adds unnecessary '
-              'overhead that can be avoided by flattening it into the '
-              'parent.'));
+              'The choice at index $i is another choice ($child) that adds '
+              'unnecessary overhead that can be avoided by flattening it into '
+              'the parent.'));
         }
       }
     }
@@ -230,24 +231,10 @@ class UnusedResult extends LinterRule {
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser is FlattenParser) {
       final deepChildren = analyzer.allChildren(parser);
-      final ignoredResults = deepChildren
-          .where((parser) =>
-              parser is CastParser ||
-              parser is CastListParser ||
-              parser is FlattenParser ||
-              parser is MapParser ||
-              parser is PermuteParser ||
-              parser is PickParser ||
-              parser is TokenParser ||
-              parser is WhereParser)
-          .toSet();
+      final ignoredResults = deepChildren.where(isResultProducing).toSet();
       if (ignoredResults.isNotEmpty) {
         final path = analyzer.findPath(
             parser, (path) => ignoredResults.contains(path.target))!;
-        final description = [
-          for (var i = 0; i < path.indexes.length; i++)
-            '${path.indexes[i]}: ${path.parsers[i + 1]}'
-        ].join(', ');
         callback(LinterIssue(
             this,
             parser,
@@ -255,9 +242,19 @@ class UnusedResult extends LinterRule {
             'instead returns the consumed input. Yet this flatten parser '
             'refers (indirectly) to one or more other parsers that explicitly '
             'produce a result which is then ignored when called from this '
-            'context: $description. This might point to an inefficient grammar '
-            'or a possible bug.'));
+            'context: ${path.description}. This might point to an inefficient '
+            'grammar or a possible bug.'));
       }
     }
   }
+
+  bool isResultProducing(Parser parser) =>
+      parser is CastParser ||
+      parser is CastListParser ||
+      parser is FlattenParser ||
+      parser is MapParser ||
+      parser is PermuteParser ||
+      parser is PickParser ||
+      parser is TokenParser ||
+      parser is WhereParser;
 }
