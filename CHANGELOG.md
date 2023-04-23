@@ -5,8 +5,8 @@
 - Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
 - Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.
 - Add support for optional expression groups in the `ExpressionBuilder`.
-- Add
 - Optimize, cleanup, and improve code and documentation.
+- Add `optimize` to in-place optimize parser graphs.
 
 ## 5.3.0
 
