@@ -58,15 +58,15 @@ class NestedGrammar3 {
 void main() {
   test('flatten().trim()', () {
     final parser = word().plus().flatten().trim();
-    expect(parser, isParseSuccess('ab1', 'ab1'));
-    expect(parser, isParseSuccess(' ab1 ', 'ab1'));
-    expect(parser, isParseSuccess('  ab1  ', 'ab1'));
+    expect(parser, isParseSuccess('ab1', result: 'ab1'));
+    expect(parser, isParseSuccess(' ab1 ', result: 'ab1'));
+    expect(parser, isParseSuccess('  ab1  ', result: 'ab1'));
   });
   test('trim().flatten()', () {
     final parser = word().plus().trim().flatten();
-    expect(parser, isParseSuccess('ab1', 'ab1'));
-    expect(parser, isParseSuccess(' ab1 ', ' ab1 '));
-    expect(parser, isParseSuccess('  ab1  ', '  ab1  '));
+    expect(parser, isParseSuccess('ab1', result: 'ab1'));
+    expect(parser, isParseSuccess(' ab1 ', result: ' ab1 '));
+    expect(parser, isParseSuccess('  ab1  ', result: '  ab1  '));
   });
   group('separatedBy()', () {
     void testWith(String name, Parser<List<T>> Function<T>(Parser<T>) builder) {
@@ -74,17 +74,17 @@ void main() {
         final string = letter();
         final stringList = builder(string);
         expect(stringList, const TypeMatcher<Parser<List<String>>>());
-        expect(stringList, isParseSuccess('a,b,c', ['a', 'b', 'c']));
+        expect(stringList, isParseSuccess('a,b,c', result: ['a', 'b', 'c']));
 
         final integer = digit().map(int.parse);
         final integerList = builder(integer);
         expect(integerList, const TypeMatcher<Parser<List<int>>>());
-        expect(integerList, isParseSuccess('1,2,3', [1, 2, 3]));
+        expect(integerList, isParseSuccess('1,2,3', result: [1, 2, 3]));
 
         final mixed = string | integer;
         final mixedList = builder(mixed);
         expect(mixedList, const TypeMatcher<Parser<List>>());
-        expect(mixedList, isParseSuccess('1,a,2', [1, 'a', 2]));
+        expect(mixedList, isParseSuccess('1,a,2', result: [1, 'a', 2]));
       });
     }
 
@@ -111,9 +111,9 @@ void main() {
         return result;
       }
     });
-    expect(parser, isParseSuccess('00', '00'));
-    expect(parser, isParseSuccess('24', '24'));
-    expect(parser, isParseSuccess('31', '31'));
+    expect(parser, isParseSuccess('00', result: '00'));
+    expect(parser, isParseSuccess('24', result: '24'));
+    expect(parser, isParseSuccess('31', result: '31'));
     expect(parser, isParseFailure('32', message: '00-31 expected'));
     expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
   });
@@ -151,22 +151,22 @@ void main() {
 
     test('iso', () {
       final date = format.parse('yyyy-mm-dd').value;
-      expect(date, isParseSuccess('1980-06-11', DateTime(1980, 6, 11)));
-      expect(date, isParseSuccess('1982-08-24', DateTime(1982, 8, 24)));
+      expect(date, isParseSuccess('1980-06-11', result: DateTime(1980, 6, 11)));
+      expect(date, isParseSuccess('1982-08-24', result: DateTime(1982, 8, 24)));
       expect(date,
           isParseFailure('1984.10.31', position: 4, message: '"-" expected'));
     });
     test('europe', () {
       final date = format.parse('dd.mm.yyyy').value;
-      expect(date, isParseSuccess('11.06.1980', DateTime(1980, 6, 11)));
-      expect(date, isParseSuccess('24.08.1982', DateTime(1982, 8, 24)));
+      expect(date, isParseSuccess('11.06.1980', result: DateTime(1980, 6, 11)));
+      expect(date, isParseSuccess('24.08.1982', result: DateTime(1982, 8, 24)));
       expect(
           date, isParseFailure('1984', position: 2, message: '"." expected'));
     });
     test('us', () {
       final date = format.parse('mm/dd/yyyy').value;
-      expect(date, isParseSuccess('06/11/1980', DateTime(1980, 6, 11)));
-      expect(date, isParseSuccess('08/24/1982', DateTime(1982, 8, 24)));
+      expect(date, isParseSuccess('06/11/1980', result: DateTime(1980, 6, 11)));
+      expect(date, isParseSuccess('08/24/1982', result: DateTime(1982, 8, 24)));
       expect(date, isParseFailure('Hello', message: 'digit expected'));
     });
   });
@@ -180,10 +180,10 @@ void main() {
       ].toSequenceParser().pick(1);
       return parser.parseOn(context);
     });
-    expect(delimited, isParseSuccess('"hello"', 'hello'));
-    expect(delimited, isParseSuccess('/hello/', 'hello'));
-    expect(delimited, isParseSuccess(',hello,', 'hello'));
-    expect(delimited, isParseSuccess('xhellox', 'hello'));
+    expect(delimited, isParseSuccess('"hello"', result: 'hello'));
+    expect(delimited, isParseSuccess('/hello/', result: 'hello'));
+    expect(delimited, isParseSuccess(',hello,', result: 'hello'));
+    expect(delimited, isParseSuccess('xhellox', result: 'hello'));
     expect(
         delimited, isParseFailure('abc', position: 3, message: '"a" expected'));
   });
@@ -227,11 +227,11 @@ void main() {
     expect(expression(2), 38);
   });
   test('stackoverflow.com/q/67617000/82303', () {
-    expect(nestedParser, isParseSuccess('()', '()'));
-    expect(nestedParser, isParseSuccess('(a)', '(a)'));
-    expect(nestedParser, isParseSuccess('(a()b)', '(a()b)'));
-    expect(nestedParser, isParseSuccess('(a(b)c)', '(a(b)c)'));
-    expect(nestedParser, isParseSuccess('(a()b(cd))', '(a()b(cd))'));
+    expect(nestedParser, isParseSuccess('()', result: '()'));
+    expect(nestedParser, isParseSuccess('(a)', result: '(a)'));
+    expect(nestedParser, isParseSuccess('(a()b)', result: '(a()b)'));
+    expect(nestedParser, isParseSuccess('(a(b)c)', result: '(a(b)c)'));
+    expect(nestedParser, isParseSuccess('(a()b(cd))', result: '(a()b(cd))'));
   });
   group('github.com/petitparser/dart-petitparser/issues/109', () {
     // The digit defines how many characters are read by the data parser.
@@ -299,9 +299,9 @@ void main() {
           return result;
         }
       });
-      expect(parser, isParseSuccess('11', ['1', '1']));
-      expect(parser, isParseSuccess('22', ['2', '2']));
-      expect(parser, isParseSuccess('33', ['3', '3']));
+      expect(parser, isParseSuccess('11', result: ['1', '1']));
+      expect(parser, isParseSuccess('22', result: ['2', '2']));
+      expect(parser, isParseSuccess('33', result: ['3', '3']));
       expect(
           parser, isParseFailure('1', position: 1, message: 'digit expected'));
       expect(parser, isParseFailure('12', message: 'values do not match'));
@@ -311,9 +311,9 @@ void main() {
       final parser = inner.where((value) => value[0] == value[1],
           failureFactory: (context, success) =>
               context.failure('values do not match'));
-      expect(parser, isParseSuccess('11', ['1', '1']));
-      expect(parser, isParseSuccess('22', ['2', '2']));
-      expect(parser, isParseSuccess('33', ['3', '3']));
+      expect(parser, isParseSuccess('11', result: ['1', '1']));
+      expect(parser, isParseSuccess('22', result: ['2', '2']));
+      expect(parser, isParseSuccess('33', result: ['3', '3']));
       expect(
           parser, isParseFailure('1', position: 1, message: 'digit expected'));
       expect(parser, isParseFailure('12', message: 'values do not match'));
@@ -325,24 +325,24 @@ void main() {
             (letter() | digit() | anyOf('_- ()')).star() &
             char('.').not('end of id expected')))
         .flatten();
-    expect(parser, isParseSuccess('foo', 'foo'));
+    expect(parser, isParseSuccess('foo', result: 'foo'));
     expect(parser,
         isParseFailure('foo.1', message: 'end of id expected', position: 3));
   });
   test('https://github.com/petitparser/dart-petitparser/issues/126', () {
     final parser = ParensGrammar().build();
-    expect(parser, isParseSuccess('', null));
-    expect(parser, isParseSuccess('()', ['(', null, ')']));
+    expect(parser, isParseSuccess('', result: null));
+    expect(parser, isParseSuccess('()', result: ['(', null, ')']));
     expect(
         parser,
-        isParseSuccess('(())', [
+        isParseSuccess('(())', result: [
           '(',
           ['(', null, ')'],
           ')'
         ]));
     expect(
         parser,
-        isParseSuccess('((()))', [
+        isParseSuccess('((()))', result: [
           '(',
           [
             '(',
@@ -357,7 +357,7 @@ void main() {
       final parser = resolve(NestedGrammar1().start());
       expect(
           parser,
-          isParseSuccess('(0)', [
+          isParseSuccess('(0)', result: [
             "'(' (nestedTerm)",
             "'0' (singleCharacter)",
             "')' (nestedTerm)",
@@ -367,7 +367,7 @@ void main() {
       final parser = resolve(NestedGrammar2().start());
       expect(
           parser,
-          isParseSuccess('(0)', [
+          isParseSuccess('(0)', result: [
             "'(' (singleCharacter)",
             "'0' (singleCharacter)",
             "')' (singleCharacter)",
@@ -377,7 +377,7 @@ void main() {
       final parser = resolve(NestedGrammar3().start());
       expect(
           parser,
-          isParseSuccess('(0)', [
+          isParseSuccess('(0)', result: [
             [
               "'(' (nestedTerm)",
               ["'0' (singleCharacter)"],

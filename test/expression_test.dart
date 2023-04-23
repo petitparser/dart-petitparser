@@ -64,30 +64,34 @@ void main() {
   final evaluator = buildEvaluator();
   group('add', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1 + 2', ['1', '+', '2']));
+      expect(parser, isParseSuccess('1 + 2', result: ['1', '+', '2']));
       expect(
           parser,
-          isParseSuccess('1 + 2 + 3', [
+          isParseSuccess('1 + 2 + 3', result: [
             ['1', '+', '2'],
             '+',
             '3'
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('1 + 2', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('2 + 1', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('1 + 2.3', closeTo(3.3, epsilon)));
-      expect(evaluator, isParseSuccess('2.3 + 1', closeTo(3.3, epsilon)));
-      expect(evaluator, isParseSuccess('1 + -2', closeTo(-1, epsilon)));
-      expect(evaluator, isParseSuccess('-2 + 1', closeTo(-1, epsilon)));
+      expect(evaluator, isParseSuccess('1 + 2', result: closeTo(3, epsilon)));
+      expect(evaluator, isParseSuccess('2 + 1', result: closeTo(3, epsilon)));
+      expect(
+          evaluator, isParseSuccess('1 + 2.3', result: closeTo(3.3, epsilon)));
+      expect(
+          evaluator, isParseSuccess('2.3 + 1', result: closeTo(3.3, epsilon)));
+      expect(evaluator, isParseSuccess('1 + -2', result: closeTo(-1, epsilon)));
+      expect(evaluator, isParseSuccess('-2 + 1', result: closeTo(-1, epsilon)));
     });
     test('evaluator many', () {
-      expect(evaluator, isParseSuccess('1', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('1 + 2', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('1 + 2 + 3', closeTo(6, epsilon)));
-      expect(evaluator, isParseSuccess('1 + 2 + 3 + 4', closeTo(10, epsilon)));
+      expect(evaluator, isParseSuccess('1', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('1 + 2', result: closeTo(3, epsilon)));
       expect(
-          evaluator, isParseSuccess('1 + 2 + 3 + 4 + 5', closeTo(15, epsilon)));
+          evaluator, isParseSuccess('1 + 2 + 3', result: closeTo(6, epsilon)));
+      expect(evaluator,
+          isParseSuccess('1 + 2 + 3 + 4', result: closeTo(10, epsilon)));
+      expect(evaluator,
+          isParseSuccess('1 + 2 + 3 + 4 + 5', result: closeTo(15, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -100,28 +104,31 @@ void main() {
   });
   group('sub', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1 - 2', ['1', '-', '2']));
+      expect(parser, isParseSuccess('1 - 2', result: ['1', '-', '2']));
       expect(
           parser,
-          isParseSuccess('1 - 2 - 3', [
+          isParseSuccess('1 - 2 - 3', result: [
             ['1', '-', '2'],
             '-',
             '3'
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('1 - 2', closeTo(-1, epsilon)));
-      expect(evaluator, isParseSuccess('1.2 - 1.2', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('1 - -2', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('-1 - -2', closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('1 - 2', result: closeTo(-1, epsilon)));
+      expect(
+          evaluator, isParseSuccess('1.2 - 1.2', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('1 - -2', result: closeTo(3, epsilon)));
+      expect(evaluator, isParseSuccess('-1 - -2', result: closeTo(1, epsilon)));
     });
     test('evaluator many', () {
-      expect(evaluator, isParseSuccess('1', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('1 - 2', closeTo(-1, epsilon)));
-      expect(evaluator, isParseSuccess('1 - 2 - 3', closeTo(-4, epsilon)));
-      expect(evaluator, isParseSuccess('1 - 2 - 3 - 4', closeTo(-8, epsilon)));
+      expect(evaluator, isParseSuccess('1', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('1 - 2', result: closeTo(-1, epsilon)));
+      expect(
+          evaluator, isParseSuccess('1 - 2 - 3', result: closeTo(-4, epsilon)));
       expect(evaluator,
-          isParseSuccess('1 - 2 - 3 - 4 - 5', closeTo(-13, epsilon)));
+          isParseSuccess('1 - 2 - 3 - 4', result: closeTo(-8, epsilon)));
+      expect(evaluator,
+          isParseSuccess('1 - 2 - 3 - 4 - 5', result: closeTo(-13, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -134,25 +141,27 @@ void main() {
   });
   group('mul', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1 * 2', ['1', '*', '2']));
+      expect(parser, isParseSuccess('1 * 2', result: ['1', '*', '2']));
       expect(
           parser,
-          isParseSuccess('1 * 2 * 3', [
+          isParseSuccess('1 * 2 * 3', result: [
             ['1', '*', '2'],
             '*',
             '3'
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('2 * 3', closeTo(6, epsilon)));
-      expect(evaluator, isParseSuccess('2 * -4', closeTo(-8, epsilon)));
+      expect(evaluator, isParseSuccess('2 * 3', result: closeTo(6, epsilon)));
+      expect(evaluator, isParseSuccess('2 * -4', result: closeTo(-8, epsilon)));
     });
     test('evaluator many', () {
-      expect(evaluator, isParseSuccess('1 * 2', closeTo(2, epsilon)));
-      expect(evaluator, isParseSuccess('1 * 2 * 3', closeTo(6, epsilon)));
-      expect(evaluator, isParseSuccess('1 * 2 * 3 * 4', closeTo(24, epsilon)));
+      expect(evaluator, isParseSuccess('1 * 2', result: closeTo(2, epsilon)));
+      expect(
+          evaluator, isParseSuccess('1 * 2 * 3', result: closeTo(6, epsilon)));
       expect(evaluator,
-          isParseSuccess('1 * 2 * 3 * 4 * 5', closeTo(120, epsilon)));
+          isParseSuccess('1 * 2 * 3 * 4', result: closeTo(24, epsilon)));
+      expect(evaluator,
+          isParseSuccess('1 * 2 * 3 * 4 * 5', result: closeTo(120, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -165,25 +174,29 @@ void main() {
   });
   group('div', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1 / 2', ['1', '/', '2']));
+      expect(parser, isParseSuccess('1 / 2', result: ['1', '/', '2']));
       expect(
           parser,
-          isParseSuccess('1 / 2 / 3', [
+          isParseSuccess('1 / 2 / 3', result: [
             ['1', '/', '2'],
             '/',
             '3'
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('12 / 3', closeTo(4, epsilon)));
-      expect(evaluator, isParseSuccess('-16 / -4', closeTo(4, epsilon)));
+      expect(evaluator, isParseSuccess('12 / 3', result: closeTo(4, epsilon)));
+      expect(
+          evaluator, isParseSuccess('-16 / -4', result: closeTo(4, epsilon)));
     });
     test('evaluator many', () {
-      expect(evaluator, isParseSuccess('100 / 2', closeTo(50, epsilon)));
-      expect(evaluator, isParseSuccess('100 / 2 / 2', closeTo(25, epsilon)));
-      expect(evaluator, isParseSuccess('100 / 2 / 2 / 5', closeTo(5, epsilon)));
+      expect(
+          evaluator, isParseSuccess('100 / 2', result: closeTo(50, epsilon)));
       expect(evaluator,
-          isParseSuccess('100 / 2 / 2 / 5 / 5', closeTo(1, epsilon)));
+          isParseSuccess('100 / 2 / 2', result: closeTo(25, epsilon)));
+      expect(evaluator,
+          isParseSuccess('100 / 2 / 2 / 5', result: closeTo(5, epsilon)));
+      expect(evaluator,
+          isParseSuccess('100 / 2 / 2 / 5 / 5', result: closeTo(1, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -196,27 +209,31 @@ void main() {
   });
   group('pow', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1 ^ 2', ['1', '^', '2']));
+      expect(parser, isParseSuccess('1 ^ 2', result: ['1', '^', '2']));
       expect(
           parser,
-          isParseSuccess('1 ^ 2 ^ 3', [
+          isParseSuccess('1 ^ 2 ^ 3', result: [
             '1',
             '^',
             ['2', '^', '3']
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('2 ^ 3', closeTo(8, epsilon)));
-      expect(evaluator, isParseSuccess('-2 ^ 3', closeTo(-8, epsilon)));
-      expect(evaluator, isParseSuccess('-2 ^ -3', closeTo(-0.125, epsilon)));
+      expect(evaluator, isParseSuccess('2 ^ 3', result: closeTo(8, epsilon)));
+      expect(evaluator, isParseSuccess('-2 ^ 3', result: closeTo(-8, epsilon)));
+      expect(evaluator,
+          isParseSuccess('-2 ^ -3', result: closeTo(-0.125, epsilon)));
     });
     test('evaluator many', () {
-      expect(evaluator, isParseSuccess('4 ^ 3', closeTo(64, epsilon)));
-      expect(evaluator, isParseSuccess('4 ^ 3 ^ 2', closeTo(262144, epsilon)));
-      expect(
-          evaluator, isParseSuccess('4 ^ 3 ^ 2 ^ 1', closeTo(262144, epsilon)));
+      expect(evaluator, isParseSuccess('4 ^ 3', result: closeTo(64, epsilon)));
       expect(evaluator,
-          isParseSuccess('4 ^ 3 ^ 2 ^ 1 ^ 0', closeTo(262144, epsilon)));
+          isParseSuccess('4 ^ 3 ^ 2', result: closeTo(262144, epsilon)));
+      expect(evaluator,
+          isParseSuccess('4 ^ 3 ^ 2 ^ 1', result: closeTo(262144, epsilon)));
+      expect(
+          evaluator,
+          isParseSuccess('4 ^ 3 ^ 2 ^ 1 ^ 0',
+              result: closeTo(262144, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -229,24 +246,24 @@ void main() {
   });
   group('parens', () {
     test('parser', () {
-      expect(parser, isParseSuccess('(1)', ['(', '1', ')']));
+      expect(parser, isParseSuccess('(1)', result: ['(', '1', ')']));
       expect(
           parser,
-          isParseSuccess('(1 + 2)', [
+          isParseSuccess('(1 + 2)', result: [
             '(',
             ['1', '+', '2'],
             ')'
           ]));
       expect(
           parser,
-          isParseSuccess('((1))', [
+          isParseSuccess('((1))', result: [
             '(',
             ['(', '1', ')'],
             ')'
           ]));
       expect(
           parser,
-          isParseSuccess('((1 + 2))', [
+          isParseSuccess('((1 + 2))', result: [
             '(',
             [
               '(',
@@ -257,7 +274,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('2 * (3 + 4)', [
+          isParseSuccess('2 * (3 + 4)', result: [
             '2',
             '*',
             [
@@ -268,7 +285,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('(2 + 3) * 4', [
+          isParseSuccess('(2 + 3) * 4', result: [
             [
               '(',
               ['2', '+', '3'],
@@ -279,7 +296,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('6 / (2 + 4)', [
+          isParseSuccess('6 / (2 + 4)', result: [
             '6',
             '/',
             [
@@ -290,7 +307,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('(2 + 6) / 2', [
+          isParseSuccess('(2 + 6) / 2', result: [
             [
               '(',
               ['2', '+', '6'],
@@ -301,14 +318,19 @@ void main() {
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('(1)', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('(1 + 2)', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('((1))', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('((1 + 2))', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('2 * (3 + 4)', closeTo(14, epsilon)));
-      expect(evaluator, isParseSuccess('(2 + 3) * 4', closeTo(20, epsilon)));
-      expect(evaluator, isParseSuccess('6 / (2 + 4)', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('(2 + 6) / 2', closeTo(4, epsilon)));
+      expect(evaluator, isParseSuccess('(1)', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('(1 + 2)', result: closeTo(3, epsilon)));
+      expect(evaluator, isParseSuccess('((1))', result: closeTo(1, epsilon)));
+      expect(
+          evaluator, isParseSuccess('((1 + 2))', result: closeTo(3, epsilon)));
+      expect(evaluator,
+          isParseSuccess('2 * (3 + 4)', result: closeTo(14, epsilon)));
+      expect(evaluator,
+          isParseSuccess('(2 + 3) * 4', result: closeTo(20, epsilon)));
+      expect(evaluator,
+          isParseSuccess('6 / (2 + 4)', result: closeTo(1, epsilon)));
+      expect(evaluator,
+          isParseSuccess('(2 + 6) / 2', result: closeTo(4, epsilon)));
     });
     test('error', () {
       expect(evaluator, isParseFailure('(', message: 'number expected'));
@@ -319,34 +341,37 @@ void main() {
   });
   group('sqrt', () {
     test('parser', () {
-      expect(parser, isParseSuccess('sqrt(4)', ['sqrt(', '4', ')']));
+      expect(parser, isParseSuccess('sqrt(4)', result: ['sqrt(', '4', ')']));
       expect(
           parser,
-          isParseSuccess('sqrt(1 + 3)', [
+          isParseSuccess('sqrt(1 + 3)', result: [
             'sqrt(',
             ['1', '+', '3'],
             ')'
           ]));
       expect(
           parser,
-          isParseSuccess('1 + sqrt(16)', [
+          isParseSuccess('1 + sqrt(16)', result: [
             '1',
             '+',
             ['sqrt(', '16', ')']
           ]));
       expect(
           parser,
-          isParseSuccess('sqrt(sqrt(16))', [
+          isParseSuccess('sqrt(sqrt(16))', result: [
             'sqrt(',
             ['sqrt(', '16', ')'],
             ')'
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('sqrt(4)', closeTo(2, epsilon)));
-      expect(evaluator, isParseSuccess('sqrt(1 + 3)', closeTo(2, epsilon)));
-      expect(evaluator, isParseSuccess('1 + sqrt(16)', closeTo(5, epsilon)));
-      expect(evaluator, isParseSuccess('sqrt(sqrt(16))', closeTo(2, epsilon)));
+      expect(evaluator, isParseSuccess('sqrt(4)', result: closeTo(2, epsilon)));
+      expect(evaluator,
+          isParseSuccess('sqrt(1 + 3)', result: closeTo(2, epsilon)));
+      expect(evaluator,
+          isParseSuccess('1 + sqrt(16)', result: closeTo(5, epsilon)));
+      expect(evaluator,
+          isParseSuccess('sqrt(sqrt(16))', result: closeTo(2, epsilon)));
     });
     test('error', () {
       expect(evaluator, isParseFailure('sqrt(', message: 'number expected'));
@@ -358,16 +383,16 @@ void main() {
   });
   group('postfix add', () {
     test('parser', () {
-      expect(parser, isParseSuccess('0++', ['0', '++']));
+      expect(parser, isParseSuccess('0++', result: ['0', '++']));
       expect(
           parser,
-          isParseSuccess('0++++', [
+          isParseSuccess('0++++', result: [
             ['0', '++'],
             '++'
           ]));
       expect(
           parser,
-          isParseSuccess('0++++++', [
+          isParseSuccess('0++++++', result: [
             [
               ['0', '++'],
               '++'
@@ -376,14 +401,14 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('0+++1', [
+          isParseSuccess('0+++1', result: [
             ['0', '++'],
             '+',
             '1'
           ]));
       expect(
           parser,
-          isParseSuccess('0+++++1', [
+          isParseSuccess('0+++++1', result: [
             [
               ['0', '++'],
               '++'
@@ -393,7 +418,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('0+++++++1', [
+          isParseSuccess('0+++++++1', result: [
             [
               [
                 ['0', '++'],
@@ -406,12 +431,13 @@ void main() {
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('0++', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('0++++', closeTo(2, epsilon)));
-      expect(evaluator, isParseSuccess('0++++++', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('0+++1', closeTo(2, epsilon)));
-      expect(evaluator, isParseSuccess('0+++++1', closeTo(3, epsilon)));
-      expect(evaluator, isParseSuccess('0+++++++1', closeTo(4, epsilon)));
+      expect(evaluator, isParseSuccess('0++', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('0++++', result: closeTo(2, epsilon)));
+      expect(evaluator, isParseSuccess('0++++++', result: closeTo(3, epsilon)));
+      expect(evaluator, isParseSuccess('0+++1', result: closeTo(2, epsilon)));
+      expect(evaluator, isParseSuccess('0+++++1', result: closeTo(3, epsilon)));
+      expect(
+          evaluator, isParseSuccess('0+++++++1', result: closeTo(4, epsilon)));
     });
     test('error', () {
       expect(evaluator, isParseFailure('++', message: 'number expected'));
@@ -423,16 +449,16 @@ void main() {
   });
   group('postfix sub', () {
     test('parser', () {
-      expect(parser, isParseSuccess('0--', ['0', '--']));
+      expect(parser, isParseSuccess('0--', result: ['0', '--']));
       expect(
           parser,
-          isParseSuccess('0----', [
+          isParseSuccess('0----', result: [
             ['0', '--'],
             '--'
           ]));
       expect(
           parser,
-          isParseSuccess('0------', [
+          isParseSuccess('0------', result: [
             [
               ['0', '--'],
               '--'
@@ -441,14 +467,14 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('0---1', [
+          isParseSuccess('0---1', result: [
             ['0', '--'],
             '-',
             '1'
           ]));
       expect(
           parser,
-          isParseSuccess('0-----1', [
+          isParseSuccess('0-----1', result: [
             [
               ['0', '--'],
               '--'
@@ -458,7 +484,7 @@ void main() {
           ]));
       expect(
           parser,
-          isParseSuccess('0-------1', [
+          isParseSuccess('0-------1', result: [
             [
               [
                 ['0', '--'],
@@ -471,12 +497,13 @@ void main() {
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('1--', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('2----', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('3------', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('2---1', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('3-----1', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('4-------1', closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('1--', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('2----', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('3------', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('2---1', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('3-----1', result: closeTo(0, epsilon)));
+      expect(
+          evaluator, isParseSuccess('4-------1', result: closeTo(0, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -489,17 +516,17 @@ void main() {
   });
   group('negate', () {
     test('parser', () {
-      expect(parser, isParseSuccess('1', '1'));
-      expect(parser, isParseSuccess('-1', ['-', '1']));
+      expect(parser, isParseSuccess('1', result: '1'));
+      expect(parser, isParseSuccess('-1', result: ['-', '1']));
       expect(
           parser,
-          isParseSuccess('--1', [
+          isParseSuccess('--1', result: [
             '-',
             ['-', '1']
           ]));
       expect(
           parser,
-          isParseSuccess('---1', [
+          isParseSuccess('---1', result: [
             '-',
             [
               '-',
@@ -508,10 +535,10 @@ void main() {
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('1', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('-1', closeTo(-1, epsilon)));
-      expect(evaluator, isParseSuccess('--1', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('---1', closeTo(-1, epsilon)));
+      expect(evaluator, isParseSuccess('1', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('-1', result: closeTo(-1, epsilon)));
+      expect(evaluator, isParseSuccess('--1', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('---1', result: closeTo(-1, epsilon)));
     });
     test('error', () {
       expect(evaluator,
@@ -522,18 +549,19 @@ void main() {
   });
   group('number', () {
     test('parser', () {
-      expect(parser, isParseSuccess('0', '0'));
-      expect(parser, isParseSuccess('0.1', '0.1'));
-      expect(parser, isParseSuccess('-1', ['-', '1']));
+      expect(parser, isParseSuccess('0', result: '0'));
+      expect(parser, isParseSuccess('0.1', result: '0.1'));
+      expect(parser, isParseSuccess('-1', result: ['-', '1']));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('0', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('0.0', closeTo(0, epsilon)));
-      expect(evaluator, isParseSuccess('1', closeTo(1, epsilon)));
-      expect(evaluator, isParseSuccess('1.2', closeTo(1.2, epsilon)));
-      expect(evaluator, isParseSuccess('34', closeTo(34, epsilon)));
-      expect(evaluator, isParseSuccess('34.7', closeTo(34.7, epsilon)));
-      expect(evaluator, isParseSuccess('56.78', closeTo(56.78, epsilon)));
+      expect(evaluator, isParseSuccess('0', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('0.0', result: closeTo(0, epsilon)));
+      expect(evaluator, isParseSuccess('1', result: closeTo(1, epsilon)));
+      expect(evaluator, isParseSuccess('1.2', result: closeTo(1.2, epsilon)));
+      expect(evaluator, isParseSuccess('34', result: closeTo(34, epsilon)));
+      expect(evaluator, isParseSuccess('34.7', result: closeTo(34.7, epsilon)));
+      expect(
+          evaluator, isParseSuccess('56.78', result: closeTo(56.78, epsilon)));
     });
     test('error', () {
       expect(evaluator, isParseFailure('', message: 'number expected'));
@@ -548,24 +576,28 @@ void main() {
     test('parser', () {
       expect(
           parser,
-          isParseSuccess('2 * 3 + 4', [
+          isParseSuccess('2 * 3 + 4', result: [
             ['2', '*', '3'],
             '+',
             '4'
           ]));
       expect(
           parser,
-          isParseSuccess('2 + 3 * 4', [
+          isParseSuccess('2 + 3 * 4', result: [
             '2',
             '+',
             ['3', '*', '4']
           ]));
     });
     test('evaluator', () {
-      expect(evaluator, isParseSuccess('2 * 3 + 4', closeTo(10, epsilon)));
-      expect(evaluator, isParseSuccess('2 + 3 * 4', closeTo(14, epsilon)));
-      expect(evaluator, isParseSuccess('6 / 3 + 4', closeTo(6, epsilon)));
-      expect(evaluator, isParseSuccess('2 + 6 / 2', closeTo(5, epsilon)));
+      expect(
+          evaluator, isParseSuccess('2 * 3 + 4', result: closeTo(10, epsilon)));
+      expect(
+          evaluator, isParseSuccess('2 + 3 * 4', result: closeTo(14, epsilon)));
+      expect(
+          evaluator, isParseSuccess('6 / 3 + 4', result: closeTo(6, epsilon)));
+      expect(
+          evaluator, isParseSuccess('2 + 6 / 2', result: closeTo(5, epsilon)));
     });
   });
   group('builder', () {
@@ -589,9 +621,9 @@ void main() {
       builder.primitive(digit());
       builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
       final parser = builder.build();
-      expect(parser, isParseSuccess('2', '2'));
-      expect(parser, isParseSuccess('(2)', '[2]'));
-      expect(parser, isParseSuccess('((2))', '[[2]]'));
+      expect(parser, isParseSuccess('2', result: '2'));
+      expect(parser, isParseSuccess('(2)', result: '[2]'));
+      expect(parser, isParseSuccess('((2))', result: '[[2]]'));
     });
     test('primitive on group', () {
       final builder = ExpressionBuilder<String>();
@@ -600,9 +632,9 @@ void main() {
         ..primitive(digit())
         ..wrapper(char('('), char(')'), (l, v, r) => '[$v]');
       final parser = builder.build();
-      expect(parser, isParseSuccess('2', '2'));
-      expect(parser, isParseSuccess('(2)', '[2]'));
-      expect(parser, isParseSuccess('((2))', '[[2]]'));
+      expect(parser, isParseSuccess('2', result: '2'));
+      expect(parser, isParseSuccess('(2)', result: '[2]'));
+      expect(parser, isParseSuccess('((2))', result: '[[2]]'));
     });
   });
   test('linter', () {

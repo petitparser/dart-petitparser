@@ -51,7 +51,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
   out.writeln('import \'../../../context/context.dart\';');
   out.writeln('import \'../../../context/result.dart\';');
-  out.writeln('import \'../../../core/character.dart\';');
+  out.writeln('import \'../../../core/parser.dart\';');
   out.writeln('import \'../../../shared/annotations.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
@@ -208,9 +208,10 @@ Future<void> generateTest() async {
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, isParseSuccess(\'$string\', sequence));');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string*\', sequence, position: $i));');
+        'isParseSuccess(\'$string\', result: sequence));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', result: sequence, position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
@@ -233,9 +234,10 @@ Future<void> generateTest() async {
         '\'${chars.map((each) => '\$$each').join()}\');');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, isParseSuccess(\'$string\', \'$string\'));');
-    out.writeln(
-        'expect(parser, isParseSuccess(\'$string*\', \'$string\', position: $i));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string\', result: \'$string\'));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', result: \'$string\', position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');

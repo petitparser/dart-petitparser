@@ -12,8 +12,8 @@ void main() {
     const sequence = Sequence2('a', 'b');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('ab', sequence));
-      expect(parser, isParseSuccess('ab*', sequence, position: 2));
+      expect(parser, isParseSuccess('ab', result: sequence));
+      expect(parser, isParseSuccess('ab*', result: sequence, position: 2));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -29,8 +29,8 @@ void main() {
     final parser = seq2(char('a'), char('b')).map2((a, b) => '$a$b');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('ab', 'ab'));
-      expect(parser, isParseSuccess('ab*', 'ab', position: 2));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseSuccess('ab*', result: 'ab', position: 2));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -79,8 +79,8 @@ void main() {
     const sequence = Sequence3('a', 'b', 'c');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abc', sequence));
-      expect(parser, isParseSuccess('abc*', sequence, position: 3));
+      expect(parser, isParseSuccess('abc', result: sequence));
+      expect(parser, isParseSuccess('abc*', result: sequence, position: 3));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -103,8 +103,8 @@ void main() {
         seq3(char('a'), char('b'), char('c')).map3((a, b, c) => '$a$b$c');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abc', 'abc'));
-      expect(parser, isParseSuccess('abc*', 'abc', position: 3));
+      expect(parser, isParseSuccess('abc', result: 'abc'));
+      expect(parser, isParseSuccess('abc*', result: 'abc', position: 3));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -161,8 +161,8 @@ void main() {
     const sequence = Sequence4('a', 'b', 'c', 'd');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcd', sequence));
-      expect(parser, isParseSuccess('abcd*', sequence, position: 4));
+      expect(parser, isParseSuccess('abcd', result: sequence));
+      expect(parser, isParseSuccess('abcd*', result: sequence, position: 4));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -191,8 +191,8 @@ void main() {
         .map4((a, b, c, d) => '$a$b$c$d');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcd', 'abcd'));
-      expect(parser, isParseSuccess('abcd*', 'abcd', position: 4));
+      expect(parser, isParseSuccess('abcd', result: 'abcd'));
+      expect(parser, isParseSuccess('abcd*', result: 'abcd', position: 4));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -257,8 +257,8 @@ void main() {
     const sequence = Sequence5('a', 'b', 'c', 'd', 'e');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcde', sequence));
-      expect(parser, isParseSuccess('abcde*', sequence, position: 5));
+      expect(parser, isParseSuccess('abcde', result: sequence));
+      expect(parser, isParseSuccess('abcde*', result: sequence, position: 5));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -293,8 +293,8 @@ void main() {
         .map5((a, b, c, d, e) => '$a$b$c$d$e');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcde', 'abcde'));
-      expect(parser, isParseSuccess('abcde*', 'abcde', position: 5));
+      expect(parser, isParseSuccess('abcde', result: 'abcde'));
+      expect(parser, isParseSuccess('abcde*', result: 'abcde', position: 5));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -368,8 +368,8 @@ void main() {
     const sequence = Sequence6('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdef', sequence));
-      expect(parser, isParseSuccess('abcdef*', sequence, position: 6));
+      expect(parser, isParseSuccess('abcdef', result: sequence));
+      expect(parser, isParseSuccess('abcdef*', result: sequence, position: 6));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -411,8 +411,8 @@ void main() {
             .map6((a, b, c, d, e, f) => '$a$b$c$d$e$f');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdef', 'abcdef'));
-      expect(parser, isParseSuccess('abcdef*', 'abcdef', position: 6));
+      expect(parser, isParseSuccess('abcdef', result: 'abcdef'));
+      expect(parser, isParseSuccess('abcdef*', result: 'abcdef', position: 6));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -494,8 +494,8 @@ void main() {
     const sequence = Sequence7('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefg', sequence));
-      expect(parser, isParseSuccess('abcdefg*', sequence, position: 7));
+      expect(parser, isParseSuccess('abcdefg', result: sequence));
+      expect(parser, isParseSuccess('abcdefg*', result: sequence, position: 7));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -543,8 +543,9 @@ void main() {
         .map7((a, b, c, d, e, f, g) => '$a$b$c$d$e$f$g');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefg', 'abcdefg'));
-      expect(parser, isParseSuccess('abcdefg*', 'abcdefg', position: 7));
+      expect(parser, isParseSuccess('abcdefg', result: 'abcdefg'));
+      expect(
+          parser, isParseSuccess('abcdefg*', result: 'abcdefg', position: 7));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -634,8 +635,9 @@ void main() {
     const sequence = Sequence8('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', sequence));
-      expect(parser, isParseSuccess('abcdefgh*', sequence, position: 8));
+      expect(parser, isParseSuccess('abcdefgh', result: sequence));
+      expect(
+          parser, isParseSuccess('abcdefgh*', result: sequence, position: 8));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -689,8 +691,9 @@ void main() {
         .map8((a, b, c, d, e, f, g, h) => '$a$b$c$d$e$f$g$h');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', 'abcdefgh'));
-      expect(parser, isParseSuccess('abcdefgh*', 'abcdefgh', position: 8));
+      expect(parser, isParseSuccess('abcdefgh', result: 'abcdefgh'));
+      expect(
+          parser, isParseSuccess('abcdefgh*', result: 'abcdefgh', position: 8));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -788,8 +791,9 @@ void main() {
     const sequence = Sequence9('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', sequence));
-      expect(parser, isParseSuccess('abcdefghi*', sequence, position: 9));
+      expect(parser, isParseSuccess('abcdefghi', result: sequence));
+      expect(
+          parser, isParseSuccess('abcdefghi*', result: sequence, position: 9));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -849,8 +853,9 @@ void main() {
         .map9((a, b, c, d, e, f, g, h, i) => '$a$b$c$d$e$f$g$h$i');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', 'abcdefghi'));
-      expect(parser, isParseSuccess('abcdefghi*', 'abcdefghi', position: 9));
+      expect(parser, isParseSuccess('abcdefghi', result: 'abcdefghi'));
+      expect(parser,
+          isParseSuccess('abcdefghi*', result: 'abcdefghi', position: 9));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
