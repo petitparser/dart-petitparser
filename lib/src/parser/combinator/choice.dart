@@ -57,10 +57,6 @@ class ChoiceParser<R> extends ListParser<R, R> {
   /// Strategy to join multiple parse errors.
   final FailureJoiner<R> failureJoiner;
 
-  /// Switches the failure joining strategy.
-  ChoiceParser<R> withFailureJoiner(FailureJoiner<R> failureJoiner) =>
-      ChoiceParser<R>(children, failureJoiner: failureJoiner);
-
   @override
   Result<R> parseOn(Context context) {
     Failure<R>? failure;
