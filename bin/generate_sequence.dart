@@ -1,8 +1,8 @@
 import 'dart:io';
 
 /// Number of parsers that can be combined.
-const int min = 2;
-const int max = 9;
+const min = 2;
+const max = 9;
 
 /// Ordinal numbers for the sequence.
 const ordinals = [
@@ -22,7 +22,7 @@ File implementationFile(int i) =>
     File('lib/src/parser/combinator/generated/sequence_$i.dart');
 
 /// Test file.
-final File testFile = File('test/generated/sequence_test.dart');
+final testFile = File('test/generated/sequence_test.dart');
 
 /// Pretty prints and cleans up a dart file.
 Future<void> format(File file) async =>
