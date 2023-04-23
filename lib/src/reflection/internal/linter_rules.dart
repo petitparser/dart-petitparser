@@ -1,20 +1,4 @@
-import '../../core/parser.dart';
-import '../../parser/action/cast.dart';
-import '../../parser/action/cast_list.dart';
-import '../../parser/action/flatten.dart';
-import '../../parser/action/map.dart';
-import '../../parser/action/permute.dart';
-import '../../parser/action/pick.dart';
-import '../../parser/action/token.dart';
-import '../../parser/action/where.dart';
-import '../../parser/combinator/choice.dart';
-import '../../parser/combinator/settable.dart';
-import '../../parser/misc/failure.dart';
-import '../../parser/predicate/any.dart';
-import '../../parser/predicate/character.dart';
-import '../../parser/repeater/possessive.dart';
-import '../../parser/repeater/repeating.dart';
-import '../../parser/utils/resolvable.dart';
+import '../../../parser.dart';
 import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
@@ -152,6 +136,30 @@ class RepeatedChoice extends LinterRule {
   }
 }
 
+class UnnecessaryFlatten extends LinterRule {
+  const UnnecessaryFlatten() : super(LinterType.warning, 'Unnecessary flatten');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    if (parser is FlattenParser) {
+      final delegate = parser.delegate;
+      if (delegate is AnyCharacterParser ||
+          delegate is FlattenParser ||
+          delegate is NewlineParser ||
+          delegate is PredicateParser ||
+          delegate is RepeatingCharacterParser ||
+          delegate is SingleCharacterParser) {
+        callback(LinterIssue(
+            this,
+            parser,
+            'A flatten parser delegating to a parser ($delegate) that is '
+            'returning the accepted input string serves no purpose and can be '
+            'removed.'));
+      }
+    }
+  }
+}
+
 class UnnecessaryResolvable extends LinterRule {
   const UnnecessaryResolvable()
       : super(LinterType.warning, 'Unnecessary resolvable');
@@ -240,7 +248,7 @@ class UnusedResult extends LinterRule {
             parser,
             'The flatten parser discards the result of its children and '
             'instead returns the consumed input. Yet this flatten parser '
-            'refers (indirectly) to one or more other parsers that explicitly '
+            '(indirectly) refers to one or more other parsers that explicitly '
             'produce a result which is then ignored when called from this '
             'context: ${path.description}. This might point to an inefficient '
             'grammar or a possible bug.'));

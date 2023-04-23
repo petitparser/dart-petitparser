@@ -785,6 +785,23 @@ void main() {
           expect(results, isEmpty);
         });
       });
+      group('unnecessary flatten', () {
+        const rules = [linter_rules.UnnecessaryFlatten()];
+        test('with issue', () {
+          final parser = any().flatten();
+          final results = linter(parser, rules: rules);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Unnecessary flatten');
+        });
+        test('without issue', () {
+          final parser = any().optional().flatten();
+          final results = linter(parser, rules: rules);
+          expect(results, isEmpty);
+        });
+      });
       group('unnecessary resolvable', () {
         const rules = [linter_rules.UnnecessaryResolvable()];
         test('with issue', () {
@@ -798,6 +815,23 @@ void main() {
         });
         test('without issue', () {
           final parser = char('a');
+          final results = linter(parser, rules: rules);
+          expect(results, isEmpty);
+        });
+      });
+      group('unoptimized flatten', () {
+        const rules = [linter_rules.UnoptimizedFlatten()];
+        test('with issue', () {
+          final parser = any().flatten();
+          final results = linter(parser, rules: rules);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.info);
+          expect(result.title, 'Unoptimized flatten');
+        });
+        test('without issue', () {
+          final parser = any().flatten('anything really');
           final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
