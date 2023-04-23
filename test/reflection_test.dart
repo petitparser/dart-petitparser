@@ -632,6 +632,31 @@ void main() {
       expect(called, results);
     });
     group('rules', () {
+      group('character repetition', () {
+        test('with issue', () {
+          final parser = char('a').star().flatten();
+          final results = linter(parser, rules: const [CharacterRepeater()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Character repeater');
+        });
+        test('with same issue', () {
+          final parser = any().plus().flatten();
+          final results = linter(parser, rules: const [CharacterRepeater()]);
+          expect(results, hasLength(1));
+          final result = results[0];
+          expect(result.parser, parser);
+          expect(result.type, LinterType.warning);
+          expect(result.title, 'Character repeater');
+        });
+        test('without issue', () {
+          final parser = char('a').plus().token();
+          final results = linter(parser, rules: const [LeftRecursion()]);
+          expect(results, isEmpty);
+        });
+      });
       group('left recursion', () {
         test('with issue', () {
           final parser = createSelfReference();
