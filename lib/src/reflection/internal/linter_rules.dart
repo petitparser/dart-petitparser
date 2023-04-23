@@ -141,7 +141,7 @@ class UnnecessaryFlatten extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is FlattenParser) {
+    if (parser is FlattenParser && parser.message == null) {
       final delegate = parser.delegate;
       if (delegate is AnyCharacterParser ||
           delegate is FlattenParser ||
@@ -153,8 +153,8 @@ class UnnecessaryFlatten extends LinterRule {
             this,
             parser,
             'A flatten parser delegating to a parser ($delegate) that is '
-            'returning the accepted input string serves no purpose and can be '
-            'removed.'));
+            'returning the accepted input string adds unnecessary overhead and '
+            'can be removed.'));
       }
     }
   }
