@@ -20,7 +20,7 @@ class CastListParser<R, S> extends DelegateParser<R, List<S>> {
   Result<List<S>> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result.isSuccess) {
-      return result.success((result.value as List).cast<S>());
+      return result.success(List.castFrom(result.value as List));
     } else {
       return result.failure(result.message);
     }

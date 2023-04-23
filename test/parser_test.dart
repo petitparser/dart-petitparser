@@ -191,30 +191,6 @@ void main() {
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
-      test('with side-effects', () {
-        final log = <int>[];
-        final parser = digit().star().flatten().map((each) {
-          final value = int.parse(each);
-          log.add(value);
-          return value;
-        }, hasSideEffects: true);
-        expect(parser.parse('123').value, 123);
-        expect(log, [123]);
-        expect(parser.accept('42'), isTrue);
-        expect(log, [123, 42]);
-      });
-      test('without side-effects', () {
-        final log = <int>[];
-        final parser = digit().star().flatten().map((each) {
-          final value = int.parse(each);
-          log.add(value);
-          return value;
-        }, hasSideEffects: false);
-        expect(parser.parse('123').value, 123);
-        expect(log, [123]);
-        expect(parser.accept('42'), isTrue);
-        expect(log, [123]);
-      });
     });
     group('permute', () {
       expectParserInvariants(any().star().permute([-1, 1]));

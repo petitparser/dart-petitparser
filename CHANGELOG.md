@@ -1,10 +1,12 @@
 # Changelog
 
-## 5.4.0 (Unpublished)
+## 5.4.0
 - Dart 2.19 requirement, enabled strict casts and type inference.
 - Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
 - Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.
-- Cleanup and improve code and documentation.
+- Add support for optional expression groups in the `ExpressionBuilder`.
+- Add
+- Optimize, cleanup, and improve code and documentation.
 
 ## 5.3.0
 

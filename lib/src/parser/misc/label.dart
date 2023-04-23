@@ -26,6 +26,10 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   Result<R> parseOn(Context context) => delegate.parseOn(context);
 
   @override
+  int fastParseOn(String buffer, int position) =>
+      delegate.fastParseOn(buffer, position);
+
+  @override
   String toString() => '${super.toString()}[$label]';
 
   @override
