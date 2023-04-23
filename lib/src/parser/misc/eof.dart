@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../../context/context.dart';
 import '../../context/result.dart';
 import '../../core/parser.dart';
-import '../combinator/sequence.dart';
+import '../combinator/skip.dart';
 
 extension EndOfInputParserExtension<R> on Parser<R> {
   /// Returns a parser that succeeds only if the receiver consumes the complete
@@ -14,7 +14,7 @@ extension EndOfInputParserExtension<R> on Parser<R> {
   /// succeed on both inputs, but not consume everything for the second input.
   @useResult
   Parser<R> end([String message = 'end of input expected']) =>
-      seq2(this, endOfInput(message)).map2((value, _) => value);
+      skip(after: endOfInput(message));
 }
 
 /// Returns a parser that succeeds at the end of input.

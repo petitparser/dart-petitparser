@@ -26,8 +26,7 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   Result<R> parseOn(Context context) => delegate.parseOn(context);
 
   @override
-  int fastParseOn(String buffer, int position) =>
-      delegate.fastParseOn(buffer, position);
+  String toString() => '${super.toString()}[$label]';
 
   @override
   LabelParser<R> copy() => LabelParser<R>(delegate, label);
@@ -35,7 +34,4 @@ class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
   @override
   bool hasEqualProperties(LabelParser<R> other) =>
       super.hasEqualProperties(other) && label == other.label;
-
-  @override
-  String toString() => '${super.toString()}[$label]';
 }
