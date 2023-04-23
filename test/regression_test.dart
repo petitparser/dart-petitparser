@@ -172,7 +172,7 @@ void main() {
     });
   });
   test('stackoverflow.com/questions/64670722', () {
-    final delimited = any().callCC((continuation, context) {
+    final delimited = any().callCC<String>((continuation, context) {
       final delimiter = continuation(context).value.toParser();
       final parser = [
         delimiter,
@@ -274,7 +274,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5', ')']);
     });
     test('recursive', () {
-      final inner = undefined<dynamic>();
+      final inner = undefined<Object?>();
       final parser =
           char('(') & inner.starLazy(char(')')).flatten() & char(')');
       inner.set(parser | any());
@@ -282,7 +282,7 @@ void main() {
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
     test('recursive (better)', () {
-      final inner = undefined<dynamic>();
+      final inner = undefined<Object?>();
       final parser = char('(') & inner.star().flatten() & char(')');
       inner.set(parser | pattern('^)'));
       expect(parser.parse(firstInput).value, ['(', 'use = "official"', ')']);
@@ -292,7 +292,7 @@ void main() {
   group('github.com/petitparser/dart-petitparser/issues/112', () {
     final inner = digit().repeat(2);
     test('original', () {
-      final parser = inner.callCC<Object>((continuation, context) {
+      final parser = inner.callCC<List<String>>((continuation, context) {
         final result = continuation(context);
         if (result.isSuccess && result.value[0] != result.value[1]) {
           return context.failure('values do not match');
