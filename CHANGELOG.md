@@ -1,7 +1,8 @@
 # Changelog
 
-## 5.4.0
+## 5.4.0 (Unpublished)
 - Add an optimized `stringRepeat` parser.
+- Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.
 
 ## 5.3.0
 

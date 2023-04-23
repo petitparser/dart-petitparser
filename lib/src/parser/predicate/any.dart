@@ -9,11 +9,16 @@ import '../../core/parser.dart';
 /// For example, `any()` succeeds and consumes any given letter. It only
 /// fails for an empty input.
 @useResult
-Parser<String> any([String message = 'input expected']) => AnyParser(message);
+Parser<String> any([String message = 'input expected']) =>
+    AnyCharacterParser(message);
+
+/// Alias for deprecated class name.
+@Deprecated('Instead use `AnyCharacterParser`')
+typedef AnyParser = AnyCharacterParser;
 
 /// A parser that accepts any input element.
-class AnyParser extends Parser<String> {
-  AnyParser(this.message);
+class AnyCharacterParser extends Parser<String> {
+  AnyCharacterParser(this.message);
 
   /// Error message to annotate parse failures with.
   final String message;
@@ -32,9 +37,9 @@ class AnyParser extends Parser<String> {
       position < buffer.length ? position + 1 : -1;
 
   @override
-  AnyParser copy() => AnyParser(message);
+  AnyCharacterParser copy() => AnyCharacterParser(message);
 
   @override
-  bool hasEqualProperties(AnyParser other) =>
+  bool hasEqualProperties(AnyCharacterParser other) =>
       super.hasEqualProperties(other) && message == other.message;
 }

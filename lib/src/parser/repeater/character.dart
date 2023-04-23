@@ -58,7 +58,7 @@ extension RepeatingCharacterParserExtension on Parser<String> {
     if (self is SingleCharacterParser) {
       return RepeatingCharacterParser(
           self.predicate, self.message, min, max ?? min);
-    } else if (self is AnyParser) {
+    } else if (self is AnyCharacterParser) {
       return RepeatingCharacterParser(
           const ConstantCharPredicate(true), self.message, min, max ?? min);
     } else {
