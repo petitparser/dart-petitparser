@@ -1,7 +1,7 @@
 import '../../context/context.dart';
 import '../../core/parser.dart';
 
-class MatchesIterator<R> extends Iterator<R> {
+class MatchesIterator<R> implements Iterator<R> {
   MatchesIterator(this.parser, this.input, this.start, this.overlapping);
 
   final Parser<R> parser;

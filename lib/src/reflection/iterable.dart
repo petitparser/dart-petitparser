@@ -23,7 +23,7 @@ class _ParserIterable extends Iterable<Parser> {
   Iterator<Parser> get iterator => _ParserIterator(root);
 }
 
-class _ParserIterator extends Iterator<Parser> {
+class _ParserIterator implements Iterator<Parser> {
   _ParserIterator(Parser root)
       : todo = [root],
         seen = {root};
