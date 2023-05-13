@@ -1,4 +1,4 @@
-import '../../context/failure.dart';
+import '../../core/result.dart';
 
 /// Function definition that joins parse [Failure] instances.
 typedef FailureJoiner<R> = Failure<R> Function(

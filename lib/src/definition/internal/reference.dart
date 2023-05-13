@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../../context/context.dart';
-import '../../context/result.dart';
+import '../../core/context.dart';
 import '../../core/parser.dart';
+import '../../core/result.dart';
 import '../../parser/utils/resolvable.dart';
 
 /// Internal implementation of a reference parser.

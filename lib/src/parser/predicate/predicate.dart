@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../../context/context.dart';
-import '../../context/result.dart';
+import '../../core/context.dart';
 import '../../core/parser.dart';
+import '../../core/result.dart';
 import '../../shared/types.dart';
 
 /// Returns a parser that reads input of the specified [length], accepts

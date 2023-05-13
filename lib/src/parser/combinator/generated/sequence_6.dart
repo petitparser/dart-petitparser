@@ -2,9 +2,9 @@
 
 import 'package:meta/meta.dart';
 
-import '../../../context/context.dart';
-import '../../../context/result.dart';
+import '../../../core/context.dart';
 import '../../../core/parser.dart';
+import '../../../core/result.dart';
 import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';

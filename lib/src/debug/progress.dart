@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../context/context.dart';
+import '../core/context.dart';
 import '../core/parser.dart';
 import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';

@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../context/failure.dart';
+import 'result.dart';
 
 /// An exception raised in case of a parse error.
 @immutable

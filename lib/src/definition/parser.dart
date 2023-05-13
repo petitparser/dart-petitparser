@@ -2,8 +2,8 @@
 
 import 'package:meta/meta.dart';
 
-import '../context/context.dart';
-import '../context/result.dart';
+import '../core/context.dart';
+import '../core/result.dart';
 import '../parser/combinator/delegate.dart';
 import 'grammar.dart';
 

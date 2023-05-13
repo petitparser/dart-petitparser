@@ -1,10 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../context/context.dart';
-import '../context/failure.dart';
-import '../context/result.dart';
-import '../context/success.dart';
 import '../shared/annotations.dart';
+import 'context.dart';
+import 'result.dart';
 
 /// Abstract base class of all parsers that produce a parse result of type [R].
 @optionalTypeArgs

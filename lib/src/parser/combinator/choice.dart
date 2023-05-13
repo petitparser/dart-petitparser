@@ -1,9 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../../context/context.dart';
-import '../../context/failure.dart';
-import '../../context/result.dart';
+import '../../core/context.dart';
 import '../../core/parser.dart';
+import '../../core/result.dart';
 import '../utils/failure_joiner.dart';
 import 'list.dart';
 

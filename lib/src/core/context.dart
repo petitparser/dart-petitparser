@@ -1,9 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../core/token.dart';
 import '../shared/annotations.dart';
-import 'failure.dart';
-import 'success.dart';
+import 'result.dart';
+import 'token.dart';
 
 /// An immutable parse context.
 @immutable
