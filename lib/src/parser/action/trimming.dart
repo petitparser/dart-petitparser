@@ -46,9 +46,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
 
     // Consume the delegate:
     final result = delegate.parseOn(context);
-    if (result.isFailure) {
-      return result;
-    }
+    if (result case Failure()) return result;
 
     // Trim the right part:
     final after = _trim(right, buffer, result.position);

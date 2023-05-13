@@ -30,12 +30,12 @@ Parser buildParser() {
 void main(List<String> arguments) {
   final parser = buildParser();
   final input = arguments.join(' ');
-  final result = parser.parse(input);
-  if (result.isSuccess) {
-    stdout.writeln(' = ${result.value}');
-  } else {
-    stderr.writeln(input);
-    stderr.writeln('${' ' * (result.position - 1)}^-- ${result.message}');
-    exit(1);
+  switch (parser.parse(input)) {
+    case Success(value: final value):
+      stdout.writeln(' = $value');
+    case Failure(position: final position, message: final message):
+      stderr.writeln(input);
+      stderr.writeln('${' ' * (position - 1)}^-- $message');
+      exit(1);
   }
 }

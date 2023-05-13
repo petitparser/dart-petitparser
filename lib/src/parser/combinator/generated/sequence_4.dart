@@ -36,11 +36,11 @@ extension RecordOfParserExtension4<R1, R2, R3, R4> on (
   /// sequence and returns a [Record] with 4 parse results.
   ///
   /// For example,
-  /// the parser `(char('a'), char('b'), char('c'), char('d')).toParser()`
+  /// the parser `(char('a'), char('b'), char('c'), char('d')).toSequenceParser()`
   /// returns `('a', 'b', 'c', 'd')`
   /// for the input `'abcd'`.
   @useResult
-  Parser<(R1, R2, R3, R4)> toParser() =>
+  Parser<(R1, R2, R3, R4)> toSequenceParser() =>
       SequenceParser4<R1, R2, R3, R4>($1, $2, $3, $4);
 }
 
@@ -101,31 +101,31 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
 
 /// Extension on a parsed [Record] with 4 values.
 extension Parsed4ResultsRecord<T1, T2, T3, T4> on (T1, T2, T3, T4) {
-  /// Returns the first element of this sequence.
+  /// Returns the first element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
-  /// Returns the second element of this sequence.
+  /// Returns the second element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
-  /// Returns the third element of this sequence.
+  /// Returns the third element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
-  /// Returns the fourth element of this sequence.
+  /// Returns the fourth element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get fourth => $4;
 
-  /// Returns the last element of this sequence.
+  /// Returns the last element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $4')
@@ -142,5 +142,5 @@ extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult
   Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback) =>
-      map((sequence) => sequence.map(callback));
+      map((record) => record.map(callback));
 }

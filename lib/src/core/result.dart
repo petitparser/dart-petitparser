@@ -29,7 +29,6 @@ sealed class Result<R> extends Context {
 }
 
 /// An immutable successful parse result.
-@immutable
 class Success<R> extends Result<R> {
   const Success(super.buffer, super.position, this.value);
 
@@ -48,7 +47,6 @@ class Success<R> extends Result<R> {
 }
 
 /// An immutable failed parse result.
-@immutable
 class Failure<R> extends Result<R> {
   const Failure(super.buffer, super.position, this.message);
 

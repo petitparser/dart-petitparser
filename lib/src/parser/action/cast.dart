@@ -18,11 +18,10 @@ class CastParser<R, S> extends DelegateParser<R, S> {
   @override
   Result<S> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return result.success(result.value as S);
-    } else {
-      return result.failure(result.message);
-    }
+    return switch (result) {
+      Success(value: final value) => result.success(value as S),
+      Failure(message: final message) => result.failure(message)
+    };
   }
 
   @override

@@ -43,11 +43,11 @@ extension RecordOfParserExtension7<R1, R2, R3, R4, R5, R6, R7> on (
   /// sequence and returns a [Record] with 7 parse results.
   ///
   /// For example,
-  /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g')).toParser()`
+  /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g')).toSequenceParser()`
   /// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g')`
   /// for the input `'abcdefg'`.
   @useResult
-  Parser<(R1, R2, R3, R4, R5, R6, R7)> toParser() =>
+  Parser<(R1, R2, R3, R4, R5, R6, R7)> toSequenceParser() =>
       SequenceParser7<R1, R2, R3, R4, R5, R6, R7>($1, $2, $3, $4, $5, $6, $7);
 }
 
@@ -144,49 +144,49 @@ extension Parsed7ResultsRecord<T1, T2, T3, T4, T5, T6, T7> on (
   T6,
   T7
 ) {
-  /// Returns the first element of this sequence.
+  /// Returns the first element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
-  /// Returns the second element of this sequence.
+  /// Returns the second element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
-  /// Returns the third element of this sequence.
+  /// Returns the third element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
-  /// Returns the fourth element of this sequence.
+  /// Returns the fourth element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get fourth => $4;
 
-  /// Returns the fifth element of this sequence.
+  /// Returns the fifth element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $5')
   T5 get fifth => $5;
 
-  /// Returns the sixth element of this sequence.
+  /// Returns the sixth element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $6')
   T6 get sixth => $6;
 
-  /// Returns the seventh element of this sequence.
+  /// Returns the seventh element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $7')
   T7 get seventh => $7;
 
-  /// Returns the last element of this sequence.
+  /// Returns the last element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $7')
@@ -205,5 +205,5 @@ extension RecordParserExtension7<T1, T2, T3, T4, T5, T6, T7>
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult
   Parser<R> map7<R>(R Function(T1, T2, T3, T4, T5, T6, T7) callback) =>
-      map((sequence) => sequence.map(callback));
+      map((record) => record.map(callback));
 }

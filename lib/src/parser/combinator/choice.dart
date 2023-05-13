@@ -27,13 +27,18 @@ extension ChoiceParserExtension on Parser {
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
   @useResult
-  ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) {
-    final self = this;
-    return self is ChoiceParser
-        ? ChoiceParser([...self.children, other],
-            failureJoiner: failureJoiner ?? self.failureJoiner)
-        : ChoiceParser([this, other], failureJoiner: failureJoiner);
-  }
+  ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) =>
+      switch (this) {
+        ChoiceParser(
+          children: final children,
+          failureJoiner: final thisFailureJoiner
+        ) =>
+          [
+            ...children,
+            other
+          ].toChoiceParser(failureJoiner: failureJoiner ?? thisFailureJoiner),
+        _ => [this, other].toChoiceParser(failureJoiner: failureJoiner)
+      };
 
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [or] for details.
@@ -61,10 +66,11 @@ class ChoiceParser<R> extends ListParser<R, R> {
     Failure<R>? failure;
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(context);
-      if (result is Failure<R>) {
-        failure = failure == null ? result : failureJoiner(failure, result);
-      } else {
-        return result;
+      switch (result) {
+        case Success():
+          return result;
+        case Failure():
+          failure = failure == null ? result : failureJoiner(failure, result);
       }
     }
     return failure!;

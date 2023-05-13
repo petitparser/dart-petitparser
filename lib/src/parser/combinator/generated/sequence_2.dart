@@ -29,11 +29,11 @@ extension RecordOfParserExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
   /// sequence and returns a [Record] with 2 parse results.
   ///
   /// For example,
-  /// the parser `(char('a'), char('b')).toParser()`
+  /// the parser `(char('a'), char('b')).toSequenceParser()`
   /// returns `('a', 'b')`
   /// for the input `'ab'`.
   @useResult
-  Parser<(R1, R2)> toParser() => SequenceParser2<R1, R2>($1, $2);
+  Parser<(R1, R2)> toSequenceParser() => SequenceParser2<R1, R2>($1, $2);
 }
 
 /// A parser that consumes a sequence of 2 parsers and returns a [Record] with
@@ -79,19 +79,19 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
 
 /// Extension on a parsed [Record] with 2 values.
 extension Parsed2ResultsRecord<T1, T2> on (T1, T2) {
-  /// Returns the first element of this sequence.
+  /// Returns the first element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
-  /// Returns the second element of this sequence.
+  /// Returns the second element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
-  /// Returns the last element of this sequence.
+  /// Returns the last element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $2')
@@ -108,5 +108,5 @@ extension RecordParserExtension2<T1, T2> on Parser<(T1, T2)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult
   Parser<R> map2<R>(R Function(T1, T2) callback) =>
-      map((sequence) => sequence.map(callback));
+      map((record) => record.map(callback));
 }

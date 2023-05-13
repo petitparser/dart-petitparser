@@ -65,15 +65,19 @@ final _single = any().map(
     (element) => RangeCharPredicate(toCharCode(element), toCharCode(element)));
 
 /// Parser that reads a character range.
-final _range = seq3(any(), char('-'), any()).map3((start, _, stop) =>
-    RangeCharPredicate(toCharCode(start), toCharCode(stop)));
+final _range = (any(), char('-'), any()).toSequenceParser().map3(
+    (start, _, stop) =>
+        RangeCharPredicate(toCharCode(start), toCharCode(stop)));
 
 /// Parser that reads a sequence of single characters or ranges.
-final _sequence = _range.or(_single).star().map(
-    (predicates) => optimizedRanges(predicates.cast<RangeCharPredicate>()));
+final _sequence = [_range, _single]
+    .toChoiceParser()
+    .star()
+    .map((predicates) => optimizedRanges(predicates));
 
 /// Parser that reads a possibly negated sequence of predicates.
-final _pattern = seq2(char('^').optional(), _sequence)
+final _pattern = (char('^').optional(), _sequence)
+    .toSequenceParser()
     .map2((negation, sequence) => negation == null
         ? sequence
         : sequence is ConstantCharPredicate

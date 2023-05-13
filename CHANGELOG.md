@@ -4,8 +4,8 @@
 
 - Dart 3.0 requirement.
 - Use Dart Records for typed sequences:
-  - Add convenience converter: `(char('a'), char('b')).toParser()`
-  - And extension methods to emulate the custom `Sequence` classes.
+  - Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
+  - And extension methods to emulate the custom `Sequence` classes, deprecate old accessor names.
 - Make `Result` a sealed class to be able to pattern match `Success` and `Failure`.
 
 ## 5.4.0

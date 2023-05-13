@@ -24,20 +24,30 @@ extension SequenceParserExtension on Parser {
   ///
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
   /// letter followed by a digit and another letter. The parse result of the
-  /// input string `'a1b'` is the list `['a', '1', 'b']`.
+  /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
   @useResult
-  Parser<List> seq(Parser other) => this is SequenceParser
-      ? [...children, other].toSequenceParser()
-      : [this, other].toSequenceParser();
+  Parser<List> seq(Parser other) => switch (this) {
+        SequenceParser(children: final children) =>
+          [...children, other].toSequenceParser(),
+        _ => [this, other].toSequenceParser()
+      };
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [seq] for details.
+  ///
+  /// For example, the parser `letter() & digit() & letter()` accepts a
+  /// letter followed by a digit and another letter. The parse result of the
+  /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
   @useResult
   Parser<List> operator &(Parser other) => seq(other);
 }
 
 extension SequenceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a sequence of parsers.
+  ///
+  /// For example, the parser `[letter(), digit(), letter()].toSequenceParser()`
+  /// accepts a letter followed by a digit and another letter. The parse result
+  /// of the input string `'a1b'` is the list `<String>['a', '1', 'b']`.
   @useResult
   Parser<List<R>> toSequenceParser() => SequenceParser<R>(this);
 }
@@ -53,11 +63,13 @@ class SequenceParser<R> extends ListParser<R, List<R>>
     final elements = <R>[];
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
+      switch (result) {
+        case Success(value: final value):
+          elements.add(value);
+          current = result;
+        case Failure(message: final message):
+          return result.failure(message);
       }
-      elements.add(result.value);
-      current = result;
     }
     return current.success(elements);
   }

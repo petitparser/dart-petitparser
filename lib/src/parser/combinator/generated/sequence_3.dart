@@ -34,11 +34,12 @@ extension RecordOfParserExtension3<R1, R2, R3> on (
   /// sequence and returns a [Record] with 3 parse results.
   ///
   /// For example,
-  /// the parser `(char('a'), char('b'), char('c')).toParser()`
+  /// the parser `(char('a'), char('b'), char('c')).toSequenceParser()`
   /// returns `('a', 'b', 'c')`
   /// for the input `'abc'`.
   @useResult
-  Parser<(R1, R2, R3)> toParser() => SequenceParser3<R1, R2, R3>($1, $2, $3);
+  Parser<(R1, R2, R3)> toSequenceParser() =>
+      SequenceParser3<R1, R2, R3>($1, $2, $3);
 }
 
 /// A parser that consumes a sequence of 3 parsers and returns a [Record] with
@@ -91,25 +92,25 @@ class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
 
 /// Extension on a parsed [Record] with 3 values.
 extension Parsed3ResultsRecord<T1, T2, T3> on (T1, T2, T3) {
-  /// Returns the first element of this sequence.
+  /// Returns the first element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
-  /// Returns the second element of this sequence.
+  /// Returns the second element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
-  /// Returns the third element of this sequence.
+  /// Returns the third element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
-  /// Returns the last element of this sequence.
+  /// Returns the last element of this record.
   @inlineVm
   @inlineJs
   @Deprecated(r'Instead use the canonical accessor $3')
@@ -126,5 +127,5 @@ extension RecordParserExtension3<T1, T2, T3> on Parser<(T1, T2, T3)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult
   Parser<R> map3<R>(R Function(T1, T2, T3) callback) =>
-      map((sequence) => sequence.map(callback));
+      map((record) => record.map(callback));
 }

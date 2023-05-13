@@ -9,11 +9,11 @@ import '../utils/matchers.dart';
 void main() {
   group('seq2', () {
     final parser = seq2(char('a'), char('b'));
-    const sequence = ('a', 'b');
+    const record = ('a', 'b');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('ab', result: sequence));
-      expect(parser, isParseSuccess('ab*', result: sequence, position: 2));
+      expect(parser, isParseSuccess('ab', result: record));
+      expect(parser, isParseSuccess('ab*', result: record, position: 2));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -25,13 +25,13 @@ void main() {
           parser, isParseFailure('a*', message: '"b" expected', position: 1));
     });
   });
-  group('converter2', () {
-    final parser = (char('a'), char('b')).toParser();
-    const sequence = ('a', 'b');
+  group('toSequenceParser()', () {
+    final parser = (char('a'), char('b')).toSequenceParser();
+    const record = ('a', 'b');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('ab', result: sequence));
-      expect(parser, isParseSuccess('ab*', result: sequence, position: 2));
+      expect(parser, isParseSuccess('ab', result: record));
+      expect(parser, isParseSuccess('ab*', result: record, position: 2));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -60,50 +60,50 @@ void main() {
           parser, isParseFailure('a*', message: '"b" expected', position: 1));
     });
   });
-  group('record2', () {
-    const sequence = ('a', 'b');
+  group('record', () {
+    const record = ('a', 'b');
     const other = ('b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
+      expect(record.second, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'b');
+      expect(record.last, 'b');
     });
     test('map', () {
-      expect(sequence.map((a, b) {
+      expect(record.map((a, b) {
         expect(a, 'a');
         expect(b, 'b');
         return 42;
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b)'));
+      expect(record.toString(), endsWith('(a, b)'));
       expect(other.toString(), endsWith('(b, a)'));
     });
   });
   group('seq3', () {
     final parser = seq3(char('a'), char('b'), char('c'));
-    const sequence = ('a', 'b', 'c');
+    const record = ('a', 'b', 'c');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abc', result: sequence));
-      expect(parser, isParseSuccess('abc*', result: sequence, position: 3));
+      expect(parser, isParseSuccess('abc', result: record));
+      expect(parser, isParseSuccess('abc*', result: record, position: 3));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -121,13 +121,13 @@ void main() {
           parser, isParseFailure('ab*', message: '"c" expected', position: 2));
     });
   });
-  group('converter3', () {
-    final parser = (char('a'), char('b'), char('c')).toParser();
-    const sequence = ('a', 'b', 'c');
+  group('toSequenceParser()', () {
+    final parser = (char('a'), char('b'), char('c')).toSequenceParser();
+    const record = ('a', 'b', 'c');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abc', result: sequence));
-      expect(parser, isParseSuccess('abc*', result: sequence, position: 3));
+      expect(parser, isParseSuccess('abc', result: record));
+      expect(parser, isParseSuccess('abc*', result: record, position: 3));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -169,24 +169,24 @@ void main() {
           parser, isParseFailure('ab*', message: '"c" expected', position: 2));
     });
   });
-  group('record3', () {
-    const sequence = ('a', 'b', 'c');
+  group('record', () {
+    const record = ('a', 'b', 'c');
     const other = ('c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
+      expect(record.third, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'c');
+      expect(record.last, 'c');
     });
     test('map', () {
-      expect(sequence.map((a, b, c) {
+      expect(record.map((a, b, c) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -194,29 +194,29 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c)'));
+      expect(record.toString(), endsWith('(a, b, c)'));
       expect(other.toString(), endsWith('(c, b, a)'));
     });
   });
   group('seq4', () {
     final parser = seq4(char('a'), char('b'), char('c'), char('d'));
-    const sequence = ('a', 'b', 'c', 'd');
+    const record = ('a', 'b', 'c', 'd');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcd', result: sequence));
-      expect(parser, isParseSuccess('abcd*', result: sequence, position: 4));
+      expect(parser, isParseSuccess('abcd', result: record));
+      expect(parser, isParseSuccess('abcd*', result: record, position: 4));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -240,13 +240,14 @@ void main() {
           parser, isParseFailure('abc*', message: '"d" expected', position: 3));
     });
   });
-  group('converter4', () {
-    final parser = (char('a'), char('b'), char('c'), char('d')).toParser();
-    const sequence = ('a', 'b', 'c', 'd');
+  group('toSequenceParser()', () {
+    final parser =
+        (char('a'), char('b'), char('c'), char('d')).toSequenceParser();
+    const record = ('a', 'b', 'c', 'd');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcd', result: sequence));
-      expect(parser, isParseSuccess('abcd*', result: sequence, position: 4));
+      expect(parser, isParseSuccess('abcd', result: record));
+      expect(parser, isParseSuccess('abcd*', result: record, position: 4));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -300,27 +301,27 @@ void main() {
           parser, isParseFailure('abc*', message: '"d" expected', position: 3));
     });
   });
-  group('record4', () {
-    const sequence = ('a', 'b', 'c', 'd');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd');
     const other = ('d', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
+      expect(record.fourth, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'd');
+      expect(record.last, 'd');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d) {
+      expect(record.map((a, b, c, d) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -329,29 +330,29 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d)'));
+      expect(record.toString(), endsWith('(a, b, c, d)'));
       expect(other.toString(), endsWith('(d, c, b, a)'));
     });
   });
   group('seq5', () {
     final parser = seq5(char('a'), char('b'), char('c'), char('d'), char('e'));
-    const sequence = ('a', 'b', 'c', 'd', 'e');
+    const record = ('a', 'b', 'c', 'd', 'e');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcde', result: sequence));
-      expect(parser, isParseSuccess('abcde*', result: sequence, position: 5));
+      expect(parser, isParseSuccess('abcde', result: record));
+      expect(parser, isParseSuccess('abcde*', result: record, position: 5));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -381,14 +382,14 @@ void main() {
           isParseFailure('abcd*', message: '"e" expected', position: 4));
     });
   });
-  group('converter5', () {
-    final parser =
-        (char('a'), char('b'), char('c'), char('d'), char('e')).toParser();
-    const sequence = ('a', 'b', 'c', 'd', 'e');
+  group('toSequenceParser()', () {
+    final parser = (char('a'), char('b'), char('c'), char('d'), char('e'))
+        .toSequenceParser();
+    const record = ('a', 'b', 'c', 'd', 'e');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcde', result: sequence));
-      expect(parser, isParseSuccess('abcde*', result: sequence, position: 5));
+      expect(parser, isParseSuccess('abcde', result: record));
+      expect(parser, isParseSuccess('abcde*', result: record, position: 5));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -454,30 +455,30 @@ void main() {
           isParseFailure('abcd*', message: '"e" expected', position: 4));
     });
   });
-  group('record5', () {
-    const sequence = ('a', 'b', 'c', 'd', 'e');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd', 'e');
     const other = ('e', 'd', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
-      expect(sequence.$5, 'e');
+      expect(record.fourth, 'd');
+      expect(record.$5, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fifth, 'e');
+      expect(record.fifth, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'e');
+      expect(record.last, 'e');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d, e) {
+      expect(record.map((a, b, c, d, e) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -487,30 +488,30 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d, e)'));
+      expect(record.toString(), endsWith('(a, b, c, d, e)'));
       expect(other.toString(), endsWith('(e, d, c, b, a)'));
     });
   });
   group('seq6', () {
     final parser =
         seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'));
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f');
+    const record = ('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdef', result: sequence));
-      expect(parser, isParseSuccess('abcdef*', result: sequence, position: 6));
+      expect(parser, isParseSuccess('abcdef', result: record));
+      expect(parser, isParseSuccess('abcdef*', result: record, position: 6));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -546,7 +547,7 @@ void main() {
           isParseFailure('abcde*', message: '"f" expected', position: 5));
     });
   });
-  group('converter6', () {
+  group('toSequenceParser()', () {
     final parser = (
       char('a'),
       char('b'),
@@ -555,12 +556,12 @@ void main() {
       char('e'),
       char('f')
     )
-        .toParser();
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f');
+        .toSequenceParser();
+    const record = ('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdef', result: sequence));
-      expect(parser, isParseSuccess('abcdef*', result: sequence, position: 6));
+      expect(parser, isParseSuccess('abcdef', result: record));
+      expect(parser, isParseSuccess('abcdef*', result: record, position: 6));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -639,33 +640,33 @@ void main() {
           isParseFailure('abcde*', message: '"f" expected', position: 5));
     });
   });
-  group('record6', () {
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd', 'e', 'f');
     const other = ('f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
-      expect(sequence.$5, 'e');
+      expect(record.fourth, 'd');
+      expect(record.$5, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fifth, 'e');
-      expect(sequence.$6, 'f');
+      expect(record.fifth, 'e');
+      expect(record.$6, 'f');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.sixth, 'f');
+      expect(record.sixth, 'f');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'f');
+      expect(record.last, 'f');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d, e, f) {
+      expect(record.map((a, b, c, d, e, f) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -676,30 +677,30 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d, e, f)'));
+      expect(record.toString(), endsWith('(a, b, c, d, e, f)'));
       expect(other.toString(), endsWith('(f, e, d, c, b, a)'));
     });
   });
   group('seq7', () {
     final parser = seq7(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'));
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefg', result: sequence));
-      expect(parser, isParseSuccess('abcdefg*', result: sequence, position: 7));
+      expect(parser, isParseSuccess('abcdefg', result: record));
+      expect(parser, isParseSuccess('abcdefg*', result: record, position: 7));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -741,7 +742,7 @@ void main() {
           isParseFailure('abcdef*', message: '"g" expected', position: 6));
     });
   });
-  group('converter7', () {
+  group('toSequenceParser()', () {
     final parser = (
       char('a'),
       char('b'),
@@ -751,12 +752,12 @@ void main() {
       char('f'),
       char('g')
     )
-        .toParser();
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
+        .toSequenceParser();
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefg', result: sequence));
-      expect(parser, isParseSuccess('abcdefg*', result: sequence, position: 7));
+      expect(parser, isParseSuccess('abcdefg', result: record));
+      expect(parser, isParseSuccess('abcdefg*', result: record, position: 7));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -848,36 +849,36 @@ void main() {
           isParseFailure('abcdef*', message: '"g" expected', position: 6));
     });
   });
-  group('record7', () {
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
     const other = ('g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
-      expect(sequence.$5, 'e');
+      expect(record.fourth, 'd');
+      expect(record.$5, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fifth, 'e');
-      expect(sequence.$6, 'f');
+      expect(record.fifth, 'e');
+      expect(record.$6, 'f');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.sixth, 'f');
-      expect(sequence.$7, 'g');
+      expect(record.sixth, 'f');
+      expect(record.$7, 'g');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.seventh, 'g');
+      expect(record.seventh, 'g');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'g');
+      expect(record.last, 'g');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d, e, f, g) {
+      expect(record.map((a, b, c, d, e, f, g) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -889,31 +890,30 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d, e, f, g)'));
+      expect(record.toString(), endsWith('(a, b, c, d, e, f, g)'));
       expect(other.toString(), endsWith('(g, f, e, d, c, b, a)'));
     });
   });
   group('seq8', () {
     final parser = seq8(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'), char('h'));
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', result: sequence));
-      expect(
-          parser, isParseSuccess('abcdefgh*', result: sequence, position: 8));
+      expect(parser, isParseSuccess('abcdefgh', result: record));
+      expect(parser, isParseSuccess('abcdefgh*', result: record, position: 8));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -961,7 +961,7 @@ void main() {
           isParseFailure('abcdefg*', message: '"h" expected', position: 7));
     });
   });
-  group('converter8', () {
+  group('toSequenceParser()', () {
     final parser = (
       char('a'),
       char('b'),
@@ -972,13 +972,12 @@ void main() {
       char('g'),
       char('h')
     )
-        .toParser();
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+        .toSequenceParser();
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', result: sequence));
-      expect(
-          parser, isParseSuccess('abcdefgh*', result: sequence, position: 8));
+      expect(parser, isParseSuccess('abcdefgh', result: record));
+      expect(parser, isParseSuccess('abcdefgh*', result: record, position: 8));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -1082,39 +1081,39 @@ void main() {
           isParseFailure('abcdefg*', message: '"h" expected', position: 7));
     });
   });
-  group('record8', () {
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     const other = ('h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
-      expect(sequence.$5, 'e');
+      expect(record.fourth, 'd');
+      expect(record.$5, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fifth, 'e');
-      expect(sequence.$6, 'f');
+      expect(record.fifth, 'e');
+      expect(record.$6, 'f');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.sixth, 'f');
-      expect(sequence.$7, 'g');
+      expect(record.sixth, 'f');
+      expect(record.$7, 'g');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.seventh, 'g');
-      expect(sequence.$8, 'h');
+      expect(record.seventh, 'g');
+      expect(record.$8, 'h');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.eighth, 'h');
+      expect(record.eighth, 'h');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'h');
+      expect(record.last, 'h');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d, e, f, g, h) {
+      expect(record.map((a, b, c, d, e, f, g, h) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -1127,31 +1126,30 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d, e, f, g, h)'));
+      expect(record.toString(), endsWith('(a, b, c, d, e, f, g, h)'));
       expect(other.toString(), endsWith('(h, g, f, e, d, c, b, a)'));
     });
   });
   group('seq9', () {
     final parser = seq9(char('a'), char('b'), char('c'), char('d'), char('e'),
         char('f'), char('g'), char('h'), char('i'));
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', result: sequence));
-      expect(
-          parser, isParseSuccess('abcdefghi*', result: sequence, position: 9));
+      expect(parser, isParseSuccess('abcdefghi', result: record));
+      expect(parser, isParseSuccess('abcdefghi*', result: record, position: 9));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -1205,7 +1203,7 @@ void main() {
           isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
     });
   });
-  group('converter9', () {
+  group('toSequenceParser()', () {
     final parser = (
       char('a'),
       char('b'),
@@ -1217,13 +1215,12 @@ void main() {
       char('h'),
       char('i')
     )
-        .toParser();
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
+        .toSequenceParser();
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', result: sequence));
-      expect(
-          parser, isParseSuccess('abcdefghi*', result: sequence, position: 9));
+      expect(parser, isParseSuccess('abcdefghi', result: record));
+      expect(parser, isParseSuccess('abcdefghi*', result: record, position: 9));
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -1339,42 +1336,42 @@ void main() {
           isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
     });
   });
-  group('record9', () {
-    const sequence = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
+  group('record', () {
+    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     const other = ('i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
-      expect(sequence.$1, 'a');
+      expect(record.$1, 'a');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.first, 'a');
-      expect(sequence.$2, 'b');
+      expect(record.first, 'a');
+      expect(record.$2, 'b');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.second, 'b');
-      expect(sequence.$3, 'c');
+      expect(record.second, 'b');
+      expect(record.$3, 'c');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.third, 'c');
-      expect(sequence.$4, 'd');
+      expect(record.third, 'c');
+      expect(record.$4, 'd');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fourth, 'd');
-      expect(sequence.$5, 'e');
+      expect(record.fourth, 'd');
+      expect(record.$5, 'e');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.fifth, 'e');
-      expect(sequence.$6, 'f');
+      expect(record.fifth, 'e');
+      expect(record.$6, 'f');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.sixth, 'f');
-      expect(sequence.$7, 'g');
+      expect(record.sixth, 'f');
+      expect(record.$7, 'g');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.seventh, 'g');
-      expect(sequence.$8, 'h');
+      expect(record.seventh, 'g');
+      expect(record.$8, 'h');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.eighth, 'h');
-      expect(sequence.$9, 'i');
+      expect(record.eighth, 'h');
+      expect(record.$9, 'i');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.ninth, 'i');
+      expect(record.ninth, 'i');
       // ignore: deprecated_member_use_from_same_package
-      expect(sequence.last, 'i');
+      expect(record.last, 'i');
     });
     test('map', () {
-      expect(sequence.map((a, b, c, d, e, f, g, h, i) {
+      expect(record.map((a, b, c, d, e, f, g, h, i) {
         expect(a, 'a');
         expect(b, 'b');
         expect(c, 'c');
@@ -1388,19 +1385,19 @@ void main() {
       }), 42);
     });
     test('equals', () {
-      expect(sequence, sequence);
-      expect(sequence, isNot(other));
-      expect(other, isNot(sequence));
+      expect(record, record);
+      expect(record, isNot(other));
+      expect(other, isNot(record));
       expect(other, other);
     });
     test('hashCode', () {
-      expect(sequence.hashCode, sequence.hashCode);
-      expect(sequence.hashCode, isNot(other.hashCode));
-      expect(other.hashCode, isNot(sequence.hashCode));
+      expect(record.hashCode, record.hashCode);
+      expect(record.hashCode, isNot(other.hashCode));
+      expect(other.hashCode, isNot(record.hashCode));
       expect(other.hashCode, other.hashCode);
     });
     test('toString', () {
-      expect(sequence.toString(), endsWith('(a, b, c, d, e, f, g, h, i)'));
+      expect(record.toString(), endsWith('(a, b, c, d, e, f, g, h, i)'));
       expect(other.toString(), endsWith('(i, h, g, f, e, d, c, b, a)'));
     });
   });

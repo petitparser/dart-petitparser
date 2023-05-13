@@ -52,9 +52,9 @@ Future<void> generateImplementation(int index) async {
   generateWarning(out);
   out.writeln('import \'package:meta/meta.dart\';');
   out.writeln();
-  out.writeln('import \'../../../context/context.dart\';');
-  out.writeln('import \'../../../core/result.dart\';');
+  out.writeln('import \'../../../core/context.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
+  out.writeln('import \'../../../core/result.dart\';');
   out.writeln('import \'../../../shared/annotations.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
@@ -92,12 +92,12 @@ Future<void> generateImplementation(int index) async {
   out.writeln('///');
   out.writeln('/// For example,');
   out.writeln(
-      '/// the parser `(${characters.map((char) => 'char(\'$char\')').join(', ')}).toParser()`');
+      '/// the parser `(${characters.map((char) => 'char(\'$char\')').join(', ')}).toSequenceParser()`');
   out.writeln(
       '/// returns `(${characters.map((char) => '\'$char\'').join(', ')})`');
   out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
-  out.writeln('Parser<(${resultTypes.join(', ')})> toParser() => ');
+  out.writeln('Parser<(${resultTypes.join(', ')})> toSequenceParser() => ');
   out.writeln('SequenceParser$index<${resultTypes.join(', ')}>('
       '${valueNames.join(', ')});');
   out.writeln('}');
@@ -164,14 +164,14 @@ Future<void> generateImplementation(int index) async {
       'extension Parsed${index}ResultsRecord<${valueTypes.join(', ')}> on '
       '(${valueTypes.join(', ')}) {');
   for (var i = 0; i < index; i++) {
-    out.writeln('/// Returns the ${ordinalNames[i]} element of this sequence.');
+    out.writeln('/// Returns the ${ordinalNames[i]} element of this record.');
     out.writeln('@inlineVm @inlineJs');
     out.writeln('@Deprecated(r\'Instead use the canonical accessor '
         '${valueNames[i]}\')');
     out.writeln('${valueTypes[i]} get ${ordinalNames[i]} => ${valueNames[i]};');
     out.writeln();
   }
-  out.writeln('/// Returns the last element of this sequence.');
+  out.writeln('/// Returns the last element of this record.');
   out.writeln('@inlineVm @inlineJs');
   out.writeln('@Deprecated(r\'Instead use the canonical accessor '
       '${valueNames.last}\')');
@@ -195,7 +195,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('@useResult');
   out.writeln(
       'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
-      'map((sequence) => sequence.map(callback));');
+      'map((record) => record.map(callback));');
   out.writeln('}');
   out.writeln();
 
@@ -222,14 +222,14 @@ Future<void> generateTest() async {
     out.writeln('group(\'seq$i\', () {');
     out.writeln('final parser = seq$i('
         '${chars.map((each) => 'char(\'$each\')').join(', ')});');
-    out.writeln('const sequence = ('
+    out.writeln('const record = ('
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string\', result: sequence));');
+        'isParseSuccess(\'$string\', result: record));');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string*\', result: sequence, position: $i));');
+        'isParseSuccess(\'$string*\', result: record, position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
@@ -245,17 +245,17 @@ Future<void> generateTest() async {
     }
     out.writeln('});');
 
-    out.writeln('group(\'converter$i\', () {');
+    out.writeln('group(\'toSequenceParser()\', () {');
     out.writeln('final parser = ('
-        '${chars.map((each) => 'char(\'$each\')').join(', ')}).toParser();');
-    out.writeln('const sequence = ('
+        '${chars.map((each) => 'char(\'$each\')').join(', ')}).toSequenceParser();');
+    out.writeln('const record = ('
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string\', result: sequence));');
+        'isParseSuccess(\'$string\', result: record));');
     out.writeln('expect(parser, '
-        'isParseSuccess(\'$string*\', result: sequence, position: $i));');
+        'isParseSuccess(\'$string*\', result: record, position: $i));');
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
@@ -297,22 +297,22 @@ Future<void> generateTest() async {
     }
     out.writeln('});');
 
-    out.writeln('group(\'record$i\', () {');
-    out.writeln('const sequence = ('
+    out.writeln('group(\'record\', () {');
+    out.writeln('const record = ('
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('const other = ('
         '${chars.reversed.map((each) => '\'$each\'').join(', ')});');
     out.writeln('test(\'accessors\', () {');
     for (var j = 0; j < i; j++) {
-      out.writeln('expect(sequence.\$${j + 1}, \'${chars[j]}\');');
+      out.writeln('expect(record.\$${j + 1}, \'${chars[j]}\');');
       out.writeln(' // ignore: deprecated_member_use_from_same_package');
-      out.writeln('expect(sequence.${ordinals[j]}, \'${chars[j]}\');');
+      out.writeln('expect(record.${ordinals[j]}, \'${chars[j]}\');');
     }
     out.writeln(' // ignore: deprecated_member_use_from_same_package');
-    out.writeln('expect(sequence.last, \'${chars[i - 1]}\');');
+    out.writeln('expect(record.last, \'${chars[i - 1]}\');');
     out.writeln('});');
     out.writeln('test(\'map\', () {');
-    out.writeln('expect(sequence.map((${chars.join(', ')}) {');
+    out.writeln('expect(record.map((${chars.join(', ')}) {');
     for (var j = 0; j < i; j++) {
       out.writeln('expect(${chars[j]}, \'${chars[j]}\');');
     }
@@ -320,19 +320,19 @@ Future<void> generateTest() async {
     out.writeln('}), 42);');
     out.writeln('});');
     out.writeln('test(\'equals\', () {');
-    out.writeln('expect(sequence, sequence);');
-    out.writeln('expect(sequence, isNot(other));');
-    out.writeln('expect(other, isNot(sequence));');
+    out.writeln('expect(record, record);');
+    out.writeln('expect(record, isNot(other));');
+    out.writeln('expect(other, isNot(record));');
     out.writeln('expect(other, other);');
     out.writeln('});');
     out.writeln('test(\'hashCode\', () {');
-    out.writeln('expect(sequence.hashCode, sequence.hashCode);');
-    out.writeln('expect(sequence.hashCode, isNot(other.hashCode));');
-    out.writeln('expect(other.hashCode, isNot(sequence.hashCode));');
+    out.writeln('expect(record.hashCode, record.hashCode);');
+    out.writeln('expect(record.hashCode, isNot(other.hashCode));');
+    out.writeln('expect(other.hashCode, isNot(record.hashCode));');
     out.writeln('expect(other.hashCode, other.hashCode);');
     out.writeln('});');
     out.writeln('test(\'toString\', () {');
-    out.writeln('expect(sequence.toString(), '
+    out.writeln('expect(record.toString(), '
         'endsWith(\'(${chars.join(', ')})\'));');
     out.writeln('expect(other.toString(), '
         'endsWith(\'(${chars.reversed.join(', ')})\'));');
