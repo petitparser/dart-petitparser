@@ -94,14 +94,14 @@ void main() {
     final id2 = id.parse('f12');
     expect(
         id1.value,
-        isA<Sequence2>()
-            .having((sequence) => sequence.first, 'first', 'y')
-            .having((sequence) => sequence.second, 'second', ['e', 'a', 'h']));
+        isA<(String, List<String>)>()
+            .having((sequence) => sequence.$1, 'first', 'y')
+            .having((sequence) => sequence.$2, 'second', ['e', 'a', 'h']));
     expect(
         id2.value,
-        isA<Sequence2>()
-            .having((sequence) => sequence.first, 'first', 'f')
-            .having((sequence) => sequence.second, 'second', ['1', '2']));
+        isA<(String, List<String>)>()
+            .having((sequence) => sequence.$1, 'first', 'f')
+            .having((sequence) => sequence.$2, 'second', ['1', '2']));
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
     expect(id3.position, 0);

@@ -44,7 +44,10 @@ Future<void> generateImplementation(int index) async {
   final resultTypes = generateValues('R', index);
   final resultNames = generateValues('result', index);
   final valueTypes = generateValues('T', index);
-  final valueNames = ordinals.sublist(0, index);
+  final valueNames = generateValues('\$', index);
+  final ordinalNames = ordinals.sublist(0, index);
+  final characters =
+      List.generate(index, (i) => String.fromCharCode('a'.codeUnitAt(0) + i));
 
   generateWarning(out);
   out.writeln('import \'package:meta/meta.dart\';');
@@ -58,28 +61,54 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
 
   // Constructor function
-  out.writeln('/// Creates a parser that consumes a sequence of $index parsers '
-      'and returns a ');
-  out.writeln('/// typed sequence [Sequence$index].');
+  out.writeln('/// Creates a [Parser] that runs the $index parsers passed as '
+      'argument in sequence ');
+  out.writeln('/// and returns a [Record] with the parsed results.');
+  out.writeln('///');
+  out.writeln('/// For example,');
+  out.writeln(
+      '/// the parser `seq$index(${characters.map((char) => 'char(\'$char\')').join(', ')})`');
+  out.writeln(
+      '/// returns `(${characters.map((char) => '\'$char\'').join(', ')})`');
+  out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
-  out.writeln('Parser<Sequence$index<${resultTypes.join(', ')}>> '
+  out.writeln('Parser<(${resultTypes.join(', ')})> '
       'seq$index<${resultTypes.join(', ')}>(');
   for (var i = 0; i < index; i++) {
     out.writeln('Parser<${resultTypes[i]}> ${parserNames[i]},');
   }
-  out.writeln(') => SequenceParser$index<${resultTypes.join(', ')}>(');
-  for (var i = 0; i < index; i++) {
-    out.writeln('${parserNames[i]},');
-  }
-  out.writeln(');');
+  out.writeln(') => SequenceParser$index<${resultTypes.join(', ')}>('
+      '${parserNames.join(', ')});');
+  out.writeln();
+
+  // Converter extension
+  out.writeln('/// Extension on a [Record] of $index [Parser]s.');
+  out.writeln('extension RecordOfParserExtension$index'
+      '<${resultTypes.join(', ')}> on '
+      '(${resultTypes.map((type) => 'Parser<$type>').join(', ')}) {');
+  out.writeln('/// Converts a [Record] of $index parsers to a [Parser] that '
+      'reads the input in');
+  out.writeln('/// sequence and returns a [Record] with $index parse results.');
+  out.writeln('///');
+  out.writeln('/// For example,');
+  out.writeln(
+      '/// the parser `(${characters.map((char) => 'char(\'$char\')').join(', ')}).toParser()`');
+  out.writeln(
+      '/// returns `(${characters.map((char) => '\'$char\'').join(', ')})`');
+  out.writeln('/// for the input `\'${characters.join()}\'`.');
+  out.writeln('@useResult');
+  out.writeln('Parser<(${resultTypes.join(', ')})> toParser() => ');
+  out.writeln('SequenceParser$index<${resultTypes.join(', ')}>('
+      '${valueNames.join(', ')});');
+  out.writeln('}');
   out.writeln();
 
   // Parser implementation.
-  out.writeln('/// A parser that consumes a sequence of $index typed parsers '
-      'and returns a typed ');
-  out.writeln('/// sequence [Sequence$index].');
+  out.writeln('/// A parser that consumes a sequence of $index parsers and '
+      'returns a [Record] with ');
+  out.writeln('/// $index parse results.');
   out.writeln('class SequenceParser$index<${resultTypes.join(', ')}> '
-      'extends Parser<Sequence$index<${resultTypes.join(', ')}>> '
+      'extends Parser<(${resultTypes.join(', ')})> '
       'implements SequentialParser {');
   out.writeln('SequenceParser$index('
       '${parserNames.map((each) => 'this.$each').join(', ')});');
@@ -89,7 +118,7 @@ Future<void> generateImplementation(int index) async {
   }
   out.writeln();
   out.writeln('@override');
-  out.writeln('Result<Sequence$index<${resultTypes.join(', ')}>> '
+  out.writeln('Result<(${resultTypes.join(', ')})> '
       'parseOn(Context context) {');
   for (var i = 0; i < index; i++) {
     out.writeln('final ${resultNames[i]} = ${parserNames[i]}'
@@ -98,7 +127,6 @@ Future<void> generateImplementation(int index) async {
         'return ${resultNames[i]}.failure(${resultNames[i]}.message);');
   }
   out.writeln('return ${resultNames[index - 1]}.success('
-      'Sequence$index<${resultTypes.join(', ')}>'
       '(${resultNames.map((each) => '$each.value').join(', ')}));');
   out.writeln('}');
   out.writeln();
@@ -130,51 +158,41 @@ Future<void> generateImplementation(int index) async {
   out.writeln('}');
   out.writeln();
 
-  /// Data class implementation.
-  out.writeln('/// Immutable typed sequence with $index values.');
-  out.writeln('@immutable');
-  out.writeln('class Sequence$index<${valueTypes.join(', ')}> {');
-  out.writeln('/// Constructs a sequence with $index typed values.');
-  out.writeln('const Sequence$index('
-      '${valueNames.map((each) => 'this.$each').join(', ')});');
-  out.writeln();
+  // Extension on the parsed [Records].
+  out.writeln('/// Extension on a parsed [Record] with $index values.');
+  out.writeln(
+      'extension Parsed${index}ResultsRecord<${valueTypes.join(', ')}> on '
+      '(${valueTypes.join(', ')}) {');
   for (var i = 0; i < index; i++) {
-    out.writeln('/// Returns the ${valueNames[i]} element of this sequence.');
-    out.writeln('@inlineVm');
-    out.writeln('final ${valueTypes[i]} ${valueNames[i]};');
+    out.writeln('/// Returns the ${ordinalNames[i]} element of this sequence.');
+    out.writeln('@inlineVm @inlineJs');
+    out.writeln('@Deprecated(r\'Instead use the canonical accessor '
+        '${valueNames[i]}\')');
+    out.writeln('${valueTypes[i]} get ${ordinalNames[i]} => ${valueNames[i]};');
     out.writeln();
   }
-  out.writeln('/// Returns the last (or ${valueNames.last}) element of this '
-      'sequence.');
+  out.writeln('/// Returns the last element of this sequence.');
   out.writeln('@inlineVm @inlineJs');
+  out.writeln('@Deprecated(r\'Instead use the canonical accessor '
+      '${valueNames.last}\')');
   out.writeln('${valueTypes.last} get last => ${valueNames.last};');
   out.writeln();
-  out.writeln('/// Converts this sequence to a new type [R] with the provided '
+  out.writeln('/// Converts this [Record] to a new type [R] with the provided '
       '[callback].');
   out.writeln('@inlineVm @inlineJs');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
-  out.writeln();
-  out.writeln('@override');
-  out.writeln('int get hashCode => Object.hash(${valueNames.join(', ')});');
-  out.writeln();
-  out.writeln('@override');
-  out.writeln('bool operator ==(Object other) => '
-      'other is Sequence$index<${valueTypes.join(', ')}> && '
-      '${valueNames.map((each) => '$each == other.$each').join(' && ')};');
-  out.writeln();
-  out.writeln('@override');
-  out.writeln('String toString() => \'\${super.toString()}'
-      '(${valueNames.map((each) => '\$$each').join(', ')})\';');
   out.writeln('}');
   out.writeln();
 
-  // Mapping extension.
+  // Extension of mapping a parser.
   out.writeln(
-      'extension ParserSequenceExtension$index<${valueTypes.join(', ')}>'
-      ' on Parser<Sequence$index<${valueTypes.join(', ')}>> {');
-  out.writeln('/// Maps a typed sequence to [R] using the provided '
+      '/// Extension on a [Parser] reading a [Record] with $index values.');
+  out.writeln('extension RecordParserExtension$index<${valueTypes.join(', ')}>'
+      ' on Parser<(${valueTypes.join(', ')})> {');
+  out.writeln('/// Maps a parsed [Record] to [R] using the provided '
       '[callback].');
+  out.writeln('@useResult');
   out.writeln(
       'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'map((sequence) => sequence.map(callback));');
@@ -204,7 +222,33 @@ Future<void> generateTest() async {
     out.writeln('group(\'seq$i\', () {');
     out.writeln('final parser = seq$i('
         '${chars.map((each) => 'char(\'$each\')').join(', ')});');
-    out.writeln('const sequence = Sequence$i('
+    out.writeln('const sequence = ('
+        '${chars.map((each) => '\'$each\'').join(', ')});');
+    out.writeln('expectParserInvariants(parser);');
+    out.writeln('test(\'success\', () {');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string\', result: sequence));');
+    out.writeln('expect(parser, '
+        'isParseSuccess(\'$string*\', result: sequence, position: $i));');
+    out.writeln('});');
+    for (var j = 0; j < i; j++) {
+      out.writeln('test(\'failure at $j\', () {');
+      out.writeln('expect(parser, isParseFailure(\''
+          '${string.substring(0, j)}\', '
+          'message: \'"${chars[j]}" expected\', '
+          'position: $j));');
+      out.writeln('expect(parser, isParseFailure(\''
+          '${string.substring(0, j)}*\', '
+          'message: \'"${chars[j]}" expected\', '
+          'position: $j));');
+      out.writeln('});');
+    }
+    out.writeln('});');
+
+    out.writeln('group(\'converter$i\', () {');
+    out.writeln('final parser = ('
+        '${chars.map((each) => 'char(\'$each\')').join(', ')}).toParser();');
+    out.writeln('const sequence = ('
         '${chars.map((each) => '\'$each\'').join(', ')});');
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
@@ -253,15 +297,18 @@ Future<void> generateTest() async {
     }
     out.writeln('});');
 
-    out.writeln('group(\'Sequence$i\', () {');
-    out.writeln('const sequence = Sequence$i('
+    out.writeln('group(\'record$i\', () {');
+    out.writeln('const sequence = ('
         '${chars.map((each) => '\'$each\'').join(', ')});');
-    out.writeln('const other = Sequence$i('
+    out.writeln('const other = ('
         '${chars.reversed.map((each) => '\'$each\'').join(', ')});');
     out.writeln('test(\'accessors\', () {');
     for (var j = 0; j < i; j++) {
+      out.writeln('expect(sequence.\$${j + 1}, \'${chars[j]}\');');
+      out.writeln(' // ignore: deprecated_member_use_from_same_package');
       out.writeln('expect(sequence.${ordinals[j]}, \'${chars[j]}\');');
     }
+    out.writeln(' // ignore: deprecated_member_use_from_same_package');
     out.writeln('expect(sequence.last, \'${chars[i - 1]}\');');
     out.writeln('});');
     out.writeln('test(\'map\', () {');

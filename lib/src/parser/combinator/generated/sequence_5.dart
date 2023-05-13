@@ -9,10 +9,15 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 5 parsers and returns a
-/// typed sequence [Sequence5].
+/// Creates a [Parser] that runs the 5 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq5(char('a'), char('b'), char('c'), char('d'), char('e'))`
+/// returns `('a', 'b', 'c', 'd', 'e')`
+/// for the input `'abcde'`.
 @useResult
-Parser<Sequence5<R1, R2, R3, R4, R5>> seq5<R1, R2, R3, R4, R5>(
+Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
   Parser<R1> parser1,
   Parser<R2> parser2,
   Parser<R3> parser3,
@@ -20,17 +25,32 @@ Parser<Sequence5<R1, R2, R3, R4, R5>> seq5<R1, R2, R3, R4, R5>(
   Parser<R5> parser5,
 ) =>
     SequenceParser5<R1, R2, R3, R4, R5>(
-      parser1,
-      parser2,
-      parser3,
-      parser4,
-      parser5,
-    );
+        parser1, parser2, parser3, parser4, parser5);
 
-/// A parser that consumes a sequence of 5 typed parsers and returns a typed
-/// sequence [Sequence5].
-class SequenceParser5<R1, R2, R3, R4, R5>
-    extends Parser<Sequence5<R1, R2, R3, R4, R5>> implements SequentialParser {
+/// Extension on a [Record] of 5 [Parser]s.
+extension RecordOfParserExtension5<R1, R2, R3, R4, R5> on (
+  Parser<R1>,
+  Parser<R2>,
+  Parser<R3>,
+  Parser<R4>,
+  Parser<R5>
+) {
+  /// Converts a [Record] of 5 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 5 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e')).toParser()`
+  /// returns `('a', 'b', 'c', 'd', 'e')`
+  /// for the input `'abcde'`.
+  @useResult
+  Parser<(R1, R2, R3, R4, R5)> toParser() =>
+      SequenceParser5<R1, R2, R3, R4, R5>($1, $2, $3, $4, $5);
+}
+
+/// A parser that consumes a sequence of 5 parsers and returns a [Record] with
+/// 5 parse results.
+class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
+    implements SequentialParser {
   SequenceParser5(
       this.parser1, this.parser2, this.parser3, this.parser4, this.parser5);
 
@@ -41,7 +61,7 @@ class SequenceParser5<R1, R2, R3, R4, R5>
   Parser<R5> parser5;
 
   @override
-  Result<Sequence5<R1, R2, R3, R4, R5>> parseOn(Context context) {
+  Result<(R1, R2, R3, R4, R5)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
@@ -52,8 +72,13 @@ class SequenceParser5<R1, R2, R3, R4, R5>
     if (result4.isFailure) return result4.failure(result4.message);
     final result5 = parser5.parseOn(result4);
     if (result5.isFailure) return result5.failure(result5.message);
-    return result5.success(Sequence5<R1, R2, R3, R4, R5>(result1.value,
-        result2.value, result3.value, result4.value, result5.value));
+    return result5.success((
+      result1.value,
+      result2.value,
+      result3.value,
+      result4.value,
+      result5.value
+    ));
   }
 
   @override
@@ -90,63 +115,56 @@ class SequenceParser5<R1, R2, R3, R4, R5>
           parser1, parser2, parser3, parser4, parser5);
 }
 
-/// Immutable typed sequence with 5 values.
-@immutable
-class Sequence5<T1, T2, T3, T4, T5> {
-  /// Constructs a sequence with 5 typed values.
-  const Sequence5(this.first, this.second, this.third, this.fourth, this.fifth);
-
+/// Extension on a parsed [Record] with 5 values.
+extension Parsed5ResultsRecord<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
   /// Returns the third element of this sequence.
   @inlineVm
-  final T3 third;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get third => $3;
 
   /// Returns the fourth element of this sequence.
   @inlineVm
-  final T4 fourth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $4')
+  T4 get fourth => $4;
 
   /// Returns the fifth element of this sequence.
   @inlineVm
-  final T5 fifth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $5')
+  T5 get fifth => $5;
 
-  /// Returns the last (or fifth) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T5 get last => fifth;
+  @Deprecated(r'Instead use the canonical accessor $5')
+  T5 get last => $5;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5) callback) =>
-      callback(first, second, third, fourth, fifth);
-
-  @override
-  int get hashCode => Object.hash(first, second, third, fourth, fifth);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence5<T1, T2, T3, T4, T5> &&
-      first == other.first &&
-      second == other.second &&
-      third == other.third &&
-      fourth == other.fourth &&
-      fifth == other.fifth;
-
-  @override
-  String toString() =>
-      '${super.toString()}($first, $second, $third, $fourth, $fifth)';
+      callback($1, $2, $3, $4, $5);
 }
 
-extension ParserSequenceExtension5<T1, T2, T3, T4, T5>
-    on Parser<Sequence5<T1, T2, T3, T4, T5>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 5 values.
+extension RecordParserExtension5<T1, T2, T3, T4, T5>
+    on Parser<(T1, T2, T3, T4, T5)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map5<R>(R Function(T1, T2, T3, T4, T5) callback) =>
       map((sequence) => sequence.map(callback));
 }

@@ -9,21 +9,36 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 2 parsers and returns a
-/// typed sequence [Sequence2].
+/// Creates a [Parser] that runs the 2 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq2(char('a'), char('b'))`
+/// returns `('a', 'b')`
+/// for the input `'ab'`.
 @useResult
-Parser<Sequence2<R1, R2>> seq2<R1, R2>(
+Parser<(R1, R2)> seq2<R1, R2>(
   Parser<R1> parser1,
   Parser<R2> parser2,
 ) =>
-    SequenceParser2<R1, R2>(
-      parser1,
-      parser2,
-    );
+    SequenceParser2<R1, R2>(parser1, parser2);
 
-/// A parser that consumes a sequence of 2 typed parsers and returns a typed
-/// sequence [Sequence2].
-class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
+/// Extension on a [Record] of 2 [Parser]s.
+extension RecordOfParserExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
+  /// Converts a [Record] of 2 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 2 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b')).toParser()`
+  /// returns `('a', 'b')`
+  /// for the input `'ab'`.
+  @useResult
+  Parser<(R1, R2)> toParser() => SequenceParser2<R1, R2>($1, $2);
+}
+
+/// A parser that consumes a sequence of 2 parsers and returns a [Record] with
+/// 2 parse results.
+class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
     implements SequentialParser {
   SequenceParser2(this.parser1, this.parser2);
 
@@ -31,12 +46,12 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
   Parser<R2> parser2;
 
   @override
-  Result<Sequence2<R1, R2>> parseOn(Context context) {
+  Result<(R1, R2)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
     if (result2.isFailure) return result2.failure(result2.message);
-    return result2.success(Sequence2<R1, R2>(result1.value, result2.value));
+    return result2.success((result1.value, result2.value));
   }
 
   @override
@@ -62,45 +77,36 @@ class SequenceParser2<R1, R2> extends Parser<Sequence2<R1, R2>>
   SequenceParser2<R1, R2> copy() => SequenceParser2<R1, R2>(parser1, parser2);
 }
 
-/// Immutable typed sequence with 2 values.
-@immutable
-class Sequence2<T1, T2> {
-  /// Constructs a sequence with 2 typed values.
-  const Sequence2(this.first, this.second);
-
+/// Extension on a parsed [Record] with 2 values.
+extension Parsed2ResultsRecord<T1, T2> on (T1, T2) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
-  /// Returns the last (or second) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T2 get last => second;
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get last => $2;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
-  R map<R>(R Function(T1, T2) callback) => callback(first, second);
-
-  @override
-  int get hashCode => Object.hash(first, second);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence2<T1, T2> &&
-      first == other.first &&
-      second == other.second;
-
-  @override
-  String toString() => '${super.toString()}($first, $second)';
+  R map<R>(R Function(T1, T2) callback) => callback($1, $2);
 }
 
-extension ParserSequenceExtension2<T1, T2> on Parser<Sequence2<T1, T2>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 2 values.
+extension RecordParserExtension2<T1, T2> on Parser<(T1, T2)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map2<R>(R Function(T1, T2) callback) =>
       map((sequence) => sequence.map(callback));
 }

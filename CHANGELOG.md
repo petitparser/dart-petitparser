@@ -1,6 +1,14 @@
 # Changelog
 
+## 5.5.0 (Unpublished)
+
+- Dart 3.0 requirement.
+- Use Dart Records for typed sequences:
+  - Add convenience converter: `(char('a'), char('b')).toParser()`
+  - And extension methods to emulate the custom `Sequence` classes.
+
 ## 5.4.0
+
 - Dart 2.19 requirement, enabled strict casts and type inference.
 - Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
 - Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.

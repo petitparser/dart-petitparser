@@ -9,23 +9,41 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 3 parsers and returns a
-/// typed sequence [Sequence3].
+/// Creates a [Parser] that runs the 3 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq3(char('a'), char('b'), char('c'))`
+/// returns `('a', 'b', 'c')`
+/// for the input `'abc'`.
 @useResult
-Parser<Sequence3<R1, R2, R3>> seq3<R1, R2, R3>(
+Parser<(R1, R2, R3)> seq3<R1, R2, R3>(
   Parser<R1> parser1,
   Parser<R2> parser2,
   Parser<R3> parser3,
 ) =>
-    SequenceParser3<R1, R2, R3>(
-      parser1,
-      parser2,
-      parser3,
-    );
+    SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 
-/// A parser that consumes a sequence of 3 typed parsers and returns a typed
-/// sequence [Sequence3].
-class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
+/// Extension on a [Record] of 3 [Parser]s.
+extension RecordOfParserExtension3<R1, R2, R3> on (
+  Parser<R1>,
+  Parser<R2>,
+  Parser<R3>
+) {
+  /// Converts a [Record] of 3 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 3 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b'), char('c')).toParser()`
+  /// returns `('a', 'b', 'c')`
+  /// for the input `'abc'`.
+  @useResult
+  Parser<(R1, R2, R3)> toParser() => SequenceParser3<R1, R2, R3>($1, $2, $3);
+}
+
+/// A parser that consumes a sequence of 3 parsers and returns a [Record] with
+/// 3 parse results.
+class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
     implements SequentialParser {
   SequenceParser3(this.parser1, this.parser2, this.parser3);
 
@@ -34,15 +52,14 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
   Parser<R3> parser3;
 
   @override
-  Result<Sequence3<R1, R2, R3>> parseOn(Context context) {
+  Result<(R1, R2, R3)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
     if (result2.isFailure) return result2.failure(result2.message);
     final result3 = parser3.parseOn(result2);
     if (result3.isFailure) return result3.failure(result3.message);
-    return result3.success(
-        Sequence3<R1, R2, R3>(result1.value, result2.value, result3.value));
+    return result3.success((result1.value, result2.value, result3.value));
   }
 
   @override
@@ -72,51 +89,42 @@ class SequenceParser3<R1, R2, R3> extends Parser<Sequence3<R1, R2, R3>>
       SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 }
 
-/// Immutable typed sequence with 3 values.
-@immutable
-class Sequence3<T1, T2, T3> {
-  /// Constructs a sequence with 3 typed values.
-  const Sequence3(this.first, this.second, this.third);
-
+/// Extension on a parsed [Record] with 3 values.
+extension Parsed3ResultsRecord<T1, T2, T3> on (T1, T2, T3) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
   /// Returns the third element of this sequence.
   @inlineVm
-  final T3 third;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get third => $3;
 
-  /// Returns the last (or third) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T3 get last => third;
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get last => $3;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
-  R map<R>(R Function(T1, T2, T3) callback) => callback(first, second, third);
-
-  @override
-  int get hashCode => Object.hash(first, second, third);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence3<T1, T2, T3> &&
-      first == other.first &&
-      second == other.second &&
-      third == other.third;
-
-  @override
-  String toString() => '${super.toString()}($first, $second, $third)';
+  R map<R>(R Function(T1, T2, T3) callback) => callback($1, $2, $3);
 }
 
-extension ParserSequenceExtension3<T1, T2, T3>
-    on Parser<Sequence3<T1, T2, T3>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 3 values.
+extension RecordParserExtension3<T1, T2, T3> on Parser<(T1, T2, T3)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map3<R>(R Function(T1, T2, T3) callback) =>
       map((sequence) => sequence.map(callback));
 }

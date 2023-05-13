@@ -9,10 +9,15 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 9 parsers and returns a
-/// typed sequence [Sequence9].
+/// Creates a [Parser] that runs the 9 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq9(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'), char('i'))`
+/// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')`
+/// for the input `'abcdefghi'`.
 @useResult
-Parser<Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>>
+Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
     seq9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
   Parser<R1> parser1,
   Parser<R2> parser2,
@@ -24,22 +29,38 @@ Parser<Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>>
   Parser<R8> parser8,
   Parser<R9> parser9,
 ) =>
-        SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
-          parser1,
-          parser2,
-          parser3,
-          parser4,
-          parser5,
-          parser6,
-          parser7,
-          parser8,
-          parser9,
-        );
+        SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(parser1, parser2,
+            parser3, parser4, parser5, parser6, parser7, parser8, parser9);
 
-/// A parser that consumes a sequence of 9 typed parsers and returns a typed
-/// sequence [Sequence9].
+/// Extension on a [Record] of 9 [Parser]s.
+extension RecordOfParserExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
+  Parser<R1>,
+  Parser<R2>,
+  Parser<R3>,
+  Parser<R4>,
+  Parser<R5>,
+  Parser<R6>,
+  Parser<R7>,
+  Parser<R8>,
+  Parser<R9>
+) {
+  /// Converts a [Record] of 9 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 9 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'), char('i')).toParser()`
+  /// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')`
+  /// for the input `'abcdefghi'`.
+  @useResult
+  Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)> toParser() =>
+      SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+          $1, $2, $3, $4, $5, $6, $7, $8, $9);
+}
+
+/// A parser that consumes a sequence of 9 parsers and returns a [Record] with
+/// 9 parse results.
 class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
-    extends Parser<Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>>
+    extends Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
     implements SequentialParser {
   SequenceParser9(this.parser1, this.parser2, this.parser3, this.parser4,
       this.parser5, this.parser6, this.parser7, this.parser8, this.parser9);
@@ -55,8 +76,7 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
   Parser<R9> parser9;
 
   @override
-  Result<Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>> parseOn(
-      Context context) {
+  Result<(R1, R2, R3, R4, R5, R6, R7, R8, R9)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
@@ -75,16 +95,17 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
     if (result8.isFailure) return result8.failure(result8.message);
     final result9 = parser9.parseOn(result8);
     if (result9.isFailure) return result9.failure(result9.message);
-    return result9.success(Sequence9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
-        result1.value,
-        result2.value,
-        result3.value,
-        result4.value,
-        result5.value,
-        result6.value,
-        result7.value,
-        result8.value,
-        result9.value));
+    return result9.success((
+      result1.value,
+      result2.value,
+      result3.value,
+      result4.value,
+      result5.value,
+      result6.value,
+      result7.value,
+      result8.value,
+      result9.value
+    ));
   }
 
   @override
@@ -143,85 +164,90 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
           parser3, parser4, parser5, parser6, parser7, parser8, parser9);
 }
 
-/// Immutable typed sequence with 9 values.
-@immutable
-class Sequence9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
-  /// Constructs a sequence with 9 typed values.
-  const Sequence9(this.first, this.second, this.third, this.fourth, this.fifth,
-      this.sixth, this.seventh, this.eighth, this.ninth);
-
+/// Extension on a parsed [Record] with 9 values.
+extension Parsed9ResultsRecord<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
+  T1,
+  T2,
+  T3,
+  T4,
+  T5,
+  T6,
+  T7,
+  T8,
+  T9
+) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
   /// Returns the third element of this sequence.
   @inlineVm
-  final T3 third;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get third => $3;
 
   /// Returns the fourth element of this sequence.
   @inlineVm
-  final T4 fourth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $4')
+  T4 get fourth => $4;
 
   /// Returns the fifth element of this sequence.
   @inlineVm
-  final T5 fifth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $5')
+  T5 get fifth => $5;
 
   /// Returns the sixth element of this sequence.
   @inlineVm
-  final T6 sixth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $6')
+  T6 get sixth => $6;
 
   /// Returns the seventh element of this sequence.
   @inlineVm
-  final T7 seventh;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $7')
+  T7 get seventh => $7;
 
   /// Returns the eighth element of this sequence.
   @inlineVm
-  final T8 eighth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $8')
+  T8 get eighth => $8;
 
   /// Returns the ninth element of this sequence.
   @inlineVm
-  final T9 ninth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $9')
+  T9 get ninth => $9;
 
-  /// Returns the last (or ninth) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T9 get last => ninth;
+  @Deprecated(r'Instead use the canonical accessor $9')
+  T9 get last => $9;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
-  R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) => callback(
-      first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
-
-  @override
-  int get hashCode => Object.hash(
-      first, second, third, fourth, fifth, sixth, seventh, eighth, ninth);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence9<T1, T2, T3, T4, T5, T6, T7, T8, T9> &&
-      first == other.first &&
-      second == other.second &&
-      third == other.third &&
-      fourth == other.fourth &&
-      fifth == other.fifth &&
-      sixth == other.sixth &&
-      seventh == other.seventh &&
-      eighth == other.eighth &&
-      ninth == other.ninth;
-
-  @override
-  String toString() =>
-      '${super.toString()}($first, $second, $third, $fourth, $fifth, $sixth, $seventh, $eighth, $ninth)';
+  R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) =>
+      callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 }
 
-extension ParserSequenceExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
-    on Parser<Sequence9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 9 values.
+extension RecordParserExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
+    on Parser<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map9<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) =>
       map((sequence) => sequence.map(callback));
 }

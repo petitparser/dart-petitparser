@@ -9,11 +9,15 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 8 parsers and returns a
-/// typed sequence [Sequence8].
+/// Creates a [Parser] that runs the 8 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq8(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'))`
+/// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')`
+/// for the input `'abcdefgh'`.
 @useResult
-Parser<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>>
-    seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
+Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
   Parser<R1> parser1,
   Parser<R2> parser2,
   Parser<R3> parser3,
@@ -23,21 +27,37 @@ Parser<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>>
   Parser<R7> parser7,
   Parser<R8> parser8,
 ) =>
-        SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
-          parser1,
-          parser2,
-          parser3,
-          parser4,
-          parser5,
-          parser6,
-          parser7,
-          parser8,
-        );
+    SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
+        parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8);
 
-/// A parser that consumes a sequence of 8 typed parsers and returns a typed
-/// sequence [Sequence8].
+/// Extension on a [Record] of 8 [Parser]s.
+extension RecordOfParserExtension8<R1, R2, R3, R4, R5, R6, R7, R8> on (
+  Parser<R1>,
+  Parser<R2>,
+  Parser<R3>,
+  Parser<R4>,
+  Parser<R5>,
+  Parser<R6>,
+  Parser<R7>,
+  Parser<R8>
+) {
+  /// Converts a [Record] of 8 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 8 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h')).toParser()`
+  /// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')`
+  /// for the input `'abcdefgh'`.
+  @useResult
+  Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> toParser() =>
+      SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
+          $1, $2, $3, $4, $5, $6, $7, $8);
+}
+
+/// A parser that consumes a sequence of 8 parsers and returns a [Record] with
+/// 8 parse results.
 class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
-    extends Parser<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>>
+    extends Parser<(R1, R2, R3, R4, R5, R6, R7, R8)>
     implements SequentialParser {
   SequenceParser8(this.parser1, this.parser2, this.parser3, this.parser4,
       this.parser5, this.parser6, this.parser7, this.parser8);
@@ -52,7 +72,7 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
   Parser<R8> parser8;
 
   @override
-  Result<Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>> parseOn(Context context) {
+  Result<(R1, R2, R3, R4, R5, R6, R7, R8)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
@@ -69,15 +89,16 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
     if (result7.isFailure) return result7.failure(result7.message);
     final result8 = parser8.parseOn(result7);
     if (result8.isFailure) return result8.failure(result8.message);
-    return result8.success(Sequence8<R1, R2, R3, R4, R5, R6, R7, R8>(
-        result1.value,
-        result2.value,
-        result3.value,
-        result4.value,
-        result5.value,
-        result6.value,
-        result7.value,
-        result8.value));
+    return result8.success((
+      result1.value,
+      result2.value,
+      result3.value,
+      result4.value,
+      result5.value,
+      result6.value,
+      result7.value,
+      result8.value
+    ));
   }
 
   @override
@@ -124,80 +145,83 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
           parser4, parser5, parser6, parser7, parser8);
 }
 
-/// Immutable typed sequence with 8 values.
-@immutable
-class Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> {
-  /// Constructs a sequence with 8 typed values.
-  const Sequence8(this.first, this.second, this.third, this.fourth, this.fifth,
-      this.sixth, this.seventh, this.eighth);
-
+/// Extension on a parsed [Record] with 8 values.
+extension Parsed8ResultsRecord<T1, T2, T3, T4, T5, T6, T7, T8> on (
+  T1,
+  T2,
+  T3,
+  T4,
+  T5,
+  T6,
+  T7,
+  T8
+) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
   /// Returns the third element of this sequence.
   @inlineVm
-  final T3 third;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get third => $3;
 
   /// Returns the fourth element of this sequence.
   @inlineVm
-  final T4 fourth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $4')
+  T4 get fourth => $4;
 
   /// Returns the fifth element of this sequence.
   @inlineVm
-  final T5 fifth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $5')
+  T5 get fifth => $5;
 
   /// Returns the sixth element of this sequence.
   @inlineVm
-  final T6 sixth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $6')
+  T6 get sixth => $6;
 
   /// Returns the seventh element of this sequence.
   @inlineVm
-  final T7 seventh;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $7')
+  T7 get seventh => $7;
 
   /// Returns the eighth element of this sequence.
   @inlineVm
-  final T8 eighth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $8')
+  T8 get eighth => $8;
 
-  /// Returns the last (or eighth) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T8 get last => eighth;
+  @Deprecated(r'Instead use the canonical accessor $8')
+  T8 get last => $8;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback) =>
-      callback(first, second, third, fourth, fifth, sixth, seventh, eighth);
-
-  @override
-  int get hashCode =>
-      Object.hash(first, second, third, fourth, fifth, sixth, seventh, eighth);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence8<T1, T2, T3, T4, T5, T6, T7, T8> &&
-      first == other.first &&
-      second == other.second &&
-      third == other.third &&
-      fourth == other.fourth &&
-      fifth == other.fifth &&
-      sixth == other.sixth &&
-      seventh == other.seventh &&
-      eighth == other.eighth;
-
-  @override
-  String toString() =>
-      '${super.toString()}($first, $second, $third, $fourth, $fifth, $sixth, $seventh, $eighth)';
+      callback($1, $2, $3, $4, $5, $6, $7, $8);
 }
 
-extension ParserSequenceExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
-    on Parser<Sequence8<T1, T2, T3, T4, T5, T6, T7, T8>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 8 values.
+extension RecordParserExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
+    on Parser<(T1, T2, T3, T4, T5, T6, T7, T8)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map8<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback) =>
       map((sequence) => sequence.map(callback));
 }

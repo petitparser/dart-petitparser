@@ -9,25 +9,44 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a parser that consumes a sequence of 4 parsers and returns a
-/// typed sequence [Sequence4].
+/// Creates a [Parser] that runs the 4 parsers passed as argument in sequence
+/// and returns a [Record] with the parsed results.
+///
+/// For example,
+/// the parser `seq4(char('a'), char('b'), char('c'), char('d'))`
+/// returns `('a', 'b', 'c', 'd')`
+/// for the input `'abcd'`.
 @useResult
-Parser<Sequence4<R1, R2, R3, R4>> seq4<R1, R2, R3, R4>(
+Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
   Parser<R1> parser1,
   Parser<R2> parser2,
   Parser<R3> parser3,
   Parser<R4> parser4,
 ) =>
-    SequenceParser4<R1, R2, R3, R4>(
-      parser1,
-      parser2,
-      parser3,
-      parser4,
-    );
+    SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
-/// A parser that consumes a sequence of 4 typed parsers and returns a typed
-/// sequence [Sequence4].
-class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
+/// Extension on a [Record] of 4 [Parser]s.
+extension RecordOfParserExtension4<R1, R2, R3, R4> on (
+  Parser<R1>,
+  Parser<R2>,
+  Parser<R3>,
+  Parser<R4>
+) {
+  /// Converts a [Record] of 4 parsers to a [Parser] that reads the input in
+  /// sequence and returns a [Record] with 4 parse results.
+  ///
+  /// For example,
+  /// the parser `(char('a'), char('b'), char('c'), char('d')).toParser()`
+  /// returns `('a', 'b', 'c', 'd')`
+  /// for the input `'abcd'`.
+  @useResult
+  Parser<(R1, R2, R3, R4)> toParser() =>
+      SequenceParser4<R1, R2, R3, R4>($1, $2, $3, $4);
+}
+
+/// A parser that consumes a sequence of 4 parsers and returns a [Record] with
+/// 4 parse results.
+class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
     implements SequentialParser {
   SequenceParser4(this.parser1, this.parser2, this.parser3, this.parser4);
 
@@ -37,7 +56,7 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
   Parser<R4> parser4;
 
   @override
-  Result<Sequence4<R1, R2, R3, R4>> parseOn(Context context) {
+  Result<(R1, R2, R3, R4)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
     if (result1.isFailure) return result1.failure(result1.message);
     final result2 = parser2.parseOn(result1);
@@ -46,8 +65,8 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
     if (result3.isFailure) return result3.failure(result3.message);
     final result4 = parser4.parseOn(result3);
     if (result4.isFailure) return result4.failure(result4.message);
-    return result4.success(Sequence4<R1, R2, R3, R4>(
-        result1.value, result2.value, result3.value, result4.value));
+    return result4
+        .success((result1.value, result2.value, result3.value, result4.value));
   }
 
   @override
@@ -80,57 +99,48 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<Sequence4<R1, R2, R3, R4>>
       SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 }
 
-/// Immutable typed sequence with 4 values.
-@immutable
-class Sequence4<T1, T2, T3, T4> {
-  /// Constructs a sequence with 4 typed values.
-  const Sequence4(this.first, this.second, this.third, this.fourth);
-
+/// Extension on a parsed [Record] with 4 values.
+extension Parsed4ResultsRecord<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Returns the first element of this sequence.
   @inlineVm
-  final T1 first;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $1')
+  T1 get first => $1;
 
   /// Returns the second element of this sequence.
   @inlineVm
-  final T2 second;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $2')
+  T2 get second => $2;
 
   /// Returns the third element of this sequence.
   @inlineVm
-  final T3 third;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $3')
+  T3 get third => $3;
 
   /// Returns the fourth element of this sequence.
   @inlineVm
-  final T4 fourth;
+  @inlineJs
+  @Deprecated(r'Instead use the canonical accessor $4')
+  T4 get fourth => $4;
 
-  /// Returns the last (or fourth) element of this sequence.
+  /// Returns the last element of this sequence.
   @inlineVm
   @inlineJs
-  T4 get last => fourth;
+  @Deprecated(r'Instead use the canonical accessor $4')
+  T4 get last => $4;
 
-  /// Converts this sequence to a new type [R] with the provided [callback].
+  /// Converts this [Record] to a new type [R] with the provided [callback].
   @inlineVm
   @inlineJs
-  R map<R>(R Function(T1, T2, T3, T4) callback) =>
-      callback(first, second, third, fourth);
-
-  @override
-  int get hashCode => Object.hash(first, second, third, fourth);
-
-  @override
-  bool operator ==(Object other) =>
-      other is Sequence4<T1, T2, T3, T4> &&
-      first == other.first &&
-      second == other.second &&
-      third == other.third &&
-      fourth == other.fourth;
-
-  @override
-  String toString() => '${super.toString()}($first, $second, $third, $fourth)';
+  R map<R>(R Function(T1, T2, T3, T4) callback) => callback($1, $2, $3, $4);
 }
 
-extension ParserSequenceExtension4<T1, T2, T3, T4>
-    on Parser<Sequence4<T1, T2, T3, T4>> {
-  /// Maps a typed sequence to [R] using the provided [callback].
+/// Extension on a [Parser] reading a [Record] with 4 values.
+extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  @useResult
   Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback) =>
       map((sequence) => sequence.map(callback));
 }
