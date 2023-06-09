@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 6 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 6 parsers passed as argument in
+/// sequence and returns a [Record] with 6 positional parse results.
 ///
 /// For example,
 /// the parser `seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'))`
@@ -28,8 +28,8 @@ Parser<(R1, R2, R3, R4, R5, R6)> seq6<R1, R2, R3, R4, R5, R6>(
     SequenceParser6<R1, R2, R3, R4, R5, R6>(
         parser1, parser2, parser3, parser4, parser5, parser6);
 
-/// Extension on a [Record] of 6 [Parser]s.
-extension RecordOfParserExtension6<R1, R2, R3, R4, R5, R6> on (
+/// Extensions on a [Record] with 6 positional [Parser]s.
+extension RecordOfParsersExtension6<R1, R2, R3, R4, R5, R6> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>,
@@ -37,8 +37,8 @@ extension RecordOfParserExtension6<R1, R2, R3, R4, R5, R6> on (
   Parser<R5>,
   Parser<R6>
 ) {
-  /// Converts a [Record] of 6 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 6 parse results.
+  /// Converts a [Record] of 6 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 6 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f')).toSequenceParser()`
@@ -50,7 +50,7 @@ extension RecordOfParserExtension6<R1, R2, R3, R4, R5, R6> on (
 }
 
 /// A parser that consumes a sequence of 6 parsers and returns a [Record] with
-/// 6 parse results.
+/// 6 positional parse results.
 class SequenceParser6<R1, R2, R3, R4, R5, R6>
     extends Parser<(R1, R2, R3, R4, R5, R6)> implements SequentialParser {
   SequenceParser6(this.parser1, this.parser2, this.parser3, this.parser4,
@@ -125,8 +125,8 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
           parser1, parser2, parser3, parser4, parser5, parser6);
 }
 
-/// Extension on a parsed [Record] with 6 values.
-extension Parsed6ResultsRecord<T1, T2, T3, T4, T5, T6> on (
+/// Extension on a [Record] with 6 positional values.
+extension RecordOfValuesExtension6<T1, T2, T3, T4, T5, T6> on (
   T1,
   T2,
   T3,
@@ -176,14 +176,15 @@ extension Parsed6ResultsRecord<T1, T2, T3, T4, T5, T6> on (
   @Deprecated(r'Instead use the canonical accessor $6')
   T6 get last => $6;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 6 positional values to a new type [R] using
+  /// the provided [callback] with 6 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5, T6) callback) =>
       callback($1, $2, $3, $4, $5, $6);
 }
 
-/// Extension on a [Parser] reading a [Record] with 6 values.
+/// Extension on a [Parser] producing a [Record] of 6 positional values.
 extension RecordParserExtension6<T1, T2, T3, T4, T5, T6>
     on Parser<(T1, T2, T3, T4, T5, T6)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].

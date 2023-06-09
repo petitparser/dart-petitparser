@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 9 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 9 parsers passed as argument in
+/// sequence and returns a [Record] with 9 positional parse results.
 ///
 /// For example,
 /// the parser `seq9(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'), char('i'))`
@@ -32,8 +32,8 @@ Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
         SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(parser1, parser2,
             parser3, parser4, parser5, parser6, parser7, parser8, parser9);
 
-/// Extension on a [Record] of 9 [Parser]s.
-extension RecordOfParserExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
+/// Extensions on a [Record] with 9 positional [Parser]s.
+extension RecordOfParsersExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>,
@@ -44,8 +44,8 @@ extension RecordOfParserExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
   Parser<R8>,
   Parser<R9>
 ) {
-  /// Converts a [Record] of 9 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 9 parse results.
+  /// Converts a [Record] of 9 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 9 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'), char('i')).toSequenceParser()`
@@ -58,7 +58,7 @@ extension RecordOfParserExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
 }
 
 /// A parser that consumes a sequence of 9 parsers and returns a [Record] with
-/// 9 parse results.
+/// 9 positional parse results.
 class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
     extends Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
     implements SequentialParser {
@@ -164,8 +164,8 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
           parser3, parser4, parser5, parser6, parser7, parser8, parser9);
 }
 
-/// Extension on a parsed [Record] with 9 values.
-extension Parsed9ResultsRecord<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
+/// Extension on a [Record] with 9 positional values.
+extension RecordOfValuesExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
   T1,
   T2,
   T3,
@@ -236,14 +236,15 @@ extension Parsed9ResultsRecord<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
   @Deprecated(r'Instead use the canonical accessor $9')
   T9 get last => $9;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 9 positional values to a new type [R] using
+  /// the provided [callback] with 9 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) =>
       callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 }
 
-/// Extension on a [Parser] reading a [Record] with 9 values.
+/// Extension on a [Parser] producing a [Record] of 9 positional values.
 extension RecordParserExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     on Parser<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].

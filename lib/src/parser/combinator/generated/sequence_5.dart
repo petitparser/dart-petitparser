@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 5 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 5 parsers passed as argument in
+/// sequence and returns a [Record] with 5 positional parse results.
 ///
 /// For example,
 /// the parser `seq5(char('a'), char('b'), char('c'), char('d'), char('e'))`
@@ -27,16 +27,16 @@ Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
     SequenceParser5<R1, R2, R3, R4, R5>(
         parser1, parser2, parser3, parser4, parser5);
 
-/// Extension on a [Record] of 5 [Parser]s.
-extension RecordOfParserExtension5<R1, R2, R3, R4, R5> on (
+/// Extensions on a [Record] with 5 positional [Parser]s.
+extension RecordOfParsersExtension5<R1, R2, R3, R4, R5> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>,
   Parser<R4>,
   Parser<R5>
 ) {
-  /// Converts a [Record] of 5 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 5 parse results.
+  /// Converts a [Record] of 5 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 5 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e')).toSequenceParser()`
@@ -48,7 +48,7 @@ extension RecordOfParserExtension5<R1, R2, R3, R4, R5> on (
 }
 
 /// A parser that consumes a sequence of 5 parsers and returns a [Record] with
-/// 5 parse results.
+/// 5 positional parse results.
 class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
     implements SequentialParser {
   SequenceParser5(
@@ -115,8 +115,8 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
           parser1, parser2, parser3, parser4, parser5);
 }
 
-/// Extension on a parsed [Record] with 5 values.
-extension Parsed5ResultsRecord<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
+/// Extension on a [Record] with 5 positional values.
+extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   /// Returns the first element of this record.
   @inlineVm
   @inlineJs
@@ -153,14 +153,15 @@ extension Parsed5ResultsRecord<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   @Deprecated(r'Instead use the canonical accessor $5')
   T5 get last => $5;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 5 positional values to a new type [R] using
+  /// the provided [callback] with 5 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5) callback) =>
       callback($1, $2, $3, $4, $5);
 }
 
-/// Extension on a [Parser] reading a [Record] with 5 values.
+/// Extension on a [Parser] producing a [Record] of 5 positional values.
 extension RecordParserExtension5<T1, T2, T3, T4, T5>
     on Parser<(T1, T2, T3, T4, T5)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].

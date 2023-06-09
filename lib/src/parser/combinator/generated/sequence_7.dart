@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 7 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 7 parsers passed as argument in
+/// sequence and returns a [Record] with 7 positional parse results.
 ///
 /// For example,
 /// the parser `seq7(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'))`
@@ -29,8 +29,8 @@ Parser<(R1, R2, R3, R4, R5, R6, R7)> seq7<R1, R2, R3, R4, R5, R6, R7>(
     SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
         parser1, parser2, parser3, parser4, parser5, parser6, parser7);
 
-/// Extension on a [Record] of 7 [Parser]s.
-extension RecordOfParserExtension7<R1, R2, R3, R4, R5, R6, R7> on (
+/// Extensions on a [Record] with 7 positional [Parser]s.
+extension RecordOfParsersExtension7<R1, R2, R3, R4, R5, R6, R7> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>,
@@ -39,8 +39,8 @@ extension RecordOfParserExtension7<R1, R2, R3, R4, R5, R6, R7> on (
   Parser<R6>,
   Parser<R7>
 ) {
-  /// Converts a [Record] of 7 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 7 parse results.
+  /// Converts a [Record] of 7 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 7 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g')).toSequenceParser()`
@@ -52,7 +52,7 @@ extension RecordOfParserExtension7<R1, R2, R3, R4, R5, R6, R7> on (
 }
 
 /// A parser that consumes a sequence of 7 parsers and returns a [Record] with
-/// 7 parse results.
+/// 7 positional parse results.
 class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
     extends Parser<(R1, R2, R3, R4, R5, R6, R7)> implements SequentialParser {
   SequenceParser7(this.parser1, this.parser2, this.parser3, this.parser4,
@@ -134,8 +134,8 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
           parser1, parser2, parser3, parser4, parser5, parser6, parser7);
 }
 
-/// Extension on a parsed [Record] with 7 values.
-extension Parsed7ResultsRecord<T1, T2, T3, T4, T5, T6, T7> on (
+/// Extension on a [Record] with 7 positional values.
+extension RecordOfValuesExtension7<T1, T2, T3, T4, T5, T6, T7> on (
   T1,
   T2,
   T3,
@@ -192,14 +192,15 @@ extension Parsed7ResultsRecord<T1, T2, T3, T4, T5, T6, T7> on (
   @Deprecated(r'Instead use the canonical accessor $7')
   T7 get last => $7;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 7 positional values to a new type [R] using
+  /// the provided [callback] with 7 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7) callback) =>
       callback($1, $2, $3, $4, $5, $6, $7);
 }
 
-/// Extension on a [Parser] reading a [Record] with 7 values.
+/// Extension on a [Parser] producing a [Record] of 7 positional values.
 extension RecordParserExtension7<T1, T2, T3, T4, T5, T6, T7>
     on Parser<(T1, T2, T3, T4, T5, T6, T7)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].

@@ -555,8 +555,7 @@ void main() {
       char('d'),
       char('e'),
       char('f')
-    )
-        .toSequenceParser();
+    ).toSequenceParser();
     const record = ('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
@@ -751,8 +750,7 @@ void main() {
       char('e'),
       char('f'),
       char('g')
-    )
-        .toSequenceParser();
+    ).toSequenceParser();
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
@@ -971,8 +969,7 @@ void main() {
       char('f'),
       char('g'),
       char('h')
-    )
-        .toSequenceParser();
+    ).toSequenceParser();
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
@@ -1214,8 +1211,7 @@ void main() {
       char('g'),
       char('h'),
       char('i')
-    )
-        .toSequenceParser();
+    ).toSequenceParser();
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {

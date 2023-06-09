@@ -60,16 +60,17 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
 
-  // Constructor function
-  out.writeln('/// Creates a [Parser] that runs the $index parsers passed as '
-      'argument in sequence ');
-  out.writeln('/// and returns a [Record] with the parsed results.');
+  // Constructor function.
+  out.writeln('/// Creates a [Parser] that consumes the $index parsers passed '
+      'as argument in ');
+  out.writeln('/// sequence and returns a [Record] with $index positional '
+      'parse results.');
   out.writeln('///');
   out.writeln('/// For example,');
-  out.writeln(
-      '/// the parser `seq$index(${characters.map((char) => 'char(\'$char\')').join(', ')})`');
-  out.writeln(
-      '/// returns `(${characters.map((char) => '\'$char\'').join(', ')})`');
+  out.writeln('/// the parser `seq$index('
+      '${characters.map((char) => 'char(\'$char\')').join(', ')})`');
+  out.writeln('/// returns `('
+      '${characters.map((char) => '\'$char\'').join(', ')})`');
   out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
   out.writeln('Parser<(${resultTypes.join(', ')})> '
@@ -81,20 +82,22 @@ Future<void> generateImplementation(int index) async {
       '${parserNames.join(', ')});');
   out.writeln();
 
-  // Converter extension
-  out.writeln('/// Extension on a [Record] of $index [Parser]s.');
-  out.writeln('extension RecordOfParserExtension$index'
+  // Converter extension.
+  out.writeln('/// Extensions on a [Record] with $index positional [Parser]s.');
+  out.writeln('extension RecordOfParsersExtension$index'
       '<${resultTypes.join(', ')}> on '
       '(${resultTypes.map((type) => 'Parser<$type>').join(', ')}) {');
-  out.writeln('/// Converts a [Record] of $index parsers to a [Parser] that '
-      'reads the input in');
-  out.writeln('/// sequence and returns a [Record] with $index parse results.');
+  out.writeln('/// Converts a [Record] of $index positional parsers to a '
+      '[Parser] that runs the');
+  out.writeln('/// parsers in sequence and returns a [Record] with $index '
+      'positional parse results.');
   out.writeln('///');
   out.writeln('/// For example,');
-  out.writeln(
-      '/// the parser `(${characters.map((char) => 'char(\'$char\')').join(', ')}).toSequenceParser()`');
-  out.writeln(
-      '/// returns `(${characters.map((char) => '\'$char\'').join(', ')})`');
+  out.writeln('/// the parser `('
+      '${characters.map((char) => 'char(\'$char\')').join(', ')})'
+      '.toSequenceParser()`');
+  out.writeln('/// returns `('
+      '${characters.map((char) => '\'$char\'').join(', ')})`');
   out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
   out.writeln('Parser<(${resultTypes.join(', ')})> toSequenceParser() => ');
@@ -106,7 +109,7 @@ Future<void> generateImplementation(int index) async {
   // Parser implementation.
   out.writeln('/// A parser that consumes a sequence of $index parsers and '
       'returns a [Record] with ');
-  out.writeln('/// $index parse results.');
+  out.writeln('/// $index positional parse results.');
   out.writeln('class SequenceParser$index<${resultTypes.join(', ')}> '
       'extends Parser<(${resultTypes.join(', ')})> '
       'implements SequentialParser {');
@@ -158,10 +161,10 @@ Future<void> generateImplementation(int index) async {
   out.writeln('}');
   out.writeln();
 
-  // Extension on the parsed [Records].
-  out.writeln('/// Extension on a parsed [Record] with $index values.');
+  // Extension on a [Record] with values.
+  out.writeln('/// Extension on a [Record] with $index positional values.');
   out.writeln(
-      'extension Parsed${index}ResultsRecord<${valueTypes.join(', ')}> on '
+      'extension RecordOfValuesExtension$index<${valueTypes.join(', ')}> on '
       '(${valueTypes.join(', ')}) {');
   for (var i = 0; i < index; i++) {
     out.writeln('/// Returns the ${ordinalNames[i]} element of this record.');
@@ -177,17 +180,18 @@ Future<void> generateImplementation(int index) async {
       '${valueNames.last}\')');
   out.writeln('${valueTypes.last} get last => ${valueNames.last};');
   out.writeln();
-  out.writeln('/// Converts this [Record] to a new type [R] with the provided '
-      '[callback].');
+  out.writeln('/// Converts this [Record] with $index positional values to '
+      'a new type [R] using');
+  out.writeln('/// the provided [callback] with $index positional arguments.');
   out.writeln('@inlineVm @inlineJs');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln('}');
   out.writeln();
 
-  // Extension of mapping a parser.
-  out.writeln(
-      '/// Extension on a [Parser] reading a [Record] with $index values.');
+  // Extension on a [Parser] producing a [Record] of values.
+  out.writeln('/// Extension on a [Parser] producing a [Record] of $index '
+      'positional values.');
   out.writeln('extension RecordParserExtension$index<${valueTypes.join(', ')}>'
       ' on Parser<(${valueTypes.join(', ')})> {');
   out.writeln('/// Maps a parsed [Record] to [R] using the provided '

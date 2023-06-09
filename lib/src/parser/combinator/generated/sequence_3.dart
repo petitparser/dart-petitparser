@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 3 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 3 parsers passed as argument in
+/// sequence and returns a [Record] with 3 positional parse results.
 ///
 /// For example,
 /// the parser `seq3(char('a'), char('b'), char('c'))`
@@ -24,14 +24,14 @@ Parser<(R1, R2, R3)> seq3<R1, R2, R3>(
 ) =>
     SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 
-/// Extension on a [Record] of 3 [Parser]s.
-extension RecordOfParserExtension3<R1, R2, R3> on (
+/// Extensions on a [Record] with 3 positional [Parser]s.
+extension RecordOfParsersExtension3<R1, R2, R3> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>
 ) {
-  /// Converts a [Record] of 3 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 3 parse results.
+  /// Converts a [Record] of 3 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 3 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c')).toSequenceParser()`
@@ -43,7 +43,7 @@ extension RecordOfParserExtension3<R1, R2, R3> on (
 }
 
 /// A parser that consumes a sequence of 3 parsers and returns a [Record] with
-/// 3 parse results.
+/// 3 positional parse results.
 class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
     implements SequentialParser {
   SequenceParser3(this.parser1, this.parser2, this.parser3);
@@ -90,8 +90,8 @@ class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
       SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 }
 
-/// Extension on a parsed [Record] with 3 values.
-extension Parsed3ResultsRecord<T1, T2, T3> on (T1, T2, T3) {
+/// Extension on a [Record] with 3 positional values.
+extension RecordOfValuesExtension3<T1, T2, T3> on (T1, T2, T3) {
   /// Returns the first element of this record.
   @inlineVm
   @inlineJs
@@ -116,13 +116,14 @@ extension Parsed3ResultsRecord<T1, T2, T3> on (T1, T2, T3) {
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get last => $3;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 3 positional values to a new type [R] using
+  /// the provided [callback] with 3 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3) callback) => callback($1, $2, $3);
 }
 
-/// Extension on a [Parser] reading a [Record] with 3 values.
+/// Extension on a [Parser] producing a [Record] of 3 positional values.
 extension RecordParserExtension3<T1, T2, T3> on Parser<(T1, T2, T3)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult

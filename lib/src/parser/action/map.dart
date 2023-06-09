@@ -17,7 +17,7 @@ extension MapParserExtension<R> on Parser<R> {
   Parser<S> map<S>(
     Callback<R, S> callback, {
     @Deprecated('All callbacks are considered to have side-effects')
-        bool hasSideEffects = true,
+    bool hasSideEffects = true,
   }) =>
       MapParser<R, S>(this, callback);
 }

@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 2 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 2 parsers passed as argument in
+/// sequence and returns a [Record] with 2 positional parse results.
 ///
 /// For example,
 /// the parser `seq2(char('a'), char('b'))`
@@ -23,10 +23,10 @@ Parser<(R1, R2)> seq2<R1, R2>(
 ) =>
     SequenceParser2<R1, R2>(parser1, parser2);
 
-/// Extension on a [Record] of 2 [Parser]s.
-extension RecordOfParserExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
-  /// Converts a [Record] of 2 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 2 parse results.
+/// Extensions on a [Record] with 2 positional [Parser]s.
+extension RecordOfParsersExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
+  /// Converts a [Record] of 2 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 2 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b')).toSequenceParser()`
@@ -37,7 +37,7 @@ extension RecordOfParserExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
 }
 
 /// A parser that consumes a sequence of 2 parsers and returns a [Record] with
-/// 2 parse results.
+/// 2 positional parse results.
 class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
     implements SequentialParser {
   SequenceParser2(this.parser1, this.parser2);
@@ -77,8 +77,8 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
   SequenceParser2<R1, R2> copy() => SequenceParser2<R1, R2>(parser1, parser2);
 }
 
-/// Extension on a parsed [Record] with 2 values.
-extension Parsed2ResultsRecord<T1, T2> on (T1, T2) {
+/// Extension on a [Record] with 2 positional values.
+extension RecordOfValuesExtension2<T1, T2> on (T1, T2) {
   /// Returns the first element of this record.
   @inlineVm
   @inlineJs
@@ -97,13 +97,14 @@ extension Parsed2ResultsRecord<T1, T2> on (T1, T2) {
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get last => $2;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 2 positional values to a new type [R] using
+  /// the provided [callback] with 2 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2) callback) => callback($1, $2);
 }
 
-/// Extension on a [Parser] reading a [Record] with 2 values.
+/// Extension on a [Parser] producing a [Record] of 2 positional values.
 extension RecordParserExtension2<T1, T2> on Parser<(T1, T2)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult

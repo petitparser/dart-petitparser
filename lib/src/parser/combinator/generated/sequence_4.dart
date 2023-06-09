@@ -9,8 +9,8 @@ import '../../../shared/annotations.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
-/// Creates a [Parser] that runs the 4 parsers passed as argument in sequence
-/// and returns a [Record] with the parsed results.
+/// Creates a [Parser] that consumes the 4 parsers passed as argument in
+/// sequence and returns a [Record] with 4 positional parse results.
 ///
 /// For example,
 /// the parser `seq4(char('a'), char('b'), char('c'), char('d'))`
@@ -25,15 +25,15 @@ Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
 ) =>
     SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
-/// Extension on a [Record] of 4 [Parser]s.
-extension RecordOfParserExtension4<R1, R2, R3, R4> on (
+/// Extensions on a [Record] with 4 positional [Parser]s.
+extension RecordOfParsersExtension4<R1, R2, R3, R4> on (
   Parser<R1>,
   Parser<R2>,
   Parser<R3>,
   Parser<R4>
 ) {
-  /// Converts a [Record] of 4 parsers to a [Parser] that reads the input in
-  /// sequence and returns a [Record] with 4 parse results.
+  /// Converts a [Record] of 4 positional parsers to a [Parser] that runs the
+  /// parsers in sequence and returns a [Record] with 4 positional parse results.
   ///
   /// For example,
   /// the parser `(char('a'), char('b'), char('c'), char('d')).toSequenceParser()`
@@ -45,7 +45,7 @@ extension RecordOfParserExtension4<R1, R2, R3, R4> on (
 }
 
 /// A parser that consumes a sequence of 4 parsers and returns a [Record] with
-/// 4 parse results.
+/// 4 positional parse results.
 class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
     implements SequentialParser {
   SequenceParser4(this.parser1, this.parser2, this.parser3, this.parser4);
@@ -99,8 +99,8 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
       SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 }
 
-/// Extension on a parsed [Record] with 4 values.
-extension Parsed4ResultsRecord<T1, T2, T3, T4> on (T1, T2, T3, T4) {
+/// Extension on a [Record] with 4 positional values.
+extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Returns the first element of this record.
   @inlineVm
   @inlineJs
@@ -131,13 +131,14 @@ extension Parsed4ResultsRecord<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get last => $4;
 
-  /// Converts this [Record] to a new type [R] with the provided [callback].
+  /// Converts this [Record] with 4 positional values to a new type [R] using
+  /// the provided [callback] with 4 positional arguments.
   @inlineVm
   @inlineJs
   R map<R>(R Function(T1, T2, T3, T4) callback) => callback($1, $2, $3, $4);
 }
 
-/// Extension on a [Parser] reading a [Record] with 4 values.
+/// Extension on a [Parser] producing a [Record] of 4 positional values.
 extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
   /// Maps a parsed [Record] to [R] using the provided [callback].
   @useResult

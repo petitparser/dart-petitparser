@@ -37,9 +37,9 @@ extension WhereParserExtension<R> on Parser<R> {
     Predicate<R> predicate, {
     FailureFactory<R>? failureFactory,
     @Deprecated('Use `failureFactory` instead')
-        Callback<R, String>? failureMessage,
+    Callback<R, String>? failureMessage,
     @Deprecated('Use `failureFactory` instead')
-        Callback<R, int>? failurePosition,
+    Callback<R, int>? failurePosition,
   }) =>
       WhereParser<R>(
           this,
