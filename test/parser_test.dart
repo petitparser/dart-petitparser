@@ -1372,6 +1372,8 @@ void main() {
     });
     group('skip', () {
       final inner = digit();
+      final before = char('<');
+      final after = char('>');
       group('none', () {
         final parser = inner.skip();
         expectParserInvariants(parser);
@@ -1383,47 +1385,53 @@ void main() {
         });
       });
       group('before', () {
-        final parser = inner.skip(before: char('*'));
+        final parser = inner.skip(before: before);
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('*1', result: '1'));
-          expect(parser, isParseSuccess('*2', result: '2'));
-          expect(parser, isParseFailure('', message: '"*" expected'));
-          expect(parser, isParseFailure('1', message: '"*" expected'));
+          expect(parser.children, [before, inner]);
+          expect(parser, isParseSuccess('<1', result: '1'));
+          expect(parser, isParseSuccess('<2', result: '2'));
+          expect(parser, isParseFailure('', message: '"<" expected'));
+          expect(parser, isParseFailure('1', message: '"<" expected'));
           expect(parser,
-              isParseFailure('*', message: 'digit expected', position: 1));
+              isParseFailure('<', message: 'digit expected', position: 1));
           expect(parser,
-              isParseFailure('*a', message: 'digit expected', position: 1));
+              isParseFailure('<a', message: 'digit expected', position: 1));
         });
       });
       group('after', () {
-        final parser = inner.skip(after: char('!'));
+        final parser = inner.skip(after: after);
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('1!', result: '1'));
-          expect(parser, isParseSuccess('2!', result: '2'));
+          expect(parser.children, [inner, after]);
+          expect(parser, isParseSuccess('1>', result: '1'));
+          expect(parser, isParseSuccess('2>', result: '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
           expect(parser,
-              isParseFailure('1', message: '"!" expected', position: 1));
-          expect(parser, isParseFailure('!', message: 'digit expected'));
-          expect(parser, isParseFailure('a!', message: 'digit expected'));
+              isParseFailure('1', message: '">" expected', position: 1));
+          expect(parser,
+              isParseFailure('1!', message: '">" expected', position: 1));
+          expect(parser, isParseFailure('>', message: 'digit expected'));
+          expect(parser, isParseFailure('a>', message: 'digit expected'));
         });
       });
       group('before & after', () {
-        final parser = inner.skip(before: char('*'), after: char('!'));
+        final parser = inner.skip(before: before, after: after);
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, isParseSuccess('*1!', result: '1'));
-          expect(parser, isParseSuccess('*2!', result: '2'));
-          expect(parser, isParseFailure('', message: '"*" expected'));
-          expect(parser, isParseFailure('1', message: '"*" expected'));
-          expect(parser, isParseFailure('1!', message: '"*" expected'));
+          expect(parser.children, [before, inner, after]);
+          expect(parser, isParseSuccess('<1>', result: '1'));
+          expect(parser, isParseSuccess('<2>', result: '2'));
+          expect(parser, isParseFailure('', message: '"<" expected'));
+          expect(parser, isParseFailure('1', message: '"<" expected'));
+          expect(parser, isParseFailure('1>', message: '"<" expected'));
+          expect(parser, isParseFailure('1!', message: '"<" expected'));
           expect(parser,
-              isParseFailure('*', message: 'digit expected', position: 1));
+              isParseFailure('<', message: 'digit expected', position: 1));
           expect(parser,
-              isParseFailure('*1', message: '"!" expected', position: 2));
+              isParseFailure('<1', message: '">" expected', position: 2));
           expect(parser,
-              isParseFailure('*1*', message: '"!" expected', position: 2));
+              isParseFailure('<1!', message: '">" expected', position: 2));
         });
       });
     });
