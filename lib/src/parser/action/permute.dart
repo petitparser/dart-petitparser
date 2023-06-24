@@ -28,14 +28,14 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
   @override
   Result<List<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    switch (result) {
-      case Success(value: final value):
-        final values = indexes
-            .map((index) => value[index < 0 ? value.length + index : index])
-            .toList(growable: false);
-        return result.success(values);
-      case Failure(message: final message):
-        return result.failure(message);
+    if (result.isSuccess) {
+      final value = result.value;
+      final values = indexes
+          .map((index) => value[index < 0 ? value.length + index : index])
+          .toList(growable: false);
+      return result.success(values);
+    } else {
+      return result.failure(result.message);
     }
   }
 

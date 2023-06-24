@@ -66,11 +66,10 @@ class WhereParser<R> extends DelegateParser<R, R> {
   @override
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return switch (result) {
-      Success(value: final value) when !predicate(value) =>
-        failureFactory(context, result),
-      _ => result
-    };
+    if (result is Success<R> && !predicate(result.value)) {
+      return failureFactory(context, result);
+    }
+    return result;
   }
 
   @override

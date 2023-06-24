@@ -25,10 +25,7 @@ class AndParser<R> extends DelegateParser<R, R> {
   @override
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return switch (result) {
-      Success(value: final value) => context.success(value),
-      Failure() => result
-    };
+    return result.isSuccess ? context.success(result.value) : result;
   }
 
   @override

@@ -38,13 +38,12 @@ class FlattenParser<R> extends DelegateParser<R, String> {
       return context.success(output, position);
     } else {
       final result = delegate.parseOn(context);
-      switch (result) {
-        case Success(position: final position):
-          final output = context.buffer.substring(context.position, position);
-          return result.success(output);
-        case Failure(message: final message):
-          return result.failure(message);
+      if (result.isSuccess) {
+        final output =
+            context.buffer.substring(context.position, result.position);
+        return result.success(output);
       }
+      return result.failure(result.message);
     }
   }
 

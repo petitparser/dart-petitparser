@@ -66,11 +66,10 @@ class ChoiceParser<R> extends ListParser<R, R> {
     Failure<R>? failure;
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(context);
-      switch (result) {
-        case Success():
-          return result;
-        case Failure():
-          failure = failure == null ? result : failureJoiner(failure, result);
+      if (result is Failure<R>) {
+        failure = failure == null ? result : failureJoiner(failure, result);
+      } else {
+        return result;
       }
     }
     return failure!;

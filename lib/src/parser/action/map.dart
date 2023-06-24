@@ -33,10 +33,11 @@ class MapParser<R, S> extends DelegateParser<R, S> {
   @override
   Result<S> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return switch (result) {
-      Success(value: final value) => result.success(callback(value)),
-      Failure(message: final message) => result.failure(message)
-    };
+    if (result.isSuccess) {
+      return result.success(callback(result.value));
+    } else {
+      return result.failure(result.message);
+    }
   }
 
   @override

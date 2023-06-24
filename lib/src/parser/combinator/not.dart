@@ -42,10 +42,9 @@ class NotParser<R> extends DelegateParser<R, Failure<R>> {
   @override
   Result<Failure<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return switch (result) {
-      Success() => context.failure(message),
-      Failure() => context.success(result),
-    };
+    return result.isFailure
+        ? context.success(result as Failure<R>)
+        : context.failure(message);
   }
 
   @override

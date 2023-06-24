@@ -25,13 +25,12 @@ class TokenParser<R> extends DelegateParser<R, Token<R>> {
   @override
   Result<Token<R>> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    switch (result) {
-      case Success(value: final value, position: final position):
-        final token =
-            Token<R>(value, context.buffer, context.position, position);
-        return result.success(token);
-      case Failure(message: final message):
-        return result.failure(message);
+    if (result.isSuccess) {
+      final token = Token<R>(
+          result.value, context.buffer, context.position, result.position);
+      return result.success(token);
+    } else {
+      return result.failure(result.message);
     }
   }
 

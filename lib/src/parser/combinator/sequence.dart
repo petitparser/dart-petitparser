@@ -63,13 +63,11 @@ class SequenceParser<R> extends ListParser<R, List<R>>
     final elements = <R>[];
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(current);
-      switch (result) {
-        case Success(value: final value):
-          elements.add(value);
-          current = result;
-        case Failure(message: final message):
-          return result.failure(message);
+      if (result.isFailure) {
+        return result.failure(result.message);
       }
+      elements.add(result.value);
+      current = result;
     }
     return current.success(elements);
   }

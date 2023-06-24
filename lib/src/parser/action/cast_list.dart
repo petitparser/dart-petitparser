@@ -19,11 +19,9 @@ class CastListParser<R, S> extends DelegateParser<R, List<S>> {
   @override
   Result<List<S>> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return switch (result) {
-      Success(value: final value) =>
-        result.success(List.castFrom(value as List)),
-      Failure(message: final message) => result.failure(message)
-    };
+    return result.isSuccess
+        ? result.success(List.castFrom(result.value as List))
+        : result.failure(result.message);
   }
 
   @override

@@ -31,10 +31,7 @@ abstract class Parser<R> {
   /// emulated using its slower brother.
   int fastParseOn(String buffer, int position) {
     final result = parseOn(Context(buffer, position));
-    return switch (result) {
-      Success(position: final position) => position,
-      Failure() => -1
-    };
+    return result.isSuccess ? result.position : -1;
   }
 
   /// Returns the parse result of the [input].
