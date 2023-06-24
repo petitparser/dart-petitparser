@@ -37,18 +37,12 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   @override
   Result<R> parseOn(Context context) {
     final buffer = context.buffer;
-
-    // Trim the left part:
     final before = _trim(left, buffer, context.position);
     if (before != context.position) {
       context = Context(buffer, before);
     }
-
-    // Consume the delegate:
     final result = delegate.parseOn(context);
     if (result.isFailure) return result;
-
-    // Trim the right part:
     final after = _trim(right, buffer, result.position);
     return after == result.position
         ? result

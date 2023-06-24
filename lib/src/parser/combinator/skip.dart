@@ -33,7 +33,6 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
 
   @override
   Result<R> parseOn(Context context) {
-    // Before
     final beforeParser = before;
     if (beforeParser != null) {
       final beforeContext = beforeParser.parseOn(context);
@@ -42,11 +41,9 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
       }
       context = beforeContext;
     }
-    // Delegate
     final resultContext = delegate.parseOn(context);
     if (resultContext.isFailure) return resultContext;
     context = resultContext;
-    // After
     final afterParser = after;
     if (afterParser != null) {
       final afterContext = afterParser.parseOn(context);
@@ -60,13 +57,10 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
 
   @override
   int fastParseOn(String buffer, int position) {
-    // Before
     position = before?.fastParseOn(buffer, position) ?? position;
     if (position < 0) return -1;
-    // Delegate
     position = delegate.fastParseOn(buffer, position);
     if (position < 0) return -1;
-    // After
     position = after?.fastParseOn(buffer, position) ?? position;
     return position;
   }
@@ -84,11 +78,7 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
   @override
   void replace(Parser source, Parser target) {
     super.replace(source, target);
-    if (before == source) {
-      before = target;
-    }
-    if (after == source) {
-      after = target;
-    }
+    if (before == source) before = target;
+    if (after == source) after = target;
   }
 }
