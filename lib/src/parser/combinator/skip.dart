@@ -48,7 +48,7 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
     if (afterParser != null) {
       final afterContext = afterParser.parseOn(context);
       if (afterContext.isFailure) {
-        return afterContext.failure(resultContext.message);
+        return afterContext.failure(afterContext.message);
       }
       context = afterContext;
     }
