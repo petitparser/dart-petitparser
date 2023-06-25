@@ -92,11 +92,11 @@ void main() {
         // ignore: deprecated_member_use_from_same_package
         parser.separatedBy<T>(char(','), includeSeparators: false);
     Parser<List<T>> castList<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy<T>(char(','), includeSeparators: false);
+        // ignore: deprecated_member_use_from_same_package, inference_failure_on_function_invocation
+        parser.separatedBy(char(','), includeSeparators: false).castList<T>();
     Parser<List<T>> smartCompiler<T>(Parser<T> parser) =>
         // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy<T>(char(','), includeSeparators: false);
+        parser.separatedBy(char(','), includeSeparators: false);
 
     testWith('with list created using desired type', typeParam);
     testWith('with generic list cast to desired type', castList);
