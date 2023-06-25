@@ -41,7 +41,7 @@ class Indent {
       .map((value) {
     stack.add(current);
     return current = value;
-  }).and();
+  }, hasSideEffects: true).and();
 
   /// A parser that consumes and returns the current indent.
   late Parser<String> same =
@@ -51,5 +51,5 @@ class Indent {
   /// not consume anything.
   late Parser<String> decrease = epsilon()
       .where((_) => stack.isNotEmpty)
-      .map((_) => current = stack.removeLast());
+      .map((_) => current = stack.removeLast(), hasSideEffects: true);
 }

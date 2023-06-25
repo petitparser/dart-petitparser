@@ -247,8 +247,10 @@ extension RecordOfValuesExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
 /// Extension on a [Parser] producing a [Record] of 9 positional values.
 extension RecordParserExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     on Parser<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback].
+  /// Maps a parsed [Record] to [R] using the provided [callback], see
+  /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map9<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) =>
-      map((record) => record.map(callback));
+  Parser<R> map9<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback,
+          {bool hasSideEffects = false}) =>
+      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

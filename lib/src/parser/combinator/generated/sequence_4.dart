@@ -140,8 +140,10 @@ extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
 
 /// Extension on a [Parser] producing a [Record] of 4 positional values.
 extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback].
+  /// Maps a parsed [Record] to [R] using the provided [callback], see
+  /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback) =>
-      map((record) => record.map(callback));
+  Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback,
+          {bool hasSideEffects = false}) =>
+      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

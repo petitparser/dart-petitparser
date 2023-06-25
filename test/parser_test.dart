@@ -191,6 +191,20 @@ void main() {
         expect(parser, isParseFailure('', message: 'digit expected'));
         expect(parser, isParseFailure('a', message: 'digit expected'));
       });
+      test('without side-effects', () {
+        final effects = <String>[];
+        final parser =
+            digit().map((each) => effects.add(each), hasSideEffects: false);
+        expect(parser.fastParseOn('1', 0), 1);
+        expect(effects, isEmpty);
+      });
+      test('with side-effects', () {
+        final effects = <String>[];
+        final parser =
+            digit().map((each) => effects.add(each), hasSideEffects: true);
+        expect(parser.fastParseOn('1', 0), 1);
+        expect(effects, ['1']);
+      });
     });
     group('permute', () {
       expectParserInvariants(any().star().permute([-1, 1]));

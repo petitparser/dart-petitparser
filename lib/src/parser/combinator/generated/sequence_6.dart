@@ -187,8 +187,10 @@ extension RecordOfValuesExtension6<T1, T2, T3, T4, T5, T6> on (
 /// Extension on a [Parser] producing a [Record] of 6 positional values.
 extension RecordParserExtension6<T1, T2, T3, T4, T5, T6>
     on Parser<(T1, T2, T3, T4, T5, T6)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback].
+  /// Maps a parsed [Record] to [R] using the provided [callback], see
+  /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map6<R>(R Function(T1, T2, T3, T4, T5, T6) callback) =>
-      map((record) => record.map(callback));
+  Parser<R> map6<R>(R Function(T1, T2, T3, T4, T5, T6) callback,
+          {bool hasSideEffects = false}) =>
+      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

@@ -1,44 +1,45 @@
 # Changelog
 
-## 5.5.0 (Unpublished)
+## 6.0.0 (Unpublished)
 
-- Dart 3.0 requirement.
-- Use Dart Records for typed sequences:
-  - Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
-  - And extension methods to emulate the custom `Sequence` classes, deprecate old accessor names.
-- Make `Result` a sealed class to be able to pattern match `Success` and `Failure`.
+* Dart 3.0 requirement.
+* Use Dart Records for typed sequences:
+  * Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
+  * And extension methods to emulate the custom `Sequence` classes, deprecate old accessor names.
+* Make `Result` a sealed class to be able to pattern match `Success` and `Failure`.
+* Reintroduce `hasSideEffect` in `MapParser` and consider all callbacks to be side-effect free.
 
 ## 5.4.0
 
-- Dart 2.19 requirement, enabled strict casts and type inference.
-- Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
-- Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.
-- Add support for optional expression groups in the `ExpressionBuilder`.
-- Optimize, cleanup, and improve code and documentation.
-- Add `optimize` to in-place optimize parser graphs.
+* Dart 2.19 requirement, enabled strict casts and type inference.
+* Introduce repeating character parser `starString`, `plusString`, `timesString` and `repeatString` for extra fast reading of strings.
+* Renamed `AnyParser` to `AnyCharacterParser`, and `CharacterParser` to `SingleCharacterParser` for consistency.
+* Add support for optional expression groups in the `ExpressionBuilder`.
+* Optimize, cleanup, and improve code and documentation.
+* Add `optimize` to in-place optimize parser graphs.
 
 ## 5.3.0
 
-- Maintenance release deprecating some old code in anticipation of the upcoming major release. 
-- Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
-- Deprecate `GrammarDefinition.build(Function, List<Object?>)`, use `buildFrom(Parser)` for a strongly typed parser instead.
-- Replace various uses of exception throwing with assertions, which yields code the compiler can optimize better.
+* Maintenance release deprecating some old code in anticipation of the upcoming major release. 
+* Deprecate the old way of defining primitive parsers and move the functionality directly to `ExpressionBuilder`.
+* Deprecate `GrammarDefinition.build(Function, List<Object?>)`, use `buildFrom(Parser)` for a strongly typed parser instead.
+* Replace various uses of exception throwing with assertions, which yields code the compiler can optimize better.
 
 ## 5.2.0
 
-- Add `@useResult` to parser constructors to avoid bugs when using the old parser instance.
-- Add a linter rule to detect unoptimized flatten parsers.
+* Add `@useResult` to parser constructors to avoid bugs when using the old parser instance.
+* Add a linter rule to detect unoptimized flatten parsers.
 
 ## 5.1.0
 
-- Dart 2.18 requirement.
-- Add `seq2`, `seq3`, ... combinator functions returning strongly typed sequences of `Sequence2<R1, R2>`, `Sequence3<R1, R2, R3>`, ...
-- Add `Parser.starSeparated`, `Parser.plusSeparated`, `Parser.timesSeparated`, and `Parser.repeatSeparated` returning `SeparatedList` with the strongly typed elements and separators. Deprecate the dynamically typed `Parser.separatedBy`.
-- Add `Parser.matchesAll` that creates a lazy iterable over the (overlapping or non-overlapping) successful parse results. Deprecate `matches` and `matchesSkipping`.
-- Add a native platform independent `newline` parser.
-- Add a section on debugging to the [tutorial](https://github.com/petitparser/dart-petitparser#debugging-your-grammars).
-- Remove the deprecated `ref0`, `ref1`, ... instance methods, these methods are globally defined since 4.2.0.
-- Make `GrammarDefinition` and `GrammarDefinition.start()` optionally typed.
+* Dart 2.18 requirement.
+* Add `seq2`, `seq3`, ... combinator functions returning strongly typed sequences of `Sequence2<R1, R2>`, `Sequence3<R1, R2, R3>`, ...
+* Add `Parser.starSeparated`, `Parser.plusSeparated`, `Parser.timesSeparated`, and `Parser.repeatSeparated` returning `SeparatedList` with the strongly typed elements and separators. Deprecate the dynamically typed `Parser.separatedBy`.
+* Add `Parser.matchesAll` that creates a lazy iterable over the (overlapping or non-overlapping) successful parse results. Deprecate `matches` and `matchesSkipping`.
+* Add a native platform independent `newline` parser.
+* Add a section on debugging to the [tutorial](https://github.com/petitparser/dart-petitparser#debugging-your-grammars).
+* Remove the deprecated `ref0`, `ref1`, ... instance methods, these methods are globally defined since 4.2.0.
+* Make `GrammarDefinition` and `GrammarDefinition.start()` optionally typed.
 
 ## 5.0.0
 

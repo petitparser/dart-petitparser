@@ -195,11 +195,13 @@ Future<void> generateImplementation(int index) async {
   out.writeln('extension RecordParserExtension$index<${valueTypes.join(', ')}>'
       ' on Parser<(${valueTypes.join(', ')})> {');
   out.writeln('/// Maps a parsed [Record] to [R] using the provided '
-      '[callback].');
+      '[callback], see ');
+  out.writeln('/// [MapParserExtension.map] for details.');
   out.writeln('@useResult');
-  out.writeln(
-      'Parser<R> map$index<R>(R Function(${valueTypes.join(', ')}) callback) => '
-      'map((record) => record.map(callback));');
+  out.writeln('Parser<R> map$index<R>('
+      'R Function(${valueTypes.join(', ')}) callback, '
+      '{bool hasSideEffects = false}) => '
+      'map((record) => record.map(callback), hasSideEffects: hasSideEffects);');
   out.writeln('}');
   out.writeln();
 

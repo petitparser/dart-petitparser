@@ -164,8 +164,10 @@ extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
 /// Extension on a [Parser] producing a [Record] of 5 positional values.
 extension RecordParserExtension5<T1, T2, T3, T4, T5>
     on Parser<(T1, T2, T3, T4, T5)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback].
+  /// Maps a parsed [Record] to [R] using the provided [callback], see
+  /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map5<R>(R Function(T1, T2, T3, T4, T5) callback) =>
-      map((record) => record.map(callback));
+  Parser<R> map5<R>(R Function(T1, T2, T3, T4, T5) callback,
+          {bool hasSideEffects = false}) =>
+      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

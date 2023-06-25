@@ -260,7 +260,7 @@ class UnusedResult extends LinterRule {
       parser is CastParser ||
       parser is CastListParser ||
       parser is FlattenParser ||
-      parser is MapParser ||
+      (parser is MapParser && !parser.hasSideEffects) ||
       parser is PermuteParser ||
       parser is PickParser ||
       parser is TokenParser ||
