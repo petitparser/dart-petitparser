@@ -27,7 +27,8 @@ extension ChoiceParserExtension on Parser {
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
   @useResult
-  ChoiceParser or(Parser other, {FailureJoiner? failureJoiner}) =>
+  ChoiceParser<dynamic> or(Parser other,
+          {FailureJoiner<dynamic>? failureJoiner}) =>
       switch (this) {
         ChoiceParser(
           children: final children,
@@ -43,7 +44,7 @@ extension ChoiceParserExtension on Parser {
   /// Convenience operator returning a parser that accepts the receiver or
   /// [other]. See [or] for details.
   @useResult
-  ChoiceParser operator |(Parser other) => or(other);
+  ChoiceParser<dynamic> operator |(Parser other) => or(other);
 }
 
 extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {

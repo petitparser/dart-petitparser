@@ -48,7 +48,7 @@ void main() {
         expect(parser, isParseFailure('1', message: 'letter expected'));
       });
       test('resume', () {
-        final continuations = <ContinuationFunction>[];
+        final continuations = <ContinuationFunction<Object>>[];
         final contexts = <Context>[];
         final parser = digit().callCC((continuation, context) {
           continuations.add(continuation);

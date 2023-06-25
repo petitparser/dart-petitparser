@@ -23,7 +23,7 @@ Map<Symbol, Parser> createUebersetzerbau() {
 // The canonical grammar to exercise first- and follow-set calculation,
 // likely originally from the dragon-book.
 Map<Symbol, Parser> createDragon() {
-  final grammar = <Symbol, SettableParser>{
+  final grammar = <Symbol, SettableParser<dynamic>>{
     for (final symbol in [#E, #Ep, #T, #Tp, #F]) symbol: undefined(),
   };
   grammar[#E]!.set(grammar[#T]! & grammar[#Ep]!);
@@ -37,7 +37,7 @@ Map<Symbol, Parser> createDragon() {
 // A highly ambiguous grammar by Saichaitanya Jampana. Exploring the problem of
 // ambiguity in context-free grammars.
 Map<Symbol, Parser> createAmbiguous() {
-  final grammar = <Symbol, SettableParser>{
+  final grammar = <Symbol, SettableParser<dynamic>>{
     for (final symbol in [#S, #A, #a, #B, #b]) symbol: undefined(),
   };
   grammar[#S]!.set((grammar[#A]! & grammar[#B]!) | grammar[#a]!);
@@ -50,7 +50,7 @@ Map<Symbol, Parser> createAmbiguous() {
 
 // A highly recursive parser.
 Map<Symbol, Parser> createRecursive() {
-  final grammar = <Symbol, SettableParser>{
+  final grammar = <Symbol, SettableParser<dynamic>>{
     for (final symbol in [#S, #P, #p, #+]) symbol: undefined(),
   };
   grammar[#S]!.set(grammar[#P]! | grammar[#p]!);

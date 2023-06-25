@@ -11,7 +11,7 @@ import 'reference.dart';
 /// created with [ref0], [ref1], [ref2], ..., [undefined], or
 /// [SettableParserExtension],
 Parser<R> resolve<R>(Parser<R> parser) {
-  final mapping = <ResolvableParser, Parser>{};
+  final mapping = <ResolvableParser<dynamic>, Parser>{};
   parser = _dereference(parser, mapping);
   final todo = <Parser>[parser];
   final seen = <Parser>{parser};

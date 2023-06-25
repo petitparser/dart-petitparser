@@ -11,7 +11,7 @@ class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
   ReferenceParser(this.function, this.arguments);
 
   final Function function;
-  final List arguments;
+  final List<dynamic> arguments;
 
   @override
   Parser<R> resolve() => Function.apply(function, arguments) as Parser<R>;

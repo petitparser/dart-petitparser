@@ -7,7 +7,7 @@ import 'result.dart';
 class ParserException implements FormatException {
   const ParserException(this.failure);
 
-  final Failure failure;
+  final Failure<dynamic> failure;
 
   @override
   String get message => failure.message;

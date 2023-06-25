@@ -83,7 +83,7 @@ void main() {
 
         final mixed = string | integer;
         final mixedList = builder(mixed);
-        expect(mixedList, const TypeMatcher<Parser<List>>());
+        expect(mixedList, const TypeMatcher<Parser<List<dynamic>>>());
         expect(mixedList, isParseSuccess('1,a,2', result: [1, 'a', 2]));
       });
     }

@@ -304,7 +304,7 @@ void main() {
     });
     test('reference', () {
       Parser<List<num>> list() => [
-            (ref0(number) & char(',') & ref0(list)).map((List values) =>
+            (ref0(number) & char(',') & ref0(list)).map((values) =>
                 <num>[values[0] as num, ...(values[2] as Iterable<num>)]),
             ref0(number).map((value) => [value]),
           ].toChoiceParser();
@@ -448,19 +448,19 @@ void main() {
     test('delegation', () {
       // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation1),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
       // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation2),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
       // ignore: deprecated_member_use_from_same_package
       expect(buggedDefinition.build(start: buggedDefinition.delegation3),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
-          isA<EpsilonParser>());
+          isA<EpsilonParser<void>>());
     });
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();

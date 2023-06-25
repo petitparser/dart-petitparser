@@ -26,7 +26,7 @@ extension SequenceParserExtension on Parser {
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
   @useResult
-  Parser<List> seq(Parser other) => switch (this) {
+  Parser<List<dynamic>> seq(Parser other) => switch (this) {
         SequenceParser(children: final children) =>
           [...children, other].toSequenceParser(),
         _ => [this, other].toSequenceParser()
@@ -39,7 +39,7 @@ extension SequenceParserExtension on Parser {
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
   @useResult
-  Parser<List> operator &(Parser other) => seq(other);
+  Parser<List<dynamic>> operator &(Parser other) => seq(other);
 }
 
 extension SequenceIterableExtension<R> on Iterable<Parser<R>> {

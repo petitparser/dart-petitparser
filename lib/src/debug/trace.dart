@@ -66,7 +66,7 @@ abstract class TraceEvent {
   Context get context;
 
   /// Returns the result if this is a exit event, otherwise `null`.
-  Result? get result;
+  Result<dynamic>? get result;
 
   /// Returns the nesting level of this event.
   int get level => parent != null ? parent!.level + 1 : 0;
@@ -85,7 +85,7 @@ class _TraceEvent extends TraceEvent {
   final Context context;
 
   @override
-  final Result? result;
+  final Result<dynamic>? result;
 
   @override
   String toString() => '${'  ' * level}${result ?? parser}';

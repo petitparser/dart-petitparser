@@ -16,7 +16,7 @@ class SeparatedList<R, S> {
 
   /// An (untyped) iterable over the [elements] and the interleaved [separators]
   /// in order of appearance.
-  Iterable get sequential sync* {
+  Iterable<dynamic /* R | S */ > get sequential sync* {
     for (var i = 0; i < elements.length; i++) {
       yield elements[i];
       if (i < separators.length) {
