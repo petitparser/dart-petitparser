@@ -74,7 +74,7 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     while (elements.length < max) {
       final result = delegate.parseOn(current);
       if (result.isFailure) {
-        return current.success(elements);
+        break;
       }
       elements.add(result.value);
       current = result;
@@ -97,7 +97,7 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     while (count < max) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) {
-        return current;
+        break;
       }
       current = result;
       count++;
