@@ -86,7 +86,7 @@ class SeparatedRepeatingParser<R, S>
       if (elements.isNotEmpty) {
         final separation = separator.parseOn(current);
         if (separation.isFailure) {
-          return current.success(SeparatedList(elements, separators));
+          break;
         }
         current = separation;
         separators.add(separation.value);
@@ -126,7 +126,7 @@ class SeparatedRepeatingParser<R, S>
       if (count > 0) {
         final separation = separator.fastParseOn(buffer, current);
         if (separation < 0) {
-          return current;
+          break;
         }
         current = separation;
       }
