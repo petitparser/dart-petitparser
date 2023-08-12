@@ -65,8 +65,8 @@ class ChoiceParser<R> extends ListParser<R, R> {
   @override
   Result<R> parseOn(Context context) {
     Failure<R>? failure;
-    for (var i = 0; i < children.length; i++) {
-      final result = children[i].parseOn(context);
+    for (final child in children) {
+      final result = child.parseOn(context);
       if (result is Failure<R>) {
         failure = failure == null ? result : failureJoiner(failure, result);
       } else {
@@ -79,8 +79,8 @@ class ChoiceParser<R> extends ListParser<R, R> {
   @override
   int fastParseOn(String buffer, int position) {
     var result = -1;
-    for (var i = 0; i < children.length; i++) {
-      result = children[i].fastParseOn(buffer, position);
+    for (final child in children) {
+      result = child.fastParseOn(buffer, position);
       if (result >= 0) {
         return result;
       }

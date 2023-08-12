@@ -61,8 +61,8 @@ class SequenceParser<R> extends ListParser<R, List<R>>
   Result<List<R>> parseOn(Context context) {
     var current = context;
     final elements = <R>[];
-    for (var i = 0; i < children.length; i++) {
-      final result = children[i].parseOn(current);
+    for (final child in children) {
+      final result = child.parseOn(current);
       if (result.isFailure) {
         return result.failure(result.message);
       }
@@ -74,8 +74,8 @@ class SequenceParser<R> extends ListParser<R, List<R>>
 
   @override
   int fastParseOn(String buffer, int position) {
-    for (var i = 0; i < children.length; i++) {
-      position = children[i].fastParseOn(buffer, position);
+    for (final child in children) {
+      position = child.fastParseOn(buffer, position);
       if (position < 0) {
         return position;
       }
