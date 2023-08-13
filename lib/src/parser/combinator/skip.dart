@@ -31,17 +31,11 @@ class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
   @override
   Result<R> parseOn(Context context) {
     final beforeContext = before.parseOn(context);
-    if (beforeContext.isFailure) {
-      return beforeContext.failure(beforeContext.message);
-    }
+    if (beforeContext is Failure) return beforeContext;
     final resultContext = delegate.parseOn(beforeContext);
-    if (resultContext.isFailure) {
-      return resultContext;
-    }
+    if (resultContext is Failure) return resultContext;
     final afterContext = after.parseOn(resultContext);
-    if (afterContext.isFailure) {
-      return afterContext.failure(afterContext.message);
-    }
+    if (afterContext is Failure) return afterContext;
     return afterContext.success(resultContext.value);
   }
 

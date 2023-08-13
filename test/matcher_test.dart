@@ -4,16 +4,16 @@ import 'package:test/test.dart';
 void main() {
   test('parse()', () {
     final parser = char('a');
-    expect(parser.parse('a').isSuccess, isTrue);
-    expect(parser.parse('b').isSuccess, isFalse);
+    expect(parser.parse('a') is Success, isTrue);
+    expect(parser.parse('b') is Success, isFalse);
   });
   test('parse (start)', () {
     final parser = char('b');
-    expect(parser.parse('abc', start: 0).isSuccess, isFalse);
-    expect(parser.parse('abc', start: 1).isSuccess, isTrue);
-    expect(parser.parse('abc', start: 2).isSuccess, isFalse);
-    expect(parser.parse('abc', start: 3).isSuccess, isFalse);
-    expect(parser.parse('abc', start: 4).isSuccess, isFalse);
+    expect(parser.parse('abc', start: 0) is Success, isFalse);
+    expect(parser.parse('abc', start: 1) is Success, isTrue);
+    expect(parser.parse('abc', start: 2) is Success, isFalse);
+    expect(parser.parse('abc', start: 3) is Success, isFalse);
+    expect(parser.parse('abc', start: 4) is Success, isFalse);
   });
   test('accept()', () {
     final parser = char('a');

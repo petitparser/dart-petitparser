@@ -32,9 +32,7 @@ class PredicateParser extends Parser<String> {
     final stop = start + length;
     if (stop <= context.buffer.length) {
       final result = context.buffer.substring(start, stop);
-      if (predicate(result)) {
-        return context.success(result, stop);
-      }
+      if (predicate(result)) return context.success(result, stop);
     }
     return context.failure(message);
   }

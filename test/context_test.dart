@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
@@ -35,7 +37,7 @@ void main() {
   });
   group('failure', () {
     test('default', () {
-      final failure = context.failure<String>('error');
+      final failure = context.failure('error');
       expect(failure.buffer, buffer);
       expect(failure.position, 0);
       expect(
@@ -53,7 +55,7 @@ void main() {
       expect(failure.toString(), 'Failure[1:1]: error');
     });
     test('with position', () {
-      final failure = context.failure<String>('error', 2);
+      final failure = context.failure('error', 2);
       expect(failure.buffer, buffer);
       expect(failure.position, 2);
       expect(

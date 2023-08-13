@@ -38,11 +38,8 @@ class MapParser<R, S> extends DelegateParser<R, S> {
   @override
   Result<S> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      return result.success(callback(result.value));
-    } else {
-      return result.failure(result.message);
-    }
+    if (result is Failure) return result;
+    return result.success(callback(result.value));
   }
 
   // If we know to have side-effects, we have to fall back to the slow mode.

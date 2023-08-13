@@ -30,20 +30,18 @@ class FlattenParser<R> extends DelegateParser<R, String> {
 
   @override
   Result<String> parseOn(Context context) {
-    // If we have a message we can switch to fast mode.
     if (message != null) {
+      // If we have a message we can switch to fast mode.
       final position = delegate.fastParseOn(context.buffer, context.position);
       if (position < 0) return context.failure(message!);
       final output = context.buffer.substring(context.position, position);
       return context.success(output, position);
     } else {
       final result = delegate.parseOn(context);
-      if (result.isSuccess) {
-        final output =
-            context.buffer.substring(context.position, result.position);
-        return result.success(output);
-      }
-      return result.failure(result.message);
+      if (result is Failure) return result;
+      final output =
+          context.buffer.substring(context.position, result.position);
+      return result.success(output);
     }
   }
 

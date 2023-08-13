@@ -51,12 +51,12 @@ Matcher isSuccess<R>({
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
 @optionalTypeArgs
-Matcher isFailure<R>({
+Matcher isFailure({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic message = anything,
 }) =>
-    isA<Failure<R>>()
+    isA<Failure>()
         .having((failure) => failure.buffer, 'buffer', buffer)
         .having((failure) => failure.position, 'position', position)
         .having((failure) => failure.message, 'message', message);
@@ -85,14 +85,14 @@ Matcher isParseSuccess<R>(
 /// parsing fails at the beginning of the input. An optional [message] can be
 /// provided to assert on the error message.
 @optionalTypeArgs
-Matcher isParseFailure<R>(
+Matcher isParseFailure(
   String input, {
   dynamic position = 0,
   dynamic message = anything,
 }) =>
-    isA<Parser<R>>()
+    isA<Parser>()
         .having((parser) => parser.parse(input), 'parse',
-            isFailure<R>(buffer: input, position: position, message: message))
+            isFailure(buffer: input, position: position, message: message))
         .having((parser) => parser.accept(input), 'accept', isFalse);
 
 /// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].

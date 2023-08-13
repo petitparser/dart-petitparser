@@ -54,17 +54,17 @@ void main() {
           continuations.add(continuation);
           contexts.add(context);
           // we have to return something for now
-          return context.failure<Object>('Abort');
+          return context.failure('Abort');
         });
         // execute the parser twice to collect the continuations
-        expect(parser.parse('1').isSuccess, isFalse);
-        expect(parser.parse('a').isSuccess, isFalse);
+        expect(parser.parse('1') is Success, isFalse);
+        expect(parser.parse('a') is Success, isFalse);
         // later we can execute the captured continuations
-        expect(continuations[0](contexts[0]).isSuccess, isTrue);
-        expect(continuations[1](contexts[1]).isSuccess, isFalse);
+        expect(continuations[0](contexts[0]) is Success, isTrue);
+        expect(continuations[1](contexts[1]) is Success, isFalse);
         // of course the continuations can be resumed multiple times
-        expect(continuations[0](contexts[0]).isSuccess, isTrue);
-        expect(continuations[1](contexts[1]).isSuccess, isFalse);
+        expect(continuations[0](contexts[0]) is Success, isTrue);
+        expect(continuations[1](contexts[1]) is Success, isFalse);
       });
       test('success', () {
         final parser = digit().callCC<String>(
@@ -1151,10 +1151,10 @@ void main() {
         });
       });
       group('failure joining', () {
-        const failureA0 = Failure<Object>('A0', 0, 'A0');
-        const failureA1 = Failure<Object>('A1', 1, 'A1');
-        const failureB0 = Failure<Object>('B0', 0, 'B0');
-        const failureB1 = Failure<Object>('B1', 1, 'B1');
+        const failureA0 = Failure('A0', 0, 'A0');
+        const failureA1 = Failure('A1', 1, 'A1');
+        const failureB0 = Failure('B0', 0, 'B0');
+        const failureB1 = Failure('B1', 1, 'B1');
         final parsers = [
           anyOf('ab').plus() & anyOf('12').plus(),
           anyOf('ac').plus() & anyOf('13').plus(),

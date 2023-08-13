@@ -74,21 +74,21 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
   @override
   Result<(R1, R2, R3, R4, R5, R6, R7, R8)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
-    if (result1.isFailure) return result1.failure(result1.message);
+    if (result1 is Failure) return result1;
     final result2 = parser2.parseOn(result1);
-    if (result2.isFailure) return result2.failure(result2.message);
+    if (result2 is Failure) return result2;
     final result3 = parser3.parseOn(result2);
-    if (result3.isFailure) return result3.failure(result3.message);
+    if (result3 is Failure) return result3;
     final result4 = parser4.parseOn(result3);
-    if (result4.isFailure) return result4.failure(result4.message);
+    if (result4 is Failure) return result4;
     final result5 = parser5.parseOn(result4);
-    if (result5.isFailure) return result5.failure(result5.message);
+    if (result5 is Failure) return result5;
     final result6 = parser6.parseOn(result5);
-    if (result6.isFailure) return result6.failure(result6.message);
+    if (result6 is Failure) return result6;
     final result7 = parser7.parseOn(result6);
-    if (result7.isFailure) return result7.failure(result7.message);
+    if (result7 is Failure) return result7;
     final result8 = parser8.parseOn(result7);
-    if (result8.isFailure) return result8.failure(result8.message);
+    if (result8 is Failure) return result8;
     return result8.success((
       result1.value,
       result2.value,

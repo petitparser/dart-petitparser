@@ -65,17 +65,13 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     var current = context;
     while (elements.length < min) {
       final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
+      if (result is Failure) return result;
       elements.add(result.value);
       current = result;
     }
     while (elements.length < max) {
       final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        break;
-      }
+      if (result is Failure) break;
       elements.add(result.value);
       current = result;
     }
@@ -88,17 +84,13 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     var current = position;
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
-      }
+      if (result < 0) return -1;
       current = result;
       count++;
     }
     while (count < max) {
       final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        break;
-      }
+      if (result < 0) break;
       current = result;
       count++;
     }

@@ -7,6 +7,8 @@
   * Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
   * And extension methods to emulate the custom `Sequence` classes, deprecate old accessor names.
 * Make `Result` a sealed class to be able to pattern match `Success` and `Failure`.
+  * Removed the unused generic type of `Failure`, it is of type `Result<Never>` now.
+  * Deprecated `isSuccess` and `isFailure`, instead use the more efficient `is Success` and `is Failure` operator. 
 * Reintroduce `hasSideEffect` in `MapParser` and consider all callbacks to be side-effect free.
 
 ## 5.4.0
@@ -99,7 +101,7 @@
 * `DelegateParser` has been made abstract to avoid a concrete class in-between abstract classes.
 * `Parser.delegate()` has been removed, use `Parser.settable()` as an equivalent replacement.
 * `Parser.optional()` is now returning `Parser<T?>`, to provide a non-null default value use `Parser.optionalWith(T value)`.
-* `Parser.not()` is now returning the failure `Parser<Failure<T>>` as success value, instead of `null`.
+* `Parser.not()` is now returning the failure `Parser<Failure>` as success value, instead of `null`.
 * `epsilon()` is now returning `Parser<void>`, to provide a non-null default value use `epsilonWith(T value)`.
 * Removed const constructor from `Parser` hierarchy, as most parsers are inherently mutable and having some constant makes things inconsistent and more complicated than necessary.
 

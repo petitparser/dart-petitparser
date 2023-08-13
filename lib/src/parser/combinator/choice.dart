@@ -27,8 +27,7 @@ extension ChoiceParserExtension on Parser {
   /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
   /// as a workaround: `[first, second].toChoiceParser()`.
   @useResult
-  ChoiceParser<dynamic> or(Parser other,
-          {FailureJoiner<dynamic>? failureJoiner}) =>
+  ChoiceParser<dynamic> or(Parser other, {FailureJoiner? failureJoiner}) =>
       switch (this) {
         ChoiceParser(
           children: final children,
@@ -49,25 +48,25 @@ extension ChoiceParserExtension on Parser {
 
 extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {
   /// Converts the parser in this iterable to a choice of parsers.
-  ChoiceParser<R> toChoiceParser({FailureJoiner<R>? failureJoiner}) =>
+  ChoiceParser<R> toChoiceParser({FailureJoiner? failureJoiner}) =>
       ChoiceParser<R>(this, failureJoiner: failureJoiner);
 }
 
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<R> extends ListParser<R, R> {
-  ChoiceParser(super.children, {FailureJoiner<R>? failureJoiner})
+  ChoiceParser(super.children, {FailureJoiner? failureJoiner})
       : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
         failureJoiner = failureJoiner ?? selectLast;
 
   /// Strategy to join multiple parse errors.
-  final FailureJoiner<R> failureJoiner;
+  final FailureJoiner failureJoiner;
 
   @override
   Result<R> parseOn(Context context) {
-    Failure<R>? failure;
+    Failure? failure;
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(context);
-      if (result is Failure<R>) {
+      if (result is Failure) {
         failure = failure == null ? result : failureJoiner(failure, result);
       } else {
         return result;

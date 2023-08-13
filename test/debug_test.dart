@@ -48,7 +48,7 @@ void main() {
     test('success', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
-      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(parser.parse('ab123') is Success, isTrue);
       expect(frames, [
         isProfileFrame(parser: 'SequenceParser', count: 1),
         isProfileFrame(parser: 'letter expected', count: 1),
@@ -60,7 +60,7 @@ void main() {
       final frames = <ProfileFrame>[];
       final parser = profile(labeledIdentifier,
           output: frames.add, predicate: (parser) => parser is LabeledParser);
-      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(parser.parse('ab123') is Success, isTrue);
       expect(frames, [
         isProfileFrame(parser: 'first', count: 1),
         isProfileFrame(parser: 'remaining', count: 1),
@@ -69,7 +69,7 @@ void main() {
     test('failure', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
-      expect(parser.parse('1').isFailure, isTrue);
+      expect(parser.parse('1') is Failure, isTrue);
       expect(frames, [
         isProfileFrame(parser: 'SequenceParser', count: 1),
         isProfileFrame(parser: 'letter expected', count: 1),
@@ -82,7 +82,7 @@ void main() {
     test('success', () {
       final frames = <ProgressFrame>[];
       final parser = progress(identifier, output: frames.add);
-      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(parser.parse('ab123') is Success, isTrue);
       expect(frames, [
         isProgressFrame(parser: 'SequenceParser', position: 0),
         isProgressFrame(parser: 'letter expected', position: 0),
@@ -98,7 +98,7 @@ void main() {
       final frames = <ProgressFrame>[];
       final parser = progress(labeledIdentifier,
           output: frames.add, predicate: (parser) => parser is LabeledParser);
-      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(parser.parse('ab123') is Success, isTrue);
       expect(frames, [
         isProgressFrame(parser: 'first', position: 0),
         isProgressFrame(parser: 'remaining', position: 1),
@@ -107,7 +107,7 @@ void main() {
     test('failure', () {
       final frames = <ProgressFrame>[];
       final parser = progress(identifier, output: frames.add);
-      expect(parser.parse('1').isFailure, isTrue);
+      expect(parser.parse('1') is Failure, isTrue);
       expect(frames, [
         isProgressFrame(parser: 'SequenceParser', position: 0),
         isProgressFrame(parser: 'letter expected', position: 0),
@@ -118,7 +118,7 @@ void main() {
     test('success', () {
       final events = <TraceEvent>[];
       final parser = trace(identifier, output: events.add);
-      expect(parser.parse('a').isSuccess, isTrue);
+      expect(parser.parse('a') is Success, isTrue);
       expect(events, [
         isTraceEvent(parser: 'SequenceParser', level: 0),
         isTraceEvent(parser: 'letter expected', level: 1),
@@ -139,7 +139,7 @@ void main() {
       final events = <TraceEvent>[];
       final parser = trace(labeledIdentifier,
           output: events.add, predicate: (parser) => parser is LabeledParser);
-      expect(parser.parse('ab123').isSuccess, isTrue);
+      expect(parser.parse('ab123') is Success, isTrue);
       expect(events, [
         isTraceEvent(parser: 'first', level: 0),
         isTraceEvent(parser: 'first', level: 0, result: isSuccess(value: 'a')),
@@ -153,7 +153,7 @@ void main() {
     test('failure', () {
       final events = <TraceEvent>[];
       final parser = trace(identifier, output: events.add);
-      expect(parser.parse('1').isFailure, isTrue);
+      expect(parser.parse('1') is Failure, isTrue);
       expect(events, [
         isTraceEvent(parser: 'SequenceParser', level: 0),
         isTraceEvent(parser: 'letter expected', level: 1),

@@ -19,15 +19,14 @@ class PatternParser extends Parser<Match> {
   @override
   Result<Match> parseOn(Context context) {
     final result = pattern.matchAsPrefix(context.buffer, context.position);
-    return result != null
-        ? context.success(result, result.end)
-        : context.failure(message);
+    if (result == null) return context.failure(message);
+    return context.success(result, result.end);
   }
 
   @override
   int fastParseOn(String buffer, int position) {
     final result = pattern.matchAsPrefix(buffer, position);
-    return result != null ? result.end : -1;
+    return result == null ? -1 : result.end;
   }
 
   @override

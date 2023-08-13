@@ -17,7 +17,7 @@ extension NotParserExtension<R> on Parser<R> {
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
   @useResult
-  Parser<Failure<R>> not([String message = 'success not expected']) =>
+  Parser<Failure> not([String message = 'success not expected']) =>
       NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
@@ -33,18 +33,20 @@ extension NotParserExtension<R> on Parser<R> {
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
 /// but consumes no input [Parr 1994, 1995].
-class NotParser<R> extends DelegateParser<R, Failure<R>> {
+class NotParser<R> extends DelegateParser<R, Failure> {
   NotParser(super.delegate, this.message);
 
   /// Error message to annotate parse failures with.
   final String message;
 
   @override
-  Result<Failure<R>> parseOn(Context context) {
+  Result<Failure> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return result.isFailure
-        ? context.success(result as Failure<R>)
-        : context.failure(message);
+    if (result is Failure) {
+      return context.success(result);
+    } else {
+      return context.failure(message);
+    }
   }
 
   @override

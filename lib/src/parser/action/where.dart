@@ -54,7 +54,7 @@ extension WhereParserExtension<R> on Parser<R> {
                       context.failure('unexpected "${success.value}"')));
 }
 
-typedef FailureFactory<R> = Failure<R> Function(
+typedef FailureFactory<R> = Failure Function(
     Context context, Success<R> success);
 
 class WhereParser<R> extends DelegateParser<R, R> {

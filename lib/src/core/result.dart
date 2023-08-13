@@ -1,20 +1,17 @@
-import 'package:meta/meta.dart';
-
 import '../shared/annotations.dart';
 import 'context.dart';
 import 'exception.dart';
 
 /// An immutable parse result that is either a [Success] or a [Failure].
-@immutable
 sealed class Result<R> extends Context {
   const Result(super.buffer, super.position);
 
   /// Returns `true` if this result indicates a parse success.
-  @inlineVm
+  @Deprecated('Use `is Success` operator instead')
   bool get isSuccess => false;
 
   /// Returns `true` if this result indicates a parse failure.
-  @inlineVm
+  @Deprecated('Use `is Failure` operator instead')
   bool get isFailure => false;
 
   /// Returns the parsed value of this result, or throws a [ParserException]
@@ -33,6 +30,7 @@ class Success<R> extends Result<R> {
   const Success(super.buffer, super.position, this.value);
 
   @override
+  @Deprecated('Use `is Success` operator instead')
   bool get isSuccess => true;
 
   @override
@@ -47,14 +45,15 @@ class Success<R> extends Result<R> {
 }
 
 /// An immutable failed parse result.
-class Failure<R> extends Result<R> {
+class Failure extends Result<Never> {
   const Failure(super.buffer, super.position, this.message);
 
   @override
+  @Deprecated('Use `is Failure` operator instead')
   bool get isFailure => true;
 
   @override
-  R get value => throw ParserException(this);
+  Never get value => throw ParserException(this);
 
   @override
   final String message;

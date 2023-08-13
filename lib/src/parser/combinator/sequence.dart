@@ -63,9 +63,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
     final elements = <R>[];
     for (var i = 0; i < children.length; i++) {
       final result = children[i].parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
+      if (result is Failure) return result;
       elements.add(result.value);
       current = result;
     }
@@ -76,9 +74,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
   int fastParseOn(String buffer, int position) {
     for (var i = 0; i < children.length; i++) {
       position = children[i].fastParseOn(buffer, position);
-      if (position < 0) {
-        return position;
-      }
+      if (position < 0) return position;
     }
     return position;
   }

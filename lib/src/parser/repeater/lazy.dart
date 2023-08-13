@@ -58,27 +58,18 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     final elements = <R>[];
     while (elements.length < min) {
       final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
+      if (result is Failure) return result;
       elements.add(result.value);
       current = result;
     }
     for (;;) {
       final limiter = limit.parseOn(current);
-      if (limiter.isSuccess) {
-        return current.success(elements);
-      } else {
-        if (elements.length >= max) {
-          return limiter.failure(limiter.message);
-        }
-        final result = delegate.parseOn(current);
-        if (result.isFailure) {
-          return limiter.failure(limiter.message);
-        }
-        elements.add(result.value);
-        current = result;
-      }
+      if (limiter is Success) return current.success(elements);
+      if (elements.length >= max) return limiter.failure(limiter.message);
+      final result = delegate.parseOn(current);
+      if (result is Failure) return limiter.failure(limiter.message);
+      elements.add(result.value);
+      current = result;
     }
   }
 
@@ -88,27 +79,18 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     var current = position;
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
-      }
+      if (result < 0) return -1;
       current = result;
       count++;
     }
     for (;;) {
       final limiter = limit.fastParseOn(buffer, current);
-      if (limiter >= 0) {
-        return current;
-      } else {
-        if (count >= max) {
-          return -1;
-        }
-        final result = delegate.fastParseOn(buffer, current);
-        if (result < 0) {
-          return -1;
-        }
-        current = result;
-        count++;
-      }
+      if (limiter >= 0) return current;
+      if (count >= max) return -1;
+      final result = delegate.fastParseOn(buffer, current);
+      if (result < 0) return -1;
+      current = result;
+      count++;
     }
   }
 

@@ -1086,8 +1086,8 @@ void main() {
                         parser.children[1].children[1],
                         parser.children[2],
                       ]))
-                  .having((p) => p.failureJoiner, 'failureJoiner',
-                      selectFarthest<String>));
+                  .having(
+                      (p) => p.failureJoiner, 'failureJoiner', selectFarthest));
         });
         test('without optimization (no nesting)', () {
           final parser = [

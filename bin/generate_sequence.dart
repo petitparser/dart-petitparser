@@ -126,8 +126,8 @@ Future<void> generateImplementation(int index) async {
   for (var i = 0; i < index; i++) {
     out.writeln('final ${resultNames[i]} = ${parserNames[i]}'
         '.parseOn(${i == 0 ? 'context' : resultNames[i - 1]});');
-    out.writeln('if (${resultNames[i]}.isFailure) '
-        'return ${resultNames[i]}.failure(${resultNames[i]}.message);');
+    out.writeln('if (${resultNames[i]} is Failure) '
+        'return ${resultNames[i]};');
   }
   out.writeln('return ${resultNames[index - 1]}.success('
       '(${resultNames.map((each) => '$each.value').join(', ')}));');

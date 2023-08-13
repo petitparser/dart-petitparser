@@ -72,7 +72,7 @@ final result1 = id.parse('yeah');
 final result2 = id.parse('f12');
 ```
 
-The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples  we are successful and can retrieve the resulting value using `Success.value`:
+The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples we are successful and can retrieve the resulting value using `Success.value`:
 
 ```dart
 print(result1.value);                   // ['y', ['e', 'a', 'h']]
@@ -89,7 +89,16 @@ print(result3.message);                 // 'letter expected'
 print(result3.position);                // 0
 ```
 
-Trying to retrieve result by calling `Failure.value` would throw the exception `ParserError`. `Context.isSuccess` and `Context.isFailure` can be used to decide if the parsing was successful.
+Trying to retrieve result by calling `Failure.value` would throw the exception `ParserError`. [Pattern matching](https://dart.dev/language/patterns) can be used to decide if the parse result was a success or a failure:
+
+```dart
+switch (id.parse(input)) {
+  case Success(value: final value):
+    print('Success: $value');
+  case Failure(message: final message, position: final position):
+    print('Failure at $position: $message');
+}
+```
 
 If you are only interested if a given string is valid you can use the helper method `Parser.accept`:
 

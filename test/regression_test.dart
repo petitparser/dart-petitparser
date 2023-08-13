@@ -106,8 +106,8 @@ void main() {
     final parser =
         digit().repeat(2).flatten().callCC<String>((continuation, context) {
       final result = continuation(context);
-      if (result.isSuccess && int.parse(result.value) > 31) {
-        return context.failure<String>('00-31 expected');
+      if (result is Success && int.parse(result.value) > 31) {
+        return context.failure('00-31 expected');
       } else {
         return result;
       }
@@ -294,7 +294,7 @@ void main() {
     test('original', () {
       final parser = inner.callCC<List<String>>((continuation, context) {
         final result = continuation(context);
-        if (result.isSuccess && result.value[0] != result.value[1]) {
+        if (result is Success && result.value[0] != result.value[1]) {
           return context.failure('values do not match');
         } else {
           return result;

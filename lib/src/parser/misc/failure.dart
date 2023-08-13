@@ -9,17 +9,17 @@ import '../../core/result.dart';
 /// For example, `failure()` always fails, no matter what input it is given.
 @useResult
 Parser<R> failure<R>([String message = 'unable to parse']) =>
-    FailureParser<R>(message);
+    FailureParser(message);
 
 /// A parser that consumes nothing and fails.
-class FailureParser<R> extends Parser<R> {
+class FailureParser extends Parser<Never> {
   FailureParser(this.message);
 
   /// Error message to annotate parse failures with.
   final String message;
 
   @override
-  Result<R> parseOn(Context context) => context.failure<R>(message);
+  Result<Never> parseOn(Context context) => context.failure(message);
 
   @override
   int fastParseOn(String buffer, int position) => -1;
@@ -28,9 +28,9 @@ class FailureParser<R> extends Parser<R> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  FailureParser<R> copy() => FailureParser<R>(message);
+  FailureParser copy() => FailureParser(message);
 
   @override
-  bool hasEqualProperties(FailureParser<R> other) =>
+  bool hasEqualProperties(FailureParser other) =>
       super.hasEqualProperties(other) && message == other.message;
 }

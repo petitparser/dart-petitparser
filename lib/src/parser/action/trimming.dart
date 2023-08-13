@@ -42,7 +42,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
       context = Context(buffer, before);
     }
     final result = delegate.parseOn(context);
-    if (result.isFailure) return result;
+    if (result is Failure) return result;
     final after = _trim(right, buffer, result.position);
     return after == result.position
         ? result

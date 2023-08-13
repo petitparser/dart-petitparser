@@ -30,10 +30,13 @@ class EndOfInputParser extends Parser<void> {
   final String message;
 
   @override
-  Result<void> parseOn(Context context) =>
-      context.position < context.buffer.length
-          ? context.failure(message)
-          : context.success(null);
+  Result<void> parseOn(Context context) {
+    if (context.position < context.buffer.length) {
+      return context.failure(message);
+    } else {
+      return context.success(null);
+    }
+  }
 
   @override
   int fastParseOn(String buffer, int position) =>

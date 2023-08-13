@@ -27,9 +27,10 @@ class AnyCharacterParser extends Parser<String> {
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
-    return position < buffer.length
-        ? context.success(buffer[position], position + 1)
-        : context.failure(message);
+    if (position < buffer.length) {
+      return context.success(buffer[position], position + 1);
+    }
+    return context.failure(message);
   }
 
   @override

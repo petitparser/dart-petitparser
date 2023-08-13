@@ -28,8 +28,8 @@ class Context {
   @inlineVm
   @inlineJs
   @useResult
-  Failure<R> failure<R>(String message, [int? position]) =>
-      Failure<R>(buffer, position ?? this.position, message);
+  Failure failure(String message, [int? position]) =>
+      Failure(buffer, position ?? this.position, message);
 
   /// Returns the current line:column position in the [buffer].
   String toPositionString() => Token.positionString(buffer, position);

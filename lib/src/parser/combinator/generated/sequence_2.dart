@@ -48,9 +48,9 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
   @override
   Result<(R1, R2)> parseOn(Context context) {
     final result1 = parser1.parseOn(context);
-    if (result1.isFailure) return result1.failure(result1.message);
+    if (result1 is Failure) return result1;
     final result2 = parser2.parseOn(result1);
-    if (result2.isFailure) return result2.failure(result2.message);
+    if (result2 is Failure) return result2;
     return result2.success((result1.value, result2.value));
   }
 

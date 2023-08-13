@@ -48,6 +48,20 @@ void main() {
     expect(id3.position, 0);
     expect(id.accept('foo'), isTrue);
     expect(id.accept('123'), isFalse);
+    expect(
+        switch (id.parse('foo')) {
+          Success(value: final value) => 'Success: $value',
+          Failure(message: final message, position: final position) =>
+            'Failure at $position: $message',
+        },
+        'Success: [f, [o, o]]');
+    expect(
+        switch (id.parse('123')) {
+          Success(value: final value) => 'Success: $value',
+          Failure(message: final message, position: final position) =>
+            'Failure at $position: $message',
+        },
+        'Failure at 0: letter expected');
   });
   test('simple grammar (chained calls)', () {
     final id = letter().seq(letter().or(digit()).star());

@@ -27,12 +27,9 @@ class PickParser<R> extends DelegateParser<List<R>, R> {
   @override
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    if (result.isSuccess) {
-      final value = result.value;
-      return result.success(value[index < 0 ? value.length + index : index]);
-    } else {
-      return result.failure(result.message);
-    }
+    if (result is Failure) return result;
+    final value = result.value;
+    return result.success(value[index < 0 ? value.length + index : index]);
   }
 
   @override

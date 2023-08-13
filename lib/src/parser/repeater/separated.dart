@@ -68,16 +68,12 @@ class SeparatedRepeatingParser<R, S>
     while (elements.length < min) {
       if (elements.isNotEmpty) {
         final separation = separator.parseOn(current);
-        if (separation.isFailure) {
-          return separation.failure(separation.message);
-        }
+        if (separation is Failure) return separation;
         current = separation;
         separators.add(separation.value);
       }
       final result = delegate.parseOn(current);
-      if (result.isFailure) {
-        return result.failure(result.message);
-      }
+      if (result is Failure) return result;
       current = result;
       elements.add(result.value);
     }
@@ -85,14 +81,12 @@ class SeparatedRepeatingParser<R, S>
       final previous = current;
       if (elements.isNotEmpty) {
         final separation = separator.parseOn(current);
-        if (separation.isFailure) {
-          break;
-        }
+        if (separation is Failure) break;
         current = separation;
         separators.add(separation.value);
       }
       final result = delegate.parseOn(current);
-      if (result.isFailure) {
+      if (result is Failure) {
         if (elements.isNotEmpty) separators.removeLast();
         return previous.success(SeparatedList(elements, separators));
       }
@@ -109,15 +103,11 @@ class SeparatedRepeatingParser<R, S>
     while (count < min) {
       if (count > 0) {
         final separation = separator.fastParseOn(buffer, current);
-        if (separation < 0) {
-          return -1;
-        }
+        if (separation < 0) return -1;
         current = separation;
       }
       final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return -1;
-      }
+      if (result < 0) return -1;
       count++;
       current = result;
     }
@@ -125,15 +115,11 @@ class SeparatedRepeatingParser<R, S>
       final previous = current;
       if (count > 0) {
         final separation = separator.fastParseOn(buffer, current);
-        if (separation < 0) {
-          break;
-        }
+        if (separation < 0) break;
         current = separation;
       }
       final result = delegate.fastParseOn(buffer, current);
-      if (result < 0) {
-        return previous;
-      }
+      if (result < 0) return previous;
       count++;
       current = result;
     }
