@@ -1392,7 +1392,8 @@ void main() {
         final parser = inner.skip();
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser, same(inner));
+          expect(parser.children,
+              [isA<EpsilonParser<void>>(), inner, isA<EpsilonParser<void>>()]);
           expect(parser, isParseSuccess('1', result: '1'));
           expect(parser, isParseSuccess('2', result: '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
@@ -1402,7 +1403,7 @@ void main() {
         final parser = inner.skip(before: before);
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser.children, [before, inner]);
+          expect(parser.children, [before, inner, isA<EpsilonParser<void>>()]);
           expect(parser, isParseSuccess('<1', result: '1'));
           expect(parser, isParseSuccess('<2', result: '2'));
           expect(parser, isParseFailure('', message: '"<" expected'));
@@ -1417,7 +1418,7 @@ void main() {
         final parser = inner.skip(after: after);
         expectParserInvariants(parser);
         test('default', () {
-          expect(parser.children, [inner, after]);
+          expect(parser.children, [isA<EpsilonParser<void>>(), inner, after]);
           expect(parser, isParseSuccess('1>', result: '1'));
           expect(parser, isParseSuccess('2>', result: '2'));
           expect(parser, isParseFailure('', message: 'digit expected'));
