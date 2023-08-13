@@ -26,6 +26,7 @@ extension SettableParserExtension<R> on Parser<R> {
 ///
 ///     final p = undefined();
 ///     p.set(char('a').seq(p).or(char('b')));
+@useResult
 SettableParser<R> undefined<R>([String message = 'undefined parser']) =>
     failure<R>(message).settable();
 
