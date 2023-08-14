@@ -310,7 +310,7 @@ void main() {
     });
     test('where', () {
       final parser = inner.where((value) => value[0] == value[1],
-          failureFactory: (context, success) =>
+          factory: (context, success) =>
               context.failure('values do not match'));
       expect(parser, isParseSuccess('11', result: ['1', '1']));
       expect(parser, isParseSuccess('22', result: ['2', '2']));
