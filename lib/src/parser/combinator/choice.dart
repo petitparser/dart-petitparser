@@ -63,16 +63,17 @@ class ChoiceParser<R> extends ListParser<R, R> {
 
   @override
   Result<R> parseOn(Context context) {
-    Failure? failure;
-    for (var i = 0; i < children.length; i++) {
+    // Check the first choice:
+    final result = children[0].parseOn(context);
+    if (result is! Failure) return result;
+    var failure = result;
+    // Check all other choices:
+    for (var i = 1; i < children.length; i++) {
       final result = children[i].parseOn(context);
-      if (result is Failure) {
-        failure = failure == null ? result : failureJoiner(failure, result);
-      } else {
-        return result;
-      }
+      if (result is! Failure) return result;
+      failure = failureJoiner(failure, result);
     }
-    return failure!;
+    return failure;
   }
 
   @override
@@ -80,9 +81,7 @@ class ChoiceParser<R> extends ListParser<R, R> {
     var result = -1;
     for (var i = 0; i < children.length; i++) {
       result = children[i].fastParseOn(buffer, position);
-      if (result >= 0) {
-        return result;
-      }
+      if (result >= 0) return result;
     }
     return result;
   }

@@ -35,7 +35,8 @@ class OptionalParser<R> extends DelegateParser<R, R> {
   @override
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
-    return result is Failure ? context.success(otherwise) : result;
+    if (result is! Failure) return result;
+    return context.success(otherwise);
   }
 
   @override
