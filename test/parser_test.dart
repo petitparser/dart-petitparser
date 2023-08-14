@@ -119,10 +119,17 @@ void main() {
         expect(parser, isParseFailure('', message: 'input expected'));
         expect(parser, isParseFailure('!', message: 'unexpected "!"'));
       });
-      test('with failure message', () {
+      test('with message', () {
+        final parser =
+            any().where((value) => value == '*', message: 'star expected');
+        expect(parser, isParseSuccess('*', result: '*'));
+        expect(parser, isParseFailure('', message: 'input expected'));
+        expect(parser, isParseFailure('!', message: 'star expected'));
+      });
+      test('with factory', () {
         final parser = digit().plus().flatten().map(int.parse).where(
             (value) => value % 7 == 0,
-            failureFactory: (context, success) =>
+            factory: (context, success) =>
                 context.failure('${success.value} is not divisible by 7'));
         expect(parser, isParseSuccess('7', result: 7));
         expect(parser, isParseSuccess('14', result: 14));
@@ -131,17 +138,18 @@ void main() {
         expect(parser,
             isParseFailure('865', message: '865 is not divisible by 7'));
       });
-      test('with failure message and position', () {
-        final inner = any().plus();
-        final parser = inner.where((value) => value.first == value.last,
-            failureFactory: (context, success) => context.failure(
-                '${success.value.first} != ${success.value.last}',
-                success.position - 1));
-        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
-        expect(parser, isParseSuccess('abba', result: ['a', 'b', 'b', 'a']));
-        expect(parser, isParseFailure('', message: 'input expected'));
-        expect(parser, isParseFailure('ab', position: 1, message: 'a != b'));
-        expect(parser, isParseFailure('abc', position: 2, message: 'a != c'));
+      test('with failure factory (deprecated)', () {
+        final parser = digit().plus().flatten().map(int.parse).where(
+            (value) => value % 7 == 0,
+            // ignore: deprecated_member_use_from_same_package
+            failureFactory: (context, success) =>
+                context.failure('${success.value} is not divisible by 7'));
+        expect(parser, isParseSuccess('7', result: 7));
+        expect(parser, isParseSuccess('14', result: 14));
+        expect(parser, isParseSuccess('861', result: 861));
+        expect(parser, isParseFailure('', message: 'digit expected'));
+        expect(parser,
+            isParseFailure('865', message: '865 is not divisible by 7'));
       });
       test('with failure message (deprecated)', () {
         final parser = digit()

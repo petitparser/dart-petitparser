@@ -71,11 +71,14 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     }
     for (;;) {
       final limiter = limit.parseOn(contexts.last);
-      if (limiter is Success) return contexts.last.success(elements);
-      if (elements.isEmpty) return limiter.failure(limiter.message);
-      contexts.removeLast();
-      elements.removeLast();
-      if (contexts.isEmpty) return limiter.failure(limiter.message);
+      if (limiter is Failure) {
+        if (elements.isEmpty) return limiter;
+        contexts.removeLast();
+        elements.removeLast();
+        if (contexts.isEmpty) return limiter;
+      } else {
+        return contexts.last.success(elements);
+      }
     }
   }
 
@@ -98,11 +101,14 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     }
     for (;;) {
       final limiter = limit.fastParseOn(buffer, positions.last);
-      if (limiter >= 0) return positions.last;
-      if (count == 0) return -1;
-      positions.removeLast();
-      count--;
-      if (positions.isEmpty) return -1;
+      if (limiter < 0) {
+        if (count == 0) return -1;
+        positions.removeLast();
+        count--;
+        if (positions.isEmpty) return -1;
+      } else {
+        return positions.last;
+      }
     }
   }
 

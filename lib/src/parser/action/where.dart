@@ -10,16 +10,8 @@ extension WhereParserExtension<R> on Parser<R> {
   /// Returns a parser that evaluates the [predicate] with the successful
   /// parse result. If the predicate returns `true` the parser proceeds with
   /// the parse result, otherwise a parse failure is created using the
-  /// optionally specified [failureMessage] and [failurePosition] callbacks.
-  ///
-  /// The function [failureMessage] receives the parse result and is expected
-  /// to return an error string of the failed predicate. If no function is
-  /// provided a default error message is created.
-  ///
-  /// Similarly, the [failurePosition] receives the parse result and is
-  /// expected to return the position of the error of the failed predicate. If
-  /// no function is provided the parser fails at the beginning of the
-  /// delegate.
+  /// optionally specified [factory] callback, the provided [message], or
+  /// otherwise an automatically created error message.
   ///
   /// The following example parses two characters, but only succeeds if they
   /// are equal:
@@ -27,7 +19,7 @@ extension WhereParserExtension<R> on Parser<R> {
   ///     final inner = any() & any();
   ///     final parser = inner.where(
   ///         (value) => value[0] == value[1],
-  ///         failureFactory: (context, success) =>
+  ///         factory: (context, success) =>
   ///             context.failure('characters do not match'));
   ///     parser.parse('aa');   // ==> Success: ['a', 'a']
   ///     parser.parse('ab');   // ==> Failure: characters do not match
@@ -35,49 +27,59 @@ extension WhereParserExtension<R> on Parser<R> {
   @useResult
   Parser<R> where(
     Predicate<R> predicate, {
-    FailureFactory<R>? failureFactory,
-    @Deprecated('Use `failureFactory` instead')
-    Callback<R, String>? failureMessage,
-    @Deprecated('Use `failureFactory` instead')
-    Callback<R, int>? failurePosition,
+    String? message,
+    FailureFactory<R>? factory,
+    @Deprecated('Use `factory` instead') Callback<R, String>? failureMessage,
+    @Deprecated('Use `factory` instead') Callback<R, int>? failurePosition,
+    @Deprecated('Use `factory` instead') FailureFactory<R>? failureFactory,
   }) =>
       WhereParser<R>(
           this,
           predicate,
-          failureFactory ??
-              ((failureMessage != null || failurePosition != null)
-                  ? (context, success) => context.failure(
-                      failureMessage?.call(success.value) ??
-                          'unexpected "${success.value}"',
-                      failurePosition?.call(success.value))
-                  : (context, success) =>
-                      context.failure('unexpected "${success.value}"')));
+          createFactory_<R>(
+              message: message,
+              factory: factory ?? failureFactory,
+              failureMessage: failureMessage,
+              failurePosition: failurePosition));
 }
 
-typedef FailureFactory<R> = Failure Function(
+typedef FailureFactory<R> = Result<R> Function(
     Context context, Success<R> success);
 
 class WhereParser<R> extends DelegateParser<R, R> {
-  WhereParser(super.parser, this.predicate, this.failureFactory);
+  WhereParser(super.parser, this.predicate, this.factory);
 
   final Predicate<R> predicate;
-  final FailureFactory<R> failureFactory;
+  final FailureFactory<R> factory;
 
   @override
   Result<R> parseOn(Context context) {
     final result = delegate.parseOn(context);
     if (result is Success<R> && !predicate(result.value)) {
-      return failureFactory(context, result);
+      return factory(context, result);
     }
     return result;
   }
 
   @override
-  Parser<R> copy() => WhereParser<R>(delegate, predicate, failureFactory);
+  Parser<R> copy() => WhereParser<R>(delegate, predicate, factory);
 
   @override
   bool hasEqualProperties(WhereParser<R> other) =>
       super.hasEqualProperties(other) &&
       predicate == other.predicate &&
-      failureFactory == other.failureFactory;
+      factory == other.factory;
 }
+
+FailureFactory<R> createFactory_<R>({
+  String? message,
+  FailureFactory<R>? factory,
+  Callback<R, String>? failureMessage,
+  Callback<R, int>? failurePosition,
+}) =>
+    factory ??
+    (context, success) => context.failure(
+        failureMessage?.call(success.value) ??
+            message ??
+            'unexpected "${success.value}"',
+        failurePosition?.call(success.value));
