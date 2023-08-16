@@ -4,9 +4,6 @@ analyzer:
     strict-inference: true
     strict-casts: true
     strict-raw-types: true
-  # TODO: Remove once https://github.com/dart-lang/sdk/issues/52451 is fixed.
-  errors:
-    unused_result: ignore
 linter:
   rules:
     - avoid_dynamic_calls

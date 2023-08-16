@@ -9,7 +9,7 @@ screenshots:
     path: petitparser.png
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.1.0
 dependencies:
   meta: ^1.9.0
 dev_dependencies:

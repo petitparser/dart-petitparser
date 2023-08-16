@@ -1,15 +1,16 @@
 # Changelog
 
-## 6.0.0 (Unpublished)
+## 6.0.0
 
-* Dart 3.0 requirement.
-* Use Dart Records for typed sequences:
+* Dart 3.1 requirement.
+* Use [Dart Records](https://dart.dev/language/records) for typed sequences:
   * Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
-  * And extension methods to emulate the custom `Sequence` classes, deprecate old accessor names.
-* Make `Result` a sealed class to be able to pattern match `Success` and `Failure`.
-  * Removed the unused generic type of `Failure`, it is of type `Result<Never>` now.
-  * Deprecated `isSuccess` and `isFailure`, instead use the more efficient `is Success` and `is Failure` operator. 
-* Reintroduce `hasSideEffect` in `MapParser` and consider all callbacks to be side-effect free.
+  * And extension methods to emulate the old `Sequence` classes, deprecate old accessors.
+* Make `Result` a sealed class to be able to [pattern match](https://dart.dev/language/patterns) `Success` and `Failure`.
+  * Removed the unused generic type of `Failure`, which is of type `Result<Never>` now.
+  * Deprecated `isSuccess` and `isFailure`, instead use the more efficient `is Success` and `is Failure` operators.
+* Reintroduce `hasSideEffect` in `MapParser` and consider callbacks to be side-effect free by default.
+* The above changes give typical parsers speed improvements between 10% and 30%.
 
 ## 5.4.0
 
