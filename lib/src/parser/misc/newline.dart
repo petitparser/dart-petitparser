@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import '../../../parser.dart';
 import '../../core/context.dart';
+import '../../core/parser.dart';
 import '../../core/result.dart';
 
 /// Returns a parser that detects newlines platform independently.

@@ -1,9 +1,15 @@
 import 'package:meta/meta.dart';
 
-import '../../../parser.dart';
 import '../../core/context.dart';
+import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../action/flatten.dart';
 import '../character/constant.dart';
+import '../character/predicate.dart';
+import '../predicate/any.dart';
+import '../predicate/character.dart';
+import 'possessive.dart';
+import 'unbounded.dart';
 
 extension RepeatingCharacterParserExtension on Parser<String> {
   /// Returns a parser that accepts the receiver zero or more times. The
