@@ -7,6 +7,12 @@ description: A dynamic parser framework to build efficient grammars and parsers 
 screenshots:
   - description: 'PetitParser'
     path: petitparser.png
+topics:
+  - grammar
+  - parser
+  - parser-combinator
+  - parsing
+  - peg
 
 environment:
   sdk: ^3.1.0
