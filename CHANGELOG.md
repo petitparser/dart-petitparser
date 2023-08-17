@@ -10,7 +10,7 @@
   * Removed the unused generic type of `Failure`, which is of type `Result<Never>` now.
   * Deprecated `isSuccess` and `isFailure`, instead use the more efficient `is Success` and `is Failure` operators.
 * Reintroduce `hasSideEffect` in `MapParser` and consider callbacks to be side-effect free by default.
-* The above changes give typical parsers speed improvements between 10% and 30%.
+* The above changes give typical parser speed improvements between 10% and 30%.
 
 ## 5.4.0
 
