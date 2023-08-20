@@ -1,10 +1,8 @@
 # Changelog
 
-## 6.1.0 (Unpublished)
-
 ## 6.0.0
 
-* Dart 3.1 requirement.
+* Dart 3.0 requirement.
 * Use [Dart Records](https://dart.dev/language/records) for typed sequences:
   * Add convenience converter: `(char('a'), char('b')).toSequenceParser()`
   * And extension methods to emulate the old `Sequence` classes, deprecate old accessors.
