@@ -17,7 +17,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// For example, the parser `digit().starSeparated(anyOf(',;'))` returns a
   /// parser that consumes input like `'1,2;3'` and that returns a
   /// [SeparatedList] with elements `['1', '2', '3']` as well as the separators
-  /// [`,`, `;`].
+  /// `[',', ';']`.
   @useResult
   Parser<SeparatedList<R, S>> starSeparated<S>(Parser<S> separator) =>
       repeatSeparated<S>(separator, 0, unbounded);

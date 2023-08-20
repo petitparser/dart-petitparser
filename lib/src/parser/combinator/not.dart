@@ -32,7 +32,7 @@ extension NotParserExtension<R> on Parser<R> {
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,
-/// but consumes no input [Parr 1994, 1995].
+/// but consumes no input.
 class NotParser<R> extends DelegateParser<R, Failure> {
   NotParser(super.delegate, this.message);
 

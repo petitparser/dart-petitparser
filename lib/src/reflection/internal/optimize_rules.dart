@@ -1,3 +1,4 @@
+import '../../../core.dart';
 import '../../../parser.dart';
 import '../../../reflection.dart';
 import '../../parser/character/constant.dart';

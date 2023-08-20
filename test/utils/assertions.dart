@@ -1,4 +1,4 @@
-import 'package:petitparser/parser.dart';
+import 'package:petitparser/core.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 

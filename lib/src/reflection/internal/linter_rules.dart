@@ -1,3 +1,4 @@
+import '../../../core.dart';
 import '../../../parser.dart';
 import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';

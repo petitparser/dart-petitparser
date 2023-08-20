@@ -11,33 +11,36 @@ import 'unbounded.dart';
 extension GreedyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
   /// reaches a [limit]. This is a greedy non-blind implementation of the
-  /// [star] operator. The [limit] is not consumed.
+  /// [PossessiveRepeatingParserExtension.star] operator. The [limit] is not
+  /// consumed.
   ///
   /// For example, the parser `char('{') & any().starGreedy(char('}')) &
   /// char('}')` consumes the complete input `'{abc}def}'` of `'{abc}def}'`.
   ///
-  /// See [starLazy] for the lazy, more efficient, and generally preferred
-  /// variation of this combinator.
+  /// See [LazyRepeatingParserExtension.starLazy] for the lazy, more efficient,
+  /// and generally preferred variation of this combinator.
   @useResult
   Parser<List<R>> starGreedy(Parser<void> limit) =>
       repeatGreedy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
-  /// reaches [limit]. This is a greedy non-blind implementation of the [plus]
-  /// operator. The [limit] is not consumed.
+  /// reaches [limit]. This is a greedy non-blind implementation of the
+  /// [PossessiveRepeatingParserExtension.plus] operator. The [limit] is not
+  /// consumed.
   ///
   /// For example, the parser `char('{') & any().plusGreedy(char('}')) &
   /// char('}')` consumes the complete input `'{abc}def}'` of `'{abc}def}'`.
   ///
-  /// See [plusLazy] for the lazy, more efficient, and generally preferred
-  /// variation of this combinator.
+  /// See [LazyRepeatingParserExtension.plusLazy] for the lazy, more efficient,
+  /// and generally preferred variation of this combinator.
   @useResult
   Parser<List<R>> plusGreedy(Parser<void> limit) =>
       repeatGreedy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a greedy non-blind
-  /// implementation of the [repeat] operator. The [limit] is not consumed.
+  /// implementation of the [PossessiveRepeatingParserExtension.repeat]
+  /// operator. The [limit] is not consumed.
   ///
   /// This is the more generic variation of the [starGreedy] and [plusGreedy]
   /// combinators.

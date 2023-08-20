@@ -27,7 +27,7 @@ class SeparatedList<R, S> {
 
   /// Combines the [elements] by grouping the elements from the left and
   /// calling [callback] on all consecutive elements with the corresponding
-  /// [separator].
+  /// `separator`.
   ///
   /// For example, if the elements are numbers and the separators are
   /// subtraction operations sequential values `1 - 2 - 3` are grouped like
@@ -42,7 +42,7 @@ class SeparatedList<R, S> {
 
   /// Combines the [elements] by grouping the elements from the right and
   /// calling [callback] on all consecutive elements with the corresponding
-  /// [separator].
+  /// `separator`.
   ///
   /// For example, if the elements are numbers and the separators are
   /// exponentiation operations sequential values `1 ^ 2 ^ 3` are grouped like

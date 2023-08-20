@@ -45,7 +45,7 @@ abstract class Parser<R> {
   ///
   /// Similarly, `letter().plus().parse('123')` results in an instance of
   /// [Failure], where [Context.position] is `0` and [Failure.message] is
-  /// ['letter expected'].
+  /// `'letter expected'`.
   @nonVirtual
   Result<R> parse(String input, {int start = 0}) =>
       parseOn(Context(input, start));

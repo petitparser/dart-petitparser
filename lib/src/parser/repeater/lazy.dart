@@ -10,34 +10,37 @@ import 'unbounded.dart';
 
 extension LazyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
-  /// reaches a [limit]. This is a lazy non-blind implementation of the [star]
-  /// operator. The [limit] is not consumed.
+  /// reaches a [limit]. This is a lazy non-blind implementation of the
+  /// [PossessiveRepeatingParserExtension.star] operator. The [limit] is not
+  /// consumed.
   ///
   /// For example, the parser `char('{') & any().starLazy(char('}')) &
   /// char('}')` only consumes the part `'{abc}'` of `'{abc}def}'`.
   ///
-  /// See [starGreedy] for the greedy and less efficient variation of
-  /// this combinator.
+  /// See [GreedyRepeatingParserExtension.starGreedy] for the greedy and less
+  /// efficient variation of this combinator.
   @useResult
   Parser<List<R>> starLazy(Parser<void> limit) =>
       repeatLazy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
-  /// reaches a [limit]. This is a lazy non-blind implementation of the [plus]
-  /// operator. The [limit] is not consumed.
+  /// reaches a [limit]. This is a lazy non-blind implementation of the
+  /// [PossessiveRepeatingParserExtension.plus] operator. The [limit] is not
+  /// consumed.
   ///
   /// For example, the parser `char('{') & any().plusLazy(char('}')) &
   /// char('}')` only consumes the part `'{abc}'` of `'{abc}def}'`.
   ///
-  /// See [plusGreedy] for the greedy and less efficient variation of
-  /// this combinator.
+  /// See [GreedyRepeatingParserExtension.plusGreedy] for the greedy and less
+  /// efficient variation of this combinator.
   @useResult
   Parser<List<R>> plusLazy(Parser<void> limit) =>
       repeatLazy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
   /// times until it reaches a [limit]. This is a lazy non-blind implementation
-  /// of the [repeat] operator. The [limit] is not consumed.
+  /// of the [PossessiveRepeatingParserExtension.repeat] operator. The [limit]
+  /// is not consumed.
   ///
   /// This is the more generic variation of the [starLazy] and [plusLazy]
   /// combinators.
