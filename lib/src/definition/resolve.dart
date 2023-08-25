@@ -38,7 +38,7 @@ Parser<R> _dereference<R>(Parser<R> parser, Map<Parser, Parser> mapping) {
   final references = <ResolvableParser<R>>{};
   while (parser is ResolvableParser<R>) {
     if (mapping.containsKey(parser)) {
-      return mapping[parser]! as Parser<R>;
+      return mapping[parser] as Parser<R>;
     } else if (!references.add(parser)) {
       throw StateError('Recursive references detected: $references');
     }
