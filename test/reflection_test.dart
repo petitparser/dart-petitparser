@@ -6,6 +6,8 @@ import 'package:petitparser/src/reflection/internal/optimize_rules.dart'
     as optimize_rules;
 import 'package:test/test.dart';
 
+import 'utils/matchers.dart';
+
 // Güting, Erwig, Übersetzerbau, Springer (p.63)
 Map<Symbol, Parser> createUebersetzerbau() {
   final grammar = <Symbol, Parser>{};
@@ -626,22 +628,24 @@ void main() {
         expect(parser, same(input));
         callback(LinterIssue(rule, parser, 'Described'));
       });
-      expect(rule.toString(),
-          'LinterRule(type: LinterType.error, title: Fake Rule)');
+      expect(
+          rule,
+          isLinterRule(
+              type: LinterType.error,
+              title: 'Fake Rule',
+              toString:
+                  'LinterRule(type: LinterType.error, title: Fake Rule)'));
       final results = linter(input, rules: [rule], callback: called.add);
       expect(results, [
-        isA<LinterIssue>()
-            .having((issue) => issue.rule, 'rule', same(rule))
-            .having((issue) => issue.type, 'type', LinterType.error)
-            .having((issue) => issue.title, 'title', 'Fake Rule')
-            .having((issue) => issue.parser, 'parser', same(input))
-            .having((issue) => issue.description, 'description', 'Described')
-            .having(
-                (issue) => issue.toString(),
-                'toString',
-                'LinterIssue(type: LinterType.error, title: Fake Rule, '
-                    'parser: Instance of \'PredicateParser\'["trigger" '
-                    'expected], description: Described)')
+        isLinterIssue(
+            rule: same(rule),
+            type: LinterType.error,
+            title: 'Fake Rule',
+            parser: same(input),
+            description: 'Described',
+            toString: 'LinterIssue(type: LinterType.error, title: Fake Rule, '
+                'parser: Instance of \'PredicateParser\'["trigger" '
+                'expected], description: Described)')
       ]);
       expect(called, results);
     });
@@ -651,20 +655,22 @@ void main() {
         test('with character predicate parser', () {
           final parser = char('a').star().flatten();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Character repeater');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Character repeater')
+          ]);
         });
         test('with any parser', () {
           final parser = any().plus().flatten();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Character repeater');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Character repeater')
+          ]);
         });
         test('without issue', () {
           final parser = char('a').plus().token();
@@ -677,11 +683,12 @@ void main() {
         test('with issue', () {
           final parser = createSelfReference();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser.children[0]);
-          expect(result.type, LinterType.error);
-          expect(result.title, 'Left recursion');
+          expect(results, [
+            isLinterIssue(
+                parser: parser.children[0],
+                type: LinterType.error,
+                title: 'Left recursion')
+          ]);
         });
         test('without issue', () {
           final parser = digit();
@@ -698,11 +705,10 @@ void main() {
             char('4'),
           ].toChoiceParser();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Nested choice');
+          expect(results, [
+            isLinterIssue(
+                parser: parser, type: LinterType.info, title: 'Nested choice')
+          ]);
         });
         test('without issue', () {
           final parser = [
@@ -719,11 +725,12 @@ void main() {
         test('with issue', () {
           final parser = epsilon().star().optional();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser.children[0]);
-          expect(result.type, LinterType.error);
-          expect(result.title, 'Nullable repeater');
+          expect(results, [
+            isLinterIssue(
+                parser: parser.children[0],
+                type: LinterType.error,
+                title: 'Nullable repeater')
+          ]);
         });
         test('without issue', () {
           final parser = digit().star().optional();
@@ -741,11 +748,12 @@ void main() {
             char('3'),
           ].toChoiceParser();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Overlapping choice');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.info,
+                title: 'Overlapping choice')
+          ]);
         });
         test('without issue', () {
           final parser = [
@@ -768,11 +776,12 @@ void main() {
             char('4'),
           ].toChoiceParser();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Repeated choice');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Repeated choice')
+          ]);
         });
         test('without issue', () {
           final parser = [
@@ -790,11 +799,12 @@ void main() {
         test('with issue', () {
           final parser = any().flatten();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Unnecessary flatten');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Unnecessary flatten')
+          ]);
         });
         test('without issue', () {
           final parser = any().optional().flatten();
@@ -807,11 +817,12 @@ void main() {
         test('with issue', () {
           final parser = char('a').settable();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Unnecessary resolvable');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Unnecessary resolvable')
+          ]);
         });
         test('without issue', () {
           final parser = char('a');
@@ -824,11 +835,12 @@ void main() {
         test('with issue', () {
           final parser = any().flatten();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Unoptimized flatten');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.info,
+                title: 'Unoptimized flatten')
+          ]);
         });
         test('without issue', () {
           final parser = any().flatten('anything really');
@@ -846,11 +858,12 @@ void main() {
             char('3'),
           ].toChoiceParser();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.warning);
-          expect(result.title, 'Unreachable choice');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.warning,
+                title: 'Unreachable choice')
+          ]);
         });
         test('without issue', () {
           final parser = [
@@ -867,11 +880,12 @@ void main() {
         test('with issue', () {
           final parser = undefined<void>();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.error);
-          expect(result.title, 'Unresolved settable');
+          expect(results, [
+            isLinterIssue(
+                parser: parser,
+                type: LinterType.error,
+                title: 'Unresolved settable')
+          ]);
         });
         test('without issue', () {
           final parser = digit().settable();
@@ -884,11 +898,10 @@ void main() {
         test('with issue', () {
           final parser = digit().map(int.parse).star().flatten();
           final results = linter(parser, rules: rules);
-          expect(results, hasLength(1));
-          final result = results[0];
-          expect(result.parser, parser);
-          expect(result.type, LinterType.info);
-          expect(result.title, 'Unused result');
+          expect(results, [
+            isLinterIssue(
+                parser: parser, type: LinterType.info, title: 'Unused result')
+          ]);
         });
         test('without issue', () {
           final parser = digit().star().flatten();
@@ -903,7 +916,7 @@ void main() {
         // Both repeater and separator are nullable, this might cause an
         // infinite loop.
         expect(linter(epsilon().starSeparated(epsilon()), rules: rules),
-            hasLength(1));
+            [isLinterIssue(title: 'Nullable repeater')]);
         // If either the repeater or the separator is non-nullable, everything
         // is fine.
         expect(linter(epsilon().starSeparated(any()), rules: rules), isEmpty);

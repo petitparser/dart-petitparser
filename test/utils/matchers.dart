@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide predicate;
 import 'package:test/test.dart' as test show predicate;
 
@@ -111,3 +112,31 @@ Matcher isPatternMatch(
                 match.groupCount, (group) => match.group(1 + group)),
             'groups',
             groups);
+
+/// Returns a [Matcher] that asserts a [LinterRule].
+Matcher isLinterRule({
+  dynamic type = anything,
+  dynamic title = anything,
+  dynamic toString = anything,
+}) =>
+    isA<LinterRule>()
+        .having((rule) => rule.type, 'type', type)
+        .having((rule) => rule.title, 'title', title)
+        .having((rule) => rule.toString(), 'toString()', toString);
+
+/// Returns a [Matcher] that asserts a [LinterIssue].
+Matcher isLinterIssue({
+  dynamic rule = anything,
+  dynamic type = anything,
+  dynamic title = anything,
+  dynamic parser = anything,
+  dynamic description = anything,
+  dynamic toString = anything,
+}) =>
+    isA<LinterIssue>()
+        .having((issue) => issue.rule, 'rule', rule)
+        .having((issue) => issue.type, 'type', type)
+        .having((issue) => issue.title, 'title', title)
+        .having((issue) => issue.parser, 'parser', parser)
+        .having((issue) => issue.description, 'description', description)
+        .having((rule) => rule.toString(), 'toString()', toString);

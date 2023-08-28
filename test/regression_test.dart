@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/matchers.dart';
@@ -527,6 +528,25 @@ void main() {
       const input = '\u2665';
       expect(input, hasLength(1));
       expect(surrogatePair, isParseFailure(input));
+    });
+  });
+  group('', () {
+    Parser<String> chars() => anyOf('abc');
+    Parser<String> direct() => chars().starString().end();
+    Parser<String> reference() => ref0(chars).starString().end();
+
+    test('direct', () {
+      final parser = resolve(direct());
+      expect(linter(parser), isEmpty);
+    });
+    test('reference', () {
+      final parser = resolve(reference());
+      expect(linter(parser), [isLinterIssue(title: 'Character repeater')]);
+    });
+    test('reference (optimized)', () {
+      final parser = optimize(resolve(reference()));
+      expect(linter(parser), isEmpty);
+      expect(parser.isEqualTo(direct()), isTrue);
     });
   });
 }
