@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import '../definition/resolve.dart';
 import '../parser/combinator/settable.dart';
+import '../reflection/iterable.dart';
 import 'group.dart';
 import 'utils.dart';
 
@@ -94,7 +94,15 @@ class ExpressionBuilder<T> {
       buildChoice(primitives),
       (parser, group) => group.build(parser),
     );
+    // Replace all uses of `_loopback` with `parser`. Do not use `resolve()`
+    // because that might try to resolve unrelated parsers outside of the scope
+    // of the `ExpressionBuilder` and cause infinite recursion.
+    for (final parent in allParser(parser)) {
+      parent.replace(_loopback, parser);
+    }
+    // Also update the loopback parser, just in case somebody keeps a reference
+    // to it (not that anybody should do that).
     _loopback.set(parser);
-    return resolve(parser);
+    return parser;
   }
 }
