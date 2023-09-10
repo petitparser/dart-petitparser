@@ -35,12 +35,6 @@ class ParserPath {
   /// path.
   final List<int> indexes;
 
-  /// Returns a human-readable description how to reach the target from source.
-  String get description => [
-        for (var i = 0; i < indexes.length; i++)
-          '${indexes[i]}: ${parsers[i + 1]}'
-      ].join(', ');
-
   void _push(Parser parser, int index) {
     parsers.add(parser);
     indexes.add(index);

@@ -15,10 +15,10 @@ import '../shared/types.dart';
 ///
 /// prints the following output:
 ///
-///      1  2006  Instance of 'SequenceParser'
-///      1   697  Instance of 'PossessiveRepeatingParser'[0..*]
-///     11   406  Instance of 'SingleCharacterParser'[letter or digit expected]
-///      1   947  Instance of 'SingleCharacterParser'[letter expected]
+///      1  2006  SequenceParser
+///      1   697  PossessiveRepeatingParser[0..*]
+///     11   406  SingleCharacterParser[letter or digit expected]
+///      1   947  SingleCharacterParser[letter expected]
 ///
 /// The first number refers to the number of activations of each parser, and
 /// the second number is the microseconds spent in this parser and all its

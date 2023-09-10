@@ -16,13 +16,13 @@ import '../shared/types.dart';
 ///
 /// prints the following output:
 ///
-///     * Instance of 'SequenceParser'
-///     * Instance of 'SingleCharacterParser'[letter expected]
-///     ** Instance of 'PossessiveRepeatingParser'[0..*]
-///     ** Instance of 'SingleCharacterParser'[letter or digit expected]
-///     *** Instance of 'SingleCharacterParser'[letter or digit expected]
-///     **** Instance of 'SingleCharacterParser'[letter or digit expected]
-///     ***** Instance of 'SingleCharacterParser'[letter or digit expected]
+///     * SequenceParser
+///     * SingleCharacterParser[letter expected]
+///     ** PossessiveRepeatingParser[0..*]
+///     ** SingleCharacterParser[letter or digit expected]
+///     *** SingleCharacterParser[letter or digit expected]
+///     **** SingleCharacterParser[letter or digit expected]
+///     ***** SingleCharacterParser[letter or digit expected]
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
 /// be reordered to avoid such expensive parses.

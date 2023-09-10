@@ -48,6 +48,7 @@ void expectParserInvariants<T>(Parser<T> parser) {
         pairwiseCompare(replaced, identical, 'replaced children'));
   });
   test('toString', () {
+    expect(parser.toString(), isNot(startsWith('Instance of')));
     expect(parser.toString(),
         stringContainsInOrder([parser.runtimeType.toString()]));
   });

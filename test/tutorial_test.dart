@@ -255,16 +255,16 @@ void main() {
     final parser = letter() & word().star();
     trace(parser, output: output.add).parse('f1');
     expect(output.map((each) => each.toString()), [
-      "Instance of 'SequenceParser<dynamic>'",
-      "  Instance of 'SingleCharacterParser'[letter expected]",
-      "  Success[1:2]: f",
-      "  Instance of 'PossessiveRepeatingParser<String>'[0..*]",
-      "    Instance of 'SingleCharacterParser'[letter or digit expected]",
-      "    Success[1:3]: 1",
-      "    Instance of 'SingleCharacterParser'[letter or digit expected]",
-      "    Failure[1:3]: letter or digit expected",
-      "  Success[1:3]: [1]",
-      "Success[1:3]: [f, [1]]",
+      'SequenceParser<dynamic>',
+      '  SingleCharacterParser[letter expected]',
+      '  Success[1:2]: f',
+      '  PossessiveRepeatingParser<String>[0..*]',
+      '    SingleCharacterParser[letter or digit expected]',
+      '    Success[1:3]: 1',
+      '    SingleCharacterParser[letter or digit expected]',
+      '    Failure[1:3]: letter or digit expected',
+      '  Success[1:3]: [1]',
+      'Success[1:3]: [f, [1]]',
     ]);
   });
 }

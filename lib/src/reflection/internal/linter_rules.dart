@@ -2,6 +2,7 @@ import '../../../parser.dart';
 import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
+import 'formatting.dart';
 import 'utilities.dart';
 
 class CharacterRepeater extends LinterRule {
@@ -39,8 +40,9 @@ class LeftRecursion extends LinterRule {
           this,
           parser,
           'The parsers directly or indirectly refers to itself without '
-          'consuming input: ${analyzer.cycleSet(parser)}. This causes an '
-          'infinite loop when parsing.'));
+          'consuming input:\n'
+          '${formatIterable(analyzer.cycleSet(parser), offset: 1)}\n'
+          'This causes an infinite loop when parsing.'));
     }
   }
 }
@@ -102,10 +104,10 @@ class OverlappingChoice extends LinterRule {
             callback(LinterIssue(
                 this,
                 parser,
-                'The choices at index $i and $j have overlapping first-sets '
-                '(${firstI.join(', ')}), which can be an indication of '
-                'an inefficient grammar. If possible, try extracting '
-                'common prefixes from choices.'));
+                'The choices at index $i and $j have overlapping first-sets, '
+                'which can be an indication of an inefficient grammar:\n'
+                '${formatIterable(firstI)}\n'
+                'If possible, try extracting common prefixes from choices.'));
           }
         }
       }
@@ -126,9 +128,11 @@ class RepeatedChoice extends LinterRule {
             callback(LinterIssue(
                 this,
                 parser,
-                'The choices at index $i and $j are identical '
-                '(${children[i]}). The second choice can never succeed and '
-                'can therefore be removed.'));
+                'The choices at index $i and $j are identical:\n'
+                ' $i: ${children[i]}\n'
+                ' $j: ${children[j]}\n'
+                'The second choice can never succeed and can therefore be '
+                'removed.'));
           }
         }
       }
@@ -207,9 +211,11 @@ class UnreachableChoice extends LinterRule {
           callback(LinterIssue(
               this,
               parser,
-              'The choice at index $i is nullable (${children[i]}), thus the '
-              'choices after that (${children.sublist(i + 1).join(', ')}) '
-              'can never be reached and can be removed.'));
+              'The choice at index $i is nullable:\n'
+              ' $i: ${children[i]}\n'
+              'thus the choices after that can never be reached and can be '
+              'removed:\n'
+              '${formatIterable(children.sublist(i + 1), offset: i + 1)}'));
         }
       }
     }
@@ -250,8 +256,9 @@ class UnusedResult extends LinterRule {
             'instead returns the consumed input. Yet this flatten parser '
             '(indirectly) refers to one or more other parsers that explicitly '
             'produce a result which is then ignored when called from this '
-            'context: ${path.description}. This might point to an inefficient '
-            'grammar or a possible bug.'));
+            'context:\n'
+            '${formatIterable(path.parsers, offset: 1)}\n'
+            'This might point to an inefficient grammar or a possible bug.'));
       }
     }
   }

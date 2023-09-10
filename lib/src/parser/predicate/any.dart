@@ -38,6 +38,9 @@ class AnyCharacterParser extends Parser<String> {
       position < buffer.length ? position + 1 : -1;
 
   @override
+  String toString() => '${super.toString()}[$message]';
+
+  @override
   AnyCharacterParser copy() => AnyCharacterParser(message);
 
   @override

@@ -139,4 +139,4 @@ Matcher isLinterIssue({
         .having((issue) => issue.title, 'title', title)
         .having((issue) => issue.parser, 'parser', parser)
         .having((issue) => issue.description, 'description', description)
-        .having((rule) => rule.toString(), 'toString()', toString);
+        .having((issue) => issue.toString(), 'toString()', toString);

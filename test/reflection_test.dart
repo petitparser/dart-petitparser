@@ -644,8 +644,8 @@ void main() {
             parser: same(input),
             description: 'Described',
             toString: 'LinterIssue(type: LinterType.error, title: Fake Rule, '
-                'parser: Instance of \'PredicateParser\'["trigger" '
-                'expected], description: Described)')
+                'parser: PredicateParser["trigger" expected], description: '
+                'Described)')
       ]);
       expect(called, results);
     });

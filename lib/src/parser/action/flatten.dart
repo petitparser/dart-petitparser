@@ -50,6 +50,10 @@ class FlattenParser<R> extends DelegateParser<R, String> {
       delegate.fastParseOn(buffer, position);
 
   @override
+  String toString() =>
+      message == null ? super.toString() : '${super.toString()}[$message]';
+
+  @override
   bool hasEqualProperties(FlattenParser<R> other) =>
       super.hasEqualProperties(other) && message == other.message;
 

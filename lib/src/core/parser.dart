@@ -137,4 +137,13 @@ abstract class Parser<R> {
   @inlineJs
   T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
       callback<R>(this);
+
+  @override
+  String toString() {
+    const prefix = "Instance of '";
+    final result = super.toString();
+    return result.startsWith(prefix)
+        ? result.substring(prefix.length).replaceFirst("'", '')
+        : result;
+  }
 }

@@ -29,6 +29,9 @@ class EpsilonParser<R> extends Parser<R> {
   int fastParseOn(String buffer, int position) => position;
 
   @override
+  String toString() => '${super.toString()}[$result]';
+
+  @override
   EpsilonParser<R> copy() => EpsilonParser<R>(result);
 
   @override
