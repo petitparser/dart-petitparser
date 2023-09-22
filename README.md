@@ -58,10 +58,10 @@ The operators `&` and `|` are overloaded and create a sequence and a choice pars
 ```dart
 final id1 = letter().seq(letter().or(digit()).star());  // (1): Parser<List<dynamic>>
 final id2 = [letter(), [letter(), digit()].toChoiceParser().star()].toSequenceParser();  // (2): Parser<List<Object>>
-final id3 = seq2(letter(), [letter(), digit()].toChoiceParser().star());  // (3): Parser<Sequence2<String, List<String>>>
+final id3 = seq2(letter(), [letter(), digit()].toChoiceParser().star());  // (3): Parser<(String, List<String>)>
 ```
 
-Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't loose type information and produces a sequence (tuple) with two typed elements `String` and `List<String>`.
+Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't loose type information and produces a [record](https://dart.dev/language/records) (tuple) with two typed elements `String` and `List<String>`.
 
 ### Parsing Some Input
 
@@ -120,6 +120,7 @@ Terminal parsers are the simplest. We've already seen a few of those:
 - `char('a')` (or `'a'.toParser()`) parses the character *a*.
 - `digit()` parses a single digit from *0* to *9*.
 - `letter()` parses a single letter from *a* to *z* and *A* to *Z*.
+- `newline()` parses a newline character sequence, i.e. *\n* (Linux) and *\r\n* (Windows).
 - `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parses a single character between *a* and *f*.
 - `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parses a single character between *a* and *f*, or *A* and *F*.
 - `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
