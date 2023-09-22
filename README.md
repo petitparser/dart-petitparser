@@ -120,7 +120,7 @@ Terminal parsers are the simplest. We've already seen a few of those:
 - `char('a')` (or `'a'.toParser()`) parses the character *a*.
 - `digit()` parses a single digit from *0* to *9*.
 - `letter()` parses a single letter from *a* to *z* and *A* to *Z*.
-- `newline()` parses a newline character sequence, i.e. *\n* (Linux) and *\r\n* (Windows).
+- `newline()` parses a newline character sequence, i.e. *LF* (Unix) and *CR+LF* (Windows).
 - `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parses a single character between *a* and *f*.
 - `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parses a single character between *a* and *f*, or *A* and *F*.
 - `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
