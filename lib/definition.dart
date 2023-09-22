@@ -1,4 +1,6 @@
 /// This package simplifies the creation of complicated recursive grammars.
+library definition;
+
 export 'src/definition/grammar.dart';
 export 'src/definition/parser.dart';
 export 'src/definition/reference.dart';

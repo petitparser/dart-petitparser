@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_lambdas
+
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
@@ -305,7 +307,7 @@ void main() {
     test('reference', () {
       Parser<List<num>> list() => [
             (ref0(number) & char(',') & ref0(list)).map((values) =>
-                <num>[values[0] as num, ...(values[2] as Iterable<num>)]),
+                <num>[values[0] as num, ...values[2] as Iterable<num>]),
             ref0(number).map((value) => [value]),
           ].toChoiceParser();
       final parser = resolve<List<num>>(list());

@@ -48,7 +48,7 @@ extension SeparatedByParserExtension<T> on Parser<T> {
             result.add(separatorAtStart as R);
           }
           result.add(firstElement as R);
-          for (var tuple in otherElements) {
+          for (final tuple in otherElements) {
             if (includeSeparators) {
               result.add(tuple.first as R);
             }

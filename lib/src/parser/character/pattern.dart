@@ -70,10 +70,8 @@ final _range = (any(), char('-'), any()).toSequenceParser().map3(
         RangeCharPredicate(toCharCode(start), toCharCode(stop)));
 
 /// Parser that reads a sequence of single characters or ranges.
-final _sequence = [_range, _single]
-    .toChoiceParser()
-    .star()
-    .map((predicates) => optimizedRanges(predicates));
+final _sequence =
+    [_range, _single].toChoiceParser().star().map(optimizedRanges);
 
 /// Parser that reads a possibly negated sequence of predicates.
 final _pattern = (char('^').optional(), _sequence)

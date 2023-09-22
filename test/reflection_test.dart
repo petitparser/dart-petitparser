@@ -541,11 +541,11 @@ void main() {
         final parsers = createAmbiguous();
         final analyzer = Analyzer(parsers[#S]!);
         expect(analyzer.cycleSet(parsers[#S]!),
-            allOf(hasLength(6), containsAll([parsers[#S]!, parsers[#A]!])));
+            allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])));
         expect(analyzer.cycleSet(parsers[#A]!),
-            allOf(hasLength(6), containsAll([parsers[#S]!, parsers[#A]!])));
+            allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])));
         expect(analyzer.cycleSet(parsers[#B]!),
-            allOf(hasLength(3), containsAll([parsers[#B]!])));
+            allOf(hasLength(3), containsAll([parsers[#B]])));
         expect(analyzer.cycleSet(parsers[#a]!), isEmpty);
         expect(analyzer.cycleSet(parsers[#b]!), isEmpty);
       });
@@ -553,9 +553,9 @@ void main() {
         final parsers = createRecursive();
         final analyzer = Analyzer(parsers[#S]!);
         expect(analyzer.cycleSet(parsers[#S]!),
-            allOf(hasLength(4), containsAll([parsers[#S]!, parsers[#P]!])));
+            allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])));
         expect(analyzer.cycleSet(parsers[#P]!),
-            allOf(hasLength(4), containsAll([parsers[#S]!, parsers[#P]!])));
+            allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])));
         expect(analyzer.cycleSet(parsers[#p]!), isEmpty);
       });
       test('self reference', () {
@@ -936,9 +936,10 @@ void main() {
       final source = lowercase();
       final input = source;
       final target = uppercase();
-      final output = transformParser(input, <T>(parser) {
-        return source.isEqualTo(parser) ? target as Parser<T> : parser;
-      });
+      final output = transformParser(
+          input,
+          <T>(parser) =>
+              source.isEqualTo(parser) ? target as Parser<T> : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input, source);
@@ -948,9 +949,10 @@ void main() {
       final source = lowercase();
       final input = source.settable();
       final target = uppercase();
-      final output = transformParser(input, <T>(parser) {
-        return source.isEqualTo(parser) ? target as Parser<T> : parser;
-      });
+      final output = transformParser(
+          input,
+          <T>(parser) =>
+              source.isEqualTo(parser) ? target as Parser<T> : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.children.single, source);
@@ -960,9 +962,10 @@ void main() {
       final source = lowercase();
       final input = source & source;
       final target = uppercase();
-      final output = transformParser(input, <T>(parser) {
-        return source.isEqualTo(parser) ? target as Parser<T> : parser;
-      });
+      final output = transformParser(
+          input,
+          <T>(parser) =>
+              source.isEqualTo(parser) ? target as Parser<T> : parser);
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.isEqualTo(source & source), isTrue);
@@ -974,9 +977,7 @@ void main() {
       final inner = failure<void>().settable();
       final outer = inner.settable().settable();
       inner.set(outer);
-      final output = transformParser(outer, <T>(parser) {
-        return parser;
-      });
+      final output = transformParser(outer, <T>(parser) => parser);
       expect(outer, isNot(output));
       expect(outer.isEqualTo(output), isTrue);
       final inputs = allParser(outer).toSet();

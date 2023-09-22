@@ -612,7 +612,7 @@ void main() {
     test('empty', () {
       final builder = ExpressionBuilder<String>();
       expect(
-          () => builder.build(),
+          builder.build,
           throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
     }, skip: !hasAssertionsEnabled());
@@ -620,7 +620,7 @@ void main() {
       final builder = ExpressionBuilder<String>();
       builder.group().wrapper(char('('), char(')'), (l, v, r) => '[$v]');
       expect(
-          () => builder.build(),
+          builder.build,
           throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
     }, skip: !hasAssertionsEnabled());

@@ -12,11 +12,9 @@ CharacterPredicate optimizedString(String string) => optimizedRanges(
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
   // 1. Sort the ranges:
   final sortedRanges = List.of(ranges, growable: false);
-  sortedRanges.sort((first, second) {
-    return first.start != second.start
-        ? first.start - second.start
-        : first.stop - second.stop;
-  });
+  sortedRanges.sort((first, second) => first.start != second.start
+      ? first.start - second.start
+      : first.stop - second.stop);
 
   // 2. Merge adjacent or overlapping ranges:
   final mergedRanges = <RangeCharPredicate>[];

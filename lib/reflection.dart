@@ -1,4 +1,6 @@
 /// This package contains tools to reflect on and transform parsers.
+library reflection;
+
 export 'src/reflection/analyzer.dart';
 export 'src/reflection/iterable.dart';
 export 'src/reflection/linter.dart';

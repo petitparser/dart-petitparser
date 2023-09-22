@@ -22,7 +22,7 @@ class NestedGrammar1 {
   Parser start() => ref0(term).end();
   Parser term() => ref0(nestedTerm) | ref0(singleCharacter);
   Parser nestedTerm() =>
-      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      char('(').map((value) => "'$value' (nestedTerm)") &
       ref0(term) &
       char(')').map((value) => "'$value' (nestedTerm)");
   Parser singleCharacter() =>
@@ -35,7 +35,7 @@ class NestedGrammar2 {
   Parser start() => ref0(term).end();
   Parser term() => (ref0(nestedTerm) | ref0(singleCharacter)).plus();
   Parser nestedTerm() =>
-      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      char('(').map((value) => "'$value' (nestedTerm)") &
       ref0(term) &
       char(')').map((value) => "'$value' (nestedTerm)");
   Parser singleCharacter() =>
@@ -48,7 +48,7 @@ class NestedGrammar3 {
   Parser start() => ref0(term).end();
   Parser term() => (ref0(nestedTerm) | ref0(singleCharacter)).plus();
   Parser nestedTerm() =>
-      (char('(')).map((value) => "'$value' (nestedTerm)") &
+      char('(').map((value) => "'$value' (nestedTerm)") &
       ref0(term) &
       char(')').map((value) => "'$value' (nestedTerm)");
   Parser singleCharacter() =>
@@ -323,9 +323,9 @@ void main() {
     });
   });
   test('https://github.com/petitparser/dart-petitparser/issues/121', () {
-    final parser = (((letter() | char('_')) &
+    final parser = ((letter() | char('_')) &
             (letter() | digit() | anyOf('_- ()')).star() &
-            char('.').not('end of id expected')))
+            char('.').not('end of id expected'))
         .flatten();
     expect(parser, isParseSuccess('foo', result: 'foo'));
     expect(parser,

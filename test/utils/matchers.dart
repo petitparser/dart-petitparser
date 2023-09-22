@@ -7,7 +7,7 @@ import 'package:test/test.dart' as test show predicate;
 /// Returns a [Matcher] that asserts on a [ParserException].
 const isParserException = TypeMatcher<ParserException>();
 
-/// Returns [true], if assertions are enabled.
+/// Returns `true`, if assertions are enabled.
 bool hasAssertionsEnabled() {
   try {
     assert(false);
@@ -27,7 +27,7 @@ Matcher isParserEqual<R>(Parser<R> parser) => test.predicate(
     (actual) => actual is Parser<R> && actual.isEqualTo(parser),
     'structurally equal');
 
-/// Returns a [Mater] that asserts on the [Context].
+/// Returns a [Matcher] that asserts on the [Context].
 TypeMatcher<Context> isContext({
   dynamic buffer = anything,
   dynamic position = anything,

@@ -201,15 +201,13 @@ void main() {
       });
       test('without side-effects', () {
         final effects = <String>[];
-        final parser =
-            digit().map((each) => effects.add(each), hasSideEffects: false);
+        final parser = digit().map(effects.add, hasSideEffects: false);
         expect(parser.fastParseOn('1', 0), 1);
         expect(effects, isEmpty);
       });
       test('with side-effects', () {
         final effects = <String>[];
-        final parser =
-            digit().map((each) => effects.add(each), hasSideEffects: true);
+        final parser = digit().map(effects.add, hasSideEffects: true);
         expect(parser.fastParseOn('1', 0), 1);
         expect(effects, ['1']);
       });
@@ -1066,7 +1064,7 @@ void main() {
           65279
         };
         for (var i = 0; i < 65536; i++) {
-          var character = String.fromCharCode(i);
+          final character = String.fromCharCode(i);
           expect(
               parser,
               whitespace.contains(i)

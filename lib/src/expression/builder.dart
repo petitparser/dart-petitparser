@@ -32,8 +32,8 @@ import 'utils.dart';
 ///     builder.group().wrapper(
 ///         char('(').trim(), char(')').trim(), (left, value, right) => value);
 ///
-/// Then come the normal arithmetic operators. We are using [cascade
-/// notation](https://dart.dev/guides/language/language-tour#cascade-notation)
+/// Then come the normal arithmetic operators. We are using
+/// [cascade notation](https://dart.dev/guides/language/language-tour#cascade-notation)
 /// to define multiple operators on the same precedence-group. The mapping
 /// functions receive both, the terms and the parsed operator in the order they
 /// appear in the parsed input:

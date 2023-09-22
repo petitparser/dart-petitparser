@@ -36,12 +36,12 @@ bool addAll<T>(Set<T> result, Iterable<T> elements) {
 /// Tests if two sets of parsers are equal.
 bool isParserIterableEqual(Iterable<Parser> first, Iterable<Parser> second) {
   for (final one in first) {
-    if (!second.any((two) => one.isEqualTo(two))) {
+    if (!second.any(one.isEqualTo)) {
       return false;
     }
   }
   for (final two in second) {
-    if (!first.any((one) => two.isEqualTo(one))) {
+    if (!first.any(two.isEqualTo)) {
       return false;
     }
   }
