@@ -456,7 +456,6 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 - [puppeteer](https://pub.dev/packages/puppeteer) is a library to automate the Chrome browser.
 - [query](https://pub.dev/packages/query) implements search queries with support for boolean groups, field scopes, ranges, etc.
 - [xml](https://pub.dev/packages/xml) is a lightweight library for parsing, traversing, and querying XML documents.
-- ... and [many others](https://pub.dev/packages?q=dependency:petitparser).
 
 
 ### History
