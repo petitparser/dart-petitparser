@@ -451,12 +451,12 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 - [equations](https://pub.dev/packages/equations) is an equation solving library.
 - [expression_language](https://pub.dev/packages/expression_language) is a library for parsing and evaluating expressions.
 - [expressions](https://pub.dev/packages/expressions) is a library to parse and evaluate simple expressions.
-- [intl_translation](https://pub.dev/packages/intl_translation) provides internationalization and localization support to Dart.
 - [json_path](https://pub.dev/packages/json_path) is an implementation of JSONPath expressions.
 - [pem](https://pub.dev/packages/pem) encodes and decodes textual cryptographic keys.
 - [puppeteer](https://pub.dev/packages/puppeteer) is a library to automate the Chrome browser.
 - [query](https://pub.dev/packages/query) implements search queries with support for boolean groups, field scopes, ranges, etc.
 - [xml](https://pub.dev/packages/xml) is a lightweight library for parsing, traversing, and querying XML documents.
+- ... and [many others](https://pub.dev/packages?q=dependency:petitparser).
 
 
 ### History
