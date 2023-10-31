@@ -530,7 +530,7 @@ void main() {
       expect(surrogatePair, isParseFailure(input));
     });
   });
-  group('', () {
+  group('https://github.com/petitparser/dart-petitparser/issues/155', () {
     Parser<String> chars() => anyOf('abc');
     Parser<String> direct() => chars().starString().end();
     Parser<String> reference() => ref0(chars).starString().end();
@@ -548,5 +548,10 @@ void main() {
       expect(linter(parser), isEmpty);
       expect(parser.isEqualTo(direct()), isTrue);
     });
+  });
+  test('https://github.com/petitparser/dart-petitparser/issues/158', () {
+    final extended = pattern('À-ÿ');
+    expect(extended, isParseSuccess('ä', result: 'ä'));
+    expect(extended, isParseSuccess('ï', result: 'ï'));
   });
 }
