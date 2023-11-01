@@ -322,7 +322,7 @@ void main() {
       expect(parser, isParseFailure('21', message: 'values do not match'));
     });
   });
-  test('https://github.com/petitparser/dart-petitparser/issues/121', () {
+  test('github.com/petitparser/dart-petitparser/issues/121', () {
     final parser = ((letter() | char('_')) &
             (letter() | digit() | anyOf('_- ()')).star() &
             char('.').not('end of id expected'))
@@ -331,7 +331,7 @@ void main() {
     expect(parser,
         isParseFailure('foo.1', message: 'end of id expected', position: 3));
   });
-  test('https://github.com/petitparser/dart-petitparser/issues/126', () {
+  test('github.com/petitparser/dart-petitparser/issues/126', () {
     final parser = ParensGrammar().build();
     expect(parser, isParseSuccess('', result: null));
     expect(parser, isParseSuccess('()', result: ['(', null, ')']));
@@ -354,7 +354,7 @@ void main() {
           ')'
         ]));
   });
-  group('https://stackoverflow.com/questions/73260748', () {
+  group('stackoverflow.com/questions/73260748', () {
     test('Case 1', () {
       final parser = resolve(NestedGrammar1().start());
       expect(
@@ -388,7 +388,7 @@ void main() {
           ]));
     });
   });
-  group('https://stackoverflow.com/questions/75278583', () {
+  group('stackoverflow.com/questions/75278583', () {
     final primitive =
         (uppercase() & char('|') & digit().plus() & char('|') & uppercase())
             .flatten()
@@ -439,7 +439,7 @@ void main() {
       }
     }
   });
-  group('https://stackoverflow.com/questions/75503464', () {
+  group('stackoverflow.com/questions/75503464', () {
     final builder = ExpressionBuilder<Object?>();
     final primitive =
         seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
@@ -486,7 +486,7 @@ void main() {
               position: 7, message: 'end of input expected'));
     });
   });
-  group('https://github.com/petitparser/dart-petitparser/issues/145', () {
+  group('github.com/petitparser/dart-petitparser/issues/145', () {
     test('solution 1', () {
       final parser = seq3(
         char("*"),
@@ -514,7 +514,7 @@ void main() {
       expect(parser.accept('*invalid *'), isFalse);
     });
   });
-  group('https://github.com/petitparser/dart-petitparser/issues/147', () {
+  group('github.com/petitparser/dart-petitparser/issues/147', () {
     final surrogatePair = seq2(
       pattern('\uD800-\uDBFF'),
       pattern('\uDC00-\uDFFF'),
@@ -530,7 +530,7 @@ void main() {
       expect(surrogatePair, isParseFailure(input));
     });
   });
-  group('https://github.com/petitparser/dart-petitparser/issues/155', () {
+  group('github.com/petitparser/dart-petitparser/issues/155', () {
     Parser<String> chars() => anyOf('abc');
     Parser<String> direct() => chars().starString().end();
     Parser<String> reference() => ref0(chars).starString().end();
@@ -549,7 +549,7 @@ void main() {
       expect(parser.isEqualTo(direct()), isTrue);
     });
   });
-  test('https://github.com/petitparser/dart-petitparser/issues/158', () {
+  test('github.com/petitparser/dart-petitparser/issues/158', () {
     final extended = pattern('À-ÿ');
     expect(extended, isParseSuccess('ä', result: 'ä'));
     expect(extended, isParseSuccess('ï', result: 'ï'));
