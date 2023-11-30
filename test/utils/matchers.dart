@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
-import 'package:test/test.dart' hide predicate;
 import 'package:test/test.dart' as test show predicate;
+import 'package:test/test.dart' hide predicate;
 
 /// Returns a [Matcher] that asserts on a [ParserException].
 const isParserException = TypeMatcher<ParserException>();
