@@ -554,4 +554,31 @@ void main() {
     expect(extended, isParseSuccess('ä', result: 'ä'));
     expect(extended, isParseSuccess('ï', result: 'ï'));
   });
+  group('github.com/petitparser/dart-petitparser/issues/162', () {
+    final uppercase = char('A').plus().map((_) => 'success');
+    final anycase = charIgnoringCase('A').plus().map((_) => 'fallback');
+    test('question', () {
+      final parser = [uppercase, anycase].toChoiceParser().end();
+      expect(parser, isParseSuccess('AAAA', result: 'success'));
+      expect(parser, isParseSuccess('aaaAAaaa', result: 'fallback'));
+      expect(
+          parser,
+          isParseFailure('AAaaAA',
+              position: 2, message: 'end of input expected'));
+    });
+    test('possible fix', () {
+      final parser = [uppercase.end(), anycase.end()].toChoiceParser();
+      expect(parser, isParseSuccess('AAAA', result: 'success'));
+      expect(parser, isParseSuccess('aaaAAaaa', result: 'fallback'));
+      expect(parser, isParseSuccess('AAaaAA', result: 'fallback'));
+    });
+    test('more general', () {
+      final parser = [uppercase.skip(after: anycase.not()), anycase]
+          .toChoiceParser()
+          .end();
+      expect(parser, isParseSuccess('AAAA', result: 'success'));
+      expect(parser, isParseSuccess('aaaAAaaa', result: 'fallback'));
+      expect(parser, isParseSuccess('AAaaAA', result: 'fallback'));
+    });
+  });
 }
