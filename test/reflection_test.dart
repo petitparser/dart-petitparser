@@ -1137,7 +1137,7 @@ void main() {
           expect(result, same(parser.children[0]));
         });
         test('with single label', () {
-          final parser = char('a').labeled("hello");
+          final parser = char('a').labeled('hello');
           final result = optimize(parser, rules: rules);
           expect(result, same(parser.children[0]));
         });

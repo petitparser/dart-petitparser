@@ -489,7 +489,7 @@ void main() {
   group('github.com/petitparser/dart-petitparser/issues/145', () {
     test('solution 1', () {
       final parser = seq3(
-        char("*"),
+        char('*'),
         seq2(
           whitespace().not(),
           [seq2(whitespace(), char('*')), char('*')]
@@ -497,7 +497,7 @@ void main() {
               .neg()
               .plus(),
         ).flatten(),
-        char("*"),
+        char('*'),
       ).map3((_, value, __) => value);
       expect(parser.parse('*valid*').value, 'valid');
       expect(parser.accept('* invalid*'), isFalse);
@@ -505,9 +505,9 @@ void main() {
     });
     test('solution 2', () {
       final parser = seq3(
-        char("*"),
+        char('*'),
         char('*').neg().plus().flatten(),
-        char("*"),
+        char('*'),
       ).map3((_, value, __) => value).where((value) => value.trim() == value);
       expect(parser.parse('*valid*').value, 'valid');
       expect(parser.accept('* invalid*'), isFalse);

@@ -78,8 +78,8 @@ abstract class GrammarDefinition<R> {
   @useResult
   @optionalTypeArgs
   Parser<T> build<T>({
-    @Deprecated("Use `buildFrom(parser)`") Function? start,
-    @Deprecated("Use `buildFrom(parser)`") List<Object> arguments = const [],
+    @Deprecated('Use `buildFrom(parser)`') Function? start,
+    @Deprecated('Use `buildFrom(parser)`') List<Object> arguments = const [],
   }) {
     if (start != null) {
       return resolve(Function.apply(start, arguments) as Parser<T>);
