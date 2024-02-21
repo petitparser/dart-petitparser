@@ -12,5 +12,5 @@ class NotCharacterPredicate extends CharacterPredicate {
   @override
   bool isEqualTo(CharacterPredicate other) =>
       other is NotCharacterPredicate &&
-      other.predicate.isEqualTo(other.predicate);
+      predicate.isEqualTo(other.predicate);
 }
