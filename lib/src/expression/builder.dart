@@ -69,7 +69,11 @@ import 'utils.dart';
 class ExpressionBuilder<T> {
   final List<Parser<T>> _primitives = [];
   final List<ExpressionGroup<T>> _groups = [];
-  final SettableParser<T> loopback = undefined();
+  final SettableParser<T> _loopback = undefined();
+
+  /// The parser for this expression builder. Can be used to loop back to this
+  /// parser.
+  SettableParser<T> loopback => _loopback;
 
   /// Defines a new primitive, literal, or value [parser].
   void primitive(Parser<T> parser) => _primitives.add(parser);
