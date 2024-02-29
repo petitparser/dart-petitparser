@@ -73,7 +73,7 @@ class ExpressionBuilder<T> {
 
   /// The parser for this expression builder. Can be used to loop back to this
   /// parser.
-  SettableParser<T> loopback => _loopback;
+  SettableParser<T> get loopback => _loopback;
 
   /// Defines a new primitive, literal, or value [parser].
   void primitive(Parser<T> parser) => _primitives.add(parser);
