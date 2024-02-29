@@ -28,7 +28,7 @@ class RangesCharPredicate implements CharacterPredicate {
   @override
   bool isEqualTo(CharacterPredicate other) =>
       other is RangesCharPredicate &&
-      other.length == length &&
-      other.starts == starts &&
-      other.stops == stops;
+      length == other.length &&
+      starts == other.starts &&
+      stops == other.stops;
 }

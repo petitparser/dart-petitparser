@@ -35,9 +35,9 @@ class LookupCharPredicate implements CharacterPredicate {
   @override
   bool isEqualTo(CharacterPredicate other) =>
       other is LookupCharPredicate &&
-      other.start == start &&
-      other.stop == stop &&
-      other.bits == bits;
+      start == other.start &&
+      stop == other.stop &&
+      bits == other.bits;
 
   static const shift = 5;
   static const offset = 31;

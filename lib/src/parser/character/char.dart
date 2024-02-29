@@ -36,5 +36,5 @@ class SingleCharPredicate extends CharacterPredicate {
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
-      other is SingleCharPredicate && other.value == value;
+      other is SingleCharPredicate && value == other.value;
 }

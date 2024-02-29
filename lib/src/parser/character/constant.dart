@@ -10,5 +10,5 @@ class ConstantCharPredicate extends CharacterPredicate {
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
-      other is ConstantCharPredicate && other.constant == constant;
+      other is ConstantCharPredicate && constant == other.constant;
 }
