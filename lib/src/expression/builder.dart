@@ -73,7 +73,7 @@ class ExpressionBuilder<T> {
 
   /// The parser for this expression builder. Can be used to loop back to this
   /// parser.
-  SettableParser<T> get loopback => _loopback;
+  Parser<T> get loopback => _loopback;
 
   /// Defines a new primitive, literal, or value [parser].
   void primitive(Parser<T> parser) => _primitives.add(parser);
@@ -81,7 +81,7 @@ class ExpressionBuilder<T> {
   /// Creates a new group of operators that share the same priority.
   @useResult
   ExpressionGroup<T> group() {
-    final group = ExpressionGroup<T>(loopback);
+    final group = ExpressionGroup<T>(_loopback);
     _groups.add(group);
     return group;
   }
@@ -98,15 +98,15 @@ class ExpressionBuilder<T> {
       buildChoice(primitives),
       (parser, group) => group.build(parser),
     );
-    // Replace all uses of `loopback` with `parser`. Do not use `resolve()`
+    // Replace all uses of `_loopback` with `parser`. Do not use `resolve()`
     // because that might try to resolve unrelated parsers outside of the scope
     // of the `ExpressionBuilder` and cause infinite recursion.
     for (final parent in allParser(parser)) {
-      parent.replace(loopback, parser);
+      parent.replace(_loopback, parser);
     }
-    // Also update the loopback parser, just in case somebody keeps a reference
+    // Also update the `_loopback` parser, just in case somebody keeps a reference
     // to it (not that anybody should do that).
-    loopback.set(parser);
+    _loopback.set(parser);
     return parser;
   }
 }
