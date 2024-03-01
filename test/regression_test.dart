@@ -581,4 +581,24 @@ void main() {
       expect(parser, isParseSuccess('AAaaAA', result: 'fallback'));
     });
   });
+  group('https://stackoverflow.com/questions/78078779', () {
+    test('How to consume only as long as another parser accepts?', () {
+      final parser = digit().plusLazy(digit().repeat(3).not());
+      expect(parser, isParseSuccess('123', result: ['1'], position: 1));
+      expect(parser, isParseSuccess('1234', result: ['1', '2'], position: 2));
+    });
+    test('How to recognize a list of items with optional delimiters?', () {
+      final parser = digit().plusSeparated(char(',').optional());
+      expect(
+          parser,
+          isParseSuccess('1,2,3',
+              result: isSeparatedList<String, String?>(
+                  elements: ['1', '2', '3'], separators: [',', ','])));
+      expect(
+          parser,
+          isParseSuccess('12,3',
+              result: isSeparatedList<String, String?>(
+                  elements: ['1', '2', '3'], separators: [null, ','])));
+    });
+  });
 }

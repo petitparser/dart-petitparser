@@ -140,3 +140,12 @@ Matcher isLinterIssue({
         .having((issue) => issue.parser, 'parser', parser)
         .having((issue) => issue.description, 'description', description)
         .having((issue) => issue.toString(), 'toString()', toString);
+
+/// Returns a [Matcher] that asserts a [SeparatedList].
+Matcher isSeparatedList<R, S>({
+  dynamic elements = anything,
+  dynamic separators = anything,
+}) =>
+    isA<SeparatedList<R, S>>()
+        .having((list) => list.elements, 'elements', elements)
+        .having((list) => list.separators, 'separators', separators);

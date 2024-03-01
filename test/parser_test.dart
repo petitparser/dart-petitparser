@@ -5,14 +5,6 @@ import 'generated/sequence_test.dart' as sequence_test;
 import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
-TypeMatcher<SeparatedList<R, S>> isSeparatedList<R, S>({
-  List<R> elements = const [],
-  List<S> separators = const [],
-}) =>
-    isA<SeparatedList<R, S>>()
-        .having((list) => list.elements, 'elements', elements)
-        .having((list) => list.separators, 'separators', separators);
-
 void main() {
   group('action', () {
     group('cast', () {
@@ -2161,24 +2153,24 @@ void main() {
         expect(
             parser,
             isParseSuccess('1a2b3',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
             isParseSuccess('1a2b3c',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4d',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
       });
@@ -2193,35 +2185,35 @@ void main() {
         expect(
             parser,
             isParseSuccess('1a2',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a'])));
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a'])));
         expect(
             parser,
             isParseSuccess('1a2b',
-                result:
-                    isSeparatedList(elements: ['1', '2'], separators: ['a']),
+                result: isSeparatedList<String, String>(
+                    elements: ['1', '2'], separators: ['a']),
                 position: 3));
         expect(
             parser,
             isParseSuccess('1a2b3',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b'])));
         expect(
             parser,
             isParseSuccess('1a2b3c',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
         expect(
             parser,
             isParseSuccess('1a2b3c4d',
-                result: isSeparatedList(
+                result: isSeparatedList<String, String>(
                     elements: ['1', '2', '3'], separators: ['a', 'b']),
                 position: 5));
       });
