@@ -51,7 +51,6 @@ Matcher isSuccess<R>({
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
-@optionalTypeArgs
 Matcher isFailure({
   dynamic buffer = anything,
   dynamic position = anything,
@@ -142,6 +141,7 @@ Matcher isLinterIssue({
         .having((issue) => issue.toString(), 'toString()', toString);
 
 /// Returns a [Matcher] that asserts a [SeparatedList].
+@optionalTypeArgs
 Matcher isSeparatedList<R, S>({
   dynamic elements = anything,
   dynamic separators = anything,
