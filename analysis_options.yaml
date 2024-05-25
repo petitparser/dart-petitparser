@@ -17,6 +17,7 @@ linter:
     - comment_references
     - directives_ordering
     - invalid_case_patterns
+    - missing_code_block_language_in_doc_comment
     - no_self_assignments
     - no_wildcard_variable_uses
     - omit_local_variable_types
@@ -33,6 +34,7 @@ linter:
     - unnecessary_await_in_return
     - unnecessary_breaks
     - unnecessary_lambdas
+    - unnecessary_library_name
     - unnecessary_null_aware_operator_on_extension_on_nullable
     - unnecessary_null_checks
     - unnecessary_parenthesis

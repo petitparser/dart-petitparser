@@ -1,5 +1,5 @@
 /// Calculator from the tutorial.
-library calc;
+library;
 
 import 'dart:io';
 import 'dart:math';

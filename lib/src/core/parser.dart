@@ -120,9 +120,11 @@ abstract class Parser<R> {
   /// parser that accepts a digit. The resulting `example` parser accepts one
   /// or more digits.
   ///
-  ///     final letter = letter();
-  ///     final example = letter.plus();
-  ///     example.replace(letter, digit());
+  /// ```dart
+  /// final letter = letter();
+  /// final example = letter.plus();
+  /// example.replace(letter, digit());
+  /// ```
   ///
   /// Override this method and [Parser.children] in all subclasses that
   /// reference other parsers.

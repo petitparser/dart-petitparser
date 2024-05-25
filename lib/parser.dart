@@ -1,5 +1,5 @@
 /// This package contains the standard parser implementations.
-library parser;
+library;
 
 export 'src/core/parser.dart';
 export 'src/parser/action/cast.dart';

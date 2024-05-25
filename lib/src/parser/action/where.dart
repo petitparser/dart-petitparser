@@ -16,14 +16,15 @@ extension WhereParserExtension<R> on Parser<R> {
   /// The following example parses two characters, but only succeeds if they
   /// are equal:
   ///
-  ///     final inner = any() & any();
-  ///     final parser = inner.where(
-  ///         (value) => value[0] == value[1],
-  ///         factory: (context, success) =>
-  ///             context.failure('characters do not match'));
-  ///     parser.parse('aa');   // ==> Success: ['a', 'a']
-  ///     parser.parse('ab');   // ==> Failure: characters do not match
-  ///
+  /// ```dart
+  /// final inner = any() & any();
+  /// final parser = inner.where(
+  ///     (value) => value[0] == value[1],
+  ///     factory: (context, success) =>
+  ///         context.failure('characters do not match'));
+  /// parser.parse('aa');   // ==> Success: ['a', 'a']
+  /// parser.parse('ab');   // ==> Failure: characters do not match
+  /// ```
   @useResult
   Parser<R> where(
     Predicate<R> predicate, {

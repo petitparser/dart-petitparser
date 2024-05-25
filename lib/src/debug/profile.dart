@@ -10,15 +10,19 @@ import '../shared/types.dart';
 ///
 /// For example, the snippet
 ///
-///     final parser = letter() & word().star();
-///     profile(parser).parse('f1234567890');
+/// ```dart
+/// final parser = letter() & word().star();
+/// profile(parser).parse('f1234567890');
+/// ```
 ///
 /// prints the following output:
 ///
+/// ```text
 ///      1  2006  SequenceParser
 ///      1   697  PossessiveRepeatingParser[0..*]
 ///     11   406  SingleCharacterParser[letter or digit expected]
 ///      1   947  SingleCharacterParser[letter expected]
+/// ```
 ///
 /// The first number refers to the number of activations of each parser, and
 /// the second number is the microseconds spent in this parser and all its

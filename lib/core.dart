@@ -1,7 +1,7 @@
 /// This package contains the core classes of the framework.
 ///
 /// {@canonicalFor parser.Parser}
-library core;
+library;
 
 export 'src/core/context.dart';
 export 'src/core/exception.dart';

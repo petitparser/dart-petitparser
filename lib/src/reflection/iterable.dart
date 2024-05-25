@@ -7,11 +7,12 @@ import '../core/parser.dart';
 /// For example, the following code prints the two parsers of the
 /// defined grammar:
 ///
-///     final parser = range('0', '9').star();
-///     allParser(parser).forEach((each) {
-///       print(each);
-///     });
-///
+/// ```dart
+/// final parser = range('0', '9').star();
+/// allParser(parser).forEach((each) {
+///   print(each);
+/// });
+/// ```
 Iterable<Parser> allParser(Parser root) => _ParserIterable(root);
 
 class _ParserIterable extends Iterable<Parser> {

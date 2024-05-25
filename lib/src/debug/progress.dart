@@ -11,18 +11,22 @@ import '../shared/types.dart';
 ///
 /// For example, the snippet
 ///
-///     final parser = letter() & word().star();
-///     progress(parser).parse('f123');
+/// ```dart
+/// final parser = letter() & word().star();
+/// progress(parser).parse('f123');
+/// ```
 ///
 /// prints the following output:
 ///
-///     * SequenceParser
-///     * SingleCharacterParser[letter expected]
-///     ** PossessiveRepeatingParser[0..*]
-///     ** SingleCharacterParser[letter or digit expected]
-///     *** SingleCharacterParser[letter or digit expected]
-///     **** SingleCharacterParser[letter or digit expected]
-///     ***** SingleCharacterParser[letter or digit expected]
+/// ```text
+/// * SequenceParser
+/// * SingleCharacterParser[letter expected]
+/// ** PossessiveRepeatingParser[0..*]
+/// ** SingleCharacterParser[letter or digit expected]
+/// *** SingleCharacterParser[letter or digit expected]
+/// **** SingleCharacterParser[letter or digit expected]
+/// ***** SingleCharacterParser[letter or digit expected]
+/// ```
 ///
 /// Jumps backwards mean that the parser is back-tracking. Often choices can
 /// be reordered to avoid such expensive parses.

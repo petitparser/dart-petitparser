@@ -12,7 +12,9 @@ extension MatchesParserExtension<T> on Parser<T> {
   ///
   /// For example, with the parser
   ///
-  ///     final parser = letter().plus().flatten();
+  /// ```dart
+  /// final parser = letter().plus().flatten();
+  /// ```
   ///
   /// `parser.allMatches('abc de')` results in the iterable `['abc', 'de']`; and
   /// `parser.allMatches('abc de', overlapping: true)` results in the iterable

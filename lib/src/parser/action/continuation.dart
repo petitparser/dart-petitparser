@@ -24,13 +24,14 @@ extension ContinuationParserExtension<R> on Parser<R> {
   /// The following example shows a simple wrapper. Messages are printed before
   /// and after the `digit()` parser is activated:
   ///
-  ///     final parser = digit().callCC((continuation, context) {
-  ///       print('Parser will be activated, the context is $context.');
-  ///       final result = continuation(context);
-  ///       print('Parser was activated, the result is $result.');
-  ///       return result;
-  ///     });
-  ///
+  /// ```dart
+  /// final parser = digit().callCC((continuation, context) {
+  ///   print('Parser will be activated, the context is $context.');
+  ///   final result = continuation(context);
+  ///   print('Parser was activated, the result is $result.');
+  ///   return result;
+  /// });
+  /// ```
   @useResult
   Parser<S> callCC<S>(ContinuationHandler<R, S> handler) =>
       ContinuationParser<R, S>(this, handler);

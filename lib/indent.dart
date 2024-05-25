@@ -1,4 +1,4 @@
 /// This package simplifies the creation of indention based parsers.
-library indent;
+library;
 
 export 'src/indent/indent.dart';
