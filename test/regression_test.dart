@@ -601,4 +601,21 @@ void main() {
                   elements: ['1', '2', '3'], separators: [null, ','])));
     });
   });
+  group('https://stackoverflow.com/questions/78701485', () {
+    final wholeNumber = digit().plus().trim();
+    final number = wholeNumber.plus() & char('.').optional() & wholeNumber;
+    test('original', () {
+      final parser = char('(') & number & char(')');
+      expect(parser, isParseSuccess('(0.53)'));
+      expect(parser,
+          isParseFailure('(0.53,00)', position: 5, message: '")" expected'));
+    });
+    test('modified', () {
+      final parser =
+          char('(') & number & char(',').not('remove comma') & char(')');
+      expect(parser, isParseSuccess('(0.53)'));
+      expect(parser,
+          isParseFailure('(0.53,00)', position: 5, message: 'remove comma'));
+    });
+  });
 }
