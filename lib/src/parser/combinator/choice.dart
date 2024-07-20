@@ -20,7 +20,7 @@ extension ChoiceParserExtension on Parser {
   /// digit. An example where the order matters is the following choice between
   /// overlapping parsers: `letter().or(char('a'))`. In the example the parser
   /// `char('a')` will never be activated, because the input is always consumed
-  /// `letter()`. This can be problematic if the author intended to attach a
+  /// by `letter()`. This can be problematic if the author intended to attach a
   /// production action to `char('a')`.
   ///
   /// Due to https://github.com/dart-lang/language/issues/1557 the resulting
