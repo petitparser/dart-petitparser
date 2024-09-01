@@ -1369,7 +1369,9 @@ void main() {
     group('settable', () {
       expectParserInvariants(any().settable());
       test('default', () {
-        final parser = char('a').settable();
+        final inner = char('a');
+        final parser = inner.settable();
+        expect(parser.resolve(), inner);
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
         expect(parser, isParseFailure(''));

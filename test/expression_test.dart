@@ -631,6 +631,15 @@ void main() {
       final parser = builder.build();
       expect(parser, isParseSuccess('a', result: 'a'));
     });
+    test('loopback', () {
+      final builder = ExpressionBuilder<String>();
+      builder.primitive(seq2(char('a'), builder.loopback).flatten());
+      builder.primitive(char('b'));
+      final parser = builder.build();
+      expect(parser, isParseSuccess('b', result: 'b'));
+      expect(parser, isParseSuccess('ab', result: 'ab'));
+      expect(parser, isParseSuccess('aab', result: 'aab'));
+    });
     group('epsilon', () {
       test('primitive', () {
         final builder = ExpressionBuilder<String>();
