@@ -618,4 +618,19 @@ void main() {
           isParseFailure('(0.53,00)', position: 5, message: 'remove comma'));
     });
   });
+  group('github.com/petitparser/dart-petitparser/discussions/177', () {
+    test('continuation', () {
+      final variables = ['first', 'second'];
+      final parser = failure<String>().callCC((continuation, context) =>
+          variables
+              .map((each) => each.toParser())
+              .toChoiceParser()
+              .parseOn(context));
+      expect(parser, isParseSuccess('first'));
+      expect(parser, isParseSuccess('second'));
+      expect(parser, isParseFailure('third'));
+      variables.add('third');
+      expect(parser, isParseSuccess('third'));
+    });
+  });
 }
