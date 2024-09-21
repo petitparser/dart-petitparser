@@ -46,9 +46,7 @@ class ContinuationParser<R, S> extends DelegateParser<R, S> {
   final ContinuationHandler<R, S> handler;
 
   @override
-  Result<S> parseOn(Context context) => handler(_parseDelegateOn, context);
-
-  Result<R> _parseDelegateOn(Context context) => delegate.parseOn(context);
+  Result<S> parseOn(Context context) => handler(delegate.parseOn, context);
 
   @override
   ContinuationParser<R, S> copy() =>
