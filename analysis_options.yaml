@@ -1,8 +1,8 @@
 include: package:lints/recommended.yaml
 analyzer:
   language:
-    strict-inference: true
     strict-casts: true
+    strict-inference: true
     strict-raw-types: true
 linter:
   rules:
@@ -11,15 +11,12 @@ linter:
     - avoid_final_parameters
     - avoid_print
     - avoid_unused_constructor_parameters
-    - camel_case_types
-    - collection_methods_unrelated_type
     - combinators_ordering
     - comment_references
     - directives_ordering
     - invalid_case_patterns
     - missing_code_block_language_in_doc_comment
     - no_self_assignments
-    - no_wildcard_variable_uses
     - omit_local_variable_types
     - prefer_const_constructors
     - prefer_const_constructors_in_immutables
@@ -34,7 +31,6 @@ linter:
     - unnecessary_await_in_return
     - unnecessary_breaks
     - unnecessary_lambdas
-    - unnecessary_library_name
     - unnecessary_null_aware_operator_on_extension_on_nullable
     - unnecessary_null_checks
     - unnecessary_parenthesis
