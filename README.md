@@ -141,7 +141,7 @@ The next set of parsers are used to combine other parsers together:
 - `p1 & p2`, `p1.seq(p2)`, `[p1, p2].toSequenceParser()`, `seq2(p1, p2)` or `(p1, p2).toSequenceParser()` parse *p1* followed by *p2* (sequence). The first two produce a result of type `List<dynamic>`, the third one a `List<P1 & P2>`, and the last two a strictly typed record type `(P1, P2)`.
 - `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice). The first two produce a result of type `dynamic`, the last one a result of type `P1 & P2`.
 
-The following parsers [repeat](https://pub.dev/documentation/petitparser/latest/parser/PossessiveRepeatingParserExtension.html) another parser a configured amount of times, and produce a list of parsed results. Check the documentation for other repeaters that are [lazy](https://pub.dev/documentation/petitparser/latest/parser/LazyRepeatingParserExtension.html) or [greedy](https://pub.dev/documentation/petitparser/latest/parser/GreedyRepeatingParserExtension.html), or that can handle [separators](https://pub.dev/documentation/petitparser/latest/parser/SeparatedRepeatingParserExtension.html).
+The following parsers [repeat](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension.html) another parser a configured amount of times, and produce a list of parsed results. Check the documentation for other repeaters that are [lazy](https://pub.dev/documentation/petitparser/latest/petitparser/LazyRepeatingParserExtension.html) or [greedy](https://pub.dev/documentation/petitparser/latest/petitparser/GreedyRepeatingParserExtension.html), or that can handle [separators](https://pub.dev/documentation/petitparser/latest/petitparser/SeparatedRepeatingParserExtension.html).
 
 - `p.star()` parses *p* zero or more times.
 - `p.plus()` parses *p* one or more times.
@@ -294,7 +294,7 @@ final parser = definition.build(start: definition.number);
 parser.parse('42');                     // 42
 ```
 
-This is just the surface of what `GrammarDefinition` can do, check out [the documentation](https://pub.dev/documentation/petitparser/latest/definition/GrammarDefinition-class.html) and the examples using it.
+This is just the surface of what `GrammarDefinition` can do, check out [the documentation](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html) and the examples using it.
 
 
 ### Using the Expression Builder
@@ -361,7 +361,7 @@ parser.parse('8/4/2');                  // 1
 parser.parse('2^2^3');                  // 256
 ```
 
-Check out [the documentation](https://pub.dev/documentation/petitparser/latest/expression/ExpressionBuilder-class.html) for more examples.
+Check out [the documentation](https://pub.dev/documentation/petitparser/latest/petitparser/ExpressionBuilder-class.html) for more examples.
 
 
 ### Testing your Grammars
