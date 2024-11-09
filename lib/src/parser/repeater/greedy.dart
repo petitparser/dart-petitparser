@@ -62,7 +62,8 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result is Failure) return result;
-      assert(current.position < result.position, '$this must always consume');
+      assert(
+          current.position < result.position, '$delegate must always consume');
       elements.add(result.value);
       current = result;
     }
@@ -70,7 +71,8 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (elements.length < max) {
       final result = delegate.parseOn(current);
       if (result is Failure) break;
-      assert(current.position < result.position, '$this must always consume');
+      assert(
+          current.position < result.position, '$delegate must always consume');
       elements.add(result.value);
       contexts.add(current = result);
     }
@@ -94,7 +96,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) return -1;
-      assert(current < result, '$this must always consume');
+      assert(current < result, '$delegate must always consume');
       current = result;
       count++;
     }
@@ -102,7 +104,7 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
     while (count < max) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) break;
-      assert(current < result, '$this must always consume');
+      assert(current < result, '$delegate must always consume');
       positions.add(current = result);
       count++;
     }

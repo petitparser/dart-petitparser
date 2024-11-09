@@ -1793,6 +1793,25 @@ void main() {
             isParseSuccess('${inputDigit.join()}1',
                 result: inputDigit, position: inputDigit.length));
       });
+      test('infinite loop', () {
+        final inner = epsilon(), limiter = failure<void>();
+        expect(
+            () => inner.starGreedy(limiter).parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.starGreedy(limiter).fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plusGreedy(limiter).parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plusGreedy(limiter).fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+      }, skip: !hasAssertionsEnabled());
     });
     group('lazy', () {
       expectParserInvariants(any().starLazy(digit()));
@@ -1906,6 +1925,25 @@ void main() {
             isParseSuccess('${input.join()}1111',
                 result: input, position: input.length));
       });
+      test('infinite loop', () {
+        final inner = epsilon(), limiter = failure<void>();
+        expect(
+            () => inner.starLazy(limiter).parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.starLazy(limiter).fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plusLazy(limiter).parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plusLazy(limiter).fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+      }, skip: !hasAssertionsEnabled());
     });
     group('possessive', () {
       expectParserInvariants(any().star());
@@ -1964,6 +2002,25 @@ void main() {
         expect(parser, isParseSuccess('aa', result: ['a', 'a']));
         expect(parser, isParseSuccess('aaa', result: ['a', 'a'], position: 2));
       });
+      test('infinite loop', () {
+        final inner = epsilon();
+        expect(
+            () => inner.star().parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.star().fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plus().parse(''),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+        expect(
+            () => inner.plus().fastParseOn('', 0),
+            throwsA(isAssertionError.having((exception) => exception.message,
+                'message', '$inner must always consume')));
+      }, skip: !hasAssertionsEnabled());
     });
     group('string', () {
       expectParserInvariants(any().starString());

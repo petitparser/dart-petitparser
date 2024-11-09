@@ -66,14 +66,16 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     while (elements.length < min) {
       final result = delegate.parseOn(current);
       if (result is Failure) return result;
-      assert(current.position < result.position, '$this must always consume');
+      assert(
+          current.position < result.position, '$delegate must always consume');
       elements.add(result.value);
       current = result;
     }
     while (elements.length < max) {
       final result = delegate.parseOn(current);
       if (result is Failure) break;
-      assert(current.position < result.position, '$this must always consume');
+      assert(
+          current.position < result.position, '$delegate must always consume');
       elements.add(result.value);
       current = result;
     }
@@ -87,14 +89,14 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
     while (count < min) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) return -1;
-      assert(current < result, '$this must always consume');
+      assert(current < result, '$delegate must always consume');
       current = result;
       count++;
     }
     while (count < max) {
       final result = delegate.fastParseOn(buffer, current);
       if (result < 0) break;
-      assert(current < result, '$this must always consume');
+      assert(current < result, '$delegate must always consume');
       current = result;
       count++;
     }
