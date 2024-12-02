@@ -1081,6 +1081,44 @@ void main() {
         expect(parser, isParseFailure(''));
       });
     });
+    group('unicode', () {
+      test('constant', () {
+        const predicate = ConstantCharPredicate(true);
+        final parser = UnicodeCharacterParser(predicate, 'any unicode char');
+        expect(parser, isParseFailure('', message: 'any unicode char'));
+        expect(parser, isParseSuccess('a', result: 'a'));
+        expect(parser, isParseSuccess('😀', result: '😀'));
+      });
+      test('constant (single)', () {
+        const predicate = SingleCharPredicate(0x1234);
+        final parser = UnicodeCharacterParser(predicate, 'strange char');
+        expect(parser, isParseFailure('', message: 'strange char'));
+        expect(parser, isParseFailure('a', message: 'strange char'));
+        expect(parser, isParseFailure('😀', message: 'strange char'));
+        expect(parser, isParseSuccess('\u{1234}', result: '\u{1234}'));
+      });
+      test('constant (surrogate)', () {
+        const predicate = SingleCharPredicate(0xABCDE);
+        final parser = UnicodeCharacterParser(predicate, 'strange char');
+        expect(parser, isParseFailure('', message: 'strange char'));
+        expect(parser, isParseFailure('a', message: 'strange char'));
+        expect(parser, isParseFailure('😀', message: 'strange char'));
+        expect(parser, isParseSuccess('\u{ABCDE}', result: '\u{ABCDE}'));
+      });
+      test('range', () {
+        const predicate = RangeCharPredicate(0x6789, 0xABCDE);
+        final parser = UnicodeCharacterParser(predicate, 'strange range');
+        expect(parser, isParseFailure('', message: 'strange range'));
+        expect(parser, isParseFailure('b', message: 'strange range'));
+        expect(parser, isParseFailure('b', message: 'strange range'));
+        expect(parser, isParseFailure('\u{6788}', message: 'strange range'));
+        expect(parser, isParseSuccess('\u{6789}', result: '\u{6789}'));
+        expect(parser, isParseSuccess('\u{6790}', result: '\u{6790}'));
+        expect(parser, isParseSuccess('\u{ABCDD}', result: '\u{ABCDD}'));
+        expect(parser, isParseSuccess('\u{ABCDE}', result: '\u{ABCDE}'));
+        expect(parser, isParseFailure('\u{ABCDF}', message: 'strange range'));
+      });
+    });
   });
   group('combinator', () {
     group('and', () {

@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/character.dart';
+import '../predicate/single_character.dart';
 import 'code.dart';
 import 'predicate.dart';
 
@@ -15,7 +15,7 @@ Parser<String> range(String start, String stop, [String? message]) =>
             '[${toReadableString(start)}-${toReadableString(stop)}] expected');
 
 class RangeCharPredicate implements CharacterPredicate {
-  RangeCharPredicate(this.start, this.stop)
+  const RangeCharPredicate(this.start, this.stop)
       : assert(start <= stop, 'Invalid range character range: $start-$stop');
 
   final int start;
