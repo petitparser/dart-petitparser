@@ -1,13 +1,15 @@
 /// Converts an string to a character code.
 int toCharCode(String value, {bool unicode = false}) {
   final codes = unicode ? value.runes : value.codeUnits;
-  assert(value.length == 1, '"$value" is not a valid character');
+  assert(codes.length == 1, '"$value" is not a valid character');
   return codes.first;
 }
 
 /// Converts a character to a readable string.
-String toReadableString(String element) =>
-    element.codeUnits.map(_toFormattedChar).join();
+String toReadableString(String value, {bool unicode = false}) {
+  final codePoints = unicode ? value.runes : value.codeUnits;
+  return codePoints.map(_toFormattedChar).join();
+}
 
 String _toFormattedChar(int code) {
   switch (code) {

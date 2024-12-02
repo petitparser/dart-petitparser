@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/single_character.dart';
+import '../predicate/unicode_character.dart';
 import 'code.dart';
 import 'optimize.dart';
 import 'predicate.dart';
@@ -12,6 +13,13 @@ import 'range.dart';
 Parser<String> char(String value, [String? message]) => SingleCharacterParser(
     SingleCharPredicate(toCharCode(value)),
     message ?? '"${toReadableString(value)}" expected');
+
+/// Returns a parser that accepts a specific character only.
+@useResult
+Parser<String> charUnicode(String value, [String? message]) =>
+    UnicodeCharacterParser(
+        SingleCharPredicate(toCharCode(value, unicode: true)),
+        message ?? '"${toReadableString(value, unicode: true)}" expected');
 
 /// Returns a parser that accepts a case-insensitive specific character only.
 @useResult
