@@ -633,4 +633,27 @@ void main() {
       expect(parser, isParseSuccess('third'));
     });
   });
+  group('github.com/petitparser/dart-petitparser/issues/80', () {
+    final surrogatePair = seq2(
+      pattern('\uD800-\uDBFF'),
+      pattern('\uDC00-\uDFFF'),
+    );
+    final decodedSurrogatePair = surrogatePair.map2((hi, lo) =>
+        0x400 * (hi.codeUnitAt(0) - 0xD800) +
+        (lo.codeUnitAt(0) - 0xDC00) +
+        0x10000);
+    test('en.wikipedia.org/wiki/UTF-16#Examples', () {
+      expect(
+          decodedSurrogatePair, isParseSuccess('\u{10437}', result: 0x10437));
+      expect(
+          decodedSurrogatePair, isParseSuccess('\u{24B62}', result: 0x24B62));
+    });
+    test('#issuecomment-2510905396', () {
+      final parser = decodedSurrogatePair
+          .where((value) => 0x20000 <= value && value <= 0x2FFFF);
+      expect(parser, isParseSuccess('\u{20000}', result: 0x20000));
+      expect(parser, isParseSuccess('\u{2abcd}', result: 0x2abcd));
+      expect(parser, isParseSuccess('\u{2FFFF}', result: 0x2FFFF));
+    });
+  });
 }
