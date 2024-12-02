@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/character.dart';
+import '../predicate/single_character.dart';
 import 'code.dart';
 import 'not.dart';
 import 'optimize.dart';

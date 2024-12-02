@@ -7,7 +7,7 @@ import '../action/flatten.dart';
 import '../character/constant.dart';
 import '../character/predicate.dart';
 import '../predicate/any.dart';
-import '../predicate/character.dart';
+import '../predicate/single_character.dart';
 import 'possessive.dart';
 import 'unbounded.dart';
 
