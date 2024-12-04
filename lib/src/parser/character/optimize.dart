@@ -5,11 +5,13 @@ import 'predicate.dart';
 import 'range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string) => optimizedRanges(
-    string.codeUnits.map((value) => RangeCharPredicate(value, value)));
+CharacterPredicate optimizedString(String string, {bool unicode = false}) =>
+    optimizedRanges((unicode ? string.runes : string.codeUnits)
+        .map((value) => RangeCharPredicate(value, value)));
 
 /// Creates an optimized predicate from a list of range predicates.
-CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
+CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
+    {bool unicode = false}) {
   // 1. Sort the ranges:
   final sortedRanges = List.of(ranges, growable: false);
   sortedRanges.sort((first, second) => first.start != second.start
@@ -38,7 +40,7 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges) {
       0, (current, range) => current + (range.stop - range.start + 1));
   if (matchingCount == 0) {
     return const ConstantCharPredicate(false);
-  } else if (matchingCount - 1 == 0xffff) {
+  } else if ((unicode && matchingCount - 1 == 0x10ffff) || (!unicode && matchingCount - 1 == 0xffff)) {
     return const ConstantCharPredicate(true);
   } else if (mergedRanges.length == 1) {
     return mergedRanges[0].start == mergedRanges[0].stop
