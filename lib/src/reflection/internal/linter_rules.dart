@@ -14,8 +14,7 @@ class CharacterRepeater extends LinterRule {
       final repeating = parser.delegate;
       if (repeating is PossessiveRepeatingParser) {
         final character = repeating.delegate;
-        if (character is SingleCharacterParser ||
-            character is AnyCharacterParser) {
+        if (character is SingleCharacterParser) {
           callback(LinterIssue(
               this,
               parser,
@@ -147,12 +146,11 @@ class UnnecessaryFlatten extends LinterRule {
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser is FlattenParser && parser.message == null) {
       final delegate = parser.delegate;
-      if (delegate is AnyCharacterParser ||
+      if (delegate is CharacterParser ||
           delegate is FlattenParser ||
           delegate is NewlineParser ||
           delegate is PredicateParser ||
-          delegate is RepeatingCharacterParser ||
-          delegate is SingleCharacterParser) {
+          delegate is RepeatingCharacterParser) {
         callback(LinterIssue(
             this,
             parser,

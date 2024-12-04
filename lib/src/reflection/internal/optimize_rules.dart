@@ -15,14 +15,6 @@ class CharacterRepeater extends OptimizeRule {
               parser,
               RepeatingCharacterParser(character.predicate, character.message,
                   repeating.min, repeating.max) as Parser<R>);
-        } else if (character is AnyCharacterParser) {
-          replace(
-              parser,
-              RepeatingCharacterParser(
-                  const ConstantCharPredicate(true),
-                  character.message,
-                  repeating.min,
-                  repeating.max) as Parser<R>);
         }
       }
     }

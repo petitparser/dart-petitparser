@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
-import '../predicate/any.dart';
+import '../character/any.dart';
 import 'delegate.dart';
 import 'skip.dart';
 

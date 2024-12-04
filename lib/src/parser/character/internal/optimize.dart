@@ -1,7 +1,7 @@
+import '../predicate.dart';
 import 'char.dart';
 import 'constant.dart';
 import 'lookup.dart';
-import 'predicate.dart';
 import 'range.dart';
 
 /// Creates an optimized character from a string.
@@ -40,7 +40,8 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
       0, (current, range) => current + (range.stop - range.start + 1));
   if (matchingCount == 0) {
     return const ConstantCharPredicate(false);
-  } else if ((unicode && matchingCount - 1 == 0x10ffff) || (!unicode && matchingCount - 1 == 0xffff)) {
+  } else if ((unicode && matchingCount - 1 == 0x10ffff) ||
+      (!unicode && matchingCount - 1 == 0xffff)) {
     return const ConstantCharPredicate(true);
   } else if (mergedRanges.length == 1) {
     return mergedRanges[0].start == mergedRanges[0].stop

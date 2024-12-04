@@ -3,18 +3,18 @@ import 'package:meta/meta.dart';
 import '../../core/parser.dart';
 import '../predicate/single_character.dart';
 import '../predicate/unicode_character.dart';
-import 'code.dart';
-import 'optimize.dart';
-import 'predicate.dart';
-import 'range.dart';
+import 'internal/char.dart';
+import 'internal/code.dart';
+import 'internal/optimize.dart';
+import 'internal/range.dart';
 
-/// Returns a parser that accepts a specific character only.
+/// Returns a parser that accepts a specific character (UTF-16 code unit).
 @useResult
 Parser<String> char(String value, [String? message]) => SingleCharacterParser(
     SingleCharPredicate(toCharCode(value)),
     message ?? '"${toReadableString(value)}" expected');
 
-/// Returns a parser that accepts a specific character only.
+/// Returns a parser that accepts a specific character (Unicode code-point).
 @useResult
 Parser<String> charUnicode(String value, [String? message]) =>
     UnicodeCharacterParser(
@@ -32,17 +32,4 @@ Parser<String> charIgnoringCase(String char, [String? message]) {
         RangeCharPredicate(upperCase, upperCase),
       ]),
       message ?? '"${toReadableString(char)}" (case-insensitive) expected');
-}
-
-class SingleCharPredicate extends CharacterPredicate {
-  const SingleCharPredicate(this.value);
-
-  final int value;
-
-  @override
-  bool test(int value) => identical(this.value, value);
-
-  @override
-  bool isEqualTo(CharacterPredicate other) =>
-      other is SingleCharPredicate && value == other.value;
 }
