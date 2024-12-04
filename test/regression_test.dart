@@ -56,6 +56,21 @@ class NestedGrammar3 {
       char('0').map((value) => "'$value' (singleCharacter)");
 }
 
+class ProtobufGrammar extends GrammarDefinition {
+  @override
+  Parser start() => ref0(file);
+  Parser file() =>
+      ref0(definition).star() & (endOfInput().trim() | ref0(definition));
+  Parser definition() => ref0(message);
+  Parser message() =>
+      string('message').trim() &
+      ref0(identifier).trim() &
+      char('{').trim() &
+      char('}').trim();
+  Parser identifier() =>
+      (letter() & word().star()).flatten('identifier expected');
+}
+
 void main() {
   test('flatten().trim()', () {
     final parser = word().plus().flatten().trim();
@@ -654,6 +669,24 @@ void main() {
       expect(parser, isParseSuccess('\u{20000}', result: 0x20000));
       expect(parser, isParseSuccess('\u{2abcd}', result: 0x2abcd));
       expect(parser, isParseSuccess('\u{2FFFF}', result: 0x2FFFF));
+    });
+  });
+  group('github.com/petitparser/dart-petitparser/issues/184', () {
+    final parser = ProtobufGrammar().build();
+    test('valid', () {
+      expect(parser.parse(' '), isSuccess());
+      expect(parser.parse('message foo {} '), isSuccess());
+      expect(parser.parse('message foo {} message bar {} '), isSuccess());
+    });
+    test('invalid', () {
+      expect(parser.parse('message '),
+          isFailure(message: 'identifier expected', position: 8));
+      expect(parser.parse('message 123'),
+          isFailure(message: 'identifier expected', position: 8));
+      expect(parser.parse('message Empty'),
+          isFailure(message: '"{" expected', position: 13));
+      expect(parser.parse('message Empty {'),
+          isFailure(message: '"}" expected', position: 15));
     });
   });
 }
