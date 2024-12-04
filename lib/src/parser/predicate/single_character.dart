@@ -3,11 +3,11 @@ import '../../core/result.dart';
 import 'character.dart';
 import 'unicode_character.dart';
 
-/// Parser class for individual UTF-16 code units.
+/// Parser class an individual UTF-16 code unit satisfying a [predicate].
 ///
 /// This class parses characters equivalent to those that [String.codeUnitAt]
 /// or [String.codeUnits] returns. To decode surrogate pairs (characters that
-/// cannot be expressed in a single 16-bit value), [UnicodeCharacterParser]
+/// cannot be expressed as a single 16-bit value), [UnicodeCharacterParser]
 /// should be used instead.
 class SingleCharacterParser extends CharacterParser {
   SingleCharacterParser(super.predicate, super.message);

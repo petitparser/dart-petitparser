@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import '../../shared/annotations.dart';
-import 'predicate.dart';
+import '../../../shared/annotations.dart';
+import '../predicate.dart';
 import 'range.dart';
 
 class LookupCharPredicate implements CharacterPredicate {

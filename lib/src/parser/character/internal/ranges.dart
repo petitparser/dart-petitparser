@@ -1,4 +1,4 @@
-import 'predicate.dart';
+import '../predicate.dart';
 
 class RangesCharPredicate implements CharacterPredicate {
   const RangesCharPredicate(this.length, this.starts, this.stops);

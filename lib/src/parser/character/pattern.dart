@@ -9,15 +9,15 @@ import '../predicate/single_character.dart';
 import '../predicate/unicode_character.dart';
 import '../repeater/possessive.dart';
 import 'char.dart';
-import 'code.dart';
-import 'constant.dart';
-import 'not.dart';
-import 'optimize.dart';
+import 'internal/code.dart';
+import 'internal/constant.dart';
+import 'internal/not.dart';
+import 'internal/optimize.dart';
+import 'internal/range.dart';
 import 'predicate.dart';
-import 'range.dart';
 
 /// Returns a parser that accepts a single character of a given character set
-/// provided as a string.
+/// provided as a string (UTF-16 code units).
 ///
 /// Characters match themselves. A dash `-` between two characters matches the
 /// range of those characters. A caret `^` at the beginning negates the pattern.
@@ -33,7 +33,7 @@ Parser<String> pattern(String element, [String? message]) =>
         message ?? '[${toReadableString(element)}] expected');
 
 /// Returns a parser that accepts a single character of a given character set
-/// provided as a string. The pattern works with full unicode patterns.
+/// provided as a string (Unicode code-points).
 ///
 /// Characters match themselves. A dash `-` between two characters matches the
 /// range of those characters. A caret `^` at the beginning negates the pattern.
@@ -49,7 +49,7 @@ Parser<String> patternUnicode(String element, [String? message]) =>
         message ?? '[${toReadableString(element, unicode: true)}] expected');
 
 /// Returns a parser that accepts a single character of a given case-insensitive
-/// character set provided as a string.
+/// character set provided as a string (UTF-16 code unit).
 ///
 /// Characters match themselves. A dash `-` between two characters matches the
 /// range of those characters. A caret `^` at the beginning negates the pattern.
