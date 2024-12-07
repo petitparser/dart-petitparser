@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/character.dart';
+import '../predicate/single_character.dart';
 import 'predicate.dart';
 
 /// Returns a parser that accepts any word character (lowercase, uppercase,

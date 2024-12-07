@@ -486,7 +486,7 @@ void main() {
     });
     group('char', () {
       expectParserInvariants(char('a'));
-      test('with string', () {
+      test('default', () {
         final parser = char('a');
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: '"a" expected'));
@@ -1079,6 +1079,96 @@ void main() {
         expect(
             parser, isParseFailure('-', message: 'letter or digit expected'));
         expect(parser, isParseFailure(''));
+      });
+    });
+    group('unicode', () {
+      group('char', () {
+        group('narrow', () {
+          expectParserInvariants(charUnicode('a'));
+          test('default', () {
+            final parser = charUnicode('a');
+            expect(parser, isParseSuccess('a', result: 'a'));
+            expect(parser, isParseFailure('b', message: '"a" expected'));
+            expect(parser, isParseFailure('😀', message: '"a" expected'));
+            expect(parser, isParseFailure('', message: '"a" expected'));
+          });
+          test('with message', () {
+            final parser = charUnicode('a', 'lowercase a');
+            expect(parser, isParseSuccess('a', result: 'a'));
+            expect(parser, isParseFailure('b', message: 'lowercase a'));
+            expect(parser, isParseFailure('😀', message: 'lowercase a'));
+            expect(parser, isParseFailure('', message: 'lowercase a'));
+          });
+        });
+        group('wide', () {
+          expectParserInvariants(charUnicode('😀'));
+          test('default', () {
+            final parser = charUnicode('😀');
+            expect(parser, isParseSuccess('😀', result: '😀'));
+            expect(parser, isParseFailure('a', message: '"😀" expected'));
+            expect(parser, isParseFailure('👻', message: '"😀" expected'));
+            expect(parser, isParseFailure('', message: '"😀" expected'));
+          });
+          test('with message', () {
+            final parser = charUnicode('😀', 'smile');
+            expect(parser, isParseSuccess('😀', result: '😀'));
+            expect(parser, isParseFailure('a', message: 'smile'));
+            expect(parser, isParseFailure('👻', message: 'smile'));
+            expect(parser, isParseFailure('', message: 'smile'));
+          });
+        });
+      });
+      group('range', () {
+        group('narrow', () {
+          expectParserInvariants(rangeUnicode('e', 'o'));
+          test('default', () {
+            final parser = rangeUnicode('e', 'o');
+            expect(parser, isParseSuccess('e', result: 'e'));
+            expect(parser, isParseSuccess('i', result: 'i'));
+            expect(parser, isParseSuccess('o', result: 'o'));
+            expect(parser, isParseFailure('p', message: '[e-o] expected'));
+            expect(parser, isParseFailure('d', message: '[e-o] expected'));
+            expect(parser, isParseFailure('😺', message: '[e-o] expected'));
+            expect(parser, isParseFailure('', message: '[e-o] expected'));
+          });
+          test('with message', () {
+            final parser = rangeUnicode('e', 'o', 'range expected');
+            expect(parser, isParseSuccess('e', result: 'e'));
+            expect(parser, isParseSuccess('i', result: 'i'));
+            expect(parser, isParseSuccess('o', result: 'o'));
+            expect(parser, isParseFailure('p', message: 'range expected'));
+            expect(parser, isParseFailure('d', message: 'range expected'));
+            expect(parser, isParseFailure('😺', message: 'range expected'));
+            expect(parser, isParseFailure('', message: 'range expected'));
+          });
+          test('invalid', () {
+            expect(() => range('o', 'e'), throwsA(isAssertionError));
+          }, skip: !hasAssertionsEnabled());
+        });
+        group('wide', () {
+          expectParserInvariants(rangeUnicode('😺', '😾'));
+          test('default', () {
+            final parser = rangeUnicode('😺', '😾');
+            expect(parser, isParseSuccess('😺', result: '😺'));
+            expect(parser, isParseSuccess('😻', result: '😻'));
+            expect(parser, isParseSuccess('😾', result: '😾'));
+            expect(parser, isParseFailure('p', message: '[😺-😾] expected'));
+            expect(parser, isParseFailure('d', message: '[😺-😾] expected'));
+            expect(parser, isParseFailure('', message: '[😺-😾] expected'));
+          });
+          test('with message', () {
+            final parser = rangeUnicode('😺', '😾', 'cat expected');
+            expect(parser, isParseSuccess('😺', result: '😺'));
+            expect(parser, isParseSuccess('😻', result: '😻'));
+            expect(parser, isParseSuccess('😾', result: '😾'));
+            expect(parser, isParseFailure('p', message: 'cat expected'));
+            expect(parser, isParseFailure('d', message: 'cat expected'));
+            expect(parser, isParseFailure('', message: 'cat expected'));
+          });
+          test('invalid', () {
+            expect(() => rangeUnicode('😾', '😺'), throwsA(isAssertionError));
+          }, skip: !hasAssertionsEnabled());
+        });
       });
     });
   });
