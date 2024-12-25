@@ -17,7 +17,7 @@ extension NotParserExtension<R> on Parser<R> {
   /// complete parser fails. Otherwise the parser `identifier` is given the
   /// ability to process the complete identifier.
   @useResult
-  Parser<Failure> not([String message = 'success not expected']) =>
+  Parser<Failure> not({String message = 'success not expected'}) =>
       NotParser(this, message);
 
   /// Returns a parser that consumes any input token (character), but the
@@ -27,8 +27,8 @@ extension NotParserExtension<R> on Parser<R> {
   /// The parser fails for inputs like `'a'` or `'Z'`, but succeeds for
   /// input like `'1'`, `'_'` or `'$'`.
   @useResult
-  Parser<String> neg([String message = 'input not expected']) =>
-      any().skip(before: not(message));
+  Parser<String> neg({String message = 'input not expected'}) =>
+      any().skip(before: not(message: message));
 }
 
 /// The not-predicate, a parser that succeeds whenever its delegate does not,

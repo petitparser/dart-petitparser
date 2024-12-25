@@ -13,14 +13,13 @@ extension EndOfInputParserExtension<R> on Parser<R> {
   /// and fails on `'ab'`. In contrast the parser `letter()` alone would
   /// succeed on both inputs, but not consume everything for the second input.
   @useResult
-  Parser<R> end([String message = 'end of input expected']) =>
-      skip(after: endOfInput(message));
+  Parser<R> end({String? message}) => skip(after: endOfInput(message: message));
 }
 
 /// Returns a parser that succeeds at the end of input.
 @useResult
-Parser<void> endOfInput([String message = 'end of input expected']) =>
-    EndOfInputParser(message);
+Parser<void> endOfInput({String? message}) =>
+    EndOfInputParser(message ?? 'end of input expected');
 
 /// A parser that succeeds at the end of input.
 class EndOfInputParser extends Parser<void> {

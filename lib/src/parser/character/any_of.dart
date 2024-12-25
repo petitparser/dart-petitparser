@@ -1,23 +1,15 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/single_character.dart';
-import '../predicate/unicode_character.dart';
+import '../predicate/character.dart';
 import 'internal/code.dart';
 import 'internal/optimize.dart';
 
-/// Returns a parser that accepts any of the specified characters (UTF-16 code
-/// units).
+/// Returns a parser that accepts any of the specified characters.
 @useResult
-Parser<String> anyOf(String chars, [String? message]) => SingleCharacterParser(
-    optimizedString(chars),
-    message ?? 'any of "${toReadableString(chars)}" expected');
-
-/// Returns a parser that accepts any of the specified characters (Unicode
-/// code-points).
-@useResult
-Parser<String> anyOfUnicode(String chars, [String? message]) =>
-    UnicodeCharacterParser(
-        optimizedString(chars, unicode: true),
+Parser<String> anyOf(String chars, {String? message, bool unicode = false}) =>
+    CharacterParser(
+        optimizedString(chars, unicode: unicode),
         message ??
-            'any of "${toReadableString(chars, unicode: true)}" expected');
+            'any of "${toReadableString(chars, unicode: unicode)}" expected',
+        unicode: unicode);

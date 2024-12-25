@@ -1,35 +1,32 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/single_character.dart';
-import '../predicate/unicode_character.dart';
+import '../predicate/character.dart';
 import 'internal/char.dart';
 import 'internal/code.dart';
 import 'internal/optimize.dart';
-import 'internal/range.dart';
 
-/// Returns a parser that accepts a specific character (UTF-16 code unit).
+/// Returns a parser that accepts a specific character [value].
+///
+/// - [message] defines a custom error message.
+/// - If [ignoreCase] is `true`, the character is matched in a case-insensitive
+///   manner.
+/// - If [unicode] is `true`, the character is matched using full unicode
+///   character parsing (as opposed to UTF-16 code units).
 @useResult
-Parser<String> char(String value, [String? message]) => SingleCharacterParser(
-    SingleCharPredicate(toCharCode(value)),
-    message ?? '"${toReadableString(value)}" expected');
-
-/// Returns a parser that accepts a specific character (Unicode code-point).
-@useResult
-Parser<String> charUnicode(String value, [String? message]) =>
-    UnicodeCharacterParser(
-        SingleCharPredicate(toCharCode(value, unicode: true)),
-        message ?? '"${toReadableString(value, unicode: true)}" expected');
-
-/// Returns a parser that accepts a case-insensitive specific character only.
-@useResult
-Parser<String> charIgnoringCase(String char, [String? message]) {
-  final lowerCase = toCharCode(char.toLowerCase());
-  final upperCase = toCharCode(char.toUpperCase());
-  return SingleCharacterParser(
-      optimizedRanges([
-        RangeCharPredicate(lowerCase, lowerCase),
-        RangeCharPredicate(upperCase, upperCase),
-      ]),
-      message ?? '"${toReadableString(char)}" (case-insensitive) expected');
+Parser<String> char(String value,
+    {String? message, bool ignoreCase = false, bool unicode = false}) {
+  final charCode = toCharCode(value, unicode: unicode);
+  final predicate = ignoreCase
+      ? optimizedString('${value.toLowerCase()}${value.toUpperCase()}',
+          unicode: unicode)
+      : SingleCharPredicate(charCode);
+  message ??= '"${toReadableString(value, unicode: unicode)}"'
+      '${ignoreCase ? ' (case-insensitive)' : ''} expected';
+  return CharacterParser(predicate, message, unicode: unicode);
 }
+
+@useResult
+@Deprecated('Use `char(value, message: message, ignoreCase: true)` instead')
+Parser<String> charIgnoringCase(String value, [String? message]) =>
+    char(value, message: message, ignoreCase: true);

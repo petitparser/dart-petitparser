@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.0
+
+- Support for unicode character parsing, enabled with the named argument `unicode: true` in all relevant character parsers.
+- Replaced all error message specification on parser constructors from an optional argument to a named one (breaking-change).
+
 ## 6.0.0
 
 * Dart 3.0 requirement.

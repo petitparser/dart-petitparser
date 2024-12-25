@@ -1,12 +1,12 @@
 /// Converts an string to a character code.
-int toCharCode(String value, {bool unicode = false}) {
+int toCharCode(String value, {required bool unicode}) {
   final codes = unicode ? value.runes : value.codeUnits;
   assert(codes.length == 1, '"$value" is not a valid character');
   return codes.first;
 }
 
 /// Converts a character to a readable string.
-String toReadableString(String value, {bool unicode = false}) {
+String toReadableString(String value, {required bool unicode}) {
   final codePoints = unicode ? value.runes : value.codeUnits;
   return codePoints.map(_toFormattedChar).join();
 }

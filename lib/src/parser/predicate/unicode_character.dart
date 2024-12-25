@@ -10,7 +10,7 @@ import 'single_character.dart';
 /// single 16-bit value) comes at an extra cost, to avoid this consider using
 /// [SingleCharacterParser] instead.
 class UnicodeCharacterParser extends CharacterParser {
-  UnicodeCharacterParser(super.predicate, super.message);
+  UnicodeCharacterParser(super.predicate, super.message) : super.internal();
 
   @override
   Result<String> parseOn(Context context) {

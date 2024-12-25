@@ -8,7 +8,7 @@ import '../../core/result.dart';
 ///
 /// For example, `failure()` always fails, no matter what input it is given.
 @useResult
-Parser<R> failure<R>([String message = 'unable to parse']) =>
+Parser<R> failure<R>({String message = 'unable to parse'}) =>
     FailureParser(message);
 
 /// A parser that consumes nothing and fails.
