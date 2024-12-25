@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../core/context.dart';
 import '../../core/result.dart';
 import 'character.dart';
@@ -10,7 +12,7 @@ import 'unicode_character.dart';
 /// cannot be expressed as a single 16-bit value), [UnicodeCharacterParser]
 /// should be used instead.
 class SingleCharacterParser extends CharacterParser {
-  SingleCharacterParser(super.predicate, super.message);
+  SingleCharacterParser(super.predicate, super.message) : super.internal();
 
   @override
   Result<String> parseOn(Context context) {

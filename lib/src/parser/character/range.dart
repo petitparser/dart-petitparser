@@ -1,27 +1,19 @@
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
-import '../predicate/single_character.dart';
-import '../predicate/unicode_character.dart';
+import '../predicate/character.dart';
 import 'internal/code.dart';
 import 'internal/range.dart';
 
 /// Returns a parser that accepts any character in the range
-/// between [start] and [stop] (UTF-16 code unit).
+/// between [start] and [stop].
 @useResult
-Parser<String> range(String start, String stop, [String? message]) =>
-    SingleCharacterParser(
-        RangeCharPredicate(toCharCode(start), toCharCode(stop)),
+Parser<String> range(String start, String stop,
+        {String? message, bool unicode = false}) =>
+    CharacterParser(
+        RangeCharPredicate(toCharCode(start, unicode: unicode),
+            toCharCode(stop, unicode: unicode)),
         message ??
-            '[${toReadableString(start)}-${toReadableString(stop)}] expected');
-
-/// Returns a parser that accepts any character in the range
-/// between [start] and [stop] (Unicode code-point).
-@useResult
-Parser<String> rangeUnicode(String start, String stop, [String? message]) =>
-    UnicodeCharacterParser(
-        RangeCharPredicate(
-            toCharCode(start, unicode: true), toCharCode(stop, unicode: true)),
-        message ??
-            '[${toReadableString(start, unicode: true)}-'
-                '${toReadableString(stop, unicode: true)}] expected');
+            '[${toReadableString(start, unicode: unicode)}-'
+                '${toReadableString(stop, unicode: unicode)}] expected',
+        unicode: unicode);

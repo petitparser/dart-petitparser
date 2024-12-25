@@ -493,7 +493,7 @@ void main() {
         expect(parser, isParseFailure('', message: '"a" expected'));
       });
       test('with message', () {
-        final parser = char('a', 'lowercase a');
+        final parser = char('a', message: 'lowercase a');
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: 'lowercase a'));
         expect(parser, isParseFailure('', message: 'lowercase a'));
@@ -1084,16 +1084,16 @@ void main() {
     group('unicode', () {
       group('char', () {
         group('narrow', () {
-          expectParserInvariants(charUnicode('a'));
+          expectParserInvariants(char('a', unicode: true));
           test('default', () {
-            final parser = charUnicode('a');
+            final parser = char('a', unicode: true);
             expect(parser, isParseSuccess('a', result: 'a'));
             expect(parser, isParseFailure('b', message: '"a" expected'));
             expect(parser, isParseFailure('😀', message: '"a" expected'));
             expect(parser, isParseFailure('', message: '"a" expected'));
           });
           test('with message', () {
-            final parser = charUnicode('a', 'lowercase a');
+            final parser = char('a', message: 'lowercase a', unicode: true);
             expect(parser, isParseSuccess('a', result: 'a'));
             expect(parser, isParseFailure('b', message: 'lowercase a'));
             expect(parser, isParseFailure('😀', message: 'lowercase a'));
@@ -1101,16 +1101,16 @@ void main() {
           });
         });
         group('wide', () {
-          expectParserInvariants(charUnicode('😀'));
+          expectParserInvariants(char('😀', unicode: true));
           test('default', () {
-            final parser = charUnicode('😀');
+            final parser = char('😀', unicode: true);
             expect(parser, isParseSuccess('😀', result: '😀'));
             expect(parser, isParseFailure('a', message: '"😀" expected'));
             expect(parser, isParseFailure('👻', message: '"😀" expected'));
             expect(parser, isParseFailure('', message: '"😀" expected'));
           });
           test('with message', () {
-            final parser = charUnicode('😀', 'smile');
+            final parser = char('😀', message: 'smile', unicode: true);
             expect(parser, isParseSuccess('😀', result: '😀'));
             expect(parser, isParseFailure('a', message: 'smile'));
             expect(parser, isParseFailure('👻', message: 'smile'));
@@ -1120,9 +1120,9 @@ void main() {
       });
       group('range', () {
         group('narrow', () {
-          expectParserInvariants(rangeUnicode('e', 'o'));
+          expectParserInvariants(range('e', 'o', unicode: true));
           test('default', () {
-            final parser = rangeUnicode('e', 'o');
+            final parser = range('e', 'o', unicode: true);
             expect(parser, isParseSuccess('e', result: 'e'));
             expect(parser, isParseSuccess('i', result: 'i'));
             expect(parser, isParseSuccess('o', result: 'o'));
@@ -1132,7 +1132,7 @@ void main() {
             expect(parser, isParseFailure('', message: '[e-o] expected'));
           });
           test('with message', () {
-            final parser = rangeUnicode('e', 'o', 'range expected');
+            final parser = range('e', 'o', message: 'range expected', unicode: true);
             expect(parser, isParseSuccess('e', result: 'e'));
             expect(parser, isParseSuccess('i', result: 'i'));
             expect(parser, isParseSuccess('o', result: 'o'));
@@ -1142,13 +1142,13 @@ void main() {
             expect(parser, isParseFailure('', message: 'range expected'));
           });
           test('invalid', () {
-            expect(() => range('o', 'e'), throwsA(isAssertionError));
+            expect(() => range('o', 'e', unicode: true), throwsA(isAssertionError));
           }, skip: !hasAssertionsEnabled());
         });
         group('wide', () {
-          expectParserInvariants(rangeUnicode('😺', '😾'));
+          expectParserInvariants(range('😺', '😾', unicode: true));
           test('default', () {
-            final parser = rangeUnicode('😺', '😾');
+            final parser = range('😺', '😾', unicode: true);
             expect(parser, isParseSuccess('😺', result: '😺'));
             expect(parser, isParseSuccess('😻', result: '😻'));
             expect(parser, isParseSuccess('😾', result: '😾'));
@@ -1157,7 +1157,7 @@ void main() {
             expect(parser, isParseFailure('', message: '[😺-😾] expected'));
           });
           test('with message', () {
-            final parser = rangeUnicode('😺', '😾', 'cat expected');
+            final parser = range('😺', '😾', message: 'cat expected', unicode: true);
             expect(parser, isParseSuccess('😺', result: '😺'));
             expect(parser, isParseSuccess('😻', result: '😻'));
             expect(parser, isParseSuccess('😾', result: '😾'));
@@ -1166,7 +1166,7 @@ void main() {
             expect(parser, isParseFailure('', message: 'cat expected'));
           });
           test('invalid', () {
-            expect(() => rangeUnicode('😾', '😺'), throwsA(isAssertionError));
+            expect(() => range('😾', '😺', unicode: true), throwsA(isAssertionError));
           }, skip: !hasAssertionsEnabled());
         });
       });
@@ -1381,7 +1381,7 @@ void main() {
     group('not', () {
       expectParserInvariants(any().not());
       test('default', () {
-        final parser = char('a').not('not "a" expected');
+        final parser = char('a').not(message: 'not "a" expected');
         expect(parser, isParseFailure('a', message: 'not "a" expected'));
         expect(
             parser,
@@ -1395,7 +1395,7 @@ void main() {
                 position: 0));
       });
       test('neg', () {
-        final parser = digit().neg('no digit expected');
+        final parser = digit().neg(message: 'no digit expected');
         expect(parser, isParseFailure('1', message: 'no digit expected'));
         expect(parser, isParseFailure('9', message: 'no digit expected'));
         expect(parser, isParseSuccess('a', result: 'a'));
@@ -1565,7 +1565,7 @@ void main() {
     group('failure', () {
       expectParserInvariants(failure<String>());
       test('default', () {
-        final parser = failure<String>('failure');
+        final parser = failure<String>(message: 'failure');
         expect(parser, isParseFailure('', message: 'failure'));
         expect(parser, isParseFailure('a', message: 'failure'));
       });

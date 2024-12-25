@@ -1167,7 +1167,7 @@ void main() {
           expect(result.children.first, same(result.children.last));
         });
         test('without duplicate', () {
-          final parser = lowercase() & lowercase('lower');
+          final parser = lowercase() & lowercase(message: 'lower');
           final result = optimize(parser,
               rules: rules,
               callback: (source, target) => fail('No replacement expected'));

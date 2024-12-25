@@ -6,7 +6,7 @@ import '../../core/result.dart';
 
 /// Returns a parser that detects newlines platform independently.
 @useResult
-Parser<String> newline([String message = 'newline expected']) =>
+Parser<String> newline({String message = 'newline expected'}) =>
     NewlineParser(message);
 
 /// A parser that consumes newlines platform independently.

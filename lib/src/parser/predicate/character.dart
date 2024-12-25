@@ -1,9 +1,24 @@
-import '../../core/parser.dart';
-import '../character/predicate.dart';
+import '../../../parser.dart';
 
 /// Abstract parser for character classes.
 abstract class CharacterParser extends Parser<String> {
-  CharacterParser(this.predicate, this.message);
+  /// Factory constructor for a unicode parser.
+  ///
+  /// The [predicate] defines the character class to be detected. The [message]
+  /// is the error text produces in case the parser failed to consume the
+  /// input.
+  ///
+  /// By default, the parsers works on UTF-16 code units. If [unicode] is set
+  /// to `true` unicode surrogate pairs are extracted and matched against the
+  /// predicate.
+  factory CharacterParser(CharacterPredicate predicate, String message,
+          {bool unicode = false}) =>
+      unicode
+          ? UnicodeCharacterParser(predicate, message)
+          : SingleCharacterParser(predicate, message);
+
+  /// Internal constructor
+  CharacterParser.internal(this.predicate, this.message);
 
   /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;
