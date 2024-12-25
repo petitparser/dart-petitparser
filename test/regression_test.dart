@@ -537,7 +537,7 @@ void main() {
   });
   group('github.com/petitparser/dart-petitparser/issues/162', () {
     final uppercase = char('A').plus().map((_) => 'success');
-    final anycase = charIgnoringCase('A').plus().map((_) => 'fallback');
+    final anycase = char('A', ignoreCase: true).plus().map((_) => 'fallback');
     test('question', () {
       final parser = [uppercase, anycase].toChoiceParser().end();
       expect(parser, isParseSuccess('AAAA', result: 'success'));
