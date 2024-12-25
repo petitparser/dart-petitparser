@@ -20,8 +20,6 @@ void main() {
       expect(success.position, 0);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
-      expect(success.isSuccess, isTrue);
-      expect(success.isFailure, isFalse);
       expect(success.toString(), 'Success[1:1]: result');
     });
     test('with position', () {
@@ -30,8 +28,6 @@ void main() {
       expect(success.position, 2);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
-      expect(success.isSuccess, isTrue);
-      expect(success.isFailure, isFalse);
       expect(success.toString(), 'Success[2:1]: result');
     });
   });
@@ -50,8 +46,6 @@ void main() {
               .having((error) => error.toString(), 'toString',
                   endsWith('error (at 1:1)'))));
       expect(failure.message, 'error');
-      expect(failure.isSuccess, isFalse);
-      expect(failure.isFailure, isTrue);
       expect(failure.toString(), 'Failure[1:1]: error');
     });
     test('with position', () {
@@ -68,8 +62,6 @@ void main() {
               .having((error) => error.toString(), 'toString',
                   endsWith('error (at 2:1)'))));
       expect(failure.message, 'error');
-      expect(failure.isSuccess, isFalse);
-      expect(failure.isFailure, isTrue);
       expect(failure.toString(), 'Failure[2:1]: error');
     });
   });

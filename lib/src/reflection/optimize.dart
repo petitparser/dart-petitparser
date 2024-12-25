@@ -53,15 +53,3 @@ Parser<R> optimize<R>(Parser<R> parser,
   }
   return parser;
 }
-
-/// Collapses all delegate parsers in-place.
-@useResult
-@Deprecated('Use `optimize(parser, rules: const [RemoveDelegate()])` instead')
-Parser<R> removeSettables<R>(Parser<R> parser) =>
-    optimize(parser, rules: const [RemoveDelegate()]);
-
-/// Collapses all duplicate parsers in-place.
-@useResult
-@Deprecated('Use `optimize(parser, rules: const [RemoveDuplicate()])` instead')
-Parser<R> removeDuplicates<R>(Parser<R> parser) =>
-    optimize(parser, rules: const [RemoveDuplicate()]);

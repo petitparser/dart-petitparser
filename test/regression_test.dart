@@ -69,40 +69,6 @@ void main() {
     expect(parser, isParseSuccess(' ab1 ', result: ' ab1 '));
     expect(parser, isParseSuccess('  ab1  ', result: '  ab1  '));
   });
-  group('separatedBy()', () {
-    void testWith(String name, Parser<List<T>> Function<T>(Parser<T>) builder) {
-      test(name, () {
-        final string = letter();
-        final stringList = builder(string);
-        expect(stringList, const TypeMatcher<Parser<List<String>>>());
-        expect(stringList, isParseSuccess('a,b,c', result: ['a', 'b', 'c']));
-
-        final integer = digit().map(int.parse);
-        final integerList = builder(integer);
-        expect(integerList, const TypeMatcher<Parser<List<int>>>());
-        expect(integerList, isParseSuccess('1,2,3', result: [1, 2, 3]));
-
-        final mixed = string | integer;
-        final mixedList = builder(mixed);
-        expect(mixedList, const TypeMatcher<Parser<List<dynamic>>>());
-        expect(mixedList, isParseSuccess('1,a,2', result: [1, 'a', 2]));
-      });
-    }
-
-    Parser<List<T>> typeParam<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy<T>(char(','), includeSeparators: false);
-    Parser<List<T>> castList<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package, inference_failure_on_function_invocation
-        parser.separatedBy(char(','), includeSeparators: false).castList<T>();
-    Parser<List<T>> smartCompiler<T>(Parser<T> parser) =>
-        // ignore: deprecated_member_use_from_same_package
-        parser.separatedBy(char(','), includeSeparators: false);
-
-    testWith('with list created using desired type', typeParam);
-    testWith('with generic list cast to desired type', castList);
-    testWith('with compiler inferring desired type', smartCompiler);
-  });
   test('parse padded and limited number', () {
     final parser =
         digit().repeat(2).flatten().callCC<String>((continuation, context) {
@@ -611,8 +577,10 @@ void main() {
           isParseFailure('(0.53,00)', position: 5, message: '")" expected'));
     });
     test('modified', () {
-      final parser =
-          char('(') & number & char(',').not(message: 'remove comma') & char(')');
+      final parser = char('(') &
+          number &
+          char(',').not(message: 'remove comma') &
+          char(')');
       expect(parser, isParseSuccess('(0.53)'));
       expect(parser,
           isParseFailure('(0.53,00)', position: 5, message: 'remove comma'));

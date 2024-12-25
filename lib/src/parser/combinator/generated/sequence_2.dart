@@ -79,24 +79,6 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
 
 /// Extension on a [Record] with 2 positional values.
 extension RecordOfValuesExtension2<T1, T2> on (T1, T2) {
-  /// Returns the first element of this record.
-  @inlineVm
-  @inlineJs
-  @Deprecated(r'Instead use the canonical accessor $1')
-  T1 get first => $1;
-
-  /// Returns the second element of this record.
-  @inlineVm
-  @inlineJs
-  @Deprecated(r'Instead use the canonical accessor $2')
-  T2 get second => $2;
-
-  /// Returns the last element of this record.
-  @inlineVm
-  @inlineJs
-  @Deprecated(r'Instead use the canonical accessor $2')
-  T2 get last => $2;
-
   /// Converts this [Record] with 2 positional values to a new type [R] using
   /// the provided [callback] with 2 positional arguments.
   @inlineVm

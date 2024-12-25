@@ -36,9 +36,8 @@ Parser<String> pattern(String pattern,
   var input = pattern;
   final isNegated = input.startsWith('^');
   if (isNegated) input = input.substring(1);
-  final inputs = ignoreCase
-      ? [input.toLowerCase(), input.toUpperCase()]
-      : [input];
+  final inputs =
+      ignoreCase ? [input.toLowerCase(), input.toUpperCase()] : [input];
   final parser = unicode ? _patternUnicodeParser : _patternParser;
   var predicate = optimizedRanges(
       inputs.expand((each) => parser.parse(each).value),

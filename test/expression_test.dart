@@ -624,13 +624,6 @@ void main() {
           throwsA(isAssertionError.having((exception) => exception.message,
               'message', 'At least one primitive parser expected')));
     }, skip: !hasAssertionsEnabled());
-    test('primitive on group', () {
-      final builder = ExpressionBuilder<String>();
-      // ignore: deprecated_member_use_from_same_package
-      builder.group().primitive(char('a'));
-      final parser = builder.build();
-      expect(parser, isParseSuccess('a', result: 'a'));
-    });
     test('loopback', () {
       final builder = ExpressionBuilder<String>();
       builder.primitive(seq2(char('a'), builder.loopback).flatten());
