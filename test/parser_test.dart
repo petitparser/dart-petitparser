@@ -474,9 +474,9 @@ void main() {
       });
     });
     group('charIgnoringCase', () {
-      expectParserInvariants(charIgnoringCase('a'));
+      expectParserInvariants(char('a', ignoreCase: true));
       test('with lowercase string', () {
-        final parser = charIgnoringCase('a');
+        final parser = char('a', ignoreCase: true);
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
@@ -485,7 +485,7 @@ void main() {
             isParseFailure('', message: '"a" (case-insensitive) expected'));
       });
       test('with uppercase string', () {
-        final parser = charIgnoringCase('A');
+        final parser = char('A', ignoreCase: true);
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
@@ -494,14 +494,14 @@ void main() {
             isParseFailure('', message: '"A" (case-insensitive) expected'));
       });
       test('with custom message', () {
-        final parser = charIgnoringCase('a', 'upper or lower');
+        final parser = char('a', message: 'upper or lower', ignoreCase: true);
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser, isParseFailure('b', message: 'upper or lower'));
         expect(parser, isParseFailure('', message: 'upper or lower'));
       });
       test('with single char', () {
-        final parser = charIgnoringCase('1');
+        final parser = char('1', ignoreCase: true);
         expect(parser, isParseSuccess('1', result: '1'));
         expect(parser,
             isParseFailure('a', message: '"1" (case-insensitive) expected'));
@@ -509,7 +509,7 @@ void main() {
             isParseFailure('', message: '"1" (case-insensitive) expected'));
       });
       test('char invalid', () {
-        expect(() => charIgnoringCase('ab'), throwsA(isAssertionError));
+        expect(() => char('ab', ignoreCase: true), throwsA(isAssertionError));
       }, skip: !hasAssertionsEnabled());
     });
     group('digit', () {
@@ -672,9 +672,9 @@ void main() {
         expect(() => pattern('c-a'), throwsA(isAssertionError));
       }, skip: !hasAssertionsEnabled());
       group('ignore case', () {
-        expectParserInvariants(patternIgnoreCase('^ad-f'));
+        expectParserInvariants(pattern('^ad-f', ignoreCase: true));
         test('with single', () {
-          final parser = patternIgnoreCase('abc');
+          final parser = pattern('abc', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -693,7 +693,7 @@ void main() {
               isParseFailure('', message: '[abc] (case-insensitive) expected'));
         });
         test('with range', () {
-          final parser = patternIgnoreCase('a-c');
+          final parser = pattern('a-c', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -712,7 +712,7 @@ void main() {
               isParseFailure('', message: '[a-c] (case-insensitive) expected'));
         });
         test('with overlapping range', () {
-          final parser = patternIgnoreCase('b-da-c');
+          final parser = pattern('b-da-c', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -735,7 +735,7 @@ void main() {
                   message: '[b-da-c] (case-insensitive) expected'));
         });
         test('with adjacent range', () {
-          final parser = patternIgnoreCase('c-ea-c');
+          final parser = pattern('c-ea-c', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -760,7 +760,7 @@ void main() {
                   message: '[c-ea-c] (case-insensitive) expected'));
         });
         test('with prefix range', () {
-          final parser = patternIgnoreCase('a-ea-c');
+          final parser = pattern('a-ea-c', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -781,7 +781,7 @@ void main() {
                   message: '[a-ea-c] (case-insensitive) expected'));
         });
         test('with postfix range', () {
-          final parser = patternIgnoreCase('a-ec-e');
+          final parser = pattern('a-ec-e', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -802,7 +802,7 @@ void main() {
                   message: '[a-ec-e] (case-insensitive) expected'));
         });
         test('with repeated range', () {
-          final parser = patternIgnoreCase('a-ea-e');
+          final parser = pattern('a-ea-e', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('b', result: 'b'));
@@ -823,7 +823,7 @@ void main() {
                   message: '[a-ea-e] (case-insensitive) expected'));
         });
         test('with composed range', () {
-          final parser = patternIgnoreCase('ac-df-');
+          final parser = pattern('ac-df-', ignoreCase: true);
           expect(parser, isParseSuccess('a', result: 'a'));
           expect(parser, isParseSuccess('A', result: 'A'));
           expect(parser, isParseSuccess('c', result: 'c'));
@@ -851,7 +851,7 @@ void main() {
                   message: '[ac-df-] (case-insensitive) expected'));
         });
         test('with negated single', () {
-          final parser = patternIgnoreCase('^a');
+          final parser = pattern('^a', ignoreCase: true);
           expect(parser, isParseSuccess('b', result: 'b'));
           expect(parser, isParseSuccess('B', result: 'B'));
           expect(parser,
@@ -862,7 +862,7 @@ void main() {
               isParseFailure('', message: '[^a] (case-insensitive) expected'));
         });
         test('with negated range', () {
-          final parser = patternIgnoreCase('^a-c');
+          final parser = pattern('^a-c', ignoreCase: true);
           expect(parser, isParseSuccess('d', result: 'd'));
           expect(parser, isParseSuccess('D', result: 'D'));
           expect(
@@ -895,7 +895,7 @@ void main() {
                   message: '[^a-c] (case-insensitive) expected'));
         });
         test('with negate but without range', () {
-          final parser = patternIgnoreCase('^a-');
+          final parser = pattern('^a-', ignoreCase: true);
           expect(parser, isParseSuccess('b', result: 'b'));
           expect(parser, isParseSuccess('B', result: 'B'));
           expect(
@@ -914,7 +914,8 @@ void main() {
               isParseFailure('', message: '[^a-] (case-insensitive) expected'));
         });
         test('with error', () {
-          expect(() => patternIgnoreCase('c-a'), throwsA(isAssertionError));
+          expect(() => pattern('c-a', ignoreCase: true),
+              throwsA(isAssertionError));
         }, skip: !hasAssertionsEnabled());
       });
       group('large ranges', () {
@@ -1661,7 +1662,7 @@ void main() {
         expect(parser, isParseFailure('A', message: '"a" expected'));
       });
       test('convert single char (case-insensitive)', () {
-        final parser = 'a'.toParser(caseInsensitive: true);
+        final parser = 'a'.toParser(ignoreCase: true);
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser,
@@ -1673,7 +1674,7 @@ void main() {
         expect(parser, isParseFailure('X', message: '[a-z] expected'));
       });
       test('convert pattern (case-insensitive)', () {
-        final parser = 'a-z'.toParser(isPattern: true, caseInsensitive: true);
+        final parser = 'a-z'.toParser(isPattern: true, ignoreCase: true);
         expect(parser, isParseSuccess('x', result: 'x'));
         expect(parser, isParseSuccess('X', result: 'X'));
         expect(parser,
@@ -1685,7 +1686,7 @@ void main() {
         expect(parser, isParseFailure('Foo', message: '"foo" expected'));
       });
       test('convert multiple chars (case-insensitive)', () {
-        final parser = 'foo'.toParser(caseInsensitive: true);
+        final parser = 'foo'.toParser(ignoreCase: true);
         expect(parser, isParseSuccess('foo', result: 'foo'));
         expect(parser, isParseSuccess('Foo', result: 'Foo'));
         expect(
@@ -1695,9 +1696,9 @@ void main() {
       });
     });
     group('stringIgnoreCase', () {
-      expectParserInvariants(stringIgnoreCase('foo'));
+      expectParserInvariants(string('foo', ignoreCase: true));
       test('default', () {
-        final parser = stringIgnoreCase('foo');
+        final parser = string('foo', ignoreCase: true);
         expect(parser, isParseSuccess('foo', result: 'foo'));
         expect(parser, isParseSuccess('FOO', result: 'FOO'));
         expect(parser, isParseSuccess('fOo', result: 'fOo'));
