@@ -130,55 +130,6 @@ void main() {
         expect(parser,
             isParseFailure('865', message: '865 is not divisible by 7'));
       });
-      test('with failure factory (deprecated)', () {
-        final parser = digit().plus().flatten().map(int.parse).where(
-            (value) => value % 7 == 0,
-            // ignore: deprecated_member_use_from_same_package
-            failureFactory: (context, success) =>
-                context.failure('${success.value} is not divisible by 7'));
-        expect(parser, isParseSuccess('7', result: 7));
-        expect(parser, isParseSuccess('14', result: 14));
-        expect(parser, isParseSuccess('861', result: 861));
-        expect(parser, isParseFailure('', message: 'digit expected'));
-        expect(parser,
-            isParseFailure('865', message: '865 is not divisible by 7'));
-      });
-      test('with failure message (deprecated)', () {
-        final parser = digit()
-            .plus()
-            .flatten()
-            .map(int.parse)
-            .where((value) => value % 7 == 0,
-                // ignore: deprecated_member_use_from_same_package
-                failureMessage: (value) => '$value is not divisible by 7');
-        expect(parser, isParseSuccess('7', result: 7));
-        expect(parser, isParseSuccess('14', result: 14));
-        expect(parser, isParseSuccess('861', result: 861));
-        expect(parser, isParseFailure('', message: 'digit expected'));
-        expect(parser,
-            isParseFailure('865', message: '865 is not divisible by 7'));
-      });
-      test('with failure position (deprecated)', () {
-        final inner = any() & any();
-        final parser = inner.where((value) => value[0] == value[1],
-            // ignore: deprecated_member_use_from_same_package
-            failurePosition: (tokens) => 1);
-        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
-        expect(parser,
-            isParseFailure('ab', position: 1, message: 'unexpected "[a, b]"'));
-        expect(parser, isParseFailure('', message: 'input expected'));
-      });
-      test('with failure message and position (deprecated)', () {
-        final inner = any() & any();
-        final parser = inner.where((list) => list[0] == list[1],
-            // ignore: deprecated_member_use_from_same_package
-            failureMessage: (list) => '${list[0]} != ${list[1]}',
-            // ignore: deprecated_member_use_from_same_package
-            failurePosition: (list) => 1);
-        expect(parser, isParseFailure('', message: 'input expected'));
-        expect(parser, isParseSuccess('aa', result: ['a', 'a']));
-        expect(parser, isParseFailure('ab', position: 1, message: 'a != b'));
-      });
     });
     group('map', () {
       expectParserInvariants(any().map((a) => a));
@@ -1132,7 +1083,8 @@ void main() {
             expect(parser, isParseFailure('', message: '[e-o] expected'));
           });
           test('with message', () {
-            final parser = range('e', 'o', message: 'range expected', unicode: true);
+            final parser =
+                range('e', 'o', message: 'range expected', unicode: true);
             expect(parser, isParseSuccess('e', result: 'e'));
             expect(parser, isParseSuccess('i', result: 'i'));
             expect(parser, isParseSuccess('o', result: 'o'));
@@ -1142,7 +1094,8 @@ void main() {
             expect(parser, isParseFailure('', message: 'range expected'));
           });
           test('invalid', () {
-            expect(() => range('o', 'e', unicode: true), throwsA(isAssertionError));
+            expect(() => range('o', 'e', unicode: true),
+                throwsA(isAssertionError));
           }, skip: !hasAssertionsEnabled());
         });
         group('wide', () {
@@ -1157,7 +1110,8 @@ void main() {
             expect(parser, isParseFailure('', message: '[😺-😾] expected'));
           });
           test('with message', () {
-            final parser = range('😺', '😾', message: 'cat expected', unicode: true);
+            final parser =
+                range('😺', '😾', message: 'cat expected', unicode: true);
             expect(parser, isParseSuccess('😺', result: '😺'));
             expect(parser, isParseSuccess('😻', result: '😻'));
             expect(parser, isParseSuccess('😾', result: '😾'));
@@ -1166,7 +1120,8 @@ void main() {
             expect(parser, isParseFailure('', message: 'cat expected'));
           });
           test('invalid', () {
-            expect(() => range('😾', '😺', unicode: true), throwsA(isAssertionError));
+            expect(() => range('😾', '😺', unicode: true),
+                throwsA(isAssertionError));
           }, skip: !hasAssertionsEnabled());
         });
       });
@@ -2422,122 +2377,6 @@ void main() {
           expect(triple.toString(), 'SeparatedList(1, +, 2, -, 3)');
           expect(quadruple.toString(), 'SeparatedList(1, +, 2, -, 3, *, 4)');
           expect(mixed.toString(), 'SeparatedList(1, +, 2, -, 3)');
-        });
-      });
-    });
-    group('separated by (deprecated)', () {
-      // ignore: deprecated_member_use_from_same_package
-      expectParserInvariants(any().separatedBy<String>(letter()));
-      group('include separators', () {
-        test('default', () {
-          // ignore: deprecated_member_use_from_same_package
-          final parser = char('a').separatedBy<String>(char('b'));
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ab', result: ['a'], position: 1));
-          expect(parser, isParseSuccess('aba', result: ['a', 'b', 'a']));
-          expect(parser,
-              isParseSuccess('abab', result: ['a', 'b', 'a'], position: 3));
-          expect(parser,
-              isParseSuccess('ababa', result: ['a', 'b', 'a', 'b', 'a']));
-          expect(
-              parser,
-              isParseSuccess('ababab',
-                  result: ['a', 'b', 'a', 'b', 'a'], position: 5));
-        });
-        test('optional separator at start', () {
-          final parser =
-              // ignore: deprecated_member_use_from_same_package
-              char('a').separatedBy<String>(char('b'),
-                  optionalSeparatorAtStart: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser,
-              isParseFailure('b', message: '"a" expected', position: 1));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ba', result: ['b', 'a']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'b', 'a']));
-          expect(parser, isParseSuccess('baba', result: ['b', 'a', 'b', 'a']));
-        });
-        test('optional separator at end', () {
-          final parser = char('a')
-              // ignore: deprecated_member_use_from_same_package
-              .separatedBy<String>(char('b'), optionalSeparatorAtEnd: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ab', result: ['a', 'b']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'b', 'a']));
-          expect(parser, isParseSuccess('abab', result: ['a', 'b', 'a', 'b']));
-        });
-        test('optional separators at start and end', () {
-          // ignore: deprecated_member_use_from_same_package
-          final parser = char('a').separatedBy<String>(char('b'),
-              optionalSeparatorAtStart: true, optionalSeparatorAtEnd: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser,
-              isParseFailure('b', message: '"a" expected', position: 1));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ba', result: ['b', 'a']));
-          expect(parser, isParseSuccess('ab', result: ['a', 'b']));
-          expect(parser, isParseSuccess('bab', result: ['b', 'a', 'b']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'b', 'a']));
-          expect(parser, isParseSuccess('baba', result: ['b', 'a', 'b', 'a']));
-          expect(parser, isParseSuccess('abab', result: ['a', 'b', 'a', 'b']));
-          expect(parser,
-              isParseSuccess('babab', result: ['b', 'a', 'b', 'a', 'b']));
-        });
-      });
-      group('exclude separators', () {
-        test('default', () {
-          final parser = char('a')
-              // ignore: deprecated_member_use_from_same_package
-              .separatedBy<String>(char('b'), includeSeparators: false);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ab', result: ['a'], position: 1));
-          expect(parser, isParseSuccess('aba', result: ['a', 'a']));
-          expect(
-              parser, isParseSuccess('abab', result: ['a', 'a'], position: 3));
-          expect(parser, isParseSuccess('ababa', result: ['a', 'a', 'a']));
-          expect(parser,
-              isParseSuccess('ababab', result: ['a', 'a', 'a'], position: 5));
-        });
-        test('optional separator at start', () {
-          // ignore: deprecated_member_use_from_same_package
-          final parser = char('a').separatedBy<String>(char('b'),
-              includeSeparators: false, optionalSeparatorAtStart: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser,
-              isParseFailure('b', message: '"a" expected', position: 1));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ba', result: ['a']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'a']));
-          expect(parser, isParseSuccess('baba', result: ['a', 'a']));
-        });
-        test('optional separator at end', () {
-          // ignore: deprecated_member_use_from_same_package
-          final parser = char('a').separatedBy<String>(char('b'),
-              includeSeparators: false, optionalSeparatorAtEnd: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ab', result: ['a']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'a']));
-          expect(parser, isParseSuccess('abab', result: ['a', 'a']));
-        });
-        test('optional separators at start and end', () {
-          // ignore: deprecated_member_use_from_same_package
-          final parser = char('a').separatedBy<String>(char('b'),
-              includeSeparators: false,
-              optionalSeparatorAtEnd: true,
-              optionalSeparatorAtStart: true);
-          expect(parser, isParseFailure('', message: '"a" expected'));
-          expect(parser, isParseSuccess('a', result: ['a']));
-          expect(parser, isParseSuccess('ba', result: ['a']));
-          expect(parser, isParseSuccess('ab', result: ['a']));
-          expect(parser, isParseSuccess('bab', result: ['a']));
-          expect(parser, isParseSuccess('aba', result: ['a', 'a']));
-          expect(parser, isParseSuccess('baba', result: ['a', 'a']));
-          expect(parser, isParseSuccess('abab', result: ['a', 'a']));
-          expect(parser, isParseSuccess('babab', result: ['a', 'a']));
         });
       });
     });

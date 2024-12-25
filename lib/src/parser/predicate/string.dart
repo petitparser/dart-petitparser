@@ -58,7 +58,7 @@ Parser<String> string(String string,
     final lowerCaseString = string.toLowerCase();
     return predicate(
         string.length,
-            (each) => lowerCaseString == each.toLowerCase(),
+        (each) => lowerCaseString == each.toLowerCase(),
         message ?? '"$string" (case-insensitive) expected');
   } else {
     return predicate(string.length, (each) => string == each,
@@ -68,5 +68,5 @@ Parser<String> string(String string,
 
 @useResult
 @Deprecated('Use `string(value, ignoreCase: true)` instead')
-Parser<String> stringIgnoreCase(String value, [String? message]) => string(value,
-    message: message, ignoreCase: true);
+Parser<String> stringIgnoreCase(String value, [String? message]) =>
+    string(value, message: message, ignoreCase: true);

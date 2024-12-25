@@ -4,19 +4,6 @@ import 'dart:io';
 const min = 2;
 const max = 9;
 
-/// Ordinal numbers for the sequence.
-const ordinals = [
-  'first',
-  'second',
-  'third',
-  'fourth',
-  'fifth',
-  'sixth',
-  'seventh',
-  'eighth',
-  'ninth',
-];
-
 /// Implementation file.
 File implementationFile(int i) =>
     File('lib/src/parser/combinator/generated/sequence_$i.dart');
@@ -45,7 +32,6 @@ Future<void> generateImplementation(int index) async {
   final resultNames = generateValues('result', index);
   final valueTypes = generateValues('T', index);
   final valueNames = generateValues('\$', index);
-  final ordinalNames = ordinals.sublist(0, index);
   final characters =
       List.generate(index, (i) => String.fromCharCode('a'.codeUnitAt(0) + i));
 
@@ -166,20 +152,6 @@ Future<void> generateImplementation(int index) async {
   out.writeln(
       'extension RecordOfValuesExtension$index<${valueTypes.join(', ')}> on '
       '(${valueTypes.join(', ')}) {');
-  for (var i = 0; i < index; i++) {
-    out.writeln('/// Returns the ${ordinalNames[i]} element of this record.');
-    out.writeln('@inlineVm @inlineJs');
-    out.writeln('@Deprecated(r\'Instead use the canonical accessor '
-        '${valueNames[i]}\')');
-    out.writeln('${valueTypes[i]} get ${ordinalNames[i]} => ${valueNames[i]};');
-    out.writeln();
-  }
-  out.writeln('/// Returns the last element of this record.');
-  out.writeln('@inlineVm @inlineJs');
-  out.writeln('@Deprecated(r\'Instead use the canonical accessor '
-      '${valueNames.last}\')');
-  out.writeln('${valueTypes.last} get last => ${valueNames.last};');
-  out.writeln();
   out.writeln('/// Converts this [Record] with $index positional values to '
       'a new type [R] using');
   out.writeln('/// the provided [callback] with $index positional arguments.');
@@ -311,11 +283,7 @@ Future<void> generateTest() async {
     out.writeln('test(\'accessors\', () {');
     for (var j = 0; j < i; j++) {
       out.writeln('expect(record.\$${j + 1}, \'${chars[j]}\');');
-      out.writeln(' // ignore: deprecated_member_use_from_same_package');
-      out.writeln('expect(record.${ordinals[j]}, \'${chars[j]}\');');
     }
-    out.writeln(' // ignore: deprecated_member_use_from_same_package');
-    out.writeln('expect(record.last, \'${chars[i - 1]}\');');
     out.writeln('});');
     out.writeln('test(\'map\', () {');
     out.writeln('expect(record.map((${chars.join(', ')}) {');

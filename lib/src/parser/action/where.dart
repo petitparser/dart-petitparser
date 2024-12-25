@@ -26,22 +26,9 @@ extension WhereParserExtension<R> on Parser<R> {
   /// parser.parse('ab');   // ==> Failure: characters do not match
   /// ```
   @useResult
-  Parser<R> where(
-    Predicate<R> predicate, {
-    String? message,
-    FailureFactory<R>? factory,
-    @Deprecated('Use `factory` instead') Callback<R, String>? failureMessage,
-    @Deprecated('Use `factory` instead') Callback<R, int>? failurePosition,
-    @Deprecated('Use `factory` instead') FailureFactory<R>? failureFactory,
-  }) =>
-      WhereParser<R>(
-          this,
-          predicate,
-          createFactory_<R>(
-              message: message,
-              factory: factory ?? failureFactory,
-              failureMessage: failureMessage,
-              failurePosition: failurePosition));
+  Parser<R> where(Predicate<R> predicate,
+          {String? message, FailureFactory<R>? factory}) =>
+      WhereParser<R>(this, predicate, factory ?? defaultFactory_(message));
 }
 
 typedef FailureFactory<R> = Result<R> Function(
@@ -72,15 +59,5 @@ class WhereParser<R> extends DelegateParser<R, R> {
       factory == other.factory;
 }
 
-FailureFactory<R> createFactory_<R>({
-  String? message,
-  FailureFactory<R>? factory,
-  Callback<R, String>? failureMessage,
-  Callback<R, int>? failurePosition,
-}) =>
-    factory ??
-    (context, success) => context.failure(
-        failureMessage?.call(success.value) ??
-            message ??
-            'unexpected "${success.value}"',
-        failurePosition?.call(success.value));
+FailureFactory<R> defaultFactory_<R>(String? message) => (context, success) =>
+    context.failure(message ?? 'unexpected "${success.value}"');

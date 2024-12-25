@@ -3,7 +3,6 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
@@ -365,11 +364,6 @@ void main() {
       expect(
           parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
     });
-    test('invalid building', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(() => grammarDefinition.build(arguments: [1, 2, 3]),
-          throwsStateError);
-    });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
       expect(() => reference.copy(), throwsUnsupportedError);
@@ -410,37 +404,17 @@ void main() {
     });
     test('direct recursion', () {
       expect(
-          () =>
-              // ignore: deprecated_member_use_from_same_package
-              buggedDefinition.build(start: buggedDefinition.directRecursion1),
-          throwsStateError);
-      expect(
           () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
           throwsStateError);
     });
     test('indirect recursion', () {
       expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion1),
-          throwsStateError);
-      expect(
           () =>
               buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
           throwsStateError);
       expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion2),
-          throwsStateError);
-      expect(
           () =>
               buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
-          throwsStateError);
-      expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion3),
           throwsStateError);
       expect(
           () =>
@@ -448,18 +422,9 @@ void main() {
           throwsStateError);
     });
     test('delegation', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation1),
-          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
           isA<EpsilonParser<void>>());
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation2),
-          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
-          isA<EpsilonParser<void>>());
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation3),
           isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
           isA<EpsilonParser<void>>());
@@ -480,30 +445,6 @@ void main() {
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('1', result: isNotNull));
-      expect(parser, isParseSuccess('12', result: isNotNull));
-      expect(parser, isParseSuccess('1.23', result: isNotNull));
-      expect(parser, isParseSuccess('-12.3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2 + 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2 - 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2 * 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2 / 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2 ^ 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + (2 * 3)', result: isNotNull));
-      expect(parser, isParseSuccess('(1 + 2) * 3', result: isNotNull));
-    });
-  });
-  group('definition parser', () {
-    final definition = ExpressionGrammarDefinition();
-    // ignore: deprecated_member_use_from_same_package
-    final parser = GrammarParser(definition);
-    expectParserInvariants(parser);
-    test('expression', () {
       expect(parser, isParseSuccess('1', result: isNotNull));
       expect(parser, isParseSuccess('12', result: isNotNull));
       expect(parser, isParseSuccess('1.23', result: isNotNull));

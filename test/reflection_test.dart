@@ -1152,12 +1152,6 @@ void main() {
           final result = optimize(parser, rules: rules);
           expect(result, same(parser));
         });
-        test('deprecated code', () {
-          final parser = char('a').settable();
-          // ignore: deprecated_member_use_from_same_package
-          final result = removeSettables(parser);
-          expect(result, same(parser.children[0]));
-        });
       });
       group('remove duplicate', () {
         const rules = [optimize_rules.RemoveDuplicate()];
@@ -1172,12 +1166,6 @@ void main() {
               rules: rules,
               callback: (source, target) => fail('No replacement expected'));
           expect(result.children.first, isNot(same(result.children.last)));
-        });
-        test('deprecated code', () {
-          final parser = lowercase() & lowercase();
-          // ignore: deprecated_member_use_from_same_package
-          final result = removeDuplicates(parser);
-          expect(result.children.first, same(result.children.last));
         });
       });
     });
