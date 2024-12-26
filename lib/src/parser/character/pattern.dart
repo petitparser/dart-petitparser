@@ -9,11 +9,11 @@ import '../predicate/character.dart';
 import '../repeater/possessive.dart';
 import 'any.dart';
 import 'char.dart';
-import 'internal/code.dart';
-import 'internal/constant.dart';
-import 'internal/not.dart';
-import 'internal/optimize.dart';
-import 'internal/range.dart';
+import 'predicates/constant.dart';
+import 'predicates/not.dart';
+import 'predicates/range.dart';
+import 'utils/code.dart';
+import 'utils/optimize.dart';
 
 /// Returns a parser that accepts a single character of a given character set
 /// [pattern] provided as a string.
@@ -45,7 +45,7 @@ Parser<String> pattern(String pattern,
   if (isNegated) {
     predicate = predicate is ConstantCharPredicate
         ? ConstantCharPredicate(!predicate.constant)
-        : NotCharacterPredicate(predicate);
+        : NotCharPredicate(predicate);
   }
   message ??= '[${toReadableString(pattern, unicode: unicode)}]'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';

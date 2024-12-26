@@ -2,8 +2,8 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'internal/code.dart';
-import 'internal/range.dart';
+import 'predicates/range.dart';
+import 'utils/code.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].

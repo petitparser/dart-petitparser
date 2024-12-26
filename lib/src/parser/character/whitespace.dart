@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'internal/whitespace.dart';
+import 'predicates/whitespace.dart';
 
 /// Returns a parser that accepts any whitespace character.
 @useResult

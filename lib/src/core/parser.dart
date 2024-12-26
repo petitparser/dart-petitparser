@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../shared/annotations.dart';
+import '../shared/utils.dart';
 import 'context.dart';
 import 'result.dart';
 
@@ -141,11 +142,5 @@ abstract class Parser<R> {
       callback<R>(this);
 
   @override
-  String toString() {
-    const prefix = "Instance of '";
-    final result = super.toString();
-    return result.startsWith(prefix)
-        ? result.substring(prefix.length).replaceFirst("'", '')
-        : result;
-  }
+  String toString() => sanitizeToString(super.toString());
 }

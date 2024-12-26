@@ -1,6 +1,6 @@
 import '../predicate.dart';
 
-class WhitespaceCharPredicate implements CharacterPredicate {
+class WhitespaceCharPredicate extends CharacterPredicate {
   const WhitespaceCharPredicate();
 
   @override
@@ -46,5 +46,8 @@ class WhitespaceCharPredicate implements CharacterPredicate {
   }
 
   @override
-  bool isEqualTo(CharacterPredicate other) => other is WhitespaceCharPredicate;
+  bool operator ==(Object other) => other is WhitespaceCharPredicate;
+
+  @override
+  int get hashCode => 8110499;
 }

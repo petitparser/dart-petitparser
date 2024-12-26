@@ -2,7 +2,7 @@
 int toCharCode(String value, {required bool unicode}) {
   final codes = unicode ? value.runes : value.codeUnits;
   assert(codes.length == 1, '"$value" is not a valid character');
-  return codes.first;
+  return codes.single;
 }
 
 /// Converts a character to a readable string.

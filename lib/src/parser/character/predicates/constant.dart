@@ -9,6 +9,12 @@ class ConstantCharPredicate extends CharacterPredicate {
   bool test(int value) => constant;
 
   @override
-  bool isEqualTo(CharacterPredicate other) =>
+  bool operator ==(Object other) =>
       other is ConstantCharPredicate && constant == other.constant;
+
+  @override
+  int get hashCode => constant.hashCode;
+
+  @override
+  String toString() => '${super.toString()}($constant)';
 }

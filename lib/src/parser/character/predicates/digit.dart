@@ -7,5 +7,8 @@ class DigitCharPredicate extends CharacterPredicate {
   bool test(int value) => 48 <= value && value <= 57;
 
   @override
-  bool isEqualTo(CharacterPredicate other) => other is DigitCharPredicate;
+  bool operator ==(Object other) => other is DigitCharPredicate;
+
+  @override
+  int get hashCode => 7085385;
 }

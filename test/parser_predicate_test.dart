@@ -5,15 +5,6 @@ import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 void main() {
-  group('any', () {
-    expectParserInvariants(any());
-    test('default', () {
-      final parser = any();
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: 'b'));
-      expect(parser, isParseFailure('', message: 'input expected'));
-    });
-  });
   group('pattern', () {
     expectParserInvariants(PatternParser('42', 'number expected'));
     test('string', () {

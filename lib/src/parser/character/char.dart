@@ -2,9 +2,9 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'internal/char.dart';
-import 'internal/code.dart';
-import 'internal/optimize.dart';
+import 'predicates/char.dart';
+import 'utils/code.dart';
+import 'utils/optimize.dart';
 
 /// Returns a parser that accepts a specific character [value].
 ///

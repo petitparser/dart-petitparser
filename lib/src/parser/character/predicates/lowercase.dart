@@ -7,5 +7,8 @@ class LowercaseCharPredicate extends CharacterPredicate {
   bool test(int value) => 97 <= value && value <= 122;
 
   @override
-  bool isEqualTo(CharacterPredicate other) => other is LowercaseCharPredicate;
+  bool operator ==(Object other) => other is LowercaseCharPredicate;
+
+  @override
+  int get hashCode => 2194118;
 }

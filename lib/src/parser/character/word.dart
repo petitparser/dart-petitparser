@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'internal/word.dart';
+import 'predicates/word.dart';
 
 /// Returns a parser that accepts any word character (lowercase, uppercase,
 /// underscore, or digit). The accepted input is equivalent to the character-set

@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'internal/constant.dart';
+import 'predicates/constant.dart';
 
 /// Returns a parser that accepts any character.
 ///

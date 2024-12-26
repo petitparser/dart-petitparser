@@ -1,6 +1,6 @@
 import '../predicate.dart';
 
-class WordCharPredicate implements CharacterPredicate {
+class WordCharPredicate extends CharacterPredicate {
   const WordCharPredicate();
 
   @override
@@ -11,5 +11,8 @@ class WordCharPredicate implements CharacterPredicate {
       identical(value, 95);
 
   @override
-  bool isEqualTo(CharacterPredicate other) => other is WordCharPredicate;
+  bool operator ==(Object other) => other is WordCharPredicate;
+
+  @override
+  int get hashCode => 9590294;
 }

@@ -17,6 +17,7 @@ topics:
 environment:
   sdk: ^3.6.0
 dependencies:
+  collection: ^1.19.0
   meta: ^1.16.0
 dev_dependencies:
   lints: ^5.1.0

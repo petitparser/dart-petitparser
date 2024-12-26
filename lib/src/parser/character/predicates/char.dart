@@ -9,6 +9,12 @@ class SingleCharPredicate extends CharacterPredicate {
   bool test(int value) => identical(this.value, value);
 
   @override
-  bool isEqualTo(CharacterPredicate other) =>
+  bool operator ==(Object other) =>
       other is SingleCharPredicate && value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  String toString() => '${super.toString()}($value)';
 }
