@@ -221,32 +221,12 @@ Future<void> generateTest() async {
           'position: $j));');
       out.writeln('});');
     }
-    out.writeln('});');
-
-    out.writeln('group(\'toSequenceParser()\', () {');
-    out.writeln('final parser = ('
+    out.writeln('test(\'toSequenceParser()\', () {');
+    out.writeln('final alternate = ('
         '${chars.map((each) => 'char(\'$each\')').join(', ')}).toSequenceParser();');
-    out.writeln('const record = ('
-        '${chars.map((each) => '\'$each\'').join(', ')});');
-    out.writeln('expectParserInvariants(parser);');
-    out.writeln('test(\'success\', () {');
-    out.writeln('expect(parser, '
-        'isParseSuccess(\'$string\', result: record));');
-    out.writeln('expect(parser, '
-        'isParseSuccess(\'$string*\', result: record, position: $i));');
+    out.writeln('expect(parser.isEqualTo(alternate), isTrue);');
+    out.writeln('expect(alternate.isEqualTo(parser), isTrue);');
     out.writeln('});');
-    for (var j = 0; j < i; j++) {
-      out.writeln('test(\'failure at $j\', () {');
-      out.writeln('expect(parser, isParseFailure(\''
-          '${string.substring(0, j)}\', '
-          'message: \'"${chars[j]}" expected\', '
-          'position: $j));');
-      out.writeln('expect(parser, isParseFailure(\''
-          '${string.substring(0, j)}*\', '
-          'message: \'"${chars[j]}" expected\', '
-          'position: $j));');
-      out.writeln('});');
-    }
     out.writeln('});');
 
     out.writeln('group(\'map$i\', () {');
