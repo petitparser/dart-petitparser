@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
+import '../shared/utils.dart';
 import 'analyzer.dart';
 import 'internal/linter_rules.dart';
 
@@ -28,7 +29,7 @@ abstract class LinterRule {
   void run(Analyzer analyzer, Parser parser, LinterCallback callback);
 
   @override
-  String toString() => 'LinterRule(type: $type, title: $title)';
+  String toString() => '${sanitizeToString(super.toString())}($type, $title)';
 }
 
 /// Encapsulates a single linter issue.
@@ -53,8 +54,8 @@ class LinterIssue {
   final String description;
 
   @override
-  String toString() => 'LinterIssue(type: $type, title: $title, '
-      'parser: $parser, description: $description)';
+  String toString() => '${sanitizeToString(super.toString())}'
+      '($type, $title, $parser, $description)';
 }
 
 /// Function signature of a linter callback that is called whenever a linter

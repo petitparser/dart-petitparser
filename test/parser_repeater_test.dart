@@ -643,12 +643,14 @@ void main() {
         expect(quadruple.foldRight(combinator), '(1+(2-(3*4)))');
       });
       test('toString', () {
-        expect(empty.toString(), 'SeparatedList()');
-        expect(single.toString(), 'SeparatedList(1)');
-        expect(double.toString(), 'SeparatedList(1, +, 2)');
-        expect(triple.toString(), 'SeparatedList(1, +, 2, -, 3)');
-        expect(quadruple.toString(), 'SeparatedList(1, +, 2, -, 3, *, 4)');
-        expect(mixed.toString(), 'SeparatedList(1, +, 2, -, 3)');
+        expect(empty.toString(), 'SeparatedList<String, String>()');
+        expect(single.toString(), 'SeparatedList<String, String>(1)');
+        expect(double.toString(), 'SeparatedList<String, String>(1, +, 2)');
+        expect(
+            triple.toString(), 'SeparatedList<String, String>(1, +, 2, -, 3)');
+        expect(quadruple.toString(),
+            'SeparatedList<String, String>(1, +, 2, -, 3, *, 4)');
+        expect(mixed.toString(), 'SeparatedList<int, String>(1, +, 2, -, 3)');
       });
     });
   });

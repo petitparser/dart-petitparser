@@ -633,8 +633,7 @@ void main() {
           isLinterRule(
               type: LinterType.error,
               title: 'Fake Rule',
-              toString:
-                  'LinterRule(type: LinterType.error, title: Fake Rule)'));
+              toString: 'PluggableLinterRule(LinterType.error, Fake Rule)'));
       final results = linter(input, rules: [rule], callback: called.add);
       expect(results, [
         isLinterIssue(
@@ -643,9 +642,8 @@ void main() {
             title: 'Fake Rule',
             parser: same(input),
             description: 'Described',
-            toString: 'LinterIssue(type: LinterType.error, title: Fake Rule, '
-                'parser: PredicateParser["trigger" expected], description: '
-                'Described)')
+            toString: 'LinterIssue(LinterType.error, Fake Rule, '
+                'PredicateParser["trigger" expected], Described)')
       ]);
       expect(called, results);
     });
