@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/src/parser/character/predicates/char.dart';
@@ -570,5 +572,36 @@ void main() {
       message: 'only word',
       predicate: const WordCharPredicate(),
     );
+  });
+  group('stress', () {
+    void stress(
+      CharacterPredicate Function(List<RangeCharPredicate>) factory, {
+      int repeat = 1000,
+      int size = 1000,
+      int maxGap = 100,
+      int maxRange = 100,
+      int seed = 81728392,
+    }) {
+      final random = Random(seed);
+      for (var i = 0; i < repeat; i++) {
+        var start = random.nextInt(maxGap);
+        final ranges = <RangeCharPredicate>[];
+        final included = List<bool>.filled(size + 1, false);
+        while (true) {
+          final end = start + random.nextInt(maxRange);
+          if (end > size) break;
+          ranges.add(RangeCharPredicate(start, end));
+          included.fillRange(start, end + 1, true);
+          start = random.nextInt(maxGap) + end + 1;
+        }
+        final lookup = factory(ranges);
+        for (var i = 0; i <= size; i++) {
+          expect(lookup.test(i), included[i]);
+        }
+      }
+    }
+
+    test('lookup', () => stress(LookupCharPredicate.fromRanges));
+    test('ranges', () => stress(RangesCharPredicate.fromRanges));
   });
 }
