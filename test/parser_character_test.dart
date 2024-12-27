@@ -126,7 +126,7 @@ void main() {
       'default',
       char('y'),
       accept: ['y'],
-      reject: ['x', '%', '\r'],
+      reject: ['x', '%', '\r', 'Y'],
       message: '"y" expected',
       predicate: const SingleCharPredicate(121),
     );
@@ -254,7 +254,7 @@ void main() {
         'default',
         pattern('y'),
         accept: ['y'],
-        reject: ['x', 'z', '5', '\x00', '😮'],
+        reject: ['x', 'z', '5', 'Y', '\x00', '😮'],
         message: '[y] expected',
         predicate: const SingleCharPredicate(121),
       );
@@ -287,7 +287,7 @@ void main() {
         'default',
         pattern('ab-'),
         accept: ['a', 'b', '-'],
-        reject: ['d', 'e', 'f'],
+        reject: ['d', 'e', 'A', 'B', 'f'],
         message: '[ab-] expected',
         predicate: const LookupCharPredicate(45, 98, [1, 3145728]),
       );
