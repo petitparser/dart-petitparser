@@ -49,8 +49,8 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
         ? SingleCharPredicate(mergedRanges[0].start)
         : mergedRanges[0];
   } else {
-    final rangeSize = 2 * mergedRanges.length;
-    final lookupSize = (ranges.last.stop - ranges.first.start + 32) >> 5;
+    final rangeSize = RangesCharPredicate.size(mergedRanges);
+    final lookupSize = LookupCharPredicate.size(mergedRanges);
     if (rangeSize < lookupSize) {
       return RangesCharPredicate.fromRanges(mergedRanges);
     } else {

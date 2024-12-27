@@ -47,6 +47,8 @@ class RangesCharPredicate extends CharacterPredicate {
 
   @override
   String toString() => '${super.toString()}($starts, $stops)';
+
+  static int size(List<RangeCharPredicate> ranges) => 2 * ranges.length;
 }
 
 const _listEquality = ListEquality<int>();
