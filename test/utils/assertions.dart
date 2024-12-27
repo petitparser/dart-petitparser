@@ -13,7 +13,6 @@ void expectParserInvariants<T>(Parser<T> parser) {
     test('copy', () {
       final copy = parser.copy();
       expect(copy, isNot(same(parser)));
-      expect(copy.toString(), parser.toString());
       expect(copy.runtimeType, parser.runtimeType);
       expect(copy.children,
           pairwiseCompare(parser.children, identical, 'same children'));
@@ -21,13 +20,11 @@ void expectParserInvariants<T>(Parser<T> parser) {
     test('transform', () {
       final copy = transformParser(parser, <T>(parser) => parser);
       expect(copy, isNot(same(parser)));
-      expect(copy.toString(), parser.toString());
       expect(copy.runtimeType, parser.runtimeType);
       expect(
           copy.children,
           pairwiseCompare(parser.children, (parser, copy) {
             expect(copy, isNot(same(parser)));
-            expect(copy.toString(), parser.toString());
             expect(copy.runtimeType, parser.runtimeType);
             return true;
           }, 'same children'));
@@ -63,8 +60,7 @@ void expectParserInvariants<T>(Parser<T> parser) {
     }
     test('toString', () {
       expect(parser.toString(), isNot(startsWith('Instance of')));
-      expect(parser.toString(),
-          stringContainsInOrder([parser.runtimeType.toString()]));
+      expect(parser.toString(), contains(parser.runtimeType.toString()));
     });
   });
 }

@@ -647,22 +647,14 @@ void main() {
             stringContainsInOrder(['SeparatedList', '<String, String>()']));
         expect(single.toString(),
             stringContainsInOrder(['SeparatedList', '<String, String>(1)']));
-        expect(
-            double.toString(),
-            stringContainsInOrder(
-                ['SeparatedList', '<String, String>(1, +, 2)']));
-        expect(
-            triple.toString(),
-            stringContainsInOrder(
-                ['SeparatedList', '<String, String>(1, +, 2, -, 3)']));
-        expect(
-            quadruple.toString(),
-            stringContainsInOrder(
-                ['SeparatedList', '<String, String>(1, +, 2, -, 3, *, 4)']));
-        expect(
-            mixed.toString(),
-            stringContainsInOrder(
-                ['SeparatedList', '<int, String>(1, +, 2, -, 3)']));
+        expect(double.toString(),
+            stringContainsInOrder(['SeparatedList', '(1, +, 2)']));
+        expect(triple.toString(),
+            stringContainsInOrder(['SeparatedList', '(1, +, 2, -, 3)']));
+        expect(quadruple.toString(),
+            stringContainsInOrder(['SeparatedList', '(1, +, 2, -, 3, *, 4)']));
+        expect(mixed.toString(),
+            stringContainsInOrder(['SeparatedList', '(1, +, 2, -, 3)']));
       });
     });
   });

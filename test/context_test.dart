@@ -11,6 +11,7 @@ void main() {
   test('context', () {
     expect(context.buffer, buffer);
     expect(context.position, 0);
+    expect(context.toString(), isNot(startsWith('Instance of')));
     expect(context.toString(), stringContainsInOrder(['Context', '[1:1]']));
   });
   group('success', () {
@@ -20,6 +21,7 @@ void main() {
       expect(success.position, 0);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
+      expect(success.toString(), isNot(startsWith('Instance of')));
       expect(success.toString(),
           stringContainsInOrder(['Success', '[1:1]: result']));
     });
@@ -29,6 +31,7 @@ void main() {
       expect(success.position, 2);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
+      expect(success.toString(), isNot(startsWith('Instance of')));
       expect(success.toString(),
           stringContainsInOrder(['Success', '[2:1]: result']));
     });
@@ -48,6 +51,7 @@ void main() {
               .having((error) => error.toString(), 'toString',
                   stringContainsInOrder(['ParserException', '[1:1]: error']))));
       expect(failure.message, 'error');
+      expect(failure.toString(), isNot(startsWith('Instance of')));
       expect(failure.toString(),
           stringContainsInOrder(['Failure[1:1]', ': error']));
     });
@@ -68,6 +72,7 @@ void main() {
                   stringContainsInOrder(
                       ['ParserException', '[2:1]: problem']))));
       expect(failure.message, 'problem');
+      expect(failure.toString(), isNot(startsWith('Instance of')));
       expect(failure.toString(),
           stringContainsInOrder(['Failure', '[2:1]: problem']));
     });

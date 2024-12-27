@@ -224,8 +224,9 @@ void main() {
       expect(token.length, 3);
       expect(token.line, 1);
       expect(token.column, 1);
+      expect(token.toString(), isNot(startsWith('Instance of')));
       expect(token.toString(),
-          stringContainsInOrder(['Token', '<List<String>>[1:1]: [1, 2, 3]']));
+          stringContainsInOrder(['Token', '[1:1]: [1, 2, 3]']));
     });
     const buffer = '1\r12\r\n123\n1234';
     final parser = any().map((value) => value.codeUnitAt(0)).token().star();

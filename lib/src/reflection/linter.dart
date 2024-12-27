@@ -53,7 +53,7 @@ class LinterIssue {
   final String description;
 
   @override
-  String toString() => '$runtimeType(type: type, title: $title, '
+  String toString() => '$runtimeType(type: $type, title: $title, '
       'parser: $parser, description: $description)';
 }
 
