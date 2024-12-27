@@ -29,7 +29,7 @@ class Success<R> extends Result<R> {
       throw UnsupportedError('Successful parse results do not have a message.');
 
   @override
-  String toString() => 'Success[${toPositionString()}]: $value';
+  String toString() => '${super.toString()}: $value';
 }
 
 /// An immutable failed parse result.
@@ -43,5 +43,5 @@ class Failure extends Result<Never> {
   final String message;
 
   @override
-  String toString() => 'Failure[${toPositionString()}]: $message';
+  String toString() => '${super.toString()}: $message';
 }

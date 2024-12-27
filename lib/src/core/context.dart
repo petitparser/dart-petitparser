@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../shared/annotations.dart';
+import '../shared/utils.dart';
 import 'result.dart';
 import 'token.dart';
 
@@ -35,5 +36,6 @@ class Context {
   String toPositionString() => Token.positionString(buffer, position);
 
   @override
-  String toString() => 'Context[${toPositionString()}]';
+  String toString() =>
+      '${sanitizeToString(super.toString())}[${toPositionString()}]';
 }
