@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import '../../shared/utils.dart';
-
 /// A list of [elements] and its [separators].
 class SeparatedList<R, S> {
   SeparatedList(this.elements, this.separators)
@@ -58,5 +56,5 @@ class SeparatedList<R, S> {
   }
 
   @override
-  String toString() => '${sanitizeToString(super.toString())}$sequential';
+  String toString() => '$runtimeType$sequential';
 }

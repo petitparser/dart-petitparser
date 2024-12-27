@@ -1,7 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../../shared/utils.dart';
-
 /// Abstract class for character predicates.
 @immutable
 abstract class CharacterPredicate {
@@ -17,5 +15,5 @@ abstract class CharacterPredicate {
   int get hashCode;
 
   @override
-  String toString() => sanitizeToString(super.toString());
+  String toString() => '$runtimeType';
 }

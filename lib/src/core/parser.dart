@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../shared/annotations.dart';
-import '../shared/utils.dart';
 import 'context.dart';
 import 'result.dart';
 
@@ -142,5 +141,5 @@ abstract class Parser<R> {
       callback<R>(this);
 
   @override
-  String toString() => sanitizeToString(super.toString());
+  String toString() => '$runtimeType';
 }

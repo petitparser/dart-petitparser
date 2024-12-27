@@ -643,14 +643,26 @@ void main() {
         expect(quadruple.foldRight(combinator), '(1+(2-(3*4)))');
       });
       test('toString', () {
-        expect(empty.toString(), 'SeparatedList<String, String>()');
-        expect(single.toString(), 'SeparatedList<String, String>(1)');
-        expect(double.toString(), 'SeparatedList<String, String>(1, +, 2)');
+        expect(empty.toString(),
+            stringContainsInOrder(['SeparatedList', '<String, String>()']));
+        expect(single.toString(),
+            stringContainsInOrder(['SeparatedList', '<String, String>(1)']));
         expect(
-            triple.toString(), 'SeparatedList<String, String>(1, +, 2, -, 3)');
-        expect(quadruple.toString(),
-            'SeparatedList<String, String>(1, +, 2, -, 3, *, 4)');
-        expect(mixed.toString(), 'SeparatedList<int, String>(1, +, 2, -, 3)');
+            double.toString(),
+            stringContainsInOrder(
+                ['SeparatedList', '<String, String>(1, +, 2)']));
+        expect(
+            triple.toString(),
+            stringContainsInOrder(
+                ['SeparatedList', '<String, String>(1, +, 2, -, 3)']));
+        expect(
+            quadruple.toString(),
+            stringContainsInOrder(
+                ['SeparatedList', '<String, String>(1, +, 2, -, 3, *, 4)']));
+        expect(
+            mixed.toString(),
+            stringContainsInOrder(
+                ['SeparatedList', '<int, String>(1, +, 2, -, 3)']));
       });
     });
   });

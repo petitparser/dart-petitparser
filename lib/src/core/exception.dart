@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../shared/utils.dart';
 import 'result.dart';
 
 /// An exception raised in case of a parse error.
@@ -20,6 +19,5 @@ class ParserException implements FormatException {
   String get source => failure.buffer;
 
   @override
-  String toString() => '${sanitizeToString(super.toString())}'
-      '[${failure.toPositionString()}]: $message';
+  String toString() => '$runtimeType[${failure.toPositionString()}]: $message';
 }
