@@ -19,6 +19,8 @@ void main() {
       final success = context.success('result');
       expect(success.buffer, buffer);
       expect(success.position, 0);
+      expect(success.isSuccess, isTrue);
+      expect(success.isFailure, isFalse);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
       expect(success.toString(), isNot(startsWith('Instance of')));
@@ -29,6 +31,8 @@ void main() {
       final success = context.success('result', 2);
       expect(success.buffer, buffer);
       expect(success.position, 2);
+      expect(success.isSuccess, isTrue);
+      expect(success.isFailure, isFalse);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
       expect(success.toString(), isNot(startsWith('Instance of')));
@@ -41,6 +45,8 @@ void main() {
       final failure = context.failure('error');
       expect(failure.buffer, buffer);
       expect(failure.position, 0);
+      expect(failure.isSuccess, isFalse);
+      expect(failure.isFailure, isTrue);
       expect(
           () => failure.value,
           throwsA(isParserException
@@ -59,6 +65,8 @@ void main() {
       final failure = context.failure('problem', 2);
       expect(failure.buffer, buffer);
       expect(failure.position, 2);
+      expect(failure.isSuccess, isFalse);
+      expect(failure.isFailure, isTrue);
       expect(
           () => failure.value,
           throwsA(isParserException

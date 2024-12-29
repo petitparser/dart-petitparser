@@ -6,6 +6,14 @@ import 'exception.dart';
 sealed class Result<R> extends Context {
   const Result(super.buffer, super.position);
 
+  /// Returns `true` if this result indicates a parse success.
+  @Deprecated('Use `is Success` operator instead')
+  bool get isSuccess => false;
+
+  /// Returns `true` if this result indicates a parse failure.
+  @Deprecated('Use `is Failure` operator instead')
+  bool get isFailure => false;
+
   /// Returns the parsed value of this result, or throws a [ParserException]
   /// if this is a parse failure.
   @inlineVm
@@ -22,6 +30,10 @@ class Success<R> extends Result<R> {
   const Success(super.buffer, super.position, this.value);
 
   @override
+  @Deprecated('Use `is Success` operator instead')
+  bool get isSuccess => true;
+
+  @override
   final R value;
 
   @override
@@ -35,6 +47,10 @@ class Success<R> extends Result<R> {
 /// An immutable failed parse result.
 class Failure extends Result<Never> {
   const Failure(super.buffer, super.position, this.message);
+
+  @override
+  @Deprecated('Use `is Failure` operator instead')
+  bool get isFailure => true;
 
   @override
   Never get value => throw ParserException(this);
