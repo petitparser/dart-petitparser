@@ -1,5 +1,6 @@
 import '../../core/context.dart';
 import '../../core/result.dart';
+import '../../shared/annotations.dart';
 import 'character.dart';
 import 'single_character.dart';
 
@@ -60,11 +61,17 @@ class UnicodeCharacterParser extends CharacterParser {
 // https://github.com/dart-lang/sdk/blob/1207250b0d5687f9016cf115068addf6593dba58/sdk/lib/core/string.dart#L932-L955
 
 // Tests if the code is a UTF-16 lead surrogate.
+@inlineVm
+@inlineJs
 bool _isLeadSurrogate(int code) => (code & 0xFC00) == 0xD800;
 
 // Tests if the code is a UTF-16 trail surrogate.
+@inlineVm
+@inlineJs
 bool _isTrailSurrogate(int code) => (code & 0xFC00) == 0xDC00;
 
 // Combines a lead and a trail surrogate value into a single code point.
+@inlineVm
+@inlineJs
 int _combineSurrogatePair(int start, int end) =>
     0x10000 + ((start & 0x3FF) << 10) + (end & 0x3FF);
