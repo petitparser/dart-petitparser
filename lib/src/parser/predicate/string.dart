@@ -15,7 +15,7 @@ extension PredicateStringExtension on String {
   /// - If [ignoreCase] is `true`, the string is matched in a case-insensitive
   ///   manner.
   /// - If [unicode] is `true`, the string is matched using full unicode
-  ///   character parsing (as opposed to UTF-16 code units).
+  ///   character decoding (as opposed to match UTF-16 code units).
   @useResult
   Parser<String> toParser(
       {String? message,
@@ -49,8 +49,8 @@ extension PredicateStringExtension on String {
 /// - If [ignoreCase] is `true`, the string is matched in a case-insensitive
 ///   manner.
 ///
-/// For example, `string('foo')` `succeeds and consumes the input string
-/// `'foo'`. Fails for any other input.`
+/// For example, `string('foo')` succeeds and consumes the input string
+/// `'foo'`. Fails for any other input.
 @useResult
 Parser<String> string(String string,
     {String? message, bool ignoreCase = false}) {
