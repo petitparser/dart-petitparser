@@ -3,7 +3,6 @@ import '../predicates/char.dart';
 import '../predicates/constant.dart';
 import '../predicates/lookup.dart';
 import '../predicates/range.dart';
-import '../predicates/ranges.dart';
 
 /// Creates an optimized character from a string.
 CharacterPredicate optimizedString(String string, {bool unicode = false}) =>
@@ -49,10 +48,6 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
         ? SingleCharPredicate(mergedRanges[0].start)
         : mergedRanges[0];
   } else {
-    final rangeSize = RangesCharPredicate.size(mergedRanges);
-    final lookupSize = LookupCharPredicate.size(mergedRanges);
-    return rangeSize < lookupSize
-        ? RangesCharPredicate.fromRanges(mergedRanges)
-        : LookupCharPredicate.fromRanges(mergedRanges);
+    return LookupCharPredicate.fromRanges(mergedRanges);
   }
 }

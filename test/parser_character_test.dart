@@ -117,8 +117,7 @@ void main() {
       accept: ['a', 'b', 'c', '🤔', '🤐'],
       reject: ['0', 'd', '🙄'],
       message: 'any of "abc🤔🤐" expected',
-      predicate: RangesCharPredicate(
-          const [97, 129296, 129300], const [99, 129296, 129300]),
+      predicate: isA<LookupCharPredicate>(),
     );
   });
   group('char', () {
@@ -304,8 +303,7 @@ void main() {
         accept: ['y', '😃', '💕'],
         reject: ['x', 'z', '💞'],
         message: '[y😃💕] expected',
-        predicate: RangesCharPredicate(
-            const [121, 128149, 128515], const [121, 128149, 128515]),
+        predicate: isA<LookupCharPredicate>(),
       );
       variation(
         'negated',
@@ -466,8 +464,7 @@ void main() {
       accept: ['∉', '⟃', '⦻'],
       reject: ['a', '9', '*'],
       message: '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected',
-      predicate: RangesCharPredicate(
-          const [8704, 10176, 10624], const [8959, 10223, 10751]),
+      predicate: isA<LookupCharPredicate>(),
     );
     // errors
     test('invalid range', () {
