@@ -28,8 +28,7 @@ class UnicodeCharacterParser extends CharacterParser {
         }
       }
       if (predicate.test(codeUnit)) {
-        return context.success(
-            buffer.substring(position, nextPosition), nextPosition);
+        return context.success(String.fromCharCode(codeUnit), nextPosition);
       }
     }
     return context.failure(message);
