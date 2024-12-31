@@ -34,7 +34,8 @@ import 'package:petitparser/petitparser.dart';
 
 It is also possible to more selectively import only certain parts of this library, i.e. `package:petitparser/core.dart` and `package:petitparser/parser.dart` for core infrastructure and the basic parsers.
 
-:warning: This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of the functionality.
+> [!IMPORTANT]
+> This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/language/libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of the functionality.
 
 ### Writing a Simple Grammar
 
@@ -61,7 +62,8 @@ final id2 = [letter(), [letter(), digit()].toChoiceParser().star()].toSequencePa
 final id3 = seq2(letter(), [letter(), digit()].toChoiceParser().star());  // (3): Parser<(String, List<String>)>
 ```
 
-Note that the inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't loose type information and produces a [record](https://dart.dev/language/records) (tuple) with two typed elements `String` and `List<String>`.
+> [!NOTE]  
+> The inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't lose type information and produces a [record](https://dart.dev/language/records) (tuple) with two typed elements `String` and `List<String>`.
 
 ### Parsing Some Input
 
@@ -72,7 +74,7 @@ final result1 = id.parse('yeah');
 final result2 = id.parse('f12');
 ```
 
-The method `Parser.parse` returns a `Result`, which is either an instance of `Success` or `Failure`. In both examples we are successful and can retrieve the resulting value using `Success.value`:
+The method `Parser.parse` returns a [`Result`](https://pub.dev/documentation/petitparser/latest/petitparser/Result-class.html), which is either an instance of [`Success`](https://pub.dev/documentation/petitparser/latest/petitparser/Success-class.html) or [`Failure`](https://pub.dev/documentation/petitparser/latest/petitparser/Failure-class.html). In both examples we are successful and can retrieve the resulting value using `Success.value`:
 
 ```dart
 print(result1.value);                   // ['y', ['e', 'a', 'h']]
@@ -89,7 +91,7 @@ print(result3.message);                 // 'letter expected'
 print(result3.position);                // 0
 ```
 
-Trying to retrieve result by calling `Failure.value` would throw the exception `ParserError`. [Pattern matching](https://dart.dev/language/patterns) can be used to decide if the parse result was a success or a failure:
+Trying to retrieve result by calling `Failure.value` would throw the exception [`ParserError`](https://pub.dev/documentation/petitparser/latest/petitparser/ParserException-class.html). [Pattern matching](https://dart.dev/language/patterns) can be used to decide if the parse result was a success or a failure:
 
 ```dart
 switch (id.parse(input)) {
@@ -116,62 +118,61 @@ PetitParser provides a large set of ready-made parser that you can compose to co
 
 Terminal parsers are the simplest. We've already seen a few of those:
 
-- `any()` parses any character.
-- `char('a')` (or `'a'.toParser()`) parses the character *a*.
-- `digit()` parses a single digit from *0* to *9*.
-- `letter()` parses a single letter from *a* to *z* and *A* to *Z*.
-- `newline()` parses a newline character sequence, i.e. *LF* (Unix) and *CR+LF* (Windows).
-- `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parses a single character between *a* and *f*.
-- `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parses a single character between *a* and *f*, or *A* and *F*.
-- `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
-- `stringIgnoreCase('abc')` (or `'abc'.toParser(caseInsensitive: true)`) parses the strings *Abc*, *aBC*, ...
-- `word()` parses a single letter, digit, or the underscore character.
+- [`any()`](https://pub.dev/documentation/petitparser/latest/petitparser/any.html) parses any character.
+- [`anyOf('abc')`](https://pub.dev/documentation/petitparser/latest/petitparser/anyOf.html) parses any of the characters, *a*, *b* or *c*.
+- [`char('a')`](https://pub.dev/documentation/petitparser/latest/petitparser/char.html) (or [`'a'.toParser()`](https://pub.dev/documentation/petitparser/latest/petitparser/PredicateStringExtension/toParser.html)) parses the character *a*.
+- [`digit()`](https://pub.dev/documentation/petitparser/latest/petitparser/digit.html) parses a single digit from *0* to *9*.
+- [`letter()`](https://pub.dev/documentation/petitparser/latest/petitparser/letter.html) parses a single letter from *a* to *z* and *A* to *Z*.
+- [`noneOf('abc')`](https://pub.dev/documentation/petitparser/latest/petitparser/noneOf.html) parses none of the characters, i.e. *d*, *1*, or *A*.
+- [`newline()`](https://pub.dev/documentation/petitparser/latest/petitparser/newline.html) parses a newline character sequence, i.e. *LF* (Unix) or *CR+LF* (Windows).
+- [`pattern('a-f')`](https://pub.dev/documentation/petitparser/latest/petitparser/pattern.html) (or [`'a-f'.toParser(isPattern: true)`](https://pub.dev/documentation/petitparser/latest/petitparser/PredicateStringExtension/toParser.html)) parses a single character between *a* and *f*.
+- [`string('abc')`](https://pub.dev/documentation/petitparser/latest/petitparser/string.html) (or [`'abc'.toParser()`](https://pub.dev/documentation/petitparser/latest/petitparser/PredicateStringExtension/toParser.html)) parses the string *abc*.
+- [`whitespace()`](https://pub.dev/documentation/petitparser/latest/petitparser/whitespace.html) parses a whitespace character, i.e. *␣* or *↦*.
+- [`word()`](https://pub.dev/documentation/petitparser/latest/petitparser/word.html) parses a single letter, digit, or the underscore character.
 
-So instead of using the letter and digit predicate above, we could have written our identifier parser using one of the equivalent variations below:
+By default all parsers use an automatically generated descriptive error message, match case-sensitive, and work on 16-bit UTF-16 code units.
 
-```dart
-final id1 = letter() & word().star();
-final id2 = letter() & pattern('a-zA-Z0-9').star();
-```
 
 #### Combinator Parsers
 
 The next set of parsers are used to combine other parsers together:
 
-- `p1 & p2`, `p1.seq(p2)`, `[p1, p2].toSequenceParser()`, `seq2(p1, p2)` or `(p1, p2).toSequenceParser()` parse *p1* followed by *p2* (sequence). The first two produce a result of type `List<dynamic>`, the third one a `List<P1 & P2>`, and the last two a strictly typed record type `(P1, P2)`.
-- `p1 | p2`, `p1.or(p2)`, or `[p1, p2].toChoiceParser()` parse *p1*, if that doesn't work parse *p2* (ordered choice). The first two produce a result of type `dynamic`, the last one a result of type `P1 & P2`.
+- [`p1 & p2`](https://pub.dev/documentation/petitparser/latest/petitparser/SequenceParserExtension/operator_bitwise_and.html), [`p1.seq(p2)`](https://pub.dev/documentation/petitparser/latest/petitparser/SequenceParserExtension/seq.html), [`[p1, p2].toSequenceParser()`](https://pub.dev/documentation/petitparser/latest/petitparser/SequenceIterableExtension/toSequenceParser.html), [`seq2(p1, p2)`](https://pub.dev/documentation/petitparser/latest/petitparser/seq2.html) or [`(p1, p2).toSequenceParser()`](https://pub.dev/documentation/petitparser/latest/petitparser/RecordOfParsersExtension2/toSequenceParser.html) parse *p1* followed by *p2* (sequence). The first two produce a result of type `List<dynamic>`, the third one a `List<P1 & P2>`, and the last two a strictly typed record type `(P1, P2)`.
+- [`p1 | p2`](https://pub.dev/documentation/petitparser/latest/petitparser/ChoiceParserExtension/operator_bitwise_or.html), [`p1.or(p2)`](https://pub.dev/documentation/petitparser/latest/petitparser/ChoiceParserExtension/or.html), or [`[p1, p2].toChoiceParser()`](https://pub.dev/documentation/petitparser/latest/petitparser/ChoiceIterableExtension/toChoiceParser.html) parse *p1*, if that doesn't work parse *p2* (ordered choice). The first two produce a result of type `dynamic`, the last one a result of type `P1 & P2`.
 
 The following parsers [repeat](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension.html) another parser a configured amount of times, and produce a list of parsed results. Check the documentation for other repeaters that are [lazy](https://pub.dev/documentation/petitparser/latest/petitparser/LazyRepeatingParserExtension.html) or [greedy](https://pub.dev/documentation/petitparser/latest/petitparser/GreedyRepeatingParserExtension.html), or that can handle [separators](https://pub.dev/documentation/petitparser/latest/petitparser/SeparatedRepeatingParserExtension.html).
 
-- `p.star()` parses *p* zero or more times.
-- `p.plus()` parses *p* one or more times.
-- `p.times(n)` parsers *p* exactly _n_ times.
-- `p.repeat(n, m)` parses *p* between _n_ and _m_ times.
+- [`p.star()`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/star.html) parses *p* zero or more times.
+- [`p.plus()`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/plus.html) parses *p* one or more times.
+- [`p.times(n)`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/times.html) parsers *p* exactly _n_ times.
+- [`p.repeat(n, m)`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/repeat.html) parses *p* between _n_ and _m_ times.
 
 A variation of the parsers above is the optional operator, it produces the value of *p* or *null*.
 
-- `p.optional()` parses *p*, if possible.
+- [`p.optional()`](https://pub.dev/documentation/petitparser/latest/petitparser/OptionalParserExtension/optional.html) parses *p* and returns its result, otherwise returns `null`.
+- [`p.optionalWith(v)`](https://pub.dev/documentation/petitparser/latest/petitparser/OptionalParserExtension/optionalWith.html) parses *p* and returns its result, otherwise returns the argument _v_.
 
 More complicated combinators that can come in handy at times are:
 
-- `p.and()` parses *p*, but does not consume its input.
-- `p.not()` parses *p* and succeed when p fails, but does not consume its input.
-- `p.end()` parses *p* and succeed at the end of the input.
+- [`p.and()`](https://pub.dev/documentation/petitparser/latest/petitparser/AndParserExtension/and.html) parses *p*, but does not consume its input.
+- [`p.not()`](https://pub.dev/documentation/petitparser/latest/petitparser/NotParserExtension/not.html) parses *p* and succeeds when p fails, but does not consume its input.
+- [`p.end()`](https://pub.dev/documentation/petitparser/latest/petitparser/EndOfInputParserExtension/end.html) parses *p* and succeeds at the end of the input.
 
 #### Transforming Parsers
 
 The last type of parsers are actions or transformations we can use as follows:
 
-- `p.map((value) => ...)` performs a transformation using the provided callback on the result of *p*.
-- `p.where((value) => ...)` fails the parser *p* if its result does not satisfy the predicate.
-- `p.pick(n)` returns the *n*-th element of the list *p* returns.
-- `p.cast<T>()` casts the result of *p* to the type `T`.
-- `p.flatten()` creates a string from the consumed input of *p*.
-- `p.token()` creates a token from the result of *p*.
-- `p.trim()` trims whitespaces before and after *p*.
-- `p.skip(before: p1, after: p2)` consumes *p1*, *p*, and *p2* in sequence, but only returns the result of *p*.
+- [`p.map((value) => ...)`](https://pub.dev/documentation/petitparser/latest/petitparser/MapParserExtension/map.html) performs a transformation using the provided callback on the result of *p*.
+- [`p.where((value) => ...)`](https://pub.dev/documentation/petitparser/latest/petitparser/WhereParserExtension/where.html) fails the parser *p* if its result does not satisfy the predicate.
+- [`p.pick(n)`](https://pub.dev/documentation/petitparser/latest/petitparser/PickParserExtension/pick.html) returns the *n*-th element of the list *p* returns.
+- [`p.cast<T>()`](https://pub.dev/documentation/petitparser/latest/petitparser/CastParserExtension/cast.html) casts the result of *p* to the type `T`.
+- [`p.flatten()`](https://pub.dev/documentation/petitparser/latest/petitparser/FlattenParserExtension/flatten.html) creates a string from the consumed input of *p*.
+- [`p.token()`](https://pub.dev/documentation/petitparser/latest/petitparser/TokenParserExtension/token.html) creates a token that encapsulates the begin and end position, and result of *p*.
+- [`p.trim()`](https://pub.dev/documentation/petitparser/latest/petitparser/TrimmingParserExtension/trim.html) trims whitespaces before and after *p*.
+- [`p.skip(before: p1, after: p2)`](https://pub.dev/documentation/petitparser/latest/petitparser/SkipParserExtension/skip.html) consumes *p1*, *p*, and *p2* in sequence, but only returns the result of *p*.
 
-Various other parsers for more specific use-cases are available, to discover browse the subclasses of the `Parser` class.
+> [!TIP]
+> Various other parsers for more specific use-cases are available, browse the subclasses and extensions of the [Parser](https://pub.dev/documentation/petitparser/latest/core/Parser-class.html) class.
 
 To return a string of the parsed identifier, we can modify our parser like this:
 
@@ -186,12 +187,10 @@ final matches = id.allMatches('foo 123 bar4');
 print(matches);                         // ['foo', 'bar4']
 ```
 
-These are the basic elements to build parsers. There are a few more well documented and tested factory methods in the `Parser` class. If you want browse their documentation and tests.
-
 
 ### Writing a More Complicated Grammar
 
-Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for a number (actually an integer):
+Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for an integer:
 
 ```dart
 final number = digit().plus().flatten().trim().map(int.parse);
@@ -218,7 +217,7 @@ final number = digit().plus().flatten().trim().map(int.parse);
 prim.set(parens | number);
 ```
 
-To make sure our parser consumes all input we wrap it with the `end()` parser into the start production:
+To make sure our parser consumes all input we wrap it with the [`end()`](https://pub.dev/documentation/petitparser/latest/petitparser/EndOfInputParserExtension/end.html) parser in the start production:
 
 ```dart
 final parser = term.end();
@@ -232,30 +231,30 @@ parser.parse('(1 + 2) * 3');            // 9
 ```
 
 
-### Using Grammar Definitions
+### Using Parser References
 
-Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). The class `GrammarDefinition` provides the building block to conveniently define and build complex grammars with possibly hundreds of productions.
+Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). PetitParser provides building blocks to conveniently define and build complex grammars with possibly hundreds of productions.
 
-To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition`. For every production create a new method returning the primitive parser defining it. The method called `start` is supposed to return the start production of the grammar. To refer to a production defined in the same definition use `ref0` with the function reference as the argument. The _0_ at the end of `ref0` means that the production reference isn't parametrized (zero argument production method).
+To create a new grammar definition subclass [`GrammarDefinition`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html). In our case we call the class `ExpressionDefinition`. For every production create a new method returning the primitive parser defining it. The method called `start` is supposed to return the start production of the grammar. To refer to a production defined in the same definition use [`ref(Function)`](https://pub.dev/documentation/petitparser/latest/petitparser/ref.html) with the function reference as the argument.
 
 ```dart
 class ExpressionDefinition extends GrammarDefinition {
-  Parser start() => ref0(term).end();
+  Parser start() => ref(term).end();
 
-  Parser term() => ref0(add) | ref0(prod);
-  Parser add() => ref0(prod) & char('+').trim() & ref0(term);
+  Parser term() => ref(add) | ref(prod);
+  Parser add() => ref(prod) & char('+').trim() & ref(term);
 
-  Parser prod() => ref0(mul) | ref0(prim);
-  Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
+  Parser prod() => ref(mul) | ref(prim);
+  Parser mul() => ref(prim) & char('*').trim() & ref(prod);
 
-  Parser prim() => ref0(parens) | ref0(number);
-  Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
+  Parser prim() => ref(parens) | ref(number);
+  Parser parens() => char('(').trim() & ref(term) & char(')').trim();
 
   Parser number() => digit().plus().flatten().trim();
 }
 ```
 
-To create a parser with all the references correctly resolved call `build()`.
+To create a parser with all the references correctly resolved call [`build()`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition/build.html).
 
 ```dart
 final definition = ExpressionDefinition();
@@ -264,6 +263,12 @@ parser.parse('1 + 2 * 3');              // ['1', '+', ['2', '+', '3']]
 ```
 
 Again, since this is plain Dart, common code refactorings such as renaming a production updates all references correctly. Also code navigation and code completion works as expected.
+
+> [!TIP] 
+> [`ref(Function)`](https://pub.dev/documentation/petitparser/latest/petitparser/ref.html) is not limited to subclasses of [`GrammarDefinition`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html), it can be used from anywhere in Dart. To build the resulting parser use [`resolve(Parser)`](https://pub.dev/documentation/petitparser/latest/petitparser/resolve.html) on the root node of the grammar.
+
+> [!TIP]
+> [`ref`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html) takes positional arguments to parametrize the created parser, if the referenced function takes arguments. While `ref` supports an arbitrary amount of arguments, it can neither infer nor check return or argument types at compile time. The variations [`ref0`](https://pub.dev/documentation/petitparser/latest/petitparser/ref0.html), [`ref1`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html), [`ref2`](https://pub.dev/documentation/petitparser/latest/petitparser/ref2.html), ... solve this problem, but require you to specify the number of arguments.
 
 To attach custom production actions you might want to further subclass your grammar definition and override overriding the necessary productions defined in the superclass:
 
@@ -284,7 +289,8 @@ final parser = definition.build();
 parser.parse('1 + 2 * 3');              // 7
 ```
 
-:warning: Subclassing of definitions only works well, if you keep your parsers dynamic like in the example above (`Parser` or `Parser<dynamic>`). While this might increase reusability of your parser definitions, it might also increase your code size and come with extra run-time cost. To avoid, specify the desired static types or [let Dart infer them](https://dart.dev/guides/language/type-system#type-inference). 
+> [!TIP]
+> Subclassing of definitions only works well, if you keep your parsers dynamic like in the example above (`Parser` or `Parser<dynamic>`). While this might increase reusability of your parser definitions, it might also increase your code size and come with extra run-time cost.
 
 To use just a part of the parser you can specify the start production when building. For example, to reuse the number parser one would write:
 
@@ -294,14 +300,14 @@ final parser = definition.build(start: definition.number);
 parser.parse('42');                     // 42
 ```
 
-This is just the surface of what `GrammarDefinition` can do, check out [the documentation](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html) and the examples using it.
+Check out [the documentation](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html) for more examples.
 
 
 ### Using the Expression Builder
 
 Writing such expression parsers is pretty common and can be tricky to get right. To simplify things, PetitParser comes with a builder that can help you to define such grammars easily. It supports the definition of operator precedence; and prefix, postfix, left- and right-associative operators.
 
-The following code creates the empty expression builder producing values of type `num`:
+The following code creates the empty [`ExpressionBuilder`](https://pub.dev/documentation/petitparser/latest/petitparser/ExpressionBuilder-class.html) producing values of type `num`:
 
 ```dart
 final builder = ExpressionBuilder<num>();
@@ -366,16 +372,16 @@ Check out [the documentation](https://pub.dev/documentation/petitparser/latest/p
 
 ### Testing your Grammars
 
-Real world grammar are typically large and complicated. PetitParser's architecture allows one to break down a grammar into manageable pieces, and develop and test each part individually before assembling the complete system.
+Real world grammars are typically large and complicated. PetitParser's architecture allows one to break down a grammar into manageable pieces, and develop and test each part individually before assembling the complete system.
 
 Start the development and testing of a new grammar at the leaves (or tokens): write the parsers that read numbers, strings, and variables first; then continue with the expressions that can be built from these literals; and finally conclude with control structures, classes and other overarching constructs. At each step add tests and assert that the individual parsers behave as desired, so that you can be sure they also work when composing them to a larger grammar later.
 
-Accessing and testing individual productions is simple: If you organize your grammar in your own code, make sure to expose parts of the grammar individually. If you use a `GrammarDefinition`, you can build individual productions using the optional start parameter of the `build` method. For example, to test the number production of the `EvaluatorDefinition` from above you would write:
+Accessing and testing individual productions is simple: If you organize your grammar in your own code, make sure to expose parts of the grammar individually. If you use a [`GrammarDefinition`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html), you can build individual productions using the [`buildFrom`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition/buildFrom.html) method. For example, to test the number production of the `EvaluatorDefinition` from above you would write:
 
 ```dart
 test('number parsing', () {
   final definition = EvaluatorDefinition();
-  final parser = definition.build(start: definition.number);
+  final parser = definition.buildFrom(definition.number);
   expect(parser.parse('42').value, 42);
 });
 ```
@@ -401,7 +407,7 @@ Check out the extensive test suites of [PetitParser](https://github.com/petitpar
 
 Sometimes parsers might not behave the way you expect them to. The first step should always be to come up with a small reproducible example. If this doesn't already solve the problem, PetitParser comes with a set of built-in tools that can help you understand what is going on.
 
-The function [trace](https://github.com/petitparser/dart-petitparser/blob/main/lib/src/debug/trace.dart) transforms your grammar so that each parser prints its activation and results:
+The function [`trace(Parser)`](https://pub.dev/documentation/petitparser/latest/debug/trace.html) transforms your grammar so that each parser prints its activation and results:
 
 ```dart
 final parser = letter() & word().star();
@@ -413,19 +419,19 @@ The above snippet produces the following output:
 ```
 SequenceParser<dynamic>
   SingleCharacterParser[letter expected]
-  Success[1:2]: f
+  Success<String>[1:2]: f
   PossessiveRepeatingParser<String>[0..*]
     SingleCharacterParser[letter or digit expected]
-    Success[1:3]: 1
+    Success<String>[1:3]: 1
     SingleCharacterParser[letter or digit expected]
     Failure[1:3]: letter or digit expected
-  Success[1:3]: [1]
-Success[1:3]: [f, [1]]
+  Success<List<String>>[1:3]: [1]
+Success<List<dynamic>>[1:3]: [f, [1]]
 ```
 
 Indentation signifies the activation of a parser object. Reverse indentation signifies the returning of a parse result either with a success or failure context.
 
-The functions [profile](https://github.com/petitparser/dart-petitparser/blob/main/lib/src/debug/profile.dart) and [progress](https://github.com/petitparser/dart-petitparser/blob/main/lib/src/debug/progress.dart) work similarly: `profile` produces a table of activation counts and times of each parser; and `progress` visualizes how the parsers process (and possibly backtrack) through your input. Both tools can help to understand and optimize the performance characteristics of your parsers.
+Similarly, the function [`profile(Parser)`](https://pub.dev/documentation/petitparser/latest/debug/profile.html) produces a table of activation counts and run-time tallies of each parser. And, [`progress(Parser)`](https://pub.dev/documentation/petitparser/latest/debug/progress.html) visualizes how the parsers process (and possibly backtrack) through your input. Both tools can help to understand and optimize the performance characteristics of your parsers.
 
 
 Misc
@@ -438,9 +444,12 @@ Misc
 
 The package comes with a large collection of example grammars and language experiments ready to explore:
 
+- [CSV](https://github.com/petitparser/dart-petitparser-examples/blob/main/lib/csv.dart) contains a simple Comma-separated values (CSV) parser.
 - [Dart](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/dart) contains an experimental Dart grammar.
 - [JSON](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/json) contains a complete JSON grammar and parser.
 - [Lisp](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/lisp) contains a complete LISP grammar, parser and evaluator.
+- [Math](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/math) contains an mathematical expression parser and evaluator.
+- [Pascal](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/pascal) contains an experimental Pascal grammar.
 - [Prolog](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/prolog) contains a basic Prolog grammar, parser and evaluator.
 - [Smalltalk](https://github.com/petitparser/dart-petitparser-examples/tree/main/lib/src/smalltalk) contains a complete Smalltalk grammar.
 - [Uri](https://github.com/petitparser/dart-petitparser-examples/blob/main/lib/uri.dart) contains a simple URI parser.
@@ -460,7 +469,7 @@ Furthermore, there are [numerous open source projects](https://pub.dev/packages?
 
 ### History
 
-PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser). Later on, as a mean to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practises of the target language.
+PetitParser was originally implemented in [Smalltalk](https://www.lukas-renggli.ch/smalltalk/helvetia/petitparser). Later on, as a means to learn these languages, I reimplemented PetitParser in [Java](https://github.com/petitparser/java-petitparser) and [Dart](https://github.com/petitparser/dart-petitparser). The implementations are very similar in their API and the supported features. If possible, the implementations adopt best practices of the target language.
 
 
 ### License
