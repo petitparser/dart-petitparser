@@ -12,7 +12,6 @@ import 'resolve.dart';
 /// runtime only. Depending on the argument count of your function consider
 /// using one of the strongly typed alternatives [ref0], [ref1], [ref2], ...
 /// instead.
-@Deprecated('Use `ref0`, `ref1`, `ref2`, ... instead')
 @useResult
 Parser<R> ref<R>(
   Function function, [

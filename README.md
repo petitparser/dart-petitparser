@@ -34,7 +34,8 @@ import 'package:petitparser/petitparser.dart';
 
 It is also possible to more selectively import only certain parts of this library, i.e. `package:petitparser/core.dart` and `package:petitparser/parser.dart` for core infrastructure and the basic parsers.
 
-:warning: This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of the functionality.
+> [!IMPORTANT]
+> This library makes extensive use of [static extension methods](https://dart.dev/guides/language/extension-methods). If you [import the library](https://dart.dev/guides/language/language-tour#using-libraries) using a _library prefix_ or only _selectively show classes_ you might miss some of the functionality.
 
 ### Writing a Simple Grammar
 
@@ -117,22 +118,23 @@ PetitParser provides a large set of ready-made parser that you can compose to co
 Terminal parsers are the simplest. We've already seen a few of those:
 
 - `any()` parses any character.
+- `anyOf('abc')` parses any of the characters, *a*, *b* or *c*.
 - `char('a')` (or `'a'.toParser()`) parses the character *a*.
 - `digit()` parses a single digit from *0* to *9*.
 - `letter()` parses a single letter from *a* to *z* and *A* to *Z*.
-- `newline()` parses a newline character sequence, i.e. *LF* (Unix) and *CR+LF* (Windows).
+- `noneOf('abc')` parses none of the characters, i.e. *d*, *1*, or *A*.
+- `newline()` parses a newline character sequence, i.e. *LF* (Unix) or *CR+LF* (Windows).
 - `pattern('a-f')` (or `'a-f'.toParser(isPattern: true)`) parses a single character between *a* and *f*.
-- `patternIgnoreCase('a-f')` (or `'a-f'.toParser(isPattern: true, caseInsensitive: true)`) parses a single character between *a* and *f*, or *A* and *F*.
 - `string('abc')` (or `'abc'.toParser()`) parses the string *abc*.
-- `stringIgnoreCase('abc')` (or `'abc'.toParser(caseInsensitive: true)`) parses the strings *Abc*, *aBC*, ...
+- `whitespace()` parses a whitespace character, i.e. *␣* or *↦*.
 - `word()` parses a single letter, digit, or the underscore character.
 
-So instead of using the letter and digit predicate above, we could have written our identifier parser using one of the equivalent variations below:
+By default all parsers use an automatically generated descriptive error message, match case-sensitive, and work on  16-bit code units. To change this default behavior use the named arguments (where appropriate):
 
-```dart
-final id1 = letter() & word().star();
-final id2 = letter() & pattern('a-zA-Z0-9').star();
-```
+- `message: 'expected a special character'` to use a custom error message,
+- `ignoreCase: true` to accept both lower- and uppercase variations, and
+- `unicode: true` to decode surrogate pairs and read Unicode code-points.
+
 
 #### Combinator Parsers
 
@@ -167,7 +169,7 @@ The last type of parsers are actions or transformations we can use as follows:
 - `p.pick(n)` returns the *n*-th element of the list *p* returns.
 - `p.cast<T>()` casts the result of *p* to the type `T`.
 - `p.flatten()` creates a string from the consumed input of *p*.
-- `p.token()` creates a token from the result of *p*.
+- `p.token()` creates a token that encapsulates the begin and end position, and result of *p*.
 - `p.trim()` trims whitespaces before and after *p*.
 - `p.skip(before: p1, after: p2)` consumes *p1*, *p*, and *p2* in sequence, but only returns the result of *p*.
 
@@ -186,12 +188,10 @@ final matches = id.allMatches('foo 123 bar4');
 print(matches);                         // ['foo', 'bar4']
 ```
 
-These are the basic elements to build parsers. There are a few more well documented and tested factory methods in the `Parser` class. If you want browse their documentation and tests.
-
 
 ### Writing a More Complicated Grammar
 
-Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for a number (actually an integer):
+Now we are able to write a more complicated grammar for evaluating simple arithmetic expressions. Within a file we start with the grammar for an integer:
 
 ```dart
 final number = digit().plus().flatten().trim().map(int.parse);
@@ -218,7 +218,7 @@ final number = digit().plus().flatten().trim().map(int.parse);
 prim.set(parens | number);
 ```
 
-To make sure our parser consumes all input we wrap it with the `end()` parser into the start production:
+To make sure our parser consumes all input we wrap it with the `end()` parser in the start production:
 
 ```dart
 final parser = term.end();
@@ -232,24 +232,24 @@ parser.parse('(1 + 2) * 3');            // 9
 ```
 
 
-### Using Grammar Definitions
+### Using Parser References
 
-Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). The class `GrammarDefinition` provides the building block to conveniently define and build complex grammars with possibly hundreds of productions.
+Defining and reusing complex grammars can be cumbersome, particularly if the grammar is large and recursive (such as the example above). PetitParser provides  building block to conveniently define and build complex grammars with possibly hundreds of productions.
 
-To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition`. For every production create a new method returning the primitive parser defining it. The method called `start` is supposed to return the start production of the grammar. To refer to a production defined in the same definition use `ref0` with the function reference as the argument. The _0_ at the end of `ref0` means that the production reference isn't parametrized (zero argument production method).
+To create a new grammar definition subclass `GrammarDefinition`. In our case we call the class `ExpressionDefinition`. For every production create a new method returning the primitive parser defining it. The method called `start` is supposed to return the start production of the grammar. To refer to a production defined in the same definition use `ref` with the function reference as the argument.
 
 ```dart
 class ExpressionDefinition extends GrammarDefinition {
-  Parser start() => ref0(term).end();
+  Parser start() => ref(term).end();
 
-  Parser term() => ref0(add) | ref0(prod);
-  Parser add() => ref0(prod) & char('+').trim() & ref0(term);
+  Parser term() => ref(add) | ref(prod);
+  Parser add() => ref(prod) & char('+').trim() & ref(term);
 
-  Parser prod() => ref0(mul) | ref0(prim);
-  Parser mul() => ref0(prim) & char('*').trim() & ref0(prod);
+  Parser prod() => ref(mul) | ref(prim);
+  Parser mul() => ref(prim) & char('*').trim() & ref(prod);
 
-  Parser prim() => ref0(parens) | ref0(number);
-  Parser parens() => char('(').trim() & ref0(term) & char(')').trim();
+  Parser prim() => ref(parens) | ref(number);
+  Parser parens() => char('(').trim() & ref(term) & char(')').trim();
 
   Parser number() => digit().plus().flatten().trim();
 }
@@ -264,6 +264,9 @@ parser.parse('1 + 2 * 3');              // ['1', '+', ['2', '+', '3']]
 ```
 
 Again, since this is plain Dart, common code refactorings such as renaming a production updates all references correctly. Also code navigation and code completion works as expected.
+
+> [!TIP] 
+> Note that `ref` is not limited to subclasses of `GrammarDefinition`, it can be used from anywhere in Dart. To build the resulting parser use `resolve(parser)` on the root node of the grammar.
 
 To attach custom production actions you might want to further subclass your grammar definition and override overriding the necessary productions defined in the superclass:
 
@@ -284,7 +287,9 @@ final parser = definition.build();
 parser.parse('1 + 2 * 3');              // 7
 ```
 
-:warning: Subclassing of definitions only works well, if you keep your parsers dynamic like in the example above (`Parser` or `Parser<dynamic>`). While this might increase reusability of your parser definitions, it might also increase your code size and come with extra run-time cost. To avoid, specify the desired static types or [let Dart infer them](https://dart.dev/guides/language/type-system#type-inference). 
+> [!TIP]
+> Subclassing of definitions only works well, if you keep your parsers dynamic like in the example above (`Parser` or `Parser<dynamic>`). While this might increase reusability of your parser definitions, it might also increase your code size and come with extra run-time cost. To avoid, specify the desired static types or [let Dart infer them](https://dart.dev/guides/language/type-system#type-inference). 
+
 
 To use just a part of the parser you can specify the start production when building. For example, to reuse the number parser one would write:
 
