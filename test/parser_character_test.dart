@@ -14,6 +14,8 @@ import 'package:petitparser/src/parser/character/predicates/ranges.dart';
 import 'package:petitparser/src/parser/character/predicates/uppercase.dart';
 import 'package:petitparser/src/parser/character/predicates/whitespace.dart';
 import 'package:petitparser/src/parser/character/predicates/word.dart';
+import 'package:petitparser/src/parser/predicate/single_character.dart';
+import 'package:petitparser/src/parser/predicate/unicode_character.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/assertions.dart';
@@ -600,5 +602,40 @@ void main() {
 
     test('lookup', () => stress(LookupCharPredicate.fromRanges));
     test('ranges', () => stress(RangesCharPredicate.fromRanges));
+  });
+  group('reader', () {
+    const predicate = ConstantCharPredicate(true);
+    test('single character', () {
+      final parser =
+          SingleCharacterParser.internal(predicate, 'single character');
+      for (var code = 0; code < 0xffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('any single character', () {
+      final parser =
+          AnySingleCharacterParser.internal(predicate, 'any single character');
+      for (var code = 0; code < 0xffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('unicode character', () {
+      final parser =
+          UnicodeCharacterParser.internal(predicate, 'unicode character');
+      for (var code = 0; code < 0x10ffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('any unicode character', () {
+      final parser = AnyUnicodeCharacterParser.internal(
+          predicate, 'any unicode character');
+      for (var code = 0; code < 0x10ffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
   });
 }
