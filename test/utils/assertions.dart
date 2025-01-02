@@ -1,4 +1,4 @@
-import 'package:petitparser/core.dart';
+import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
@@ -51,5 +51,10 @@ void expectParserInvariants<T>(Parser<T> parser) {
     expect(parser.toString(), isNot(startsWith('Instance of')));
     expect(parser.toString(),
         stringContainsInOrder([parser.runtimeType.toString()]));
+    if (parser case SingleCharacterParser(predicate: final predicate)) {
+      expect(predicate.toString(), isNot(startsWith('Instance of')));
+      expect(predicate.toString(),
+          stringContainsInOrder([predicate.runtimeType.toString()]));
+    }
   });
 }

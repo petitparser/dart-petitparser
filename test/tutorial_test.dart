@@ -257,14 +257,14 @@ void main() {
     expect(output.map((each) => each.toString()), [
       'SequenceParser<dynamic>',
       '  SingleCharacterParser[letter expected]',
-      '  Success[1:2]: f',
+      '  Success<String>[1:2]: f',
       '  PossessiveRepeatingParser<String>[0..*]',
       '    SingleCharacterParser[letter or digit expected]',
-      '    Success[1:3]: 1',
+      '    Success<String>[1:3]: 1',
       '    SingleCharacterParser[letter or digit expected]',
       '    Failure[1:3]: letter or digit expected',
-      '  Success[1:3]: [1]',
-      'Success[1:3]: [f, [1]]',
+      '  Success<List<String>>[1:3]: [1]',
+      'Success<List<dynamic>>[1:3]: [f, [1]]',
     ]);
   });
 }

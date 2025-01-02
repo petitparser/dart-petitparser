@@ -9,13 +9,13 @@ import 'predicate.dart';
 Parser<String> whitespace([String message = 'whitespace expected']) =>
     SingleCharacterParser(const WhitespaceCharPredicate(), message);
 
-class WhitespaceCharPredicate implements CharacterPredicate {
+class WhitespaceCharPredicate extends CharacterPredicate {
   const WhitespaceCharPredicate();
 
   @override
-  bool test(int value) {
-    if (value < 256) {
-      switch (value) {
+  bool test(int charCode) {
+    if (charCode < 256) {
+      switch (charCode) {
         case 0x09:
         case 0x0A:
         case 0x0B:
@@ -29,7 +29,7 @@ class WhitespaceCharPredicate implements CharacterPredicate {
           return false;
       }
     }
-    switch (value) {
+    switch (charCode) {
       case 0x1680:
       case 0x2000:
       case 0x2001:

@@ -7,9 +7,12 @@ class NotCharacterPredicate extends CharacterPredicate {
   final CharacterPredicate predicate;
 
   @override
-  bool test(int value) => !predicate.test(value);
+  bool test(int charCode) => !predicate.test(charCode);
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
       other is NotCharacterPredicate && predicate.isEqualTo(other.predicate);
+
+  @override
+  String toString() => '${super.toString()}($predicate)';
 }

@@ -1,13 +1,18 @@
 import 'package:meta/meta.dart';
 
-/// Abstract character predicate class.
+import '../../shared/to_string.dart';
+
+/// Abstract class for character predicates.
 @immutable
 abstract class CharacterPredicate {
   const CharacterPredicate();
 
-  /// Tests if the character predicate is satisfied.
-  bool test(int value);
+  /// Tests if the [charCode] satisfies the predicate.
+  bool test(int charCode);
 
   /// Compares the two predicates for equality.
   bool isEqualTo(CharacterPredicate other);
+
+  @override
+  String toString() => objectToString(this);
 }

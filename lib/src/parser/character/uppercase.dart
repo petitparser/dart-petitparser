@@ -10,11 +10,11 @@ import 'predicate.dart';
 Parser<String> uppercase([String message = 'uppercase letter expected']) =>
     SingleCharacterParser(const UppercaseCharPredicate(), message);
 
-class UppercaseCharPredicate implements CharacterPredicate {
+class UppercaseCharPredicate extends CharacterPredicate {
   const UppercaseCharPredicate();
 
   @override
-  bool test(int value) => 65 <= value && value <= 90;
+  bool test(int charCode) => 65 <= charCode && charCode <= 90;
 
   @override
   bool isEqualTo(CharacterPredicate other) => other is UppercaseCharPredicate;

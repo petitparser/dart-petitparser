@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../shared/to_string.dart';
 import 'result.dart';
 
 /// An exception raised in case of a parse error.
@@ -19,6 +20,6 @@ class ParserException implements FormatException {
   String get source => failure.buffer;
 
   @override
-  String toString() => '${super.toString()}: $message '
-      '(at ${failure.toPositionString()})';
+  String toString() =>
+      '${objectToString(this)}[${failure.toPositionString()}]: $message';
 }

@@ -27,14 +27,17 @@ Parser<String> charIgnoringCase(String char, [String? message]) {
 }
 
 class SingleCharPredicate extends CharacterPredicate {
-  const SingleCharPredicate(this.value);
+  const SingleCharPredicate(this.charCode);
 
-  final int value;
+  final int charCode;
 
   @override
-  bool test(int value) => identical(this.value, value);
+  bool test(int charCode) => identical(this.charCode, charCode);
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
-      other is SingleCharPredicate && value == other.value;
+      other is SingleCharPredicate && charCode == other.charCode;
+
+  @override
+  String toString() => '${super.toString()}($charCode)';
 }

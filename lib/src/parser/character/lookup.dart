@@ -6,7 +6,7 @@ import '../../shared/pragma.dart';
 import 'predicate.dart';
 import 'range.dart';
 
-class LookupCharPredicate implements CharacterPredicate {
+class LookupCharPredicate extends CharacterPredicate {
   LookupCharPredicate(List<RangeCharPredicate> ranges)
       : start = ranges.first.start,
         stop = ranges.last.stop,
@@ -26,8 +26,8 @@ class LookupCharPredicate implements CharacterPredicate {
   final Uint32List bits;
 
   @override
-  bool test(int value) =>
-      start <= value && value <= stop && _testBit(value - start);
+  bool test(int charCode) =>
+      start <= charCode && charCode <= stop && _testBit(charCode - start);
 
   @preferInline
   @noBoundsChecks
@@ -40,6 +40,9 @@ class LookupCharPredicate implements CharacterPredicate {
       start == other.start &&
       stop == other.stop &&
       _listEquality.equals(bits, other.bits);
+
+  @override
+  String toString() => '${super.toString()}($start, $stop, $bits)';
 }
 
 const _listEquality = ListEquality<int>();

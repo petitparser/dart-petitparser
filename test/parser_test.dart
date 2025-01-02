@@ -275,7 +275,10 @@ void main() {
         expect(token.length, 3);
         expect(token.line, 1);
         expect(token.column, 1);
-        expect(token.toString(), 'Token[1:1]: [1, 2, 3]');
+        expect(
+            token.toString(),
+            stringContainsInOrder(
+                ['Token', '<List<String>>', '[1:1]: [1, 2, 3]']));
       });
       const buffer = '1\r12\r\n123\n1234';
       final parser = any().map((value) => value.codeUnitAt(0)).token().star();
@@ -2326,12 +2329,33 @@ void main() {
           expect(quadruple.foldRight(combinator), '(1+(2-(3*4)))');
         });
         test('toString', () {
-          expect(empty.toString(), 'SeparatedList()');
-          expect(single.toString(), 'SeparatedList(1)');
-          expect(double.toString(), 'SeparatedList(1, +, 2)');
-          expect(triple.toString(), 'SeparatedList(1, +, 2, -, 3)');
-          expect(quadruple.toString(), 'SeparatedList(1, +, 2, -, 3, *, 4)');
-          expect(mixed.toString(), 'SeparatedList(1, +, 2, -, 3)');
+          expect(
+              empty.toString(),
+              stringContainsInOrder(
+                  ['SeparatedList', '<String, String>', '()']));
+          expect(
+              single.toString(),
+              stringContainsInOrder(
+                  ['SeparatedList', '<String, String>', '(1)']));
+          expect(
+              double.toString(),
+              stringContainsInOrder(
+                  ['SeparatedList', '<String, String>', '(1, +, 2)']));
+          expect(
+              triple.toString(),
+              stringContainsInOrder(
+                  ['SeparatedList', '<String, String>', '(1, +, 2, -, 3)']));
+          expect(
+              quadruple.toString(),
+              stringContainsInOrder([
+                'SeparatedList',
+                '<String, String>',
+                '(1, +, 2, -, 3, *, 4)'
+              ]));
+          expect(
+              mixed.toString(),
+              stringContainsInOrder(
+                  ['SeparatedList', '<int, String>', '(1, +, 2, -, 3)']));
         });
       });
     });
