@@ -41,6 +41,7 @@ export 'src/parser/misc/label.dart';
 export 'src/parser/misc/newline.dart';
 export 'src/parser/misc/position.dart';
 export 'src/parser/predicate/character.dart';
+export 'src/parser/predicate/converter.dart';
 export 'src/parser/predicate/pattern.dart';
 export 'src/parser/predicate/predicate.dart';
 export 'src/parser/predicate/single_character.dart';
