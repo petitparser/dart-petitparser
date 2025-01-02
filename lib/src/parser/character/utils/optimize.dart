@@ -5,13 +5,15 @@ import '../predicates/lookup.dart';
 import '../predicates/range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string, {bool unicode = false}) =>
-    optimizedRanges((unicode ? string.runes : string.codeUnits)
-        .map((value) => RangeCharPredicate(value, value)));
+CharacterPredicate optimizedString(String string, {required bool unicode}) =>
+    optimizedRanges(
+        (unicode ? string.runes : string.codeUnits)
+            .map((value) => RangeCharPredicate(value, value)),
+        unicode: unicode);
 
 /// Creates an optimized predicate from a list of range predicates.
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
-    {bool unicode = false}) {
+    {required bool unicode}) {
   // 1. Sort the ranges:
   final sortedRanges = List.of(ranges, growable: false);
   sortedRanges.sort((first, second) => first.start != second.start
