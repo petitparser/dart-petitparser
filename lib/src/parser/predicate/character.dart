@@ -1,6 +1,9 @@
 import 'package:meta/meta.dart';
 
-import '../../../parser.dart';
+import '../../core/parser.dart';
+import '../character/predicate.dart';
+import 'single_character.dart';
+import 'unicode_character.dart';
 
 /// Abstract parser for character classes.
 abstract class CharacterParser extends Parser<String> {

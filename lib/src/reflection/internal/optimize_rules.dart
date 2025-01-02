@@ -1,5 +1,14 @@
-import '../../../parser.dart';
-import '../../../reflection.dart';
+import '../../core/parser.dart';
+import '../../parser/action/flatten.dart';
+import '../../parser/combinator/choice.dart';
+import '../../parser/combinator/delegate.dart';
+import '../../parser/combinator/settable.dart';
+import '../../parser/misc/label.dart';
+import '../../parser/predicate/single_character.dart';
+import '../../parser/repeater/character.dart';
+import '../../parser/repeater/possessive.dart';
+import '../analyzer.dart';
+import '../optimize.dart';
 
 class CharacterRepeater extends OptimizeRule {
   const CharacterRepeater();
