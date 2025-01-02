@@ -27,13 +27,10 @@ class SingleCharacterParser extends CharacterParser {
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
-    if (position < buffer.length) {
-      final codeUnit = buffer.codeUnitAt(position);
-      if (predicate.test(codeUnit)) {
-        return context.success(String.fromCharCode(codeUnit), position + 1);
-      }
-    }
-    return context.failure(message);
+    return position < buffer.length &&
+            predicate.test(buffer.codeUnitAt(position))
+        ? context.success(buffer[position], position + 1)
+        : context.failure(message);
   }
 
   @override
