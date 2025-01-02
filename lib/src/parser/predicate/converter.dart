@@ -31,8 +31,8 @@ extension ToParserStringExtension on String {
           unicode: unicode);
     }
     // Depending on length of the input create different parsers.
-    return switch (unicode ? codeUnits.length : runes.length) {
-      0 => epsilonWith<String>(''),
+    return switch (unicode ? runes.length : codeUnits.length) {
+      0 => epsilonWith<String>(this),
       1 => char(this,
           message: message,
           ignoreCase: ignoreCase || caseInsensitive,

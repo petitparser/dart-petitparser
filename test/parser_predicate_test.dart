@@ -1,4 +1,9 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/src/parser/character/predicates/char.dart';
+import 'package:petitparser/src/parser/character/predicates/lookup.dart';
+import 'package:petitparser/src/parser/character/predicates/range.dart';
+import 'package:petitparser/src/parser/predicate/single_character.dart';
+import 'package:petitparser/src/parser/predicate/unicode_character.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/assertions.dart';
@@ -87,50 +92,15 @@ void main() {
       expect(parser, isParseFailure('fo', message: '"foo" expected'));
       expect(parser, isParseFailure('Foo', message: '"foo" expected'));
     });
-    test('convert empty', () {
-      final parser = ''.toParser();
-      expect(parser, isParseSuccess('', result: ''));
-    });
-    test('convert single char', () {
-      final parser = 'a'.toParser();
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseFailure('A', message: '"a" expected'));
-    });
-    test('convert single char (case-insensitive)', () {
-      final parser = 'a'.toParser(ignoreCase: true);
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('A', result: 'A'));
-      expect(parser,
-          isParseFailure('b', message: '"a" (case-insensitive) expected'));
-    });
-    test('convert pattern', () {
-      final parser = 'a-z'.toParser(isPattern: true);
-      expect(parser, isParseSuccess('x', result: 'x'));
-      expect(parser, isParseFailure('X', message: '[a-z] expected'));
-    });
-    test('convert pattern (case-insensitive)', () {
-      final parser = 'a-z'.toParser(isPattern: true, ignoreCase: true);
-      expect(parser, isParseSuccess('x', result: 'x'));
-      expect(parser, isParseSuccess('X', result: 'X'));
-      expect(parser,
-          isParseFailure('1', message: '[a-z] (case-insensitive) expected'));
-    });
-    test('convert multiple chars', () {
-      final parser = 'foo'.toParser();
+    test('message', () {
+      final parser = string('foo', message: 'special expected');
       expect(parser, isParseSuccess('foo', result: 'foo'));
-      expect(parser, isParseFailure('Foo', message: '"foo" expected'));
+      expect(parser, isParseFailure('', message: 'special expected'));
+      expect(parser, isParseFailure('f', message: 'special expected'));
+      expect(parser, isParseFailure('fo', message: 'special expected'));
+      expect(parser, isParseFailure('Foo', message: 'special expected'));
     });
-    test('convert multiple chars (case-insensitive)', () {
-      final parser = 'foo'.toParser(ignoreCase: true);
-      expect(parser, isParseSuccess('foo', result: 'foo'));
-      expect(parser, isParseSuccess('Foo', result: 'Foo'));
-      expect(parser,
-          isParseFailure('bar', message: '"foo" (case-insensitive) expected'));
-    });
-  });
-  group('stringIgnoreCase', () {
-    expectParserInvariants(string('foo', ignoreCase: true));
-    test('default', () {
+    test('ignore-case', () {
       final parser = string('foo', ignoreCase: true);
       expect(parser, isParseSuccess('foo', result: 'foo'));
       expect(parser, isParseSuccess('FOO', result: 'FOO'));
@@ -141,6 +111,113 @@ void main() {
           isParseFailure('f', message: '"foo" (case-insensitive) expected'));
       expect(parser,
           isParseFailure('Fo', message: '"foo" (case-insensitive) expected'));
+    });
+  });
+  group('convert', () {
+    test('empty', () {
+      final parser = ''.toParser();
+      expect(parser, isA<EpsilonParser<String>>());
+      expect(parser, isParseSuccess('', result: ''));
+    });
+    test('single char', () {
+      final parser = 'a'.toParser();
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const SingleCharPredicate(97)));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseFailure('A', message: '"a" expected'));
+    });
+    test('single char (message)', () {
+      final parser = 'a'.toParser(message: 'first letter');
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const SingleCharPredicate(97)));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseFailure('A', message: 'first letter'));
+    });
+    test('single char (case-insensitive)', () {
+      final parser = 'a'.toParser(ignoreCase: true);
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const LookupCharPredicate(65, 97, [1, 1])));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('A', result: 'A'));
+      expect(parser,
+          isParseFailure('b', message: '"a" (case-insensitive) expected'));
+    });
+    test('single char (unicode)', () {
+      final parser = '🂓'.toParser(unicode: true);
+      expect(
+          parser,
+          isA<UnicodeCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const SingleCharPredicate(127123)));
+      expect(parser, isParseSuccess('🂓', result: '🂓'));
+      expect(parser, isParseFailure('b', message: '"🂓" expected'));
+    });
+    test('pattern', () {
+      final parser = 'a-z'.toParser(isPattern: true);
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const RangeCharPredicate(97, 122)));
+      expect(parser, isParseSuccess('x', result: 'x'));
+      expect(parser, isParseFailure('X', message: '[a-z] expected'));
+    });
+    test('pattern (message)', () {
+      final parser =
+          'a-z'.toParser(isPattern: true, message: 'letter expected');
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const RangeCharPredicate(97, 122)));
+      expect(parser, isParseSuccess('x', result: 'x'));
+      expect(parser, isParseFailure('1', message: 'letter expected'));
+    });
+    test('pattern (case-insensitive)', () {
+      final parser = 'a-z'.toParser(isPattern: true, ignoreCase: true);
+      expect(
+          parser,
+          isA<SingleCharacterParser>().having(
+              (parser) => parser.predicate,
+              'predicate',
+              const LookupCharPredicate(65, 122, [67108863, 67108863])));
+      expect(parser, isParseSuccess('x', result: 'x'));
+      expect(parser, isParseSuccess('X', result: 'X'));
+      expect(parser,
+          isParseFailure('1', message: '[a-z] (case-insensitive) expected'));
+    });
+    test('pattern (unicode)', () {
+      final parser = '🂡-🂪'.toParser(isPattern: true, unicode: true);
+      expect(
+          parser,
+          isA<UnicodeCharacterParser>().having((parser) => parser.predicate,
+              'predicate', const RangeCharPredicate(127137, 127146)));
+      expect(parser, isParseSuccess('🂡', result: '🂡'));
+      expect(parser, isParseSuccess('🂧', result: '🂧'));
+      expect(parser, isParseFailure('🂓', message: '[🂡-🂪] expected'));
+    });
+    test('string', () {
+      final parser = 'foo'.toParser();
+      expect(parser, isA<PredicateParser>());
+      expect(parser, isParseSuccess('foo', result: 'foo'));
+      expect(parser, isParseFailure('Foo', message: '"foo" expected'));
+    });
+    test('string (message)', () {
+      final parser = 'foo'.toParser(message: 'special expected');
+      expect(parser, isA<PredicateParser>());
+      expect(parser, isParseSuccess('foo', result: 'foo'));
+      expect(parser, isParseFailure('bar', message: 'special expected'));
+    });
+    test('string (case-insensitive)', () {
+      final parser = 'foo'.toParser(ignoreCase: true);
+      expect(parser, isA<PredicateParser>());
+      expect(parser, isParseSuccess('foo', result: 'foo'));
+      expect(parser, isParseSuccess('Foo', result: 'Foo'));
+      expect(parser,
+          isParseFailure('bar', message: '"foo" (case-insensitive) expected'));
     });
   });
 }
