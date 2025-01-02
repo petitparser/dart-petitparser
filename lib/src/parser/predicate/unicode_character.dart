@@ -1,6 +1,10 @@
+import 'package:meta/meta.dart';
+
 import '../../core/context.dart';
 import '../../core/result.dart';
 import '../../shared/annotations.dart';
+import '../character/predicate.dart';
+import '../character/predicates/constant.dart';
 import 'character.dart';
 import 'single_character.dart';
 
@@ -11,24 +15,31 @@ import 'single_character.dart';
 /// single 16-bit value) comes at an extra cost, to avoid this consider using
 /// [SingleCharacterParser] instead.
 class UnicodeCharacterParser extends CharacterParser {
-  UnicodeCharacterParser(super.predicate, super.message) : super.internal();
+  factory UnicodeCharacterParser(
+          CharacterPredicate predicate, String message) =>
+      const ConstantCharPredicate(true) == predicate
+          ? AnyUnicodeCharacterParser.internal(predicate, message)
+          : UnicodeCharacterParser.internal(predicate, message);
+
+  @internal
+  UnicodeCharacterParser.internal(super.predicate, super.message)
+      : super.internal();
 
   @override
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
-    final position = context.position;
+    var position = context.position;
     if (position < buffer.length) {
-      var codeUnit = buffer.codeUnitAt(position);
-      var nextPosition = position + 1;
-      if (_isLeadSurrogate(codeUnit) && nextPosition < buffer.length) {
-        final nextCodeUnit = buffer.codeUnitAt(nextPosition);
+      var codeUnit = buffer.codeUnitAt(position++);
+      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
+        final nextCodeUnit = buffer.codeUnitAt(position);
         if (_isTrailSurrogate(nextCodeUnit)) {
           codeUnit = _combineSurrogatePair(codeUnit, nextCodeUnit);
-          nextPosition++;
+          position++;
         }
       }
       if (predicate.test(codeUnit)) {
-        return context.success(String.fromCharCode(codeUnit), nextPosition);
+        return context.success(String.fromCharCode(codeUnit), position);
       }
     }
     return context.failure(message);
@@ -54,6 +65,47 @@ class UnicodeCharacterParser extends CharacterParser {
 
   @override
   UnicodeCharacterParser copy() => UnicodeCharacterParser(predicate, message);
+}
+
+/// Internal parser specialization of the [UnicodeCharacterParser] that assumes
+/// its `predicate` always returns `true`.
+class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
+  @internal
+  AnyUnicodeCharacterParser.internal(super.predicate, super.message)
+      : super.internal();
+
+  @override
+  Result<String> parseOn(Context context) {
+    final buffer = context.buffer;
+    var position = context.position;
+    if (position < buffer.length) {
+      var codeUnit = buffer.codeUnitAt(position++);
+      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
+        final nextCodeUnit = buffer.codeUnitAt(position);
+        if (_isTrailSurrogate(nextCodeUnit)) {
+          codeUnit = _combineSurrogatePair(codeUnit, nextCodeUnit);
+          position++;
+        }
+      }
+      return context.success(String.fromCharCode(codeUnit), position);
+    }
+    return context.failure(message);
+  }
+
+  @override
+  int fastParseOn(String buffer, int position) {
+    if (position < buffer.length) {
+      final codeUnit = buffer.codeUnitAt(position++);
+      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
+        final nextCodeUnit = buffer.codeUnitAt(position);
+        if (_isTrailSurrogate(nextCodeUnit)) {
+          position++;
+        }
+      }
+      return position;
+    }
+    return -1;
+  }
 }
 
 // The following tests are adapted from the Dart SDK:

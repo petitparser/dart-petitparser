@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../../../parser.dart';
 
 /// Abstract parser for character classes.
@@ -18,6 +20,7 @@ abstract class CharacterParser extends Parser<String> {
           : SingleCharacterParser(predicate, message);
 
   /// Internal constructor
+  @internal
   CharacterParser.internal(this.predicate, this.message);
 
   /// Predicate indicating whether a character can be consumed.
