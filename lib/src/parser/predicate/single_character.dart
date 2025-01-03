@@ -48,7 +48,8 @@ class SingleCharacterParser extends CharacterParser {
 class AnySingleCharacterParser extends SingleCharacterParser {
   @internal
   AnySingleCharacterParser.internal(super.predicate, super.message)
-      : super.internal();
+      : assert(const ConstantCharPredicate(true) == predicate),
+        super.internal();
 
   @override
   Result<String> parseOn(Context context) {

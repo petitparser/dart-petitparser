@@ -72,7 +72,8 @@ class UnicodeCharacterParser extends CharacterParser {
 class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
   @internal
   AnyUnicodeCharacterParser.internal(super.predicate, super.message)
-      : super.internal();
+      : assert(const ConstantCharPredicate(true) == predicate),
+        super.internal();
 
   @override
   Result<String> parseOn(Context context) {
