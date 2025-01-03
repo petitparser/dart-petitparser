@@ -23,7 +23,7 @@ import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 @isTestGroup
-void variation(
+void variation<P extends CharacterParser>(
   String label,
   Parser<String> parser, {
   Iterable<String> accept = const [],
@@ -51,37 +51,38 @@ void variation(
       expect(parser, isParseFailure('', message: message));
     });
     test('state', () {
-      final characterParser = parser as CharacterParser;
-      expect(characterParser.message, message);
-      expect(characterParser.predicate, predicate);
-      expect(characterParser.predicate.toString(),
-          isNot(startsWith('Instance of')));
       expect(
-          characterParser.predicate.toString(),
-          stringContainsInOrder(
-              [characterParser.predicate.runtimeType.toString()]));
-      expect(characterParser.predicate.hashCode, isA<int>());
+          parser,
+          isCharacterParser<P>(
+              message: message,
+              predicate: allOf(
+                  predicate,
+                  isA<CharacterPredicate>()
+                      .having((predicate) => predicate.toString(), 'toString',
+                          isNot(startsWith('Instance of')))
+                      .having((predicate) => predicate.hashCode, 'hashCode',
+                          isA<int>()))));
     });
   });
 }
 
 void main() {
   group('any', () {
-    variation(
+    variation<AnySingleCharacterParser>(
       'default',
       any(),
       accept: ['a', 'z', '9', '\u3211'],
       message: 'input expected',
       predicate: const ConstantCharPredicate(true),
     );
-    variation(
+    variation<AnySingleCharacterParser>(
       'message',
       any(message: 'something expected'),
       accept: ['a', 'z', '9', '\u3211'],
       message: 'something expected',
       predicate: const ConstantCharPredicate(true),
     );
-    variation(
+    variation<AnyUnicodeCharacterParser>(
       'unicode',
       any(unicode: true),
       accept: ['a', 'b', 'c', '🤔', '🤐'],
@@ -90,7 +91,7 @@ void main() {
     );
   });
   group('anyOf', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       anyOf('uncopyrightable'),
       accept: ['c', 'g', 'h', 'i', 'o', 'p', 'r', 't', 'y'],
@@ -98,7 +99,7 @@ void main() {
       message: 'any of "uncopyrightable" expected',
       predicate: LookupCharPredicate(97, 121, Uint32List.fromList([18541015])),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       anyOf('02468', message: 'even digit'),
       accept: ['0', '2', '4', '6', '8'],
@@ -106,7 +107,7 @@ void main() {
       message: 'even digit',
       predicate: LookupCharPredicate(48, 56, Uint32List.fromList([341])),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'ignore-case',
       anyOf('aB0', ignoreCase: true),
       accept: ['a', 'A', 'b', 'B', '0'],
@@ -115,7 +116,7 @@ void main() {
       predicate:
           LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216])),
     );
-    variation(
+    variation<UnicodeCharacterParser>(
       'unicode',
       anyOf('abc🤔🤐', unicode: true),
       accept: ['a', 'b', 'c', '🤔', '🤐'],
@@ -125,7 +126,7 @@ void main() {
     );
   });
   group('char', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       char('y'),
       accept: ['y'],
@@ -133,7 +134,7 @@ void main() {
       message: '"y" expected',
       predicate: const SingleCharPredicate(121),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       char('y', message: 'lowercase y'),
       accept: ['y'],
@@ -141,7 +142,7 @@ void main() {
       message: 'lowercase y',
       predicate: const SingleCharPredicate(121),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'ignore-case',
       char('y', ignoreCase: true),
       accept: ['y', 'Y'],
@@ -149,7 +150,7 @@ void main() {
       message: '"y" (case-insensitive) expected',
       predicate: LookupCharPredicate(89, 121, Uint32List.fromList([1, 1])),
     );
-    variation(
+    variation<UnicodeCharacterParser>(
       'unicode',
       char('🙄', unicode: true),
       accept: ['🙄'],
@@ -163,7 +164,7 @@ void main() {
     }, skip: !hasAssertionsEnabled());
   });
   group('digit', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       digit(),
       accept: ['0', '8', '9'],
@@ -171,7 +172,7 @@ void main() {
       message: 'digit expected',
       predicate: const DigitCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       digit(message: 'number expected'),
       accept: ['1', '2', '3'],
@@ -181,7 +182,7 @@ void main() {
     );
   });
   group('letter', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       letter(),
       accept: ['a', 'X', 'n'],
@@ -189,7 +190,7 @@ void main() {
       message: 'letter expected',
       predicate: const LetterCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       letter(message: 'word constituent'),
       accept: ['y', 'Z', 'R'],
@@ -199,7 +200,7 @@ void main() {
     );
   });
   group('lowercase', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       lowercase(),
       accept: ['a', 'l', 'r'],
@@ -207,7 +208,7 @@ void main() {
       message: 'lowercase letter expected',
       predicate: const LowercaseCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       lowercase(message: 'lowercase only'),
       accept: ['x', 'y', 'z'],
@@ -217,7 +218,7 @@ void main() {
     );
   });
   group('noneOf', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       noneOf('uncopyrightable'),
       accept: ['x', 'z'],
@@ -226,7 +227,7 @@ void main() {
       predicate: NotCharPredicate(
           LookupCharPredicate(97, 121, Uint32List.fromList([18541015]))),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       noneOf('02468', message: 'no even digit'),
       accept: ['1', '3', '5', '7', '9'],
@@ -235,7 +236,7 @@ void main() {
       predicate: NotCharPredicate(
           LookupCharPredicate(48, 56, Uint32List.fromList([341]))),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'ignore-case',
       noneOf('aB0', ignoreCase: true),
       accept: ['c', 'C', 'x', '1'],
@@ -244,7 +245,7 @@ void main() {
       predicate: NotCharPredicate(
           LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216]))),
     );
-    variation(
+    variation<UnicodeCharacterParser>(
       'unicode',
       noneOf('abc🤔🤐', unicode: true),
       accept: ['0', 'd', '🙄'],
@@ -254,7 +255,7 @@ void main() {
   });
   group('pattern', () {
     group('single', () {
-      variation(
+      variation<SingleCharacterParser>(
         'default',
         pattern('y'),
         accept: ['y'],
@@ -262,14 +263,14 @@ void main() {
         message: '[y] expected',
         predicate: const SingleCharPredicate(121),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'ignore-case',
         pattern('a', ignoreCase: true),
         accept: ['a', 'A'],
         reject: ['b', 'B', '\x00', '&'],
         predicate: LookupCharPredicate(65, 97, Uint32List.fromList([1, 1])),
       );
-      variation(
+      variation<UnicodeCharacterParser>(
         'unicode',
         pattern('😮', unicode: true),
         accept: ['😮'],
@@ -277,7 +278,7 @@ void main() {
         message: '[😮] expected',
         predicate: const SingleCharPredicate(128558),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'negated',
         pattern('^y'),
         accept: ['x', 'z', '5', '\x00'],
@@ -287,7 +288,7 @@ void main() {
       );
     });
     group('multiple', () {
-      variation(
+      variation<SingleCharacterParser>(
         'default',
         pattern('ab-'),
         accept: ['a', 'b', '-'],
@@ -296,7 +297,7 @@ void main() {
         predicate:
             LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728])),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'ignore-case',
         pattern('ab-', ignoreCase: true),
         accept: ['a', 'A', 'b', 'B', '-'],
@@ -304,7 +305,7 @@ void main() {
         predicate: LookupCharPredicate(
             45, 98, Uint32List.fromList([3145729, 3145728])),
       );
-      variation(
+      variation<UnicodeCharacterParser>(
         'unicode',
         pattern('y😃💕', unicode: true),
         accept: ['y', '😃', '💕'],
@@ -312,7 +313,7 @@ void main() {
         message: '[y😃💕] expected',
         predicate: isA<LookupCharPredicate>(),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'negated',
         pattern('^ab-'),
         accept: ['d', 'e', 'f'],
@@ -323,7 +324,7 @@ void main() {
       );
     });
     group('range', () {
-      variation(
+      variation<SingleCharacterParser>(
         'default',
         pattern('a-c'),
         accept: ['a', 'b', 'c'],
@@ -331,7 +332,7 @@ void main() {
         message: '[a-c] expected',
         predicate: const RangeCharPredicate(97, 99),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'negated',
         pattern('^a-c'),
         accept: ['d', 'e', 'f'],
@@ -339,7 +340,7 @@ void main() {
         message: '[^a-c] expected',
         predicate: const NotCharPredicate(RangeCharPredicate(97, 99)),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'overlapping',
         pattern('b-da-c'),
         accept: ['a', 'b', 'c', 'd'],
@@ -347,7 +348,7 @@ void main() {
         message: '[b-da-c] expected',
         predicate: const RangeCharPredicate(97, 100),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'adjacent',
         pattern('c-ea-c'),
         accept: ['a', 'b', 'c', 'd', 'e'],
@@ -355,7 +356,7 @@ void main() {
         message: '[c-ea-c] expected',
         predicate: const RangeCharPredicate(97, 101),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'prefix',
         pattern('a-ea-c'),
         accept: ['a', 'b', 'c', 'd', 'e'],
@@ -363,7 +364,7 @@ void main() {
         message: '[a-ea-c] expected',
         predicate: const RangeCharPredicate(97, 101),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'postfix',
         pattern('a-ec-e'),
         accept: ['a', 'b', 'c', 'd', 'e'],
@@ -371,7 +372,7 @@ void main() {
         message: '[a-ec-e] expected',
         predicate: const RangeCharPredicate(97, 101),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'repeated',
         pattern('a-ea-e'),
         accept: ['a', 'b', 'c', 'd', 'e'],
@@ -379,7 +380,7 @@ void main() {
         message: '[a-ea-e] expected',
         predicate: const RangeCharPredicate(97, 101),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'composed',
         pattern('ac-df-'),
         accept: ['a', 'c', 'd', 'f', '-'],
@@ -390,7 +391,7 @@ void main() {
       );
     });
     group('everything', () {
-      variation(
+      variation<AnySingleCharacterParser>(
         'default',
         pattern('\u{0000}-\u{ffff}'),
         accept: ['\u{0000}', '\u{ffff}'],
@@ -398,7 +399,7 @@ void main() {
         message: '[\\x00-\u{ffff}] expected',
         predicate: const ConstantCharPredicate(true),
       );
-      variation(
+      variation<AnySingleCharacterParser>(
         'ignore-case',
         pattern('\u{0000}-\u{ffff}', ignoreCase: true),
         accept: ['\u{0000}', '\u{ffff}'],
@@ -406,7 +407,7 @@ void main() {
         message: '[\\x00-￿] (case-insensitive) expected',
         predicate: const ConstantCharPredicate(true),
       );
-      variation(
+      variation<AnyUnicodeCharacterParser>(
         'unicode',
         pattern('\u{0000}-\u{10ffff}', unicode: true),
         accept: ['\u{0000}', '\u{ffff}', '\u{10ffff}'],
@@ -414,7 +415,7 @@ void main() {
         message: '[\\x00-\u{10ffff}] expected',
         predicate: const ConstantCharPredicate(true),
       );
-      variation(
+      variation<SingleCharacterParser>(
         'negated',
         pattern('^\u{0000}-\u{ffff}'),
         accept: [],
@@ -422,7 +423,7 @@ void main() {
         message: '[^\\x00-\u{ffff}] expected',
         predicate: const ConstantCharPredicate(false),
       );
-      variation(
+      variation<UnicodeCharacterParser>(
         'negated, unicode',
         pattern('^\u{0000}-\u{10ffff}', unicode: true),
         accept: [],
@@ -432,7 +433,7 @@ void main() {
       );
     });
     group('nothing', () {
-      variation(
+      variation<SingleCharacterParser>(
         'default',
         pattern(''),
         accept: [],
@@ -440,7 +441,7 @@ void main() {
         message: '[] expected',
         predicate: const ConstantCharPredicate(false),
       );
-      variation(
+      variation<UnicodeCharacterParser>(
         'unicode',
         pattern('', unicode: true),
         accept: [],
@@ -448,7 +449,7 @@ void main() {
         message: '[] expected',
         predicate: const ConstantCharPredicate(false),
       );
-      variation(
+      variation<AnySingleCharacterParser>(
         'negated',
         pattern('^'),
         accept: ['\u{0000}', '\u{ffff}'],
@@ -456,7 +457,7 @@ void main() {
         message: '[^] expected',
         predicate: const ConstantCharPredicate(true),
       );
-      variation(
+      variation<AnyUnicodeCharacterParser>(
         'negated, unicode',
         pattern('^', unicode: true),
         accept: ['\u{0000}', '\u{10ffff}'],
@@ -466,7 +467,7 @@ void main() {
       );
     });
     // special
-    variation(
+    variation<SingleCharacterParser>(
       'large range',
       pattern('\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff'),
       accept: ['∉', '⟃', '⦻'],
@@ -480,7 +481,7 @@ void main() {
     }, skip: !hasAssertionsEnabled());
   });
   group('range', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       range('e', 'o'),
       accept: ['e', 'i', 'o'],
@@ -488,7 +489,7 @@ void main() {
       message: '[e-o] expected',
       predicate: const RangeCharPredicate(101, 111),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       range('x', 'z', message: 'variable expected'),
       accept: ['x', 'y', 'z'],
@@ -496,7 +497,7 @@ void main() {
       message: 'variable expected',
       predicate: const RangeCharPredicate(120, 122),
     );
-    variation(
+    variation<UnicodeCharacterParser>(
       'unicode',
       range('😁', '😄', unicode: true),
       accept: ['😁', '😃', '😄'],
@@ -512,7 +513,7 @@ void main() {
     }, skip: !hasAssertionsEnabled());
   });
   group('uppercase', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       uppercase(),
       accept: ['A', 'L', 'R'],
@@ -520,7 +521,7 @@ void main() {
       message: 'uppercase letter expected',
       predicate: const UppercaseCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       uppercase(message: 'only uppercase'),
       accept: ['X', 'Y', 'Z'],
@@ -543,7 +544,7 @@ void main() {
       for (var c = 0; c <= 0x10000; c++)
         if (!whitespaceCharCodes.contains(c)) String.fromCharCode(c)
     ];
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       whitespace(),
       accept: accept,
@@ -551,7 +552,7 @@ void main() {
       message: 'whitespace expected',
       predicate: const WhitespaceCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       whitespace(message: 'only blanks'),
       accept: [' ', '\t', '\r', '\f', '\r', '\n'],
@@ -561,7 +562,7 @@ void main() {
     );
   });
   group('word', () {
-    variation(
+    variation<SingleCharacterParser>(
       'default',
       word(),
       accept: ['a', 'z', 'A', 'Z', '0', '9', '_'],
@@ -569,7 +570,7 @@ void main() {
       message: 'letter or digit expected',
       predicate: const WordCharPredicate(),
     );
-    variation(
+    variation<SingleCharacterParser>(
       'message',
       word(message: 'only word'),
       accept: ['L', 'F', 'R', '7'],
@@ -599,9 +600,9 @@ void main() {
           included.fillRange(start, end + 1, true);
           start = random.nextInt(maxGap) + end + 1;
         }
-        final lookup = factory(ranges);
+        final predicate = factory(ranges);
         for (var i = 0; i <= size; i++) {
-          expect(lookup.test(i), included[i]);
+          expect(predicate.test(i), included[i]);
         }
       }
     }

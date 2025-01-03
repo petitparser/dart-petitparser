@@ -149,3 +149,13 @@ Matcher isSeparatedList<R, S>({
     isA<SeparatedList<R, S>>()
         .having((list) => list.elements, 'elements', elements)
         .having((list) => list.separators, 'separators', separators);
+
+/// Returns a [Matcher] that asserts a [CharacterParser].
+@optionalTypeArgs
+Matcher isCharacterParser<P extends CharacterParser>({
+  dynamic predicate = anything,
+  dynamic message = anything,
+}) =>
+    isA<P>()
+        .having((parser) => parser.predicate, 'predicate', predicate)
+        .having((parser) => parser.message, 'message', message);

@@ -1,4 +1,6 @@
 import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/src/parser/character/predicates/char.dart';
+import 'package:petitparser/src/parser/character/predicates/constant.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/assertions.dart';
@@ -349,6 +351,10 @@ void main() {
     expectParserInvariants(any().starString());
     test('star', () {
       final parser = char('a').starString();
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseSuccess('', result: ''));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -356,6 +362,10 @@ void main() {
     });
     test('plus', () {
       final parser = char('a').plusString();
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -363,6 +373,10 @@ void main() {
     });
     test('times', () {
       final parser = char('a').timesString(2);
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('a', position: 1, message: '"a" expected'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -370,6 +384,10 @@ void main() {
     });
     test('repeat', () {
       final parser = char('a').repeatString(2, 3);
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('a', position: 1, message: '"a" expected'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -379,6 +397,10 @@ void main() {
     test('repeat unbounded', () {
       final input = 'a' * 100000;
       final parser = char('a').repeatString(2, unbounded);
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseSuccess(input, result: input));
     });
     test('repeat erroneous', () {
@@ -393,6 +415,10 @@ void main() {
     }, skip: !hasAssertionsEnabled());
     test('times', () {
       final parser = char('a').timesString(2);
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<SingleCharPredicate>()));
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('a', position: 1, message: '"a" expected'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -400,6 +426,21 @@ void main() {
     });
     test('any', () {
       final parser = any().plusString();
+      expect(
+          parser,
+          isA<RepeatingCharacterParser>().having((parser) => parser.predicate,
+              'predicate', isA<ConstantCharPredicate>()));
+      expect(parser, isParseFailure('', message: 'input expected'));
+      expect(parser, isParseSuccess('a', result: 'a'));
+      expect(parser, isParseSuccess('aa', result: 'aa'));
+      expect(parser, isParseSuccess('aaa', result: 'aaa'));
+    });
+    test('any (unicode)', () {
+      final parser = any(unicode: true).plusString();
+      expect(
+          parser,
+          isA<FlattenParser>().having((parser) => parser.delegate, 'delegate',
+              isA<PossessiveRepeatingParser<String>>()));
       expect(parser, isParseFailure('', message: 'input expected'));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('aa', result: 'aa'));
@@ -407,6 +448,10 @@ void main() {
     });
     test('fallback', () {
       final parser = char('a').settable().plusString();
+      expect(
+          parser,
+          isA<FlattenParser>().having((parser) => parser.delegate, 'delegate',
+              isA<PossessiveRepeatingParser<String>>()));
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('aa', result: 'aa'));

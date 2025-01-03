@@ -125,8 +125,8 @@ void main() {
       final parser = 'a'.toParser();
       expect(
           parser,
-          isA<SingleCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const SingleCharPredicate(97)));
+          isCharacterParser<SingleCharacterParser>(
+              predicate: const SingleCharPredicate(97)));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseFailure('A', message: '"a" expected'));
     });
@@ -134,8 +134,8 @@ void main() {
       final parser = 'a'.toParser(message: 'first letter');
       expect(
           parser,
-          isA<SingleCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const SingleCharPredicate(97)));
+          isCharacterParser<SingleCharacterParser>(
+              predicate: const SingleCharPredicate(97)));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseFailure('A', message: 'first letter'));
     });
@@ -143,10 +143,9 @@ void main() {
       final parser = 'a'.toParser(ignoreCase: true);
       expect(
           parser,
-          isA<SingleCharacterParser>().having(
-              (parser) => parser.predicate,
-              'predicate',
-              LookupCharPredicate(65, 97, Uint32List.fromList([1, 1]))));
+          isCharacterParser<SingleCharacterParser>(
+              predicate:
+                  LookupCharPredicate(65, 97, Uint32List.fromList([1, 1]))));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('A', result: 'A'));
       expect(parser,
@@ -156,8 +155,8 @@ void main() {
       final parser = '🂓'.toParser(unicode: true);
       expect(
           parser,
-          isA<UnicodeCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const SingleCharPredicate(127123)));
+          isCharacterParser<UnicodeCharacterParser>(
+              predicate: const SingleCharPredicate(127123)));
       expect(parser, isParseSuccess('🂓', result: '🂓'));
       expect(parser, isParseFailure('b', message: '"🂓" expected'));
     });
@@ -165,8 +164,8 @@ void main() {
       final parser = 'a-z'.toParser(isPattern: true);
       expect(
           parser,
-          isA<SingleCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const RangeCharPredicate(97, 122)));
+          isCharacterParser<SingleCharacterParser>(
+              predicate: const RangeCharPredicate(97, 122)));
       expect(parser, isParseSuccess('x', result: 'x'));
       expect(parser, isParseFailure('X', message: '[a-z] expected'));
     });
@@ -175,8 +174,8 @@ void main() {
           'a-z'.toParser(isPattern: true, message: 'letter expected');
       expect(
           parser,
-          isA<SingleCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const RangeCharPredicate(97, 122)));
+          isCharacterParser<SingleCharacterParser>(
+              predicate: const RangeCharPredicate(97, 122)));
       expect(parser, isParseSuccess('x', result: 'x'));
       expect(parser, isParseFailure('1', message: 'letter expected'));
     });
@@ -184,10 +183,8 @@ void main() {
       final parser = 'a-z'.toParser(isPattern: true, ignoreCase: true);
       expect(
           parser,
-          isA<SingleCharacterParser>().having(
-              (parser) => parser.predicate,
-              'predicate',
-              LookupCharPredicate(
+          isCharacterParser<SingleCharacterParser>(
+              predicate: LookupCharPredicate(
                   65, 122, Uint32List.fromList([67108863, 67108863]))));
       expect(parser, isParseSuccess('x', result: 'x'));
       expect(parser, isParseSuccess('X', result: 'X'));
@@ -198,8 +195,8 @@ void main() {
       final parser = '🂡-🂪'.toParser(isPattern: true, unicode: true);
       expect(
           parser,
-          isA<UnicodeCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const RangeCharPredicate(127137, 127146)));
+          isCharacterParser<UnicodeCharacterParser>(
+              predicate: const RangeCharPredicate(127137, 127146)));
       expect(parser, isParseSuccess('🂡', result: '🂡'));
       expect(parser, isParseSuccess('🂧', result: '🂧'));
       expect(parser, isParseFailure('🂓', message: '[🂡-🂪] expected'));
