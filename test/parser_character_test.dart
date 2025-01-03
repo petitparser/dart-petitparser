@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
@@ -95,7 +96,7 @@ void main() {
       accept: ['c', 'g', 'h', 'i', 'o', 'p', 'r', 't', 'y'],
       reject: ['x', 'z', 'C'],
       message: 'any of "uncopyrightable" expected',
-      predicate: const LookupCharPredicate(97, 121, [18541015]),
+      predicate: LookupCharPredicate(97, 121, Uint32List.fromList([18541015])),
     );
     variation(
       'message',
@@ -103,7 +104,7 @@ void main() {
       accept: ['0', '2', '4', '6', '8'],
       reject: ['1', '3', '5', '7', '9'],
       message: 'even digit',
-      predicate: const LookupCharPredicate(48, 56, [341]),
+      predicate: LookupCharPredicate(48, 56, Uint32List.fromList([341])),
     );
     variation(
       'ignore-case',
@@ -111,7 +112,8 @@ void main() {
       accept: ['a', 'A', 'b', 'B', '0'],
       reject: ['c', '1'],
       message: 'any of "aB0" (case-insensitive) expected',
-      predicate: const LookupCharPredicate(48, 98, [393217, 393216]),
+      predicate:
+          LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216])),
     );
     variation(
       'unicode',
@@ -145,7 +147,7 @@ void main() {
       accept: ['y', 'Y'],
       reject: ['x', 'z', 'X', 'Z'],
       message: '"y" (case-insensitive) expected',
-      predicate: const LookupCharPredicate(89, 121, [1, 1]),
+      predicate: LookupCharPredicate(89, 121, Uint32List.fromList([1, 1])),
     );
     variation(
       'unicode',
@@ -221,8 +223,8 @@ void main() {
       accept: ['x', 'z'],
       reject: ['c', 'g', 'h', 'i', 'o', 'p', 'r', 't', 'y'],
       message: 'none of "uncopyrightable" expected',
-      predicate:
-          const NotCharPredicate(LookupCharPredicate(97, 121, [18541015])),
+      predicate: NotCharPredicate(
+          LookupCharPredicate(97, 121, Uint32List.fromList([18541015]))),
     );
     variation(
       'message',
@@ -230,7 +232,8 @@ void main() {
       accept: ['1', '3', '5', '7', '9'],
       reject: ['0', '2', '4', '6', '8'],
       message: 'no even digit',
-      predicate: const NotCharPredicate(LookupCharPredicate(48, 56, [341])),
+      predicate: NotCharPredicate(
+          LookupCharPredicate(48, 56, Uint32List.fromList([341]))),
     );
     variation(
       'ignore-case',
@@ -238,8 +241,8 @@ void main() {
       accept: ['c', 'C', 'x', '1'],
       reject: ['a', 'A', 'b', 'B', '0'],
       message: 'none of "aB0" (case-insensitive) expected',
-      predicate:
-          const NotCharPredicate(LookupCharPredicate(48, 98, [393217, 393216])),
+      predicate: NotCharPredicate(
+          LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216]))),
     );
     variation(
       'unicode',
@@ -264,7 +267,7 @@ void main() {
         pattern('a', ignoreCase: true),
         accept: ['a', 'A'],
         reject: ['b', 'B', '\x00', '&'],
-        predicate: const LookupCharPredicate(65, 97, [1, 1]),
+        predicate: LookupCharPredicate(65, 97, Uint32List.fromList([1, 1])),
       );
       variation(
         'unicode',
@@ -290,14 +293,16 @@ void main() {
         accept: ['a', 'b', '-'],
         reject: ['d', 'e', 'A', 'B', 'f'],
         message: '[ab-] expected',
-        predicate: const LookupCharPredicate(45, 98, [1, 3145728]),
+        predicate:
+            LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728])),
       );
       variation(
         'ignore-case',
         pattern('ab-', ignoreCase: true),
         accept: ['a', 'A', 'b', 'B', '-'],
         reject: ['c', 'C', '\x00', '&'],
-        predicate: const LookupCharPredicate(45, 98, [3145729, 3145728]),
+        predicate: LookupCharPredicate(
+            45, 98, Uint32List.fromList([3145729, 3145728])),
       );
       variation(
         'unicode',
@@ -313,8 +318,8 @@ void main() {
         accept: ['d', 'e', 'f'],
         reject: ['a', 'b', '-'],
         message: '[^ab-] expected',
-        predicate:
-            const NotCharPredicate(LookupCharPredicate(45, 98, [1, 3145728])),
+        predicate: NotCharPredicate(
+            LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728]))),
       );
     });
     group('range', () {
@@ -380,7 +385,8 @@ void main() {
         accept: ['a', 'c', 'd', 'f', '-'],
         reject: ['b', 'e', 'g'],
         message: '[ac-df-] expected',
-        predicate: const LookupCharPredicate(45, 102, [1, 47185920]),
+        predicate:
+            LookupCharPredicate(45, 102, Uint32List.fromList([1, 47185920])),
       );
     });
     group('everything', () {

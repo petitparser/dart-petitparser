@@ -24,7 +24,7 @@ class LookupCharPredicate extends CharacterPredicate {
 
   final int start;
   final int stop;
-  final List<int> bits;
+  final Uint32List bits;
 
   @override
   bool test(int value) =>

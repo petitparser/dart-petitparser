@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/src/parser/character/predicates/char.dart';
 import 'package:petitparser/src/parser/character/predicates/lookup.dart';
@@ -141,8 +143,10 @@ void main() {
       final parser = 'a'.toParser(ignoreCase: true);
       expect(
           parser,
-          isA<SingleCharacterParser>().having((parser) => parser.predicate,
-              'predicate', const LookupCharPredicate(65, 97, [1, 1])));
+          isA<SingleCharacterParser>().having(
+              (parser) => parser.predicate,
+              'predicate',
+              LookupCharPredicate(65, 97, Uint32List.fromList([1, 1]))));
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseSuccess('A', result: 'A'));
       expect(parser,
@@ -183,7 +187,8 @@ void main() {
           isA<SingleCharacterParser>().having(
               (parser) => parser.predicate,
               'predicate',
-              const LookupCharPredicate(65, 122, [67108863, 67108863])));
+              LookupCharPredicate(
+                  65, 122, Uint32List.fromList([67108863, 67108863]))));
       expect(parser, isParseSuccess('x', result: 'x'));
       expect(parser, isParseSuccess('X', result: 'X'));
       expect(parser,

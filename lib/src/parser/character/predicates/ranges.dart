@@ -15,8 +15,8 @@ class RangesCharPredicate extends CharacterPredicate {
   const RangesCharPredicate(this.starts, this.stops)
       : assert(starts.length == stops.length);
 
-  final List<int> starts;
-  final List<int> stops;
+  final Uint32List starts;
+  final Uint32List stops;
 
   @override
   bool test(int value) {
