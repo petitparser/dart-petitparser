@@ -17,8 +17,8 @@ import '../../parser/predicate/single_character.dart';
 import '../../parser/repeater/character.dart';
 import '../../parser/repeater/possessive.dart';
 import '../../parser/repeater/repeating.dart';
+import '../../parser/repeater/separated.dart';
 import '../../parser/utils/resolvable.dart';
-import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
 import 'formatting.dart';
@@ -29,11 +29,9 @@ class CharacterRepeater extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is FlattenParser) {
-      final repeating = parser.delegate;
-      if (repeating is PossessiveRepeatingParser) {
-        final character = repeating.delegate;
-        if (character is SingleCharacterParser) {
+    if (parser case FlattenParser(delegate: final repeating)) {
+      if (repeating case PossessiveRepeatingParser(delegate: final character)) {
+        if (character case SingleCharacterParser()) {
           callback(LinterIssue(
               this,
               parser,
@@ -70,11 +68,10 @@ class NestedChoice extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ChoiceParser) {
-      final children = parser.children;
+    if (parser case ChoiceParser(children: final children)) {
       for (var i = 0; i < children.length - 1; i++) {
         final child = children[i];
-        if (child is ChoiceParser) {
+        if (child case ChoiceParser()) {
           callback(LinterIssue(
               this,
               parser,
@@ -92,17 +89,17 @@ class NullableRepeater extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is RepeatingParser) {
-      final isNullable = parser is SequentialParser
-          ? parser.children.every((each) => analyzer.isNullable(each))
-          : analyzer.isNullable(parser.delegate);
-      if (isNullable) {
-        callback(LinterIssue(
-            this,
-            parser,
-            'A repeater that delegates to a nullable parser causes an infinite '
-            'loop when parsing.'));
+    if (parser is RepeatingParser && analyzer.isNullable(parser.delegate)) {
+      // Separated repeating parsers are fine, unless separator is nullable.
+      if (parser is SeparatedRepeatingParser &&
+          !analyzer.isNullable(parser.separator)) {
+        return;
       }
+      callback(LinterIssue(
+          this,
+          parser,
+          'A repeater that delegates to a nullable parser causes an infinite '
+          'loop when parsing.'));
     }
   }
 }
@@ -112,8 +109,7 @@ class OverlappingChoice extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ChoiceParser) {
-      final children = parser.children;
+    if (parser case ChoiceParser(children: final children)) {
       for (var i = 0; i < children.length; i++) {
         final firstI = analyzer.firstSet(children[i]);
         for (var j = i + 1; j < children.length; j++) {
@@ -138,8 +134,7 @@ class RepeatedChoice extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ChoiceParser) {
-      final children = parser.children;
+    if (parser case ChoiceParser(children: final children)) {
       for (var i = 0; i < children.length; i++) {
         for (var j = i + 1; j < children.length; j++) {
           if (children[i].isEqualTo(children[j])) {
@@ -163,8 +158,7 @@ class UnnecessaryFlatten extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is FlattenParser && parser.message == null) {
-      final delegate = parser.delegate;
+    if (parser case FlattenParser(message: null, delegate: final delegate)) {
       if (delegate is CharacterParser ||
           delegate is FlattenParser ||
           delegate is NewlineParser ||
@@ -187,7 +181,7 @@ class UnnecessaryResolvable extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ResolvableParser) {
+    if (parser case ResolvableParser()) {
       callback(LinterIssue(
           this,
           parser,
@@ -204,7 +198,7 @@ class UnoptimizedFlatten extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is FlattenParser && parser.message == null) {
+    if (parser case FlattenParser(message: null)) {
       callback(LinterIssue(
           this,
           parser,
@@ -221,8 +215,7 @@ class UnreachableChoice extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is ChoiceParser) {
-      final children = parser.children;
+    if (parser case ChoiceParser(children: final children)) {
       for (var i = 0; i < children.length - 1; i++) {
         if (analyzer.isNullable(children[i])) {
           callback(LinterIssue(
@@ -244,7 +237,7 @@ class UnresolvedSettable extends LinterRule {
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
-    if (parser is SettableParser && parser.delegate is FailureParser) {
+    if (parser case SettableParser(delegate: FailureParser())) {
       callback(LinterIssue(
           this,
           parser,
