@@ -8,7 +8,8 @@ import '../character/predicates/constant.dart';
 import 'character.dart';
 import 'single_character.dart';
 
-/// Parser class for an individual Unicode code-point satisfying a [predicate].
+/// Parser class for an individual Unicode code-point satisfying a
+/// [CharacterPredicate].
 ///
 /// This class parses Unicode code-points, similar to those that [String.runes]
 /// returns. Decoding surrogate pairs (characters that cannot be expressed in a
@@ -17,9 +18,11 @@ import 'single_character.dart';
 class UnicodeCharacterParser extends CharacterParser {
   factory UnicodeCharacterParser(
           CharacterPredicate predicate, String message) =>
-      const ConstantCharPredicate(true) == predicate
-          ? AnyUnicodeCharacterParser.internal(predicate, message)
-          : UnicodeCharacterParser.internal(predicate, message);
+      switch (predicate) {
+        ConstantCharPredicate(constant: true) =>
+          AnyUnicodeCharacterParser.internal(predicate, message),
+        _ => UnicodeCharacterParser.internal(predicate, message),
+      };
 
   @internal
   UnicodeCharacterParser.internal(super.predicate, super.message)
@@ -28,18 +31,20 @@ class UnicodeCharacterParser extends CharacterParser {
   @override
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
-    var position = context.position;
+    final position = context.position;
     if (position < buffer.length) {
-      var codeUnit = buffer.codeUnitAt(position++);
-      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
-        final nextCodeUnit = buffer.codeUnitAt(position);
+      var codeUnit = buffer.codeUnitAt(position);
+      var nextPosition = position + 1;
+      if (_isLeadSurrogate(codeUnit) && nextPosition < buffer.length) {
+        final nextCodeUnit = buffer.codeUnitAt(nextPosition);
         if (_isTrailSurrogate(nextCodeUnit)) {
           codeUnit = _combineSurrogatePair(codeUnit, nextCodeUnit);
-          position++;
+          nextPosition++;
         }
       }
       if (predicate.test(codeUnit)) {
-        return context.success(String.fromCharCode(codeUnit), position);
+        return context.success(
+            buffer.substring(position, nextPosition), nextPosition);
       }
     }
     return context.failure(message);
@@ -78,17 +83,16 @@ class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
   @override
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
-    var position = context.position;
+    final position = context.position;
     if (position < buffer.length) {
-      var codeUnit = buffer.codeUnitAt(position++);
-      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
-        final nextCodeUnit = buffer.codeUnitAt(position);
-        if (_isTrailSurrogate(nextCodeUnit)) {
-          codeUnit = _combineSurrogatePair(codeUnit, nextCodeUnit);
-          position++;
-        }
+      var nextPosition = position + 1;
+      if (_isLeadSurrogate(buffer.codeUnitAt(position)) &&
+          nextPosition < buffer.length &&
+          _isTrailSurrogate(buffer.codeUnitAt(nextPosition))) {
+        nextPosition++;
       }
-      return context.success(String.fromCharCode(codeUnit), position);
+      return context.success(
+          buffer.substring(position, nextPosition), nextPosition);
     }
     return context.failure(message);
   }
@@ -96,12 +100,10 @@ class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
   @override
   int fastParseOn(String buffer, int position) {
     if (position < buffer.length) {
-      final codeUnit = buffer.codeUnitAt(position++);
-      if (_isLeadSurrogate(codeUnit) && position < buffer.length) {
-        final nextCodeUnit = buffer.codeUnitAt(position);
-        if (_isTrailSurrogate(nextCodeUnit)) {
-          position++;
-        }
+      if (_isLeadSurrogate(buffer.codeUnitAt(position++)) &&
+          position < buffer.length &&
+          _isTrailSurrogate(buffer.codeUnitAt(position))) {
+        position++;
       }
       return position;
     }

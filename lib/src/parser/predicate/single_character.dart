@@ -7,7 +7,8 @@ import '../character/predicates/constant.dart';
 import 'character.dart';
 import 'unicode_character.dart';
 
-/// Parser class an individual UTF-16 code unit satisfying a [predicate].
+/// Parser class for an individual UTF-16 code unit satisfying a
+/// [CharacterPredicate].
 ///
 /// This class parses characters equivalent to those that [String.codeUnitAt]
 /// or [String.codeUnits] returns. To decode surrogate pairs (characters that
@@ -15,9 +16,11 @@ import 'unicode_character.dart';
 /// should be used instead.
 class SingleCharacterParser extends CharacterParser {
   factory SingleCharacterParser(CharacterPredicate predicate, String message) =>
-      const ConstantCharPredicate(true) == predicate
-          ? AnySingleCharacterParser.internal(predicate, message)
-          : SingleCharacterParser.internal(predicate, message);
+      switch (predicate) {
+        ConstantCharPredicate(constant: true) =>
+          AnySingleCharacterParser.internal(predicate, message),
+        _ => SingleCharacterParser.internal(predicate, message),
+      };
 
   @internal
   SingleCharacterParser.internal(super.predicate, super.message)

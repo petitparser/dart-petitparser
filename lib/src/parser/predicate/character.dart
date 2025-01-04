@@ -18,9 +18,10 @@ abstract class CharacterParser extends Parser<String> {
   /// predicate.
   factory CharacterParser(CharacterPredicate predicate, String message,
           {bool unicode = false}) =>
-      unicode
-          ? UnicodeCharacterParser(predicate, message)
-          : SingleCharacterParser(predicate, message);
+      switch (unicode) {
+        false => SingleCharacterParser(predicate, message),
+        true => UnicodeCharacterParser(predicate, message),
+      };
 
   /// Internal constructor
   @internal
