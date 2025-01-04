@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show ListEquality;
 
+import '../../../shared/annotations.dart';
 import '../predicate.dart';
 import 'range.dart';
 
@@ -21,6 +22,8 @@ class RangesCharPredicate extends CharacterPredicate {
   final Uint32List ranges;
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   bool test(int value) {
     var min = 0;
     var max = ranges.length - 2;

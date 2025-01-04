@@ -29,6 +29,8 @@ class UnicodeCharacterParser extends CharacterParser {
       : super.internal();
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -51,6 +53,8 @@ class UnicodeCharacterParser extends CharacterParser {
   }
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   int fastParseOn(String buffer, int position) {
     if (position < buffer.length) {
       var codeUnit = buffer.codeUnitAt(position++);
@@ -81,6 +85,8 @@ class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
         super.internal();
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -98,6 +104,8 @@ class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
   }
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   int fastParseOn(String buffer, int position) {
     if (position < buffer.length) {
       if (_isLeadSurrogate(buffer.codeUnitAt(position++)) &&

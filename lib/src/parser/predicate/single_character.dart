@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/context.dart';
 import '../../core/result.dart';
+import '../../shared/annotations.dart';
 import '../character/predicate.dart';
 import '../character/predicates/constant.dart';
 import 'character.dart';
@@ -27,6 +28,8 @@ class SingleCharacterParser extends CharacterParser {
       : super.internal();
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -37,6 +40,8 @@ class SingleCharacterParser extends CharacterParser {
   }
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   int fastParseOn(String buffer, int position) =>
       position < buffer.length && predicate.test(buffer.codeUnitAt(position))
           ? position + 1
@@ -55,6 +60,8 @@ class AnySingleCharacterParser extends SingleCharacterParser {
         super.internal();
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -64,6 +71,8 @@ class AnySingleCharacterParser extends SingleCharacterParser {
   }
 
   @override
+  @noBoundsChecksVm
+  @noBoundsChecksJs
   int fastParseOn(String buffer, int position) =>
       position < buffer.length ? position + 1 : -1;
 }
