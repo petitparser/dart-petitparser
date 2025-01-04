@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show equalsIgnoreAsciiCase;
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
@@ -13,18 +14,14 @@ import 'predicate.dart';
 /// `'foo'`. Fails for any other input.
 @useResult
 Parser<String> string(String string,
-    {String? message, bool ignoreCase = false}) {
-  if (ignoreCase) {
-    final lowerCaseString = string.toLowerCase();
-    return predicate(
-        string.length,
-        (each) => lowerCaseString == each.toLowerCase(),
-        message ?? '"$string" (case-insensitive) expected');
-  } else {
-    return predicate(string.length, (each) => string == each,
-        message ?? '"$string" expected');
-  }
-}
+        {String? message, bool ignoreCase = false}) =>
+    ignoreCase
+        ? predicate(
+            string.length,
+            (value) => equalsIgnoreAsciiCase(string, value),
+            message ?? '"$string" (case-insensitive) expected')
+        : predicate(string.length, (value) => string == value,
+            message ?? '"$string" expected');
 
 @useResult
 @Deprecated('Use `string(value, ignoreCase: true)` instead')

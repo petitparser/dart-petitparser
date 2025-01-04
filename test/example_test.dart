@@ -79,10 +79,8 @@ void main() {
   });
   test('invalid string', () {
     expect(quoted, isParseFailure('"', position: 1, message: '""" expected'));
-    expect(
-        quoted, isParseFailure('"a', position: 2, message: '""" expected'));
-    expect(
-        quoted, isParseFailure('"ab', position: 3, message: '""" expected'));
+    expect(quoted, isParseFailure('"a', position: 2, message: '""" expected'));
+    expect(quoted, isParseFailure('"ab', position: 3, message: '""" expected'));
     expect(quoted, isParseFailure('a"', message: '""" expected'));
     expect(quoted, isParseFailure('ab"', message: '""" expected'));
   });
