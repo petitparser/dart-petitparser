@@ -78,13 +78,13 @@ void main() {
     expect(quoted, isParseSuccess('"abc"x', result: '"abc"', position: 5));
   });
   test('invalid string', () {
-    expect(quoted, isParseFailure('"', position: 1, message: '"\\"" expected'));
+    expect(quoted, isParseFailure('"', position: 1, message: '""" expected'));
     expect(
-        quoted, isParseFailure('"a', position: 2, message: '"\\"" expected'));
+        quoted, isParseFailure('"a', position: 2, message: '""" expected'));
     expect(
-        quoted, isParseFailure('"ab', position: 3, message: '"\\"" expected'));
-    expect(quoted, isParseFailure('a"', message: '"\\"" expected'));
-    expect(quoted, isParseFailure('ab"', message: '"\\"" expected'));
+        quoted, isParseFailure('"ab', position: 3, message: '""" expected'));
+    expect(quoted, isParseFailure('a"', message: '""" expected'));
+    expect(quoted, isParseFailure('ab"', message: '""" expected'));
   });
   test('return statement', () {
     expect(keyword, isParseSuccess('return f', result: 'f'));
@@ -103,7 +103,7 @@ void main() {
     expect(keyword,
         isParseFailure('return1', position: 6, message: 'whitespace expected'));
     expect(keyword,
-        isParseFailure('return  _', position: 8, message: '"\\"" expected'));
+        isParseFailure('return  _', position: 8, message: '""" expected'));
   });
   test('javadoc', () {
     expect(javadoc, isParseSuccess('/** foo */', result: '/** foo */'));

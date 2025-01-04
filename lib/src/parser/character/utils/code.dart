@@ -12,28 +12,16 @@ String toReadableString(String value, {required bool unicode}) {
 }
 
 String _toFormattedChar(int code) {
-  switch (code) {
-    case 0x08:
-      return r'\b'; // backspace
-    case 0x09:
-      return r'\t'; // horizontal tab
-    case 0x0A:
-      return r'\n'; // new line
-    case 0x0B:
-      return r'\v'; // vertical tab
-    case 0x0C:
-      return r'\f'; // form feed
-    case 0x0D:
-      return r'\r'; // carriage return
-    case 0x22:
-      return r'\"'; // double quote
-    case 0x27:
-      return r"\'"; // single quote
-    case 0x5C:
-      return r'\\'; // backslash
-  }
-  if (code < 0x20) {
-    return '\\x${code.toRadixString(16).padLeft(2, '0')}';
-  }
+  if (_escapes[code] case final value?) return value;
+  if (code < 0x20) return '\\x${code.toRadixString(16).padLeft(2, '0')}';
   return String.fromCharCode(code);
 }
+
+const _escapes = {
+  0x0a: r'\n', // new line
+  0x0d: r'\r', // carriage return
+  0x0c: r'\f', // form feed
+  0x08: r'\b', // backspace
+  0x09: r'\t', // horizontal tab
+  0x0b: r'\v', // vertical tab
+};
