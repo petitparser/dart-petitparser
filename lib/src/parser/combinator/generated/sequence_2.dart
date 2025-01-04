@@ -10,17 +10,14 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 2 parsers passed as argument in
-/// sequence and returns a [Record] with 2 positional parse results.
+/// sequence and returns a [Record] with the 2 positional parse results.
 ///
 /// For example,
 /// the parser `seq2(char('a'), char('b'))`
 /// returns `('a', 'b')`
 /// for the input `'ab'`.
 @useResult
-Parser<(R1, R2)> seq2<R1, R2>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-) =>
+Parser<(R1, R2)> seq2<R1, R2>(Parser<R1> parser1, Parser<R2> parser2) =>
     SequenceParser2<R1, R2>(parser1, parser2);
 
 /// Extensions on a [Record] with 2 positional [Parser]s.

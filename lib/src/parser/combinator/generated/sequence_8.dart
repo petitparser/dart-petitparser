@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 8 parsers passed as argument in
-/// sequence and returns a [Record] with 8 positional parse results.
+/// sequence and returns a [Record] with the 8 positional parse results.
 ///
 /// For example,
 /// the parser `seq8(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'), char('g'), char('h'))`
@@ -18,15 +18,14 @@ import '../../utils/sequential.dart';
 /// for the input `'abcdefgh'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-  Parser<R4> parser4,
-  Parser<R5> parser5,
-  Parser<R6> parser6,
-  Parser<R7> parser7,
-  Parser<R8> parser8,
-) =>
+        Parser<R1> parser1,
+        Parser<R2> parser2,
+        Parser<R3> parser3,
+        Parser<R4> parser4,
+        Parser<R5> parser5,
+        Parser<R6> parser6,
+        Parser<R7> parser7,
+        Parser<R8> parser8) =>
     SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
         parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8);
 

@@ -10,19 +10,15 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 4 parsers passed as argument in
-/// sequence and returns a [Record] with 4 positional parse results.
+/// sequence and returns a [Record] with the 4 positional parse results.
 ///
 /// For example,
 /// the parser `seq4(char('a'), char('b'), char('c'), char('d'))`
 /// returns `('a', 'b', 'c', 'd')`
 /// for the input `'abcd'`.
 @useResult
-Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-  Parser<R4> parser4,
-) =>
+Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(Parser<R1> parser1,
+        Parser<R2> parser2, Parser<R3> parser3, Parser<R4> parser4) =>
     SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
 /// Extensions on a [Record] with 4 positional [Parser]s.

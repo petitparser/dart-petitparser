@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 5 parsers passed as argument in
-/// sequence and returns a [Record] with 5 positional parse results.
+/// sequence and returns a [Record] with the 5 positional parse results.
 ///
 /// For example,
 /// the parser `seq5(char('a'), char('b'), char('c'), char('d'), char('e'))`
@@ -18,12 +18,11 @@ import '../../utils/sequential.dart';
 /// for the input `'abcde'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-  Parser<R4> parser4,
-  Parser<R5> parser5,
-) =>
+        Parser<R1> parser1,
+        Parser<R2> parser2,
+        Parser<R3> parser3,
+        Parser<R4> parser4,
+        Parser<R5> parser5) =>
     SequenceParser5<R1, R2, R3, R4, R5>(
         parser1, parser2, parser3, parser4, parser5);
 

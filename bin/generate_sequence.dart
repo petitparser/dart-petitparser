@@ -49,7 +49,7 @@ Future<void> generateImplementation(int index) async {
   // Constructor function.
   out.writeln('/// Creates a [Parser] that consumes the $index parsers passed '
       'as argument in ');
-  out.writeln('/// sequence and returns a [Record] with $index positional '
+  out.writeln('/// sequence and returns a [Record] with the $index positional '
       'parse results.');
   out.writeln('///');
   out.writeln('/// For example,');
@@ -60,11 +60,13 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
   out.writeln('Parser<(${resultTypes.join(', ')})> '
-      'seq$index<${resultTypes.join(', ')}>(');
-  for (var i = 0; i < index; i++) {
-    out.writeln('Parser<${resultTypes[i]}> ${parserNames[i]},');
-  }
-  out.writeln(') => SequenceParser$index<${resultTypes.join(', ')}>('
+      'seq$index<${resultTypes.join(', ')}>('
+      '${[
+    for (var i = 0; i < index; i++)
+      'Parser<${resultTypes[i]}> ${parserNames[i]}'
+  ].join(', ')}'
+      ') => ');
+  out.writeln('SequenceParser$index<${resultTypes.join(', ')}>('
       '${parserNames.join(', ')});');
   out.writeln();
 

@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 3 parsers passed as argument in
-/// sequence and returns a [Record] with 3 positional parse results.
+/// sequence and returns a [Record] with the 3 positional parse results.
 ///
 /// For example,
 /// the parser `seq3(char('a'), char('b'), char('c'))`
@@ -18,10 +18,7 @@ import '../../utils/sequential.dart';
 /// for the input `'abc'`.
 @useResult
 Parser<(R1, R2, R3)> seq3<R1, R2, R3>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-) =>
+        Parser<R1> parser1, Parser<R2> parser2, Parser<R3> parser3) =>
     SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 
 /// Extensions on a [Record] with 3 positional [Parser]s.
