@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show equalsIgnoreAsciiCase;
 import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
@@ -49,8 +50,7 @@ Parser<String> string(String element, [String? message]) => predicate(
 /// For example, `stringIgnoreCase('foo')` succeeds and consumes the input
 /// string `'Foo'` or `'FOO'`. Fails for any other input.
 @useResult
-Parser<String> stringIgnoreCase(String element, [String? message]) {
-  final lowerElement = element.toLowerCase();
-  return predicate(element.length, (each) => lowerElement == each.toLowerCase(),
-      message ?? '"$element" (case-insensitive) expected');
-}
+Parser<String> stringIgnoreCase(String element, [String? message]) => predicate(
+    element.length,
+    (value) => equalsIgnoreAsciiCase(element, value),
+    message ?? '"$element" (case-insensitive) expected');
