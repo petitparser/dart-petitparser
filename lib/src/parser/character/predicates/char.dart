@@ -1,20 +1,20 @@
 import '../predicate.dart';
 
-class SingleCharPredicate extends CharacterPredicate {
-  const SingleCharPredicate(this.value);
+final class SingleCharPredicate extends CharacterPredicate {
+  const SingleCharPredicate(this.charCode);
 
-  final int value;
+  final int charCode;
 
   @override
-  bool test(int value) => identical(this.value, value);
+  bool test(int charCode) => this.charCode == charCode;
 
   @override
   bool operator ==(Object other) =>
-      other is SingleCharPredicate && value == other.value;
+      other is SingleCharPredicate && charCode == other.charCode;
 
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => charCode.hashCode;
 
   @override
-  String toString() => '${super.toString()}($value)';
+  String toString() => '${super.toString()}($charCode)';
 }

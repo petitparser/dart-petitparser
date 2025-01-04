@@ -1,12 +1,12 @@
 import '../predicate.dart';
 
-class ConstantCharPredicate extends CharacterPredicate {
+final class ConstantCharPredicate extends CharacterPredicate {
   const ConstantCharPredicate(this.constant);
 
   final bool constant;
 
   @override
-  bool test(int value) => constant;
+  bool test(int charCode) => constant;
 
   @override
   bool operator ==(Object other) =>

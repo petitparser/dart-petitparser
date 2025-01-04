@@ -1,6 +1,6 @@
 import '../predicate.dart';
 
-class RangeCharPredicate extends CharacterPredicate {
+final class RangeCharPredicate extends CharacterPredicate {
   const RangeCharPredicate(this.start, this.stop)
       : assert(start <= stop, 'Invalid range character range: $start-$stop');
 
@@ -8,7 +8,7 @@ class RangeCharPredicate extends CharacterPredicate {
   final int stop;
 
   @override
-  bool test(int value) => start <= value && value <= stop;
+  bool test(int charCode) => start <= charCode && charCode <= stop;
 
   @override
   bool operator ==(Object other) =>

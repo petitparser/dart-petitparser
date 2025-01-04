@@ -1,10 +1,10 @@
 import '../predicate.dart';
 
-class DigitCharPredicate extends CharacterPredicate {
+final class DigitCharPredicate extends CharacterPredicate {
   const DigitCharPredicate();
 
   @override
-  bool test(int value) => 48 <= value && value <= 57;
+  bool test(int charCode) => 48 <= charCode && charCode <= 57;
 
   @override
   bool operator ==(Object other) => other is DigitCharPredicate;

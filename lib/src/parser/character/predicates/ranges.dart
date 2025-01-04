@@ -6,7 +6,7 @@ import '../../../shared/annotations.dart';
 import '../predicate.dart';
 import 'range.dart';
 
-class RangesCharPredicate extends CharacterPredicate {
+final class RangesCharPredicate extends CharacterPredicate {
   factory RangesCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges) {
     final flattened = Uint32List(size(ranges));
     var i = 0;
@@ -24,14 +24,14 @@ class RangesCharPredicate extends CharacterPredicate {
   @override
   @noBoundsChecksVm
   @noBoundsChecksJs
-  bool test(int value) {
+  bool test(int charCode) {
     var min = 0;
     var max = ranges.length - 2;
     while (min <= max) {
       final mid = (min + ((max - min) >> 1)) & ~1;
-      if (ranges[mid] <= value && value <= ranges[mid + 1]) {
+      if (ranges[mid] <= charCode && charCode <= ranges[mid + 1]) {
         return true;
-      } else if (value < ranges[mid]) {
+      } else if (charCode < ranges[mid]) {
         max = mid - 2;
       } else {
         min = mid + 2;

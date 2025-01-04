@@ -5,8 +5,8 @@ import 'package:meta/meta.dart';
 abstract class CharacterPredicate {
   const CharacterPredicate();
 
-  /// Tests if the unicode code point [value] satisfies ths predicate.
-  bool test(int value);
+  /// Tests if the [charCode] satisfies the predicate.
+  bool test(int charCode);
 
   @override
   bool operator ==(Object other);

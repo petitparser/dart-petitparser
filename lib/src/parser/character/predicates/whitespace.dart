@@ -1,48 +1,25 @@
 import '../predicate.dart';
 
-class WhitespaceCharPredicate extends CharacterPredicate {
+final class WhitespaceCharPredicate extends CharacterPredicate {
   const WhitespaceCharPredicate();
 
   @override
-  bool test(int value) {
-    if (value < 256) {
-      switch (value) {
-        case 0x09:
-        case 0x0A:
-        case 0x0B:
-        case 0x0C:
-        case 0x0D:
-        case 0x20:
-        case 0x85:
-        case 0xA0:
-          return true;
-        default:
-          return false;
-      }
+  bool test(int charCode) {
+    // The following code is adapted from the Dart SDK:
+    // https://github.com/dart-lang/sdk/blob/2ad44521dc99c2dfa924c3a7867e8baad6e78359/sdk/lib/_internal/wasm/lib/string.dart#L563
+    if (charCode <= 32) {
+      return (charCode == 32) || ((charCode <= 13) && (charCode >= 9));
     }
-    switch (value) {
-      case 0x1680:
-      case 0x2000:
-      case 0x2001:
-      case 0x2002:
-      case 0x2003:
-      case 0x2004:
-      case 0x2005:
-      case 0x2006:
-      case 0x2007:
-      case 0x2008:
-      case 0x2009:
-      case 0x200A:
-      case 0x2028:
-      case 0x2029:
-      case 0x202F:
-      case 0x205F:
-      case 0x3000:
-      case 0xFEFF:
-        return true;
-      default:
-        return false;
-    }
+    if (charCode < 0x85) return false;
+    if ((charCode == 0x85) || (charCode == 0xA0)) return true;
+    return (charCode <= 0x200A)
+        ? ((charCode == 0x1680) || (0x2000 <= charCode))
+        : ((charCode == 0x2028) ||
+            (charCode == 0x2029) ||
+            (charCode == 0x202F) ||
+            (charCode == 0x205F) ||
+            (charCode == 0x3000) ||
+            (charCode == 0xFEFF));
   }
 
   @override

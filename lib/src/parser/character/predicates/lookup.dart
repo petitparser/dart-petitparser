@@ -6,7 +6,7 @@ import '../../../shared/annotations.dart';
 import '../predicate.dart';
 import 'range.dart';
 
-class LookupCharPredicate extends CharacterPredicate {
+final class LookupCharPredicate extends CharacterPredicate {
   LookupCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
       : start = ranges.first.start,
         stop = ranges.last.stop,
@@ -24,11 +24,12 @@ class LookupCharPredicate extends CharacterPredicate {
 
   final int start;
   final int stop;
+
   final Uint32List bits;
 
   @override
-  bool test(int value) =>
-      start <= value && value <= stop && _testBit(value - start);
+  bool test(int charCode) =>
+      start <= charCode && charCode <= stop && _testBit(charCode - start);
 
   @inlineJs
   @inlineVm

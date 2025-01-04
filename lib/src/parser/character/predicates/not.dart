@@ -1,12 +1,12 @@
 import '../predicate.dart';
 
-class NotCharPredicate extends CharacterPredicate {
+final class NotCharPredicate extends CharacterPredicate {
   const NotCharPredicate(this.predicate);
 
   final CharacterPredicate predicate;
 
   @override
-  bool test(int value) => !predicate.test(value);
+  bool test(int charCode) => !predicate.test(charCode);
 
   @override
   bool operator ==(Object other) =>
