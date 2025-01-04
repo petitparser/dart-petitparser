@@ -157,7 +157,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Converts this [Record] with $index positional values to '
       'a new type [R] using');
   out.writeln('/// the provided [callback] with $index positional arguments.');
-  out.writeln('@inlineVm @inlineJs');
+  out.writeln('@inline');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln('}');

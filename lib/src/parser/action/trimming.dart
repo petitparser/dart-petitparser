@@ -55,8 +55,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
     return result < 0 ? -1 : _trim(right, buffer, result);
   }
 
-  @inlineVm
-  @inlineJs
+  @inline
   int _trim(Parser parser, String buffer, int position) {
     for (;;) {
       final result = parser.fastParseOn(buffer, position);

@@ -99,8 +99,7 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
 extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Converts this [Record] with 4 positional values to a new type [R] using
   /// the provided [callback] with 4 positional arguments.
-  @inlineVm
-  @inlineJs
+  @inline
   R map<R>(R Function(T1, T2, T3, T4) callback) => callback($1, $2, $3, $4);
 }
 

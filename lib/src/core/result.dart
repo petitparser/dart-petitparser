@@ -34,9 +34,11 @@ class Success<R> extends Result<R> {
   bool get isSuccess => true;
 
   @override
+  @inlineVm
   final R value;
 
   @override
+  @inlineVm
   String get message =>
       throw UnsupportedError('Successful parse results do not have a message.');
 
@@ -53,9 +55,11 @@ class Failure extends Result<Never> {
   bool get isFailure => true;
 
   @override
+  @inlineVm
   Never get value => throw ParserException(this);
 
   @override
+  @inlineVm
   final String message;
 
   @override

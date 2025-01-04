@@ -118,8 +118,7 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
 extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   /// Converts this [Record] with 5 positional values to a new type [R] using
   /// the provided [callback] with 5 positional arguments.
-  @inlineVm
-  @inlineJs
+  @inline
   R map<R>(R Function(T1, T2, T3, T4, T5) callback) =>
       callback($1, $2, $3, $4, $5);
 }

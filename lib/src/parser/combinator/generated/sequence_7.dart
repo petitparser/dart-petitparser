@@ -145,8 +145,7 @@ extension RecordOfValuesExtension7<T1, T2, T3, T4, T5, T6, T7> on (
 ) {
   /// Converts this [Record] with 7 positional values to a new type [R] using
   /// the provided [callback] with 7 positional arguments.
-  @inlineVm
-  @inlineJs
+  @inline
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7) callback) =>
       callback($1, $2, $3, $4, $5, $6, $7);
 }

@@ -22,8 +22,7 @@ final class RangesCharPredicate extends CharacterPredicate {
   final Uint32List ranges;
 
   @override
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @noBoundsChecks
   bool test(int charCode) {
     var min = 0;
     var max = ranges.length - 2;

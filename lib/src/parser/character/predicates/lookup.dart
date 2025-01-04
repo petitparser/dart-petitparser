@@ -31,10 +31,8 @@ final class LookupCharPredicate extends CharacterPredicate {
   bool test(int charCode) =>
       start <= charCode && charCode <= stop && _testBit(charCode - start);
 
-  @inlineJs
-  @inlineVm
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @inline
+  @noBoundsChecks
   bool _testBit(int value) =>
       (bits[value >> _shift] & _mask[value & _offset]) != 0;
 

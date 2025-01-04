@@ -18,15 +18,13 @@ class Context {
   final int position;
 
   /// Returns a result indicating a parse success.
-  @inlineVm
-  @inlineJs
+  @inline
   @useResult
   Success<R> success<R>(R result, [int? position]) =>
       Success<R>(buffer, position ?? this.position, result);
 
   /// Returns a result indicating a parse failure.
-  @inlineVm
-  @inlineJs
+  @inline
   @useResult
   Failure failure(String message, [int? position]) =>
       Failure(buffer, position ?? this.position, message);

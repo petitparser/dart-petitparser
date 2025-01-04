@@ -28,8 +28,7 @@ class SingleCharacterParser extends CharacterParser {
       : super.internal();
 
   @override
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -40,8 +39,7 @@ class SingleCharacterParser extends CharacterParser {
   }
 
   @override
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) =>
       position < buffer.length && predicate.test(buffer.codeUnitAt(position))
           ? position + 1
@@ -60,8 +58,7 @@ class AnySingleCharacterParser extends SingleCharacterParser {
         super.internal();
 
   @override
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -71,8 +68,7 @@ class AnySingleCharacterParser extends SingleCharacterParser {
   }
 
   @override
-  @noBoundsChecksVm
-  @noBoundsChecksJs
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) =>
       position < buffer.length ? position + 1 : -1;
 }

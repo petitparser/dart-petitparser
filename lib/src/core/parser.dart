@@ -135,8 +135,7 @@ abstract class Parser<R> {
   /// makes it possible to wrap the parser without loosing type information.
   @internal
   @nonVirtual
-  @inlineVm
-  @inlineJs
+  @inline
   T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
       callback<R>(this);
 
