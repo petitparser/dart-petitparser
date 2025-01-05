@@ -9,12 +9,9 @@ const isParserException = TypeMatcher<ParserException>();
 
 /// Returns `true`, if assertions are enabled.
 bool hasAssertionsEnabled() {
-  try {
-    assert(false);
-    return false;
-  } catch (exception) {
-    return true;
-  }
+  var hasAssertions = false;
+  assert(hasAssertions = true);
+  return hasAssertions;
 }
 
 /// Returns a [Matcher] that asserts on a [AssertionError].

@@ -41,7 +41,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../../core/context.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
   out.writeln('import \'../../../core/result.dart\';');
-  out.writeln('import \'../../../shared/annotations.dart\';');
+  out.writeln('import \'../../../shared/pragma.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
@@ -157,7 +157,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Converts this [Record] with $index positional values to '
       'a new type [R] using');
   out.writeln('/// the provided [callback] with $index positional arguments.');
-  out.writeln('@inline');
+  out.writeln('@preferInline');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln('}');

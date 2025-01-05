@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../core/context.dart';
 import '../../core/result.dart';
-import '../../shared/annotations.dart';
+import '../../shared/pragma.dart';
 import '../character/predicate.dart';
 import '../character/predicates/constant.dart';
 import 'character.dart';

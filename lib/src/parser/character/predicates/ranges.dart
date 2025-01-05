@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show ListEquality;
 
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../predicate.dart';
 import 'range.dart';
 

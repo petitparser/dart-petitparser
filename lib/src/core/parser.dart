@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../shared/annotations.dart';
+import '../shared/pragma.dart';
 import 'context.dart';
 import 'result.dart';
 
@@ -135,7 +135,7 @@ abstract class Parser<R> {
   /// makes it possible to wrap the parser without loosing type information.
   @internal
   @nonVirtual
-  @inline
+  @preferInline
   T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
       callback<R>(this);
 

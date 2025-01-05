@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -99,7 +99,7 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
 extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Converts this [Record] with 4 positional values to a new type [R] using
   /// the provided [callback] with 4 positional arguments.
-  @inline
+  @preferInline
   R map<R>(R Function(T1, T2, T3, T4) callback) => callback($1, $2, $3, $4);
 }
 

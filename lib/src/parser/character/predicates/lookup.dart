@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show ListEquality;
 
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../predicate.dart';
 import 'range.dart';
 
@@ -31,7 +31,7 @@ final class LookupCharPredicate extends CharacterPredicate {
   bool test(int charCode) =>
       start <= charCode && charCode <= stop && _testBit(charCode - start);
 
-  @inline
+  @preferInline
   @noBoundsChecks
   bool _testBit(int value) =>
       (bits[value >> _shift] & _mask[value & _offset]) != 0;

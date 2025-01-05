@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -78,7 +78,7 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
 extension RecordOfValuesExtension2<T1, T2> on (T1, T2) {
   /// Converts this [Record] with 2 positional values to a new type [R] using
   /// the provided [callback] with 2 positional arguments.
-  @inline
+  @preferInline
   R map<R>(R Function(T1, T2) callback) => callback($1, $2);
 }
 

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
@@ -177,7 +177,7 @@ extension RecordOfValuesExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
 ) {
   /// Converts this [Record] with 9 positional values to a new type [R] using
   /// the provided [callback] with 9 positional arguments.
-  @inline
+  @preferInline
   R map<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback) =>
       callback($1, $2, $3, $4, $5, $6, $7, $8, $9);
 }
