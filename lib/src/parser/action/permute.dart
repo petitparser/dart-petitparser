@@ -30,9 +30,10 @@ class PermuteParser<R> extends DelegateParser<List<R>, List<R>> {
     final result = delegate.parseOn(context);
     if (result is Failure) return result;
     final value = result.value;
-    final values = indexes
-        .map((index) => value[index < 0 ? value.length + index : index])
-        .toList(growable: false);
+    final values = List.generate(indexes.length, (i) {
+      final index = indexes[i];
+      return value[index < 0 ? value.length + index : index];
+    }, growable: false);
     return result.success(values);
   }
 
