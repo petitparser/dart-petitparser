@@ -32,7 +32,7 @@ class RangesCharPredicate implements CharacterPredicate {
       other is RangesCharPredicate &&
       length == other.length &&
       _listEquality.equals(starts, other.starts) &&
-      _listEquality.equals(stops, other.stops) ;
+      _listEquality.equals(stops, other.stops);
 }
 
 const _listEquality = ListEquality<int>();
