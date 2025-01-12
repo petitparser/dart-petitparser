@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart' show ListEquality;
+
 import 'predicate.dart';
 
 class RangesCharPredicate implements CharacterPredicate {
@@ -29,6 +31,8 @@ class RangesCharPredicate implements CharacterPredicate {
   bool isEqualTo(CharacterPredicate other) =>
       other is RangesCharPredicate &&
       length == other.length &&
-      starts == other.starts &&
-      stops == other.stops;
+      _listEquality.equals(starts, other.starts) &&
+      _listEquality.equals(stops, other.stops) ;
 }
+
+const _listEquality = ListEquality<int>();
