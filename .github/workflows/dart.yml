@@ -20,7 +20,7 @@ jobs:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
       - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
       - name: "Dependencies"
