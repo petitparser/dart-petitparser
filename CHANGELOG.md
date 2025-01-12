@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.1.0
+
+* Improve documentation and fix broken links.
+* Prevent infinite recursion in repeating parsers.
+* Improve performance of case-insensitive string matching and the permutation parser.
+* Make the `loopback` variable in the expression builder public (thanks to [joranmulderij](https://github.com/joranmulderij)).
+* Fix various bugs in equality testing of character predicates (thanks to [North101](https://github.com/North101)).
+
 ## 6.0.0
 
 * Dart 3.0 requirement.
