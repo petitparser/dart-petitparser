@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 import '../../shared/types.dart';
 
 /// Returns a parser that reads input of the specified [length], accepts
@@ -27,6 +28,7 @@ class PredicateParser extends Parser<String> {
   final String message;
 
   @override
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final start = context.position;
     final stop = start + length;
@@ -38,6 +40,7 @@ class PredicateParser extends Parser<String> {
   }
 
   @override
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) {
     final stop = position + length;
     return stop <= buffer.length && predicate(buffer.substring(position, stop))

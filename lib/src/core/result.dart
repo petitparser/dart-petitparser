@@ -1,9 +1,10 @@
-import '../shared/annotations.dart';
+import '../shared/pragma.dart';
 import 'context.dart';
 import 'exception.dart';
 
 /// An immutable parse result that is either a [Success] or a [Failure].
 sealed class Result<R> extends Context {
+  @preferInline
   const Result(super.buffer, super.position);
 
   /// Returns `true` if this result indicates a parse success.
@@ -16,17 +17,16 @@ sealed class Result<R> extends Context {
 
   /// Returns the parsed value of this result, or throws a [ParserException]
   /// if this is a parse failure.
-  @inlineVm
   R get value;
 
   /// Returns the error message of this result, or throws an [UnsupportedError]
   /// if this is a parse success.
-  @inlineVm
   String get message;
 }
 
 /// An immutable successful parse result.
 class Success<R> extends Result<R> {
+  @preferInline
   const Success(super.buffer, super.position, this.value);
 
   @override
@@ -46,6 +46,7 @@ class Success<R> extends Result<R> {
 
 /// An immutable failed parse result.
 class Failure extends Result<Never> {
+  @preferInline
   const Failure(super.buffer, super.position, this.message);
 
   @override

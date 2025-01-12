@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
-import '../../shared/annotations.dart';
+import '../../shared/pragma.dart';
 import '../character/whitespace.dart';
 import '../combinator/delegate.dart';
 import '../utils/sequential.dart';
@@ -55,8 +55,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
     return result < 0 ? -1 : _trim(right, buffer, result);
   }
 
-  @inlineVm
-  @inlineJs
+  @preferInline
   int _trim(Parser parser, String buffer, int position) {
     for (;;) {
       final result = parser.fastParseOn(buffer, position);

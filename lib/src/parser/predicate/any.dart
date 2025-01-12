@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 
 /// Returns a parser that accepts any input element.
 ///
@@ -24,6 +25,7 @@ class AnyCharacterParser extends Parser<String> {
   final String message;
 
   @override
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;

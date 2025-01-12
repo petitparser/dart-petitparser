@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 import '../action/flatten.dart';
 import '../character/constant.dart';
 import '../character/predicate.dart';
@@ -96,6 +97,7 @@ class RepeatingCharacterParser extends Parser<String> {
   final int max;
 
   @override
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final start = context.position;
@@ -120,6 +122,7 @@ class RepeatingCharacterParser extends Parser<String> {
   }
 
   @override
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) {
     final end = buffer.length;
     var count = 0;

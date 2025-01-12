@@ -5,22 +5,19 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 2 parsers passed as argument in
-/// sequence and returns a [Record] with 2 positional parse results.
+/// sequence and returns a [Record] with the 2 positional parse results.
 ///
 /// For example,
 /// the parser `seq2(char('a'), char('b'))`
 /// returns `('a', 'b')`
 /// for the input `'ab'`.
 @useResult
-Parser<(R1, R2)> seq2<R1, R2>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-) =>
+Parser<(R1, R2)> seq2<R1, R2>(Parser<R1> parser1, Parser<R2> parser2) =>
     SequenceParser2<R1, R2>(parser1, parser2);
 
 /// Extensions on a [Record] with 2 positional [Parser]s.
@@ -80,27 +77,23 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
 /// Extension on a [Record] with 2 positional values.
 extension RecordOfValuesExtension2<T1, T2> on (T1, T2) {
   /// Returns the first element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
   /// Returns the second element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
   /// Returns the last element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get last => $2;
 
   /// Converts this [Record] with 2 positional values to a new type [R] using
   /// the provided [callback] with 2 positional arguments.
-  @inlineVm
-  @inlineJs
+  @preferInline
   R map<R>(R Function(T1, T2) callback) => callback($1, $2);
 }
 

@@ -5,12 +5,12 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 5 parsers passed as argument in
-/// sequence and returns a [Record] with 5 positional parse results.
+/// sequence and returns a [Record] with the 5 positional parse results.
 ///
 /// For example,
 /// the parser `seq5(char('a'), char('b'), char('c'), char('d'), char('e'))`
@@ -18,12 +18,11 @@ import '../../utils/sequential.dart';
 /// for the input `'abcde'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-  Parser<R4> parser4,
-  Parser<R5> parser5,
-) =>
+        Parser<R1> parser1,
+        Parser<R2> parser2,
+        Parser<R3> parser3,
+        Parser<R4> parser4,
+        Parser<R5> parser5) =>
     SequenceParser5<R1, R2, R3, R4, R5>(
         parser1, parser2, parser3, parser4, parser5);
 
@@ -118,45 +117,38 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
 /// Extension on a [Record] with 5 positional values.
 extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
   /// Returns the first element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
   /// Returns the second element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
   /// Returns the third element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
   /// Returns the fourth element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get fourth => $4;
 
   /// Returns the fifth element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $5')
   T5 get fifth => $5;
 
   /// Returns the last element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $5')
   T5 get last => $5;
 
   /// Converts this [Record] with 5 positional values to a new type [R] using
   /// the provided [callback] with 5 positional arguments.
-  @inlineVm
-  @inlineJs
+  @preferInline
   R map<R>(R Function(T1, T2, T3, T4, T5) callback) =>
       callback($1, $2, $3, $4, $5);
 }

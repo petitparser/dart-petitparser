@@ -5,24 +5,20 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 4 parsers passed as argument in
-/// sequence and returns a [Record] with 4 positional parse results.
+/// sequence and returns a [Record] with the 4 positional parse results.
 ///
 /// For example,
 /// the parser `seq4(char('a'), char('b'), char('c'), char('d'))`
 /// returns `('a', 'b', 'c', 'd')`
 /// for the input `'abcd'`.
 @useResult
-Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-  Parser<R4> parser4,
-) =>
+Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(Parser<R1> parser1,
+        Parser<R2> parser2, Parser<R3> parser3, Parser<R4> parser4) =>
     SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
 /// Extensions on a [Record] with 4 positional [Parser]s.
@@ -102,39 +98,33 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
 /// Extension on a [Record] with 4 positional values.
 extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
   /// Returns the first element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
   /// Returns the second element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
   /// Returns the third element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
   /// Returns the fourth element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get fourth => $4;
 
   /// Returns the last element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $4')
   T4 get last => $4;
 
   /// Converts this [Record] with 4 positional values to a new type [R] using
   /// the provided [callback] with 4 positional arguments.
-  @inlineVm
-  @inlineJs
+  @preferInline
   R map<R>(R Function(T1, T2, T3, T4) callback) => callback($1, $2, $3, $4);
 }
 

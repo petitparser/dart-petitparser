@@ -55,7 +55,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../../core/context.dart\';');
   out.writeln('import \'../../../core/parser.dart\';');
   out.writeln('import \'../../../core/result.dart\';');
-  out.writeln('import \'../../../shared/annotations.dart\';');
+  out.writeln('import \'../../../shared/pragma.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
   out.writeln();
@@ -63,7 +63,7 @@ Future<void> generateImplementation(int index) async {
   // Constructor function.
   out.writeln('/// Creates a [Parser] that consumes the $index parsers passed '
       'as argument in ');
-  out.writeln('/// sequence and returns a [Record] with $index positional '
+  out.writeln('/// sequence and returns a [Record] with the $index positional '
       'parse results.');
   out.writeln('///');
   out.writeln('/// For example,');
@@ -74,11 +74,13 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// for the input `\'${characters.join()}\'`.');
   out.writeln('@useResult');
   out.writeln('Parser<(${resultTypes.join(', ')})> '
-      'seq$index<${resultTypes.join(', ')}>(');
-  for (var i = 0; i < index; i++) {
-    out.writeln('Parser<${resultTypes[i]}> ${parserNames[i]},');
-  }
-  out.writeln(') => SequenceParser$index<${resultTypes.join(', ')}>('
+      'seq$index<${resultTypes.join(', ')}>('
+      '${[
+    for (var i = 0; i < index; i++)
+      'Parser<${resultTypes[i]}> ${parserNames[i]}'
+  ].join(', ')}'
+      ') => ');
+  out.writeln('SequenceParser$index<${resultTypes.join(', ')}>('
       '${parserNames.join(', ')});');
   out.writeln();
 
@@ -168,14 +170,14 @@ Future<void> generateImplementation(int index) async {
       '(${valueTypes.join(', ')}) {');
   for (var i = 0; i < index; i++) {
     out.writeln('/// Returns the ${ordinalNames[i]} element of this record.');
-    out.writeln('@inlineVm @inlineJs');
+    out.writeln('@preferInline');
     out.writeln('@Deprecated(r\'Instead use the canonical accessor '
         '${valueNames[i]}\')');
     out.writeln('${valueTypes[i]} get ${ordinalNames[i]} => ${valueNames[i]};');
     out.writeln();
   }
   out.writeln('/// Returns the last element of this record.');
-  out.writeln('@inlineVm @inlineJs');
+  out.writeln('@preferInline');
   out.writeln('@Deprecated(r\'Instead use the canonical accessor '
       '${valueNames.last}\')');
   out.writeln('${valueTypes.last} get last => ${valueNames.last};');
@@ -183,7 +185,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln('/// Converts this [Record] with $index positional values to '
       'a new type [R] using');
   out.writeln('/// the provided [callback] with $index positional arguments.');
-  out.writeln('@inlineVm @inlineJs');
+  out.writeln('@preferInline');
   out.writeln('R map<R>(R Function(${valueTypes.join(', ')}) callback) => '
       'callback(${valueNames.join(', ')});');
   out.writeln('}');

@@ -5,12 +5,12 @@ import 'package:meta/meta.dart';
 import '../../../core/context.dart';
 import '../../../core/parser.dart';
 import '../../../core/result.dart';
-import '../../../shared/annotations.dart';
+import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
 
 /// Creates a [Parser] that consumes the 3 parsers passed as argument in
-/// sequence and returns a [Record] with 3 positional parse results.
+/// sequence and returns a [Record] with the 3 positional parse results.
 ///
 /// For example,
 /// the parser `seq3(char('a'), char('b'), char('c'))`
@@ -18,10 +18,7 @@ import '../../utils/sequential.dart';
 /// for the input `'abc'`.
 @useResult
 Parser<(R1, R2, R3)> seq3<R1, R2, R3>(
-  Parser<R1> parser1,
-  Parser<R2> parser2,
-  Parser<R3> parser3,
-) =>
+        Parser<R1> parser1, Parser<R2> parser2, Parser<R3> parser3) =>
     SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 
 /// Extensions on a [Record] with 3 positional [Parser]s.
@@ -93,33 +90,28 @@ class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
 /// Extension on a [Record] with 3 positional values.
 extension RecordOfValuesExtension3<T1, T2, T3> on (T1, T2, T3) {
   /// Returns the first element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $1')
   T1 get first => $1;
 
   /// Returns the second element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $2')
   T2 get second => $2;
 
   /// Returns the third element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get third => $3;
 
   /// Returns the last element of this record.
-  @inlineVm
-  @inlineJs
+  @preferInline
   @Deprecated(r'Instead use the canonical accessor $3')
   T3 get last => $3;
 
   /// Converts this [Record] with 3 positional values to a new type [R] using
   /// the provided [callback] with 3 positional arguments.
-  @inlineVm
-  @inlineJs
+  @preferInline
   R map<R>(R Function(T1, T2, T3) callback) => callback($1, $2, $3);
 }
 

@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 import '../utils/failure_joiner.dart';
 import 'list.dart';
 
@@ -62,6 +63,7 @@ class ChoiceParser<R> extends ListParser<R, R> {
   final FailureJoiner failureJoiner;
 
   @override
+  @noBoundsChecks
   Result<R> parseOn(Context context) {
     // Check the first choice:
     final result = children[0].parseOn(context);
@@ -77,6 +79,7 @@ class ChoiceParser<R> extends ListParser<R, R> {
   }
 
   @override
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) {
     var result = -1;
     for (var i = 0; i < children.length; i++) {

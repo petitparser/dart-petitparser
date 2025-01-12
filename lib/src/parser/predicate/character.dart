@@ -1,6 +1,7 @@
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 import '../character/predicate.dart';
 
 /// Alias for deprecated class name.
@@ -18,6 +19,7 @@ class SingleCharacterParser extends Parser<String> {
   final String message;
 
   @override
+  @noBoundsChecks
   Result<String> parseOn(Context context) {
     final buffer = context.buffer;
     final position = context.position;
@@ -29,6 +31,7 @@ class SingleCharacterParser extends Parser<String> {
   }
 
   @override
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) =>
       position < buffer.length && predicate.test(buffer.codeUnitAt(position))
           ? position + 1

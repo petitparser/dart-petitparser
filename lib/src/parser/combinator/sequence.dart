@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../../core/context.dart';
 import '../../core/parser.dart';
 import '../../core/result.dart';
+import '../../shared/pragma.dart';
 import '../utils/sequential.dart';
 import 'list.dart';
 
@@ -58,6 +59,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
   SequenceParser(super.children);
 
   @override
+  @noBoundsChecks
   Result<List<R>> parseOn(Context context) {
     var current = context;
     final elements = <R>[];
@@ -71,6 +73,7 @@ class SequenceParser<R> extends ListParser<R, List<R>>
   }
 
   @override
+  @noBoundsChecks
   int fastParseOn(String buffer, int position) {
     for (var i = 0; i < children.length; i++) {
       position = children[i].fastParseOn(buffer, position);
