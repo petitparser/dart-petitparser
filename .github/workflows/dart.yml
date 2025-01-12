@@ -6,6 +6,7 @@ on:
     branches: [ main ]
   schedule:
     - cron: "0 0 * * 0"
+  workflow_dispatch:
 defaults:
   run:
     shell: bash
@@ -21,8 +22,6 @@ jobs:
           key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
       - name: "Dependencies"
         run: dart pub upgrade --no-precompile
       - name: "Dart Analyzer"
