@@ -7,8 +7,8 @@ class CharacterRepeater extends OptimizeRule {
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
-    if (parser is FlattenParser<List<String>>) {
-      final repeating = (parser as FlattenParser<List<String>>).delegate;
+    if (parser is FlattenParser) {
+      final repeating = (parser as FlattenParser).delegate;
       if (repeating is PossessiveRepeatingParser<String>) {
         final character = repeating.delegate;
         if (character is SingleCharacterParser) {

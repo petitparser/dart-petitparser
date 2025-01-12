@@ -5,7 +5,7 @@ import '../../core/parser.dart';
 import '../../core/result.dart';
 import '../combinator/delegate.dart';
 
-extension FlattenParserExtension<R> on Parser<R> {
+extension FlattenParserExtension on Parser {
   /// Returns a parser that discards the result of the receiver and answers
   /// the sub-string its delegate consumes.
   ///
@@ -17,12 +17,12 @@ extension FlattenParserExtension<R> on Parser<R> {
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
   @useResult
-  Parser<String> flatten([String? message]) => FlattenParser<R>(this, message);
+  Parser<String> flatten([String? message]) => FlattenParser(this, message);
 }
 
 /// A parser that discards the result of the delegate and answers the
 /// sub-string its delegate consumes.
-class FlattenParser<R> extends DelegateParser<R, String> {
+class FlattenParser extends DelegateParser<void, String> {
   FlattenParser(super.delegate, [this.message]);
 
   /// Error message to indicate parse failures with.
@@ -54,9 +54,9 @@ class FlattenParser<R> extends DelegateParser<R, String> {
       message == null ? super.toString() : '${super.toString()}[$message]';
 
   @override
-  bool hasEqualProperties(FlattenParser<R> other) =>
+  bool hasEqualProperties(FlattenParser other) =>
       super.hasEqualProperties(other) && message == other.message;
 
   @override
-  FlattenParser<R> copy() => FlattenParser<R>(delegate, message);
+  FlattenParser copy() => FlattenParser(delegate, message);
 }
