@@ -11,7 +11,7 @@ void main() {
   test('context', () {
     expect(context.buffer, buffer);
     expect(context.position, 0);
-    expect(context.toString(), stringContainsInOrder(['Context', '[1:1]']));
+    expect(context.toString(), isToString(name: 'Context', rest: ['[1:1]']));
   });
   group('success', () {
     test('default', () {
@@ -22,8 +22,10 @@ void main() {
       expect(() => success.message, throwsA(isUnsupportedError));
       expect(success.isSuccess, isTrue);
       expect(success.isFailure, isFalse);
-      expect(success.toString(),
-          stringContainsInOrder(['Success', '<String>', '[1:1]: result']));
+      expect(
+          success.toString(),
+          isToString(
+              name: 'Success', generic: '<String>', rest: ['[1:1]: result']));
     });
     test('with position', () {
       final success = context.success('result', 2);
@@ -33,8 +35,10 @@ void main() {
       expect(() => success.message, throwsA(isUnsupportedError));
       expect(success.isSuccess, isTrue);
       expect(success.isFailure, isFalse);
-      expect(success.toString(),
-          stringContainsInOrder(['Success', '<String>', '[2:1]: result']));
+      expect(
+          success.toString(),
+          isToString(
+              name: 'Success', generic: '<String>', rest: ['[2:1]: result']));
     });
   });
   group('failure', () {
@@ -49,13 +53,16 @@ void main() {
               .having((error) => error.message, 'message', 'error')
               .having((error) => error.offset, 'offset', 0)
               .having((error) => error.source, 'source', same(buffer))
-              .having((error) => error.toString(), 'toString',
-                  stringContainsInOrder(['ParserException', '[1:1]: error']))));
+              .having(
+                  (error) => error.toString(),
+                  'toString',
+                  isToString(
+                      name: 'ParserException', rest: ['[1:1]: error']))));
       expect(failure.message, 'error');
       expect(failure.isSuccess, isFalse);
       expect(failure.isFailure, isTrue);
       expect(failure.toString(),
-          stringContainsInOrder(['Failure', '[1:1]: error']));
+          isToString(name: 'Failure', rest: ['[1:1]: error']));
     });
     test('with position', () {
       final failure = context.failure('error', 2);
@@ -68,13 +75,16 @@ void main() {
               .having((error) => error.message, 'message', 'error')
               .having((error) => error.offset, 'offset', 2)
               .having((error) => error.source, 'source', same(buffer))
-              .having((error) => error.toString(), 'toString',
-                  stringContainsInOrder(['ParserException', '[2:1]: error']))));
+              .having(
+                  (error) => error.toString(),
+                  'toString',
+                  isToString(
+                      name: 'ParserException', rest: ['[2:1]: error']))));
       expect(failure.message, 'error');
       expect(failure.isSuccess, isFalse);
       expect(failure.isFailure, isTrue);
       expect(failure.toString(),
-          stringContainsInOrder(['Failure', '[2:1]: error']));
+          isToString(name: 'Failure', rest: ['[2:1]: error']));
     });
   });
 }

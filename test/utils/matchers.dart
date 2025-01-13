@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
-import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/debug.dart';
+import 'package:petitparser/petitparser.dart' hide anyOf, predicate;
 import 'package:petitparser/reflection.dart';
-import 'package:test/test.dart' as test show predicate;
-import 'package:test/test.dart' hide predicate;
+import 'package:test/test.dart';
 
 /// Returns a [Matcher] that asserts on a [ParserException].
 const isParserException = TypeMatcher<ParserException>();
@@ -23,9 +23,30 @@ final isAssertionError = hasAssertionsEnabled()
     : throw UnsupportedError('Assertions are disabled');
 
 /// Returns a [Matcher] that asserts two parsers are structurally equivalent.
-Matcher isParserEqual<R>(Parser<R> parser) => test.predicate(
-    (actual) => actual is Parser<R> && actual.isEqualTo(parser),
-    'structurally equal');
+Matcher isParserDeepEqual(Parser expected) => predicate(
+    (actual) => actual is Parser && actual.isEqualTo(expected),
+    'deep equivalent');
+
+/// Returns a [Matcher] that asserts two parsers are the same (ignoring children).
+Matcher isParserShallowEqual(Parser expected) => predicate(
+    (actual) => actual is Parser && actual.isEqualTo(expected, {actual}),
+    'shallow equivalent');
+
+/// Returns a [Matcher] that asserts on the `toString` output.
+Matcher isToString({
+  String? name,
+  String? generic,
+  Iterable<String>? rest,
+}) =>
+    allOf(
+      isNotEmpty,
+      isNot(startsWith('Instance of')),
+      stringContainsInOrder([
+        if (name != null && hasAssertionsEnabled()) name,
+        if (generic != null && hasAssertionsEnabled()) generic,
+        if (rest != null) ...rest,
+      ]),
+    );
 
 /// Returns a [Matcher] that asserts on the [Context].
 TypeMatcher<Context> isContext({
@@ -149,3 +170,46 @@ Matcher isSeparatedList<R, S>({
     isA<SeparatedList<R, S>>()
         .having((list) => list.elements, 'elements', elements)
         .having((list) => list.separators, 'separators', separators);
+
+/// Returns a [Matcher] that asserts a [ProfileFrame].
+Matcher isProfileFrame({
+  dynamic parser = anything,
+  dynamic count = anything,
+  dynamic elapsed = anything,
+  dynamic toString = anything,
+}) =>
+    isA<ProfileFrame>()
+        .having((frame) => frame.parser, 'parser', parser)
+        .having((frame) => frame.count, 'count', count)
+        .having((frame) => frame.elapsed, 'elapsed', elapsed)
+        .having((frame) => frame.toString(), 'toString', toString);
+
+/// Returns a [Matcher] that asserts a [ProgressFrame].
+Matcher isProgressFrame({
+  dynamic parser = anything,
+  dynamic context = anything,
+  dynamic position = anything,
+  dynamic toString = anything,
+}) =>
+    isA<ProgressFrame>()
+        .having((frame) => frame.parser, 'parser', parser)
+        .having((frame) => frame.context, 'context', context)
+        .having((frame) => frame.position, 'position', position)
+        .having((frame) => frame.toString(), 'toString', toString);
+
+/// Returns a [Matcher] that asserts a [TraceEvent].
+Matcher isTraceEvent({
+  dynamic parent = anything,
+  dynamic parser = anything,
+  dynamic context = anything,
+  dynamic result = anything,
+  dynamic level = anything,
+  dynamic toString = anything,
+}) =>
+    isA<TraceEvent>()
+        .having((frame) => frame.parent, 'parent', parent)
+        .having((frame) => frame.parser, 'parser', parser)
+        .having((frame) => frame.context, 'context', context)
+        .having((frame) => frame.result, 'result', result)
+        .having((frame) => frame.level, 'level', level)
+        .having((frame) => frame.toString(), 'toString', toString);

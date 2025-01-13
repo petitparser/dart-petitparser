@@ -2,6 +2,8 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
+import 'matchers.dart';
+
 /// Shared invariants for all parsers.
 void expectParserInvariants<T>(Parser<T> parser) {
   test('copy', () {
@@ -11,6 +13,7 @@ void expectParserInvariants<T>(Parser<T> parser) {
     expect(copy.runtimeType, parser.runtimeType);
     expect(copy.children,
         pairwiseCompare(parser.children, identical, 'same children'));
+    expect(copy, isParserDeepEqual(parser));
   });
   test('transform', () {
     final copy = transformParser(parser, <T>(parser) => parser);
@@ -25,13 +28,13 @@ void expectParserInvariants<T>(Parser<T> parser) {
           expect(copy.runtimeType, parser.runtimeType);
           return true;
         }, 'same children'));
+    expect(copy, isParserDeepEqual(parser));
   });
   test('isEqualTo', () {
     final copy = parser.copy();
-    expect(copy.isEqualTo(copy), isTrue);
-    expect(parser.isEqualTo(parser), isTrue);
-    expect(copy.isEqualTo(parser), isTrue);
-    expect(parser.isEqualTo(copy), isTrue);
+    expect(copy, isParserDeepEqual(parser));
+    expect(copy, isParserDeepEqual(copy));
+    expect(parser, isParserDeepEqual(copy));
   });
   test('replace', () {
     final copy = parser.copy();
@@ -48,13 +51,10 @@ void expectParserInvariants<T>(Parser<T> parser) {
         pairwiseCompare(replaced, identical, 'replaced children'));
   });
   test('toString', () {
-    expect(parser.toString(), isNot(startsWith('Instance of')));
-    expect(parser.toString(),
-        stringContainsInOrder([parser.runtimeType.toString()]));
+    expect(parser.toString(), isToString(name: parser.runtimeType.toString()));
     if (parser case SingleCharacterParser(predicate: final predicate)) {
-      expect(predicate.toString(), isNot(startsWith('Instance of')));
       expect(predicate.toString(),
-          stringContainsInOrder([predicate.runtimeType.toString()]));
+          isToString(name: predicate.runtimeType.toString()));
     }
   });
 }

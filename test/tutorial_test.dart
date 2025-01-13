@@ -5,6 +5,8 @@ import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
+import 'utils/matchers.dart';
+
 class ExpressionDefinition extends GrammarDefinition {
   @override
   Parser start() => ref0(term).end();
@@ -266,5 +268,5 @@ void main() {
       '  Success<List<String>>[1:3]: [1]',
       'Success<List<dynamic>>[1:3]: [f, [1]]',
     ]);
-  });
+  }, skip: !hasAssertionsEnabled());
 }

@@ -277,8 +277,10 @@ void main() {
         expect(token.column, 1);
         expect(
             token.toString(),
-            stringContainsInOrder(
-                ['Token', '<List<String>>', '[1:1]: [1, 2, 3]']));
+            isToString(
+                name: 'Token',
+                generic: '<List<String>>',
+                rest: ['[1:1]: [1, 2, 3]']));
       });
       const buffer = '1\r12\r\n123\n1234';
       final parser = any().map((value) => value.codeUnitAt(0)).token().star();
@@ -2331,31 +2333,40 @@ void main() {
         test('toString', () {
           expect(
               empty.toString(),
-              stringContainsInOrder(
-                  ['SeparatedList', '<String, String>', '()']));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<String, String>',
+                  rest: ['()']));
           expect(
               single.toString(),
-              stringContainsInOrder(
-                  ['SeparatedList', '<String, String>', '(1)']));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<String, String>',
+                  rest: ['(1)']));
           expect(
               double.toString(),
-              stringContainsInOrder(
-                  ['SeparatedList', '<String, String>', '(1, +, 2)']));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<String, String>',
+                  rest: ['(1, +, 2)']));
           expect(
               triple.toString(),
-              stringContainsInOrder(
-                  ['SeparatedList', '<String, String>', '(1, +, 2, -, 3)']));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<String, String>',
+                  rest: ['(1, +, 2, -, 3)']));
           expect(
               quadruple.toString(),
-              stringContainsInOrder([
-                'SeparatedList',
-                '<String, String>',
-                '(1, +, 2, -, 3, *, 4)'
-              ]));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<String, String>',
+                  rest: ['(1, +, 2, -, 3, *, 4)']));
           expect(
               mixed.toString(),
-              stringContainsInOrder(
-                  ['SeparatedList', '<int, String>', '(1, +, 2, -, 3)']));
+              isToString(
+                  name: 'SeparatedList',
+                  generic: '<int, String>',
+                  rest: ['(1, +, 2, -, 3)']));
         });
       });
     });
