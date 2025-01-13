@@ -1,6 +1,6 @@
 import '../../../parser.dart';
 import '../../../reflection.dart';
-import '../../parser/character/constant.dart';
+import '../../parser/character/predicate/constant.dart';
 
 class CharacterRepeater extends OptimizeRule {
   const CharacterRepeater();

@@ -1,8 +1,8 @@
-import 'char.dart';
-import 'constant.dart';
-import 'lookup.dart';
-import 'predicate.dart';
-import 'range.dart';
+import '../predicate.dart';
+import '../predicate/char.dart';
+import '../predicate/constant.dart';
+import '../predicate/lookup.dart';
+import '../predicate/range.dart';
 
 /// Creates an optimized character from a string.
 CharacterPredicate optimizedString(String string) => optimizedRanges(

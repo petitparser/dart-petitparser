@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show ListEquality;
 
-import '../../shared/pragma.dart';
-import 'predicate.dart';
+import '../../../shared/pragma.dart';
+import '../predicate.dart';
 import 'range.dart';
 
 class LookupCharPredicate extends CharacterPredicate {

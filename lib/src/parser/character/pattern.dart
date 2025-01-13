@@ -9,11 +9,11 @@ import '../predicate/any.dart';
 import '../predicate/character.dart';
 import '../repeater/possessive.dart';
 import 'char.dart';
-import 'code.dart';
-import 'constant.dart';
-import 'not.dart';
-import 'optimize.dart';
-import 'range.dart';
+import 'predicate/constant.dart';
+import 'predicate/not.dart';
+import 'predicate/range.dart';
+import 'utils/code.dart';
+import 'utils/optimize.dart';
 
 /// Returns a parser that accepts a single character of a given character set
 /// provided as a string.

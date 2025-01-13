@@ -2,20 +2,10 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'predicate.dart';
+import 'predicate/lowercase.dart';
 
 /// Returns a parser that accepts any lowercase character. The accepted input is
 /// equivalent to the character-set `a-z`.
 @useResult
 Parser<String> lowercase([String message = 'lowercase letter expected']) =>
     SingleCharacterParser(const LowercaseCharPredicate(), message);
-
-class LowercaseCharPredicate extends CharacterPredicate {
-  const LowercaseCharPredicate();
-
-  @override
-  bool test(int charCode) => 97 <= charCode && charCode <= 122;
-
-  @override
-  bool isEqualTo(CharacterPredicate other) => other is LowercaseCharPredicate;
-}

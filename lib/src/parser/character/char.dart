@@ -2,10 +2,10 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'code.dart';
-import 'optimize.dart';
-import 'predicate.dart';
-import 'range.dart';
+import 'predicate/char.dart';
+import 'predicate/range.dart';
+import 'utils/code.dart';
+import 'utils/optimize.dart';
 
 /// Returns a parser that accepts a specific character only.
 @useResult
@@ -24,20 +24,4 @@ Parser<String> charIgnoringCase(String char, [String? message]) {
         RangeCharPredicate(upperCase, upperCase),
       ]),
       message ?? '"${toReadableString(char)}" (case-insensitive) expected');
-}
-
-class SingleCharPredicate extends CharacterPredicate {
-  const SingleCharPredicate(this.charCode);
-
-  final int charCode;
-
-  @override
-  bool test(int charCode) => identical(this.charCode, charCode);
-
-  @override
-  bool isEqualTo(CharacterPredicate other) =>
-      other is SingleCharPredicate && charCode == other.charCode;
-
-  @override
-  String toString() => '${super.toString()}($charCode)';
 }

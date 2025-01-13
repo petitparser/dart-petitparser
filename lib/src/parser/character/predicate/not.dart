@@ -1,6 +1,5 @@
-import 'predicate.dart';
+import '../predicate.dart';
 
-/// Negates the result of a character predicate.
 class NotCharacterPredicate extends CharacterPredicate {
   const NotCharacterPredicate(this.predicate);
 

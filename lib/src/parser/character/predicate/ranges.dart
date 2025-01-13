@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart' show ListEquality;
 
-import 'predicate.dart';
+import '../predicate.dart';
 
 class RangesCharPredicate extends CharacterPredicate {
   const RangesCharPredicate(this.length, this.starts, this.stops);

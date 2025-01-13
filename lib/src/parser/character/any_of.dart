@@ -2,8 +2,8 @@ import 'package:meta/meta.dart';
 
 import '../../core/parser.dart';
 import '../predicate/character.dart';
-import 'code.dart';
-import 'optimize.dart';
+import 'utils/code.dart';
+import 'utils/optimize.dart';
 
 /// Returns a parser that accepts any of the specified characters.
 @useResult

@@ -1,4 +1,4 @@
-import 'predicate.dart';
+import '../predicate.dart';
 
 class ConstantCharPredicate extends CharacterPredicate {
   const ConstantCharPredicate(this.constant);
