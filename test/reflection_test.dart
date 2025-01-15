@@ -1035,8 +1035,8 @@ void main() {
     test('child replacement performed', () {
       final input = char('a') | char('b'), replacement = char('c');
       final rule = PluggableOptimizeRule(<R>(rule, analyzer, parser, replace) {
-        if (parser is SingleCharacterParser &&
-            (parser as SingleCharacterParser).message == '"b" expected') {
+        if (parser is CharacterParser &&
+            (parser as CharacterParser).message == '"b" expected') {
           replace(parser, replacement as Parser<R>);
         }
       });

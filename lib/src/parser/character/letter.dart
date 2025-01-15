@@ -8,4 +8,4 @@ import 'predicate/letter.dart';
 /// The accepted input is equivalent to the character-set `a-zA-Z`.
 @useResult
 Parser<String> letter([String message = 'letter expected']) =>
-    SingleCharacterParser(const LetterCharPredicate(), message);
+    CharacterParser(const LetterCharPredicate(), message);

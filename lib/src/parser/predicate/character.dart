@@ -1,16 +1,32 @@
-import '../../core/context.dart';
+import 'package:meta/meta.dart';
+
 import '../../core/parser.dart';
-import '../../core/result.dart';
-import '../../shared/pragma.dart';
 import '../character/predicate.dart';
+import 'single_character.dart';
+import 'unicode_character.dart';
 
-/// Alias for deprecated class name.
-@Deprecated('Instead use `SingleCharacterParser`')
-typedef CharacterParser = SingleCharacterParser;
+/// Parser class for an individual character satisfying a [CharacterPredicate].
+abstract class CharacterParser extends Parser<String> {
+  /// Constructs a new character parser.
+  ///
+  /// The [predicate] defines the character class to be detected.
+  ///
+  /// The [message] is the error text generated in case the predicate does not
+  /// satisfy the input.
+  ///
+  /// By default, the parsers works on UTF-16 code units. If [unicode] is set
+  /// to `true` unicode surrogate pairs are extracted from the input and matched
+  /// against the predicate.
+  factory CharacterParser(CharacterPredicate predicate, String message,
+          {bool unicode = false}) =>
+      switch (unicode) {
+        false => SingleCharacterParser(predicate, message),
+        true => UnicodeCharacterParser(predicate, message),
+      };
 
-/// Parser class for individual character classes.
-class SingleCharacterParser extends Parser<String> {
-  SingleCharacterParser(this.predicate, this.message);
+  /// Internal constructor.
+  @internal
+  CharacterParser.internal(this.predicate, this.message);
 
   /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;
@@ -19,29 +35,7 @@ class SingleCharacterParser extends Parser<String> {
   final String message;
 
   @override
-  @noBoundsChecks
-  Result<String> parseOn(Context context) {
-    final buffer = context.buffer;
-    final position = context.position;
-    if (position < buffer.length &&
-        predicate.test(buffer.codeUnitAt(position))) {
-      return context.success(buffer[position], position + 1);
-    }
-    return context.failure(message);
-  }
-
-  @override
-  @noBoundsChecks
-  int fastParseOn(String buffer, int position) =>
-      position < buffer.length && predicate.test(buffer.codeUnitAt(position))
-          ? position + 1
-          : -1;
-
-  @override
   String toString() => '${super.toString()}[$message]';
-
-  @override
-  SingleCharacterParser copy() => SingleCharacterParser(predicate, message);
 
   @override
   bool hasEqualProperties(SingleCharacterParser other) =>

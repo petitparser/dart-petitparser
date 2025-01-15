@@ -5,9 +5,9 @@ import '../action/map.dart';
 import '../combinator/choice.dart';
 import '../combinator/optional.dart';
 import '../combinator/sequence.dart';
-import '../predicate/any.dart';
 import '../predicate/character.dart';
 import '../repeater/possessive.dart';
+import 'any.dart';
 import 'char.dart';
 import 'predicate/constant.dart';
 import 'predicate/not.dart';
@@ -27,9 +27,9 @@ import 'utils/optimize.dart';
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
 @useResult
-Parser<String> pattern(String element, [String? message]) =>
-    SingleCharacterParser(_pattern.parse(element).value,
-        message ?? '[${toReadableString(element)}] expected');
+Parser<String> pattern(String element, [String? message]) => CharacterParser(
+    _pattern.parse(element).value,
+    message ?? '[${toReadableString(element)}] expected');
 
 /// Returns a parser that accepts a single character of a given case-insensitive
 /// character set provided as a string.

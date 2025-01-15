@@ -7,4 +7,4 @@ import 'predicate/whitespace.dart';
 /// Returns a parser that accepts any whitespace character.
 @useResult
 Parser<String> whitespace([String message = 'whitespace expected']) =>
-    SingleCharacterParser(const WhitespaceCharPredicate(), message);
+    CharacterParser(const WhitespaceCharPredicate(), message);

@@ -8,4 +8,4 @@ import 'predicate/lowercase.dart';
 /// equivalent to the character-set `a-z`.
 @useResult
 Parser<String> lowercase([String message = 'lowercase letter expected']) =>
-    SingleCharacterParser(const LowercaseCharPredicate(), message);
+    CharacterParser(const LowercaseCharPredicate(), message);

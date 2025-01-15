@@ -9,4 +9,4 @@ import 'predicate/word.dart';
 /// `a-zA-Z_0-9`.
 @useResult
 Parser<String> word([String message = 'letter or digit expected']) =>
-    SingleCharacterParser(const WordCharPredicate(), message);
+    CharacterParser(const WordCharPredicate(), message);

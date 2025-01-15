@@ -9,7 +9,7 @@ import 'utils/code.dart';
 /// between [start] and [stop].
 @useResult
 Parser<String> range(String start, String stop, [String? message]) =>
-    SingleCharacterParser(
+    CharacterParser(
         RangeCharPredicate(toCharCode(start), toCharCode(stop)),
         message ??
             '[${toReadableString(start)}-${toReadableString(stop)}] expected');

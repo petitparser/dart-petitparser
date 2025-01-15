@@ -1,4 +1,23 @@
-import '../../../parser.dart';
+import '../../core/parser.dart';
+import '../../parser/action/cast.dart';
+import '../../parser/action/cast_list.dart';
+import '../../parser/action/flatten.dart';
+import '../../parser/action/map.dart';
+import '../../parser/action/permute.dart';
+import '../../parser/action/pick.dart';
+import '../../parser/action/token.dart';
+import '../../parser/action/where.dart';
+import '../../parser/combinator/choice.dart';
+import '../../parser/combinator/settable.dart';
+import '../../parser/misc/failure.dart';
+import '../../parser/misc/newline.dart';
+import '../../parser/predicate/character.dart';
+import '../../parser/predicate/predicate.dart';
+import '../../parser/predicate/single_character.dart';
+import '../../parser/repeater/character.dart';
+import '../../parser/repeater/possessive.dart';
+import '../../parser/repeater/repeating.dart';
+import '../../parser/utils/resolvable.dart';
 import '../../parser/utils/sequential.dart';
 import '../analyzer.dart';
 import '../linter.dart';
@@ -14,8 +33,7 @@ class CharacterRepeater extends LinterRule {
       final repeating = parser.delegate;
       if (repeating is PossessiveRepeatingParser) {
         final character = repeating.delegate;
-        if (character is SingleCharacterParser ||
-            character is AnyCharacterParser) {
+        if (character is SingleCharacterParser) {
           callback(LinterIssue(
               this,
               parser,
@@ -147,12 +165,11 @@ class UnnecessaryFlatten extends LinterRule {
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser is FlattenParser && parser.message == null) {
       final delegate = parser.delegate;
-      if (delegate is AnyCharacterParser ||
+      if (delegate is CharacterParser ||
           delegate is FlattenParser ||
           delegate is NewlineParser ||
           delegate is PredicateParser ||
-          delegate is RepeatingCharacterParser ||
-          delegate is SingleCharacterParser) {
+          delegate is RepeatingCharacterParser) {
         callback(LinterIssue(
             this,
             parser,

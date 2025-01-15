@@ -8,4 +8,4 @@ import 'predicate/uppercase.dart';
 /// equivalent to the character-set `A-Z`.
 @useResult
 Parser<String> uppercase([String message = 'uppercase letter expected']) =>
-    SingleCharacterParser(const UppercaseCharPredicate(), message);
+    CharacterParser(const UppercaseCharPredicate(), message);

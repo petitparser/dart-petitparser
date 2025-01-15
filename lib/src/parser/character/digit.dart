@@ -8,4 +8,4 @@ import 'predicate/digit.dart';
 /// equivalent to the character-set `0-9`.
 @useResult
 Parser<String> digit([String message = 'digit expected']) =>
-    SingleCharacterParser(const DigitCharPredicate(), message);
+    CharacterParser(const DigitCharPredicate(), message);

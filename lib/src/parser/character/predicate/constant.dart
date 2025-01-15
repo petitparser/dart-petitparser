@@ -1,6 +1,9 @@
 import '../predicate.dart';
 
 class ConstantCharPredicate extends CharacterPredicate {
+  static const any = ConstantCharPredicate(true);
+  static const none = ConstantCharPredicate(false);
+
   const ConstantCharPredicate(this.constant);
 
   final bool constant;

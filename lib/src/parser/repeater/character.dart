@@ -6,9 +6,7 @@ import '../../core/result.dart';
 import '../../shared/pragma.dart';
 import '../action/flatten.dart';
 import '../character/predicate.dart';
-import '../character/predicate/constant.dart';
-import '../predicate/any.dart';
-import '../predicate/character.dart';
+import '../predicate/single_character.dart';
 import 'possessive.dart';
 import 'unbounded.dart';
 
@@ -68,9 +66,6 @@ extension RepeatingCharacterParserExtension on Parser<String> {
     if (self is SingleCharacterParser) {
       return RepeatingCharacterParser(
           self.predicate, message ?? self.message, min, max ?? min);
-    } else if (self is AnyCharacterParser) {
-      return RepeatingCharacterParser(const ConstantCharPredicate(true),
-          message ?? self.message, min, max ?? min);
     } else {
       return self.repeat(min, max).flatten(message);
     }

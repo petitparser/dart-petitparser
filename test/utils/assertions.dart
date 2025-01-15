@@ -52,7 +52,7 @@ void expectParserInvariants<T>(Parser<T> parser) {
   });
   test('toString', () {
     expect(parser.toString(), isToString(name: parser.runtimeType.toString()));
-    if (parser case SingleCharacterParser(predicate: final predicate)) {
+    if (parser case CharacterParser(predicate: final predicate)) {
       expect(predicate.toString(),
           isToString(name: predicate.runtimeType.toString()));
     }

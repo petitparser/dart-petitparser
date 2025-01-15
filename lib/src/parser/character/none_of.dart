@@ -8,6 +8,6 @@ import 'utils/optimize.dart';
 
 /// Returns a parser that accepts none of the specified characters.
 @useResult
-Parser<String> noneOf(String chars, [String? message]) => SingleCharacterParser(
+Parser<String> noneOf(String chars, [String? message]) => CharacterParser(
     NotCharacterPredicate(optimizedString(chars)),
     message ?? 'none of "${toReadableString(chars)}" expected');
