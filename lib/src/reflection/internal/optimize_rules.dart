@@ -15,11 +15,10 @@ class CharacterRepeater extends OptimizeRule {
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
-    if (parser is FlattenParser) {
-      final repeating = (parser as FlattenParser).delegate;
-      if (repeating is PossessiveRepeatingParser<String>) {
-        final character = repeating.delegate;
-        if (character is SingleCharacterParser) {
+    if (parser case FlattenParser(delegate: final repeating)) {
+      if (repeating
+          case PossessiveRepeatingParser<String>(delegate: final character)) {
+        if (character case SingleCharacterParser()) {
           replace(
               parser,
               RepeatingCharacterParser(character.predicate, character.message,
