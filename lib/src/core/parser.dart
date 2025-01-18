@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import '../shared/pragma.dart';
-import '../shared/to_string.dart';
 import 'context.dart';
 import 'result.dart';
 
@@ -141,5 +140,5 @@ abstract class Parser<R> {
       callback<R>(this);
 
   @override
-  String toString() => objectToString(this);
+  String toString() => '$runtimeType';
 }

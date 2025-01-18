@@ -1,7 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../../shared/to_string.dart';
-
 /// Abstract class for character predicates.
 @immutable
 abstract class CharacterPredicate {
@@ -14,5 +12,5 @@ abstract class CharacterPredicate {
   bool isEqualTo(CharacterPredicate other);
 
   @override
-  String toString() => objectToString(this);
+  String toString() => '$runtimeType';
 }

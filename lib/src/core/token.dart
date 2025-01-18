@@ -5,7 +5,6 @@ import 'package:meta/meta.dart';
 import '../matcher/matches.dart';
 import '../parser/action/token.dart';
 import '../parser/misc/newline.dart';
-import '../shared/to_string.dart';
 import 'parser.dart';
 
 /// A token represents a parsed part of the input stream.
@@ -44,8 +43,7 @@ class Token<R> {
   int get column => Token.lineAndColumnOf(buffer, start)[1];
 
   @override
-  String toString() =>
-      '${objectToString(this)}[${positionString(buffer, start)}]: $value';
+  String toString() => '$runtimeType[${positionString(buffer, start)}]: $value';
 
   @override
   bool operator ==(Object other) =>
