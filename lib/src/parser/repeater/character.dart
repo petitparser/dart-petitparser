@@ -22,8 +22,8 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   /// or any sequence of letters and returns a possibly empty string of the
   /// parsed letters.
   @useResult
-  Parser<String> starString([String? message]) =>
-      repeatString(0, unbounded, message);
+  Parser<String> starString({String? message}) =>
+      repeatString(0, unbounded, message: message);
 
   /// Returns a parser that accepts the receiver one or more times. The
   /// resulting parser returns the consumed input string.
@@ -35,8 +35,8 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   /// For example, the parser `letter().plusString()` accepts any sequence of
   /// letters and returns the string of the parsed letters.
   @useResult
-  Parser<String> plusString([String? message]) =>
-      repeatString(1, unbounded, message);
+  Parser<String> plusString({String? message}) =>
+      repeatString(1, unbounded, message: message);
 
   /// Returns a parser that accepts the receiver exactly [count] times. The
   /// resulting parser returns the consumed input string.
@@ -48,8 +48,8 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   /// For example, the parser `letter().timesString(2)` accepts two letters and
   /// returns a string of the two parsed letters.
   @useResult
-  Parser<String> timesString(int count, [String? message]) =>
-      repeatString(count, count, message);
+  Parser<String> timesString(int count, {String? message}) =>
+      repeatString(count, count, message: message);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
   /// The resulting parser returns the consumed input string.
@@ -61,13 +61,13 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   /// For example, the parser `letter().repeatString(2, 4)` accepts a sequence of
   /// two, three, or four letters and returns the accepted letters as a string.
   @useResult
-  Parser<String> repeatString(int min, [int? max, String? message]) {
+  Parser<String> repeatString(int min, int max, {String? message}) {
     final self = this;
     if (self is SingleCharacterParser) {
       return RepeatingCharacterParser(
-          self.predicate, message ?? self.message, min, max ?? min);
+          self.predicate, message ?? self.message, min, max);
     } else {
-      return self.repeat(min, max).flatten(message);
+      return self.repeat(min, max).flatten(message: message);
     }
   }
 }

@@ -17,7 +17,7 @@ extension FlattenParserExtension on Parser {
   /// for the input `'abc'`. In contrast, the parser `letter().plus()` would
   /// return `['a', 'b', 'c']` for the same input instead.
   @useResult
-  Parser<String> flatten([String? message]) => FlattenParser(this, message);
+  Parser<String> flatten({String? message}) => FlattenParser(this, message);
 }
 
 /// A parser that discards the result of the delegate and answers the

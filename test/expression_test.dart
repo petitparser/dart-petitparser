@@ -11,7 +11,7 @@ Parser buildParser() {
   builder.primitive(digit()
       .plus()
       .seq(char('.').seq(digit().plus()).optional())
-      .flatten('number expected')
+      .flatten(message: 'number expected')
       .trim());
   builder.group()
     ..wrapper(char('(').trim(), char(')').trim(),
@@ -37,7 +37,7 @@ Parser<num> buildEvaluator() {
   builder.primitive(digit()
       .plus()
       .seq(char('.').seq(digit().plus()).optional())
-      .flatten('number expected')
+      .flatten(message: 'number expected')
       .trim()
       .map(num.parse));
   builder.group()

@@ -9,5 +9,5 @@ import 'predicate/constant.dart';
 /// For example, `any()` succeeds and consumes any given letter. It only
 /// fails for an empty input.
 @useResult
-Parser<String> any([String message = 'input expected']) =>
+Parser<String> any({String message = 'input expected'}) =>
     CharacterParser(ConstantCharPredicate.any, message);

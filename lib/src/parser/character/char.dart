@@ -9,13 +9,13 @@ import 'utils/optimize.dart';
 
 /// Returns a parser that accepts a specific character only.
 @useResult
-Parser<String> char(String char, [String? message]) => CharacterParser(
+Parser<String> char(String char, {String? message}) => CharacterParser(
     SingleCharPredicate(toCharCode(char)),
     message ?? '"${toReadableString(char)}" expected');
 
 /// Returns a parser that accepts a case-insensitive specific character only.
 @useResult
-Parser<String> charIgnoringCase(String char, [String? message]) {
+Parser<String> charIgnoringCase(String char, {String? message}) {
   final lowerCase = toCharCode(char.toLowerCase());
   final upperCase = toCharCode(char.toUpperCase());
   return CharacterParser(

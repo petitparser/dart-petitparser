@@ -18,17 +18,17 @@ extension ToParserStringExtension on String {
       return epsilonWith<String>(this);
     } else if (length == 1) {
       return caseInsensitive
-          ? charIgnoringCase(this, message)
-          : char(this, message);
+          ? charIgnoringCase(this, message: message)
+          : char(this, message: message);
     } else {
       if (isPattern) {
         return caseInsensitive
-            ? patternIgnoreCase(this, message)
-            : pattern(this, message);
+            ? patternIgnoreCase(this, message: message)
+            : pattern(this, message: message);
       } else {
         return caseInsensitive
-            ? stringIgnoreCase(this, message)
-            : string(this, message);
+            ? stringIgnoreCase(this, message: message)
+            : string(this, message: message);
       }
     }
   }

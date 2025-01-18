@@ -845,7 +845,7 @@ void main() {
           ]);
         });
         test('without issue', () {
-          final parser = any().flatten('anything really');
+          final parser = any().flatten(message: 'anything really');
           final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
@@ -1169,7 +1169,7 @@ void main() {
           expect(result.children.first, same(result.children.last));
         });
         test('without duplicate', () {
-          final parser = lowercase() & lowercase('lower');
+          final parser = lowercase() & lowercase(message: 'lower');
           final result = optimize(parser,
               rules: rules,
               callback: (source, target) => fail('No replacement expected'));

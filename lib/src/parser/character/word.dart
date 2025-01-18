@@ -8,5 +8,5 @@ import 'predicate/word.dart';
 /// underscore, or digit). The accepted input is equivalent to the character-set
 /// `a-zA-Z_0-9`.
 @useResult
-Parser<String> word([String message = 'letter or digit expected']) =>
+Parser<String> word({String message = 'letter or digit expected'}) =>
     CharacterParser(const WordCharPredicate(), message);

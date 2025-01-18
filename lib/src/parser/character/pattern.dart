@@ -27,7 +27,7 @@ import 'utils/optimize.dart';
 /// `pattern('^aou') accepts any character, but fails for the characters 'a',
 /// 'o', or 'u'.
 @useResult
-Parser<String> pattern(String element, [String? message]) => CharacterParser(
+Parser<String> pattern(String element, {String? message}) => CharacterParser(
     _pattern.parse(element).value,
     message ?? '[${toReadableString(element)}] expected');
 
@@ -43,7 +43,7 @@ Parser<String> pattern(String element, [String? message]) => CharacterParser(
 /// fails for any other character. The parser `patternIgnoreCase('^A') accepts
 /// any character, but fails for the characters 'a' or 'A'.
 @useResult
-Parser<String> patternIgnoreCase(String element, [String? message]) {
+Parser<String> patternIgnoreCase(String element, {String? message}) {
   var normalized = element;
   final isNegated = normalized.startsWith('^');
   if (isNegated) {
@@ -57,7 +57,8 @@ Parser<String> patternIgnoreCase(String element, [String? message]) {
       '${isNegated ? '^' : ''}'
       '${normalized.toLowerCase()}${normalized.toUpperCase()}'
       '${isDashed ? '-' : ''}',
-      message ?? '[${toReadableString(element)}] (case-insensitive) expected');
+      message: message ??
+          '[${toReadableString(element)}] (case-insensitive) expected');
 }
 
 /// Parser that reads a single character.

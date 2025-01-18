@@ -86,7 +86,8 @@ void main() {
         expect(parser, isParseSuccess('1234', result: '1234'));
       });
       test('with message', () {
-        final parser = digit().repeat(2, unbounded).flatten('gimme a number');
+        final parser =
+            digit().repeat(2, unbounded).flatten(message: 'gimme a number');
         expect(parser, isParseFailure('', message: 'gimme a number'));
         expect(parser, isParseFailure('a', message: 'gimme a number'));
         expect(parser, isParseFailure('1', message: 'gimme a number'));
@@ -498,7 +499,7 @@ void main() {
         expect(parser, isParseFailure('', message: '"a" expected'));
       });
       test('with message', () {
-        final parser = char('a', 'lowercase a');
+        final parser = char('a', message: 'lowercase a');
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseFailure('b', message: 'lowercase a'));
         expect(parser, isParseFailure('', message: 'lowercase a'));
@@ -548,7 +549,7 @@ void main() {
             isParseFailure('', message: '"A" (case-insensitive) expected'));
       });
       test('with custom message', () {
-        final parser = charIgnoringCase('a', 'upper or lower');
+        final parser = charIgnoringCase('a', message: 'upper or lower');
         expect(parser, isParseSuccess('a', result: 'a'));
         expect(parser, isParseSuccess('A', result: 'A'));
         expect(parser, isParseFailure('b', message: 'upper or lower'));
@@ -1296,7 +1297,7 @@ void main() {
     group('not', () {
       expectParserInvariants(any().not());
       test('default', () {
-        final parser = char('a').not('not "a" expected');
+        final parser = char('a').not(message: 'not "a" expected');
         expect(parser, isParseFailure('a', message: 'not "a" expected'));
         expect(
             parser,
@@ -1310,7 +1311,7 @@ void main() {
                 position: 0));
       });
       test('neg', () {
-        final parser = digit().neg('no digit expected');
+        final parser = digit().neg(message: 'no digit expected');
         expect(parser, isParseFailure('1', message: 'no digit expected'));
         expect(parser, isParseFailure('9', message: 'no digit expected'));
         expect(parser, isParseSuccess('a', result: 'a'));
@@ -1480,7 +1481,7 @@ void main() {
     group('failure', () {
       expectParserInvariants(failure<String>());
       test('default', () {
-        final parser = failure<String>('failure');
+        final parser = failure<String>(message: 'failure');
         expect(parser, isParseFailure('', message: 'failure'));
         expect(parser, isParseFailure('a', message: 'failure'));
       });

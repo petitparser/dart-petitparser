@@ -36,7 +36,7 @@ class Indent {
   /// A parser that increases the current indentation and returns it, but does
   /// not consume anything.
   late Parser<String> increase = parser
-      .plusString(message)
+      .plusString(message: message)
       .where((value) => value.length > current.length)
       .map((value) {
     stack.add(current);
@@ -45,7 +45,7 @@ class Indent {
 
   /// A parser that consumes and returns the current indent.
   late Parser<String> same =
-      parser.starString(message).where((value) => value == current);
+      parser.starString(message: message).where((value) => value == current);
 
   /// A parser that decreases the current indentation and returns it, but does
   /// not consume anything.

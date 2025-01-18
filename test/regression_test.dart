@@ -68,7 +68,7 @@ class ProtobufGrammar extends GrammarDefinition {
       char('{').trim() &
       char('}').trim();
   Parser identifier() =>
-      (letter() & word().star()).flatten('identifier expected');
+      (letter() & word().star()).flatten(message: 'identifier expected');
 }
 
 void main() {
@@ -340,7 +340,7 @@ void main() {
   test('github.com/petitparser/dart-petitparser/issues/121', () {
     final parser = ((letter() | char('_')) &
             (letter() | digit() | anyOf('_- ()')).star() &
-            char('.').not('end of id expected'))
+            char('.').not(message: 'end of id expected'))
         .flatten();
     expect(parser, isParseSuccess('foo', result: 'foo'));
     expect(parser,
@@ -458,7 +458,7 @@ void main() {
     final builder = ExpressionBuilder<Object?>();
     final primitive =
         seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
-            .flatten('value expected')
+            .flatten(message: 'value expected')
             .trim();
     builder.primitive(primitive);
     builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
@@ -626,8 +626,10 @@ void main() {
           isParseFailure('(0.53,00)', position: 5, message: '")" expected'));
     });
     test('modified', () {
-      final parser =
-          char('(') & number & char(',').not('remove comma') & char(')');
+      final parser = char('(') &
+          number &
+          char(',').not(message: 'remove comma') &
+          char(')');
       expect(parser, isParseSuccess('(0.53)'));
       expect(parser,
           isParseFailure('(0.53,00)', position: 5, message: 'remove comma'));

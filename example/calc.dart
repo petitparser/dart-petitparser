@@ -13,7 +13,7 @@ Parser buildParser() {
           (char('.') & digit().plus()).optional() &
           (pattern('eE') & pattern('+-').optional() & digit().plus())
               .optional())
-      .flatten('number expected')
+      .flatten(message: 'number expected')
       .trim()
       .map(num.parse));
   builder.group().wrapper(
