@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
@@ -20,8 +18,6 @@ void main() {
       expect(success.position, 0);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
-      expect(success.isSuccess, isTrue);
-      expect(success.isFailure, isFalse);
       expect(
           success.toString(),
           isToString(
@@ -33,8 +29,6 @@ void main() {
       expect(success.position, 2);
       expect(success.value, 'result');
       expect(() => success.message, throwsA(isUnsupportedError));
-      expect(success.isSuccess, isTrue);
-      expect(success.isFailure, isFalse);
       expect(
           success.toString(),
           isToString(
@@ -59,8 +53,6 @@ void main() {
                   isToString(
                       name: 'ParserException', rest: ['[1:1]: error']))));
       expect(failure.message, 'error');
-      expect(failure.isSuccess, isFalse);
-      expect(failure.isFailure, isTrue);
       expect(failure.toString(),
           isToString(name: 'Failure', rest: ['[1:1]: error']));
     });
@@ -81,8 +73,6 @@ void main() {
                   isToString(
                       name: 'ParserException', rest: ['[2:1]: error']))));
       expect(failure.message, 'error');
-      expect(failure.isSuccess, isFalse);
-      expect(failure.isFailure, isTrue);
       expect(failure.toString(),
           isToString(name: 'Failure', rest: ['[2:1]: error']));
     });

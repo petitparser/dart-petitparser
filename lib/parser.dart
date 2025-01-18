@@ -54,7 +54,6 @@ export 'src/parser/repeater/limited.dart';
 export 'src/parser/repeater/possessive.dart';
 export 'src/parser/repeater/repeating.dart';
 export 'src/parser/repeater/separated.dart';
-export 'src/parser/repeater/separated_by.dart';
 export 'src/parser/repeater/unbounded.dart';
 export 'src/parser/utils/failure_joiner.dart';
 export 'src/parser/utils/labeled.dart';

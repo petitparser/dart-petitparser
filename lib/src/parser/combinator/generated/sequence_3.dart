@@ -89,26 +89,6 @@ class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
 
 /// Extension on a [Record] with 3 positional values.
 extension RecordOfValuesExtension3<T1, T2, T3> on (T1, T2, T3) {
-  /// Returns the first element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $1')
-  T1 get first => $1;
-
-  /// Returns the second element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $2')
-  T2 get second => $2;
-
-  /// Returns the third element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $3')
-  T3 get third => $3;
-
-  /// Returns the last element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $3')
-  T3 get last => $3;
-
   /// Converts this [Record] with 3 positional values to a new type [R] using
   /// the provided [callback] with 3 positional arguments.
   @preferInline

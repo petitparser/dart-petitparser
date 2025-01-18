@@ -116,36 +116,6 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
 
 /// Extension on a [Record] with 5 positional values.
 extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
-  /// Returns the first element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $1')
-  T1 get first => $1;
-
-  /// Returns the second element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $2')
-  T2 get second => $2;
-
-  /// Returns the third element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $3')
-  T3 get third => $3;
-
-  /// Returns the fourth element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $4')
-  T4 get fourth => $4;
-
-  /// Returns the fifth element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $5')
-  T5 get fifth => $5;
-
-  /// Returns the last element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $5')
-  T5 get last => $5;
-
   /// Converts this [Record] with 5 positional values to a new type [R] using
   /// the provided [callback] with 5 positional arguments.
   @preferInline

@@ -3,7 +3,6 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
-import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
@@ -82,25 +81,18 @@ class UntypedReferencesGrammarDefinition extends GrammarDefinition {
 
 class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
   @override
-  // ignore: deprecated_member_use_from_same_package
   Parser start() => ref(f0);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f0() => ref(f1, 1);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f1(int a1) => ref(f2, a1, 2);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f2(int a1, int a2) => ref(f3, a1, a2, 3);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f3(int a1, int a2, int a3) => ref(f4, a1, a2, a3, 4);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f4(int a1, int a2, int a3, int a4) => ref(f5, a1, a2, a3, a4, 5);
 
-  // ignore: deprecated_member_use_from_same_package
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
         a1.toString().toParser(),
         a2.toString().toParser(),
@@ -258,36 +250,21 @@ void main() {
               .toSequenceParser();
       Parser<List<String>> f8(
               int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) =>
-          // ignore: deprecated_member_use_from_same_package
           ref(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
       Parser<List<String>> f7(
               int a1, int a2, int a3, int a4, int a5, int a6, int a7) =>
-          // ignore: deprecated_member_use_from_same_package
           ref(f8, a1, a2, a3, a4, a5, a6, a7, 8);
       Parser<List<String>> f6(int a1, int a2, int a3, int a4, int a5, int a6) =>
-          // ignore: deprecated_member_use_from_same_package
           ref(f7, a1, a2, a3, a4, a5, a6, 7);
       Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) =>
-          // ignore: deprecated_member_use_from_same_package
           ref(f6, a1, a2, a3, a4, a5, 6);
       Parser<List<String>> f4(int a1, int a2, int a3, int a4) =>
-          // ignore: deprecated_member_use_from_same_package
           ref(f5, a1, a2, a3, a4, 5);
-      Parser<List<String>> f3(int a1, int a2, int a3) =>
-          // ignore: deprecated_member_use_from_same_package
-          ref(f4, a1, a2, a3, 4);
-      Parser<List<String>> f2(int a1, int a2) =>
-          // ignore: deprecated_member_use_from_same_package
-          ref(f3, a1, a2, 3);
-      Parser<List<String>> f1(int a1) =>
-          // ignore: deprecated_member_use_from_same_package
-          ref(f2, a1, 2);
-      Parser<List<String>> f0() =>
-          // ignore: deprecated_member_use_from_same_package
-          ref(f1, 1);
-      Parser<List<String>> start() =>
-          // ignore: deprecated_member_use_from_same_package
-          ref(f0);
+      Parser<List<String>> f3(int a1, int a2, int a3) => ref(f4, a1, a2, a3, 4);
+      Parser<List<String>> f2(int a1, int a2) => ref(f3, a1, a2, 3);
+      Parser<List<String>> f1(int a1) => ref(f2, a1, 2);
+      Parser<List<String>> f0() => ref(f1, 1);
+      Parser<List<String>> start() => ref(f0);
       expect(resolve(start()),
           isParseSuccess('123456789', result: '123456789'.split('')));
     });
@@ -365,11 +342,6 @@ void main() {
       expect(
           parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
     });
-    test('invalid building', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(() => grammarDefinition.build(arguments: [1, 2, 3]),
-          throwsStateError);
-    });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
       expect(() => reference.copy(), throwsUnsupportedError);
@@ -410,37 +382,17 @@ void main() {
     });
     test('direct recursion', () {
       expect(
-          () =>
-              // ignore: deprecated_member_use_from_same_package
-              buggedDefinition.build(start: buggedDefinition.directRecursion1),
-          throwsStateError);
-      expect(
           () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
           throwsStateError);
     });
     test('indirect recursion', () {
       expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion1),
-          throwsStateError);
-      expect(
           () =>
               buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
           throwsStateError);
       expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion2),
-          throwsStateError);
-      expect(
           () =>
               buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
-          throwsStateError);
-      expect(
-          () => buggedDefinition.build(
-              // ignore: deprecated_member_use_from_same_package
-              start: buggedDefinition.indirectRecursion3),
           throwsStateError);
       expect(
           () =>
@@ -448,18 +400,9 @@ void main() {
           throwsStateError);
     });
     test('delegation', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation1),
-          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
           isA<EpsilonParser<void>>());
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation2),
-          isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
-          isA<EpsilonParser<void>>());
-      // ignore: deprecated_member_use_from_same_package
-      expect(buggedDefinition.build(start: buggedDefinition.delegation3),
           isA<EpsilonParser<void>>());
       expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
           isA<EpsilonParser<void>>());
@@ -480,30 +423,6 @@ void main() {
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('1', result: isNotNull));
-      expect(parser, isParseSuccess('12', result: isNotNull));
-      expect(parser, isParseSuccess('1.23', result: isNotNull));
-      expect(parser, isParseSuccess('-12.3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2 + 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2 - 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2 * 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2 / 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2 ^ 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + (2 * 3)', result: isNotNull));
-      expect(parser, isParseSuccess('(1 + 2) * 3', result: isNotNull));
-    });
-  });
-  group('definition parser', () {
-    final definition = ExpressionGrammarDefinition();
-    // ignore: deprecated_member_use_from_same_package
-    final parser = GrammarParser(definition);
-    expectParserInvariants(parser);
-    test('expression', () {
       expect(parser, isParseSuccess('1', result: isNotNull));
       expect(parser, isParseSuccess('12', result: isNotNull));
       expect(parser, isParseSuccess('1.23', result: isNotNull));

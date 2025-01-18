@@ -24,7 +24,7 @@ abstract class CharacterParser extends Parser<String> {
         true => UnicodeCharacterParser(predicate, message),
       };
 
-  /// Internal constructor.
+  /// Internal constructor
   @internal
   CharacterParser.internal(this.predicate, this.message);
 
@@ -38,7 +38,7 @@ abstract class CharacterParser extends Parser<String> {
   String toString() => '${super.toString()}[$message]';
 
   @override
-  bool hasEqualProperties(SingleCharacterParser other) =>
+  bool hasEqualProperties(CharacterParser other) =>
       super.hasEqualProperties(other) &&
       predicate.isEqualTo(other.predicate) &&
       message == other.message;

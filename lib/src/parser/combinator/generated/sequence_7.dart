@@ -143,46 +143,6 @@ extension RecordOfValuesExtension7<T1, T2, T3, T4, T5, T6, T7> on (
   T6,
   T7
 ) {
-  /// Returns the first element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $1')
-  T1 get first => $1;
-
-  /// Returns the second element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $2')
-  T2 get second => $2;
-
-  /// Returns the third element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $3')
-  T3 get third => $3;
-
-  /// Returns the fourth element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $4')
-  T4 get fourth => $4;
-
-  /// Returns the fifth element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $5')
-  T5 get fifth => $5;
-
-  /// Returns the sixth element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $6')
-  T6 get sixth => $6;
-
-  /// Returns the seventh element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $7')
-  T7 get seventh => $7;
-
-  /// Returns the last element of this record.
-  @preferInline
-  @Deprecated(r'Instead use the canonical accessor $7')
-  T7 get last => $7;
-
   /// Converts this [Record] with 7 positional values to a new type [R] using
   /// the provided [callback] with 7 positional arguments.
   @preferInline

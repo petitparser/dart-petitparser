@@ -65,13 +65,7 @@ void main() {
     const other = ('b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'b');
     });
     test('map', () {
       expect(record.map((a, b) {
@@ -174,16 +168,8 @@ void main() {
     const other = ('c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'c');
     });
     test('map', () {
       expect(record.map((a, b, c) {
@@ -306,19 +292,9 @@ void main() {
     const other = ('d', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'd');
     });
     test('map', () {
       expect(record.map((a, b, c, d) {
@@ -460,22 +436,10 @@ void main() {
     const other = ('e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
       expect(record.$5, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fifth, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'e');
     });
     test('map', () {
       expect(record.map((a, b, c, d, e) {
@@ -644,25 +608,11 @@ void main() {
     const other = ('f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
       expect(record.$5, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fifth, 'e');
       expect(record.$6, 'f');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.sixth, 'f');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'f');
     });
     test('map', () {
       expect(record.map((a, b, c, d, e, f) {
@@ -852,28 +802,12 @@ void main() {
     const other = ('g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
       expect(record.$5, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fifth, 'e');
       expect(record.$6, 'f');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.sixth, 'f');
       expect(record.$7, 'g');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.seventh, 'g');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'g');
     });
     test('map', () {
       expect(record.map((a, b, c, d, e, f, g) {
@@ -1083,31 +1017,13 @@ void main() {
     const other = ('h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
       expect(record.$5, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fifth, 'e');
       expect(record.$6, 'f');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.sixth, 'f');
       expect(record.$7, 'g');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.seventh, 'g');
       expect(record.$8, 'h');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.eighth, 'h');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'h');
     });
     test('map', () {
       expect(record.map((a, b, c, d, e, f, g, h) {
@@ -1337,34 +1253,14 @@ void main() {
     const other = ('i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a');
     test('accessors', () {
       expect(record.$1, 'a');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.first, 'a');
       expect(record.$2, 'b');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.second, 'b');
       expect(record.$3, 'c');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.third, 'c');
       expect(record.$4, 'd');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fourth, 'd');
       expect(record.$5, 'e');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.fifth, 'e');
       expect(record.$6, 'f');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.sixth, 'f');
       expect(record.$7, 'g');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.seventh, 'g');
       expect(record.$8, 'h');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.eighth, 'h');
       expect(record.$9, 'i');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.ninth, 'i');
-      // ignore: deprecated_member_use_from_same_package
-      expect(record.last, 'i');
     });
     test('map', () {
       expect(record.map((a, b, c, d, e, f, g, h, i) {

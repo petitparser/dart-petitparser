@@ -17,14 +17,6 @@ class ExpressionGroup<T> {
   /// Loopback parser used to establish the recursive expressions.
   final Parser<T> _loopback;
 
-  /// Defines a new primitive or literal [parser].
-  @Deprecated('Define primitive parsers directly on the builder using '
-      '`ExpressionBuilder.primitive`')
-  void primitive(Parser<T> parser) => primitives.add(parser);
-
-  @internal
-  final List<Parser<T>> primitives = [];
-
   /// Defines a new wrapper using [left] and [right] parsers, that are typically
   /// used for parenthesis. Evaluates the [callback] with the parsed `left`
   /// delimiter, the `value` and `right` delimiter.
