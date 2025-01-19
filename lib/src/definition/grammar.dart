@@ -81,8 +81,8 @@ abstract class GrammarDefinition<R> {
 
   /// Builds a composite parser starting with the specified [parser].
   ///
-  /// As argument either pass a reference to a production of this definition or
-  /// any other parser using productions of this definition.
+  /// As argument either pass a reference to a production in this definition, or
+  /// any other parser using productions in this definition.
   @useResult
   Parser<T> buildFrom<T>(Parser<T> parser) => resolve<T>(parser);
 }

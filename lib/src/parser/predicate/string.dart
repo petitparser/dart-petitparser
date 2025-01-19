@@ -22,8 +22,3 @@ Parser<String> string(String string,
             message ?? '"$string" (case-insensitive) expected')
         : predicate(string.length, (value) => string == value,
             message ?? '"$string" expected');
-
-@useResult
-@Deprecated('Use `string(value, ignoreCase: true)` instead')
-Parser<String> stringIgnoreCase(String value, [String? message]) =>
-    string(value, message: message, ignoreCase: true);

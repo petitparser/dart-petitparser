@@ -18,15 +18,9 @@ Parser<String> char(String value,
     {String? message, bool ignoreCase = false, bool unicode = false}) {
   final charCode = toCharCode(value, unicode: unicode);
   final predicate = ignoreCase
-      ? optimizedString('${value.toLowerCase()}${value.toUpperCase()}',
-          unicode: unicode)
+      ? optimizedString(value, ignoreCase: ignoreCase, unicode: unicode)
       : SingleCharPredicate(charCode);
   message ??= '"${toReadableString(value, unicode: unicode)}"'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);
 }
-
-@useResult
-@Deprecated('Use `char(value, message: message, ignoreCase: true)` instead')
-Parser<String> charIgnoringCase(String value, [String? message]) =>
-    char(value, message: message, ignoreCase: true);

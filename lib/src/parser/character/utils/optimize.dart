@@ -5,11 +5,14 @@ import '../predicate/lookup.dart';
 import '../predicate/range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string, {required bool unicode}) =>
-    optimizedRanges(
-        (unicode ? string.runes : string.codeUnits)
-            .map((value) => RangeCharPredicate(value, value)),
-        unicode: unicode);
+CharacterPredicate optimizedString(String string,
+    {required bool unicode, bool ignoreCase = false}) {
+  if (ignoreCase) string = '${string.toLowerCase()}${string.toUpperCase()}';
+  return optimizedRanges(
+      (unicode ? string.runes : string.codeUnits)
+          .map((value) => RangeCharPredicate(value, value)),
+      unicode: unicode);
+}
 
 /// Creates an optimized predicate from a list of range predicates.
 CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,

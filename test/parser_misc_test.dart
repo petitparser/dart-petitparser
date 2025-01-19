@@ -31,7 +31,7 @@ void main() {
       expect(parser, isParseFailure('a', message: 'failure'));
     });
   });
-  group('labeled', () {
+  group('label', () {
     expectParserInvariants(any().labeled('anything'));
     test('default', () {
       final parser = char('*').labeled('asterisk');

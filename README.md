@@ -109,7 +109,6 @@ print(id.accept('foo'));                // true
 print(id.accept('123'));                // false
 ```
 
-
 ### Different Kinds of Parsers
 
 PetitParser provides a large set of ready-made parser that you can compose to consume and transform arbitrarily complex languages. 
@@ -130,8 +129,11 @@ Terminal parsers are the simplest. We've already seen a few of those:
 - [`whitespace()`](https://pub.dev/documentation/petitparser/latest/petitparser/whitespace.html) parses a whitespace character, i.e. *␣* or *↦*.
 - [`word()`](https://pub.dev/documentation/petitparser/latest/petitparser/word.html) parses a single letter, digit, or the underscore character.
 
-By default all parsers use an automatically generated descriptive error message, match case-sensitive, and work on 16-bit UTF-16 code units.
+By default all parsers use an automatically generated descriptive error message, match case-sensitive, and work on 16-bit UTF-16 code units. To change this default behavior use the named arguments (where appropriate):
 
+- `message: 'expected a special character'` to use a custom error message,
+- `ignoreCase: true` to accept both lower- and uppercase variations, and
+- `unicode: true` to decode surrogate pairs and read Unicode code-points.
 
 #### Combinator Parsers
 

@@ -8,7 +8,7 @@ abstract class CharacterPredicate {
   /// Tests if the [charCode] satisfies the predicate.
   bool test(int charCode);
 
-  /// Compares the two predicates for equality.
+  /// Compares the predicate and [other] for equality.
   bool isEqualTo(CharacterPredicate other);
 
   @override

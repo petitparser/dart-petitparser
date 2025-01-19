@@ -4,7 +4,7 @@ import '../../core/parser.dart';
 import '../action/map.dart';
 import '../combinator/choice.dart';
 import '../combinator/sequence.dart';
-import '../misc/eof.dart';
+import '../misc/end.dart';
 import '../predicate/character.dart';
 import '../repeater/possessive.dart';
 import 'any.dart';
@@ -51,11 +51,6 @@ Parser<String> pattern(String pattern,
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);
 }
-
-@useResult
-@Deprecated('Use `pattern(value, message: message, ignoreCase: true)` instead')
-Parser<String> patternIgnoreCase(String value, [String? message]) =>
-    pattern(value, message: message, ignoreCase: true);
 
 Parser<List<RangeCharPredicate>> _createParser({required bool unicode}) {
   // Parser that consumes a single character.

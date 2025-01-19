@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/src/parser/character/predicate/char.dart';
+import 'package:petitparser/src/parser/character/predicate/constant.dart';
 import 'package:petitparser/src/parser/character/predicate/lookup.dart';
 import 'package:petitparser/src/parser/character/predicate/range.dart';
 import 'package:test/test.dart' hide anyOf;
@@ -10,6 +11,41 @@ import 'utils/assertions.dart';
 import 'utils/matchers.dart';
 
 void main() {
+  group('character', () {
+    const predicate = ConstantCharPredicate.any;
+    test('single character', () {
+      final parser =
+          SingleCharacterParser.internal(predicate, 'single character');
+      for (var code = 0; code < 0xffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('any single character', () {
+      final parser =
+          AnySingleCharacterParser.internal(predicate, 'any single character');
+      for (var code = 0; code < 0xffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('unicode character', () {
+      final parser =
+          UnicodeCharacterParser.internal(predicate, 'unicode character');
+      for (var code = 0; code < 0x10ffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+    test('any unicode character', () {
+      final parser = AnyUnicodeCharacterParser.internal(
+          predicate, 'any unicode character');
+      for (var code = 0; code < 0x10ffff; code++) {
+        final char = String.fromCharCode(code);
+        expect(parser, isParseSuccess(char, result: char));
+      }
+    });
+  });
   group('pattern', () {
     expectParserInvariants(PatternParser('42', 'number expected'));
     test('string', () {

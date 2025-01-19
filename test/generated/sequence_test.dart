@@ -24,23 +24,9 @@ void main() {
       expect(
           parser, isParseFailure('a*', message: '"b" expected', position: 1));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (char('a'), char('b')).toSequenceParser();
-    const record = ('a', 'b');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('ab', result: record));
-      expect(parser, isParseSuccess('ab*', result: record, position: 2));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+    test('toSequenceParser()', () {
+      final alternate = (char('a'), char('b')).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map2', () {
@@ -114,29 +100,9 @@ void main() {
       expect(
           parser, isParseFailure('ab*', message: '"c" expected', position: 2));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (char('a'), char('b'), char('c')).toSequenceParser();
-    const record = ('a', 'b', 'c');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abc', result: record));
-      expect(parser, isParseSuccess('abc*', result: record, position: 3));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+    test('toSequenceParser()', () {
+      final alternate = (char('a'), char('b'), char('c')).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map3', () {
@@ -225,36 +191,10 @@ void main() {
       expect(
           parser, isParseFailure('abc*', message: '"d" expected', position: 3));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser =
-        (char('a'), char('b'), char('c'), char('d')).toSequenceParser();
-    const record = ('a', 'b', 'c', 'd');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcd', result: record));
-      expect(parser, isParseSuccess('abcd*', result: record, position: 4));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+    test('toSequenceParser()', () {
+      final alternate =
+          (char('a'), char('b'), char('c'), char('d')).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map4', () {
@@ -357,42 +297,10 @@ void main() {
       expect(parser,
           isParseFailure('abcd*', message: '"e" expected', position: 4));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (char('a'), char('b'), char('c'), char('d'), char('e'))
-        .toSequenceParser();
-    const record = ('a', 'b', 'c', 'd', 'e');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcde', result: record));
-      expect(parser, isParseSuccess('abcde*', result: record, position: 5));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
-    });
-    test('failure at 4', () {
-      expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+    test('toSequenceParser()', () {
+      final alternate = (char('a'), char('b'), char('c'), char('d'), char('e'))
+          .toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map5', () {
@@ -510,54 +418,16 @@ void main() {
       expect(parser,
           isParseFailure('abcde*', message: '"f" expected', position: 5));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (
-      char('a'),
-      char('b'),
-      char('c'),
-      char('d'),
-      char('e'),
-      char('f')
-    ).toSequenceParser();
-    const record = ('a', 'b', 'c', 'd', 'e', 'f');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcdef', result: record));
-      expect(parser, isParseSuccess('abcdef*', result: record, position: 6));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
-    });
-    test('failure at 4', () {
-      expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
-    });
-    test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+    test('toSequenceParser()', () {
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+        char('e'),
+        char('f')
+      ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map6', () {
@@ -690,61 +560,17 @@ void main() {
       expect(parser,
           isParseFailure('abcdef*', message: '"g" expected', position: 6));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (
-      char('a'),
-      char('b'),
-      char('c'),
-      char('d'),
-      char('e'),
-      char('f'),
-      char('g')
-    ).toSequenceParser();
-    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcdefg', result: record));
-      expect(parser, isParseSuccess('abcdefg*', result: record, position: 7));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
-    });
-    test('failure at 4', () {
-      expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
-    });
-    test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
-    });
-    test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+    test('toSequenceParser()', () {
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+        char('e'),
+        char('f'),
+        char('g')
+      ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map7', () {
@@ -892,68 +718,18 @@ void main() {
       expect(parser,
           isParseFailure('abcdefg*', message: '"h" expected', position: 7));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (
-      char('a'),
-      char('b'),
-      char('c'),
-      char('d'),
-      char('e'),
-      char('f'),
-      char('g'),
-      char('h')
-    ).toSequenceParser();
-    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcdefgh', result: record));
-      expect(parser, isParseSuccess('abcdefgh*', result: record, position: 8));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
-    });
-    test('failure at 4', () {
-      expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
-    });
-    test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
-    });
-    test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
-    });
-    test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
+    test('toSequenceParser()', () {
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+        char('e'),
+        char('f'),
+        char('g'),
+        char('h')
+      ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map8', () {
@@ -1115,75 +891,19 @@ void main() {
       expect(parser,
           isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
     });
-  });
-  group('toSequenceParser()', () {
-    final parser = (
-      char('a'),
-      char('b'),
-      char('c'),
-      char('d'),
-      char('e'),
-      char('f'),
-      char('g'),
-      char('h'),
-      char('i')
-    ).toSequenceParser();
-    const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
-    expectParserInvariants(parser);
-    test('success', () {
-      expect(parser, isParseSuccess('abcdefghi', result: record));
-      expect(parser, isParseSuccess('abcdefghi*', result: record, position: 9));
-    });
-    test('failure at 0', () {
-      expect(parser, isParseFailure('', message: '"a" expected', position: 0));
-      expect(parser, isParseFailure('*', message: '"a" expected', position: 0));
-    });
-    test('failure at 1', () {
-      expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
-      expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
-    });
-    test('failure at 2', () {
-      expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
-      expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
-    });
-    test('failure at 3', () {
-      expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
-      expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
-    });
-    test('failure at 4', () {
-      expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
-    });
-    test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
-    });
-    test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
-    });
-    test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
-    });
-    test('failure at 8', () {
-      expect(parser,
-          isParseFailure('abcdefgh', message: '"i" expected', position: 8));
-      expect(parser,
-          isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
+    test('toSequenceParser()', () {
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+        char('e'),
+        char('f'),
+        char('g'),
+        char('h'),
+        char('i')
+      ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map9', () {

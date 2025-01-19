@@ -24,12 +24,19 @@ final isAssertionError = hasAssertionsEnabled()
 
 /// Returns a [Matcher] that asserts two parsers are structurally equivalent.
 Matcher isParserDeepEqual(Parser expected) => predicate(
-    (actual) => actual is Parser && actual.isEqualTo(expected),
+    (actual) =>
+        actual is Parser &&
+        actual.isEqualTo(expected) &&
+        expected.isEqualTo(actual),
     'deep equivalent');
 
-/// Returns a [Matcher] that asserts two parsers are the same (ignoring children).
+/// Returns a [Matcher] that asserts two parsers are equivalent ignoring
+/// children.
 Matcher isParserShallowEqual(Parser expected) => predicate(
-    (actual) => actual is Parser && actual.isEqualTo(expected, {actual}),
+    (actual) =>
+        actual is Parser &&
+        actual.isEqualTo(expected, {actual}) &&
+        expected.isEqualTo(actual, {expected}),
     'shallow equivalent');
 
 /// Returns a [Matcher] that asserts a [CharacterParser].
@@ -48,8 +55,11 @@ Matcher isCharacterParser<P extends CharacterParser>({
         .having((parser) => parser.message, 'message', message);
 
 /// Returns a [Matcher] that asserts a [CharacterPredicate].
-Matcher isCharacterPredicate(CharacterPredicate other) => predicate(
-    (actual) => actual is CharacterPredicate && actual.isEqualTo(other),
+Matcher isCharacterPredicate(CharacterPredicate expected) => predicate(
+    (actual) =>
+        actual is CharacterPredicate &&
+        actual.isEqualTo(expected) &&
+        expected.isEqualTo(actual),
     'equal predicate');
 
 /// Returns a [Matcher] that asserts on the `toString` output.

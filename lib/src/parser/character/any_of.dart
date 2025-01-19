@@ -9,10 +9,8 @@ import 'utils/optimize.dart';
 @useResult
 Parser<String> anyOf(String value,
     {String? message, bool ignoreCase = false, bool unicode = false}) {
-  final predicate = ignoreCase
-      ? optimizedString('${value.toLowerCase()}${value.toUpperCase()}',
-          unicode: unicode)
-      : optimizedString(value, unicode: unicode);
+  final predicate =
+      optimizedString(value, ignoreCase: ignoreCase, unicode: unicode);
   message ??= 'any of "${toReadableString(value, unicode: unicode)}"'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);

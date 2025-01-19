@@ -22,7 +22,7 @@ void main() {
           isParseFailure('abc', position: 0, message: 'digit expected'));
     });
   });
-  group('callCC', () {
+  group('continuation', () {
     expectParserInvariants(
         any().callCC<String>((continuation, context) => continuation(context)));
     test('delegation', () {
@@ -100,34 +100,6 @@ void main() {
       expect(parser, isParseSuccess('1', result: '1'));
       expect(parser, isParseSuccess('1,12', result: '1,12'));
       expect(parser, isParseSuccess('1,12,123', result: '1,12,123'));
-    });
-  });
-  group('where', () {
-    expectParserInvariants(any().where((value) => true));
-    test('default', () {
-      final parser = any().where((value) => value == '*');
-      expect(parser, isParseSuccess('*', result: '*'));
-      expect(parser, isParseFailure('', message: 'input expected'));
-      expect(parser, isParseFailure('!', message: 'unexpected "!"'));
-    });
-    test('with message', () {
-      final parser =
-          any().where((value) => value == '*', message: 'star expected');
-      expect(parser, isParseSuccess('*', result: '*'));
-      expect(parser, isParseFailure('', message: 'input expected'));
-      expect(parser, isParseFailure('!', message: 'star expected'));
-    });
-    test('with factory', () {
-      final parser = digit().plus().flatten().map(int.parse).where(
-          (value) => value % 7 == 0,
-          factory: (context, success) =>
-              context.failure('${success.value} is not divisible by 7'));
-      expect(parser, isParseSuccess('7', result: 7));
-      expect(parser, isParseSuccess('14', result: 14));
-      expect(parser, isParseSuccess('861', result: 861));
-      expect(parser, isParseFailure('', message: 'digit expected'));
-      expect(
-          parser, isParseFailure('865', message: '865 is not divisible by 7'));
     });
   });
   group('map', () {
@@ -375,6 +347,34 @@ void main() {
       expect(
           parser, isParseFailure('#a', position: 0, message: '"a" expected'));
       expect(parser, isParseSuccess('a*', result: 'a', position: 1));
+    });
+  });
+  group('where', () {
+    expectParserInvariants(any().where((value) => true));
+    test('default', () {
+      final parser = any().where((value) => value == '*');
+      expect(parser, isParseSuccess('*', result: '*'));
+      expect(parser, isParseFailure('', message: 'input expected'));
+      expect(parser, isParseFailure('!', message: 'unexpected "!"'));
+    });
+    test('with message', () {
+      final parser =
+          any().where((value) => value == '*', message: 'star expected');
+      expect(parser, isParseSuccess('*', result: '*'));
+      expect(parser, isParseFailure('', message: 'input expected'));
+      expect(parser, isParseFailure('!', message: 'star expected'));
+    });
+    test('with factory', () {
+      final parser = digit().plus().flatten().map(int.parse).where(
+          (value) => value % 7 == 0,
+          factory: (context, success) =>
+              context.failure('${success.value} is not divisible by 7'));
+      expect(parser, isParseSuccess('7', result: 7));
+      expect(parser, isParseSuccess('14', result: 14));
+      expect(parser, isParseSuccess('861', result: 861));
+      expect(parser, isParseFailure('', message: 'digit expected'));
+      expect(
+          parser, isParseFailure('865', message: '865 is not divisible by 7'));
     });
   });
 }

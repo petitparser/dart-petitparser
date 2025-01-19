@@ -10,10 +10,8 @@ import 'utils/optimize.dart';
 @useResult
 Parser<String> noneOf(String value,
     {String? message, bool ignoreCase = false, bool unicode = false}) {
-  final predicate = NotCharPredicate(ignoreCase
-      ? optimizedString('${value.toLowerCase()}${value.toUpperCase()}',
-          unicode: unicode)
-      : optimizedString(value, unicode: unicode));
+  final predicate = NotCharPredicate(
+      optimizedString(value, ignoreCase: ignoreCase, unicode: unicode));
   message ??= 'none of "${toReadableString(value, unicode: unicode)}"'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);
