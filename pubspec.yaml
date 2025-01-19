@@ -15,10 +15,10 @@ topics:
   - peg
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 dependencies:
   meta: ^1.16.0
   collection: ^1.19.0
 dev_dependencies:
-  lints: ^5.0.0
+  lints: ^5.1.0
   test: ^1.25.0
