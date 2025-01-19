@@ -7,11 +7,10 @@ import '../predicate.dart';
 import 'range.dart';
 
 class LookupCharPredicate extends CharacterPredicate {
-  LookupCharPredicate(List<RangeCharPredicate> ranges)
+  LookupCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
       : start = ranges.first.start,
         stop = ranges.last.stop,
-        bits = Uint32List(
-            (ranges.last.stop - ranges.first.start + 1 + _offset) >> _shift) {
+        bits = Uint32List(size(ranges)) {
     for (final range in ranges) {
       for (var index = range.start - start;
           index <= range.stop - start;
@@ -20,6 +19,8 @@ class LookupCharPredicate extends CharacterPredicate {
       }
     }
   }
+
+  const LookupCharPredicate(this.start, this.stop, this.bits);
 
   final int start;
   final int stop;
@@ -43,6 +44,9 @@ class LookupCharPredicate extends CharacterPredicate {
 
   @override
   String toString() => '${super.toString()}($start, $stop, $bits)';
+
+  static int size(Iterable<RangeCharPredicate> ranges) =>
+      (ranges.last.stop - ranges.first.start + _offset + 1) >> _shift;
 }
 
 const _listEquality = ListEquality<int>();

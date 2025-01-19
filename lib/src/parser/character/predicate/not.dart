@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
-class NotCharacterPredicate extends CharacterPredicate {
-  const NotCharacterPredicate(this.predicate);
+class NotCharPredicate extends CharacterPredicate {
+  const NotCharPredicate(this.predicate);
 
   final CharacterPredicate predicate;
 
@@ -10,7 +10,7 @@ class NotCharacterPredicate extends CharacterPredicate {
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
-      other is NotCharacterPredicate && predicate.isEqualTo(other.predicate);
+      other is NotCharPredicate && predicate.isEqualTo(other.predicate);
 
   @override
   String toString() => '${super.toString()}($predicate)';

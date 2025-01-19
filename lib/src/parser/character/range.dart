@@ -8,8 +8,12 @@ import 'utils/code.dart';
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
 @useResult
-Parser<String> range(String start, String stop, {String? message}) =>
+Parser<String> range(String start, String stop,
+        {String? message, bool unicode = false}) =>
     CharacterParser(
-        RangeCharPredicate(toCharCode(start), toCharCode(stop)),
+        RangeCharPredicate(toCharCode(start, unicode: unicode),
+            toCharCode(stop, unicode: unicode)),
         message ??
-            '[${toReadableString(start)}-${toReadableString(stop)}] expected');
+            '[${toReadableString(start, unicode: unicode)}-'
+                '${toReadableString(stop, unicode: unicode)}] expected',
+        unicode: unicode);

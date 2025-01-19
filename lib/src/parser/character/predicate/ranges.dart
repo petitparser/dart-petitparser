@@ -1,41 +1,52 @@
+import 'dart:typed_data';
+
 import 'package:collection/collection.dart' show ListEquality;
 
+import '../../../shared/pragma.dart';
 import '../predicate.dart';
+import 'range.dart';
 
 class RangesCharPredicate extends CharacterPredicate {
-  const RangesCharPredicate(this.length, this.starts, this.stops);
+  RangesCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
+      : ranges = Uint32List(size(ranges)) {
+    var i = 0;
+    for (final range in ranges) {
+      this.ranges[i++] = range.start;
+      this.ranges[i++] = range.stop;
+    }
+  }
 
-  final int length;
-  final List<int> starts;
-  final List<int> stops;
+  const RangesCharPredicate(this.ranges);
+
+  final Uint32List ranges;
 
   @override
+  @noBoundsChecks
   bool test(int charCode) {
     var min = 0;
-    var max = length;
-    while (min < max) {
-      final mid = min + ((max - min) >> 1);
-      final comp = starts[mid] - charCode;
-      if (comp == 0) {
+    var max = ranges.length - 2;
+    while (min <= max) {
+      final mid = (min + ((max - min) >> 1)) & ~1;
+      if (ranges[mid] <= charCode && charCode <= ranges[mid + 1]) {
         return true;
-      } else if (comp < 0) {
-        min = mid + 1;
+      } else if (charCode < ranges[mid]) {
+        max = mid - 2;
       } else {
-        max = mid;
+        min = mid + 2;
       }
     }
-    return 0 < min && charCode <= stops[min - 1];
+    return false;
   }
 
   @override
   bool isEqualTo(CharacterPredicate other) =>
       other is RangesCharPredicate &&
-      length == other.length &&
-      _listEquality.equals(starts, other.starts) &&
-      _listEquality.equals(stops, other.stops);
+      _listEquality.equals(ranges, other.ranges);
 
   @override
-  String toString() => '${super.toString()}($length, $starts, $stops)';
+  String toString() => '${super.toString()}($ranges)';
+
+  static int size(Iterable<RangeCharPredicate> ranges) => 2 * ranges.length;
 }
 
 const _listEquality = ListEquality<int>();

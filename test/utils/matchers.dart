@@ -32,6 +32,26 @@ Matcher isParserShallowEqual(Parser expected) => predicate(
     (actual) => actual is Parser && actual.isEqualTo(expected, {actual}),
     'shallow equivalent');
 
+/// Returns a [Matcher] that asserts a [CharacterParser].
+@optionalTypeArgs
+Matcher isCharacterParser<P extends CharacterParser>({
+  dynamic predicate = anything,
+  dynamic message = anything,
+}) =>
+    isA<P>()
+        .having(
+            (parser) => parser.predicate,
+            'predicate',
+            predicate is CharacterPredicate
+                ? isCharacterPredicate(predicate)
+                : predicate)
+        .having((parser) => parser.message, 'message', message);
+
+/// Returns a [Matcher] that asserts a [CharacterPredicate].
+Matcher isCharacterPredicate(CharacterPredicate other) => predicate(
+    (actual) => actual is CharacterPredicate && actual.isEqualTo(other),
+    'equal predicate');
+
 /// Returns a [Matcher] that asserts on the `toString` output.
 Matcher isToString({
   String? name,
