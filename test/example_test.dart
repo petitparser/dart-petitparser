@@ -15,8 +15,9 @@ void main() {
       .seq(whitespace().plus().flatten())
       .seq(identifier.or(number).or(quoted))
       .map((list) => list.last);
-  final javadoc =
-      string('/**').seq(string('*/').neg().star()).seq(string('*/')).flatten();
+  final javadoc = string(
+    '/**',
+  ).seq(string('*/').neg().star()).seq(string('*/')).flatten();
   final multiLine = string('"""')
       .seq((string(r'\"""') | any()).starLazy(string('"""')).flatten())
       .seq(string('"""'))
@@ -61,7 +62,9 @@ void main() {
     expect(number, isParseFailure('', position: 0, message: 'digit expected'));
     expect(number, isParseFailure('-', position: 1, message: 'digit expected'));
     expect(
-        number, isParseFailure('-x', position: 1, message: 'digit expected'));
+      number,
+      isParseFailure('-x', position: 1, message: 'digit expected'),
+    );
     expect(number, isParseFailure('.', message: 'digit expected'));
     expect(number, isParseFailure('.1', message: 'digit expected'));
   });
@@ -80,9 +83,13 @@ void main() {
   test('invalid string', () {
     expect(quoted, isParseFailure('"', position: 1, message: '"\\"" expected'));
     expect(
-        quoted, isParseFailure('"a', position: 2, message: '"\\"" expected'));
+      quoted,
+      isParseFailure('"a', position: 2, message: '"\\"" expected'),
+    );
     expect(
-        quoted, isParseFailure('"ab', position: 3, message: '"\\"" expected'));
+      quoted,
+      isParseFailure('"ab', position: 3, message: '"\\"" expected'),
+    );
     expect(quoted, isParseFailure('a"', message: '"\\"" expected'));
     expect(quoted, isParseFailure('ab"', message: '"\\"" expected'));
   });
@@ -100,10 +107,14 @@ void main() {
   });
   test('invalid statement', () {
     expect(keyword, isParseFailure('retur f', message: '"return" expected'));
-    expect(keyword,
-        isParseFailure('return1', position: 6, message: 'whitespace expected'));
-    expect(keyword,
-        isParseFailure('return  _', position: 8, message: '"\\"" expected'));
+    expect(
+      keyword,
+      isParseFailure('return1', position: 6, message: 'whitespace expected'),
+    );
+    expect(
+      keyword,
+      isParseFailure('return  _', position: 8, message: '"\\"" expected'),
+    );
   });
   test('javadoc', () {
     expect(javadoc, isParseSuccess('/** foo */', result: '/** foo */'));
@@ -113,6 +124,8 @@ void main() {
     expect(multiLine, isParseSuccess(r'"""abc"""', result: r'abc'));
     expect(multiLine, isParseSuccess(r'"""abc\n"""', result: r'abc\n'));
     expect(
-        multiLine, isParseSuccess(r'"""abc\"""def"""', result: r'abc\"""def'));
+      multiLine,
+      isParseSuccess(r'"""abc\"""def"""', result: r'abc\"""def'),
+    );
   });
 }

@@ -7,16 +7,19 @@ import '../../shared/types.dart';
 class ParserPath {
   /// Constructs a path from a list of parsers and indexes.
   ParserPath(this.parsers, this.indexes)
-      : assert(parsers.isNotEmpty, 'parsers cannot be empty'),
-        assert(indexes.length == parsers.length - 1, 'indexes wrong size'),
-        assert((() {
+    : assert(parsers.isNotEmpty, 'parsers cannot be empty'),
+      assert(indexes.length == parsers.length - 1, 'indexes wrong size'),
+      assert(
+        (() {
           for (var i = 0; i < indexes.length; i++) {
             if (parsers[i].children[indexes[i]] != parsers[i + 1]) {
               return false;
             }
           }
           return true;
-        })(), 'indexes invalid');
+        })(),
+        'indexes invalid',
+      );
 
   /// The non-empty list of parsers in this path.
   final List<Parser> parsers;
@@ -48,7 +51,9 @@ class ParserPath {
 
 @internal
 Iterable<ParserPath> depthFirstSearch(
-    ParserPath path, Predicate<ParserPath> predicate) sync* {
+  ParserPath path,
+  Predicate<ParserPath> predicate,
+) sync* {
   if (predicate(path)) {
     yield ParserPath(List.from(path.parsers), List.from(path.indexes));
   } else {

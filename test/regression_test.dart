@@ -85,8 +85,10 @@ void main() {
     expect(parser, isParseSuccess('  ab1  ', result: '  ab1  '));
   });
   test('parse padded and limited number', () {
-    final parser =
-        digit().repeat(2).flatten().callCC<String>((continuation, context) {
+    final parser = digit().repeat(2).flatten().callCC<String>((
+      continuation,
+      context,
+    ) {
       final result = continuation(context);
       if (result is Success && int.parse(result.value) > 31) {
         return context.failure('00-31 expected');
@@ -101,50 +103,61 @@ void main() {
     expect(parser, isParseFailure('3', position: 1, message: 'digit expected'));
   });
   group('date format parser', () {
-    final day = 'dd'.toParser().map((token) => digit()
-        .repeat(2)
-        .flatten()
-        .map((value) => MapEntry(#day, int.parse(value))));
-    final month = 'mm'.toParser().map((token) => digit()
-        .repeat(2)
-        .flatten()
-        .map((value) => MapEntry(#month, int.parse(value))));
-    final year = 'yyyy'.toParser().map((token) => digit()
-        .repeat(4)
-        .flatten()
-        .map((value) => MapEntry(#year, int.parse(value))));
+    final day = 'dd'.toParser().map(
+      (token) => digit()
+          .repeat(2)
+          .flatten()
+          .map((value) => MapEntry(#day, int.parse(value))),
+    );
+    final month = 'mm'.toParser().map(
+      (token) => digit()
+          .repeat(2)
+          .flatten()
+          .map((value) => MapEntry(#month, int.parse(value))),
+    );
+    final year = 'yyyy'.toParser().map(
+      (token) => digit()
+          .repeat(4)
+          .flatten()
+          .map((value) => MapEntry(#year, int.parse(value))),
+    );
 
-    final spacing = whitespace().map((token) =>
-        whitespace().star().map((value) => const MapEntry(#unused, 0)));
+    final spacing = whitespace().map(
+      (token) => whitespace().star().map((value) => const MapEntry(#unused, 0)),
+    );
     final verbatim = any().map(
-        (token) => token.toParser().map((value) => const MapEntry(#unused, 0)));
+      (token) => token.toParser().map((value) => const MapEntry(#unused, 0)),
+    );
 
     final entries = [day, month, year, spacing, verbatim].toChoiceParser();
-    final format = entries
-        .star()
-        .end()
-        .map((parsers) => parsers.toSequenceParser().map((entries) {
-              final arguments = Map.fromEntries(entries);
-              return DateTime(
-                arguments[#year] ?? DateTime.now().year,
-                arguments[#month] ?? DateTime.january,
-                arguments[#day] ?? 1,
-              );
-            }));
+    final format = entries.star().end().map(
+      (parsers) => parsers.toSequenceParser().map((entries) {
+        final arguments = Map.fromEntries(entries);
+        return DateTime(
+          arguments[#year] ?? DateTime.now().year,
+          arguments[#month] ?? DateTime.january,
+          arguments[#day] ?? 1,
+        );
+      }),
+    );
 
     test('iso', () {
       final date = format.parse('yyyy-mm-dd').value;
       expect(date, isParseSuccess('1980-06-11', result: DateTime(1980, 6, 11)));
       expect(date, isParseSuccess('1982-08-24', result: DateTime(1982, 8, 24)));
-      expect(date,
-          isParseFailure('1984.10.31', position: 4, message: '"-" expected'));
+      expect(
+        date,
+        isParseFailure('1984.10.31', position: 4, message: '"-" expected'),
+      );
     });
     test('europe', () {
       final date = format.parse('dd.mm.yyyy').value;
       expect(date, isParseSuccess('11.06.1980', result: DateTime(1980, 6, 11)));
       expect(date, isParseSuccess('24.08.1982', result: DateTime(1982, 8, 24)));
       expect(
-          date, isParseFailure('1984', position: 2, message: '"." expected'));
+        date,
+        isParseFailure('1984', position: 2, message: '"." expected'),
+      );
     });
     test('us', () {
       final date = format.parse('mm/dd/yyyy').value;
@@ -168,38 +181,70 @@ void main() {
     expect(delimited, isParseSuccess(',hello,', result: 'hello'));
     expect(delimited, isParseSuccess('xhellox', result: 'hello'));
     expect(
-        delimited, isParseFailure('abc', position: 3, message: '"a" expected'));
+      delimited,
+      isParseFailure('abc', position: 3, message: '"a" expected'),
+    );
   });
   test('function evaluator', () {
     final builder = ExpressionBuilder<Evaluator>();
     builder
-      ..primitive(digit()
-          .plus()
-          .seq(char('.').seq(digit().plus()).optional())
-          .flatten()
-          .trim()
-          .map((a) {
-        final number = num.parse(a);
-        return (num value) => number;
-      }))
-      ..primitive(char('x').trim().map((_) => (value) => value));
-    builder
-        .group()
-        .wrapper(char('(').trim(), char(')').trim(), (_, a, __) => a);
+      ..primitive(
+        digit()
+            .plus()
+            .seq(char('.').seq(digit().plus()).optional())
+            .flatten()
+            .trim()
+            .map((a) {
+              final number = num.parse(a);
+              return (num value) => number;
+            }),
+      )
+      ..primitive(
+        char('x').trim().map(
+          (_) =>
+              (value) => value,
+        ),
+      );
+    builder.group().wrapper(
+      char('(').trim(),
+      char(')').trim(),
+      (_, a, __) => a,
+    );
     // negation is a prefix operator
-    builder
-        .group()
-        .prefix(char('-').trim(), (_, a) => (num value) => -a(value));
+    builder.group().prefix(
+      char('-').trim(),
+      (_, a) =>
+          (num value) => -a(value),
+    );
     // power is right-associative
     builder.group().right(
-        char('^').trim(), (a, _, b) => (num value) => pow(a(value), b(value)));
+      char('^').trim(),
+      (a, _, b) =>
+          (num value) => pow(a(value), b(value)),
+    );
     // multiplication and addition are left-associative
     builder.group()
-      ..left(char('*').trim(), (a, _, b) => (num value) => a(value) * b(value))
-      ..left(char('/').trim(), (a, _, b) => (num value) => a(value) / b(value));
+      ..left(
+        char('*').trim(),
+        (a, _, b) =>
+            (num value) => a(value) * b(value),
+      )
+      ..left(
+        char('/').trim(),
+        (a, _, b) =>
+            (num value) => a(value) / b(value),
+      );
     builder.group()
-      ..left(char('+').trim(), (a, _, b) => (num value) => a(value) + b(value))
-      ..left(char('-').trim(), (a, _, b) => (num value) => a(value) - b(value));
+      ..left(
+        char('+').trim(),
+        (a, _, b) =>
+            (num value) => a(value) + b(value),
+      )
+      ..left(
+        char('-').trim(),
+        (a, _, b) =>
+            (num value) => a(value) - b(value),
+      );
     final parser = builder.build().end();
 
     final expression = parser.parse('5 * x ^ 3 - 2').value;
@@ -245,8 +290,11 @@ void main() {
     test('greedy', () {
       final parser =
           char('(') & any().starGreedy(char(')')).flatten() & char(')');
-      expect(parser.parse(firstInput).value,
-          ['(', 'use = "official").empty(', ')']);
+      expect(parser.parse(firstInput).value, [
+        '(',
+        'use = "official").empty(',
+        ')',
+      ]);
       expect(parser.parse(secondInput).value, ['(', '(5 + 5) * 5', ')']);
     });
     test('lazy', () {
@@ -286,87 +334,115 @@ void main() {
       expect(parser, isParseSuccess('22', result: ['2', '2']));
       expect(parser, isParseSuccess('33', result: ['3', '3']));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'digit expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'digit expected'),
+      );
       expect(parser, isParseFailure('12', message: 'values do not match'));
       expect(parser, isParseFailure('21', message: 'values do not match'));
     });
     test('where', () {
-      final parser = inner.where((value) => value[0] == value[1],
-          factory: (context, success) =>
-              context.failure('values do not match'));
+      final parser = inner.where(
+        (value) => value[0] == value[1],
+        factory: (context, success) => context.failure('values do not match'),
+      );
       expect(parser, isParseSuccess('11', result: ['1', '1']));
       expect(parser, isParseSuccess('22', result: ['2', '2']));
       expect(parser, isParseSuccess('33', result: ['3', '3']));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'digit expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'digit expected'),
+      );
       expect(parser, isParseFailure('12', message: 'values do not match'));
       expect(parser, isParseFailure('21', message: 'values do not match'));
     });
   });
   test('github.com/petitparser/dart-petitparser/issues/121', () {
-    final parser = ((letter() | char('_')) &
-            (letter() | digit() | anyOf('_- ()')).star() &
-            char('.').not(message: 'end of id expected'))
-        .flatten();
+    final parser =
+        ((letter() | char('_')) &
+                (letter() | digit() | anyOf('_- ()')).star() &
+                char('.').not(message: 'end of id expected'))
+            .flatten();
     expect(parser, isParseSuccess('foo', result: 'foo'));
-    expect(parser,
-        isParseFailure('foo.1', message: 'end of id expected', position: 3));
+    expect(
+      parser,
+      isParseFailure('foo.1', message: 'end of id expected', position: 3),
+    );
   });
   test('github.com/petitparser/dart-petitparser/issues/126', () {
     final parser = ParensGrammar().build();
     expect(parser, isParseSuccess('', result: null));
     expect(parser, isParseSuccess('()', result: ['(', null, ')']));
     expect(
-        parser,
-        isParseSuccess('(())', result: [
+      parser,
+      isParseSuccess(
+        '(())',
+        result: [
           '(',
           ['(', null, ')'],
-          ')'
-        ]));
+          ')',
+        ],
+      ),
+    );
     expect(
-        parser,
-        isParseSuccess('((()))', result: [
+      parser,
+      isParseSuccess(
+        '((()))',
+        result: [
           '(',
           [
             '(',
             ['(', null, ')'],
-            ')'
+            ')',
           ],
-          ')'
-        ]));
+          ')',
+        ],
+      ),
+    );
   });
   group('stackoverflow.com/questions/73260748', () {
     test('Case 1', () {
       final parser = resolve(NestedGrammar1().start());
       expect(
-          parser,
-          isParseSuccess('(0)', result: [
+        parser,
+        isParseSuccess(
+          '(0)',
+          result: [
             "'(' (nestedTerm)",
             "'0' (singleCharacter)",
             "')' (nestedTerm)",
-          ]));
+          ],
+        ),
+      );
     });
     test('Case 2', () {
       final parser = resolve(NestedGrammar2().start());
       expect(
-          parser,
-          isParseSuccess('(0)', result: [
+        parser,
+        isParseSuccess(
+          '(0)',
+          result: [
             "'(' (singleCharacter)",
             "'0' (singleCharacter)",
             "')' (singleCharacter)",
-          ]));
+          ],
+        ),
+      );
     });
     test('Case 3', () {
       final parser = resolve(NestedGrammar3().start());
       expect(
-          parser,
-          isParseSuccess('(0)', result: [
+        parser,
+        isParseSuccess(
+          '(0)',
+          result: [
             [
               "'(' (nestedTerm)",
               ["'0' (singleCharacter)"],
               "')' (nestedTerm)",
-            ]
-          ]));
+            ],
+          ],
+        ),
+      );
     });
   });
   group('stackoverflow.com/questions/75278583', () {
@@ -394,7 +470,10 @@ void main() {
         final builder = ExpressionBuilder<Object>();
         builder.primitive(primitive);
         builder.group().wrapper(
-            char('(').trim(), char(')').trim(), (l, v, r) => [l, v, r]);
+          char('(').trim(),
+          char(')').trim(),
+          (l, v, r) => [l, v, r],
+        );
         builder.group()
           ..left(string('&&').trim(), (a, op, b) => [a, '&&', b])
           ..left(string('||').trim(), (a, op, b) => [a, '||', b]);
@@ -406,7 +485,8 @@ void main() {
       '&&': '(S|69|L && S|69|L)',
       '||': '(S|69|L || S|69|L)',
       'short': '((S|69|L || S|69|L) || S|69|L)',
-      'long': '(((S|69|L || S|69|R || S|72|L || S|72|R) && ((S|62|L && (S|78|L '
+      'long':
+          '(((S|69|L || S|69|R || S|72|L || S|72|R) && ((S|62|L && (S|78|L '
           '|| S|55|L) && (S|77|L || S|1|L)) || (S|62|R && (S|78|R || S|55|R) &&'
           ' (S|77|R || S|1|R)))) && (M|34|L || M|34|R) && (((M|40|L && M|39|L &'
           '& M|36|L) || (M|40|R && M|39|R && M|36|R)) || ((M|38|L && M|36|L && '
@@ -422,10 +502,13 @@ void main() {
   });
   group('stackoverflow.com/questions/75503464', () {
     final builder = ExpressionBuilder<Object?>();
-    final primitive =
-        seq5(uppercase(), char('|'), digit().plus(), char('|'), uppercase())
-            .flatten(message: 'value expected')
-            .trim();
+    final primitive = seq5(
+      uppercase(),
+      char('|'),
+      digit().plus(),
+      char('|'),
+      uppercase(),
+    ).flatten(message: 'value expected').trim();
     builder.primitive(primitive);
     builder.group().wrapper(char('(').trim(), char(')').trim(), (l, v, r) => v);
     builder.group()
@@ -436,35 +519,53 @@ void main() {
       expect(parser, isParseSuccess('S|69|L', result: 'S|69|L'));
       expect(parser, isParseSuccess('(S|69|L)', result: 'S|69|L'));
       expect(
-          parser,
-          isParseSuccess('S|69|L && S|69|R',
-              result: ['&&', 'S|69|L', 'S|69|R']));
+        parser,
+        isParseSuccess('S|69|L && S|69|R', result: ['&&', 'S|69|L', 'S|69|R']),
+      );
       expect(
-          parser,
-          isParseSuccess('S|69|L || S|69|R',
-              result: ['||', 'S|69|L', 'S|69|R']));
+        parser,
+        isParseSuccess('S|69|L || S|69|R', result: ['||', 'S|69|L', 'S|69|R']),
+      );
     });
     test('value error', () {
-      expect(parser,
-          isParseFailure('S|fail|L', position: 0, message: 'value expected'));
-      expect(parser,
-          isParseFailure('(S|fail|L)', position: 0, message: 'value expected'));
       expect(
-          parser,
-          isParseFailure('S|69|L && S|fail|R',
-              position: 7, message: 'end of input expected'));
+        parser,
+        isParseFailure('S|fail|L', position: 0, message: 'value expected'),
+      );
       expect(
-          parser,
-          isParseFailure('S|69|L || S|fail|R',
-              position: 7, message: 'end of input expected'));
+        parser,
+        isParseFailure('(S|fail|L)', position: 0, message: 'value expected'),
+      );
+      expect(
+        parser,
+        isParseFailure(
+          'S|69|L && S|fail|R',
+          position: 7,
+          message: 'end of input expected',
+        ),
+      );
+      expect(
+        parser,
+        isParseFailure(
+          'S|69|L || S|fail|R',
+          position: 7,
+          message: 'end of input expected',
+        ),
+      );
     });
     test('other error', () {
-      expect(parser,
-          isParseFailure('(S|69|L', position: 0, message: 'value expected'));
       expect(
-          parser,
-          isParseFailure('S|69|L &',
-              position: 7, message: 'end of input expected'));
+        parser,
+        isParseFailure('(S|69|L', position: 0, message: 'value expected'),
+      );
+      expect(
+        parser,
+        isParseFailure(
+          'S|69|L &',
+          position: 7,
+          message: 'end of input expected',
+        ),
+      );
     });
   });
   group('github.com/petitparser/dart-petitparser/issues/145', () {
@@ -473,10 +574,10 @@ void main() {
         char('*'),
         seq2(
           whitespace().not(),
-          [seq2(whitespace(), char('*')), char('*')]
-              .toChoiceParser()
-              .neg()
-              .plus(),
+          [
+            seq2(whitespace(), char('*')),
+            char('*'),
+          ].toChoiceParser().neg().plus(),
         ).flatten(),
         char('*'),
       ).map3((_, value, __) => value);
@@ -543,9 +644,9 @@ void main() {
       expect(parser, isParseSuccess('AAAA', result: 'success'));
       expect(parser, isParseSuccess('aaaAAaaa', result: 'fallback'));
       expect(
-          parser,
-          isParseFailure('AAaaAA',
-              position: 2, message: 'end of input expected'));
+        parser,
+        isParseFailure('AAaaAA', position: 2, message: 'end of input expected'),
+      );
     });
     test('possible fix', () {
       final parser = [uppercase.end(), anycase.end()].toChoiceParser();
@@ -554,9 +655,10 @@ void main() {
       expect(parser, isParseSuccess('AAaaAA', result: 'fallback'));
     });
     test('more general', () {
-      final parser = [uppercase.skip(after: anycase.not()), anycase]
-          .toChoiceParser()
-          .end();
+      final parser = [
+        uppercase.skip(after: anycase.not()),
+        anycase,
+      ].toChoiceParser().end();
       expect(parser, isParseSuccess('AAAA', result: 'success'));
       expect(parser, isParseSuccess('aaaAAaaa', result: 'fallback'));
       expect(parser, isParseSuccess('AAaaAA', result: 'fallback'));
@@ -571,15 +673,25 @@ void main() {
     test('How to recognize a list of items with optional delimiters?', () {
       final parser = digit().plusSeparated(char(',').optional());
       expect(
-          parser,
-          isParseSuccess('1,2,3',
-              result: isSeparatedList<String, String?>(
-                  elements: ['1', '2', '3'], separators: [',', ','])));
+        parser,
+        isParseSuccess(
+          '1,2,3',
+          result: isSeparatedList<String, String?>(
+            elements: ['1', '2', '3'],
+            separators: [',', ','],
+          ),
+        ),
+      );
       expect(
-          parser,
-          isParseSuccess('12,3',
-              result: isSeparatedList<String, String?>(
-                  elements: ['1', '2', '3'], separators: [null, ','])));
+        parser,
+        isParseSuccess(
+          '12,3',
+          result: isSeparatedList<String, String?>(
+            elements: ['1', '2', '3'],
+            separators: [null, ','],
+          ),
+        ),
+      );
     });
   });
   group('https://stackoverflow.com/questions/78701485', () {
@@ -588,27 +700,33 @@ void main() {
     test('original', () {
       final parser = char('(') & number & char(')');
       expect(parser, isParseSuccess('(0.53)'));
-      expect(parser,
-          isParseFailure('(0.53,00)', position: 5, message: '")" expected'));
+      expect(
+        parser,
+        isParseFailure('(0.53,00)', position: 5, message: '")" expected'),
+      );
     });
     test('modified', () {
-      final parser = char('(') &
+      final parser =
+          char('(') &
           number &
           char(',').not(message: 'remove comma') &
           char(')');
       expect(parser, isParseSuccess('(0.53)'));
-      expect(parser,
-          isParseFailure('(0.53,00)', position: 5, message: 'remove comma'));
+      expect(
+        parser,
+        isParseFailure('(0.53,00)', position: 5, message: 'remove comma'),
+      );
     });
   });
   group('github.com/petitparser/dart-petitparser/discussions/177', () {
     test('continuation', () {
       final variables = ['first', 'second'];
-      final parser = failure<String>().callCC((continuation, context) =>
-          variables
-              .map((each) => each.toParser())
-              .toChoiceParser()
-              .parseOn(context));
+      final parser = failure<String>().callCC(
+        (continuation, context) => variables
+            .map((each) => each.toParser())
+            .toChoiceParser()
+            .parseOn(context),
+      );
       expect(parser, isParseSuccess('first'));
       expect(parser, isParseSuccess('second'));
       expect(parser, isParseFailure('third'));
@@ -621,19 +739,26 @@ void main() {
       pattern('\uD800-\uDBFF'),
       pattern('\uDC00-\uDFFF'),
     );
-    final decodedSurrogatePair = surrogatePair.map2((hi, lo) =>
-        0x400 * (hi.codeUnitAt(0) - 0xD800) +
-        (lo.codeUnitAt(0) - 0xDC00) +
-        0x10000);
+    final decodedSurrogatePair = surrogatePair.map2(
+      (hi, lo) =>
+          0x400 * (hi.codeUnitAt(0) - 0xD800) +
+          (lo.codeUnitAt(0) - 0xDC00) +
+          0x10000,
+    );
     test('en.wikipedia.org/wiki/UTF-16#Examples', () {
       expect(
-          decodedSurrogatePair, isParseSuccess('\u{10437}', result: 0x10437));
+        decodedSurrogatePair,
+        isParseSuccess('\u{10437}', result: 0x10437),
+      );
       expect(
-          decodedSurrogatePair, isParseSuccess('\u{24B62}', result: 0x24B62));
+        decodedSurrogatePair,
+        isParseSuccess('\u{24B62}', result: 0x24B62),
+      );
     });
     test('#issuecomment-2510905396', () {
-      final parser = decodedSurrogatePair
-          .where((value) => 0x20000 <= value && value <= 0x2FFFF);
+      final parser = decodedSurrogatePair.where(
+        (value) => 0x20000 <= value && value <= 0x2FFFF,
+      );
       expect(parser, isParseSuccess('\u{20000}', result: 0x20000));
       expect(parser, isParseSuccess('\u{2abcd}', result: 0x2abcd));
       expect(parser, isParseSuccess('\u{2FFFF}', result: 0x2FFFF));
@@ -647,14 +772,22 @@ void main() {
       expect(parser.parse('message foo {} message bar {} '), isSuccess());
     });
     test('invalid', () {
-      expect(parser.parse('message '),
-          isFailure(message: 'identifier expected', position: 8));
-      expect(parser.parse('message 123'),
-          isFailure(message: 'identifier expected', position: 8));
-      expect(parser.parse('message Empty'),
-          isFailure(message: '"{" expected', position: 13));
-      expect(parser.parse('message Empty {'),
-          isFailure(message: '"}" expected', position: 15));
+      expect(
+        parser.parse('message '),
+        isFailure(message: 'identifier expected', position: 8),
+      );
+      expect(
+        parser.parse('message 123'),
+        isFailure(message: 'identifier expected', position: 8),
+      );
+      expect(
+        parser.parse('message Empty'),
+        isFailure(message: '"{" expected', position: 13),
+      );
+      expect(
+        parser.parse('message Empty {'),
+        isFailure(message: '"}" expected', position: 15),
+      );
     });
   });
 }

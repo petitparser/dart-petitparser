@@ -48,12 +48,12 @@ class TypedReferencesGrammarDefinition extends GrammarDefinition {
       ref5(f5, a1, a2, a3, a4, 5);
 
   Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) => [
-        a1.toString().toParser(),
-        a2.toString().toParser(),
-        a3.toString().toParser(),
-        a4.toString().toParser(),
-        a5.toString().toParser(),
-      ].toSequenceParser();
+    a1.toString().toParser(),
+    a2.toString().toParser(),
+    a3.toString().toParser(),
+    a4.toString().toParser(),
+    a5.toString().toParser(),
+  ].toSequenceParser();
 }
 
 class UntypedReferencesGrammarDefinition extends GrammarDefinition {
@@ -71,12 +71,12 @@ class UntypedReferencesGrammarDefinition extends GrammarDefinition {
   Parser f4(int a1, int a2, int a3, int a4) => ref5(f5, a1, a2, a3, a4, 5);
 
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
-        a1.toString().toParser(),
-        a2.toString().toParser(),
-        a3.toString().toParser(),
-        a4.toString().toParser(),
-        a5.toString().toParser(),
-      ].toSequenceParser();
+    a1.toString().toParser(),
+    a2.toString().toParser(),
+    a3.toString().toParser(),
+    a4.toString().toParser(),
+    a5.toString().toParser(),
+  ].toSequenceParser();
 }
 
 class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
@@ -94,12 +94,12 @@ class DeprecatedUntypedReferencesGrammarDefinition extends GrammarDefinition {
   Parser f4(int a1, int a2, int a3, int a4) => ref(f5, a1, a2, a3, a4, 5);
 
   Parser f5(int a1, int a2, int a3, int a4, int a5) => [
-        a1.toString().toParser(),
-        a2.toString().toParser(),
-        a3.toString().toParser(),
-        a4.toString().toParser(),
-        a5.toString().toParser(),
-      ].toSequenceParser();
+    a1.toString().toParser(),
+    a2.toString().toParser(),
+    a3.toString().toParser(),
+    a4.toString().toParser(),
+    a5.toString().toParser(),
+  ].toSequenceParser();
 }
 
 class BuggedGrammarDefinition extends GrammarDefinition {
@@ -156,9 +156,11 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 
   Parser primary() => ref0(number) | ref0(parentheses);
 
-  Parser number() => token(char('-').optional() &
-      digit().plus() &
-      (char('.') & digit().plus()).optional());
+  Parser number() => token(
+    char('-').optional() &
+        digit().plus() &
+        (char('.') & digit().plus()).optional(),
+  );
 
   Parser parentheses() => token('(') & ref0(terms) & token(')');
 
@@ -174,15 +176,16 @@ class ExpressionGrammarDefinition extends GrammarDefinition {
 
 void main() {
   group('reference & resolve', () {
-    Parser<String> numberToken() => (char('-').optional() &
-            digit().plus() &
-            (char('.') & digit().plus()).optional())
-        .flatten()
-        .trim();
+    Parser<String> numberToken() =>
+        (char('-').optional() &
+                digit().plus() &
+                (char('.') & digit().plus()).optional())
+            .flatten()
+            .trim();
     Parser<num> number() => ref0(numberToken).map(num.parse);
-    Parser<List<num>> numberList([String separator = ',']) => ref0(number)
-        .plusSeparated(separator.toParser())
-        .map((list) => list.elements);
+    Parser<List<num>> numberList([String separator = ',']) => ref0(
+      number,
+    ).plusSeparated(separator.toParser()).map((list) => list.elements);
 
     test('reference without parameters', () {
       final firstReference = ref0(number);
@@ -216,17 +219,46 @@ void main() {
       expect(() => reference.fastParseOn('0', 0), throwsUnsupportedError);
     });
     test('references typed', () {
-      Parser<List<String>> f9(int a1, int a2, int a3, int a4, int a5, int a6,
-              int a7, int a8, int a9) =>
-          [a1, a2, a3, a4, a5, a6, a7, a8, a9]
-              .map((value) => value.toString().toParser())
-              .toSequenceParser();
+      Parser<List<String>> f9(
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+        int a8,
+        int a9,
+      ) => [
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+        a7,
+        a8,
+        a9,
+      ].map((value) => value.toString().toParser()).toSequenceParser();
       Parser<List<String>> f8(
-              int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) =>
-          ref9(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+        int a8,
+      ) => ref9(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
       Parser<List<String>> f7(
-              int a1, int a2, int a3, int a4, int a5, int a6, int a7) =>
-          ref8(f8, a1, a2, a3, a4, a5, a6, a7, 8);
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+      ) => ref8(f8, a1, a2, a3, a4, a5, a6, a7, 8);
       Parser<List<String>> f6(int a1, int a2, int a3, int a4, int a5, int a6) =>
           ref7(f7, a1, a2, a3, a4, a5, a6, 7);
       Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) =>
@@ -239,21 +271,52 @@ void main() {
       Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
       Parser<List<String>> f0() => ref1(f1, 1);
       Parser<List<String>> start() => ref0(f0);
-      expect(resolve(start()),
-          isParseSuccess('123456789', result: '123456789'.split('')));
+      expect(
+        resolve(start()),
+        isParseSuccess('123456789', result: '123456789'.split('')),
+      );
     });
     test('references untyped', () {
-      Parser<List<String>> f9(int a1, int a2, int a3, int a4, int a5, int a6,
-              int a7, int a8, int a9) =>
-          [a1, a2, a3, a4, a5, a6, a7, a8, a9]
-              .map((value) => value.toString().toParser())
-              .toSequenceParser();
+      Parser<List<String>> f9(
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+        int a8,
+        int a9,
+      ) => [
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+        a7,
+        a8,
+        a9,
+      ].map((value) => value.toString().toParser()).toSequenceParser();
       Parser<List<String>> f8(
-              int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) =>
-          ref(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+        int a8,
+      ) => ref(f9, a1, a2, a3, a4, a5, a6, a7, a8, 9);
       Parser<List<String>> f7(
-              int a1, int a2, int a3, int a4, int a5, int a6, int a7) =>
-          ref(f8, a1, a2, a3, a4, a5, a6, a7, 8);
+        int a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int a6,
+        int a7,
+      ) => ref(f8, a1, a2, a3, a4, a5, a6, a7, 8);
       Parser<List<String>> f6(int a1, int a2, int a3, int a4, int a5, int a6) =>
           ref(f7, a1, a2, a3, a4, a5, a6, 7);
       Parser<List<String>> f5(int a1, int a2, int a3, int a4, int a5) =>
@@ -265,8 +328,10 @@ void main() {
       Parser<List<String>> f1(int a1) => ref(f2, a1, 2);
       Parser<List<String>> f0() => ref(f1, 1);
       Parser<List<String>> start() => ref(f0);
-      expect(resolve(start()),
-          isParseSuccess('123456789', result: '123456789'.split('')));
+      expect(
+        resolve(start()),
+        isParseSuccess('123456789', result: '123456789'.split('')),
+      );
     });
     test('resolved parser', () {
       expect(resolve(number()), isParseSuccess('1', result: 1));
@@ -275,7 +340,9 @@ void main() {
     test('resolved parser with arguments', () {
       expect(resolve(numberList()), isParseSuccess('1,2', result: [1, 2]));
       expect(
-          resolve(numberList(';')), isParseSuccess('3;4;5', result: [3, 4, 5]));
+        resolve(numberList(';')),
+        isParseSuccess('3;4;5', result: [3, 4, 5]),
+      );
     });
     test('direct recursion', () {
       Parser<String> create() => ref0(create);
@@ -283,10 +350,11 @@ void main() {
     });
     test('reference', () {
       Parser<List<num>> list() => [
-            (ref0(number) & char(',') & ref0(list)).map((values) =>
-                <num>[values[0] as num, ...values[2] as Iterable<num>]),
-            ref0(number).map((value) => [value]),
-          ].toChoiceParser();
+        (ref0(number) & char(',') & ref0(list)).map(
+          (values) => <num>[values[0] as num, ...values[2] as Iterable<num>],
+        ),
+        ref0(number).map((value) => [value]),
+      ].toChoiceParser();
       final parser = resolve<List<num>>(list());
       expect(parser, isParseSuccess('1', result: [1]));
       expect(parser, isParseSuccess('1,2', result: [1, 2]));
@@ -330,17 +398,23 @@ void main() {
     test('reference with multiple arguments', () {
       final parser = typedReferenceDefinition.build();
       expect(
-          parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
+        parser,
+        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
+      );
     });
     test('reference with multiple arguments (untyped)', () {
       final parser = untypedReferenceDefinition.build();
       expect(
-          parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
+        parser,
+        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
+      );
     });
     test('reference with multiple arguments (untyped, deprecated)', () {
       final parser = deprecatedUntypedReferenceDefinition.build();
       expect(
-          parser, isParseSuccess('12345', result: ['1', '2', '3', '4', '5']));
+        parser,
+        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
+      );
     });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
@@ -351,61 +425,80 @@ void main() {
       final parser = grammarDefinition.build();
       expect(parser, isParseSuccess('1,2', result: ['1', ',', '2']));
       expect(
-          parser,
-          isParseSuccess('1,2,3', result: [
+        parser,
+        isParseSuccess(
+          '1,2,3',
+          result: [
             '1',
             ',',
-            ['2', ',', '3']
-          ]));
+            ['2', ',', '3'],
+          ],
+        ),
+      );
     });
     test('parser', () {
       final parser = parserDefinition.build();
       expect(parser, isParseSuccess('1,2', result: [1, ',', 2]));
       expect(
-          parser,
-          isParseSuccess('1,2,3', result: [
+        parser,
+        isParseSuccess(
+          '1,2,3',
+          result: [
             1,
             ',',
-            [2, ',', 3]
-          ]));
+            [2, ',', 3],
+          ],
+        ),
+      );
     });
     test('token', () {
       final parser = tokenDefinition.build();
       expect(parser, isParseSuccess('1, 2', result: ['1', ',', '2']));
       expect(
-          parser,
-          isParseSuccess('1, 2, 3', result: [
+        parser,
+        isParseSuccess(
+          '1, 2, 3',
+          result: [
             '1',
             ',',
-            ['2', ',', '3']
-          ]));
+            ['2', ',', '3'],
+          ],
+        ),
+      );
     });
     test('direct recursion', () {
       expect(
-          () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
-          throwsStateError);
+        () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
+        throwsStateError,
+      );
     });
     test('indirect recursion', () {
       expect(
-          () =>
-              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
-          throwsStateError);
+        () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
+        throwsStateError,
+      );
       expect(
-          () =>
-              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
-          throwsStateError);
+        () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
+        throwsStateError,
+      );
       expect(
-          () =>
-              buggedDefinition.buildFrom(buggedDefinition.indirectRecursion3()),
-          throwsStateError);
+        () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion3()),
+        throwsStateError,
+      );
     });
     test('delegation', () {
-      expect(buggedDefinition.buildFrom(buggedDefinition.delegation1()),
-          isA<EpsilonParser<void>>());
-      expect(buggedDefinition.buildFrom(buggedDefinition.delegation2()),
-          isA<EpsilonParser<void>>());
-      expect(buggedDefinition.buildFrom(buggedDefinition.delegation3()),
-          isA<EpsilonParser<void>>());
+      expect(
+        buggedDefinition.buildFrom(buggedDefinition.delegation1()),
+        isA<EpsilonParser<void>>(),
+      );
+      expect(
+        buggedDefinition.buildFrom(buggedDefinition.delegation2()),
+        isA<EpsilonParser<void>>(),
+      );
+      expect(
+        buggedDefinition.buildFrom(buggedDefinition.delegation3()),
+        isA<EpsilonParser<void>>(),
+      );
     });
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();

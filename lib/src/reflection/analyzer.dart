@@ -27,9 +27,12 @@ class Analyzer {
   Set<Parser> allChildren(Parser parser) {
     assert(parsers.contains(parser), 'parser is not part of the analyzer');
     return _allChildren.putIfAbsent(
-        parser,
-        () => parser.children.fold(
-            <Parser>{}, (result, child) => result..addAll(allParser(child))));
+      parser,
+      () => parser.children.fold(
+        <Parser>{},
+        (result, child) => result..addAll(allParser(child)),
+      ),
+    );
   }
 
   late final Map<Parser, Set<Parser>> _allChildren = {};
@@ -54,7 +57,9 @@ class Analyzer {
 
   /// Returns all paths starting at [source] that satisfy the given [predicate].
   Iterable<ParserPath> findAllPaths(
-      Parser source, Predicate<ParserPath> predicate) {
+    Parser source,
+    Predicate<ParserPath> predicate,
+  ) {
     assert(parsers.contains(source), 'source is not part of the analyzer');
     return depthFirstSearch(ParserPath([source], []), predicate);
   }
@@ -76,8 +81,10 @@ class Analyzer {
   /// Includes [sentinel], if the set is nullable.
   Iterable<Parser> firstSet(Parser parser) => _firstSets[parser]!;
 
-  late final Map<Parser, Set<Parser>> _firstSets =
-      computeFirstSets(parsers: _parsers, sentinel: sentinel);
+  late final Map<Parser, Set<Parser>> _firstSets = computeFirstSets(
+    parsers: _parsers,
+    sentinel: sentinel,
+  );
 
   /// Returns the follow-set of a [parser].
   ///
@@ -87,13 +94,19 @@ class Analyzer {
   Iterable<Parser> followSet(Parser parser) => _followSet[parser]!;
 
   late final Map<Parser, Set<Parser>> _followSet = computeFollowSets(
-      root: root, parsers: _parsers, firstSets: _firstSets, sentinel: sentinel);
+    root: root,
+    parsers: _parsers,
+    firstSets: _firstSets,
+    sentinel: sentinel,
+  );
 
   /// Returns the cycle-set of a [parser].
   Iterable<Parser> cycleSet(Parser parser) => _cycleSet[parser]!;
 
-  late final Map<Parser, List<Parser>> _cycleSet =
-      computeCycleSets(parsers: _parsers, firstSets: _firstSets);
+  late final Map<Parser, List<Parser>> _cycleSet = computeCycleSets(
+    parsers: _parsers,
+    firstSets: _firstSets,
+  );
 
   /// A unique parser used as a marker in [firstSet] and [followSet]
   /// computations.

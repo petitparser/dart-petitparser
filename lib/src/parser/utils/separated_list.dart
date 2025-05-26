@@ -3,10 +3,10 @@ import 'dart:math';
 /// A list of [elements] and its [separators].
 class SeparatedList<R, S> {
   SeparatedList(this.elements, this.separators)
-      : assert(
-          max(0, elements.length - 1) == separators.length,
-          'Inconsistent number of elements ($elements) and separators ($separators)',
-        );
+    : assert(
+        max(0, elements.length - 1) == separators.length,
+        'Inconsistent number of elements ($elements) and separators ($separators)',
+      );
 
   /// The parsed elements.
   final List<R> elements;
@@ -16,7 +16,7 @@ class SeparatedList<R, S> {
 
   /// An (untyped) iterable over the [elements] and the interleaved [separators]
   /// in order of appearance.
-  Iterable<dynamic /* R | S */ > get sequential sync* {
+  Iterable<dynamic /* R | S */> get sequential sync* {
     for (var i = 0; i < elements.length; i++) {
       yield elements[i];
       if (i < separators.length) {

@@ -8,13 +8,15 @@ import 'range.dart';
 
 class LookupCharPredicate extends CharacterPredicate {
   LookupCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
-      : start = ranges.first.start,
-        stop = ranges.last.stop,
-        bits = Uint32List(size(ranges)) {
+    : start = ranges.first.start,
+      stop = ranges.last.stop,
+      bits = Uint32List(size(ranges)) {
     for (final range in ranges) {
-      for (var index = range.start - start;
-          index <= range.stop - start;
-          index++) {
+      for (
+        var index = range.start - start;
+        index <= range.stop - start;
+        index++
+      ) {
         bits[index >> _shift] |= _mask[index & _offset];
       }
     }

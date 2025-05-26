@@ -77,7 +77,7 @@ void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
         for (var code = 32; code <= 126; code++) String.fromCharCode(code),
         '',
       ])
-        if (parser.accept(character)) character
+        if (parser.accept(character)) character,
   };
   expect(actualInputs, expectedInputs);
 }
@@ -95,8 +95,13 @@ class PluggableLinterRule extends LinterRule {
 class PluggableOptimizeRule extends OptimizeRule {
   const PluggableOptimizeRule(this._run);
 
-  final void Function<R>(OptimizeRule rule, Analyzer analyzer, Parser<R> parser,
-      ReplaceParser<R> replace) _run;
+  final void Function<R>(
+    OptimizeRule rule,
+    Analyzer analyzer,
+    Parser<R> parser,
+    ReplaceParser<R> replace,
+  )
+  _run;
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) =>
@@ -169,10 +174,7 @@ void main() {
           parsers[#b],
           parsers[#e],
         });
-        expect(analyzer.allChildren(parsers[#B]!), {
-          parsers[#b],
-          parsers[#e],
-        });
+        expect(analyzer.allChildren(parsers[#B]!), {parsers[#b], parsers[#e]});
         expect(analyzer.allChildren(parsers[#a]!), isEmpty);
         expect(analyzer.allChildren(parsers[#b]!), isEmpty);
         expect(analyzer.allChildren(parsers[#c]!), isEmpty);
@@ -248,13 +250,17 @@ void main() {
         final parsers = createRecursive();
         final analyzer = Analyzer(parsers[#S]!);
         expect(
-            analyzer.findAllPaths(analyzer.root, (target) => false), isEmpty);
+          analyzer.findAllPaths(analyzer.root, (target) => false),
+          isEmpty,
+        );
       });
       test('self reference', () {
         final parser = createSelfReference();
         final analyzer = Analyzer(parser);
         expect(
-            analyzer.findAllPaths(analyzer.root, (target) => false), isEmpty);
+          analyzer.findAllPaths(analyzer.root, (target) => false),
+          isEmpty,
+        );
       });
     });
     group('isNullable', () {
@@ -540,29 +546,41 @@ void main() {
       test('ambiguous grammar', () {
         final parsers = createAmbiguous();
         final analyzer = Analyzer(parsers[#S]!);
-        expect(analyzer.cycleSet(parsers[#S]!),
-            allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])));
-        expect(analyzer.cycleSet(parsers[#A]!),
-            allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])));
-        expect(analyzer.cycleSet(parsers[#B]!),
-            allOf(hasLength(3), containsAll([parsers[#B]])));
+        expect(
+          analyzer.cycleSet(parsers[#S]!),
+          allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])),
+        );
+        expect(
+          analyzer.cycleSet(parsers[#A]!),
+          allOf(hasLength(6), containsAll([parsers[#S], parsers[#A]])),
+        );
+        expect(
+          analyzer.cycleSet(parsers[#B]!),
+          allOf(hasLength(3), containsAll([parsers[#B]])),
+        );
         expect(analyzer.cycleSet(parsers[#a]!), isEmpty);
         expect(analyzer.cycleSet(parsers[#b]!), isEmpty);
       });
       test('recursive grammar', () {
         final parsers = createRecursive();
         final analyzer = Analyzer(parsers[#S]!);
-        expect(analyzer.cycleSet(parsers[#S]!),
-            allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])));
-        expect(analyzer.cycleSet(parsers[#P]!),
-            allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])));
+        expect(
+          analyzer.cycleSet(parsers[#S]!),
+          allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])),
+        );
+        expect(
+          analyzer.cycleSet(parsers[#P]!),
+          allOf(hasLength(4), containsAll([parsers[#S], parsers[#P]])),
+        );
         expect(analyzer.cycleSet(parsers[#p]!), isEmpty);
       });
       test('self reference', () {
         final parser = createSelfReference();
         final analyzer = Analyzer(parser);
-        expect(analyzer.cycleSet(parser),
-            allOf(hasLength(1), containsAll([parser])));
+        expect(
+          analyzer.cycleSet(parser),
+          allOf(hasLength(1), containsAll([parser])),
+        );
       });
     });
   });
@@ -613,41 +631,58 @@ void main() {
     test('rules called on all parsers', () {
       final seen = <Parser>{};
       final input = char('a') | char('b');
-      final rule = PluggableLinterRule(LinterType.error, 'Fake Rule',
-          (rule, analyzer, parser, callback) => seen.add(parser));
-      final results = linter(input,
-          rules: [rule], callback: (issue) => fail('Unexpected callback'));
+      final rule = PluggableLinterRule(
+        LinterType.error,
+        'Fake Rule',
+        (rule, analyzer, parser, callback) => seen.add(parser),
+      );
+      final results = linter(
+        input,
+        rules: [rule],
+        callback: (issue) => fail('Unexpected callback'),
+      );
       expect(results, isEmpty);
       expect(seen, {input, input.children[0], input.children[1]});
     });
     test('issue triggered', () {
       final input = 'trigger'.toParser();
       final called = <LinterIssue>[];
-      final rule = PluggableLinterRule(LinterType.error, 'Fake Rule',
-          (rule, analyzer, parser, callback) {
+      final rule = PluggableLinterRule(LinterType.error, 'Fake Rule', (
+        rule,
+        analyzer,
+        parser,
+        callback,
+      ) {
         expect(parser, same(input));
         callback(LinterIssue(rule, parser, 'Described'));
       });
       expect(
-          rule,
-          isLinterRule(
-              type: LinterType.error,
-              title: 'Fake Rule',
-              toString: isToString(
-                  name: 'LinterRule',
-                  rest: ['(type: LinterType.error, title: Fake Rule)'])));
+        rule,
+        isLinterRule(
+          type: LinterType.error,
+          title: 'Fake Rule',
+          toString: isToString(
+            name: 'LinterRule',
+            rest: ['(type: LinterType.error, title: Fake Rule)'],
+          ),
+        ),
+      );
       final results = linter(input, rules: [rule], callback: called.add);
       expect(results, [
         isLinterIssue(
-            rule: same(rule),
-            type: LinterType.error,
-            title: 'Fake Rule',
-            parser: same(input),
-            description: 'Described',
-            toString: isToString(name: 'LinterIssue', rest: [
+          rule: same(rule),
+          type: LinterType.error,
+          title: 'Fake Rule',
+          parser: same(input),
+          description: 'Described',
+          toString: isToString(
+            name: 'LinterIssue',
+            rest: [
               '(type: LinterType.error, title: Fake Rule',
-              'description: Described)'
-            ]))
+              'description: Described)',
+            ],
+          ),
+        ),
       ]);
       expect(called, results);
     });
@@ -659,9 +694,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Character repeater')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Character repeater',
+            ),
           ]);
         });
         test('with any parser', () {
@@ -669,9 +705,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Character repeater')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Character repeater',
+            ),
           ]);
         });
         test('without issue', () {
@@ -687,9 +724,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser.children[0],
-                type: LinterType.error,
-                title: 'Left recursion')
+              parser: parser.children[0],
+              type: LinterType.error,
+              title: 'Left recursion',
+            ),
           ]);
         });
         test('without issue', () {
@@ -709,7 +747,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser, type: LinterType.info, title: 'Nested choice')
+              parser: parser,
+              type: LinterType.info,
+              title: 'Nested choice',
+            ),
           ]);
         });
         test('without issue', () {
@@ -729,9 +770,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser.children[0],
-                type: LinterType.error,
-                title: 'Nullable repeater')
+              parser: parser.children[0],
+              type: LinterType.error,
+              title: 'Nullable repeater',
+            ),
           ]);
         });
         test('without issue', () {
@@ -752,17 +794,14 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.info,
-                title: 'Overlapping choice')
+              parser: parser,
+              type: LinterType.info,
+              title: 'Overlapping choice',
+            ),
           ]);
         });
         test('without issue', () {
-          final parser = [
-            char('1'),
-            char('2'),
-            char('3'),
-          ].toChoiceParser();
+          final parser = [char('1'), char('2'), char('3')].toChoiceParser();
           final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
@@ -780,9 +819,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Repeated choice')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Repeated choice',
+            ),
           ]);
         });
         test('without issue', () {
@@ -803,9 +843,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Unnecessary flatten')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Unnecessary flatten',
+            ),
           ]);
         });
         test('without issue', () {
@@ -821,9 +862,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Unnecessary resolvable')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Unnecessary resolvable',
+            ),
           ]);
         });
         test('without issue', () {
@@ -839,9 +881,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.info,
-                title: 'Unoptimized flatten')
+              parser: parser,
+              type: LinterType.info,
+              title: 'Unoptimized flatten',
+            ),
           ]);
         });
         test('without issue', () {
@@ -862,17 +905,14 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.warning,
-                title: 'Unreachable choice')
+              parser: parser,
+              type: LinterType.warning,
+              title: 'Unreachable choice',
+            ),
           ]);
         });
         test('without issue', () {
-          final parser = [
-            char('1'),
-            char('2'),
-            char('3'),
-          ].toChoiceParser();
+          final parser = [char('1'), char('2'), char('3')].toChoiceParser();
           final results = linter(parser, rules: rules);
           expect(results, isEmpty);
         });
@@ -884,9 +924,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser,
-                type: LinterType.error,
-                title: 'Unresolved settable')
+              parser: parser,
+              type: LinterType.error,
+              title: 'Unresolved settable',
+            ),
           ]);
         });
         test('without issue', () {
@@ -902,7 +943,10 @@ void main() {
           final results = linter(parser, rules: rules);
           expect(results, [
             isLinterIssue(
-                parser: parser, type: LinterType.info, title: 'Unused result')
+              parser: parser,
+              type: LinterType.info,
+              title: 'Unused result',
+            ),
           ]);
         });
         test('without issue', () {
@@ -917,8 +961,9 @@ void main() {
         const rules = [linter_rules.NullableRepeater()];
         // Both repeater and separator are nullable, this might cause an
         // infinite loop.
-        expect(linter(epsilon().starSeparated(epsilon()), rules: rules),
-            [isLinterIssue(title: 'Nullable repeater')]);
+        expect(linter(epsilon().starSeparated(epsilon()), rules: rules), [
+          isLinterIssue(title: 'Nullable repeater'),
+        ]);
         // If either the repeater or the separator is non-nullable, everything
         // is fine.
         expect(linter(epsilon().starSeparated(any()), rules: rules), isEmpty);
@@ -939,9 +984,9 @@ void main() {
       final input = source;
       final target = uppercase();
       final output = transformParser(
-          input,
-          <T>(parser) =>
-              source.isEqualTo(parser) ? target as Parser<T> : parser);
+        input,
+        <T>(parser) => source.isEqualTo(parser) ? target as Parser<T> : parser,
+      );
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input, source);
@@ -952,9 +997,9 @@ void main() {
       final input = source.settable();
       final target = uppercase();
       final output = transformParser(
-          input,
-          <T>(parser) =>
-              source.isEqualTo(parser) ? target as Parser<T> : parser);
+        input,
+        <T>(parser) => source.isEqualTo(parser) ? target as Parser<T> : parser,
+      );
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.children.single, source);
@@ -965,9 +1010,9 @@ void main() {
       final input = source & source;
       final target = uppercase();
       final output = transformParser(
-          input,
-          <T>(parser) =>
-              source.isEqualTo(parser) ? target as Parser<T> : parser);
+        input,
+        <T>(parser) => source.isEqualTo(parser) ? target as Parser<T> : parser,
+      );
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(input.isEqualTo(source & source), isTrue);
@@ -998,9 +1043,9 @@ void main() {
       final outer = inner.settable().settable();
       inner.set(outer);
       final output = transformParser(
-          input,
-          <T>(parser) =>
-              source.isEqualTo(parser) ? outer as Parser<T> : parser);
+        input,
+        <T>(parser) => source.isEqualTo(parser) ? outer as Parser<T> : parser,
+      );
       expect(input, isNot(output));
       expect(input.isEqualTo(output), isFalse);
       expect(output.isEqualTo(outer), isTrue);
@@ -1011,7 +1056,8 @@ void main() {
       final seen = <Parser>{};
       final input = char('a') | char('b');
       final rule = PluggableOptimizeRule(
-          <R>(rule, analyzer, parser, replace) => seen.add(parser));
+        <R>(rule, analyzer, parser, replace) => seen.add(parser),
+      );
       final result = optimize(
         input,
         rules: [rule],
@@ -1026,10 +1072,14 @@ void main() {
         expect(parser, same(input));
         replace(input as Parser<R>, output as Parser<R>);
       });
-      final result = optimize(input, rules: [rule], callback: (source, target) {
-        expect(source, input);
-        expect(target, output);
-      });
+      final result = optimize(
+        input,
+        rules: [rule],
+        callback: (source, target) {
+          expect(source, input);
+          expect(target, output);
+        },
+      );
       expect(result, same(output));
     });
     test('child replacement performed', () {
@@ -1040,10 +1090,14 @@ void main() {
           replace(parser, replacement as Parser<R>);
         }
       });
-      final result = optimize(input, rules: [rule], callback: (source, target) {
-        expect(source, input.children[1]);
-        expect(target, replacement);
-      });
+      final result = optimize(
+        input,
+        rules: [rule],
+        callback: (source, target) {
+          expect(source, input.children[1]);
+          expect(target, replacement);
+        },
+      );
       expect(result, same(input));
       expect(result.children[1], same(replacement));
     });
@@ -1055,22 +1109,24 @@ void main() {
           final parser = character.repeat(2, 3).flatten();
           final result = optimize(parser, rules: rules);
           expect(
-              result,
-              isA<RepeatingCharacterParser>()
-                  .having((p) => p.min, 'min', 2)
-                  .having((p) => p.max, 'max', 3)
-                  .having((p) => p.message, 'message', '"a" expected'));
+            result,
+            isA<RepeatingCharacterParser>()
+                .having((p) => p.min, 'min', 2)
+                .having((p) => p.max, 'max', 3)
+                .having((p) => p.message, 'message', '"a" expected'),
+          );
         });
         test('with any parser', () {
           final character = any();
           final parser = character.repeat(3, 5).flatten();
           final result = optimize(parser, rules: rules);
           expect(
-              result,
-              isA<RepeatingCharacterParser>()
-                  .having((p) => p.min, 'min', 3)
-                  .having((p) => p.max, 'max', 5)
-                  .having((p) => p.message, 'message', 'input expected'));
+            result,
+            isA<RepeatingCharacterParser>()
+                .having((p) => p.min, 'min', 3)
+                .having((p) => p.max, 'max', 5)
+                .having((p) => p.message, 'message', 'input expected'),
+          );
         });
         test('without optimization', () {
           final parser = char('a').plus().token();
@@ -1091,29 +1147,32 @@ void main() {
           ].toChoiceParser(failureJoiner: selectFarthest);
           final result = optimize(parser, rules: rules);
           expect(
-              result,
-              isA<ChoiceParser<String>>()
-                  .having(
-                      (p) => p.children,
-                      'children',
-                      containsAllInOrder([
-                        parser.children[0],
-                        parser.children[1].children[0],
-                        parser.children[1].children[1],
-                        parser.children[2],
-                      ]))
-                  .having(
-                      (p) => p.failureJoiner, 'failureJoiner', selectFarthest));
+            result,
+            isA<ChoiceParser<String>>()
+                .having(
+                  (p) => p.children,
+                  'children',
+                  containsAllInOrder([
+                    parser.children[0],
+                    parser.children[1].children[0],
+                    parser.children[1].children[1],
+                    parser.children[2],
+                  ]),
+                )
+                .having(
+                  (p) => p.failureJoiner,
+                  'failureJoiner',
+                  selectFarthest,
+                ),
+          );
         });
         test('without optimization (no nesting)', () {
-          final parser = [
-            char('1'),
-            char('2'),
-            char('3'),
-          ].toChoiceParser();
-          final result = optimize(parser,
-              rules: rules,
-              callback: (source, target) => fail('No replacement expected'));
+          final parser = [char('1'), char('2'), char('3')].toChoiceParser();
+          final result = optimize(
+            parser,
+            rules: rules,
+            callback: (source, target) => fail('No replacement expected'),
+          );
           expect(result, same(parser));
         });
         test('without optimization (different joiner)', () {
@@ -1125,9 +1184,11 @@ void main() {
             ].toChoiceParser(failureJoiner: selectFarthest),
             char('4'),
           ].toChoiceParser();
-          final result = optimize(parser,
-              rules: rules,
-              callback: (source, target) => fail('No replacement expected'));
+          final result = optimize(
+            parser,
+            rules: rules,
+            callback: (source, target) => fail('No replacement expected'),
+          );
           expect(result, same(parser));
         });
       });
@@ -1164,9 +1225,11 @@ void main() {
         });
         test('without duplicate', () {
           final parser = lowercase() & lowercase(message: 'lower');
-          final result = optimize(parser,
-              rules: rules,
-              callback: (source, target) => fail('No replacement expected'));
+          final result = optimize(
+            parser,
+            rules: rules,
+            callback: (source, target) => fail('No replacement expected'),
+          );
           expect(result.children.first, isNot(same(result.children.last)));
         });
       });

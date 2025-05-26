@@ -63,7 +63,9 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       final result = delegate.parseOn(current);
       if (result is Failure) return result;
       assert(
-          current.position < result.position, '$delegate must always consume');
+        current.position < result.position,
+        '$delegate must always consume',
+      );
       elements.add(result.value);
       current = result;
     }
@@ -73,8 +75,10 @@ class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
         if (elements.length >= max) return limiter;
         final result = delegate.parseOn(current);
         if (result is Failure) return limiter;
-        assert(current.position < result.position,
-            '$delegate must always consume');
+        assert(
+          current.position < result.position,
+          '$delegate must always consume',
+        );
         elements.add(result.value);
         current = result;
       } else {

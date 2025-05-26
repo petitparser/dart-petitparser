@@ -5,11 +5,7 @@ import 'analyzer.dart';
 import 'internal/linter_rules.dart';
 
 /// The type of a linter issue.
-enum LinterType {
-  info,
-  warning,
-  error,
-}
+enum LinterType { info, warning, error }
 
 /// Encapsulates a single linter rule.
 @immutable
@@ -53,7 +49,8 @@ class LinterIssue {
   final String description;
 
   @override
-  String toString() => '$runtimeType(type: $type, title: $title, '
+  String toString() =>
+      '$runtimeType(type: $type, title: $title, '
       'parser: $parser, description: $description)';
 }
 
@@ -86,18 +83,23 @@ const allLinterRules = [
 /// A custom list of [rules] can be provided, otherwise [allLinterRules] are
 /// used and filtered by the set of [excludedRules] and [excludedTypes] (rules
 /// of `LinterType.info` are ignored by default).
-List<LinterIssue> linter(Parser parser,
-    {LinterCallback? callback,
-    List<LinterRule>? rules,
-    Set<String> excludedRules = const {},
-    Set<LinterType> excludedTypes = const {LinterType.info}}) {
+List<LinterIssue> linter(
+  Parser parser, {
+  LinterCallback? callback,
+  List<LinterRule>? rules,
+  Set<String> excludedRules = const {},
+  Set<LinterType> excludedTypes = const {LinterType.info},
+}) {
   final issues = <LinterIssue>[];
   final analyzer = Analyzer(parser);
-  final selectedRules = rules ??
+  final selectedRules =
+      rules ??
       allLinterRules
-          .where((rule) =>
-              !excludedRules.contains(rule.title) &&
-              !excludedTypes.contains(rule.type))
+          .where(
+            (rule) =>
+                !excludedRules.contains(rule.title) &&
+                !excludedTypes.contains(rule.type),
+          )
           .toList(growable: false);
   for (final parser in analyzer.parsers) {
     for (final rule in selectedRules) {

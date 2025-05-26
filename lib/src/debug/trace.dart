@@ -39,8 +39,11 @@ import '../shared/types.dart';
 /// The optional [output] callback can be used to continuously receive
 /// [TraceEvent] objects with current enter and exit data.
 @useResult
-Parser<R> trace<R>(Parser<R> root,
-    {VoidCallback<TraceEvent> output = print, Predicate<Parser>? predicate}) {
+Parser<R> trace<R>(
+  Parser<R> root, {
+  VoidCallback<TraceEvent> output = print,
+  Predicate<Parser>? predicate,
+}) {
   TraceEvent? parent;
   return transformParser(root, <R>(parser) {
     if (predicate == null || predicate(parser)) {

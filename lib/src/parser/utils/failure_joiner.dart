@@ -18,7 +18,7 @@ Failure selectFarthest(Failure first, Failure second) =>
 /// error messages at the same position.
 Failure selectFarthestJoined(Failure first, Failure second) =>
     first.position > second.position
-        ? first
-        : first.position < second.position
-            ? second
-            : first.failure('${first.message} OR ${second.message}');
+    ? first
+    : first.position < second.position
+    ? second
+    : first.failure('${first.message} OR ${second.message}');

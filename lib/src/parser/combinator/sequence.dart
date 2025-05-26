@@ -28,10 +28,12 @@ extension SequenceParserExtension on Parser {
   /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
   @useResult
   Parser<List<dynamic>> seq(Parser other) => switch (this) {
-        SequenceParser(children: final children) =>
-          [...children, other].toSequenceParser(),
-        _ => [this, other].toSequenceParser()
-      };
+    SequenceParser(children: final children) => [
+      ...children,
+      other,
+    ].toSequenceParser(),
+    _ => [this, other].toSequenceParser(),
+  };
 
   /// Convenience operator returning a parser that accepts the receiver followed
   /// by [other]. See [seq] for details.

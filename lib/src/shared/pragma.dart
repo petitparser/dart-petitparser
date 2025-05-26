@@ -8,8 +8,8 @@ const isWasm = bool.fromEnvironment('dart.tool.dart2wasm');
 const preferInline = isJavaScript
     ? preferInlineJs
     : isWasm
-        ? preferInlineWasm
-        : preferInlineVm;
+    ? preferInlineWasm
+    : preferInlineVm;
 const preferInlineJs = pragma('dart2js:prefer-inline');
 const preferInlineVm = pragma('vm:prefer-inline');
 const preferInlineWasm = pragma('wasm:prefer-inline');

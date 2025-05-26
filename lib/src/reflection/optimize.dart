@@ -28,8 +28,11 @@ const allOptimizerRules = [
 
 /// Returns an in-place optimized version of the parser.
 @useResult
-Parser<R> optimize<R>(Parser<R> parser,
-    {ReplaceParser<dynamic>? callback, List<OptimizeRule>? rules}) {
+Parser<R> optimize<R>(
+  Parser<R> parser, {
+  ReplaceParser<dynamic>? callback,
+  List<OptimizeRule>? rules,
+}) {
   final analyzer = Analyzer(parser);
   final selectedRules = rules ?? allOptimizerRules;
   final replacements = <Parser, Parser>{};

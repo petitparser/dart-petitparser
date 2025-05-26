@@ -18,15 +18,14 @@ import '../../utils/sequential.dart';
 /// for the input `'abc'`.
 @useResult
 Parser<(R1, R2, R3)> seq3<R1, R2, R3>(
-        Parser<R1> parser1, Parser<R2> parser2, Parser<R3> parser3) =>
-    SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+) => SequenceParser3<R1, R2, R3>(parser1, parser2, parser3);
 
 /// Extensions on a [Record] with 3 positional [Parser]s.
-extension RecordOfParsersExtension3<R1, R2, R3> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>
-) {
+extension RecordOfParsersExtension3<R1, R2, R3>
+    on (Parser<R1>, Parser<R2>, Parser<R3>) {
   /// Converts a [Record] of 3 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 3 positional parse results.
   ///
@@ -100,7 +99,8 @@ extension RecordParserExtension3<T1, T2, T3> on Parser<(T1, T2, T3)> {
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map3<R>(R Function(T1, T2, T3) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map3<R>(
+    R Function(T1, T2, T3) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

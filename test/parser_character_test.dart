@@ -50,7 +50,9 @@ void variation<P extends CharacterParser>(
     });
     test('state', () {
       expect(
-          parser, isCharacterParser<P>(message: message, predicate: predicate));
+        parser,
+        isCharacterParser<P>(message: message, predicate: predicate),
+      );
     });
   });
 }
@@ -102,8 +104,11 @@ void main() {
       accept: ['a', 'A', 'b', 'B', '0'],
       reject: ['c', '1'],
       message: 'any of "aB0" (case-insensitive) expected',
-      predicate:
-          LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216])),
+      predicate: LookupCharPredicate(
+        48,
+        98,
+        Uint32List.fromList([393217, 393216]),
+      ),
     );
     variation<UnicodeCharacterParser>(
       'unicode',
@@ -214,7 +219,8 @@ void main() {
       reject: ['c', 'g', 'h', 'i', 'o', 'p', 'r', 't', 'y'],
       message: 'none of "uncopyrightable" expected',
       predicate: NotCharPredicate(
-          LookupCharPredicate(97, 121, Uint32List.fromList([18541015]))),
+        LookupCharPredicate(97, 121, Uint32List.fromList([18541015])),
+      ),
     );
     variation<SingleCharacterParser>(
       'message',
@@ -223,7 +229,8 @@ void main() {
       reject: ['0', '2', '4', '6', '8'],
       message: 'no even digit',
       predicate: NotCharPredicate(
-          LookupCharPredicate(48, 56, Uint32List.fromList([341]))),
+        LookupCharPredicate(48, 56, Uint32List.fromList([341])),
+      ),
     );
     variation<SingleCharacterParser>(
       'ignore-case',
@@ -232,7 +239,8 @@ void main() {
       reject: ['a', 'A', 'b', 'B', '0'],
       message: 'none of "aB0" (case-insensitive) expected',
       predicate: NotCharPredicate(
-          LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216]))),
+        LookupCharPredicate(48, 98, Uint32List.fromList([393217, 393216])),
+      ),
     );
     variation<UnicodeCharacterParser>(
       'unicode',
@@ -283,8 +291,11 @@ void main() {
         accept: ['a', 'b', '-'],
         reject: ['d', 'e', 'A', 'B', 'f'],
         message: '[ab-] expected',
-        predicate:
-            LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728])),
+        predicate: LookupCharPredicate(
+          45,
+          98,
+          Uint32List.fromList([1, 3145728]),
+        ),
       );
       variation<SingleCharacterParser>(
         'ignore-case',
@@ -292,7 +303,10 @@ void main() {
         accept: ['a', 'A', 'b', 'B', '-'],
         reject: ['c', 'C', '\x00', '&'],
         predicate: LookupCharPredicate(
-            45, 98, Uint32List.fromList([3145729, 3145728])),
+          45,
+          98,
+          Uint32List.fromList([3145729, 3145728]),
+        ),
       );
       variation<UnicodeCharacterParser>(
         'unicode',
@@ -309,7 +323,8 @@ void main() {
         reject: ['a', 'b', '-'],
         message: '[^ab-] expected',
         predicate: NotCharPredicate(
-            LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728]))),
+          LookupCharPredicate(45, 98, Uint32List.fromList([1, 3145728])),
+        ),
       );
     });
     group('range', () {
@@ -375,8 +390,11 @@ void main() {
         accept: ['a', 'c', 'd', 'f', '-'],
         reject: ['b', 'e', 'g'],
         message: '[ac-df-] expected',
-        predicate:
-            LookupCharPredicate(45, 102, Uint32List.fromList([1, 47185920])),
+        predicate: LookupCharPredicate(
+          45,
+          102,
+          Uint32List.fromList([1, 47185920]),
+        ),
       );
     });
     group('everything', () {
@@ -523,15 +541,15 @@ void main() {
     const whitespaceCharCodes = {
       9, 10, 11, 12, 13, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196,
       8197, 8198, 8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288,
-      65279 //
+      65279, //
     };
     final accept = [
       for (var c = 0; c <= 0x10000; c++)
-        if (whitespaceCharCodes.contains(c)) String.fromCharCode(c)
+        if (whitespaceCharCodes.contains(c)) String.fromCharCode(c),
     ];
     final reject = [
       for (var c = 0; c <= 0x10000; c++)
-        if (!whitespaceCharCodes.contains(c)) String.fromCharCode(c)
+        if (!whitespaceCharCodes.contains(c)) String.fromCharCode(c),
     ];
     variation<SingleCharacterParser>(
       'default',

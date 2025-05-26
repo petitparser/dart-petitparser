@@ -10,14 +10,17 @@ Map<Parser, Set<Parser>> computeFirstSets({
       parser: {
         if (isTerminal(parser)) parser,
         if (isNullable(parser)) sentinel,
-      }
+      },
   };
   var changed = false;
   do {
     changed = false;
     for (final parser in parsers) {
       changed |= expandFirstSet(
-          parser: parser, firstSets: firstSets, sentinel: sentinel);
+        parser: parser,
+        firstSets: firstSets,
+        sentinel: sentinel,
+      );
     }
   } while (changed);
   return firstSets;

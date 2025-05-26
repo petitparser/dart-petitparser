@@ -67,7 +67,9 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
       final result = delegate.parseOn(current);
       if (result is Failure) return result;
       assert(
-          current.position < result.position, '$delegate must always consume');
+        current.position < result.position,
+        '$delegate must always consume',
+      );
       elements.add(result.value);
       current = result;
     }
@@ -75,7 +77,9 @@ class PossessiveRepeatingParser<R> extends RepeatingParser<R, List<R>> {
       final result = delegate.parseOn(current);
       if (result is Failure) break;
       assert(
-          current.position < result.position, '$delegate must always consume');
+        current.position < result.position,
+        '$delegate must always consume',
+      );
       elements.add(result.value);
       current = result;
     }

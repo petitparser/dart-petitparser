@@ -16,13 +16,20 @@ class CharacterRepeater extends OptimizeRule {
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
     if (parser case FlattenParser(delegate: final repeating)) {
-      if (repeating
-          case PossessiveRepeatingParser<String>(delegate: final character)) {
+      if (repeating case PossessiveRepeatingParser<String>(
+        delegate: final character,
+      )) {
         if (character case SingleCharacterParser()) {
           replace(
-              parser,
-              RepeatingCharacterParser(character.predicate, character.message,
-                  repeating.min, repeating.max) as Parser<R>);
+            parser,
+            RepeatingCharacterParser(
+                  character.predicate,
+                  character.message,
+                  repeating.min,
+                  repeating.max,
+                )
+                as Parser<R>,
+          );
         }
       }
     }
@@ -35,14 +42,18 @@ class FlattenChoice extends OptimizeRule {
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
     if (parser is ChoiceParser<R>) {
-      final children = parser.children.expand((child) =>
-          child is ChoiceParser<R> &&
-                  parser.failureJoiner == child.failureJoiner
-              ? child.children
-              : [child]);
+      final children = parser.children.expand(
+        (child) =>
+            child is ChoiceParser<R> &&
+                parser.failureJoiner == child.failureJoiner
+            ? child.children
+            : [child],
+      );
       if (parser.children.length < children.length) {
-        replace(parser,
-            children.toChoiceParser(failureJoiner: parser.failureJoiner));
+        replace(
+          parser,
+          children.toChoiceParser(failureJoiner: parser.failureJoiner),
+        );
       }
     }
   }

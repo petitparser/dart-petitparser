@@ -11,14 +11,15 @@ import 'character.dart';
 /// surrogate pairs) satisfying a specified [CharacterPredicate].
 class UnicodeCharacterParser extends CharacterParser {
   factory UnicodeCharacterParser(
-          CharacterPredicate predicate, String message) =>
-      ConstantCharPredicate.any.isEqualTo(predicate)
-          ? AnyUnicodeCharacterParser.internal(predicate, message)
-          : UnicodeCharacterParser.internal(predicate, message);
+    CharacterPredicate predicate,
+    String message,
+  ) => ConstantCharPredicate.any.isEqualTo(predicate)
+      ? AnyUnicodeCharacterParser.internal(predicate, message)
+      : UnicodeCharacterParser.internal(predicate, message);
 
   @internal
   UnicodeCharacterParser.internal(super.predicate, super.message)
-      : super.internal();
+    : super.internal();
 
   @override
   @noBoundsChecks
@@ -37,7 +38,9 @@ class UnicodeCharacterParser extends CharacterParser {
       }
       if (predicate.test(codeUnit)) {
         return context.success(
-            buffer.substring(position, nextPosition), nextPosition);
+          buffer.substring(position, nextPosition),
+          nextPosition,
+        );
       }
     }
     return context.failure(message);
@@ -70,8 +73,8 @@ class UnicodeCharacterParser extends CharacterParser {
 /// character (including possible surrogate pairs).
 class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
   AnyUnicodeCharacterParser.internal(super.predicate, super.message)
-      : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
-        super.internal();
+    : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
+      super.internal();
 
   @override
   @noBoundsChecks
@@ -86,7 +89,9 @@ class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
         nextPosition++;
       }
       return context.success(
-          buffer.substring(position, nextPosition), nextPosition);
+        buffer.substring(position, nextPosition),
+        nextPosition,
+      );
     }
     return context.failure(message);
   }

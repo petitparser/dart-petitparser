@@ -18,26 +18,35 @@ import '../../utils/sequential.dart';
 /// for the input `'abcdefg'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5, R6, R7)> seq7<R1, R2, R3, R4, R5, R6, R7>(
-        Parser<R1> parser1,
-        Parser<R2> parser2,
-        Parser<R3> parser3,
-        Parser<R4> parser4,
-        Parser<R5> parser5,
-        Parser<R6> parser6,
-        Parser<R7> parser7) =>
-    SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
-        parser1, parser2, parser3, parser4, parser5, parser6, parser7);
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+  Parser<R6> parser6,
+  Parser<R7> parser7,
+) => SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
+  parser1,
+  parser2,
+  parser3,
+  parser4,
+  parser5,
+  parser6,
+  parser7,
+);
 
 /// Extensions on a [Record] with 7 positional [Parser]s.
-extension RecordOfParsersExtension7<R1, R2, R3, R4, R5, R6, R7> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>,
-  Parser<R5>,
-  Parser<R6>,
-  Parser<R7>
-) {
+extension RecordOfParsersExtension7<R1, R2, R3, R4, R5, R6, R7>
+    on
+        (
+          Parser<R1>,
+          Parser<R2>,
+          Parser<R3>,
+          Parser<R4>,
+          Parser<R5>,
+          Parser<R6>,
+          Parser<R7>,
+        ) {
   /// Converts a [Record] of 7 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 7 positional parse results.
   ///
@@ -53,9 +62,17 @@ extension RecordOfParsersExtension7<R1, R2, R3, R4, R5, R6, R7> on (
 /// A parser that consumes a sequence of 7 parsers and returns a [Record] with
 /// 7 positional parse results.
 class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
-    extends Parser<(R1, R2, R3, R4, R5, R6, R7)> implements SequentialParser {
-  SequenceParser7(this.parser1, this.parser2, this.parser3, this.parser4,
-      this.parser5, this.parser6, this.parser7);
+    extends Parser<(R1, R2, R3, R4, R5, R6, R7)>
+    implements SequentialParser {
+  SequenceParser7(
+    this.parser1,
+    this.parser2,
+    this.parser3,
+    this.parser4,
+    this.parser5,
+    this.parser6,
+    this.parser7,
+  );
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -88,7 +105,7 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
       result4.value,
       result5.value,
       result6.value,
-      result7.value
+      result7.value,
     ));
   }
 
@@ -112,8 +129,15 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
   }
 
   @override
-  List<Parser> get children =>
-      [parser1, parser2, parser3, parser4, parser5, parser6, parser7];
+  List<Parser> get children => [
+    parser1,
+    parser2,
+    parser3,
+    parser4,
+    parser5,
+    parser6,
+    parser7,
+  ];
 
   @override
   void replace(Parser source, Parser target) {
@@ -130,19 +154,19 @@ class SequenceParser7<R1, R2, R3, R4, R5, R6, R7>
   @override
   SequenceParser7<R1, R2, R3, R4, R5, R6, R7> copy() =>
       SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
-          parser1, parser2, parser3, parser4, parser5, parser6, parser7);
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+        parser6,
+        parser7,
+      );
 }
 
 /// Extension on a [Record] with 7 positional values.
-extension RecordOfValuesExtension7<T1, T2, T3, T4, T5, T6, T7> on (
-  T1,
-  T2,
-  T3,
-  T4,
-  T5,
-  T6,
-  T7
-) {
+extension RecordOfValuesExtension7<T1, T2, T3, T4, T5, T6, T7>
+    on (T1, T2, T3, T4, T5, T6, T7) {
   /// Converts this [Record] with 7 positional values to a new type [R] using
   /// the provided [callback] with 7 positional arguments.
   @preferInline
@@ -156,7 +180,8 @@ extension RecordParserExtension7<T1, T2, T3, T4, T5, T6, T7>
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map7<R>(R Function(T1, T2, T3, T4, T5, T6, T7) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map7<R>(
+    R Function(T1, T2, T3, T4, T5, T6, T7) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

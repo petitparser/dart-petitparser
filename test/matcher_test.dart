@@ -38,12 +38,18 @@ void main() {
       expect(parser.allMatches(input, start: 3), ['45']);
     });
     test('allMatches(overlapping: true)', () {
-      expect(parser.allMatches(input, overlapping: true),
-          ['12', '23', '45', '56']);
+      expect(parser.allMatches(input, overlapping: true), [
+        '12',
+        '23',
+        '45',
+        '56',
+      ]);
     });
     test('allMatches(start: 3, overlapping: true)', () {
-      expect(
-          parser.allMatches(input, start: 3, overlapping: true), ['45', '56']);
+      expect(parser.allMatches(input, start: 3, overlapping: true), [
+        '45',
+        '56',
+      ]);
     });
   });
   group('pattern', () {
@@ -108,25 +114,32 @@ void main() {
       expect(input.replaceFirst(pattern, '!'), 'a!3b45');
     });
     test('replaceFirstMapped()', () {
-      expect(input.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
-          'a!12!3b45');
+      expect(
+        input.replaceFirstMapped(pattern, (match) => '!${match[0]}!'),
+        'a!12!3b45',
+      );
     });
     test('replaceAll()', () {
       expect(input.replaceAll(pattern, '!'), 'a!3b!');
     });
     test('replaceAllMapped()', () {
-      expect(input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
-          'a!12!3b!45!');
+      expect(
+        input.replaceAllMapped(pattern, (match) => '!${match[0]}!'),
+        'a!12!3b!45!',
+      );
     });
     test('split()', () {
       expect(input.split(pattern), ['a', '3b', '']);
     });
     test('splitMapJoin()', () {
       expect(
-          input.splitMapJoin(pattern,
-              onMatch: (match) => '!${match[0]}!',
-              onNonMatch: (nonMatch) => '?$nonMatch?'),
-          '?a?!12!?3b?!45!??');
+        input.splitMapJoin(
+          pattern,
+          onMatch: (match) => '!${match[0]}!',
+          onNonMatch: (nonMatch) => '?$nonMatch?',
+        ),
+        '?a?!12!?3b?!45!??',
+      );
     });
   });
 }

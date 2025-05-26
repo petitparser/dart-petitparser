@@ -18,22 +18,27 @@ void main() {
     test('default', () {
       final parser = digit().map(int.parse).repeat(3).castList<num>();
       expect(parser, isParseSuccess('123', result: <num>[1, 2, 3]));
-      expect(parser,
-          isParseFailure('abc', position: 0, message: 'digit expected'));
+      expect(
+        parser,
+        isParseFailure('abc', position: 0, message: 'digit expected'),
+      );
     });
   });
   group('continuation', () {
     expectParserInvariants(
-        any().callCC<String>((continuation, context) => continuation(context)));
+      any().callCC<String>((continuation, context) => continuation(context)),
+    );
     test('delegation', () {
-      final parser = digit()
-          .callCC<String>((continuation, context) => continuation(context));
+      final parser = digit().callCC<String>(
+        (continuation, context) => continuation(context),
+      );
       expect(parser, isParseSuccess('1', result: '1'));
       expect(parser, isParseFailure('a', message: 'digit expected'));
     });
     test('diversion', () {
-      final parser = digit()
-          .callCC<String>((continuation, context) => letter().parseOn(context));
+      final parser = digit().callCC<String>(
+        (continuation, context) => letter().parseOn(context),
+      );
       expect(parser, isParseSuccess('a', result: 'a'));
       expect(parser, isParseFailure('1', message: 'letter expected'));
     });
@@ -58,13 +63,15 @@ void main() {
     });
     test('success', () {
       final parser = digit().callCC<String>(
-          (continuation, context) => context.success('success'));
+        (continuation, context) => context.success('success'),
+      );
       expect(parser, isParseSuccess('1', result: 'success', position: 0));
       expect(parser, isParseSuccess('a', result: 'success', position: 0));
     });
     test('failure', () {
       final parser = digit().callCC<String>(
-          (continuation, context) => context.failure('failure'));
+        (continuation, context) => context.failure('failure'),
+      );
       expect(parser, isParseFailure('1', message: 'failure'));
       expect(parser, isParseFailure('a', message: 'failure'));
     });
@@ -76,16 +83,21 @@ void main() {
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(parser, isParseFailure('a', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'digit expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'digit expected'),
+      );
       expect(
-          parser, isParseFailure('1a', position: 1, message: 'digit expected'));
+        parser,
+        isParseFailure('1a', position: 1, message: 'digit expected'),
+      );
       expect(parser, isParseSuccess('12', result: '12'));
       expect(parser, isParseSuccess('123', result: '123'));
       expect(parser, isParseSuccess('1234', result: '1234'));
     });
     test('with message', () {
-      final parser =
-          digit().repeat(2, unbounded).flatten(message: 'gimme a number');
+      final parser = digit()
+          .repeat(2, unbounded)
+          .flatten(message: 'gimme a number');
       expect(parser, isParseFailure('', message: 'gimme a number'));
       expect(parser, isParseFailure('a', message: 'gimme a number'));
       expect(parser, isParseFailure('1', message: 'gimme a number'));
@@ -95,8 +107,11 @@ void main() {
       expect(parser, isParseSuccess('1234', result: '1234'));
     });
     test('nested', () {
-      final parser =
-          digit().star().flatten().plusSeparated(char(',')).flatten();
+      final parser = digit()
+          .star()
+          .flatten()
+          .plusSeparated(char(','))
+          .flatten();
       expect(parser, isParseSuccess('1', result: '1'));
       expect(parser, isParseSuccess('1,12', result: '1,12'));
       expect(parser, isParseSuccess('1,12,123', result: '1,12,123'));
@@ -105,8 +120,9 @@ void main() {
   group('map', () {
     expectParserInvariants(any().map((a) => a));
     test('default', () {
-      final parser =
-          digit().map((each) => each.codeUnitAt(0) - '0'.codeUnitAt(0));
+      final parser = digit().map(
+        (each) => each.codeUnitAt(0) - '0'.codeUnitAt(0),
+      );
       expect(parser, isParseSuccess('1', result: 1));
       expect(parser, isParseSuccess('4', result: 4));
       expect(parser, isParseSuccess('9', result: 9));
@@ -134,9 +150,13 @@ void main() {
       expect(parser, isParseSuccess('2b', result: ['b', '2']));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'letter expected'));
-      expect(parser,
-          isParseFailure('12', position: 1, message: 'letter expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'letter expected'),
+      );
+      expect(
+        parser,
+        isParseFailure('12', position: 1, message: 'letter expected'),
+      );
     });
     test('from end', () {
       final parser = digit().seq(letter()).permute([-1, 0]);
@@ -144,9 +164,13 @@ void main() {
       expect(parser, isParseSuccess('2b', result: ['b', '2']));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'letter expected'));
-      expect(parser,
-          isParseFailure('12', position: 1, message: 'letter expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'letter expected'),
+      );
+      expect(
+        parser,
+        isParseFailure('12', position: 1, message: 'letter expected'),
+      );
     });
     test('repeated', () {
       final parser = digit().seq(letter()).permute([1, 1]);
@@ -154,9 +178,13 @@ void main() {
       expect(parser, isParseSuccess('2b', result: ['b', 'b']));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'letter expected'));
-      expect(parser,
-          isParseFailure('12', position: 1, message: 'letter expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'letter expected'),
+      );
+      expect(
+        parser,
+        isParseFailure('12', position: 1, message: 'letter expected'),
+      );
     });
   });
   group('pick', () {
@@ -167,9 +195,13 @@ void main() {
       expect(parser, isParseSuccess('2b', result: 'b'));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'letter expected'));
-      expect(parser,
-          isParseFailure('12', position: 1, message: 'letter expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'letter expected'),
+      );
+      expect(
+        parser,
+        isParseFailure('12', position: 1, message: 'letter expected'),
+      );
     });
     test('from end', () {
       final parser = digit().seq(letter()).pick(-1);
@@ -177,9 +209,13 @@ void main() {
       expect(parser, isParseSuccess('2b', result: 'b'));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('1', position: 1, message: 'letter expected'));
-      expect(parser,
-          isParseFailure('12', position: 1, message: 'letter expected'));
+        parser,
+        isParseFailure('1', position: 1, message: 'letter expected'),
+      );
+      expect(
+        parser,
+        isParseFailure('12', position: 1, message: 'letter expected'),
+      );
     });
   });
   group('token', () {
@@ -198,8 +234,10 @@ void main() {
       expect(token.line, 1);
       expect(token.column, 1);
       expect(token.toString(), isNot(startsWith('Instance of')));
-      expect(token.toString(),
-          stringContainsInOrder(['Token', '[1:1]: [1, 2, 3]']));
+      expect(
+        token.toString(),
+        stringContainsInOrder(['Token', '[1:1]: [1, 2, 3]']),
+      );
     });
     const buffer = '1\r12\r\n123\n1234';
     final parser = any().map((value) => value.codeUnitAt(0)).token().star();
@@ -247,7 +285,7 @@ void main() {
         '1',
         '2',
         '3',
-        '4'
+        '4',
       ];
       expect(result.map((token) => token.input), expected);
     });
@@ -255,24 +293,54 @@ void main() {
       test('normal', () {
         final joined = Token.join(result);
         expect(
-            joined,
-            isA<Token<List<int>>>()
-                .having((token) => token.value, 'value',
-                    [49, 13, 49, 50, 13, 10, 49, 50, 51, 10, 49, 50, 51, 52])
-                .having((token) => token.buffer, 'buffer', buffer)
-                .having((token) => token.start, 'start', 0)
-                .having((token) => token.stop, 'stop', buffer.length));
+          joined,
+          isA<Token<List<int>>>()
+              .having((token) => token.value, 'value', [
+                49,
+                13,
+                49,
+                50,
+                13,
+                10,
+                49,
+                50,
+                51,
+                10,
+                49,
+                50,
+                51,
+                52,
+              ])
+              .having((token) => token.buffer, 'buffer', buffer)
+              .having((token) => token.start, 'start', 0)
+              .having((token) => token.stop, 'stop', buffer.length),
+        );
       });
       test('reverse order', () {
         final joined = Token.join(result.reversed);
         expect(
-            joined,
-            isA<Token<List<int>>>()
-                .having((token) => token.value, 'value',
-                    [52, 51, 50, 49, 10, 51, 50, 49, 10, 13, 50, 49, 13, 49])
-                .having((token) => token.buffer, 'buffer', buffer)
-                .having((token) => token.start, 'start', 0)
-                .having((token) => token.stop, 'stop', buffer.length));
+          joined,
+          isA<Token<List<int>>>()
+              .having((token) => token.value, 'value', [
+                52,
+                51,
+                50,
+                49,
+                10,
+                51,
+                50,
+                49,
+                10,
+                13,
+                50,
+                49,
+                13,
+                49,
+              ])
+              .having((token) => token.buffer, 'buffer', buffer)
+              .having((token) => token.start, 'start', 0)
+              .having((token) => token.stop, 'stop', buffer.length),
+        );
       });
       test('empty', () {
         expect(() => Token.join([]), throwsArgumentError);
@@ -309,9 +377,13 @@ void main() {
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('b', message: '"a" expected'));
       expect(
-          parser, isParseFailure(' b', position: 1, message: '"a" expected'));
+        parser,
+        isParseFailure(' b', position: 1, message: '"a" expected'),
+      );
       expect(
-          parser, isParseFailure('  b', position: 2, message: '"a" expected'));
+        parser,
+        isParseFailure('  b', position: 2, message: '"a" expected'),
+      );
     });
     test('custom both', () {
       final parser = char('a').trim(char('*'));
@@ -325,9 +397,13 @@ void main() {
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('b', message: '"a" expected'));
       expect(
-          parser, isParseFailure('*b', position: 1, message: '"a" expected'));
+        parser,
+        isParseFailure('*b', position: 1, message: '"a" expected'),
+      );
       expect(
-          parser, isParseFailure('**b', position: 2, message: '"a" expected'));
+        parser,
+        isParseFailure('**b', position: 2, message: '"a" expected'),
+      );
     });
     test('custom left and right', () {
       final parser = char('a').trim(char('*'), char('#'));
@@ -341,11 +417,17 @@ void main() {
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseFailure('b', message: '"a" expected'));
       expect(
-          parser, isParseFailure('*b', position: 1, message: '"a" expected'));
+        parser,
+        isParseFailure('*b', position: 1, message: '"a" expected'),
+      );
       expect(
-          parser, isParseFailure('**b', position: 2, message: '"a" expected'));
+        parser,
+        isParseFailure('**b', position: 2, message: '"a" expected'),
+      );
       expect(
-          parser, isParseFailure('#a', position: 0, message: '"a" expected'));
+        parser,
+        isParseFailure('#a', position: 0, message: '"a" expected'),
+      );
       expect(parser, isParseSuccess('a*', result: 'a', position: 1));
     });
   });
@@ -358,23 +440,32 @@ void main() {
       expect(parser, isParseFailure('!', message: 'unexpected "!"'));
     });
     test('with message', () {
-      final parser =
-          any().where((value) => value == '*', message: 'star expected');
+      final parser = any().where(
+        (value) => value == '*',
+        message: 'star expected',
+      );
       expect(parser, isParseSuccess('*', result: '*'));
       expect(parser, isParseFailure('', message: 'input expected'));
       expect(parser, isParseFailure('!', message: 'star expected'));
     });
     test('with factory', () {
-      final parser = digit().plus().flatten().map(int.parse).where(
-          (value) => value % 7 == 0,
-          factory: (context, success) =>
-              context.failure('${success.value} is not divisible by 7'));
+      final parser = digit()
+          .plus()
+          .flatten()
+          .map(int.parse)
+          .where(
+            (value) => value % 7 == 0,
+            factory: (context, success) =>
+                context.failure('${success.value} is not divisible by 7'),
+          );
       expect(parser, isParseSuccess('7', result: 7));
       expect(parser, isParseSuccess('14', result: 14));
       expect(parser, isParseSuccess('861', result: 861));
       expect(parser, isParseFailure('', message: 'digit expected'));
       expect(
-          parser, isParseFailure('865', message: '865 is not divisible by 7'));
+        parser,
+        isParseFailure('865', message: '865 is not divisible by 7'),
+      );
     });
   });
 }

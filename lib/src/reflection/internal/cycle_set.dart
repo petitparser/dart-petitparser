@@ -38,10 +38,11 @@ void computeCycleSet({
     } else {
       stack.add(child);
       computeCycleSet(
-          parser: child,
-          firstSets: firstSets,
-          cycleSets: cycleSets,
-          stack: stack);
+        parser: child,
+        firstSets: firstSets,
+        cycleSets: cycleSets,
+        stack: stack,
+      );
       stack.removeLast();
     }
   }

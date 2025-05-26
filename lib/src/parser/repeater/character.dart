@@ -65,7 +65,11 @@ extension RepeatingCharacterParserExtension on Parser<String> {
     final self = this;
     if (self is SingleCharacterParser) {
       return RepeatingCharacterParser(
-          self.predicate, message ?? self.message, min, max);
+        self.predicate,
+        message ?? self.message,
+        min,
+        max,
+      );
     } else {
       return self.repeat(min, max).flatten(message: message);
     }
@@ -76,8 +80,8 @@ extension RepeatingCharacterParserExtension on Parser<String> {
 /// of its delegate.
 class RepeatingCharacterParser extends Parser<String> {
   RepeatingCharacterParser(this.predicate, this.message, this.min, this.max)
-      : assert(0 <= min, 'min must be at least 0, but got $min'),
-        assert(min <= max, 'max must be at least $min, but got $max');
+    : assert(0 <= min, 'min must be at least 0, but got $min'),
+      assert(min <= max, 'max must be at least $min, but got $max');
 
   /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;

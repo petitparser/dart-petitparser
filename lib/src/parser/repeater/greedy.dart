@@ -63,7 +63,9 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       final result = delegate.parseOn(current);
       if (result is Failure) return result;
       assert(
-          current.position < result.position, '$delegate must always consume');
+        current.position < result.position,
+        '$delegate must always consume',
+      );
       elements.add(result.value);
       current = result;
     }
@@ -72,7 +74,9 @@ class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
       final result = delegate.parseOn(current);
       if (result is Failure) break;
       assert(
-          current.position < result.position, '$delegate must always consume');
+        current.position < result.position,
+        '$delegate must always consume',
+      );
       elements.add(result.value);
       contexts.add(current = result);
     }

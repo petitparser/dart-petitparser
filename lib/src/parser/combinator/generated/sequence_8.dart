@@ -18,28 +18,38 @@ import '../../utils/sequential.dart';
 /// for the input `'abcdefgh'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
-        Parser<R1> parser1,
-        Parser<R2> parser2,
-        Parser<R3> parser3,
-        Parser<R4> parser4,
-        Parser<R5> parser5,
-        Parser<R6> parser6,
-        Parser<R7> parser7,
-        Parser<R8> parser8) =>
-    SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
-        parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8);
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+  Parser<R6> parser6,
+  Parser<R7> parser7,
+  Parser<R8> parser8,
+) => SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
+  parser1,
+  parser2,
+  parser3,
+  parser4,
+  parser5,
+  parser6,
+  parser7,
+  parser8,
+);
 
 /// Extensions on a [Record] with 8 positional [Parser]s.
-extension RecordOfParsersExtension8<R1, R2, R3, R4, R5, R6, R7, R8> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>,
-  Parser<R5>,
-  Parser<R6>,
-  Parser<R7>,
-  Parser<R8>
-) {
+extension RecordOfParsersExtension8<R1, R2, R3, R4, R5, R6, R7, R8>
+    on
+        (
+          Parser<R1>,
+          Parser<R2>,
+          Parser<R3>,
+          Parser<R4>,
+          Parser<R5>,
+          Parser<R6>,
+          Parser<R7>,
+          Parser<R8>,
+        ) {
   /// Converts a [Record] of 8 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 8 positional parse results.
   ///
@@ -50,7 +60,15 @@ extension RecordOfParsersExtension8<R1, R2, R3, R4, R5, R6, R7, R8> on (
   @useResult
   Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> toSequenceParser() =>
       SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
-          $1, $2, $3, $4, $5, $6, $7, $8);
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+      );
 }
 
 /// A parser that consumes a sequence of 8 parsers and returns a [Record] with
@@ -58,8 +76,16 @@ extension RecordOfParsersExtension8<R1, R2, R3, R4, R5, R6, R7, R8> on (
 class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
     extends Parser<(R1, R2, R3, R4, R5, R6, R7, R8)>
     implements SequentialParser {
-  SequenceParser8(this.parser1, this.parser2, this.parser3, this.parser4,
-      this.parser5, this.parser6, this.parser7, this.parser8);
+  SequenceParser8(
+    this.parser1,
+    this.parser2,
+    this.parser3,
+    this.parser4,
+    this.parser5,
+    this.parser6,
+    this.parser7,
+    this.parser8,
+  );
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -96,7 +122,7 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
       result5.value,
       result6.value,
       result7.value,
-      result8.value
+      result8.value,
     ));
   }
 
@@ -122,8 +148,16 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
   }
 
   @override
-  List<Parser> get children =>
-      [parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8];
+  List<Parser> get children => [
+    parser1,
+    parser2,
+    parser3,
+    parser4,
+    parser5,
+    parser6,
+    parser7,
+    parser8,
+  ];
 
   @override
   void replace(Parser source, Parser target) {
@@ -140,21 +174,21 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
 
   @override
   SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8> copy() =>
-      SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(parser1, parser2, parser3,
-          parser4, parser5, parser6, parser7, parser8);
+      SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>(
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+        parser6,
+        parser7,
+        parser8,
+      );
 }
 
 /// Extension on a [Record] with 8 positional values.
-extension RecordOfValuesExtension8<T1, T2, T3, T4, T5, T6, T7, T8> on (
-  T1,
-  T2,
-  T3,
-  T4,
-  T5,
-  T6,
-  T7,
-  T8
-) {
+extension RecordOfValuesExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
+    on (T1, T2, T3, T4, T5, T6, T7, T8) {
   /// Converts this [Record] with 8 positional values to a new type [R] using
   /// the provided [callback] with 8 positional arguments.
   @preferInline
@@ -168,7 +202,8 @@ extension RecordParserExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map8<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map8<R>(
+    R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

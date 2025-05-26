@@ -18,22 +18,22 @@ import '../../utils/sequential.dart';
 /// for the input `'abcde'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
-        Parser<R1> parser1,
-        Parser<R2> parser2,
-        Parser<R3> parser3,
-        Parser<R4> parser4,
-        Parser<R5> parser5) =>
-    SequenceParser5<R1, R2, R3, R4, R5>(
-        parser1, parser2, parser3, parser4, parser5);
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+) => SequenceParser5<R1, R2, R3, R4, R5>(
+  parser1,
+  parser2,
+  parser3,
+  parser4,
+  parser5,
+);
 
 /// Extensions on a [Record] with 5 positional [Parser]s.
-extension RecordOfParsersExtension5<R1, R2, R3, R4, R5> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>,
-  Parser<R5>
-) {
+extension RecordOfParsersExtension5<R1, R2, R3, R4, R5>
+    on (Parser<R1>, Parser<R2>, Parser<R3>, Parser<R4>, Parser<R5>) {
   /// Converts a [Record] of 5 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 5 positional parse results.
   ///
@@ -51,7 +51,12 @@ extension RecordOfParsersExtension5<R1, R2, R3, R4, R5> on (
 class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
     implements SequentialParser {
   SequenceParser5(
-      this.parser1, this.parser2, this.parser3, this.parser4, this.parser5);
+    this.parser1,
+    this.parser2,
+    this.parser3,
+    this.parser4,
+    this.parser5,
+  );
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -76,7 +81,7 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
       result2.value,
       result3.value,
       result4.value,
-      result5.value
+      result5.value,
     ));
   }
 
@@ -111,7 +116,12 @@ class SequenceParser5<R1, R2, R3, R4, R5> extends Parser<(R1, R2, R3, R4, R5)>
   @override
   SequenceParser5<R1, R2, R3, R4, R5> copy() =>
       SequenceParser5<R1, R2, R3, R4, R5>(
-          parser1, parser2, parser3, parser4, parser5);
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+      );
 }
 
 /// Extension on a [Record] with 5 positional values.
@@ -129,7 +139,8 @@ extension RecordParserExtension5<T1, T2, T3, T4, T5>
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map5<R>(R Function(T1, T2, T3, T4, T5) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map5<R>(
+    R Function(T1, T2, T3, T4, T5) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

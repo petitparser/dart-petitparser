@@ -11,8 +11,10 @@ void expectParserInvariants<T>(Parser<T> parser) {
     expect(copy, isNot(same(parser)));
     expect(copy.toString(), parser.toString());
     expect(copy.runtimeType, parser.runtimeType);
-    expect(copy.children,
-        pairwiseCompare(parser.children, identical, 'same children'));
+    expect(
+      copy.children,
+      pairwiseCompare(parser.children, identical, 'same children'),
+    );
     expect(copy, isParserDeepEqual(parser));
   });
   test('transform', () {
@@ -21,13 +23,14 @@ void expectParserInvariants<T>(Parser<T> parser) {
     expect(copy.toString(), parser.toString());
     expect(copy.runtimeType, parser.runtimeType);
     expect(
-        copy.children,
-        pairwiseCompare(parser.children, (parser, copy) {
-          expect(copy, isNot(same(parser)));
-          expect(copy.toString(), parser.toString());
-          expect(copy.runtimeType, parser.runtimeType);
-          return true;
-        }, 'same children'));
+      copy.children,
+      pairwiseCompare(parser.children, (parser, copy) {
+        expect(copy, isNot(same(parser)));
+        expect(copy.toString(), parser.toString());
+        expect(copy.runtimeType, parser.runtimeType);
+        return true;
+      }, 'same children'),
+    );
     expect(copy, isParserDeepEqual(parser));
   });
   test('isEqualTo', () {
@@ -47,14 +50,18 @@ void expectParserInvariants<T>(Parser<T> parser) {
       expect(copy.children[i], same(target));
       replaced.add(target);
     }
-    expect(copy.children,
-        pairwiseCompare(replaced, identical, 'replaced children'));
+    expect(
+      copy.children,
+      pairwiseCompare(replaced, identical, 'replaced children'),
+    );
   });
   test('toString', () {
     expect(parser.toString(), isToString(name: parser.runtimeType.toString()));
     if (parser case CharacterParser(predicate: final predicate)) {
-      expect(predicate.toString(),
-          isToString(name: predicate.runtimeType.toString()));
+      expect(
+        predicate.toString(),
+        isToString(name: predicate.runtimeType.toString()),
+      );
     }
   });
 }

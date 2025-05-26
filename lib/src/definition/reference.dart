@@ -25,9 +25,17 @@ Parser<R> ref<R>(
   dynamic arg8 = undefined,
   dynamic arg9 = undefined,
 ]) {
-  final arguments = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]
-      .takeWhile((each) => each != undefined)
-      .toList(growable: false);
+  final arguments = [
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+  ].takeWhile((each) => each != undefined).toList(growable: false);
   return ReferenceParser<R>(function, arguments);
 }
 
@@ -47,10 +55,7 @@ Parser<R> ref0<R>(Parser<R> Function() function) =>
 ///
 /// See [ref0] for a detailed description.
 @useResult
-Parser<R> ref1<R, A1>(
-  Parser<R> Function(A1) function,
-  A1 arg1,
-) =>
+Parser<R> ref1<R, A1>(Parser<R> Function(A1) function, A1 arg1) =>
     ReferenceParser<R>(function, [arg1]);
 
 /// Reference to a production [function] parametrized with 2 arguments.
@@ -61,8 +66,7 @@ Parser<R> ref2<R, A1, A2>(
   Parser<R> Function(A1, A2) function,
   A1 arg1,
   A2 arg2,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2]);
+) => ReferenceParser<R>(function, [arg1, arg2]);
 
 /// Reference to a production [function] parametrized with 3 arguments.
 ///
@@ -73,8 +77,7 @@ Parser<R> ref3<R, A1, A2, A3>(
   A1 arg1,
   A2 arg2,
   A3 arg3,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2, arg3]);
+) => ReferenceParser<R>(function, [arg1, arg2, arg3]);
 
 /// Reference to a production [function] parametrized with 4 arguments.
 ///
@@ -86,8 +89,7 @@ Parser<R> ref4<R, A1, A2, A3, A4>(
   A2 arg2,
   A3 arg3,
   A4 arg4,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4]);
+) => ReferenceParser<R>(function, [arg1, arg2, arg3, arg4]);
 
 /// Reference to a production [function] parametrized with 5 arguments.
 ///
@@ -100,8 +102,7 @@ Parser<R> ref5<R, A1, A2, A3, A4, A5>(
   A3 arg3,
   A4 arg4,
   A5 arg5,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5]);
+) => ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5]);
 
 /// Reference to a production [function] parametrized with 6 arguments.
 ///
@@ -115,8 +116,7 @@ Parser<R> ref6<R, A1, A2, A3, A4, A5, A6>(
   A4 arg4,
   A5 arg5,
   A6 arg6,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6]);
+) => ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6]);
 
 /// Reference to a production [function] parametrized with 7 arguments.
 ///
@@ -131,8 +131,7 @@ Parser<R> ref7<R, A1, A2, A3, A4, A5, A6, A7>(
   A5 arg5,
   A6 arg6,
   A7 arg7,
-) =>
-    ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7]);
+) => ReferenceParser<R>(function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7]);
 
 /// Reference to a production [function] parametrized with 8 arguments.
 ///
@@ -148,9 +147,16 @@ Parser<R> ref8<R, A1, A2, A3, A4, A5, A6, A7, A8>(
   A6 arg6,
   A7 arg7,
   A8 arg8,
-) =>
-    ReferenceParser<R>(
-        function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]);
+) => ReferenceParser<R>(function, [
+  arg1,
+  arg2,
+  arg3,
+  arg4,
+  arg5,
+  arg6,
+  arg7,
+  arg8,
+]);
 
 /// Reference to a production [function] parametrized with 9 arguments.
 ///
@@ -167,6 +173,14 @@ Parser<R> ref9<R, A1, A2, A3, A4, A5, A6, A7, A8, A9>(
   A7 arg7,
   A8 arg8,
   A9 arg9,
-) =>
-    ReferenceParser<R>(
-        function, [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]);
+) => ReferenceParser<R>(function, [
+  arg1,
+  arg2,
+  arg3,
+  arg4,
+  arg5,
+  arg6,
+  arg7,
+  arg8,
+  arg9,
+]);

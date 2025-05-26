@@ -3,7 +3,7 @@ import '../../core/parser.dart';
 /// Abstract parser that parses a list of things in some way.
 abstract class ListParser<R, S> extends Parser<S> {
   ListParser(Iterable<Parser<R>> children)
-      : children = List<Parser<R>>.of(children, growable: false);
+    : children = List<Parser<R>>.of(children, growable: false);
 
   /// The children parsers being delegated to.
   @override

@@ -36,8 +36,9 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// separators of type [S].
   @useResult
   Parser<SeparatedList<R, S>> timesSeparated<S>(
-          Parser<S> separator, int count) =>
-      repeatSeparated<S>(separator, count, count);
+    Parser<S> separator,
+    int count,
+  ) => repeatSeparated<S>(separator, count, count);
 
   /// Returns a parser that consumes the receiver between [min] and [max] times
   /// separated by the [separator] parser. The resulting parser returns a
@@ -45,8 +46,10 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// well as the separators of type [S].
   @useResult
   Parser<SeparatedList<R, S>> repeatSeparated<S>(
-          Parser<S> separator, int min, int max) =>
-      SeparatedRepeatingParser<R, S>(this, separator, min, max);
+    Parser<S> separator,
+    int min,
+    int max,
+  ) => SeparatedRepeatingParser<R, S>(this, separator, min, max);
 }
 
 /// A parser that consumes the [delegate] between [min] and [max] times
@@ -55,7 +58,11 @@ class SeparatedRepeatingParser<R, S>
     extends RepeatingParser<R, SeparatedList<R, S>>
     implements SequentialParser {
   SeparatedRepeatingParser(
-      super.delegate, this.separator, super.min, super.max);
+    super.delegate,
+    this.separator,
+    super.min,
+    super.max,
+  );
 
   /// Parser consuming input between the repeated elements.
   Parser<S> separator;

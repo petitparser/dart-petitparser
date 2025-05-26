@@ -9,17 +9,17 @@ Map<Parser, Set<Parser>> computeFollowSets({
   required Parser sentinel,
 }) {
   final followSets = {
-    for (final parser in parsers)
-      parser: {
-        if (parser == root) sentinel,
-      }
+    for (final parser in parsers) parser: {if (parser == root) sentinel},
   };
   var changed = false;
   do {
     changed = false;
     for (final parser in parsers) {
       changed |= expandFollowSet(
-          parser: parser, followSets: followSets, firstSets: firstSets);
+        parser: parser,
+        followSets: followSets,
+        firstSets: firstSets,
+      );
     }
   } while (changed);
   return followSets;
@@ -40,10 +40,7 @@ bool expandFollowSet({
   } else if (parser is RepeatingParser) {
     return expandFollowSetOfSequence(
       parser: parser,
-      children: [
-        parser.children[0],
-        ...parser.children,
-      ],
+      children: [parser.children[0], ...parser.children],
       followSets: followSets,
       firstSets: firstSets,
     );
@@ -78,8 +75,10 @@ bool expandFollowSetOfSequence({
       if (j == children.length) {
         changed |= addAll(followSets[children[i]]!, followSets[parser]!);
       }
-      changed |= addAll(followSets[children[i]]!,
-          firstSet.where((each) => !isNullable(each)));
+      changed |= addAll(
+        followSets[children[i]]!,
+        firstSet.where((each) => !isNullable(each)),
+      );
     }
   }
   return changed;

@@ -19,7 +19,9 @@ extension MatchesParserExtension<T> on Parser<T> {
   /// `parser.allMatches('abc de')` results in the iterable `['abc', 'de']`; and
   /// `parser.allMatches('abc de', overlapping: true)` results in the iterable
   /// `['abc', 'bc', 'c', 'de', 'e']`.
-  Iterable<T> allMatches(String input,
-          {int start = 0, bool overlapping = false}) =>
-      MatchesIterable<T>(this, input, start, overlapping);
+  Iterable<T> allMatches(
+    String input, {
+    int start = 0,
+    bool overlapping = false,
+  }) => MatchesIterable<T>(this, input, start, overlapping);
 }

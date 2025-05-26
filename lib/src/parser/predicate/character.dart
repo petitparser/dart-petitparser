@@ -17,12 +17,14 @@ abstract class CharacterParser extends Parser<String> {
   /// By default, the parsers works on UTF-16 code units. If [unicode] is set
   /// to `true` unicode surrogate pairs are extracted from the input and matched
   /// against the predicate.
-  factory CharacterParser(CharacterPredicate predicate, String message,
-          {bool unicode = false}) =>
-      switch (unicode) {
-        false => SingleCharacterParser(predicate, message),
-        true => UnicodeCharacterParser(predicate, message),
-      };
+  factory CharacterParser(
+    CharacterPredicate predicate,
+    String message, {
+    bool unicode = false,
+  }) => switch (unicode) {
+    false => SingleCharacterParser(predicate, message),
+    true => UnicodeCharacterParser(predicate, message),
+  };
 
   /// Internal constructor
   @internal

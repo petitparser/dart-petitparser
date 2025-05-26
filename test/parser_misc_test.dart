@@ -11,8 +11,10 @@ void main() {
       final parser = char('a').end();
       expect(parser, isParseFailure('', message: '"a" expected'));
       expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser,
-          isParseFailure('aa', position: 1, message: 'end of input expected'));
+      expect(
+        parser,
+        isParseFailure('aa', position: 1, message: 'end of input expected'),
+      );
     });
   });
   group('epsilon', () {

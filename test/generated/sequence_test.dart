@@ -22,7 +22,9 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (char('a'), char('b')).toSequenceParser();
@@ -43,7 +45,9 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
   });
   group('record', () {
@@ -54,11 +58,14 @@ void main() {
       expect(record.$2, 'b');
     });
     test('map', () {
-      expect(record.map((a, b) {
-        expect(a, 'a');
-        expect(b, 'b');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b) {
+          expect(a, 'a');
+          expect(b, 'b');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -92,13 +99,19 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (char('a'), char('b'), char('c')).toSequenceParser();
@@ -106,8 +119,11 @@ void main() {
     });
   });
   group('map3', () {
-    final parser =
-        seq3(char('a'), char('b'), char('c')).map3((a, b, c) => '$a$b$c');
+    final parser = seq3(
+      char('a'),
+      char('b'),
+      char('c'),
+    ).map3((a, b, c) => '$a$b$c');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abc', result: 'abc'));
@@ -120,13 +136,19 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
   });
   group('record', () {
@@ -138,12 +160,15 @@ void main() {
       expect(record.$3, 'c');
     });
     test('map', () {
-      expect(record.map((a, b, c) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -177,29 +202,47 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('toSequenceParser()', () {
-      final alternate =
-          (char('a'), char('b'), char('c'), char('d')).toSequenceParser();
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+      ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map4', () {
-    final parser = seq4(char('a'), char('b'), char('c'), char('d'))
-        .map4((a, b, c, d) => '$a$b$c$d');
+    final parser = seq4(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+    ).map4((a, b, c, d) => '$a$b$c$d');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcd', result: 'abcd'));
@@ -212,19 +255,29 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
   });
   group('record', () {
@@ -237,13 +290,16 @@ void main() {
       expect(record.$4, 'd');
     });
     test('map', () {
-      expect(record.map((a, b, c, d) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -277,35 +333,59 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('toSequenceParser()', () {
-      final alternate = (char('a'), char('b'), char('c'), char('d'), char('e'))
-          .toSequenceParser();
+      final alternate = (
+        char('a'),
+        char('b'),
+        char('c'),
+        char('d'),
+        char('e'),
+      ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map5', () {
-    final parser = seq5(char('a'), char('b'), char('c'), char('d'), char('e'))
-        .map5((a, b, c, d, e) => '$a$b$c$d$e');
+    final parser = seq5(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+    ).map5((a, b, c, d, e) => '$a$b$c$d$e');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcde', result: 'abcde'));
@@ -318,25 +398,39 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
   });
   group('record', () {
@@ -350,14 +444,17 @@ void main() {
       expect(record.$5, 'e');
     });
     test('map', () {
-      expect(record.map((a, b, c, d, e) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        expect(e, 'e');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d, e) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          expect(e, 'e');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -377,8 +474,14 @@ void main() {
     });
   });
   group('seq6', () {
-    final parser =
-        seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'));
+    final parser = seq6(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+    );
     const record = ('a', 'b', 'c', 'd', 'e', 'f');
     expectParserInvariants(parser);
     test('success', () {
@@ -392,31 +495,49 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (
@@ -425,15 +546,20 @@ void main() {
         char('c'),
         char('d'),
         char('e'),
-        char('f')
+        char('f'),
       ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map6', () {
-    final parser =
-        seq6(char('a'), char('b'), char('c'), char('d'), char('e'), char('f'))
-            .map6((a, b, c, d, e, f) => '$a$b$c$d$e$f');
+    final parser = seq6(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+    ).map6((a, b, c, d, e, f) => '$a$b$c$d$e$f');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdef', result: 'abcdef'));
@@ -446,31 +572,49 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
   });
   group('record', () {
@@ -485,15 +629,18 @@ void main() {
       expect(record.$6, 'f');
     });
     test('map', () {
-      expect(record.map((a, b, c, d, e, f) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        expect(e, 'e');
-        expect(f, 'f');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d, e, f) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          expect(e, 'e');
+          expect(f, 'f');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -513,8 +660,15 @@ void main() {
     });
   });
   group('seq7', () {
-    final parser = seq7(char('a'), char('b'), char('c'), char('d'), char('e'),
-        char('f'), char('g'));
+    final parser = seq7(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+    );
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g');
     expectParserInvariants(parser);
     test('success', () {
@@ -528,37 +682,59 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (
@@ -568,20 +744,28 @@ void main() {
         char('d'),
         char('e'),
         char('f'),
-        char('g')
+        char('g'),
       ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map7', () {
-    final parser = seq7(char('a'), char('b'), char('c'), char('d'), char('e'),
-            char('f'), char('g'))
-        .map7((a, b, c, d, e, f, g) => '$a$b$c$d$e$f$g');
+    final parser = seq7(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+    ).map7((a, b, c, d, e, f, g) => '$a$b$c$d$e$f$g');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefg', result: 'abcdefg'));
       expect(
-          parser, isParseSuccess('abcdefg*', result: 'abcdefg', position: 7));
+        parser,
+        isParseSuccess('abcdefg*', result: 'abcdefg', position: 7),
+      );
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -590,37 +774,59 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
   });
   group('record', () {
@@ -636,16 +842,19 @@ void main() {
       expect(record.$7, 'g');
     });
     test('map', () {
-      expect(record.map((a, b, c, d, e, f, g) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        expect(e, 'e');
-        expect(f, 'f');
-        expect(g, 'g');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d, e, f, g) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          expect(e, 'e');
+          expect(f, 'f');
+          expect(g, 'g');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -665,8 +874,16 @@ void main() {
     });
   });
   group('seq8', () {
-    final parser = seq8(char('a'), char('b'), char('c'), char('d'), char('e'),
-        char('f'), char('g'), char('h'));
+    final parser = seq8(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+      char('h'),
+    );
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
     expectParserInvariants(parser);
     test('success', () {
@@ -680,43 +897,69 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
     test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
+      expect(
+        parser,
+        isParseFailure('abcdefg', message: '"h" expected', position: 7),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefg*', message: '"h" expected', position: 7),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (
@@ -727,20 +970,29 @@ void main() {
         char('e'),
         char('f'),
         char('g'),
-        char('h')
+        char('h'),
       ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map8', () {
-    final parser = seq8(char('a'), char('b'), char('c'), char('d'), char('e'),
-            char('f'), char('g'), char('h'))
-        .map8((a, b, c, d, e, f, g, h) => '$a$b$c$d$e$f$g$h');
+    final parser = seq8(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+      char('h'),
+    ).map8((a, b, c, d, e, f, g, h) => '$a$b$c$d$e$f$g$h');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefgh', result: 'abcdefgh'));
       expect(
-          parser, isParseSuccess('abcdefgh*', result: 'abcdefgh', position: 8));
+        parser,
+        isParseSuccess('abcdefgh*', result: 'abcdefgh', position: 8),
+      );
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -749,43 +1001,69 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
     test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
+      expect(
+        parser,
+        isParseFailure('abcdefg', message: '"h" expected', position: 7),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefg*', message: '"h" expected', position: 7),
+      );
     });
   });
   group('record', () {
@@ -802,17 +1080,20 @@ void main() {
       expect(record.$8, 'h');
     });
     test('map', () {
-      expect(record.map((a, b, c, d, e, f, g, h) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        expect(e, 'e');
-        expect(f, 'f');
-        expect(g, 'g');
-        expect(h, 'h');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d, e, f, g, h) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          expect(e, 'e');
+          expect(f, 'f');
+          expect(g, 'g');
+          expect(h, 'h');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);
@@ -832,8 +1113,17 @@ void main() {
     });
   });
   group('seq9', () {
-    final parser = seq9(char('a'), char('b'), char('c'), char('d'), char('e'),
-        char('f'), char('g'), char('h'), char('i'));
+    final parser = seq9(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+      char('h'),
+      char('i'),
+    );
     const record = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
     expectParserInvariants(parser);
     test('success', () {
@@ -847,49 +1137,79 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
     test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
+      expect(
+        parser,
+        isParseFailure('abcdefg', message: '"h" expected', position: 7),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefg*', message: '"h" expected', position: 7),
+      );
     });
     test('failure at 8', () {
-      expect(parser,
-          isParseFailure('abcdefgh', message: '"i" expected', position: 8));
-      expect(parser,
-          isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
+      expect(
+        parser,
+        isParseFailure('abcdefgh', message: '"i" expected', position: 8),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefgh*', message: '"i" expected', position: 8),
+      );
     });
     test('toSequenceParser()', () {
       final alternate = (
@@ -901,20 +1221,30 @@ void main() {
         char('f'),
         char('g'),
         char('h'),
-        char('i')
+        char('i'),
       ).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
   });
   group('map9', () {
-    final parser = seq9(char('a'), char('b'), char('c'), char('d'), char('e'),
-            char('f'), char('g'), char('h'), char('i'))
-        .map9((a, b, c, d, e, f, g, h, i) => '$a$b$c$d$e$f$g$h$i');
+    final parser = seq9(
+      char('a'),
+      char('b'),
+      char('c'),
+      char('d'),
+      char('e'),
+      char('f'),
+      char('g'),
+      char('h'),
+      char('i'),
+    ).map9((a, b, c, d, e, f, g, h, i) => '$a$b$c$d$e$f$g$h$i');
     expectParserInvariants(parser);
     test('success', () {
       expect(parser, isParseSuccess('abcdefghi', result: 'abcdefghi'));
-      expect(parser,
-          isParseSuccess('abcdefghi*', result: 'abcdefghi', position: 9));
+      expect(
+        parser,
+        isParseSuccess('abcdefghi*', result: 'abcdefghi', position: 9),
+      );
     });
     test('failure at 0', () {
       expect(parser, isParseFailure('', message: '"a" expected', position: 0));
@@ -923,49 +1253,79 @@ void main() {
     test('failure at 1', () {
       expect(parser, isParseFailure('a', message: '"b" expected', position: 1));
       expect(
-          parser, isParseFailure('a*', message: '"b" expected', position: 1));
+        parser,
+        isParseFailure('a*', message: '"b" expected', position: 1),
+      );
     });
     test('failure at 2', () {
       expect(
-          parser, isParseFailure('ab', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab', message: '"c" expected', position: 2),
+      );
       expect(
-          parser, isParseFailure('ab*', message: '"c" expected', position: 2));
+        parser,
+        isParseFailure('ab*', message: '"c" expected', position: 2),
+      );
     });
     test('failure at 3', () {
       expect(
-          parser, isParseFailure('abc', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc', message: '"d" expected', position: 3),
+      );
       expect(
-          parser, isParseFailure('abc*', message: '"d" expected', position: 3));
+        parser,
+        isParseFailure('abc*', message: '"d" expected', position: 3),
+      );
     });
     test('failure at 4', () {
       expect(
-          parser, isParseFailure('abcd', message: '"e" expected', position: 4));
-      expect(parser,
-          isParseFailure('abcd*', message: '"e" expected', position: 4));
+        parser,
+        isParseFailure('abcd', message: '"e" expected', position: 4),
+      );
+      expect(
+        parser,
+        isParseFailure('abcd*', message: '"e" expected', position: 4),
+      );
     });
     test('failure at 5', () {
-      expect(parser,
-          isParseFailure('abcde', message: '"f" expected', position: 5));
-      expect(parser,
-          isParseFailure('abcde*', message: '"f" expected', position: 5));
+      expect(
+        parser,
+        isParseFailure('abcde', message: '"f" expected', position: 5),
+      );
+      expect(
+        parser,
+        isParseFailure('abcde*', message: '"f" expected', position: 5),
+      );
     });
     test('failure at 6', () {
-      expect(parser,
-          isParseFailure('abcdef', message: '"g" expected', position: 6));
-      expect(parser,
-          isParseFailure('abcdef*', message: '"g" expected', position: 6));
+      expect(
+        parser,
+        isParseFailure('abcdef', message: '"g" expected', position: 6),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdef*', message: '"g" expected', position: 6),
+      );
     });
     test('failure at 7', () {
-      expect(parser,
-          isParseFailure('abcdefg', message: '"h" expected', position: 7));
-      expect(parser,
-          isParseFailure('abcdefg*', message: '"h" expected', position: 7));
+      expect(
+        parser,
+        isParseFailure('abcdefg', message: '"h" expected', position: 7),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefg*', message: '"h" expected', position: 7),
+      );
     });
     test('failure at 8', () {
-      expect(parser,
-          isParseFailure('abcdefgh', message: '"i" expected', position: 8));
-      expect(parser,
-          isParseFailure('abcdefgh*', message: '"i" expected', position: 8));
+      expect(
+        parser,
+        isParseFailure('abcdefgh', message: '"i" expected', position: 8),
+      );
+      expect(
+        parser,
+        isParseFailure('abcdefgh*', message: '"i" expected', position: 8),
+      );
     });
   });
   group('record', () {
@@ -983,18 +1343,21 @@ void main() {
       expect(record.$9, 'i');
     });
     test('map', () {
-      expect(record.map((a, b, c, d, e, f, g, h, i) {
-        expect(a, 'a');
-        expect(b, 'b');
-        expect(c, 'c');
-        expect(d, 'd');
-        expect(e, 'e');
-        expect(f, 'f');
-        expect(g, 'g');
-        expect(h, 'h');
-        expect(i, 'i');
-        return 42;
-      }), 42);
+      expect(
+        record.map((a, b, c, d, e, f, g, h, i) {
+          expect(a, 'a');
+          expect(b, 'b');
+          expect(c, 'c');
+          expect(d, 'd');
+          expect(e, 'e');
+          expect(f, 'f');
+          expect(g, 'g');
+          expect(h, 'h');
+          expect(i, 'i');
+          return 42;
+        }),
+        42,
+      );
     });
     test('equals', () {
       expect(record, record);

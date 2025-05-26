@@ -12,12 +12,12 @@ import 'character.dart';
 class SingleCharacterParser extends CharacterParser {
   factory SingleCharacterParser(CharacterPredicate predicate, String message) =>
       ConstantCharPredicate.any.isEqualTo(predicate)
-          ? AnySingleCharacterParser.internal(predicate, message)
-          : SingleCharacterParser.internal(predicate, message);
+      ? AnySingleCharacterParser.internal(predicate, message)
+      : SingleCharacterParser.internal(predicate, message);
 
   @internal
   SingleCharacterParser.internal(super.predicate, super.message)
-      : super.internal();
+    : super.internal();
 
   @override
   @noBoundsChecks
@@ -35,8 +35,8 @@ class SingleCharacterParser extends CharacterParser {
   @noBoundsChecks
   int fastParseOn(String buffer, int position) =>
       position < buffer.length && predicate.test(buffer.codeUnitAt(position))
-          ? position + 1
-          : -1;
+      ? position + 1
+      : -1;
 
   @override
   SingleCharacterParser copy() => SingleCharacterParser(predicate, message);
@@ -46,8 +46,8 @@ class SingleCharacterParser extends CharacterParser {
 /// character (including possible surrogate pairs).
 class AnySingleCharacterParser extends SingleCharacterParser {
   AnySingleCharacterParser.internal(super.predicate, super.message)
-      : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
-        super.internal();
+    : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
+      super.internal();
 
   @override
   @noBoundsChecks

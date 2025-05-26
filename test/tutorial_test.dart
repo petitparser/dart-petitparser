@@ -39,31 +39,27 @@ void main() {
     final id2 = id.parse('f12');
     expect(id1.value, [
       'y',
-      ['e', 'a', 'h']
+      ['e', 'a', 'h'],
     ]);
     expect(id2.value, [
       'f',
-      ['1', '2']
+      ['1', '2'],
     ]);
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
     expect(id3.position, 0);
     expect(id.accept('foo'), isTrue);
     expect(id.accept('123'), isFalse);
-    expect(
-        switch (id.parse('foo')) {
-          Success(value: final value) => 'Success: $value',
-          Failure(message: final message, position: final position) =>
-            'Failure at $position: $message',
-        },
-        'Success: [f, [o, o]]');
-    expect(
-        switch (id.parse('123')) {
-          Success(value: final value) => 'Success: $value',
-          Failure(message: final message, position: final position) =>
-            'Failure at $position: $message',
-        },
-        'Failure at 0: letter expected');
+    expect(switch (id.parse('foo')) {
+      Success(value: final value) => 'Success: $value',
+      Failure(message: final message, position: final position) =>
+        'Failure at $position: $message',
+    }, 'Success: [f, [o, o]]');
+    expect(switch (id.parse('123')) {
+      Success(value: final value) => 'Success: $value',
+      Failure(message: final message, position: final position) =>
+        'Failure at $position: $message',
+    }, 'Failure at 0: letter expected');
   });
   test('simple grammar (chained calls)', () {
     final id = letter().seq(letter().or(digit()).star());
@@ -71,11 +67,11 @@ void main() {
     final id2 = id.parse('f12');
     expect(id1.value, [
       'y',
-      ['e', 'a', 'h']
+      ['e', 'a', 'h'],
     ]);
     expect(id2.value, [
       'f',
-      ['1', '2']
+      ['1', '2'],
     ]);
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
@@ -86,17 +82,17 @@ void main() {
   test('simple grammar (lists)', () {
     final id = [
       letter(),
-      [letter(), digit()].toChoiceParser().star()
+      [letter(), digit()].toChoiceParser().star(),
     ].toSequenceParser();
     final id1 = id.parse('yeah');
     final id2 = id.parse('f12');
     expect(id1.value, [
       'y',
-      ['e', 'a', 'h']
+      ['e', 'a', 'h'],
     ]);
     expect(id2.value, [
       'f',
-      ['1', '2']
+      ['1', '2'],
     ]);
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
@@ -109,15 +105,17 @@ void main() {
     final id1 = id.parse('yeah');
     final id2 = id.parse('f12');
     expect(
-        id1.value,
-        isA<(String, List<String>)>()
-            .having((sequence) => sequence.$1, 'first', 'y')
-            .having((sequence) => sequence.$2, 'second', ['e', 'a', 'h']));
+      id1.value,
+      isA<(String, List<String>)>()
+          .having((sequence) => sequence.$1, 'first', 'y')
+          .having((sequence) => sequence.$2, 'second', ['e', 'a', 'h']),
+    );
     expect(
-        id2.value,
-        isA<(String, List<String>)>()
-            .having((sequence) => sequence.$1, 'first', 'f')
-            .having((sequence) => sequence.$2, 'second', ['1', '2']));
+      id2.value,
+      isA<(String, List<String>)>()
+          .having((sequence) => sequence.$1, 'first', 'f')
+          .having((sequence) => sequence.$2, 'second', ['1', '2']),
+    );
     final id3 = id.parse('123');
     expect(id3.message, 'letter expected');
     expect(id3.position, 0);
@@ -138,16 +136,17 @@ void main() {
     final term = undefined<Object?>();
     final prod = undefined<Object?>();
     final prim = undefined<Object?>();
-    final add = (prod & char('+').trim() & term)
-        .castList<num>()
-        .map((values) => values[0] + values[2]);
+    final add = (prod & char('+').trim() & term).castList<num>().map(
+      (values) => values[0] + values[2],
+    );
     term.set(add | prod);
-    final mul = (prim & char('*').trim() & prod)
-        .castList<num>()
-        .map((values) => values[0] * values[2]);
+    final mul = (prim & char('*').trim() & prod).castList<num>().map(
+      (values) => values[0] * values[2],
+    );
     prod.set(mul | prim);
-    final parens =
-        (char('(').trim() & term & char(')').trim()).map((values) => values[1]);
+    final parens = (char('(').trim() & term & char(')').trim()).map(
+      (values) => values[1],
+    );
     final number = digit().plus().flatten().trim().map(int.parse);
     prim.set(parens | number);
     final parser = term.end();
@@ -160,21 +159,21 @@ void main() {
     expect(parser.parse('1 + 2 + 3').value, [
       '1',
       '+',
-      ['2', '+', '3']
+      ['2', '+', '3'],
     ]);
     expect(parser.parse('1 + 2 * 3').value, [
       '1',
       '+',
-      ['2', '*', '3']
+      ['2', '*', '3'],
     ]);
     expect(parser.parse('(1 + 2) * 3').value, [
       [
         '(',
         ['1', '+', '2'],
-        ')'
+        ')',
       ],
       '*',
-      '3'
+      '3',
     ]);
   });
   test('evaluator definition', () {
@@ -183,21 +182,21 @@ void main() {
     expect(parser.parse('1 + 2 + 3').value, [
       '1',
       '+',
-      ['2', '+', '3']
+      ['2', '+', '3'],
     ]);
     expect(parser.parse('1 + 2 * 3').value, [
       '1',
       '+',
-      ['2', '*', '3']
+      ['2', '*', '3'],
     ]);
     expect(parser.parse('(1 + 2) * 3').value, [
       [
         '(',
         ['1', '+', '2'],
-        ')'
+        ')',
       ],
       '*',
-      '3'
+      '3',
     ]);
   });
   test('number definition', () {
@@ -214,19 +213,26 @@ void main() {
   });
   test('expression builder', () {
     final builder = ExpressionBuilder<num>();
-    builder.primitive(digit()
-        .plus()
-        .seq(char('.').seq(digit().plus()).optional())
-        .flatten()
-        .trim()
-        .map(num.parse));
+    builder.primitive(
+      digit()
+          .plus()
+          .seq(char('.').seq(digit().plus()).optional())
+          .flatten()
+          .trim()
+          .map(num.parse),
+    );
     builder.group().wrapper(
-        char('(').trim(), char(')').trim(), (left, value, right) => value);
+      char('(').trim(),
+      char(')').trim(),
+      (left, value, right) => value,
+    );
     // Negation is a prefix operator.
     builder.group().prefix(char('-').trim(), (operator, value) => -value);
     // Power is right-associative.
     builder.group().right(
-        char('^').trim(), (left, operator, right) => math.pow(left, right));
+      char('^').trim(),
+      (left, operator, right) => math.pow(left, right),
+    );
     // Multiplication and addition are left-associative, multiplication has
     // higher priority than addition.
     builder.group()

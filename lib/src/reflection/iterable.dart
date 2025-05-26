@@ -25,9 +25,7 @@ class _ParserIterable extends Iterable<Parser> {
 }
 
 class _ParserIterator implements Iterator<Parser> {
-  _ParserIterator(Parser root)
-      : todo = [root],
-        seen = {root};
+  _ParserIterator(Parser root) : todo = [root], seen = {root};
 
   final List<Parser> todo;
   final Set<Parser> seen;

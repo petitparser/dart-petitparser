@@ -31,23 +31,30 @@ import 'utils/optimize.dart';
 /// variations of its characters. If [unicode] is set to `true` unicode
 /// surrogate pairs are extracted and matched against the predicate.
 @useResult
-Parser<String> pattern(String pattern,
-    {String? message, bool ignoreCase = false, bool unicode = false}) {
+Parser<String> pattern(
+  String pattern, {
+  String? message,
+  bool ignoreCase = false,
+  bool unicode = false,
+}) {
   var input = pattern;
   final isNegated = input.startsWith('^');
   if (isNegated) input = input.substring(1);
-  final inputs =
-      ignoreCase ? [input.toLowerCase(), input.toUpperCase()] : [input];
+  final inputs = ignoreCase
+      ? [input.toLowerCase(), input.toUpperCase()]
+      : [input];
   final parser = unicode ? _patternUnicodeParser : _patternParser;
   var predicate = optimizedRanges(
-      inputs.expand((each) => parser.parse(each).value),
-      unicode: unicode);
+    inputs.expand((each) => parser.parse(each).value),
+    unicode: unicode,
+  );
   if (isNegated) {
     predicate = predicate is ConstantCharPredicate
         ? ConstantCharPredicate(!predicate.constant)
         : NotCharPredicate(predicate);
   }
-  message ??= '[${toReadableString(pattern, unicode: unicode)}]'
+  message ??=
+      '[${toReadableString(pattern, unicode: unicode)}]'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);
 }
@@ -56,16 +63,19 @@ Parser<List<RangeCharPredicate>> _createParser({required bool unicode}) {
   // Parser that consumes a single character.
   final character = any(unicode: unicode);
   // Parser that reads a single character.
-  final single = character.map((element) => RangeCharPredicate(
+  final single = character.map(
+    (element) => RangeCharPredicate(
       toCharCode(element, unicode: unicode),
-      toCharCode(element, unicode: unicode)));
+      toCharCode(element, unicode: unicode),
+    ),
+  );
   // Parser that reads a character range.
-  final range = (
-    character,
-    char('-'),
-    character
-  ).toSequenceParser().map3((start, _, stop) => RangeCharPredicate(
-      toCharCode(start, unicode: unicode), toCharCode(stop, unicode: unicode)));
+  final range = (character, char('-'), character).toSequenceParser().map3(
+    (start, _, stop) => RangeCharPredicate(
+      toCharCode(start, unicode: unicode),
+      toCharCode(stop, unicode: unicode),
+    ),
+  );
   // Parser that reads a sequence of single characters or ranges.
   return [range, single].toChoiceParser().star().end();
 }

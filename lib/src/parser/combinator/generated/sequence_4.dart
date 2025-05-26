@@ -17,17 +17,16 @@ import '../../utils/sequential.dart';
 /// returns `('a', 'b', 'c', 'd')`
 /// for the input `'abcd'`.
 @useResult
-Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(Parser<R1> parser1,
-        Parser<R2> parser2, Parser<R3> parser3, Parser<R4> parser4) =>
-    SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
+Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+) => SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
 /// Extensions on a [Record] with 4 positional [Parser]s.
-extension RecordOfParsersExtension4<R1, R2, R3, R4> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>
-) {
+extension RecordOfParsersExtension4<R1, R2, R3, R4>
+    on (Parser<R1>, Parser<R2>, Parser<R3>, Parser<R4>) {
   /// Converts a [Record] of 4 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 4 positional parse results.
   ///
@@ -61,8 +60,12 @@ class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
     if (result3 is Failure) return result3;
     final result4 = parser4.parseOn(result3);
     if (result4 is Failure) return result4;
-    return result4
-        .success((result1.value, result2.value, result3.value, result4.value));
+    return result4.success((
+      result1.value,
+      result2.value,
+      result3.value,
+      result4.value,
+    ));
   }
 
   @override
@@ -108,7 +111,8 @@ extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map4<R>(R Function(T1, T2, T3, T4) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map4<R>(
+    R Function(T1, T2, T3, T4) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

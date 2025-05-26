@@ -32,14 +32,17 @@ class CharacterRepeater extends LinterRule {
     if (parser case FlattenParser(delegate: final repeating)) {
       if (repeating case PossessiveRepeatingParser(delegate: final character)) {
         if (character case SingleCharacterParser()) {
-          callback(LinterIssue(
+          callback(
+            LinterIssue(
               this,
               parser,
               'A flattened repeater ($repeating) that delegates to a character '
               'parser ($character) can be much more efficiently implemented '
               'using `starString`, `plusString`, `timesString`, or '
               '`repeatString` that directly returns the underlying String '
-              'instead of an intermediate List.'));
+              'instead of an intermediate List.',
+            ),
+          );
         }
       }
     }
@@ -52,13 +55,16 @@ class LeftRecursion extends LinterRule {
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (analyzer.cycleSet(parser).isNotEmpty) {
-      callback(LinterIssue(
+      callback(
+        LinterIssue(
           this,
           parser,
           'The parsers directly or indirectly refers to itself without '
           'consuming input:\n'
           '${formatIterable(analyzer.cycleSet(parser), offset: 1)}\n'
-          'This causes an infinite loop when parsing.'));
+          'This causes an infinite loop when parsing.',
+        ),
+      );
     }
   }
 }
@@ -72,12 +78,15 @@ class NestedChoice extends LinterRule {
       for (var i = 0; i < children.length - 1; i++) {
         final child = children[i];
         if (child case ChoiceParser()) {
-          callback(LinterIssue(
+          callback(
+            LinterIssue(
               this,
               parser,
               'The choice at index $i is another choice ($child) that adds '
               'unnecessary overhead that can be avoided by flattening it into '
-              'the parent.'));
+              'the parent.',
+            ),
+          );
         }
       }
     }
@@ -95,11 +104,14 @@ class NullableRepeater extends LinterRule {
           !analyzer.isNullable(parser.separator)) {
         return;
       }
-      callback(LinterIssue(
+      callback(
+        LinterIssue(
           this,
           parser,
           'A repeater that delegates to a nullable parser causes an infinite '
-          'loop when parsing.'));
+          'loop when parsing.',
+        ),
+      );
     }
   }
 }
@@ -115,13 +127,16 @@ class OverlappingChoice extends LinterRule {
         for (var j = i + 1; j < children.length; j++) {
           final firstJ = analyzer.firstSet(children[j]);
           if (isParserIterableEqual(firstI, firstJ)) {
-            callback(LinterIssue(
+            callback(
+              LinterIssue(
                 this,
                 parser,
                 'The choices at index $i and $j have overlapping first-sets, '
                 'which can be an indication of an inefficient grammar:\n'
                 '${formatIterable(firstI)}\n'
-                'If possible, try extracting common prefixes from choices.'));
+                'If possible, try extracting common prefixes from choices.',
+              ),
+            );
           }
         }
       }
@@ -138,14 +153,17 @@ class RepeatedChoice extends LinterRule {
       for (var i = 0; i < children.length; i++) {
         for (var j = i + 1; j < children.length; j++) {
           if (children[i].isEqualTo(children[j])) {
-            callback(LinterIssue(
+            callback(
+              LinterIssue(
                 this,
                 parser,
                 'The choices at index $i and $j are identical:\n'
                 ' $i: ${children[i]}\n'
                 ' $j: ${children[j]}\n'
                 'The second choice can never succeed and can therefore be '
-                'removed.'));
+                'removed.',
+              ),
+            );
           }
         }
       }
@@ -164,12 +182,15 @@ class UnnecessaryFlatten extends LinterRule {
           delegate is NewlineParser ||
           delegate is PredicateParser ||
           delegate is RepeatingCharacterParser) {
-        callback(LinterIssue(
+        callback(
+          LinterIssue(
             this,
             parser,
             'A flatten parser delegating to a parser ($delegate) that is '
             'returning the accepted input string adds unnecessary overhead and '
-            'can be removed.'));
+            'can be removed.',
+          ),
+        );
       }
     }
   }
@@ -177,18 +198,21 @@ class UnnecessaryFlatten extends LinterRule {
 
 class UnnecessaryResolvable extends LinterRule {
   const UnnecessaryResolvable()
-      : super(LinterType.warning, 'Unnecessary resolvable');
+    : super(LinterType.warning, 'Unnecessary resolvable');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser case ResolvableParser()) {
-      callback(LinterIssue(
+      callback(
+        LinterIssue(
           this,
           parser,
           'Resolvable parsers are used during construction of recursive '
           'grammars. While they typically dispatch to their delegate, '
           'they add unnecessary overhead and can be avoided by removing '
-          'them before parsing using `resolve(parser)`.'));
+          'them before parsing using `resolve(parser)`.',
+        ),
+      );
     }
   }
 }
@@ -199,13 +223,16 @@ class UnoptimizedFlatten extends LinterRule {
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser case FlattenParser(message: null)) {
-      callback(LinterIssue(
+      callback(
+        LinterIssue(
           this,
           parser,
           'A flatten parser without an error message is unable to switch '
           'to the fast parsing mode. This can lead to inefficient parsers '
           'and can usually easily fixed by providing an error message '
-          'that should be used in case the delegate fails to parse.'));
+          'that should be used in case the delegate fails to parse.',
+        ),
+      );
     }
   }
 }
@@ -218,14 +245,17 @@ class UnreachableChoice extends LinterRule {
     if (parser case ChoiceParser(children: final children)) {
       for (var i = 0; i < children.length - 1; i++) {
         if (analyzer.isNullable(children[i])) {
-          callback(LinterIssue(
+          callback(
+            LinterIssue(
               this,
               parser,
               'The choice at index $i is nullable:\n'
               ' $i: ${children[i]}\n'
               'thus the choices after that can never be reached and can be '
               'removed:\n'
-              '${formatIterable(children.sublist(i + 1), offset: i + 1)}'));
+              '${formatIterable(children.sublist(i + 1), offset: i + 1)}',
+            ),
+          );
         }
       }
     }
@@ -238,12 +268,15 @@ class UnresolvedSettable extends LinterRule {
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
     if (parser case SettableParser(delegate: FailureParser())) {
-      callback(LinterIssue(
+      callback(
+        LinterIssue(
           this,
           parser,
           'This error is typically a bug in the code where a recursive '
           'grammar was created with `undefined()` that has not been '
-          'resolved.'));
+          'resolved.',
+        ),
+      );
     }
   }
 }
@@ -258,8 +291,11 @@ class UnusedResult extends LinterRule {
       final ignoredResults = deepChildren.where(isResultProducing).toSet();
       if (ignoredResults.isNotEmpty) {
         final path = analyzer.findPath(
-            parser, (path) => ignoredResults.contains(path.target))!;
-        callback(LinterIssue(
+          parser,
+          (path) => ignoredResults.contains(path.target),
+        )!;
+        callback(
+          LinterIssue(
             this,
             parser,
             'The flatten parser discards the result of its children and '
@@ -268,7 +304,9 @@ class UnusedResult extends LinterRule {
             'produce a result which is then ignored when called from this '
             'context:\n'
             '${formatIterable(path.parsers, offset: 1)}\n'
-            'This might point to an inefficient grammar or a possible bug.'));
+            'This might point to an inefficient grammar or a possible bug.',
+          ),
+        );
       }
     }
   }

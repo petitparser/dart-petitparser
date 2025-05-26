@@ -31,8 +31,11 @@ import '../shared/types.dart';
 /// The optional [output] callback can be used to receive [ProfileFrame]
 /// objects with the full profiling information at the end of the parse.
 @useResult
-Parser<R> profile<R>(Parser<R> root,
-    {VoidCallback<ProfileFrame> output = print, Predicate<Parser>? predicate}) {
+Parser<R> profile<R>(
+  Parser<R> root, {
+  VoidCallback<ProfileFrame> output = print,
+  Predicate<Parser>? predicate,
+}) {
   final frames = <ProfileFrame>[];
   return transformParser(root, <R>(parser) {
     if (predicate == null || predicate(parser)) {

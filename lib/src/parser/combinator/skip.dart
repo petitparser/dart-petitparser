@@ -15,9 +15,11 @@ extension SkipParserExtension<R> on Parser<R> {
   /// For example, the parser `digit().skip(char('['), char(']'))`
   /// returns `'3'` for the input `'[3]'`.
   @useResult
-  Parser<R> skip({Parser<void>? before, Parser<void>? after}) =>
-      SkipParser<R>(this,
-          before: before ?? epsilon(), after: after ?? epsilon());
+  Parser<R> skip({Parser<void>? before, Parser<void>? after}) => SkipParser<R>(
+    this,
+    before: before ?? epsilon(),
+    after: after ?? epsilon(),
+  );
 }
 
 /// A parser that silently consumes input of another parser before and after

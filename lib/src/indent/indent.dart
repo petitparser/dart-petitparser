@@ -13,11 +13,9 @@ import '../parser/repeater/character.dart';
 /// Based on https://stackoverflow.com/a/56926044/82303.
 @experimental
 class Indent {
-  Indent({
-    Parser<String>? parser,
-    String? message,
-  })  : parser = parser ?? pattern(' \t'),
-        message = message ?? 'indented expected';
+  Indent({Parser<String>? parser, String? message})
+    : parser = parser ?? pattern(' \t'),
+      message = message ?? 'indented expected';
 
   /// The parser used read a single indentation step.
   final Parser<String> parser;
@@ -39,13 +37,15 @@ class Indent {
       .plusString(message: message)
       .where((value) => value.length > current.length)
       .map((value) {
-    stack.add(current);
-    return current = value;
-  }, hasSideEffects: true).and();
+        stack.add(current);
+        return current = value;
+      }, hasSideEffects: true)
+      .and();
 
   /// A parser that consumes and returns the current indent.
-  late Parser<String> same =
-      parser.starString(message: message).where((value) => value == current);
+  late Parser<String> same = parser
+      .starString(message: message)
+      .where((value) => value == current);
 
   /// A parser that decreases the current indentation and returns it, but does
   /// not consume anything.

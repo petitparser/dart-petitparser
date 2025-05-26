@@ -8,7 +8,7 @@ import 'range.dart';
 
 class RangesCharPredicate extends CharacterPredicate {
   RangesCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
-      : ranges = Uint32List(size(ranges)) {
+    : ranges = Uint32List(size(ranges)) {
     var i = 0;
     for (final range in ranges) {
       this.ranges[i++] = range.start;

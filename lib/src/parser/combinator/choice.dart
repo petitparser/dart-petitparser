@@ -32,13 +32,13 @@ extension ChoiceParserExtension on Parser {
       switch (this) {
         ChoiceParser(
           children: final children,
-          failureJoiner: final thisFailureJoiner
+          failureJoiner: final thisFailureJoiner,
         ) =>
           [
             ...children,
-            other
+            other,
           ].toChoiceParser(failureJoiner: failureJoiner ?? thisFailureJoiner),
-        _ => [this, other].toChoiceParser(failureJoiner: failureJoiner)
+        _ => [this, other].toChoiceParser(failureJoiner: failureJoiner),
       };
 
   /// Convenience operator returning a parser that accepts the receiver or
@@ -56,8 +56,8 @@ extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {
 /// A parser that uses the first parser that succeeds.
 class ChoiceParser<R> extends ListParser<R, R> {
   ChoiceParser(super.children, {FailureJoiner? failureJoiner})
-      : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
-        failureJoiner = failureJoiner ?? selectLast;
+    : assert(children.isNotEmpty, 'Choice parser cannot be empty'),
+      failureJoiner = failureJoiner ?? selectLast;
 
   /// Strategy to join multiple parse errors.
   final FailureJoiner failureJoiner;

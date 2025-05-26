@@ -24,50 +24,49 @@ final isAssertionError = hasAssertionsEnabled()
 
 /// Returns a [Matcher] that asserts two parsers are structurally equivalent.
 Matcher isParserDeepEqual(Parser expected) => predicate(
-    (actual) =>
-        actual is Parser &&
-        actual.isEqualTo(expected) &&
-        expected.isEqualTo(actual),
-    'deep equivalent');
+  (actual) =>
+      actual is Parser &&
+      actual.isEqualTo(expected) &&
+      expected.isEqualTo(actual),
+  'deep equivalent',
+);
 
 /// Returns a [Matcher] that asserts two parsers are equivalent ignoring
 /// children.
 Matcher isParserShallowEqual(Parser expected) => predicate(
-    (actual) =>
-        actual is Parser &&
-        actual.isEqualTo(expected, {actual}) &&
-        expected.isEqualTo(actual, {expected}),
-    'shallow equivalent');
+  (actual) =>
+      actual is Parser &&
+      actual.isEqualTo(expected, {actual}) &&
+      expected.isEqualTo(actual, {expected}),
+  'shallow equivalent',
+);
 
 /// Returns a [Matcher] that asserts a [CharacterParser].
 @optionalTypeArgs
 Matcher isCharacterParser<P extends CharacterParser>({
   dynamic predicate = anything,
   dynamic message = anything,
-}) =>
-    isA<P>()
-        .having(
-            (parser) => parser.predicate,
-            'predicate',
-            predicate is CharacterPredicate
-                ? isCharacterPredicate(predicate)
-                : predicate)
-        .having((parser) => parser.message, 'message', message);
+}) => isA<P>()
+    .having(
+      (parser) => parser.predicate,
+      'predicate',
+      predicate is CharacterPredicate
+          ? isCharacterPredicate(predicate)
+          : predicate,
+    )
+    .having((parser) => parser.message, 'message', message);
 
 /// Returns a [Matcher] that asserts a [CharacterPredicate].
 Matcher isCharacterPredicate(CharacterPredicate expected) => predicate(
-    (actual) =>
-        actual is CharacterPredicate &&
-        actual.isEqualTo(expected) &&
-        expected.isEqualTo(actual),
-    'equal predicate');
+  (actual) =>
+      actual is CharacterPredicate &&
+      actual.isEqualTo(expected) &&
+      expected.isEqualTo(actual),
+  'equal predicate',
+);
 
 /// Returns a [Matcher] that asserts on the `toString` output.
-Matcher isToString({
-  String? name,
-  String? generic,
-  Iterable<String>? rest,
-}) =>
+Matcher isToString({String? name, String? generic, Iterable<String>? rest}) =>
     allOf(
       isNotEmpty,
       isNot(startsWith('Instance of')),
@@ -82,10 +81,9 @@ Matcher isToString({
 TypeMatcher<Context> isContext({
   dynamic buffer = anything,
   dynamic position = anything,
-}) =>
-    isA<Context>()
-        .having((context) => context.buffer, 'buffer', buffer)
-        .having((context) => context.position, 'position', position);
+}) => isA<Context>()
+    .having((context) => context.buffer, 'buffer', buffer)
+    .having((context) => context.position, 'position', position);
 
 /// Returns a [Matcher] that asserts the context under test is a [Success].
 /// Optionally also asserts [position] and [value].
@@ -94,11 +92,10 @@ Matcher isSuccess<R>({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic value = anything,
-}) =>
-    isA<Success<R>>()
-        .having((success) => success.buffer, 'buffer', buffer)
-        .having((success) => success.value, 'value', value)
-        .having((success) => success.position, 'position', position);
+}) => isA<Success<R>>()
+    .having((success) => success.buffer, 'buffer', buffer)
+    .having((success) => success.value, 'value', value)
+    .having((success) => success.position, 'position', position);
 
 /// Returns a [Matcher] that asserts the context under test is a [Failure].
 /// Optionally also asserts [position] and [message].
@@ -106,11 +103,10 @@ Matcher isFailure({
   dynamic buffer = anything,
   dynamic position = anything,
   dynamic message = anything,
-}) =>
-    isA<Failure>()
-        .having((failure) => failure.buffer, 'buffer', buffer)
-        .having((failure) => failure.position, 'position', position)
-        .having((failure) => failure.message, 'message', message);
+}) => isA<Failure>()
+    .having((failure) => failure.buffer, 'buffer', buffer)
+    .having((failure) => failure.position, 'position', position)
+    .having((failure) => failure.message, 'message', message);
 
 /// Returns a [Matcher] that asserts the parser under test yields a successful
 /// parse [result] for the given [input]. If no [position] is provided, assert
@@ -120,16 +116,17 @@ Matcher isParseSuccess<R>(
   String input, {
   dynamic result = anything,
   dynamic position,
-}) =>
-    isA<Parser<R>>()
-        .having(
-            (parser) => parser.parse(input),
-            'parse',
-            isSuccess<R>(
-                buffer: input,
-                value: result,
-                position: position ?? input.length))
-        .having((parser) => parser.accept(input), 'accept', isTrue);
+}) => isA<Parser<R>>()
+    .having(
+      (parser) => parser.parse(input),
+      'parse',
+      isSuccess<R>(
+        buffer: input,
+        value: result,
+        position: position ?? input.length,
+      ),
+    )
+    .having((parser) => parser.accept(input), 'accept', isTrue);
 
 /// Returns a [Matcher] that asserts the parser under test yields a parse
 /// failure for the given [input]. If no [position] is provided, assert that
@@ -140,11 +137,13 @@ Matcher isParseFailure(
   String input, {
   dynamic position = 0,
   dynamic message = anything,
-}) =>
-    isA<Parser>()
-        .having((parser) => parser.parse(input), 'parse',
-            isFailure(buffer: input, position: position, message: message))
-        .having((parser) => parser.accept(input), 'accept', isFalse);
+}) => isA<Parser>()
+    .having(
+      (parser) => parser.parse(input),
+      'parse',
+      isFailure(buffer: input, position: position, message: message),
+    )
+    .having((parser) => parser.accept(input), 'accept', isFalse);
 
 /// Returns a [Matcher] that asserts on a [Match], the result of a [Pattern].
 Matcher isPatternMatch(
@@ -152,27 +151,26 @@ Matcher isPatternMatch(
   dynamic start = anything,
   dynamic end = anything,
   dynamic groups = anything,
-}) =>
-    isA<Match>()
-        .having((match) => match.group(0), 'match', match)
-        .having((match) => match.start, 'start', start)
-        .having((match) => match.end, 'end', end)
-        .having(
-            (match) => List.generate(
-                match.groupCount, (group) => match.group(1 + group)),
-            'groups',
-            groups);
+}) => isA<Match>()
+    .having((match) => match.group(0), 'match', match)
+    .having((match) => match.start, 'start', start)
+    .having((match) => match.end, 'end', end)
+    .having(
+      (match) =>
+          List.generate(match.groupCount, (group) => match.group(1 + group)),
+      'groups',
+      groups,
+    );
 
 /// Returns a [Matcher] that asserts a [LinterRule].
 Matcher isLinterRule({
   dynamic type = anything,
   dynamic title = anything,
   dynamic toString = anything,
-}) =>
-    isA<LinterRule>()
-        .having((rule) => rule.type, 'type', type)
-        .having((rule) => rule.title, 'title', title)
-        .having((rule) => rule.toString(), 'toString()', toString);
+}) => isA<LinterRule>()
+    .having((rule) => rule.type, 'type', type)
+    .having((rule) => rule.title, 'title', title)
+    .having((rule) => rule.toString(), 'toString()', toString);
 
 /// Returns a [Matcher] that asserts a [LinterIssue].
 Matcher isLinterIssue({
@@ -182,24 +180,22 @@ Matcher isLinterIssue({
   dynamic parser = anything,
   dynamic description = anything,
   dynamic toString = anything,
-}) =>
-    isA<LinterIssue>()
-        .having((issue) => issue.rule, 'rule', rule)
-        .having((issue) => issue.type, 'type', type)
-        .having((issue) => issue.title, 'title', title)
-        .having((issue) => issue.parser, 'parser', parser)
-        .having((issue) => issue.description, 'description', description)
-        .having((issue) => issue.toString(), 'toString()', toString);
+}) => isA<LinterIssue>()
+    .having((issue) => issue.rule, 'rule', rule)
+    .having((issue) => issue.type, 'type', type)
+    .having((issue) => issue.title, 'title', title)
+    .having((issue) => issue.parser, 'parser', parser)
+    .having((issue) => issue.description, 'description', description)
+    .having((issue) => issue.toString(), 'toString()', toString);
 
 /// Returns a [Matcher] that asserts a [SeparatedList].
 @optionalTypeArgs
 Matcher isSeparatedList<R, S>({
   dynamic elements = anything,
   dynamic separators = anything,
-}) =>
-    isA<SeparatedList<R, S>>()
-        .having((list) => list.elements, 'elements', elements)
-        .having((list) => list.separators, 'separators', separators);
+}) => isA<SeparatedList<R, S>>()
+    .having((list) => list.elements, 'elements', elements)
+    .having((list) => list.separators, 'separators', separators);
 
 /// Returns a [Matcher] that asserts a [ProfileFrame].
 Matcher isProfileFrame({
@@ -207,12 +203,11 @@ Matcher isProfileFrame({
   dynamic count = anything,
   dynamic elapsed = anything,
   dynamic toString = anything,
-}) =>
-    isA<ProfileFrame>()
-        .having((frame) => frame.parser, 'parser', parser)
-        .having((frame) => frame.count, 'count', count)
-        .having((frame) => frame.elapsed, 'elapsed', elapsed)
-        .having((frame) => frame.toString(), 'toString', toString);
+}) => isA<ProfileFrame>()
+    .having((frame) => frame.parser, 'parser', parser)
+    .having((frame) => frame.count, 'count', count)
+    .having((frame) => frame.elapsed, 'elapsed', elapsed)
+    .having((frame) => frame.toString(), 'toString', toString);
 
 /// Returns a [Matcher] that asserts a [ProgressFrame].
 Matcher isProgressFrame({
@@ -220,12 +215,11 @@ Matcher isProgressFrame({
   dynamic context = anything,
   dynamic position = anything,
   dynamic toString = anything,
-}) =>
-    isA<ProgressFrame>()
-        .having((frame) => frame.parser, 'parser', parser)
-        .having((frame) => frame.context, 'context', context)
-        .having((frame) => frame.position, 'position', position)
-        .having((frame) => frame.toString(), 'toString', toString);
+}) => isA<ProgressFrame>()
+    .having((frame) => frame.parser, 'parser', parser)
+    .having((frame) => frame.context, 'context', context)
+    .having((frame) => frame.position, 'position', position)
+    .having((frame) => frame.toString(), 'toString', toString);
 
 /// Returns a [Matcher] that asserts a [TraceEvent].
 Matcher isTraceEvent({
@@ -235,11 +229,10 @@ Matcher isTraceEvent({
   dynamic result = anything,
   dynamic level = anything,
   dynamic toString = anything,
-}) =>
-    isA<TraceEvent>()
-        .having((frame) => frame.parent, 'parent', parent)
-        .having((frame) => frame.parser, 'parser', parser)
-        .having((frame) => frame.context, 'context', context)
-        .having((frame) => frame.result, 'result', result)
-        .having((frame) => frame.level, 'level', level)
-        .having((frame) => frame.toString(), 'toString', toString);
+}) => isA<TraceEvent>()
+    .having((frame) => frame.parent, 'parent', parent)
+    .having((frame) => frame.parser, 'parser', parser)
+    .having((frame) => frame.context, 'context', context)
+    .having((frame) => frame.result, 'result', result)
+    .having((frame) => frame.level, 'level', level)
+    .having((frame) => frame.toString(), 'toString', toString);

@@ -18,24 +18,32 @@ import '../../utils/sequential.dart';
 /// for the input `'abcdef'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5, R6)> seq6<R1, R2, R3, R4, R5, R6>(
-        Parser<R1> parser1,
-        Parser<R2> parser2,
-        Parser<R3> parser3,
-        Parser<R4> parser4,
-        Parser<R5> parser5,
-        Parser<R6> parser6) =>
-    SequenceParser6<R1, R2, R3, R4, R5, R6>(
-        parser1, parser2, parser3, parser4, parser5, parser6);
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+  Parser<R6> parser6,
+) => SequenceParser6<R1, R2, R3, R4, R5, R6>(
+  parser1,
+  parser2,
+  parser3,
+  parser4,
+  parser5,
+  parser6,
+);
 
 /// Extensions on a [Record] with 6 positional [Parser]s.
-extension RecordOfParsersExtension6<R1, R2, R3, R4, R5, R6> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>,
-  Parser<R5>,
-  Parser<R6>
-) {
+extension RecordOfParsersExtension6<R1, R2, R3, R4, R5, R6>
+    on
+        (
+          Parser<R1>,
+          Parser<R2>,
+          Parser<R3>,
+          Parser<R4>,
+          Parser<R5>,
+          Parser<R6>,
+        ) {
   /// Converts a [Record] of 6 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 6 positional parse results.
   ///
@@ -51,9 +59,16 @@ extension RecordOfParsersExtension6<R1, R2, R3, R4, R5, R6> on (
 /// A parser that consumes a sequence of 6 parsers and returns a [Record] with
 /// 6 positional parse results.
 class SequenceParser6<R1, R2, R3, R4, R5, R6>
-    extends Parser<(R1, R2, R3, R4, R5, R6)> implements SequentialParser {
-  SequenceParser6(this.parser1, this.parser2, this.parser3, this.parser4,
-      this.parser5, this.parser6);
+    extends Parser<(R1, R2, R3, R4, R5, R6)>
+    implements SequentialParser {
+  SequenceParser6(
+    this.parser1,
+    this.parser2,
+    this.parser3,
+    this.parser4,
+    this.parser5,
+    this.parser6,
+  );
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -82,7 +97,7 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
       result3.value,
       result4.value,
       result5.value,
-      result6.value
+      result6.value,
     ));
   }
 
@@ -104,8 +119,14 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
   }
 
   @override
-  List<Parser> get children =>
-      [parser1, parser2, parser3, parser4, parser5, parser6];
+  List<Parser> get children => [
+    parser1,
+    parser2,
+    parser3,
+    parser4,
+    parser5,
+    parser6,
+  ];
 
   @override
   void replace(Parser source, Parser target) {
@@ -121,18 +142,18 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
   @override
   SequenceParser6<R1, R2, R3, R4, R5, R6> copy() =>
       SequenceParser6<R1, R2, R3, R4, R5, R6>(
-          parser1, parser2, parser3, parser4, parser5, parser6);
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+        parser6,
+      );
 }
 
 /// Extension on a [Record] with 6 positional values.
-extension RecordOfValuesExtension6<T1, T2, T3, T4, T5, T6> on (
-  T1,
-  T2,
-  T3,
-  T4,
-  T5,
-  T6
-) {
+extension RecordOfValuesExtension6<T1, T2, T3, T4, T5, T6>
+    on (T1, T2, T3, T4, T5, T6) {
   /// Converts this [Record] with 6 positional values to a new type [R] using
   /// the provided [callback] with 6 positional arguments.
   @preferInline
@@ -146,7 +167,8 @@ extension RecordParserExtension6<T1, T2, T3, T4, T5, T6>
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map6<R>(R Function(T1, T2, T3, T4, T5, T6) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map6<R>(
+    R Function(T1, T2, T3, T4, T5, T6) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

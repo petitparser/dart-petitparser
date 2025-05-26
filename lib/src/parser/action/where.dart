@@ -26,13 +26,15 @@ extension WhereParserExtension<R> on Parser<R> {
   /// parser.parse('ab');   // ==> Failure: characters do not match
   /// ```
   @useResult
-  Parser<R> where(Predicate<R> predicate,
-          {String? message, FailureFactory<R>? factory}) =>
-      WhereParser<R>(this, predicate, factory ?? defaultFactory_(message));
+  Parser<R> where(
+    Predicate<R> predicate, {
+    String? message,
+    FailureFactory<R>? factory,
+  }) => WhereParser<R>(this, predicate, factory ?? defaultFactory_(message));
 }
 
-typedef FailureFactory<R> = Result<R> Function(
-    Context context, Success<R> success);
+typedef FailureFactory<R> =
+    Result<R> Function(Context context, Success<R> success);
 
 class WhereParser<R> extends DelegateParser<R, R> {
   WhereParser(super.parser, this.predicate, this.factory);
@@ -59,5 +61,6 @@ class WhereParser<R> extends DelegateParser<R, R> {
       factory == other.factory;
 }
 
-FailureFactory<R> defaultFactory_<R>(String? message) => (context, success) =>
-    context.failure(message ?? 'unexpected "${success.value}"');
+FailureFactory<R> defaultFactory_<R>(String? message) =>
+    (context, success) =>
+        context.failure(message ?? 'unexpected "${success.value}"');

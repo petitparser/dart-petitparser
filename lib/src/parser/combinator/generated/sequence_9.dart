@@ -18,31 +18,42 @@ import '../../utils/sequential.dart';
 /// for the input `'abcdefghi'`.
 @useResult
 Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
-    seq9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
-            Parser<R1> parser1,
-            Parser<R2> parser2,
-            Parser<R3> parser3,
-            Parser<R4> parser4,
-            Parser<R5> parser5,
-            Parser<R6> parser6,
-            Parser<R7> parser7,
-            Parser<R8> parser8,
-            Parser<R9> parser9) =>
-        SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(parser1, parser2,
-            parser3, parser4, parser5, parser6, parser7, parser8, parser9);
+seq9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+  Parser<R1> parser1,
+  Parser<R2> parser2,
+  Parser<R3> parser3,
+  Parser<R4> parser4,
+  Parser<R5> parser5,
+  Parser<R6> parser6,
+  Parser<R7> parser7,
+  Parser<R8> parser8,
+  Parser<R9> parser9,
+) => SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+  parser1,
+  parser2,
+  parser3,
+  parser4,
+  parser5,
+  parser6,
+  parser7,
+  parser8,
+  parser9,
+);
 
 /// Extensions on a [Record] with 9 positional [Parser]s.
-extension RecordOfParsersExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
-  Parser<R1>,
-  Parser<R2>,
-  Parser<R3>,
-  Parser<R4>,
-  Parser<R5>,
-  Parser<R6>,
-  Parser<R7>,
-  Parser<R8>,
-  Parser<R9>
-) {
+extension RecordOfParsersExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
+    on
+        (
+          Parser<R1>,
+          Parser<R2>,
+          Parser<R3>,
+          Parser<R4>,
+          Parser<R5>,
+          Parser<R6>,
+          Parser<R7>,
+          Parser<R8>,
+          Parser<R9>,
+        ) {
   /// Converts a [Record] of 9 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 9 positional parse results.
   ///
@@ -53,7 +64,16 @@ extension RecordOfParsersExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
   @useResult
   Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)> toSequenceParser() =>
       SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
-          $1, $2, $3, $4, $5, $6, $7, $8, $9);
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+      );
 }
 
 /// A parser that consumes a sequence of 9 parsers and returns a [Record] with
@@ -61,8 +81,17 @@ extension RecordOfParsersExtension9<R1, R2, R3, R4, R5, R6, R7, R8, R9> on (
 class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
     extends Parser<(R1, R2, R3, R4, R5, R6, R7, R8, R9)>
     implements SequentialParser {
-  SequenceParser9(this.parser1, this.parser2, this.parser3, this.parser4,
-      this.parser5, this.parser6, this.parser7, this.parser8, this.parser9);
+  SequenceParser9(
+    this.parser1,
+    this.parser2,
+    this.parser3,
+    this.parser4,
+    this.parser5,
+    this.parser6,
+    this.parser7,
+    this.parser8,
+    this.parser9,
+  );
 
   Parser<R1> parser1;
   Parser<R2> parser2;
@@ -103,7 +132,7 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
       result6.value,
       result7.value,
       result8.value,
-      result9.value
+      result9.value,
     ));
   }
 
@@ -132,16 +161,16 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
 
   @override
   List<Parser> get children => [
-        parser1,
-        parser2,
-        parser3,
-        parser4,
-        parser5,
-        parser6,
-        parser7,
-        parser8,
-        parser9
-      ];
+    parser1,
+    parser2,
+    parser3,
+    parser4,
+    parser5,
+    parser6,
+    parser7,
+    parser8,
+    parser9,
+  ];
 
   @override
   void replace(Parser source, Parser target) {
@@ -159,22 +188,22 @@ class SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>
 
   @override
   SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9> copy() =>
-      SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(parser1, parser2,
-          parser3, parser4, parser5, parser6, parser7, parser8, parser9);
+      SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+        parser6,
+        parser7,
+        parser8,
+        parser9,
+      );
 }
 
 /// Extension on a [Record] with 9 positional values.
-extension RecordOfValuesExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9> on (
-  T1,
-  T2,
-  T3,
-  T4,
-  T5,
-  T6,
-  T7,
-  T8,
-  T9
-) {
+extension RecordOfValuesExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
+    on (T1, T2, T3, T4, T5, T6, T7, T8, T9) {
   /// Converts this [Record] with 9 positional values to a new type [R] using
   /// the provided [callback] with 9 positional arguments.
   @preferInline
@@ -188,7 +217,8 @@ extension RecordParserExtension9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
   /// Maps a parsed [Record] to [R] using the provided [callback], see
   /// [MapParserExtension.map] for details.
   @useResult
-  Parser<R> map9<R>(R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback,
-          {bool hasSideEffects = false}) =>
-      map((record) => record.map(callback), hasSideEffects: hasSideEffects);
+  Parser<R> map9<R>(
+    R Function(T1, T2, T3, T4, T5, T6, T7, T8, T9) callback, {
+    bool hasSideEffects = false,
+  }) => map((record) => record.map(callback), hasSideEffects: hasSideEffects);
 }

@@ -5,23 +5,32 @@ import '../predicate/lookup.dart';
 import '../predicate/range.dart';
 
 /// Creates an optimized character from a string.
-CharacterPredicate optimizedString(String string,
-    {required bool unicode, bool ignoreCase = false}) {
+CharacterPredicate optimizedString(
+  String string, {
+  required bool unicode,
+  bool ignoreCase = false,
+}) {
   if (ignoreCase) string = '${string.toLowerCase()}${string.toUpperCase()}';
   return optimizedRanges(
-      (unicode ? string.runes : string.codeUnits)
-          .map((value) => RangeCharPredicate(value, value)),
-      unicode: unicode);
+    (unicode ? string.runes : string.codeUnits).map(
+      (value) => RangeCharPredicate(value, value),
+    ),
+    unicode: unicode,
+  );
 }
 
 /// Creates an optimized predicate from a list of range predicates.
-CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
-    {required bool unicode}) {
+CharacterPredicate optimizedRanges(
+  Iterable<RangeCharPredicate> ranges, {
+  required bool unicode,
+}) {
   // 1. Sort the ranges:
   final sortedRanges = List.of(ranges, growable: false);
-  sortedRanges.sort((first, second) => first.start != second.start
-      ? first.start - second.start
-      : first.stop - second.stop);
+  sortedRanges.sort(
+    (first, second) => first.start != second.start
+        ? first.start - second.start
+        : first.stop - second.stop,
+  );
 
   // 2. Merge adjacent or overlapping ranges:
   final mergedRanges = <RangeCharPredicate>[];
@@ -31,8 +40,10 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
     } else {
       final lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
-        final characterRange =
-            RangeCharPredicate(lastRange.start, thisRange.stop);
+        final characterRange = RangeCharPredicate(
+          lastRange.start,
+          thisRange.stop,
+        );
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
         mergedRanges.add(thisRange);
@@ -42,7 +53,9 @@ CharacterPredicate optimizedRanges(Iterable<RangeCharPredicate> ranges,
 
   // 3. Build the best resulting predicate:
   final matchingCount = mergedRanges.fold<int>(
-      0, (current, range) => current + (range.stop - range.start + 1));
+    0,
+    (current, range) => current + (range.stop - range.start + 1),
+  );
   if (matchingCount == 0) {
     return ConstantCharPredicate.none;
   } else if ((unicode && matchingCount - 1 == 0x10ffff) ||

@@ -68,7 +68,10 @@ class Token<R> {
     while (iterator.moveNext()) {
       if (buffer != iterator.current.buffer) {
         throw ArgumentError.value(
-            token, 'token', 'Token do not use same buffer');
+          token,
+          'token',
+          'Token do not use same buffer',
+        );
       }
       value.add(iterator.current.value);
       start = math.min(start, iterator.current.start);
