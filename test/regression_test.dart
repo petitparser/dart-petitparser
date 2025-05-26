@@ -205,11 +205,7 @@ void main() {
               (value) => value,
         ),
       );
-    builder.group().wrapper(
-      char('(').trim(),
-      char(')').trim(),
-      (_, a, __) => a,
-    );
+    builder.group().wrapper(char('(').trim(), char(')').trim(), (_, a, _) => a);
     // negation is a prefix operator
     builder.group().prefix(
       char('-').trim(),
@@ -580,7 +576,7 @@ void main() {
           ].toChoiceParser().neg().plus(),
         ).flatten(),
         char('*'),
-      ).map3((_, value, __) => value);
+      ).map3((_, value, _) => value);
       expect(parser.parse('*valid*').value, 'valid');
       expect(parser.accept('* invalid*'), isFalse);
       expect(parser.accept('*invalid *'), isFalse);
@@ -590,7 +586,7 @@ void main() {
         char('*'),
         char('*').neg().plus().flatten(),
         char('*'),
-      ).map3((_, value, __) => value).where((value) => value.trim() == value);
+      ).map3((_, value, _) => value).where((value) => value.trim() == value);
       expect(parser.parse('*valid*').value, 'valid');
       expect(parser.accept('* invalid*'), isFalse);
       expect(parser.accept('*invalid *'), isFalse);

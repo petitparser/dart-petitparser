@@ -898,7 +898,7 @@ void main() {
         builder
           ..primitive(noneOf('()'))
           ..primitive(epsilonWith('*'));
-        builder.group().wrapper(char('('), char(')'), (_, v, __) => '[$v]');
+        builder.group().wrapper(char('('), char(')'), (_, v, _) => '[$v]');
         final parser = builder.build().end();
         expect(parser, isParseSuccess('', result: '*'));
         expect(parser, isParseSuccess('a', result: 'a'));
@@ -935,7 +935,7 @@ void main() {
         final builder = ExpressionBuilder<String>();
         builder.primitive(digit());
         builder.group()
-          ..wrapper(char('('), char(')'), (_, v, __) => '($v)')
+          ..wrapper(char('('), char(')'), (_, v, _) => '($v)')
           ..optional('∅');
         final parser = builder.build().end();
         expect(parser, isParseSuccess('', result: '∅'));
@@ -965,7 +965,7 @@ void main() {
       final builder = ExpressionBuilder<String>();
       builder.primitive(noneOf(')'));
       builder.group()
-        ..wrapper(char('('), char(')'), (_, value, __) => '($value)')
+        ..wrapper(char('('), char(')'), (_, value, _) => '($value)')
         ..prefix(char('!'), (_, value) => '!($value)')
         ..postfix(char('?'), (value, _) => '($value)?')
         ..left(char('|'), (left, _, right) => '($left|$right)')
