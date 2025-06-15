@@ -4,6 +4,8 @@
 
 - Support for unicode character parsing, enabled with the named argument `unicode: true` in all relevant character parsers.
 - Replaced all error message specification on parser constructors from an optional argument to a named one (breaking-change).
+- Cleanup, simplifications, and optimizations to the codebase.
+- Removal of old deprecated code.
 
 ## 6.1.0
 
