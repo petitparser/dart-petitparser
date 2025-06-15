@@ -127,7 +127,7 @@ Terminal parsers are the simplest. We've already seen a few of those:
 
 By default all parsers use an automatically generated descriptive error message, match case-sensitive, and work on 16-bit UTF-16 code units. To change this default behavior use the named arguments (where appropriate):
 
-- `message: 'expected a special character'` to use a custom error message,
+- `message: 'expected a special character'` to define a custom error message,
 - `ignoreCase: true` to accept both lower- and uppercase variations, and
 - `unicode: true` to decode surrogate pairs and read Unicode code-points.
 
@@ -260,9 +260,11 @@ parser.parse('1 + 2 * 3');              // ['1', '+', ['2', '+', '3']]
 
 Again, since this is plain Dart, common code refactorings such as renaming a production updates all references correctly. Also code navigation and code completion works as expected.
 
-> [!TIP] > [`ref(Function)`](https://pub.dev/documentation/petitparser/latest/petitparser/ref.html) is not limited to subclasses of [`GrammarDefinition`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html), it can be used from anywhere in Dart. To build the resulting parser use [`resolve(Parser)`](https://pub.dev/documentation/petitparser/latest/petitparser/resolve.html) on the root node of the grammar.
+> [!TIP]
+> The use of [`ref(Function)`](https://pub.dev/documentation/petitparser/latest/petitparser/ref.html) is not limited to subclasses of [`GrammarDefinition`](https://pub.dev/documentation/petitparser/latest/petitparser/GrammarDefinition-class.html), it can be called from anywhere in Dart. To build the resulting parser use [`resolve(Parser)`](https://pub.dev/documentation/petitparser/latest/petitparser/resolve.html) on the root node of the grammar.
 
-> [!TIP] > [`ref`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html) takes positional arguments to parametrize the created parser, if the referenced function takes arguments. While `ref` supports an arbitrary amount of arguments, it can neither infer nor check return or argument types at compile time. The variations [`ref0`](https://pub.dev/documentation/petitparser/latest/petitparser/ref0.html), [`ref1`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html), [`ref2`](https://pub.dev/documentation/petitparser/latest/petitparser/ref2.html), ... solve this problem, but require you to specify the number of arguments.
+> [!TIP]
+> The function [`ref`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html) takes positional arguments to parametrize the created parser, if the referenced function takes arguments. While `ref` supports an arbitrary amount of arguments, it can neither infer nor check return or argument types at compile time. The variations [`ref0`](https://pub.dev/documentation/petitparser/latest/petitparser/ref0.html), [`ref1`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html), [`ref2`](https://pub.dev/documentation/petitparser/latest/petitparser/ref2.html), ... solve this problem, but require you to specify the number of arguments.
 
 To attach custom production actions you might want to further subclass your grammar definition and override overriding the necessary productions defined in the superclass:
 

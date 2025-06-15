@@ -2,10 +2,15 @@
 
 ## 7.0.0
 
-- Support for unicode character parsing, enabled with the named argument `unicode: true` in all relevant character parsers.
-- Replaced all error message specification on parser constructors from an optional argument to a named one (breaking-change).
+- Dart 3.8 requirement.
+- Support for unicode character parsing in all relevant character parsers.
+- Most character parser constructors now uniformly support the following named arguments (breaking-change):
+  - `message:` to customize the default error message;
+  - `ignoreCase:` to accept lower- and upper-case variations; and
+  - `unicode:` to decode surrogate pairs and instead of UTF-16 only.
+- For consistency and better flexibility in the future, replaced optional arguments to a named ones in various other constructors: `Parser.flatten({String message})`, `Parser.not({String message})`, `Parser.neg({String message})`, `Parser.end({String message})`, `Parser.starString([String? message])`, `Parser.plusString({String? message})`, `Parser.timesString(int count, {String? message})`, `Parser.repeatString(int min, int max, {String? message})`, `failure({String message})`, `newline({String message})`, `undefined({String message})` (breaking-change).
 - Cleanup, simplifications, and optimizations to the codebase.
-- Removal of old deprecated code.
+- Removal of long deprecated code.
 
 ## 6.1.0
 
