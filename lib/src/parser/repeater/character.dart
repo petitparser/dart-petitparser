@@ -103,21 +103,15 @@ class RepeatingCharacterParser extends Parser<String> {
     final end = buffer.length;
     var position = start;
     var count = 0;
-    while (count < min) {
-      if (position >= end || !predicate.test(buffer.codeUnitAt(position))) {
-        return context.failure(message, position);
-      }
+    while (count < max &&
+        position < end &&
+        predicate.test(buffer.codeUnitAt(position))) {
       position++;
       count++;
     }
-    while (position < end && count < max) {
-      if (!predicate.test(buffer.codeUnitAt(position))) {
-        break;
-      }
-      position++;
-      count++;
-    }
-    return context.success(buffer.substring(start, position), position);
+    return count >= min
+        ? context.success(buffer.substring(start, position), position)
+        : context.failure(message, position);
   }
 
   @override
@@ -125,21 +119,13 @@ class RepeatingCharacterParser extends Parser<String> {
   int fastParseOn(String buffer, int position) {
     final end = buffer.length;
     var count = 0;
-    while (count < min) {
-      if (position >= end || !predicate.test(buffer.codeUnitAt(position))) {
-        return -1;
-      }
+    while (count < max &&
+        position < end &&
+        predicate.test(buffer.codeUnitAt(position))) {
       position++;
       count++;
     }
-    while (position < end && count < max) {
-      if (!predicate.test(buffer.codeUnitAt(position))) {
-        break;
-      }
-      position++;
-      count++;
-    }
-    return position;
+    return count >= min ? position : -1;
   }
 
   @override
