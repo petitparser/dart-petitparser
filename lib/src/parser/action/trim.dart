@@ -59,6 +59,7 @@ class TrimmingParser<R> extends DelegateParser<R, R>
   int _trim(Parser parser, String buffer, int position) {
     for (;;) {
       final result = parser.fastParseOn(buffer, position);
+      assert(result != position, '$parser must always consume');
       if (result < 0) {
         break;
       }
