@@ -786,4 +786,40 @@ void main() {
       );
     });
   });
+  group('github.com/petitparser/dart-petitparser/issues/191', () {
+    test('simple', () {
+      final zero = '0'.toParser();
+      final one = '1'.toParser();
+      final parser = [seq2(zero, one), one].toChoiceParser().star().flatten();
+      expect(parser, isParseSuccess('1', result: '1'));
+      expect(parser, isParseSuccess('01', result: '01'));
+      expect(parser, isParseSuccess('11', result: '11'));
+      expect(parser, isParseSuccess('011', result: '011'));
+      expect(parser, isParseSuccess('0101', result: '0101'));
+    });
+    test('general', () {
+      final zero = '0'.toParser();
+      final one = '1'.toParser();
+      final parser = [zero, one]
+          .toChoiceParser()
+          .callCC<String>((continuation, context) {
+            // Parse the original choice parser (zero or one).
+            final result = continuation(context);
+            // If this is a success and the result is '0', build a new parser
+            // and continue with that:
+            if (result case Success(value: '0')) {
+              return '1'.toParser().parseOn(result);
+            }
+            // Otherwise just return the result of the original choice parser.
+            return result;
+          })
+          .star()
+          .flatten();
+      expect(parser, isParseSuccess('1', result: '1'));
+      expect(parser, isParseSuccess('01', result: '01'));
+      expect(parser, isParseSuccess('11', result: '11'));
+      expect(parser, isParseSuccess('011', result: '011'));
+      expect(parser, isParseSuccess('0101', result: '0101'));
+    });
+  });
 }
