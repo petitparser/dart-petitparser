@@ -805,12 +805,12 @@ void main() {
           .callCC<String>((continuation, context) {
             // Parse the original choice parser (zero or one).
             final result = continuation(context);
-            // If this is a success and the result is '0', build a new parser
-            // and continue with that:
+            // If this is a success and the result is '0', create a new parser
+            // and follow up with it after the original choice parser.
             if (result case Success(value: '0')) {
               return '1'.toParser().parseOn(result);
             }
-            // Otherwise just return the result of the original choice parser.
+            // Otherwise return the result of the original choice parser.
             return result;
           })
           .star()
