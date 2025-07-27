@@ -13,7 +13,7 @@ final testFile = File('test/generated/sequence_test.dart');
 
 /// Pretty prints and cleans up a dart file.
 Future<void> format(File file) async =>
-    Process.run('dart', ['format', '--fix', file.absolute.path]);
+    Process.run('dart', ['format', file.absolute.path]);
 
 /// Generate the variable names.
 List<String> generateValues(String prefix, int i) =>
