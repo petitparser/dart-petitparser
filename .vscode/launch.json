@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run all Tests",
+      "type": "dart",
+      "request": "launch",
+      "program": "./test/all_test.dart"
+    },
+    {
+      "name": "Generate Sequence",
+      "type": "dart",
+      "request": "launch",
+      "program": "bin/generate_sequence.dart"
+    },
+  ]
+}
