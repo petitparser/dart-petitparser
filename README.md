@@ -61,6 +61,9 @@ final id3 = seq2(letter(), [letter(), digit()].toChoiceParser().star());  // (3)
 > [!NOTE]
 > The inferred type of the 3 parsers is not equivalent: Due to [github.com/dart-lang/language/issues/1557](https://github.com/dart-lang/language/issues/1557) the inferred type of sequence and choice parsers created with operators (0) or chained function calls (1) is `Parser<dynamic>`. The parser built from lists (2) provides the most generic type, `List<Object>` in this example. The last variation (3) is the only one that doesn't lose type information and produces a [record](https://dart.dev/language/records) (tuple) with two typed elements `String` and `List<String>`.
 
+> [!IMPORTANT]
+> Parsers read input greedily: if a parser fails, it does not retry. Only `ChoiceParser` provides backtracking by trying its children in order until one succeeds; if none do, the whole choice fails.
+
 ### Parsing Some Input
 
 To actually consume an input string we use the method `Parser.parse`:
@@ -409,7 +412,7 @@ trace(parser).parse('f1');
 
 The above snippet produces the following output:
 
-```
+```text
 SequenceParser<dynamic>
   SingleCharacterParser[letter expected]
   Success<String>[1:2]: f
