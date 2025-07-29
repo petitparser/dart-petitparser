@@ -71,6 +71,28 @@ class ProtobufGrammar extends GrammarDefinition {
       (letter() & word().star()).flatten(message: 'identifier expected');
 }
 
+class AssignmentGrammar extends GrammarDefinition {
+  @override
+  Parser start() => (ref0(assignment) | ref0(expression)).end();
+  Parser assignment() =>
+      ref0(variable) & ref0(indexed).star() & char('=') & ref0(expression);
+  Parser expression() {
+    final expr = ExpressionBuilder<dynamic>();
+    expr.primitive(ref0(number));
+    expr.primitive(ref0(variable));
+    expr.primitive(ref0(literalArray));
+    expr.group().postfix(ref0(indexed), (a, b) => (a, b));
+    expr.group().left(char('+'), (a, op, b) => (a, op, b));
+    return expr.build();
+  }
+
+  Parser number() => digit();
+  Parser variable() => letter();
+  Parser literalArray() =>
+      char('[') & ref0(expression).starSeparated(char(',')) & char(']');
+  Parser indexed() => char('[') & ref0(expression) & char(']');
+}
+
 void main() {
   test('flatten().trim()', () {
     final parser = word().plus().flatten().trim();
@@ -820,6 +842,39 @@ void main() {
       expect(parser, isParseSuccess('11', result: '11'));
       expect(parser, isParseSuccess('011', result: '011'));
       expect(parser, isParseSuccess('0101', result: '0101'));
+    });
+  });
+  group('github.com/petitparser/dart-petitparser/issues/193', () {
+    final parser = AssignmentGrammar().build();
+    test('number', () {
+      expect(parser, isParseSuccess('1'));
+    });
+    test('variable', () {
+      expect(parser, isParseSuccess('a'));
+      expect(parser, isParseSuccess('a[1]'));
+      expect(parser, isParseSuccess('a[1+2]'));
+      expect(parser, isParseSuccess('a[1][2]'));
+    });
+    test('array', () {
+      expect(parser, isParseSuccess('[]'));
+      expect(parser, isParseSuccess('[1]'));
+      expect(parser, isParseSuccess('[1,2]'));
+    });
+    test('addition', () {
+      expect(parser, isParseSuccess('1+2'));
+      expect(parser, isParseSuccess('1+2+3'));
+    });
+    test('assignment', () {
+      expect(parser, isParseSuccess('a=1'));
+      expect(parser, isParseSuccess('a=2+3'));
+      expect(parser, isParseSuccess('a[1]=2'));
+      expect(parser, isParseSuccess('a[1][2+3]=4'));
+      expect(parser, isParseSuccess('a[1]=[2+3][4]'));
+    });
+    test('examples', () {
+      expect(parser, isParseSuccess('a[0]'));
+      expect(parser, isParseSuccess('a[0][0]'));
+      expect(parser, isParseSuccess('[1,2,3][0]+[[1,2],1][0][0]'));
     });
   });
 }
