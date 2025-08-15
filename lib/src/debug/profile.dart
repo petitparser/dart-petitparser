@@ -37,7 +37,7 @@ Parser<R> profile<R>(
   Predicate<Parser>? predicate,
 }) {
   final frames = <ProfileFrame>[];
-  return transformParser(root, <R>(parser) {
+  return transformParser(root, <P>(parser) {
     if (predicate == null || predicate(parser)) {
       final frame = _ProfileFrame(parser);
       frames.add(frame);

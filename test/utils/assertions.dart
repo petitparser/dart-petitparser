@@ -18,7 +18,7 @@ void expectParserInvariants<T>(Parser<T> parser) {
     expect(copy, isParserDeepEqual(parser));
   });
   test('transform', () {
-    final copy = transformParser(parser, <T>(parser) => parser);
+    final copy = transformParser(parser, <P>(parser) => parser);
     expect(copy, isNot(same(parser)));
     expect(copy.toString(), parser.toString());
     expect(copy.runtimeType, parser.runtimeType);

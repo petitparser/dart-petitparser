@@ -45,7 +45,7 @@ Parser<R> trace<R>(
   Predicate<Parser>? predicate,
 }) {
   TraceEvent? parent;
-  return transformParser(root, <R>(parser) {
+  return transformParser(root, <P>(parser) {
     if (predicate == null || predicate(parser)) {
       return parser.callCC((continuation, context) {
         final currentParent = parent;

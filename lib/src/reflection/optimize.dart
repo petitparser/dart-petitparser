@@ -37,9 +37,9 @@ Parser<R> optimize<R>(
   final selectedRules = rules ?? allOptimizerRules;
   final replacements = <Parser, Parser>{};
   for (final parser in analyzer.parsers) {
-    parser.captureResultGeneric(<R>(parser) {
+    parser.captureResultGeneric(<P>(parser) {
       for (final rule in selectedRules) {
-        rule.run<R>(analyzer, parser, (a, b) {
+        rule.run<P>(analyzer, parser, (a, b) {
           if (callback != null) callback(a, b);
           replacements[a] = b;
         });

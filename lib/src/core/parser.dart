@@ -136,7 +136,7 @@ abstract class Parser<R> {
   @internal
   @nonVirtual
   @preferInline
-  T captureResultGeneric<T>(T Function<R>(Parser<R> self) callback) =>
+  T captureResultGeneric<T>(T Function<S>(Parser<S> self) callback) =>
       callback<R>(this);
 
   @override
