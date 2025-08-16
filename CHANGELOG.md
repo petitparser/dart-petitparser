@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.1
+
+- Dart and Flutter 3.9 compatibility.
+- Minor optimization to repeating character parsers.
+- Assertion on looping trim parser.
+
 ## 7.0.0
 
 - Dart 3.8 requirement.
@@ -67,7 +73,7 @@
 ## 5.0.0
 
 - Dart 2.16 requirement.
-- Moved PetitParser examples to a separate Git repository: https://github.com/petitparser/dart-petitparser-examples.
+- Moved PetitParser examples to a separate Git repository: <https://github.com/petitparser/dart-petitparser-examples>.
 - Add a `skip` helper that silently consumes input before and/or after another parser.
 - Make the `ExpressionBuilder<T>` statically typed. This requires existing code to specify the desired result type, and provide all reduction actions.
 - Deprecate `hasSideEffect` in `MapParser` by considering all callbacks to have side-effects, the benefit of the added complications is negligible.
