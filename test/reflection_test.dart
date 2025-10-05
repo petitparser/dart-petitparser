@@ -717,6 +717,28 @@ void main() {
           expect(results, isEmpty);
         });
       });
+      group('duplicate parser', () {
+        const rules = [linter_rules.DuplicateParser()];
+        test('with issue', () {
+          final parser = seq2(digit(), digit());
+          final results = linter(parser, rules: rules);
+          expect(results, [
+            isLinterIssue(
+              parser: parser.children[0],
+              type: LinterType.info,
+              title: 'Duplicate parser',
+            ),
+          ]);
+        });
+        test('without issue', () {
+          final parser = seq2(
+            digit(message: 'first'),
+            digit(message: 'second'),
+          );
+          final results = linter(parser, rules: rules);
+          expect(results, isEmpty);
+        });
+      });
       group('left recursion', () {
         const rules = [linter_rules.LeftRecursion()];
         test('with issue', () {
@@ -1219,12 +1241,15 @@ void main() {
       group('remove duplicate', () {
         const rules = [optimize_rules.RemoveDuplicate()];
         test('with duplicate', () {
-          final parser = lowercase() & lowercase();
+          final parser = seq2(digit(), digit());
           final result = optimize(parser, rules: rules);
           expect(result.children.first, same(result.children.last));
         });
         test('without duplicate', () {
-          final parser = lowercase() & lowercase(message: 'lower');
+          final parser = seq2(
+            digit(message: 'first'),
+            digit(message: 'second'),
+          );
           final result = optimize(
             parser,
             rules: rules,

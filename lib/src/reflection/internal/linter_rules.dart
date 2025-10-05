@@ -49,6 +49,26 @@ class CharacterRepeater extends LinterRule {
   }
 }
 
+class DuplicateParser extends LinterRule {
+  const DuplicateParser() : super(LinterType.info, 'Duplicate parser');
+
+  @override
+  void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
+    final duplicates = analyzer.parsers.where(parser.isEqualTo).toList();
+    if (duplicates.length > 1 && duplicates.first == parser) {
+      callback(
+        LinterIssue(
+          this,
+          parser,
+          '${duplicates.length} instances of the same parser exist in this '
+          'grammar. If possible, reuse the same parser instances to reduce '
+          'memory footprint and increase performance.',
+        ),
+      );
+    }
+  }
+}
+
 class LeftRecursion extends LinterRule {
   const LeftRecursion() : super(LinterType.error, 'Left recursion');
 
