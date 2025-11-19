@@ -28,6 +28,7 @@ linter:
     - prefer_if_elements_to_conditional_expressions
     - prefer_relative_imports
     - prefer_single_quotes
+    - remove_deprecations_in_breaking_versions
     - unnecessary_await_in_return
     - unnecessary_breaks
     - unnecessary_lambdas
