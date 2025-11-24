@@ -23,7 +23,7 @@ jobs:
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: dart-lang/setup-dart@v1
       - name: "Dependencies"
         run: dart pub upgrade --no-precompile
@@ -47,7 +47,7 @@ jobs:
     name: "Flutter CI"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: amake/dart-flutter-compat@v1
         with:
           channel: stable
