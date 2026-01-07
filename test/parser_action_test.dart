@@ -24,6 +24,14 @@ void main() {
       );
     });
   });
+  group('constant', () {
+    final parser = digit().constant(42);
+    expectParserInvariants(parser);
+    test('default', () {
+      expect(parser, isParseSuccess('1', result: 42));
+      expect(parser, isParseFailure('a', message: 'digit expected'));
+    });
+  });
   group('continuation', () {
     expectParserInvariants(
       any().callCC<String>((continuation, context) => continuation(context)),

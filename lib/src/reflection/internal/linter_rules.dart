@@ -1,6 +1,7 @@
 import '../../core/parser.dart';
 import '../../parser/action/cast.dart';
 import '../../parser/action/cast_list.dart';
+import '../../parser/action/constant.dart';
 import '../../parser/action/flatten.dart';
 import '../../parser/action/map.dart';
 import '../../parser/action/permute.dart';
@@ -334,6 +335,7 @@ class UnusedResult extends LinterRule {
   bool isResultProducing(Parser parser) =>
       parser is CastParser ||
       parser is CastListParser ||
+      parser is ConstantParser ||
       parser is FlattenParser ||
       (parser is MapParser && !parser.hasSideEffects) ||
       parser is PermuteParser ||

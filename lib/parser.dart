@@ -4,6 +4,7 @@ library;
 export 'src/core/parser.dart';
 export 'src/parser/action/cast.dart';
 export 'src/parser/action/cast_list.dart';
+export 'src/parser/action/constant.dart';
 export 'src/parser/action/continuation.dart';
 export 'src/parser/action/flatten.dart';
 export 'src/parser/action/map.dart';
