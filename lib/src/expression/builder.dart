@@ -30,7 +30,7 @@ import 'utils.dart';
 /// ```dart
 ///
 /// Then we define the operator-groups in descending precedence. The highest
-/// precedence have parentheses. The mapping function receives both the opening
+/// precedence have parentheses. The mapping function receives the opening
 /// parenthesis, the value, and the closing parenthesis as arguments:
 ///
 /// ```dart
@@ -41,7 +41,7 @@ import 'utils.dart';
 /// Then come the normal arithmetic operators. We are using
 /// [cascade notation](https://dart.dev/guides/language/language-tour#cascade-notation)
 /// to define multiple operators on the same precedence-group. The mapping
-/// functions receive both, the terms and the parsed operator in the order they
+/// functions receive the terms and the parsed operator in the order they
 /// appear in the parsed input:
 ///
 /// ```dart

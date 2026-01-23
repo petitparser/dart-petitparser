@@ -7,8 +7,8 @@ import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
 import '../shared/types.dart';
 
-/// Returns a transformed [Parser] that when being used to read input prints a
-/// trace of all activated parsers and their respective parse results.
+/// Returns a transformed [Parser] that, when used to read input, prints a trace
+/// of all activated parsers and their respective parse results.
 ///
 /// For example, the snippet
 ///
@@ -72,7 +72,7 @@ abstract class TraceEvent {
   /// Returns the activation context of this event.
   Context get context;
 
-  /// Returns the result if this is a exit event, otherwise `null`.
+  /// Returns the result if this is an exit event, otherwise `null`.
   Result<dynamic>? get result;
 
   /// Returns the nesting level of this event.

@@ -18,7 +18,7 @@ class ExpressionGroup<T> {
   final Parser<T> _loopback;
 
   /// Defines a new wrapper using [left] and [right] parsers, that are typically
-  /// used for parenthesis. Evaluates the [callback] with the parsed `left`
+  /// used for parentheses. Evaluates the [callback] with the parsed `left`
   /// delimiter, the `value` and `right` delimiter.
   void wrapper<L, R>(
     Parser<L> left,
@@ -108,7 +108,7 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _left = [];
 
-  /// Makes the group optional and instead return the provided [value].
+  /// Makes the group optional and instead returns the provided [value].
   void optional(T value) {
     assert(!_optional, 'At most one optional value expected');
     _optionalValue = value;

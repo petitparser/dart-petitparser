@@ -8,7 +8,7 @@ import 'resolve.dart';
 /// Creates a [Parser] from a [function] reference, possibly with the given
 /// arguments [arg1], [arg2], [arg3], ...
 ///
-/// This method doesn't work well in strong mode as it perform type checks at
+/// This method doesn't work well in strong mode as it performs type checks at
 /// runtime only. Depending on the argument count of your function consider
 /// using one of the strongly typed alternatives [ref0], [ref1], [ref2], ...
 /// instead.
@@ -45,7 +45,7 @@ Parser<R> ref<R>(
 /// recursively reference each other. Once the parser is assembled resolve all
 /// references by passing the root of your parser to [resolve].
 ///
-/// If you function takes arguments, consider one of the typed alternatives
+/// If your function takes arguments, consider one of the typed alternatives
 /// [ref1], [ref2], [ref3], ... instead.
 @useResult
 Parser<R> ref0<R>(Parser<R> Function() function) =>

@@ -18,7 +18,7 @@ class ExpressionResultPostfix<V, O> {
   V call(V value) => callback(value, operator);
 }
 
-/// Encapsulates a infix operation.
+/// Encapsulates an infix operation.
 class ExpressionResultInfix<V, O> {
   ExpressionResultInfix(this.operator, this.callback);
 

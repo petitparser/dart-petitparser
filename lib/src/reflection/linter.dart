@@ -19,7 +19,7 @@ abstract class LinterRule {
   /// Human readable title of this rule.
   final String title;
 
-  /// Executes this rule using a provided [analyzer] on a [parser]. Expected
+  /// Executes this rule using the provided [analyzer] on a [parser]. Expected
   /// to call [callback] zero or more times as issues are detected.
   void run(Analyzer analyzer, Parser parser, LinterCallback callback);
 

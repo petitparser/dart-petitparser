@@ -55,7 +55,7 @@ class Token<R> {
   @override
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
-  /// Combines multiple token into a single token with the list of its values.
+  /// Combines multiple tokens into a single token with the list of its values.
   static Token<List<T>> join<T>(Iterable<Token<T>> token) {
     final iterator = token.iterator;
     if (!iterator.moveNext()) {

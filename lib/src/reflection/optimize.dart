@@ -14,7 +14,7 @@ abstract class OptimizeRule {
   /// Constructs a new optimization rule.
   const OptimizeRule();
 
-  /// Executes this rule using a provided [analyzer] on a [parser].
+  /// Executes this rule using the provided [analyzer] on a [parser].
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace);
 }
 

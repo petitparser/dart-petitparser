@@ -6,8 +6,8 @@ import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
 import '../shared/types.dart';
 
-/// Returns a transformed [Parser] that when being used to read input
-/// visually prints its progress while progressing.
+/// Returns a transformed [Parser] that, when used to read input, visually
+/// prints its progress.
 ///
 /// For example, the snippet
 ///
@@ -51,7 +51,7 @@ Parser<R> progress<R>(
 
 /// Encapsulates the data around a parser progress.
 abstract class ProgressFrame {
-  /// Return the parser of this frame.
+  /// Returns the parser of this frame.
   Parser get parser;
 
   /// Returns the activation context of this frame.

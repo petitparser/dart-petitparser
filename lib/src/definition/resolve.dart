@@ -9,7 +9,7 @@ import 'reference.dart';
 /// This code in-lines parsers that purely reference another one (subclasses
 /// of [ResolvableParser]). This includes, but is not limited to, parsers
 /// created with [ref0], [ref1], [ref2], ..., [undefined], or
-/// [SettableParserExtension],
+/// [SettableParserExtension].
 Parser<R> resolve<R>(Parser<R> parser) {
   final mapping = <ResolvableParser<dynamic>, Parser>{};
   parser = _dereference(parser, mapping);
@@ -32,7 +32,7 @@ Parser<R> resolve<R>(Parser<R> parser) {
 }
 
 /// Internal helper to dereference and resolve a chain of [ResolvableParser]
-/// instances to their resolved counterpart. Throws a [StateError] if the there
+/// instances to their resolved counterpart. Throws a [StateError] if there
 /// is a directly cyclic dependency on itself.
 Parser<R> _dereference<R>(Parser<R> parser, Map<Parser, Parser> mapping) {
   final references = <ResolvableParser<R>>{};

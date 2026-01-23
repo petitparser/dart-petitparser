@@ -5,8 +5,8 @@ import '../parser/action/continuation.dart';
 import '../reflection/transform.dart';
 import '../shared/types.dart';
 
-/// Returns a transformed [Parser] that when being used measures
-/// the activation count and total time of each parser.
+/// Returns a transformed [Parser] that, when used, measures the activation
+/// count and total time of each parser.
 ///
 /// For example, the snippet
 ///
@@ -60,13 +60,13 @@ Parser<R> profile<R>(
 
 /// Encapsulates the data around a parser profile.
 abstract class ProfileFrame {
-  /// Return the parser of this frame.
+  /// Returns the parser of this frame.
   Parser get parser;
 
-  /// Return the number of times this parser was activated.
+  /// Returns the number of times this parser was activated.
   int get count;
 
-  /// Return the total elapsed time in this parser and its children.
+  /// Returns the total elapsed time in this parser and its children.
   Duration get elapsed;
 }
 

@@ -22,8 +22,8 @@ class Analyzer {
 
   /// Returns a set of all deep children reachable from [parser].
   ///
-  /// The returned set does only include the [parser] itself, if it is
-  /// recursively calling itself.
+  /// The returned set only includes the [parser] itself, if it is recursively
+  /// calling itself.
   Set<Parser> allChildren(Parser parser) {
     assert(parsers.contains(parser), 'parser is not part of the analyzer');
     return _allChildren.putIfAbsent(

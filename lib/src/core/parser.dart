@@ -12,7 +12,7 @@ abstract class Parser<R> {
   /// Primitive method doing the actual parsing.
   ///
   /// The method is overridden in concrete subclasses to implement the
-  /// parser specific logic. The methods takes a parse [context] and
+  /// parser specific logic. The method takes a parse [context] and
   /// returns the resulting context, which is either a [Success] or
   /// [Failure] context.
   Result<R> parseOn(Context context);
@@ -132,7 +132,7 @@ abstract class Parser<R> {
   void replace(Parser source, Parser target) {}
 
   /// Internal helper to capture the generic type [R] of the parse result. This
-  /// makes it possible to wrap the parser without loosing type information.
+  /// makes it possible to wrap the parser without losing type information.
   @internal
   @nonVirtual
   @preferInline

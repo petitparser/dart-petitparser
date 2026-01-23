@@ -1,7 +1,7 @@
-/// True, if the code is running in JavaScript.
+/// True if the code is running in JavaScript.
 const isJavaScript = identical(1, 1.0);
 
-/// True, if the code is running in WASM.
+/// True if the code is running in WASM.
 const isWasm = bool.fromEnvironment('dart.tool.dart2wasm');
 
 /// Inline a function or method when possible.

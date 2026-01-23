@@ -11,7 +11,7 @@ extension MapParserExtension<R> on Parser<R> {
   /// on success of the receiver.
   ///
   /// [callback] should be side-effect free, meaning for the same input it
-  /// always gives the same output. This allows the framework skip calling
+  /// always gives the same output. This allows the framework to skip calling
   /// the callback if the result is not used, or to cache the results. If
   /// [callback] has side-effects, make sure to exactly understand the
   /// implications and set [hasSideEffects] to `true`.

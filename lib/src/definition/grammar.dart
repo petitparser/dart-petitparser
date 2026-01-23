@@ -29,8 +29,8 @@ import 'resolve.dart';
 /// completion works as expected.
 ///
 /// To attach custom production actions you might want to further subclass your
-/// grammar definition and override overriding the necessary productions defined
-/// in the superclass:
+/// grammar definition and override the necessary productions defined in the
+/// superclass:
 ///
 /// ```dart
 /// class ListParserDefinition extends ListGrammarDefinition {
@@ -61,7 +61,7 @@ import 'resolve.dart';
 /// parametrize the start production.
 ///
 /// ```dart
-/// final parser = new ListParserDefinition().build();
+/// final parser = ListParserDefinition().build();
 ///
 /// parser.parse('1');          // [1]
 /// parser.parse('1,2,3');      // [1, 2, 3]
