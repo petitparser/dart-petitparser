@@ -13,6 +13,8 @@ import 'utils/optimize.dart';
 ///   manner.
 /// - If [unicode] is `true`, the character is matched using full unicode
 ///   character parsing (as opposed to UTF-16 code units).
+///
+/// For example, the parser `char('a')` accepts the character 'a'.
 @useResult
 Parser<String> char(
   String value, {

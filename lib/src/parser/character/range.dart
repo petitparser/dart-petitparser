@@ -7,6 +7,8 @@ import 'utils/code.dart';
 
 /// Returns a parser that accepts any character in the range
 /// between [start] and [stop].
+///
+/// For example, the parser `range('a', 'z')` accepts any lowercase letter.
 @useResult
 Parser<String> range(
   String start,

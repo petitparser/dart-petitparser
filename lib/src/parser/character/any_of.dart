@@ -6,6 +6,8 @@ import 'utils/code.dart';
 import 'utils/optimize.dart';
 
 /// Returns a parser that accepts any of the specified characters in [value].
+///
+/// For example, the parser `anyOf('aeiou')` accepts any vowel.
 @useResult
 Parser<String> anyOf(
   String value, {

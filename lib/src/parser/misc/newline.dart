@@ -6,6 +6,8 @@ import '../../core/result.dart';
 import '../../shared/pragma.dart';
 
 /// Returns a parser that detects newlines platform independently.
+///
+/// For example, the parser `newline()` accepts `\n`, `\r`, and `\r\n`.
 @useResult
 Parser<String> newline({String message = 'newline expected'}) =>
     NewlineParser(message);

@@ -7,6 +7,9 @@ import 'utils/code.dart';
 import 'utils/optimize.dart';
 
 /// Returns a parser that accepts none of the specified characters in [value].
+///
+/// For example, the parser `noneOf('0123456789')` accepts any non-digit
+/// character.
 @useResult
 Parser<String> noneOf(
   String value, {

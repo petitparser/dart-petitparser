@@ -5,6 +5,8 @@ import '../predicate/character.dart';
 import 'predicate/whitespace.dart';
 
 /// Returns a parser that accepts any whitespace character.
+///
+/// For example, the parser `whitespace()` accepts the character ' '.
 @useResult
 Parser<String> whitespace({String message = 'whitespace expected'}) =>
     CharacterParser(const WhitespaceCharPredicate(), message);

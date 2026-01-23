@@ -5,6 +5,9 @@ import '../../core/parser.dart';
 import '../../core/result.dart';
 
 /// Returns a parser that reports the current input position.
+///
+/// For example, the parser `position()` returns the current index in the
+/// input string.
 @useResult
 Parser position() => PositionParser();
 

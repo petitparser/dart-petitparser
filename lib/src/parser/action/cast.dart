@@ -7,6 +7,9 @@ import '../combinator/delegate.dart';
 
 extension CastParserExtension<R> on Parser<R> {
   /// Returns a parser that casts itself to `Parser<R>`.
+  ///
+  /// For example, the parser `digit().map(int.parse).cast<num>()` returns the
+  /// integer value of the parsed digit as a `num`.
   @useResult
   Parser<S> cast<S>() => CastParser<R, S>(this);
 }

@@ -9,6 +9,9 @@ import '../combinator/delegate.dart';
 extension LabelParserExtension<R> on Parser<R> {
   /// Returns a parser that simply defers to its delegate, but that
   /// has a [label] for debugging purposes.
+  ///
+  /// For example, the parser `digit().labeled('number')` shows up as 'number'
+  /// in traces and error messages.
   @useResult
   LabeledParser<R> labeled(String label) => LabelParser<R>(this, label);
 }
