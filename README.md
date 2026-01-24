@@ -90,7 +90,7 @@ print(result3.message);                 // 'letter expected'
 print(result3.position);                // 0
 ```
 
-Trying to retrieve result by calling `Failure.value` would throw the exception [`ParserError`](https://pub.dev/documentation/petitparser/latest/petitparser/ParserException-class.html). [Pattern matching](https://dart.dev/language/patterns) can be used to decide if the parse result was a success or a failure:
+Trying to retrieve result by calling `Failure.value` would throw the exception [`ParserException`](https://pub.dev/documentation/petitparser/latest/petitparser/ParserException-class.html). [Pattern matching](https://dart.dev/language/patterns) can be used to decide if the parse result was a success or a failure:
 
 ```dart
 switch (id.parse(input)) {
@@ -145,7 +145,7 @@ The following parsers [repeat](https://pub.dev/documentation/petitparser/latest/
 
 - [`p.star()`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/star.html) parses _p_ zero or more times.
 - [`p.plus()`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/plus.html) parses _p_ one or more times.
-- [`p.times(n)`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/times.html) parsers _p_ exactly _n_ times.
+- [`p.times(n)`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/times.html) parses _p_ exactly _n_ times.
 - [`p.repeat(n, m)`](https://pub.dev/documentation/petitparser/latest/petitparser/PossessiveRepeatingParserExtension/repeat.html) parses _p_ between _n_ and _m_ times.
 
 A variation of the parsers above is the optional operator, it produces the value of _p_ or _null_.
@@ -269,7 +269,7 @@ Again, since this is plain Dart, common code refactorings such as renaming a pro
 > [!TIP]
 > The function [`ref`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html) takes positional arguments to parametrize the created parser, if the referenced function takes arguments. While `ref` supports an arbitrary amount of arguments, it can neither infer nor check return or argument types at compile time. The variations [`ref0`](https://pub.dev/documentation/petitparser/latest/petitparser/ref0.html), [`ref1`](https://pub.dev/documentation/petitparser/latest/petitparser/ref1.html), [`ref2`](https://pub.dev/documentation/petitparser/latest/petitparser/ref2.html), ... solve this problem, but require you to specify the number of arguments.
 
-To attach custom production actions you might want to further subclass your grammar definition and override overriding the necessary productions defined in the superclass:
+To attach custom production actions you might want to further subclass your grammar definition and override the necessary productions defined in the superclass:
 
 ```dart
 class EvaluatorDefinition extends ExpressionDefinition {

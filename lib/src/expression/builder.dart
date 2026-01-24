@@ -27,7 +27,7 @@ import 'utils.dart';
 ///     .flatten()
 ///     .trim()
 ///     .map(num.parse));
-/// ```dart
+/// ```
 ///
 /// Then we define the operator-groups in descending precedence. The highest
 /// precedence have parentheses. The mapping function receives the opening
@@ -74,7 +74,7 @@ import 'utils.dart';
 /// parser.parse('-8');      // -8
 /// parser.parse('1+2*3');   // 7
 /// parser.parse('1*2+3');   // 5
-/// parser.parse('8/4/2');   // 2
+/// parser.parse('8/4/2');   // 1
 /// parser.parse('2^2^3');   // 256
 /// ```
 class ExpressionBuilder<T> {

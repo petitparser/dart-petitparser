@@ -56,6 +56,16 @@ class Token<R> {
   int get hashCode => value.hashCode + start.hashCode + stop.hashCode;
 
   /// Combines multiple tokens into a single token with the list of its values.
+  ///
+  /// ```dart
+  /// final t1 = Token('a', 'abc', 0, 1);
+  /// final t2 = Token('b', 'abc', 1, 2);
+  /// final t3 = Token.join([t1, t2]);
+  ///
+  /// print(t3.value);  // ['a', 'b']
+  /// print(t3.start);  // 0
+  /// print(t3.stop);   // 2
+  /// ```
   static Token<List<T>> join<T>(Iterable<Token<T>> token) {
     final iterator = token.iterator;
     if (!iterator.moveNext()) {
@@ -70,7 +80,7 @@ class Token<R> {
         throw ArgumentError.value(
           token,
           'token',
-          'Token do not use same buffer',
+          'Tokens do not use the same buffer',
         );
       }
       value.add(iterator.current.value);
@@ -85,6 +95,12 @@ class Token<R> {
   static final _newlineParser = newline();
 
   /// Converts the [position] index in a [buffer] to a line and column tuple.
+  ///
+  /// ```dart
+  /// const buffer = 'a\nb';
+  /// print(Token.lineAndColumnOf(buffer, 0)); // [1, 1]
+  /// print(Token.lineAndColumnOf(buffer, 2)); // [2, 1]
+  /// ```
   static List<int> lineAndColumnOf(String buffer, int position) {
     var line = 1, offset = 0;
     for (final token in newlineParser().token().allMatches(buffer)) {
@@ -99,6 +115,12 @@ class Token<R> {
 
   /// Returns a human readable string representing the [position] index in a
   /// [buffer].
+  ///
+  /// ```dart
+  /// const buffer = 'a\nb';
+  /// print(Token.positionString(buffer, 0)); // 1:1
+  /// print(Token.positionString(buffer, 2)); // 2:1
+  /// ```
   static String positionString(String buffer, int position) {
     final lineAndColumn = lineAndColumnOf(buffer, position);
     return '${lineAndColumn[0]}:${lineAndColumn[1]}';

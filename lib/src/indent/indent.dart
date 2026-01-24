@@ -20,7 +20,7 @@ class Indent {
   /// The parser used read a single indentation step.
   final Parser<String> parser;
 
-  /// The error message to use when an indention is expected.
+  /// The error message to use when an indentation is expected.
   final String message;
 
   /// Internal field with the stack of indentations.
