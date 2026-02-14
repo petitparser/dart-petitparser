@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.2
+
+- Numerous fixes and improvements to documentation and examples.
+- Add a constant parser `Parser.constant(Object value)` that can be used to return a constant value.
+- Add a linter rule to detect duplicate parsers.
+
 ## 7.0.1
 
 - Dart and Flutter 3.9 compatibility.
