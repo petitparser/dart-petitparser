@@ -4,6 +4,7 @@
 
 - When generating new Dart code, strictly follow the style conventions defined in [Effective Dart](https://dart.dev/effective-dart).
 - Systematically prefer using `const` constructors and literals whenever possible to optimize runtime performance.
+- Prefer using the Dart MCP tool instead of running commands manually.
 
 ## Comments, Documentation and Examples
   
@@ -27,27 +28,27 @@
 
 ### Code Quality
 
-- The code must be free of linter warnings (run `dart analyze` and `dart fix --apply`).
 - The code must be auto-formatted (run `dart format .`).
-- Embrace strict **null safety**. Avoid using the non-null assertion operator (`!`) unless you can prove adherence to a loop invariant or similar logical guarantee that the compiler cannot infer.
+- The code must be free of linter warnings (run `dart analyze` and `dart fix --apply`).
+- Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible.
 
 ## Logic and Patterns
 
 ### Asynchrony
 
-- Prefer `async` / `await` syntax over chaining `Future.then`, `Future.catchError`, etc., for better readability.
-- Always return `Future<void>` instead of `void` for asynchronous functions (unless it's an event handler where `void` is required).
+- Prefer `async` / `await` syntax over chaining `Future.then`, `Future.catchError`, ...
+- Always return `Future<void>` instead of `void` for asynchronous functions.
 
 ### Error Handling
 
-- Throw specific exceptions (e.g., `ArgumentError`, `StateError`, `FormatException`) rather than generic `Exception` strings.
+- Throw specific exceptions (e.g., `ArgumentError`, `StateError`, `FormatException`) rather than generic `Exception`.
 - Catch specific exceptions. Avoid generic `catch (e)` unless you are logging the error or rethrowing it.
 
 ## Architecture
 
 - Keep the root `lib/` directory clean. It should primarily contain the public API exports.
 - Place implementation details in `lib/src/`. Users of the package should not import files from `lib/src/` directly.
-- Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. If required, justify the addition to the user.
+- Avoid introducing new external dependencies in `pubspec.yaml` unless absolutely necessary and no alternative exists in the SDK. Justify any addition to the user.
 
 ## Testing
 
