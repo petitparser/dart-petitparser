@@ -15,6 +15,7 @@ import '../../parser/misc/newline.dart';
 import '../../parser/predicate/character.dart';
 import '../../parser/predicate/predicate.dart';
 import '../../parser/predicate/single_character.dart';
+import '../../parser/predicate/string.dart';
 import '../../parser/repeater/character.dart';
 import '../../parser/repeater/possessive.dart';
 import '../../parser/repeater/repeating.dart';
@@ -202,6 +203,7 @@ class UnnecessaryFlatten extends LinterRule {
           delegate is FlattenParser ||
           delegate is NewlineParser ||
           delegate is PredicateParser ||
+          delegate is StringParser ||
           delegate is RepeatingCharacterParser) {
         callback(
           LinterIssue(

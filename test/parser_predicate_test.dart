@@ -5,7 +5,7 @@ import 'package:petitparser/src/parser/character/predicate/char.dart';
 import 'package:petitparser/src/parser/character/predicate/constant.dart';
 import 'package:petitparser/src/parser/character/predicate/lookup.dart';
 import 'package:petitparser/src/parser/character/predicate/range.dart';
-import 'package:test/test.dart' hide anyOf;
+import 'package:test/test.dart' hide anyOf, predicate;
 
 import 'utils/assertions.dart';
 import 'utils/matchers.dart';
@@ -165,7 +165,10 @@ void main() {
       expect(parser, isParseFailure('fo', message: 'special expected'));
       expect(parser, isParseFailure('Foo', message: 'special expected'));
     });
-    test('ignore-case', () {
+  });
+  group('string (ignore-case)', () {
+    expectParserInvariants(string('foo', ignoreCase: true));
+    test('default', () {
       final parser = string('foo', ignoreCase: true);
       expect(parser, isParseSuccess('foo', result: 'foo'));
       expect(parser, isParseSuccess('FOO', result: 'FOO'));
@@ -180,8 +183,33 @@ void main() {
       );
       expect(
         parser,
-        isParseFailure('Fo', message: '"foo" (case-insensitive) expected'),
+        isParseFailure('fo', message: '"foo" (case-insensitive) expected'),
       );
+      expect(
+        parser,
+        isParseFailure('foc', message: '"foo" (case-insensitive) expected'),
+      );
+    });
+    test('message', () {
+      final parser = string('foo', message: 'special expected');
+      expect(parser, isParseSuccess('foo', result: 'foo'));
+      expect(parser, isParseFailure('', message: 'special expected'));
+      expect(parser, isParseFailure('f', message: 'special expected'));
+      expect(parser, isParseFailure('fo', message: 'special expected'));
+      expect(parser, isParseFailure('Foc', message: 'special expected'));
+    });
+  });
+  group('predicate', () {
+    final parser = predicate(3, (value) => value == 'foo', 'foo expected');
+    expectParserInvariants(parser);
+    test('success', () {
+      expect(parser, isParseSuccess('foo', result: 'foo'));
+    });
+    test('failure (predicate)', () {
+      expect(parser, isParseFailure('bar', message: 'foo expected'));
+    });
+    test('failure (length)', () {
+      expect(parser, isParseFailure('fo', message: 'foo expected'));
     });
   });
   group('convert', () {
@@ -296,19 +324,19 @@ void main() {
     });
     test('string', () {
       final parser = 'foo'.toParser();
-      expect(parser, isA<PredicateParser>());
+      expect(parser, isA<StringParser>());
       expect(parser, isParseSuccess('foo', result: 'foo'));
       expect(parser, isParseFailure('Foo', message: '"foo" expected'));
     });
     test('string (message)', () {
       final parser = 'foo'.toParser(message: 'special expected');
-      expect(parser, isA<PredicateParser>());
+      expect(parser, isA<StringParser>());
       expect(parser, isParseSuccess('foo', result: 'foo'));
       expect(parser, isParseFailure('bar', message: 'special expected'));
     });
     test('string (case-insensitive)', () {
       final parser = 'foo'.toParser(ignoreCase: true);
-      expect(parser, isA<PredicateParser>());
+      expect(parser, isA<StringIgnoreCaseParser>());
       expect(parser, isParseSuccess('foo', result: 'foo'));
       expect(parser, isParseSuccess('Foo', result: 'Foo'));
       expect(
