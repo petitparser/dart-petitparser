@@ -73,7 +73,7 @@ Matcher isToString({String? name, String? generic, Iterable<String>? rest}) =>
       stringContainsInOrder([
         if (name != null && hasAssertionsEnabled()) name,
         if (generic != null && hasAssertionsEnabled()) generic,
-        if (rest != null) ...rest,
+        ...?rest,
       ]),
     );
 
