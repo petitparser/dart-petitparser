@@ -23,7 +23,7 @@ extension FlattenParserExtension on Parser {
 /// A parser that discards the result of the delegate and answers the
 /// sub-string its delegate consumes.
 class FlattenParser extends DelegateParser<void, String> {
-  FlattenParser(super.delegate, [this.message]);
+  new(super.delegate, [this.message]);
 
   /// Error message to indicate parse failures with.
   final String? message;

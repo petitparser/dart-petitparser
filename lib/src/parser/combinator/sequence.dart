@@ -58,7 +58,7 @@ extension SequenceIterableExtension<R> on Iterable<Parser<R>> {
 /// A parser that parses a sequence of parsers.
 class SequenceParser<R> extends ListParser<R, List<R>>
     implements SequentialParser {
-  SequenceParser(super.children);
+  new(super.children);
 
   @override
   @noBoundsChecks

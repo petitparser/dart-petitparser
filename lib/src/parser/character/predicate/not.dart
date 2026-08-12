@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
 class NotCharPredicate extends CharacterPredicate {
-  const NotCharPredicate(this.predicate);
+  const new(this.predicate);
 
   final CharacterPredicate predicate;
 

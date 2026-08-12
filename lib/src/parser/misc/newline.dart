@@ -14,7 +14,7 @@ Parser<String> newline({String message = 'newline expected'}) =>
 
 /// A parser that consumes newlines platform independently.
 class NewlineParser extends Parser<String> {
-  NewlineParser(this.message);
+  new(this.message);
 
   final String message;
 

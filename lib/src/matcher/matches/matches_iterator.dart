@@ -2,7 +2,7 @@ import '../../core/context.dart';
 import '../../core/parser.dart';
 
 class MatchesIterator<R> implements Iterator<R> {
-  MatchesIterator(this.parser, this.input, this.start, this.overlapping);
+  new(this.parser, this.input, this.start, this.overlapping);
 
   final Parser<R> parser;
   final String input;

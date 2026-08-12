@@ -6,7 +6,7 @@ import '../../shared/types.dart';
 /// A continuous path through the parser graph.
 class ParserPath {
   /// Constructs a path from a list of parsers and indexes.
-  ParserPath(this.parsers, this.indexes)
+  new(this.parsers, this.indexes)
     : assert(parsers.isNotEmpty, 'parsers cannot be empty'),
       assert(indexes.length == parsers.length - 1, 'indexes wrong size'),
       assert(

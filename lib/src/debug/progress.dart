@@ -62,7 +62,7 @@ abstract class ProgressFrame {
 }
 
 class _ProgressFrame extends ProgressFrame {
-  _ProgressFrame(this.parser, this.context);
+  new(this.parser, this.context);
 
   @override
   final Parser parser;

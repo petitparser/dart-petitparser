@@ -13,7 +13,7 @@ import '../parser/repeater/character.dart';
 /// Based on https://stackoverflow.com/a/56926044/82303.
 @experimental
 class Indent {
-  Indent({Parser<String>? parser, String? message})
+  new({Parser<String>? parser, String? message})
     : parser = parser ?? pattern(' \t'),
       message = message ?? 'indented expected';
 

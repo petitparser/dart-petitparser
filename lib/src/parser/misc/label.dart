@@ -19,7 +19,7 @@ extension LabelParserExtension<R> on Parser<R> {
 /// A parser that always defers to its delegate, but that also holds a label
 /// for debugging purposes.
 class LabelParser<R> extends DelegateParser<R, R> implements LabeledParser<R> {
-  LabelParser(super.delegate, this.label);
+  new(super.delegate, this.label);
 
   /// Label of this parser.
   @override

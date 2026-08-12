@@ -83,7 +83,7 @@ void expectTerminals(Iterable<Parser> parsers, Iterable<String> inputs) {
 }
 
 class PluggableLinterRule extends LinterRule {
-  const PluggableLinterRule(super.type, super.title, this._run);
+  const new(super.type, super.title, this._run);
 
   final void Function(LinterRule rule, Analyzer, Parser, LinterCallback) _run;
 
@@ -93,7 +93,7 @@ class PluggableLinterRule extends LinterRule {
 }
 
 class PluggableOptimizeRule extends OptimizeRule {
-  const PluggableOptimizeRule(this._run);
+  const new(this._run);
 
   final void Function<R>(
     OptimizeRule rule,

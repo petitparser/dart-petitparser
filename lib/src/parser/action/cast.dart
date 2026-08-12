@@ -16,7 +16,7 @@ extension CastParserExtension<R> on Parser<R> {
 
 /// A parser that casts a `Result` to a `Result<R>`.
 class CastParser<R, S> extends DelegateParser<R, S> {
-  CastParser(super.delegate);
+  new(super.delegate);
 
   @override
   Result<S> parseOn(Context context) {

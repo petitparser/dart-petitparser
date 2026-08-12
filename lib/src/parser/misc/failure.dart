@@ -13,7 +13,7 @@ Parser<R> failure<R>({String message = 'unable to parse'}) =>
 
 /// A parser that consumes nothing and fails.
 class FailureParser extends Parser<Never> {
-  FailureParser(this.message);
+  new(this.message);
 
   /// Error message to annotate parse failures with.
   final String message;

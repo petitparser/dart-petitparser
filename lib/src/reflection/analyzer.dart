@@ -10,7 +10,7 @@ import 'iterable.dart';
 /// Helper to reflect on properties of a grammar.
 class Analyzer {
   /// Constructs an analyzer on the parser graph starting at [root].
-  Analyzer(this.root);
+  new(this.root);
 
   /// The start parser of analysis.
   final Parser root;

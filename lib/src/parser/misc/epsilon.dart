@@ -17,7 +17,7 @@ Parser<R> epsilonWith<R>(R result) => EpsilonParser<R>(result);
 
 /// A parser that consumes nothing and succeeds.
 class EpsilonParser<R> extends Parser<R> {
-  EpsilonParser(this.result);
+  new(this.result);
 
   /// Value to be returned when the parser is activated.
   final R result;

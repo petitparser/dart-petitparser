@@ -8,7 +8,7 @@ import 'pattern_iterator.dart';
 
 @immutable
 class PatternIterable extends IterableBase<ParserMatch> {
-  const PatternIterable(this.pattern, this.input, this.start);
+  const new(this.pattern, this.input, this.start);
 
   final ParserPattern pattern;
   final String input;

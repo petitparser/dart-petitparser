@@ -183,9 +183,10 @@ void main() {
             .flatten()
             .trim();
     Parser<num> number() => ref0(numberToken).map(num.parse);
-    Parser<List<num>> numberList([String separator = ',']) => ref0(
-      number,
-    ).plusSeparated(separator.toParser()).map((list) => list.elements);
+    Parser<List<num>> numberList([String separator = ',']) =>
+        ref0(number)
+            .plusSeparated(separator.toParser())
+            .map((list) => list.elements);
 
     test('reference without parameters', () {
       final firstReference = ref0(number);

@@ -13,7 +13,7 @@ Parser position() => PositionParser();
 
 /// A parser that reports the current input position.
 class PositionParser extends Parser<int> {
-  PositionParser();
+  new();
 
   @override
   Result<int> parseOn(Context context) => context.success(context.position);

@@ -17,7 +17,7 @@ abstract class CharacterParser extends Parser<String> {
   /// By default, the parsers works on UTF-16 code units. If [unicode] is set
   /// to `true` unicode surrogate pairs are extracted from the input and matched
   /// against the predicate.
-  factory CharacterParser(
+  factory(
     CharacterPredicate predicate,
     String message, {
     bool unicode = false,
@@ -28,7 +28,7 @@ abstract class CharacterParser extends Parser<String> {
 
   /// Internal constructor
   @internal
-  CharacterParser.internal(this.predicate, this.message);
+  new internal(this.predicate, this.message);
 
   /// Predicate indicating whether a character can be consumed.
   final CharacterPredicate predicate;

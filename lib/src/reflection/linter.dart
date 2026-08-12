@@ -11,7 +11,7 @@ enum LinterType { info, warning, error }
 @immutable
 abstract class LinterRule {
   /// Constructs a new linter rule.
-  const LinterRule(this.type, this.title);
+  const new(this.type, this.title);
 
   /// Severity of issues detected by this rule.
   final LinterType type;
@@ -31,7 +31,7 @@ abstract class LinterRule {
 @immutable
 class LinterIssue {
   /// Constructs a new linter rule.
-  const LinterIssue(this.rule, this.parser, this.description);
+  const new(this.rule, this.parser, this.description);
 
   /// Rule that identified the issue.
   final LinterRule rule;

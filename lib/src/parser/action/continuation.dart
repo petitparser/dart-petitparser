@@ -6,8 +6,10 @@ import '../../core/result.dart';
 import '../../parser/combinator/delegate.dart';
 
 /// Handler function for the [ContinuationParser].
-typedef ContinuationHandler<R, S> =
-    Result<S> Function(ContinuationFunction<R> continuation, Context context);
+typedef ContinuationHandler<R, S> = Result<S> Function(
+  ContinuationFunction<R> continuation,
+  Context context,
+);
 
 /// Continuation function of the [ContinuationHandler].
 typedef ContinuationFunction<R> = Result<R> Function(Context context);
@@ -40,7 +42,7 @@ extension ContinuationParserExtension<R> on Parser<R> {
 /// Continuation parser that when activated captures a continuation function
 /// and passes it together with the current context into the handler.
 class ContinuationParser<R, S> extends DelegateParser<R, S> {
-  ContinuationParser(super.delegate, this.handler);
+  new(super.delegate, this.handler);
 
   /// Activation handler of the continuation.
   final ContinuationHandler<R, S> handler;

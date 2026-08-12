@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
 class UppercaseCharPredicate extends CharacterPredicate {
-  const UppercaseCharPredicate();
+  const new();
 
   @override
   bool test(int charCode) => 65 <= charCode && charCode <= 90;

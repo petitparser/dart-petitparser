@@ -14,6 +14,8 @@ linter:
     - combinators_ordering
     - comment_references
     - directives_ordering
+    - empty_container_bodies
+    - initialize_in_field_declaration
     - invalid_case_patterns
     - missing_code_block_language_in_doc_comment
     - no_self_assignments
@@ -29,11 +31,14 @@ linter:
     - prefer_relative_imports
     - prefer_single_quotes
     - remove_deprecations_in_breaking_versions
-    - unnecessary_await_in_return
     - unnecessary_breaks
+    - unnecessary_const_in_enum_constructor
     - unnecessary_lambdas
     - unnecessary_null_aware_operator_on_extension_on_nullable
     - unnecessary_null_checks
     - unnecessary_parenthesis
+    - unnecessary_primary_constructor_body
     - unnecessary_statements
+    - unnecessary_type_name_in_constructor
     - unreachable_from_main
+    - use_declaring_parameters

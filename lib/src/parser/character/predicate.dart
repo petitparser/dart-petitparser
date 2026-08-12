@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 /// Abstract class for character predicates.
 @immutable
 abstract class CharacterPredicate {
-  const CharacterPredicate();
+  const new();
 
   /// Tests if the [charCode] satisfies the predicate.
   bool test(int charCode);

@@ -16,7 +16,7 @@ extension ConstantParserExtension<R> on Parser<R> {
 
 /// A parser that returns a constant value.
 class ConstantParser<R, S> extends DelegateParser<R, S> {
-  ConstantParser(super.delegate, this.value);
+  new(super.delegate, this.value);
 
   final S value;
 

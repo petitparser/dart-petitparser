@@ -80,7 +80,7 @@ abstract class TraceEvent {
 }
 
 class _TraceEvent extends TraceEvent {
-  _TraceEvent(this.parent, this.parser, this.context, [this.result]);
+  new(this.parent, this.parser, this.context, [this.result]);
 
   @override
   final TraceEvent? parent;

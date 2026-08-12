@@ -7,7 +7,7 @@ import 'result.dart';
 /// Abstract base class of all parsers that produce a parse result of type [R].
 @optionalTypeArgs
 abstract class Parser<R> {
-  Parser();
+  new();
 
   /// Primitive method doing the actual parsing.
   ///

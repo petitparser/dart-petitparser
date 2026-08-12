@@ -12,7 +12,7 @@ typedef ReplaceParser<R> = void Function(Parser<R> source, Parser<R> target);
 @immutable
 abstract class OptimizeRule {
   /// Constructs a new optimization rule.
-  const OptimizeRule();
+  const new();
 
   /// Executes this rule using the provided [analyzer] on a [parser].
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace);

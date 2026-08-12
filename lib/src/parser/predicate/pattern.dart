@@ -8,7 +8,7 @@ import '../../core/result.dart';
 /// any implementation of [Pattern], but can lead to very inefficient parsers
 /// when not used carefully.
 class PatternParser extends Parser<Match> {
-  PatternParser(this.pattern, this.message);
+  new(this.pattern, this.message);
 
   /// The [Pattern] matcher this parser uses.
   final Pattern pattern;

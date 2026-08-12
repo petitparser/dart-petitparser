@@ -26,7 +26,7 @@ extension TrimmingParserExtension<R> on Parser<R> {
 /// its delegate.
 class TrimmingParser<R> extends DelegateParser<R, R>
     implements SequentialParser {
-  TrimmingParser(super.delegate, this.left, this.right);
+  new(super.delegate, this.left, this.right);
 
   /// Parser that consumes input before the delegate.
   Parser<void> left;

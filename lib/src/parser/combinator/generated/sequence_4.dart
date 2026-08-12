@@ -43,7 +43,7 @@ extension RecordOfParsersExtension4<R1, R2, R3, R4>
 /// 4 positional parse results.
 class SequenceParser4<R1, R2, R3, R4> extends Parser<(R1, R2, R3, R4)>
     implements SequentialParser {
-  SequenceParser4(this.parser1, this.parser2, this.parser3, this.parser4);
+  new(this.parser1, this.parser2, this.parser3, this.parser4);
 
   Parser<R1> parser1;
   Parser<R2> parser2;

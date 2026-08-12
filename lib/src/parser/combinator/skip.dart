@@ -25,7 +25,7 @@ extension SkipParserExtension<R> on Parser<R> {
 /// A parser that silently consumes input of another parser before and after
 /// its delegate.
 class SkipParser<R> extends DelegateParser<R, R> implements SequentialParser {
-  SkipParser(super.delegate, {required this.before, required this.after});
+  new(super.delegate, {required this.before, required this.after});
 
   Parser<void> before;
   Parser<void> after;

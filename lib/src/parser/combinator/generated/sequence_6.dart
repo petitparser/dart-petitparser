@@ -61,7 +61,7 @@ extension RecordOfParsersExtension6<R1, R2, R3, R4, R5, R6>
 class SequenceParser6<R1, R2, R3, R4, R5, R6>
     extends Parser<(R1, R2, R3, R4, R5, R6)>
     implements SequentialParser {
-  SequenceParser6(
+  new(
     this.parser1,
     this.parser2,
     this.parser3,

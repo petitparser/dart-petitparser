@@ -7,7 +7,7 @@ import '../predicate.dart';
 import 'range.dart';
 
 class LookupCharPredicate extends CharacterPredicate {
-  LookupCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
+  new fromRanges(Iterable<RangeCharPredicate> ranges)
     : start = ranges.first.start,
       stop = ranges.last.stop,
       bits = Uint32List(size(ranges)) {
@@ -22,7 +22,7 @@ class LookupCharPredicate extends CharacterPredicate {
     }
   }
 
-  const LookupCharPredicate(this.start, this.stop, this.bits);
+  const new(this.start, this.stop, this.bits);
 
   final int start;
   final int stop;

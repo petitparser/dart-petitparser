@@ -6,7 +6,7 @@ import 'repeating.dart';
 /// parser 'limit'. Subclasses provide repeating behavior as typically seen in
 /// regular expression implementations (non-blind).
 abstract class LimitedRepeatingParser<R> extends RepeatingParser<R, List<R>> {
-  LimitedRepeatingParser(Parser<R> delegate, this.limit, int min, int max)
+  new(Parser<R> delegate, this.limit, int min, int max)
     : super(delegate, min, max);
 
   /// Parser restraining further consumption of the delegate parser.

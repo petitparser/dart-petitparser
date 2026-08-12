@@ -5,7 +5,7 @@ import 'exception.dart';
 /// An immutable parse result that is either a [Success] or a [Failure].
 sealed class Result<R> extends Context {
   @preferInline
-  const Result(super.buffer, super.position);
+  const new(super.buffer, super.position);
 
   /// Returns the parsed value of this result, or throws a [ParserException]
   /// if this is a parse failure.
@@ -19,7 +19,7 @@ sealed class Result<R> extends Context {
 /// An immutable successful parse result.
 class Success<R> extends Result<R> {
   @preferInline
-  const Success(super.buffer, super.position, this.value);
+  const new(super.buffer, super.position, this.value);
 
   @override
   final R value;
@@ -35,7 +35,7 @@ class Success<R> extends Result<R> {
 /// An immutable failed parse result.
 class Failure extends Result<Never> {
   @preferInline
-  const Failure(super.buffer, super.position, this.message);
+  const new(super.buffer, super.position, this.message);
 
   @override
   Never get value => throw ParserException(this);

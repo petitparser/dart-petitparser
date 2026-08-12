@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
 class RangeCharPredicate extends CharacterPredicate {
-  const RangeCharPredicate(this.start, this.stop)
+  const new(this.start, this.stop)
     : assert(start <= stop, 'Invalid range character range: $start-$stop');
 
   final int start;

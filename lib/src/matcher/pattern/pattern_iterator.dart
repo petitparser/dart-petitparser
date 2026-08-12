@@ -3,7 +3,7 @@ import 'parser_match.dart';
 import 'parser_pattern.dart';
 
 class PatternIterator implements Iterator<ParserMatch> {
-  PatternIterator(this.pattern, this.parser, this.input, this.start);
+  new(this.pattern, this.parser, this.input, this.start);
 
   final ParserPattern pattern;
   final Parser parser;

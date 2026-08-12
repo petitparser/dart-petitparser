@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
 class SingleCharPredicate extends CharacterPredicate {
-  const SingleCharPredicate(this.charCode);
+  const new(this.charCode);
 
   final int charCode;
 

@@ -27,7 +27,7 @@ extension OptionalParserExtension<R> on Parser<R> {
 
 /// A parser that optionally parsers its delegate, or answers `null`.
 class OptionalParser<R> extends DelegateParser<R, R> {
-  OptionalParser(super.delegate, this.otherwise);
+  new(super.delegate, this.otherwise);
 
   /// The value returned if the [delegate] cannot be parsed.
   final R otherwise;

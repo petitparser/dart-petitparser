@@ -16,7 +16,7 @@ import 'parser.dart';
 class Token<R> {
   /// Constructs a token from the parsed value, the input buffer, and the
   /// start and stop position in the input buffer.
-  const Token(this.value, this.buffer, this.start, this.stop);
+  const new(this.value, this.buffer, this.start, this.stop);
 
   /// The parsed value of the token.
   final R value;

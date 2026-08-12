@@ -12,7 +12,7 @@ import 'utils.dart';
 /// Models a group of operators of the same precedence.
 class ExpressionGroup<T> {
   @internal
-  ExpressionGroup(this._loopback);
+  new(this._loopback);
 
   /// Loopback parser used to establish the recursive expressions.
   final Parser<T> _loopback;

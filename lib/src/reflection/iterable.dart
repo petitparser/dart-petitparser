@@ -16,7 +16,7 @@ import '../core/parser.dart';
 Iterable<Parser> allParser(Parser root) => _ParserIterable(root);
 
 class _ParserIterable extends Iterable<Parser> {
-  _ParserIterable(this.root);
+  new(this.root);
 
   final Parser root;
 
@@ -25,7 +25,7 @@ class _ParserIterable extends Iterable<Parser> {
 }
 
 class _ParserIterator implements Iterator<Parser> {
-  _ParserIterator(Parser root) : todo = [root], seen = {root};
+  new(Parser root) : todo = [root], seen = {root};
 
   final List<Parser> todo;
   final Set<Parser> seen;

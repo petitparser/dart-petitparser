@@ -1,6 +1,6 @@
 /// Encapsulates a prefix operation.
 class ExpressionResultPrefix<V, O> {
-  ExpressionResultPrefix(this.operator, this.callback);
+  new(this.operator, this.callback);
 
   final O operator;
   final V Function(O operator, V value) callback;
@@ -10,7 +10,7 @@ class ExpressionResultPrefix<V, O> {
 
 /// Encapsulates a postfix operation.
 class ExpressionResultPostfix<V, O> {
-  ExpressionResultPostfix(this.operator, this.callback);
+  new(this.operator, this.callback);
 
   final O operator;
   final V Function(V value, O operator) callback;
@@ -20,7 +20,7 @@ class ExpressionResultPostfix<V, O> {
 
 /// Encapsulates an infix operation.
 class ExpressionResultInfix<V, O> {
-  ExpressionResultInfix(this.operator, this.callback);
+  new(this.operator, this.callback);
 
   final O operator;
   final V Function(V left, O operator, V right) callback;

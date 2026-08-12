@@ -4,7 +4,7 @@ class ConstantCharPredicate extends CharacterPredicate {
   static const any = ConstantCharPredicate(true);
   static const none = ConstantCharPredicate(false);
 
-  const ConstantCharPredicate(this.constant);
+  const new(this.constant);
 
   final bool constant;
 

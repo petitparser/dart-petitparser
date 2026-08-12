@@ -1,7 +1,7 @@
 import '../predicate.dart';
 
 class LetterCharPredicate extends CharacterPredicate {
-  const LetterCharPredicate();
+  const new();
 
   @override
   bool test(int charCode) =>

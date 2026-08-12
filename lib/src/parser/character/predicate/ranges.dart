@@ -7,7 +7,7 @@ import '../predicate.dart';
 import 'range.dart';
 
 class RangesCharPredicate extends CharacterPredicate {
-  RangesCharPredicate.fromRanges(Iterable<RangeCharPredicate> ranges)
+  new fromRanges(Iterable<RangeCharPredicate> ranges)
     : ranges = Uint32List(size(ranges)) {
     var i = 0;
     for (final range in ranges) {
@@ -16,7 +16,7 @@ class RangesCharPredicate extends CharacterPredicate {
     }
   }
 
-  const RangesCharPredicate(this.ranges);
+  const new(this.ranges);
 
   final Uint32List ranges;
 

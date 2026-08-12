@@ -27,7 +27,7 @@ import 'formatting.dart';
 import 'utilities.dart';
 
 class CharacterRepeater extends LinterRule {
-  const CharacterRepeater() : super(LinterType.warning, 'Character repeater');
+  const new() : super(LinterType.warning, 'Character repeater');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -52,7 +52,7 @@ class CharacterRepeater extends LinterRule {
 }
 
 class DuplicateParser extends LinterRule {
-  const DuplicateParser() : super(LinterType.info, 'Duplicate parser');
+  const new() : super(LinterType.info, 'Duplicate parser');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -72,7 +72,7 @@ class DuplicateParser extends LinterRule {
 }
 
 class LeftRecursion extends LinterRule {
-  const LeftRecursion() : super(LinterType.error, 'Left recursion');
+  const new() : super(LinterType.error, 'Left recursion');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -92,7 +92,7 @@ class LeftRecursion extends LinterRule {
 }
 
 class NestedChoice extends LinterRule {
-  const NestedChoice() : super(LinterType.info, 'Nested choice');
+  const new() : super(LinterType.info, 'Nested choice');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -116,7 +116,7 @@ class NestedChoice extends LinterRule {
 }
 
 class NullableRepeater extends LinterRule {
-  const NullableRepeater() : super(LinterType.error, 'Nullable repeater');
+  const new() : super(LinterType.error, 'Nullable repeater');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -139,7 +139,7 @@ class NullableRepeater extends LinterRule {
 }
 
 class OverlappingChoice extends LinterRule {
-  const OverlappingChoice() : super(LinterType.info, 'Overlapping choice');
+  const new() : super(LinterType.info, 'Overlapping choice');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -167,7 +167,7 @@ class OverlappingChoice extends LinterRule {
 }
 
 class RepeatedChoice extends LinterRule {
-  const RepeatedChoice() : super(LinterType.warning, 'Repeated choice');
+  const new() : super(LinterType.warning, 'Repeated choice');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -194,7 +194,7 @@ class RepeatedChoice extends LinterRule {
 }
 
 class UnnecessaryFlatten extends LinterRule {
-  const UnnecessaryFlatten() : super(LinterType.warning, 'Unnecessary flatten');
+  const new() : super(LinterType.warning, 'Unnecessary flatten');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -220,8 +220,7 @@ class UnnecessaryFlatten extends LinterRule {
 }
 
 class UnnecessaryResolvable extends LinterRule {
-  const UnnecessaryResolvable()
-    : super(LinterType.warning, 'Unnecessary resolvable');
+  const new() : super(LinterType.warning, 'Unnecessary resolvable');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -241,7 +240,7 @@ class UnnecessaryResolvable extends LinterRule {
 }
 
 class UnoptimizedFlatten extends LinterRule {
-  const UnoptimizedFlatten() : super(LinterType.info, 'Unoptimized flatten');
+  const new() : super(LinterType.info, 'Unoptimized flatten');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -261,7 +260,7 @@ class UnoptimizedFlatten extends LinterRule {
 }
 
 class UnreachableChoice extends LinterRule {
-  const UnreachableChoice() : super(LinterType.warning, 'Unreachable choice');
+  const new() : super(LinterType.warning, 'Unreachable choice');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -286,7 +285,7 @@ class UnreachableChoice extends LinterRule {
 }
 
 class UnresolvedSettable extends LinterRule {
-  const UnresolvedSettable() : super(LinterType.error, 'Unresolved settable');
+  const new() : super(LinterType.error, 'Unresolved settable');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {
@@ -305,7 +304,7 @@ class UnresolvedSettable extends LinterRule {
 }
 
 class UnusedResult extends LinterRule {
-  const UnusedResult() : super(LinterType.info, 'Unused result');
+  const new() : super(LinterType.info, 'Unused result');
 
   @override
   void run(Analyzer analyzer, Parser parser, LinterCallback callback) {

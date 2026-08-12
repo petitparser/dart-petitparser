@@ -53,7 +53,7 @@ extension LazyRepeatingParserExtension<R> on Parser<R> {
 /// implementations. It limits its consumption to meet the 'limit' condition as
 /// early as possible.
 class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
-  LazyRepeatingParser(super.parser, super.limit, super.min, super.max);
+  new(super.parser, super.limit, super.min, super.max);
 
   @override
   Result<List<R>> parseOn(Context context) {

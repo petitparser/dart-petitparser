@@ -71,12 +71,7 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
 class SeparatedRepeatingParser<R, S>
     extends RepeatingParser<R, SeparatedList<R, S>>
     implements SequentialParser {
-  SeparatedRepeatingParser(
-    super.delegate,
-    this.separator,
-    super.min,
-    super.max,
-  );
+  new(super.delegate, this.separator, super.min, super.max);
 
   /// Parser consuming input between the repeated elements.
   Parser<S> separator;

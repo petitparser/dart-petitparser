@@ -17,7 +17,7 @@ Parser<String> predicate(
 
 /// A parser for a literal satisfying a predicate.
 class PredicateParser extends Parser<String> {
-  PredicateParser(this.length, this.predicate, this.message)
+  new(this.length, this.predicate, this.message)
     : assert(length > 0, 'length must be positive');
 
   /// The length of the input to read.

@@ -8,7 +8,7 @@ import '../../parser/utils/resolvable.dart';
 /// Internal implementation of a reference parser.
 @immutable
 class ReferenceParser<R> extends Parser<R> implements ResolvableParser<R> {
-  ReferenceParser(this.function, this.arguments);
+  new(this.function, this.arguments);
 
   final Function function;
   final List<dynamic> arguments;

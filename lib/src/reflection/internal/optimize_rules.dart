@@ -11,7 +11,7 @@ import '../analyzer.dart';
 import '../optimize.dart';
 
 class CharacterRepeater extends OptimizeRule {
-  const CharacterRepeater();
+  const new();
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
@@ -23,12 +23,11 @@ class CharacterRepeater extends OptimizeRule {
           replace(
             parser,
             RepeatingCharacterParser(
-                  character.predicate,
-                  character.message,
-                  repeating.min,
-                  repeating.max,
-                )
-                as Parser<R>,
+              character.predicate,
+              character.message,
+              repeating.min,
+              repeating.max,
+            ) as Parser<R>,
           );
         }
       }
@@ -37,7 +36,7 @@ class CharacterRepeater extends OptimizeRule {
 }
 
 class FlattenChoice extends OptimizeRule {
-  const FlattenChoice();
+  const new();
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
@@ -60,7 +59,7 @@ class FlattenChoice extends OptimizeRule {
 }
 
 class RemoveDelegate extends OptimizeRule {
-  const RemoveDelegate();
+  const new();
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {
@@ -79,7 +78,7 @@ class RemoveDelegate extends OptimizeRule {
 }
 
 class RemoveDuplicate extends OptimizeRule {
-  const RemoveDuplicate();
+  const new();
 
   @override
   void run<R>(Analyzer analyzer, Parser<R> parser, ReplaceParser<R> replace) {

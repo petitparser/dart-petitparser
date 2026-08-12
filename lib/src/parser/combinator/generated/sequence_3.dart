@@ -42,7 +42,7 @@ extension RecordOfParsersExtension3<R1, R2, R3>
 /// 3 positional parse results.
 class SequenceParser3<R1, R2, R3> extends Parser<(R1, R2, R3)>
     implements SequentialParser {
-  SequenceParser3(this.parser1, this.parser2, this.parser3);
+  new(this.parser1, this.parser2, this.parser3);
 
   Parser<R1> parser1;
   Parser<R2> parser2;

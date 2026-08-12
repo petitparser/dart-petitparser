@@ -28,7 +28,7 @@ Parser<String> string(
 
 /// A parser for a literal string.
 class StringParser extends Parser<String> {
-  StringParser(this.literal, this.message);
+  new(this.literal, this.message);
 
   /// The literal to match.
   final String literal;
@@ -64,7 +64,7 @@ class StringParser extends Parser<String> {
 
 /// A parser for a literal string, case-insensitive.
 class StringIgnoreCaseParser extends StringParser {
-  StringIgnoreCaseParser(super.input, super.message);
+  new(super.input, super.message);
 
   @override
   @noBoundsChecks

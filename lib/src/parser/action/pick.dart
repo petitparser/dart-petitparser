@@ -19,7 +19,7 @@ extension PickParserExtension<R> on Parser<List<R>> {
 /// A parser that performs a transformation with a given function on the
 /// successful parse result of the delegate.
 class PickParser<R> extends DelegateParser<List<R>, R> {
-  PickParser(super.delegate, this.index);
+  new(super.delegate, this.index);
 
   /// Indicates which element to return from the parsed list.
   final int index;

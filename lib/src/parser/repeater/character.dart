@@ -79,7 +79,7 @@ extension RepeatingCharacterParserExtension on Parser<String> {
 /// An abstract parser that repeatedly parses between 'min' and 'max' instances
 /// of its delegate.
 class RepeatingCharacterParser extends Parser<String> {
-  RepeatingCharacterParser(this.predicate, this.message, this.min, this.max)
+  new(this.predicate, this.message, this.min, this.max)
     : assert(0 <= min, 'min must be at least 0, but got $min'),
       assert(min <= max, 'max must be at least $min, but got $max');
 

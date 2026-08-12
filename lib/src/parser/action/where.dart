@@ -33,11 +33,13 @@ extension WhereParserExtension<R> on Parser<R> {
   }) => WhereParser<R>(this, predicate, factory ?? defaultFactory_(message));
 }
 
-typedef FailureFactory<R> =
-    Result<R> Function(Context context, Success<R> success);
+typedef FailureFactory<R> = Result<R> Function(
+  Context context,
+  Success<R> success,
+);
 
 class WhereParser<R> extends DelegateParser<R, R> {
-  WhereParser(super.parser, this.predicate, this.factory);
+  new(super.parser, this.predicate, this.factory);
 
   final Predicate<R> predicate;
   final FailureFactory<R> factory;

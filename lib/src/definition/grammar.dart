@@ -68,7 +68,7 @@ import 'resolve.dart';
 /// ```
 @optionalTypeArgs
 abstract class GrammarDefinition<R> {
-  const GrammarDefinition();
+  const new();
 
   /// The starting production of this definition.
   Parser<R> start();

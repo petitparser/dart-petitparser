@@ -37,7 +37,7 @@ extension RecordOfParsersExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
 /// 2 positional parse results.
 class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
     implements SequentialParser {
-  SequenceParser2(this.parser1, this.parser2);
+  new(this.parser1, this.parser2);
 
   Parser<R1> parser1;
   Parser<R2> parser2;

@@ -10,14 +10,13 @@ import 'character.dart';
 /// Parser class for an individual 16-bit UTF-16 code units satisfying a
 /// specified [CharacterPredicate].
 class SingleCharacterParser extends CharacterParser {
-  factory SingleCharacterParser(CharacterPredicate predicate, String message) =>
+  factory(CharacterPredicate predicate, String message) =>
       ConstantCharPredicate.any.isEqualTo(predicate)
       ? AnySingleCharacterParser.internal(predicate, message)
       : SingleCharacterParser.internal(predicate, message);
 
   @internal
-  SingleCharacterParser.internal(super.predicate, super.message)
-    : super.internal();
+  new internal(super.predicate, super.message) : super.internal();
 
   @override
   @noBoundsChecks
@@ -45,7 +44,7 @@ class SingleCharacterParser extends CharacterParser {
 /// Optimized version of [SingleCharacterParser] that parses any 16-bit UTF-16
 /// character (including possible surrogate pairs).
 class AnySingleCharacterParser extends SingleCharacterParser {
-  AnySingleCharacterParser.internal(super.predicate, super.message)
+  new internal(super.predicate, super.message)
     : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
       super.internal();
 

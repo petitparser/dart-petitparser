@@ -71,7 +71,7 @@ abstract class ProfileFrame {
 }
 
 class _ProfileFrame extends ProfileFrame {
-  _ProfileFrame(this.parser);
+  new(this.parser);
 
   final stopwatch = Stopwatch();
 

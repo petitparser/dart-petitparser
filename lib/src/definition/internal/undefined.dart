@@ -1,5 +1,5 @@
 class _Undefined {
-  const _Undefined();
+  const new();
 }
 
 /// A unique sentinel object for undefined data.

@@ -7,7 +7,7 @@ import 'matches_iterator.dart';
 
 @immutable
 class MatchesIterable<R> extends IterableBase<R> {
-  const MatchesIterable(this.parser, this.input, this.start, this.overlapping);
+  const new(this.parser, this.input, this.start, this.overlapping);
 
   final Parser<R> parser;
   final String input;

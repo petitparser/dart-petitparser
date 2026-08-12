@@ -15,9 +15,10 @@ void main() {
       .seq(whitespace().plus().flatten())
       .seq(identifier.or(number).or(quoted))
       .map((list) => list.last);
-  final javadoc = string(
-    '/**',
-  ).seq(string('*/').neg().star()).seq(string('*/')).flatten();
+  final javadoc = string('/**')
+      .seq(string('*/').neg().star())
+      .seq(string('*/'))
+      .flatten();
   final multiLine = string('"""')
       .seq((string(r'\"""') | any()).starLazy(string('"""')).flatten())
       .seq(string('"""'))

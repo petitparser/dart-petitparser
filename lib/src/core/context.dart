@@ -8,7 +8,7 @@ import 'token.dart';
 @immutable
 class Context {
   @preferInline
-  const Context(this.buffer, this.position);
+  const new(this.buffer, this.position);
 
   /// The buffer we are working on.
   final String buffer;

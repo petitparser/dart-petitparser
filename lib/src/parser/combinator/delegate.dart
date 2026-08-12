@@ -3,7 +3,7 @@ import '../../core/parser.dart';
 /// An abstract parser that delegates to a parser of type [T] and returns a
 /// result of type [R].
 abstract class DelegateParser<T, R> extends Parser<R> {
-  DelegateParser(this.delegate);
+  new(this.delegate);
 
   /// The parser this parser delegates to.
   Parser<T> delegate;

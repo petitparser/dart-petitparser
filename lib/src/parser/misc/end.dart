@@ -24,7 +24,7 @@ Parser<void> endOfInput({String message = 'end of input expected'}) =>
 
 /// A parser that succeeds at the end of input.
 class EndOfInputParser extends Parser<void> {
-  EndOfInputParser(this.message);
+  new(this.message);
 
   /// Error message to annotate parse failures with.
   final String message;

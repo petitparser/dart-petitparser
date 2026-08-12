@@ -10,16 +10,13 @@ import 'character.dart';
 /// Parser class for an individual Unicode code-point (including possible
 /// surrogate pairs) satisfying a specified [CharacterPredicate].
 class UnicodeCharacterParser extends CharacterParser {
-  factory UnicodeCharacterParser(
-    CharacterPredicate predicate,
-    String message,
-  ) => ConstantCharPredicate.any.isEqualTo(predicate)
+  factory(CharacterPredicate predicate, String message) =>
+      ConstantCharPredicate.any.isEqualTo(predicate)
       ? AnyUnicodeCharacterParser.internal(predicate, message)
       : UnicodeCharacterParser.internal(predicate, message);
 
   @internal
-  UnicodeCharacterParser.internal(super.predicate, super.message)
-    : super.internal();
+  new internal(super.predicate, super.message) : super.internal();
 
   @override
   @noBoundsChecks
@@ -72,7 +69,7 @@ class UnicodeCharacterParser extends CharacterParser {
 /// Optimized version of [UnicodeCharacterParser] that parses any Unicode
 /// character (including possible surrogate pairs).
 class AnyUnicodeCharacterParser extends UnicodeCharacterParser {
-  AnyUnicodeCharacterParser.internal(super.predicate, super.message)
+  new internal(super.predicate, super.message)
     : assert(ConstantCharPredicate.any.isEqualTo(predicate)),
       super.internal();
 
