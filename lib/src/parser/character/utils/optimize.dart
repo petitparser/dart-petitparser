@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../predicate.dart';
 import '../predicate/char.dart';
 import '../predicate/constant.dart';
@@ -40,9 +42,12 @@ CharacterPredicate optimizedRanges(
     } else {
       final lastRange = mergedRanges.last;
       if (lastRange.stop + 1 >= thisRange.start) {
+        // The ranges are sorted by (start, stop), so `thisRange` can still be
+        // fully contained in `lastRange`; take the larger stop, or the merge
+        // would drop the characters between the two stops.
         final characterRange = RangeCharPredicate(
           lastRange.start,
-          thisRange.stop,
+          math.max(lastRange.stop, thisRange.stop),
         );
         mergedRanges[mergedRanges.length - 1] = characterRange;
       } else {
