@@ -377,6 +377,22 @@ void main() {
         predicate: const RangeCharPredicate(97, 101),
       );
       variation<SingleCharacterParser>(
+        'contained',
+        pattern('a-ec-d'),
+        accept: ['a', 'b', 'c', 'd', 'e'],
+        reject: ['f'],
+        message: '[a-ec-d] expected',
+        predicate: const RangeCharPredicate(97, 101),
+      );
+      variation<SingleCharacterParser>(
+        'contained (negated)',
+        pattern('^a-ec-d'),
+        accept: ['f'],
+        reject: ['a', 'b', 'c', 'd', 'e'],
+        message: '[^a-ec-d] expected',
+        predicate: const NotCharPredicate(RangeCharPredicate(97, 101)),
+      );
+      variation<SingleCharacterParser>(
         'repeated',
         pattern('a-ea-e'),
         accept: ['a', 'b', 'c', 'd', 'e'],
