@@ -57,19 +57,17 @@ CharacterPredicate optimizedRanges(
   }
 
   // 3. Build the best resulting predicate:
-  final matchingCount = mergedRanges.fold<int>(
-    0,
-    (current, range) => current + (range.stop - range.start + 1),
-  );
-  if (matchingCount == 0) {
+  if (mergedRanges.isEmpty) {
     return ConstantCharPredicate.none;
-  } else if ((unicode && matchingCount - 1 == 0x10ffff) ||
-      (!unicode && matchingCount - 1 == 0xffff)) {
-    return ConstantCharPredicate.any;
   } else if (mergedRanges.length == 1) {
-    return mergedRanges[0].start == mergedRanges[0].stop
-        ? SingleCharPredicate(mergedRanges[0].start)
-        : mergedRanges[0];
+    final range = mergedRanges[0];
+    if (range.start <= 0 && range.stop >= (unicode ? 0x10ffff : 0xffff)) {
+      return ConstantCharPredicate.any;
+    } else if (range.start == range.stop) {
+      return SingleCharPredicate(range.start);
+    } else {
+      return range;
+    }
   } else {
     return LookupCharPredicate.fromRanges(mergedRanges);
   }

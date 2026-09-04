@@ -15,6 +15,7 @@ import 'package:petitparser/src/parser/character/predicate/ranges.dart';
 import 'package:petitparser/src/parser/character/predicate/uppercase.dart';
 import 'package:petitparser/src/parser/character/predicate/whitespace.dart';
 import 'package:petitparser/src/parser/character/predicate/word.dart';
+import 'package:petitparser/src/parser/character/utils/optimize.dart';
 import 'package:test/test.dart' hide anyOf;
 
 import 'utils/assertions.dart';
@@ -454,6 +455,14 @@ void main() {
         message: '[^\\x00-\u{10ffff}] expected',
         predicate: const ConstantCharPredicate(false),
       );
+      variation<SingleCharacterParser>(
+        'almost everything',
+        pattern('\u{0001}-\u{ffff}'),
+        accept: ['\u{0001}', '\u{ffff}'],
+        reject: ['\u{0000}'],
+        message: '[\\x01-\u{ffff}] expected',
+        predicate: const RangeCharPredicate(1, 0xffff),
+      );
     });
     group('nothing', () {
       variation<SingleCharacterParser>(
@@ -632,5 +641,45 @@ void main() {
 
     test('lookup', () => stress(LookupCharPredicate.fromRanges));
     test('ranges', () => stress(RangesCharPredicate.fromRanges));
+  });
+  group('optimize', () {
+    test('full range without zero', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(1, 65536),
+      ], unicode: false);
+      expect(predicate.test(0), isFalse);
+      expect(predicate.test(1), isTrue);
+      expect(predicate.test(65536), isTrue);
+      expect(predicate, isNot(ConstantCharPredicate.any));
+    });
+    test('disjoint ranges summing to full count', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(1, 32768),
+        const RangeCharPredicate(32770, 65537),
+      ], unicode: false);
+      expect(predicate.test(0), isFalse);
+      expect(predicate.test(32769), isFalse);
+      expect(predicate, isNot(ConstantCharPredicate.any));
+    });
+    test('unicode full range without zero', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(1, 0x10ffff + 1),
+      ], unicode: true);
+      expect(predicate.test(0), isFalse);
+      expect(predicate.test(1), isTrue);
+      expect(predicate, isNot(ConstantCharPredicate.any));
+    });
+    test('covers everything', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(0, 0xffff),
+      ], unicode: false);
+      expect(predicate, ConstantCharPredicate.any);
+    });
+    test('covers everything (unicode)', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(0, 0x10ffff),
+      ], unicode: true);
+      expect(predicate, ConstantCharPredicate.any);
+    });
   });
 }
