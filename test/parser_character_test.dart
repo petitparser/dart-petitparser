@@ -413,6 +413,38 @@ void main() {
           Uint32List.fromList([1, 47185920]),
         ),
       );
+      variation<SingleCharacterParser>(
+        'ignore-case',
+        pattern('b-d', ignoreCase: true),
+        accept: ['b', 'c', 'd', 'B', 'C', 'D'],
+        reject: ['a', 'A', 'e', 'E', '1'],
+        message: '[b-d] (case-insensitive) expected',
+        predicate: isA<LookupCharPredicate>(),
+      );
+      variation<SingleCharacterParser>(
+        'boundary crossing, ignore-case',
+        pattern('[-b', ignoreCase: true),
+        accept: ['[', r'\', ']', '^', '_', '`', 'a', 'b', 'A', 'B'],
+        reject: ['Z', 'c', 'C', '0'],
+        message: '[[-b] (case-insensitive) expected',
+        predicate: isA<LookupCharPredicate>(),
+      );
+      variation<SingleCharacterParser>(
+        'spanning letters, ignore-case',
+        pattern('A-z', ignoreCase: true),
+        accept: ['A', 'Z', '[', r'\', ']', '^', '_', '`', 'a', 'z'],
+        reject: ['@', '{', '0'],
+        message: '[A-z] (case-insensitive) expected',
+        predicate: const RangeCharPredicate(65, 122),
+      );
+      variation<UnicodeCharacterParser>(
+        'unicode, ignore-case',
+        pattern('а-в', ignoreCase: true, unicode: true),
+        accept: ['а', 'б', 'в', 'А', 'Б', 'В'],
+        reject: ['г', 'Г', 'a', 'A'],
+        message: '[а-в] (case-insensitive) expected',
+        predicate: isA<LookupCharPredicate>(),
+      );
     });
     group('everything', () {
       variation<AnySingleCharacterParser>(

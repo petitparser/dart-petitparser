@@ -40,14 +40,12 @@ Parser<String> pattern(
   var input = pattern;
   final isNegated = input.startsWith('^');
   if (isNegated) input = input.substring(1);
-  final inputs = ignoreCase
-      ? [input.toLowerCase(), input.toUpperCase()]
-      : [input];
   final parser = unicode ? _patternUnicodeParser : _patternParser;
-  var predicate = optimizedRanges(
-    inputs.expand((each) => parser.parse(each).value),
-    unicode: unicode,
-  );
+  final parsedRanges = parser.parse(input).value;
+  final ranges = ignoreCase
+      ? _expandCase(parsedRanges, unicode: unicode)
+      : parsedRanges;
+  var predicate = optimizedRanges(ranges, unicode: unicode);
   if (isNegated) {
     predicate = predicate is ConstantCharPredicate
         ? ConstantCharPredicate(!predicate.constant)
@@ -57,6 +55,31 @@ Parser<String> pattern(
       '[${toReadableString(pattern, unicode: unicode)}]'
       '${ignoreCase ? ' (case-insensitive)' : ''} expected';
   return CharacterParser(predicate, message, unicode: unicode);
+}
+
+Iterable<RangeCharPredicate> _expandCase(
+  Iterable<RangeCharPredicate> ranges, {
+  required bool unicode,
+}) sync* {
+  for (final range in ranges) {
+    yield range;
+    if (range.start <= 0 && range.stop >= (unicode ? 0x10ffff : 0xffff)) {
+      continue;
+    }
+    for (var code = range.start; code <= range.stop; code++) {
+      final char = String.fromCharCode(code);
+      final lower = char.toLowerCase();
+      final upper = char.toUpperCase();
+      final lowerCodes = unicode ? lower.runes : lower.codeUnits;
+      if (lower != char && lowerCodes.length == 1) {
+        yield RangeCharPredicate(lowerCodes.first, lowerCodes.first);
+      }
+      final upperCodes = unicode ? upper.runes : upper.codeUnits;
+      if (upper != char && upperCodes.length == 1) {
+        yield RangeCharPredicate(upperCodes.first, upperCodes.first);
+      }
+    }
+  }
 }
 
 Parser<List<RangeCharPredicate>> _createParser({required bool unicode}) {
