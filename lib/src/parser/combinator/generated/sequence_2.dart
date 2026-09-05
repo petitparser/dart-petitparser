@@ -8,6 +8,7 @@ import '../../../core/result.dart';
 import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
+import 'sequence_3.dart';
 
 /// Creates a [Parser] that consumes the 2 parsers passed as argument in
 /// sequence and returns a [Record] with the 2 positional parse results.
@@ -72,6 +73,21 @@ class SequenceParser2<R1, R2> extends Parser<(R1, R2)>
 
   @override
   SequenceParser2<R1, R2> copy() => SequenceParser2<R1, R2>(parser1, parser2);
+
+  /// Returns a parser that consumes the receiver followed by [other] in
+  /// sequence and returns a [SequenceParser3] with the 3 positional
+  /// parse results.
+  ///
+  /// Flattens into a strictly typed [Record] with 3 elements, preserving
+  /// static type information.
+  ///
+  /// For example,
+  /// the parser `char('a').then(char('b')).then(char('c'))`
+  /// returns `('a', 'b', 'c')`
+  /// for the input `'abc'`.
+  @useResult
+  SequenceParser3<R1, R2, R3> then<R3>(Parser<R3> other) =>
+      SequenceParser3<R1, R2, R3>(parser1, parser2, other);
 }
 
 /// Extension on a [Record] with 2 positional values.

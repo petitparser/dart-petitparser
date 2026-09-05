@@ -30,6 +30,10 @@ void main() {
       final alternate = (char('a'), char('b')).toSequenceParser();
       expect(alternate, isParserDeepEqual(parser));
     });
+    test('then()', () {
+      final alternate = char('a').then(char('b'));
+      expect(alternate, isParserDeepEqual(parser));
+    });
   });
   group('map2', () {
     final parser = seq2(char('a'), char('b')).map2((a, b) => '$a$b');
@@ -115,6 +119,10 @@ void main() {
     });
     test('toSequenceParser()', () {
       final alternate = (char('a'), char('b'), char('c')).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a').then(char('b')).then(char('c'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -233,6 +241,13 @@ void main() {
         char('c'),
         char('d'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -375,6 +390,14 @@ void main() {
         char('d'),
         char('e'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'))
+          .then(char('e'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -548,6 +571,15 @@ void main() {
         char('e'),
         char('f'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'))
+          .then(char('e'))
+          .then(char('f'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -746,6 +778,16 @@ void main() {
         char('f'),
         char('g'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'))
+          .then(char('e'))
+          .then(char('f'))
+          .then(char('g'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -972,6 +1014,17 @@ void main() {
         char('g'),
         char('h'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'))
+          .then(char('e'))
+          .then(char('f'))
+          .then(char('g'))
+          .then(char('h'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });
@@ -1223,6 +1276,18 @@ void main() {
         char('h'),
         char('i'),
       ).toSequenceParser();
+      expect(alternate, isParserDeepEqual(parser));
+    });
+    test('then()', () {
+      final alternate = char('a')
+          .then(char('b'))
+          .then(char('c'))
+          .then(char('d'))
+          .then(char('e'))
+          .then(char('f'))
+          .then(char('g'))
+          .then(char('h'))
+          .then(char('i'));
       expect(alternate, isParserDeepEqual(parser));
     });
   });

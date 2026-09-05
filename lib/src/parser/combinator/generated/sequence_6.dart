@@ -8,6 +8,7 @@ import '../../../core/result.dart';
 import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
+import 'sequence_7.dart';
 
 /// Creates a [Parser] that consumes the 6 parsers passed as argument in
 /// sequence and returns a [Record] with the 6 positional parse results.
@@ -148,6 +149,29 @@ class SequenceParser6<R1, R2, R3, R4, R5, R6>
         parser4,
         parser5,
         parser6,
+      );
+
+  /// Returns a parser that consumes the receiver followed by [other] in
+  /// sequence and returns a [SequenceParser7] with the 7 positional
+  /// parse results.
+  ///
+  /// Flattens into a strictly typed [Record] with 7 elements, preserving
+  /// static type information.
+  ///
+  /// For example,
+  /// the parser `char('a').then(char('b')).then(char('c')).then(char('d')).then(char('e')).then(char('f')).then(char('g'))`
+  /// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g')`
+  /// for the input `'abcdefg'`.
+  @useResult
+  SequenceParser7<R1, R2, R3, R4, R5, R6, R7> then<R7>(Parser<R7> other) =>
+      SequenceParser7<R1, R2, R3, R4, R5, R6, R7>(
+        parser1,
+        parser2,
+        parser3,
+        parser4,
+        parser5,
+        parser6,
+        other,
       );
 }
 

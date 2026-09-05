@@ -5,6 +5,7 @@ import '../../core/parser.dart';
 import '../../core/result.dart';
 import '../../shared/pragma.dart';
 import '../utils/sequential.dart';
+import 'generated/sequence_2.dart';
 import 'list.dart';
 
 export 'generated/sequence_2.dart';
@@ -16,7 +17,7 @@ export 'generated/sequence_7.dart';
 export 'generated/sequence_8.dart';
 export 'generated/sequence_9.dart';
 
-extension SequenceParserExtension on Parser {
+extension SequenceParserExtension<R1> on Parser<R1> {
   /// Returns a parser that accepts the receiver followed by [other]. The
   /// resulting parser returns a list of the parse result of the receiver
   /// followed by the parse result of [other]. Calling this method on an
@@ -26,6 +27,8 @@ extension SequenceParserExtension on Parser {
   /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
+  ///
+  /// Prefer to use [then] for strongly typed sequences: `first.then(second)`.
   @useResult
   Parser<List<dynamic>> seq(Parser other) => switch (this) {
     SequenceParser(children: final children) => [
@@ -41,8 +44,27 @@ extension SequenceParserExtension on Parser {
   /// For example, the parser `letter() & digit() & letter()` accepts a
   /// letter followed by a digit and another letter. The parse result of the
   /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
+  ///
+  /// Prefer to use [then] for strongly typed sequences: `first.then(second)`.
   @useResult
   Parser<List<dynamic>> operator &(Parser other) => seq(other);
+
+  /// Returns a parser that consumes the receiver followed by [other] in
+  /// sequence and returns a [Record] with the 2 positional parse results.
+  ///
+  /// Unlike [seq] and [operator &] which return an untyped `List<dynamic>`,
+  /// [then] preserves the static types of each element. Subsequent calls to
+  /// [then] automatically flatten into strictly typed records up to 9 elements.
+  ///
+  /// For example, the parser `char('a').then(char('b'))` returns `('a', 'b')`
+  /// with the static type `(String, String)` for the input `'ab'`.
+  ///
+  /// Calling [then] again flattens into a 3-element record:
+  /// `char('a').then(char('b')).then(char('c'))` returns `('a', 'b', 'c')`
+  /// with the static type `(String, String, String)`.
+  @useResult
+  SequenceParser2<R1, R2> then<R2>(Parser<R2> other) =>
+      SequenceParser2<R1, R2>(this, other);
 }
 
 extension SequenceIterableExtension<R> on Iterable<Parser<R>> {

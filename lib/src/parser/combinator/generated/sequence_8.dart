@@ -8,6 +8,7 @@ import '../../../core/result.dart';
 import '../../../shared/pragma.dart';
 import '../../action/map.dart';
 import '../../utils/sequential.dart';
+import 'sequence_9.dart';
 
 /// Creates a [Parser] that consumes the 8 parsers passed as argument in
 /// sequence and returns a [Record] with the 8 positional parse results.
@@ -184,6 +185,32 @@ class SequenceParser8<R1, R2, R3, R4, R5, R6, R7, R8>
         parser7,
         parser8,
       );
+
+  /// Returns a parser that consumes the receiver followed by [other] in
+  /// sequence and returns a [SequenceParser9] with the 9 positional
+  /// parse results.
+  ///
+  /// Flattens into a strictly typed [Record] with 9 elements, preserving
+  /// static type information.
+  ///
+  /// For example,
+  /// the parser `char('a').then(char('b')).then(char('c')).then(char('d')).then(char('e')).then(char('f')).then(char('g')).then(char('h')).then(char('i'))`
+  /// returns `('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')`
+  /// for the input `'abcdefghi'`.
+  @useResult
+  SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9> then<R9>(
+    Parser<R9> other,
+  ) => SequenceParser9<R1, R2, R3, R4, R5, R6, R7, R8, R9>(
+    parser1,
+    parser2,
+    parser3,
+    parser4,
+    parser5,
+    parser6,
+    parser7,
+    parser8,
+    other,
+  );
 }
 
 /// Extension on a [Record] with 8 positional values.

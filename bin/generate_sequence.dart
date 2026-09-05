@@ -46,6 +46,9 @@ Future<void> generateImplementation(int index) async {
   out.writeln('import \'../../../shared/pragma.dart\';');
   out.writeln('import \'../../action/map.dart\';');
   out.writeln('import \'../../utils/sequential.dart\';');
+  if (index < max) {
+    out.writeln('import \'sequence_${index + 1}.dart\';');
+  }
   out.writeln();
 
   // Constructor function.
@@ -129,7 +132,7 @@ Future<void> generateImplementation(int index) async {
     'implements SequentialParser {',
   );
   out.writeln(
-    'SequenceParser$index('
+    'new('
     '${parserNames.map((each) => 'this.$each').join(', ')});',
   );
   out.writeln();
@@ -187,6 +190,42 @@ Future<void> generateImplementation(int index) async {
     'SequenceParser$index<${resultTypes.join(', ')}>'
     '(${parserNames.join(', ')});',
   );
+
+  if (index < max) {
+    final nextIndex = index + 1;
+    final nextType = 'R$nextIndex';
+    final allResultTypes = [...resultTypes, nextType].join(', ');
+    final nextChar = String.fromCharCode('a'.codeUnitAt(0) + index);
+    final allChars = [...characters, nextChar];
+
+    out.writeln();
+    out.writeln(
+      '  /// Returns a parser that consumes the receiver followed by [other] in',
+    );
+    out.writeln(
+      '  /// sequence and returns a [SequenceParser$nextIndex] with the $nextIndex positional',
+    );
+    out.writeln('  /// parse results.');
+    out.writeln('  ///');
+    out.writeln(
+      '  /// Flattens into a strictly typed [Record] with $nextIndex elements, preserving',
+    );
+    out.writeln('  /// static type information.');
+    out.writeln('  ///');
+    out.writeln('  /// For example,');
+    out.writeln(
+      '  /// the parser `${characters.map((c) => 'char(\'$c\')').reduce((a, b) => '$a.then($b)')}.then(char(\'$nextChar\'))`',
+    );
+    out.writeln(
+      '  /// returns `(${allChars.map((c) => '\'$c\'').join(', ')})`',
+    );
+    out.writeln('  /// for the input `\'${allChars.join()}\'`.');
+    out.writeln('  @useResult');
+    out.writeln(
+      '  SequenceParser$nextIndex<$allResultTypes> then<$nextType>(Parser<$nextType> other) => '
+      'SequenceParser$nextIndex<$allResultTypes>(${parserNames.join(', ')}, other);',
+    );
+  }
   out.writeln('}');
   out.writeln();
 
@@ -295,6 +334,13 @@ Future<void> generateTest() async {
     out.writeln(
       'final alternate = ('
       '${chars.map((each) => 'char(\'$each\')').join(', ')}).toSequenceParser();',
+    );
+    out.writeln('expect(alternate, isParserDeepEqual(parser));');
+    out.writeln('});');
+    out.writeln('test(\'then()\', () {');
+    out.writeln(
+      'final alternate = '
+      '${chars.map((each) => 'char(\'$each\')').reduce((a, b) => '$a.then($b)')};',
     );
     out.writeln('expect(alternate, isParserDeepEqual(parser));');
     out.writeln('});');
