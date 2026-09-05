@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.1.0 (unpublished)
+
+- Dart 3.13 requirement.
+- Add `.then` to fluently construct strongly typed sequences.
+- Add specialized `StringParser` and `StringIgnoreCaseParser`.
+- Optimize character predicate selection and lookup bit-testing.
+- Fix character range merging with contained sub-ranges (thanks to [dylanpulver](https://github.com/dylanpulver)).
+- Fix character range optimization falsely returning `ConstantCharPredicate.any`.
+- Fix case-insensitive pattern parsing with inverted character ranges.
+- Rewrite and modernize README.md with approachable tutorials, typed Dart idioms, and practical examples.
+
 ## 7.0.2
 
 - Numerous fixes and improvements to documentation and examples.
