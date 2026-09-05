@@ -3,7 +3,7 @@ version: 7.0.2
 
 homepage: https://petitparser.github.io
 repository: https://github.com/petitparser/dart-petitparser
-description: A dynamic parser framework to build efficient grammars and parsers quickly.
+description: Build fast, composable, and type-safe grammars and parsers in Dart.
 screenshots:
   - description: 'PetitParser'
     path: petitparser.png
