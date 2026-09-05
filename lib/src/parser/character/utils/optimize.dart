@@ -5,6 +5,7 @@ import '../predicate/char.dart';
 import '../predicate/constant.dart';
 import '../predicate/lookup.dart';
 import '../predicate/range.dart';
+import '../predicate/ranges.dart';
 
 /// Creates an optimized character from a string.
 CharacterPredicate optimizedString(
@@ -69,6 +70,16 @@ CharacterPredicate optimizedRanges(
       return range;
     }
   } else {
+    // Prefer O(1) table lookup when the bitset is compact (<= 1 KB, e.g. ASCII
+    // and contiguous scripts). Switch to O(log N) binary search on flat ranges
+    // when a large code point span would cause excessive bitset allocations and
+    // L1 data cache eviction for relatively few ranges.
+    final lookupBytes =
+        (mergedRanges.last.stop - mergedRanges.first.start + 32) >> 3;
+    final rangesBytes = mergedRanges.length * 8;
+    if (lookupBytes > 1024 && rangesBytes < (lookupBytes >> 3)) {
+      return RangesCharPredicate.fromRanges(mergedRanges);
+    }
     return LookupCharPredicate.fromRanges(mergedRanges);
   }
 }

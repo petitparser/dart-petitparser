@@ -117,7 +117,7 @@ void main() {
       accept: ['a', 'b', 'c', '🤔', '🤐'],
       reject: ['0', 'd', '🙄'],
       message: 'any of "abc🤔🤐" expected',
-      predicate: isA<LookupCharPredicate>(),
+      predicate: isA<RangesCharPredicate>(),
     );
   });
   group('char', () {
@@ -315,7 +315,7 @@ void main() {
         accept: ['y', '😃', '💕'],
         reject: ['x', 'z', '💞'],
         message: '[y😃💕] expected',
-        predicate: isA<LookupCharPredicate>(),
+        predicate: isA<RangesCharPredicate>(),
       );
       variation<SingleCharacterParser>(
         'negated',
@@ -712,6 +712,29 @@ void main() {
         const RangeCharPredicate(0, 0x10ffff),
       ], unicode: true);
       expect(predicate, ConstantCharPredicate.any);
+    });
+    test('selects lookup for dense ranges', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(48, 57),
+        const RangeCharPredicate(65, 90),
+        const RangeCharPredicate(97, 122),
+      ], unicode: false);
+      expect(predicate, isA<LookupCharPredicate>());
+      expect(predicate.test('a'.codeUnitAt(0)), isTrue);
+      expect(predicate.test('Z'.codeUnitAt(0)), isTrue);
+      expect(predicate.test('0'.codeUnitAt(0)), isTrue);
+      expect(predicate.test('?'.codeUnitAt(0)), isFalse);
+    });
+    test('selects ranges for sparse ranges with large span', () {
+      final predicate = optimizedRanges([
+        const RangeCharPredicate(97, 97),
+        const RangeCharPredicate(0x10000, 0x10000),
+      ], unicode: true);
+      expect(predicate, isA<RangesCharPredicate>());
+      expect(predicate.test(97), isTrue);
+      expect(predicate.test(0x10000), isTrue);
+      expect(predicate.test(98), isFalse);
+      expect(predicate.test(0), isFalse);
     });
   });
 }
