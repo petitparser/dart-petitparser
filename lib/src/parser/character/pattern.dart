@@ -93,7 +93,7 @@ Parser<List<RangeCharPredicate>> _createParser({required bool unicode}) {
     ),
   );
   // Parser that reads a character range.
-  final range = (character, char('-'), character).toSequenceParser().map3(
+  final range = seq3(character, char('-'), character).map3(
     (start, _, stop) => RangeCharPredicate(
       toCharCode(start, unicode: unicode),
       toCharCode(stop, unicode: unicode),

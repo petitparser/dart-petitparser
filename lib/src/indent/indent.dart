@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
 import '../core/parser.dart';
-import '../parser/action/map.dart';
 import '../parser/action/where.dart';
 import '../parser/character/pattern.dart';
 import '../parser/combinator/and.dart';
+import '../parser/combinator/generated/sequence_3.dart';
 import '../parser/misc/epsilon.dart';
 import '../parser/repeater/character.dart';
 
@@ -31,25 +31,44 @@ class Indent {
   @internal
   String current = '';
 
-  /// A parser that increases the current indentation and returns it, but does
-  /// not consume anything.
-  late Parser<String> increase = parser
+  /// A parser that increases the indentation.
+  ///
+  /// The parser performs the following actions in sequence:
+  ///
+  /// 1. verifies that the new indentation is deeper than the previous one,
+  /// 2. pushes the previous indentation to the stack,
+  /// 3. updates the current indentation with the new one, and
+  /// 4. returns the new indentation without consuming it.
+  ///
+  late final Parser<String> increase = parser
       .plusString(message: message)
-      .where((value) => value.length > current.length)
-      .map((value) {
-        stack.add(current);
-        return current = value;
-      }, hasSideEffects: true)
+      .where((value) {
+        if (value.startsWith(current) && value.length > current.length) {
+          stack.add(current);
+          current = value;
+          return true;
+        } else {
+          return false;
+        }
+      })
       .and();
 
-  /// A parser that consumes and returns the current indent.
-  late Parser<String> same = parser
+  /// A parser that consumes and matches the current indentation level.
+  late final Parser<String> same = parser
       .starString(message: message)
       .where((value) => value == current);
 
-  /// A parser that decreases the current indentation and returns it, but does
-  /// not consume anything.
-  late Parser<String> decrease = epsilon()
-      .where((_) => stack.isNotEmpty)
-      .map((_) => current = stack.removeLast(), hasSideEffects: true);
+  /// A parser that decreases the indentation by one level.
+  late final Parser<void> decrease = epsilon().where((_) {
+    if (stack.isNotEmpty) {
+      current = stack.removeLast();
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  /// Helper to indent during the run of another parser.
+  Parser<R> during<R>(Parser<R> parser) =>
+      seq3(increase, parser, decrease).map3((_, body, _) => body);
 }

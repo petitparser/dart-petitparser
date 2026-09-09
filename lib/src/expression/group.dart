@@ -24,7 +24,7 @@ class ExpressionGroup<T> {
     Parser<L> left,
     Parser<R> right,
     T Function(L left, T value, R right) callback,
-  ) => _wrapper.add((left, _loopback, right).toSequenceParser().map3(callback));
+  ) => _wrapper.add(seq3(left, _loopback, right).map3(callback));
 
   Parser<T> _buildWrapper(Parser<T> inner) => buildChoice([..._wrapper, inner]);
 
@@ -41,7 +41,7 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPrefix(Parser<T> inner) => _prefix.isEmpty
       ? inner
-      : (buildChoice(_prefix).star(), inner).toSequenceParser().map2(
+      : seq2(buildChoice(_prefix).star(), inner).map2(
           (prefix, value) =>
               prefix.reversed.fold(value, (each, result) => result.call(each)),
         );
@@ -59,7 +59,7 @@ class ExpressionGroup<T> {
 
   Parser<T> _buildPostfix(Parser<T> inner) => _postfix.isEmpty
       ? inner
-      : (inner, buildChoice(_postfix).star()).toSequenceParser().map2(
+      : seq2(inner, buildChoice(_postfix).star()).map2(
           (value, postfix) =>
               postfix.fold(value, (each, result) => result.call(each)),
         );

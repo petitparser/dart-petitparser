@@ -11,48 +11,47 @@ class IndentList extends GrammarDefinition {
   final indent = Indent();
 
   @override
-  Parser start() => <Parser>[
+  Parser<List<dynamic>> start() => seq4(
     ref0(newlines).optional(),
     ref0(things),
     ref0(newlines).optional(),
     endOfInput(),
-  ].toSequenceParser().pick(1);
+  ).map4((_, things, _, _) => things);
 
-  Parser things() => <Parser>[
+  Parser<List<dynamic>> things() => seq2(
     indent.same,
     ref0(object) | ref0(line),
-  ].toSequenceParser().pick(1).star();
+  ).map2((_, value) => value).star();
 
-  Parser object() => <Parser>[
+  Parser<Map<String, dynamic>> object() => seq2(
     ref0(key),
     ref0(block) | ref0(inline),
-  ].toSequenceParser().map((values) => {values[0]: values[1]});
+  ).map2((key, values) => {key: values});
 
-  Parser key() => <Parser>[
+  Parser<String> key() => seq4(
     pattern('^ \t\r\n:').plusString(),
     indent.parser.star(),
     char(':'),
     indent.parser.star(),
-  ].toSequenceParser().pick(0);
+  ).map4((key, _, _, _) => key);
 
-  Parser block() => <Parser>[
+  Parser<List<dynamic>> block() => seq2(
     ref0(newlines),
-    indent.increase,
-    ref0(things),
-    indent.decrease,
-  ].toSequenceParser().pick(2);
+    indent.during(ref0(things)),
+  ).map2((_, things) => things);
 
-  Parser inline() => ref0(line).map((value) => [value]);
+  Parser<String> inline() => ref0(line);
 
-  Parser line() => <Parser>[
+  Parser<String> line() => seq2(
     ref0(newline).neg().plus().flatten(),
     ref0(newlines).optional(),
-  ].toSequenceParser().pick(0);
+  ).map2((line, _) => line);
 
-  Parser newline() => Token.newlineParser();
+  Parser<void> whitespaces() => indent.parser.star();
 
-  Parser newlines() =>
-      [indent.parser.star(), ref0(newline)].toSequenceParser().plus();
+  Parser<void> newline() => Token.newlineParser();
+
+  Parser<void> newlines() => seq2(ref0(whitespaces), ref0(newline)).plus();
 }
 
 void main() {
@@ -207,15 +206,9 @@ void main() {
         isParseSuccess(
           'a:1\nb: 2\nc :3',
           result: [
-            {
-              'a': ['1'],
-            },
-            {
-              'b': ['2'],
-            },
-            {
-              'c': ['3'],
-            },
+            {'a': '1'},
+            {'b': '2'},
+            {'c': '3'},
           ],
         ),
       );
