@@ -8,25 +8,31 @@ import '../utils/failure_joiner.dart';
 import 'list.dart';
 
 extension ChoiceParserExtension on Parser {
-  /// Returns a parser that accepts the receiver or [other]. The resulting
-  /// parser returns the parse result of the receiver, if the receiver fails
-  /// it returns the parse result of [other] (exclusive ordered choice).
+  /// Returns a parser that accepts the receiver or [other] (ordered choice).
   ///
-  /// An optional [failureJoiner] can be specified that determines which
-  /// [Failure] to return in case both parsers fail. By default the last
-  /// failure is returned [selectLast], but [selectFarthest] is another
-  /// common choice that usually gives better error messages.
+  /// Evaluates the receiver first; if it succeeds, its result is returned.
+  /// If it fails, parsing falls back to [other]. If called on an existing
+  /// [ChoiceParser], this flattens [other] into the existing choice rather
+  /// than nesting choices.
   ///
-  /// For example, the parser `letter().or(digit())` accepts a letter or a
-  /// digit. An example where the order matters is the following choice between
-  /// overlapping parsers: `letter().or(char('a'))`. In the example the parser
-  /// `char('a')` will never be activated, because the input is always consumed
-  /// by `letter()`. This can be problematic if the author intended to attach a
-  /// production action to `char('a')`.
+  /// The optional [failureJoiner] determines which [Failure] to report when
+  /// all alternatives fail. Defaults to [selectLast], though [selectFarthest]
+  /// can sometimes provide more helpful error messages.
   ///
-  /// Due to https://github.com/dart-lang/language/issues/1557 the resulting
-  /// parser cannot be properly typed. Please use [ChoiceIterableExtension]
-  /// as a workaround: `[first, second].toChoiceParser()`.
+  /// Order is significant. Because alternatives are tested sequentially, earlier
+  /// branches take precedence over later, overlapping ones:
+  ///
+  /// ```dart
+  /// // Evaluates to Object (String or int):
+  /// final parser = letter() | digit().map(int.parse);
+  ///
+  /// // In this example, char('a') is unreachable because letter() matches first:
+  /// final shadowed = letter() | char('a');
+  /// ```
+  ///
+  /// The returned parser has result type `dynamic` due to Dart's lack of union
+  /// types (https://github.com/dart-lang/language/issues/1557). For better type
+  /// safety, prefer [ChoiceIterableExtension.toChoiceParser].
   @useResult
   ChoiceParser<dynamic> or(Parser other, {FailureJoiner? failureJoiner}) =>
       switch (this) {
@@ -41,14 +47,48 @@ extension ChoiceParserExtension on Parser {
         _ => [this, other].toChoiceParser(failureJoiner: failureJoiner),
       };
 
-  /// Convenience operator returning a parser that accepts the receiver or
-  /// [other]. See [or] for details.
+  /// Syntactic sugar for [or].
+  ///
+  /// Returns an ordered choice parser trying the receiver first, followed
+  /// by [other].
+  ///
+  /// ```dart
+  /// final parser = letter() | digit().map(int.parse);
+  /// parser.parse('a'); // Success: 'a'
+  /// parser.parse('1'); // Success: 1
+  /// ```
+  ///
+  /// The result type is `dynamic`. For better type safety, prefer
+  /// [ChoiceIterableExtension.toChoiceParser].
   @useResult
   ChoiceParser<dynamic> operator |(Parser other) => or(other);
 }
 
 extension ChoiceIterableExtension<R> on Iterable<Parser<R>> {
-  /// Converts the parser in this iterable to a choice of parsers.
+  /// Combines this iterable of parsers into a single [ChoiceParser].
+  ///
+  /// Tries each parser in sequence, returning the result of the first successful
+  /// match. If all parsers fail, a joined [Failure] is produced according to
+  /// [failureJoiner] (defaults to [selectLast]).
+  ///
+  /// Because all elements in the collection must share a single type parameter
+  /// [R], combining parsers of different types causes Dart to infer their
+  /// closest common supertype (typically `Object` or `Object?`):
+  ///
+  /// ```dart
+  /// // Inferred as ChoiceParser<Object>:
+  /// final choice = [
+  ///   letter(),                  // Parser<String>
+  ///   digit().map(int.parse),     // Parser<int>
+  /// ].toChoiceParser();
+  /// ```
+  ///
+  /// For homogeneous collections, the concrete type is preserved directly:
+  ///
+  /// ```dart
+  /// // Inferred as ChoiceParser<String>:
+  /// final keywords = [string('if'), string('else')].toChoiceParser();
+  /// ```
   ChoiceParser<R> toChoiceParser({FailureJoiner? failureJoiner}) =>
       ChoiceParser<R>(this, failureJoiner: failureJoiner);
 }

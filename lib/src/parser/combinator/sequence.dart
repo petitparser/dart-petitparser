@@ -6,6 +6,7 @@ import '../../core/result.dart';
 import '../../shared/pragma.dart';
 import '../utils/sequential.dart';
 import 'generated/sequence_2.dart';
+import 'generated/sequence_3.dart';
 import 'list.dart';
 
 export 'generated/sequence_2.dart';
@@ -18,17 +19,19 @@ export 'generated/sequence_8.dart';
 export 'generated/sequence_9.dart';
 
 extension SequenceParserExtension<R1> on Parser<R1> {
-  /// Returns a parser that accepts the receiver followed by [other]. The
-  /// resulting parser returns a list of the parse result of the receiver
-  /// followed by the parse result of [other]. Calling this method on an
-  /// existing sequence code does not nest this sequence into a new one, but
-  /// instead augments the existing sequence with [other].
+  /// Returns a parser that accepts the receiver followed by [other].
   ///
-  /// For example, the parser `letter().seq(digit()).seq(letter())` accepts a
-  /// letter followed by a digit and another letter. The parse result of the
-  /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
+  /// The resulting parser produces a flattened [List] containing the result
+  /// of the receiver followed by the result of [other]. If called on an
+  /// existing [SequenceParser], this flattens [other] into the sequence
+  /// rather than nesting a new sequence within it.
   ///
-  /// Prefer to use [then] for strongly typed sequences: `first.then(second)`.
+  /// For example, the parser `letter().seq(digit().map(int.parse)).seq(letter())`
+  /// accepts a letter followed by a digit and another letter. For the input
+  /// `'a1b'`, it evaluates to `<dynamic>['a', 1, 'b']`.
+  ///
+  /// The resulting list element type is `dynamic`. For compile-time type safety,
+  /// prefer using [then], [seq2], or [seq3].
   @useResult
   Parser<List<dynamic>> seq(Parser other) => switch (this) {
     SequenceParser(children: final children) => [
@@ -38,41 +41,55 @@ extension SequenceParserExtension<R1> on Parser<R1> {
     _ => [this, other].toSequenceParser(),
   };
 
-  /// Convenience operator returning a parser that accepts the receiver followed
-  /// by [other]. See [seq] for details.
+  /// Syntactic sugar for [seq].
   ///
-  /// For example, the parser `letter() & digit() & letter()` accepts a
-  /// letter followed by a digit and another letter. The parse result of the
-  /// input string `'a1b'` is the list `<dynamic>['a', '1', 'b']`.
+  /// Combines the receiver and [other] into a sequential parser producing
+  /// a `List<dynamic>`.
   ///
-  /// Prefer to use [then] for strongly typed sequences: `first.then(second)`.
+  /// ```dart
+  /// final parser = letter() & digit().map(int.parse) & letter();
+  /// parser.parse('a1b'); // Success: ['a', 1, 'b']
+  /// ```
+  ///
+  /// For type-safe alternatives, prefer [then], [seq2], or [seq3].
   @useResult
   Parser<List<dynamic>> operator &(Parser other) => seq(other);
 
-  /// Returns a parser that consumes the receiver followed by [other] in
-  /// sequence and returns a [Record] with the 2 positional parse results.
+  /// Returns a parser that sequences the receiver and [other], returning their
+  /// results as a typed 2-element [Record].
   ///
-  /// Unlike [seq] and [operator &] which return an untyped `List<dynamic>`,
-  /// [then] preserves the static types of each element. Subsequent calls to
-  /// [then] automatically flatten into strictly typed records up to 9 elements.
+  /// Unlike [seq], which returns an untyped `List<dynamic>`, [then] preserves
+  /// the static types of all matched parsers. Chained invocations of [then]
+  /// flatten automatically into larger typed records up to 9 elements.
   ///
-  /// For example, the parser `char('a').then(char('b'))` returns `('a', 'b')`
-  /// with the static type `(String, String)` for the input `'ab'`.
+  /// For example:
+  /// ```dart
+  /// // Produces a (String, int) record:
+  /// final pair = letter().then(digit().map(int.parse));
   ///
-  /// Calling [then] again flattens into a 3-element record:
-  /// `char('a').then(char('b')).then(char('c'))` returns `('a', 'b', 'c')`
-  /// with the static type `(String, String, String)`.
+  /// // Flattens into a 3-element record (String, int, String):
+  /// final triplet = pair.then(letter());
+  /// ```
   @useResult
   SequenceParser2<R1, R2> then<R2>(Parser<R2> other) =>
       SequenceParser2<R1, R2>(this, other);
 }
 
 extension SequenceIterableExtension<R> on Iterable<Parser<R>> {
-  /// Converts the parser in this iterable to a sequence of parsers.
+  /// Combines this iterable of parsers into a single [SequenceParser].
   ///
-  /// For example, the parser `[letter(), digit(), letter()].toSequenceParser()`
-  /// accepts a letter followed by a digit and another letter. The parse result
-  /// of the input string `'a1b'` is the list `<String>['a', '1', 'b']`.
+  /// The parsers execute sequentially, collecting their outputs into a `List<R>`.
+  /// If any parser in the sequence fails, the entire sequence fails at that point.
+  ///
+  /// For example:
+  /// ```dart
+  /// final sequence = [letter(), digit().map(int.parse), letter()].toSequenceParser();
+  /// sequence.parse('a1b'); // Success: <Object>['a', 1, 'b']
+  /// ```
+  ///
+  /// Heterogeneous sequences require casting or using a common base type. For
+  /// compile-time typed safety, prefer [SequenceParserExtension.then], [seq2],
+  /// or [seq3].
   @useResult
   Parser<List<R>> toSequenceParser() => SequenceParser<R>(this);
 }
