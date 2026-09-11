@@ -5,6 +5,7 @@
 .idea/
 .packages
 .pub/
+.opencode/
 *.iml
 petitparser_examples/build
 pubspec.lock

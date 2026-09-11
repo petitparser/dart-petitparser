@@ -11,7 +11,6 @@ import '../parser/repeater/character.dart';
 /// A stateful set of parsers to handled indentation based grammars.
 ///
 /// Based on https://stackoverflow.com/a/56926044/82303.
-@experimental
 class Indent {
   new({Parser<String>? parser, String? message})
     : parser = parser ?? pattern(' \t'),
