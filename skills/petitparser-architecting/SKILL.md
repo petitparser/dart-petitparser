@@ -9,11 +9,25 @@ description: Organizes grammars into maintainable, scalable, and modular archite
 
 - Transitioning from standalone combinator scripts to production-grade, maintainable grammars.
 - Architecting non-trivial language grammars (e.g. Python, Dart, SQL) with multiple syntactic domains.
-- Constructing strongly-typed AST node hierarchies with sealed classes.
+- Constructing strongly-typed AST node hierarchies with sealed classes or domain models.
 - Managing operator precedence, associativity, and grouping via `ExpressionBuilder`.
 - Centralizing lexical whitespace and comment handling across all rules.
 - Handling stateful parsing constraints (e.g. indentation levels, bracket nesting).
 - Parameterizing grammar rules (`ref1`, `ref2`).
+
+## Architectural Choice: `GrammarDefinition` vs. Standalone Combinators
+
+Choose the architecture that matches the grammar's complexity:
+
+- **Standalone Top-Level Combinators**:
+  - Recommended for non-recursive or simple micro-syntaxes (e.g., URI/URL parsing, arithmetic calculators, CSV/tabular parsers, regex).
+  - Lightweight, fast to instantiate, and avoids the boilerplate of `GrammarDefinition` when mutual recursion and sub-rule overrides are unnecessary.
+  - Can use `undefined<T>()` and `.set()` for localized single-point recursion when needed.
+
+- **`GrammarDefinition<R>` Subclasses**:
+  - Recommended for non-trivial languages, programming language grammars, and complex DSLs with mutually recursive productions.
+  - Enables sub-rule testing in isolation via `.buildFrom(ref0(production))`.
+  - Supports horizontal decomposition across multiple files using mixins.
 
 ## `GrammarDefinition` Lifecycle
 
@@ -21,9 +35,10 @@ description: Organizes grammars into maintainable, scalable, and modular archite
 - Use `ref0(production)` to reference a zero-argument production.
 - Use `ref1(production, arg)` to reference a 1-argument parameterized production.
 - Use `ref2(production, arg1, arg2)` to reference a 2-argument parameterized production.
-- Define `start()` returning the root entry rule anchored with `.end()`.
+- Define `start()` returning the root entry rule (anchored with `.end()` for full-input validation).
 - Call `.build()` on the definition instance to resolve mutual references into a runnable parser.
 - Call `.buildFrom(ref0(production))` to compile any sub-rule in isolation for unit testing.
+- **Leaf / Terminal Rules in Fields**: Leaf, non-recursive terminal productions (e.g. `final identifierStart = [letter(), char('_')].toChoiceParser();`) may be stored in `final` instance fields directly rather than methods, as they do not participate in mutual recursion or redefinition.
 
 ```dart
 class SimpleGrammarDefinition extends GrammarDefinition<num> {
@@ -62,15 +77,16 @@ class TemplatedGrammarDefinition extends GrammarDefinition<List<String>> {
 }
 ```
 
-### Obsolete Anti-Pattern: Two-Tier Grammar Inheritance
+### Single-Tier vs. Obsolete Two-Tier Grammar Inheritance
 
 Historically, grammars were split into an untyped base grammar (e.g., `DartGrammarDefinition`) and a parser subclass overriding methods with AST mappers (e.g., `DartParserDefinition extends DartGrammarDefinition`).
 
-**Do not use this two-tier inheritance pattern**:
+**Single-tier grammars are always preferred**:
 
 - Overriding methods in subclasses with different return types breaks Dart's strict typing.
 - Leads to untyped `Parser<dynamic>` everywhere and brittle list index casts (`values[0] as String`).
-- Instead, build the strongly-typed AST directly within the grammar definition, and split large grammars horizontally using mixins.
+- Instead, build strongly-typed AST nodes or values directly within the grammar definition.
+- For large grammars, decompose horizontally using Dart mixins rather than vertical inheritance tiers.
 
 ### Modularization via Mixins
 
@@ -182,12 +198,13 @@ Parser<ExpressionNode> expression() {
 - Always `.trim()` operators inside `builder.group()`.
 - Group from highest precedence to lowest precedence.
 - Disambiguate overlapping symbols (e.g. prefix `-` vs binary `-`) by placing them in distinct method calls (`prefix` vs `left`).
+- To model implicit concatenation/juxtaposition (e.g. in regex or command expressions), use `epsilon()` as an infix operator in a group: `builder.group()..left(epsilon(), (left, _, right) => ConcatNode(left, right));`.
 
 ### Stateful Parsing & Side Effects
 
-When grammar rules depend on external context (e.g. Python indentation stacks, bracket nesting counters):
+When grammar rules depend on external context (e.g. Python indentation stacks, bracket nesting counters, local scope tables):
 
-- Use `hasSideEffects: true` when performing state mutations inside `.map()` or `.map2()`.
+- Always use `hasSideEffects: true` when performing state mutations inside `.map()` or `.map2()`.
 - Encapsulate scoped transitions via combinators:
 
 ```dart
@@ -203,34 +220,32 @@ class IndentState {
 }
 ```
 
-### AST Construction with Sealed Hierarchies
+### AST Construction & Type Models
 
-Structure syntax trees using Dart 3 sealed class hierarchies:
+Match the AST architecture to the language domain:
 
-```dart
-sealed class ASTNode {
-  const ASTNode();
-}
+1. **Sealed Class Hierarchies**: Recommended for formal languages and compilers with closed sets of grammar productions to allow exhaustive Dart 3 switch expressions.
+2. **Dynamic / S-Expression Models**: For homoiconic languages (like Lisp/Scheme), dynamic representation using `Cons`, `Name`, primitives, and lists is idiomatic and preferred over forced sealed hierarchies.
+3. **Independent Domain Classes**: For grammars producing relational or declarative structures (like Prolog `Database`, `Rule`, `Term`), separate domain classes without a shared root interface are completely appropriate.
+4. **Visitor-Based Open Hierarchies**: Ideal when downstream consumers need to extend AST processing with polymorphic visitors without modifying node classes.
 
-sealed class StatementNode extends ASTNode {
-  const StatementNode();
-}
+### Handling Semantic Validation & Evaluation Errors
 
-class ReturnNode extends StatementNode {
-  const ReturnNode(this.expression);
-  final ExpressionNode? expression;
-}
+Depending on the application context, choose the appropriate error strategy:
 
-class VariableDeclarationNode extends StatementNode {
-  const VariableDeclarationNode({required this.name, required this.initializer});
-  final String name;
-  final ExpressionNode initializer;
-}
-```
+1. **Throwing Exceptions in Actions**:
+   - Valid for self-evaluating calculators or CLI tools where the caller catches and reports errors.
+   - Example: throwing `ArgumentError` or `FormatException` on unknown operators or arithmetic errors.
+2. **Backtracking via `.where()`**:
+   - Valid when semantic invalidity should be treated as a standard parse failure.
+   - Example: `parser.where((val) => isValidIdentifier(val), message: 'reserved keyword cannot be identifier')`. Allows the parser to backtrack and attempt alternative choice branches.
+3. **Deferred / Unresolved AST Nodes**:
+   - Valid in multi-pass compilers and analyzers.
+   - Construct placeholder nodes (e.g. `UnresolvedFunctionNode`, `ErrorNode`) so syntax parsing completes successfully, deferring diagnostics to a dedicated semantic analysis pass.
 
 ## Critical Heuristics & Anti-Patterns
 
-- **Agnostic Syntax Rules**: Keep grammar productions focused strictly on parsing and AST creation. Avoid embedding evaluation, execution, or UI formatting directly in the grammar.
+- **Single-Tier Strongly-Typed Grammars**: Construct strongly typed ASTs directly in production methods; avoid untyped two-tier inheritance.
 - **Strictly Typed Sequences**: Use `seq2`..`seq9` with `map2`..`map9`. Avoid dynamic list index extraction (`values[0]`).
-- **Always Anchor Entry**: Ensure `start()` terminates with `.end()` to reject partial matches.
+- **Anchoring Entrypoints**: Anchor top-level entrypoints with `.end()` when verifying complete input consumption. Omit `.end()` intentionally for prefix scanning or substring extraction.
 - **Isolated Sub-rule Testing**: Design rules so they can be individually built and tested with `buildFrom(ref0(rule))` before integrating into the full grammar.

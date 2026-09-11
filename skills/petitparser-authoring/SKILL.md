@@ -54,12 +54,17 @@ final caseInsensitiveKeyword = string('select', ignoreCase: true);
 - Prioritized PEG semantics: branches evaluate in declared order; first match wins.
 - Avoid dynamic `|` / `or()` which decay to `ChoiceParser<dynamic>`.
 
-### Repetition
+### Repetition & String Buffering
 
 - `parser.star()`: Zero or more occurrences (`List<T>`).
 - `parser.plus()`: One or more occurrences (`List<T>`).
-- `parser.repeat(min, max)`: Between `min` and `max` occurrences.
-- `parser.times(n)`: Exactly `n` occurrences.
+- `parser.repeat(min, max)`: Between `min` and `max` occurrences (`List<T>`).
+- `parser.times(n)`: Exactly `n` occurrences (`List<T>`).
+- **Zero-Allocation String Repetitions**: For character parsers, systematically prefer string combinators over `.star()` / `.plus()` to eliminate intermediate `List<String>` allocations:
+  - `charParser.starString({String? message})`: Directly returns consumed `String`.
+  - `charParser.plusString({String? message})`: Directly returns consumed non-empty `String`.
+  - `charParser.timesString(n, {String? message})`: Matches exactly `n` characters into `String`.
+  - `charParser.repeatString(min, max, {String? message})`: Matches bounded count into `String`.
 
 ### Separated Repetition
 
@@ -72,7 +77,11 @@ final caseInsensitiveKeyword = string('select', ignoreCase: true);
 ### Greedy and Lazy Repetition
 
 - `starGreedy(limit)` and `plusGreedy(limit)`: Consumes as much as possible, then backtracks until `limit` matches.
-- `starLazy(limit)` and `plusLazy(limit)`: Consumes as few repetitions as possible until `limit` matches. Preferred for delimited comments and quoted strings.
+- `starLazy(limit)` and `plusLazy(limit)`: Consumes as few repetitions as possible until `limit` matches. Preferred for delimited comments and quoted strings:
+
+  ```dart
+  final multiLineComment = seq3(string('/*'), any().starLazy(string('*/')), string('*/'));
+  ```
 
 ### Optionality & Lookahead
 
@@ -83,16 +92,21 @@ final caseInsensitiveKeyword = string('select', ignoreCase: true);
 - `parser.neg({String message = 'input not expected'})`: Inverts a character parser, consuming any character not matched.
 - `parser.end({String message = 'end of input expected'})`: Matches end of input.
 
+### Delimiter Stripping with `.skip()`
+
+Use `.skip()` to discard surrounding syntax delimiters without tuple unpacking:
+
 ```dart
-final typedSeq = seq2(digit().map(int.parse), letter());
-final operator = [char('+'), char('-'), char('*'), char('/')].toChoiceParser();
-final commaNumbers = digit().plusString().plusSeparated(char(',').trim());
-final comment = seq3(string('/*'), any().starLazy(string('*/')), string('*/'));
+// Discard open and close braces directly, returning Map<String, dynamic>:
+final objectParser = members.skip(before: char('{').trim(), after: char('}').trim());
+
+// Discard leading prefix token:
+final negativeNumber = number.skip(before: char('-'));
 ```
 
 ## Lexical & Token Processing
 
-- `parser.trim()`: Strips leading and trailing default whitespace. Pass custom parser to trim specific trivia.
+- `parser.trim()`: Strips leading and trailing default whitespace. Pass custom parser to trim specific trivia (e.g. `parser.trim(ref0(hiddenWhitespace))`).
 - `parser.flatten({String? message})`: Extracts consumed substring. Providing `message` enables fast parse mode.
 - `parser.token()`: Wraps result in `Token<T>` containing `value`, `start`, `stop`, and `length`.
 
@@ -104,11 +118,45 @@ final identifierToken = seq2(
 ).flatten(message: 'identifier expected').token();
 ```
 
+### String Decoding & Escape Handling
+
+Idiomatic pattern for quoted strings with escape sequences:
+
+```dart
+final escapedChar = seq2(
+  char(r'\'),
+  anyOf(r'"\/bfnrt'),
+).map2((_, char) => switch (char) {
+  'b' => '\b',
+  'f' => '\f',
+  'n' => '\n',
+  'r' => '\r',
+  't' => '\t',
+  _ => char,
+});
+
+final unicodeChar = seq2(
+  string(r'\u'),
+  pattern('0-9a-fA-F').timesString(4, message: '4-digit hex expected'),
+).map2((_, hex) => String.fromCharCode(int.parse(hex, radix: 16)));
+
+final normalChar = pattern(r'^"\\');
+
+final stringContent = [normalChar, escapedChar, unicodeChar].toChoiceParser();
+final stringLiteral = stringContent.star().skip(before: char('"'), after: char('"')).map((chars) => chars.join());
+```
+
+For strings without escape transforms, avoid `map((chars) => chars.join())` and use `.flatten()`:
+
+```dart
+final rawQuotedString = pattern('^"').starString().skip(before: char('"'), after: char('"'));
+```
+
 ## Production Actions & Mapping
 
 - `seq2(p1, p2).map2((a, b) => ...)` through `map9`: Strongly-typed positional mapping for record sequences.
 - `parser.map((val) => ..., hasSideEffects: false)`: Transforms output value.
-- `parser.where((val) => condition, message: '...')`: Filters parsed values with optional failure message.
+- `parser.where((val) => condition, message: '...')`: Filters parsed values with optional failure message, turning invalid values into backtrackable parse failures.
 
 ```dart
 final coordinate = seq3(
@@ -120,14 +168,9 @@ final coordinate = seq3(
 
 ## Empty & Explicit Failure Parsers
 
-- `epsilon()`: Consumes nothing and returns `null` (`Parser<void>`).
+- `epsilon()`: Consumes nothing and returns `null` (`Parser<void>`). Useful for nullable defaults or as infix operator in `ExpressionBuilder`.
 - `epsilonWith<R>(result)`: Consumes nothing and returns `result` (`Parser<R>`).
 - `failure({String message = 'unable to parse'})`: Consumes nothing and fails with `message`.
-
-```dart
-final emptyState = epsilonWith(<String>[]);
-final unsupported = failure(message: 'unsupported syntax');
-```
 
 ## High-Performance Parsing Idioms
 
@@ -137,14 +180,6 @@ final unsupported = failure(message: 'unsupported syntax');
 - Use `charParser.starString()` and `charParser.plusString()` instead of `.star().flatten()` to avoid intermediate list allocations.
 - Pass `message:` to `flatten(message: '...')` to activate fast parse mode.
 - Avoid `cast<T>()` and `castList<T>()`; construct typed combinators directly.
-
-```dart
-// Efficient:
-final identifier = seq2(
-  letter(),
-  word().starString(),
-).flatten(message: 'identifier expected');
-```
 
 ## Diagnostics & Custom Failure Messages
 
@@ -183,16 +218,18 @@ Wrap recurring syntax patterns into reusable helper functions:
 
 ```dart
 Parser<T> parenthesized<T>(Parser open, Parser<T> body, Parser close) =>
-    seq3(open.trim(), body, close.trim()).map3((_, value, _) => value);
+    body.skip(before: open.trim(), after: close.trim());
 
 Parser<List<T>> commaSeparated<T>(Parser<T> element) =>
     element.plusSeparated(char(',').trim()).map((sep) => sep.elements);
 ```
 
-## Critical Rules
+## Critical Rules & Guidelines
 
 - **PEG Choice Order**: More specific prefixes must precede general ones (`[string('=='), char('=')].toChoiceParser()`).
-- **Anchor Root Rules**: Append `.end()` to top-level productions to reject unconsumed trailing input.
-- **No Nullable Repeaters**: Never wrap zero-width matchers (`optional()`, `star()`, `epsilon()`) inside `star()` or `plus()`.
+- **Anchoring with `.end()`**:
+  - Append `.end()` when validating complete input files, documents, or data payloads.
+  - Intentionally omit `.end()` for prefix scanning, substring extraction, streaming tokens, or embedding sub-languages.
+- **No Nullable Repeaters**: Never wrap zero-width matchers (`optional()`, `star()`, `epsilon()`) inside `star()`, `plus()`, or `starSeparated()`.
 - **Avoid `&` and `|`**: Always use typed sequences (`seq2`..`seq9`) and `toChoiceParser()`.
 - **Avoid List Indexing**: Never unpack sequences with `values[0]` and runtime casts; use `map2`..`map9`.

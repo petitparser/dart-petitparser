@@ -27,14 +27,31 @@ switch (result) {
 }
 ```
 
-- **`result is Success<T>` / `result is Failure`**: Type checks for outcome inspection (or pattern matching via `switch (result)` / `if (result case Success(:final value))`). Note that `Result` is a sealed class without `isSuccess` or `isFailure` boolean getters.
-- **`result.value`**: The parsed value. Throws `ParserException` if called on a `Failure`. Always guard with a pattern match or type check.
-- **`result.position`**: Index of the character immediately following the consumed input.
-- **Zero-Copy Slicing**: Use the optional `{int start = 0}` parameter to begin parsing at an arbitrary offset without creating sub-string copies:
+### Result Inspection Patterns
 
-  ```dart
-  final sliceResult = parser.parse(largeBuffer, start: 1024);
-  ```
+Choose between exception-based error propagation and inline pattern matching:
+
+1. **Direct Value Access (`result.value`)**:
+   - Calling `result.value` throws a `ParserException` on `Failure`.
+   - Highly idiomatic for CLI entrypoints, unit test helpers, and APIs where parse failures are treated as exceptional conditions.
+   - `ParserException` includes full diagnostic metadata: `message`, `offset`, and human-readable context.
+
+   ```dart
+   T parseOrThrow<T>(Parser<T> parser, String input) => parser.parse(input).value;
+   ```
+
+2. **Non-Throwing Pattern Matching**:
+   - Recommended when failures are expected as normal control flow (e.g. IDE diagnostics, user form validation).
+   - Use Dart 3 switch expressions or `if (result case Success(:final value))`.
+   - Note: `Result` is a sealed class with subclasses `Success<T>` and `Failure<T>`.
+
+### Zero-Copy Slicing
+
+Use the optional `{int start = 0}` parameter to begin parsing at an arbitrary offset without creating substring copies:
+
+```dart
+final sliceResult = parser.parse(largeBuffer, start: 1024);
+```
 
 ### Fast Syntax Validation (`accept`)
 
@@ -93,16 +110,13 @@ final hasDigits = 'abc 123'.contains(digit().toPattern());
 
 ## Critical Heuristics & Anti-Patterns
 
-- **The Unanchored Prefix Trap**:
+- **Intentional Anchoring vs. Prefix Scanning**:
   - Neither `parse()` nor `accept()` automatically check that the entire input is consumed.
   - A parser for `'foo'` successfully matches `'foo bar'` and consumes 3 characters.
-  - Always append `.end()` to top-level entrypoint rules when full-string validation is required.
-- **Unchecked `.value` Access**:
-  - Invoking `.value` directly on an unchecked `Result<T>` throws an unhandled `ParserException` on failure.
-  - Use Dart 3 pattern matching (`if (result case Success(:final value)) ...`) or verify `result is Success<T>` before accessing `.value`.
+  - Append `.end()` when complete input consumption is mandatory. Omit `.end()` intentionally when implementing prefix scanning, token streaming, or substring matching.
 - **Allocating Results for Pure Validation**:
-  - Never do `parser.parse(input) is Success` for simple validation.
-  - Use `parser.accept(input)` instead to avoid intermediate object allocations.
+  - Never do `parser.parse(input) is Success` for simple boolean validation.
+  - Use `parser.accept(input)` instead to eliminate intermediate object allocations.
 - **AST vs. String Matching in `toPattern()`**:
   - `toPattern()` interfaces with Dart's `Match` API, which works on matched character ranges (`Match.start`, `Match.end`, `Match.group(0)`).
   - When parsed AST structures or mapped objects are needed, use `allMatches()` or `parse()` instead of `toPattern()`.

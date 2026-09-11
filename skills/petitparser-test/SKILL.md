@@ -93,9 +93,9 @@ test('parses binary expression AST', () {
 });
 ```
 
-### Automated Grammar Linter
+### Automated Grammar Linter & Pragmatic Exclusions
 
-PetitParser includes a built-in static grammar analyzer. Add a dedicated test verifying the grammar is free of structural defects:
+PetitParser includes a built-in static grammar analyzer via `linter(parser)`. Add a dedicated test verifying the grammar is free of structural defects:
 
 ```dart
 import 'package:petitparser/reflection.dart';
@@ -115,7 +115,22 @@ The linter automatically checks for:
 - Left-recursive cycles that cause infinite call stacks.
 - Repetition over nullable / zero-width parsers.
 - Redundant and nested wrapper parsers.
-- Inefficient patterns.
+- Duplicate parsers.
+
+#### Pragmatic Linter Exclusions
+
+While grammars should strive to pass all linter checks cleanly, certain rules can be legitimately ignored depending on grammar design:
+
+- **`Duplicate parser`**: Often triggered when parameterized helper rules (e.g. `ref1(token, ',')`) or terminal tokens are independently generated across multiple productions. If consolidating them adds unnecessary coupling or complexity, exclude the rule pragmatically:
+
+  ```dart
+  expect(
+    linter(parser, excludedRules: {'Duplicate parser'}),
+    isEmpty,
+  );
+  ```
+
+- Always document the rationale when passing `excludedRules` to `linter()`.
 
 ### Edge-Case & Boundary Matrix
 
@@ -140,4 +155,4 @@ When a large external test file or corpus file fails to parse:
 
 - **Dual-Verification Mandatory**: Never only test `isSuccess`. Testing invalid inputs with `isFailure` is essential to prevent false-positive over-matching.
 - **Isolate Sub-Rules**: Test each production in isolation (`buildFrom`) to minimize search space when grammar rules break.
-- **Always Verify Clean Linter**: Run `linter(parser)` as part of continuous integration.
+- **Verify Clean Linter**: Run `linter(parser)` as part of continuous integration, documenting any intentional exclusions.
