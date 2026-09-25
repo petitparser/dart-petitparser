@@ -31,11 +31,11 @@ Choose the architecture that matches the grammar's complexity:
 
 ## `GrammarDefinition` Lifecycle
 
-- Subclass `GrammarDefinition<R>` where each grammatical production is a zero-argument method returning `Parser<T>`.
+- Subclass `GrammarDefinition<R>` where each grammatical production is a method returning `Parser<T>`.
 - Use `ref0(production)` to reference a zero-argument production.
 - Use `ref1(production, arg)` to reference a 1-argument parameterized production.
 - Use `ref2(production, arg1, arg2)` to reference a 2-argument parameterized production.
-- Define `start()` returning the root entry rule (anchored with `.end()` for full-input validation).
+- Define `start()` returning the root entry rule of type `Parser<R>` (anchored with `.end()` for full-input validation).
 - Call `.build()` on the definition instance to resolve mutual references into a runnable parser.
 - Call `.buildFrom(ref0(production))` to compile any sub-rule in isolation for unit testing.
 - **Leaf / Terminal Rules in Fields**: Leaf, non-recursive terminal productions (e.g. `final identifierStart = [letter(), char('_')].toChoiceParser();`) may be stored in `final` instance fields directly rather than methods, as they do not participate in mutual recursion or redefinition.
@@ -79,7 +79,7 @@ class TemplatedGrammarDefinition extends GrammarDefinition<List<String>> {
 
 ### Single-Tier vs. Obsolete Two-Tier Grammar Inheritance
 
-Historically, grammars were split into an untyped base grammar (e.g., `DartGrammarDefinition`) and a parser subclass overriding methods with AST mappers (e.g., `DartParserDefinition extends DartGrammarDefinition`).
+Historically, grammars were often split into an untyped base grammar (e.g., `DartGrammarDefinition`) and a parser subclass overriding methods with AST mappers (e.g., `DartParserDefinition extends DartGrammarDefinition`).
 
 **Single-tier grammars are always preferred**:
 

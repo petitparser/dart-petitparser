@@ -14,22 +14,28 @@ description: Translates formal specifications (EBNF, PEG, regex, or natural lang
 - Composing reusable parser factory functions.
 - Writing high-throughput, memory-efficient parsers.
 
+## Getting Started
+
+Import most common features with `import 'package:petitparser/petitparser.dart';`.
+
+Alternatively import the more specific packages `import 'package:petitparser/parser.dart';` for parser authoring, and `import 'package:petitparser/core.dart';` for parser use.
+
 ## Terminal Matchers
 
 ### Exact Matchers
 
-- `char('a')`: Matches single character. Supports `ignoreCase: true`, `unicode: true`, and custom `message:`.
-- `string('const')`: Matches exact string literal. Supports `ignoreCase: true` and custom `message:`.
+- `char('a')`: Matches single character. Supports `ignoreCase: true`, `unicode: true`, and custom error `message:`.
+- `string('const')`: Matches exact string literal. Supports `ignoreCase: true` and custom error `message:`.
 
 ### Predicate Matchers
 
-- `pattern('0-9a-fA-F')`: Character class range/set syntax. Supports negation prefix (`pattern('^0-9')`), `unicode: true`, and custom `message:`.
-- `anyOf('+-*/')`: Matches any single character in the string.
-- `noneOf('\r\n')`: Matches any single character not in the string.
+- `pattern('0-9a-fA-F')`: Character class range/set syntax. Supports negation prefix (`pattern('^0-9')`), `unicode: true`, and custom error `message:`.
+- `anyOf('+-*/')`: Matches any single character in the string. Supports `ignoreCase: true`, `unicode: true`, and custom error `message:`.
+- `noneOf('\r\n')`: Matches any single character not in the string. Supports `ignoreCase: true`, `unicode: true`, and custom error `message:`.
 
 ### Built-in Character Matchers
 
-- `digit()`, `letter()`, `word()`, `whitespace()`, `newline()`, `any()`. All accept an optional custom `message:`.
+- `digit()`, `letter()`, `word()`, `whitespace()`, `newline()`, `any()`. All accept an optional custom error `message:`.
 
 ```dart
 final hexDigit = pattern('0-9a-fA-F');
@@ -46,7 +52,7 @@ final caseInsensitiveKeyword = string('select', ignoreCase: true);
 - Record extension: `(p1, p2).toSequenceParser()` converts a record of parsers into `Parser<(R1, R2)>`.
 - Chaining: `p1.then(p2).then(p3)` flattens typed parsers into a typed record `Parser<(R1, R2, R3)>`.
 - List sequence: `[p1, p2, p3].toSequenceParser()` combines an iterable of parsers into `Parser<List<R>>` of their common supertype.
-- Avoid dynamic `&` / `seq()` which decay to `Parser<List<dynamic>>`.
+- Avoid dynamic `&` / `seq()` which decay to `SequenceParser<List<dynamic>>`.
 
 ### Ordered Choice
 
@@ -155,7 +161,7 @@ final rawQuotedString = pattern('^"').starString().skip(before: char('"'), after
 ## Production Actions & Mapping
 
 - `seq2(p1, p2).map2((a, b) => ...)` through `map9`: Strongly-typed positional mapping for record sequences.
-- `parser.map((val) => ..., hasSideEffects: false)`: Transforms output value.
+- `parser.map((val) => ...)`: Transforms output value.
 - `parser.where((val) => condition, message: '...')`: Filters parsed values with optional failure message, turning invalid values into backtrackable parse failures.
 
 ```dart
@@ -168,7 +174,7 @@ final coordinate = seq3(
 
 ## Empty & Explicit Failure Parsers
 
-- `epsilon()`: Consumes nothing and returns `null` (`Parser<void>`). Useful for nullable defaults or as infix operator in `ExpressionBuilder`.
+- `epsilon()`: Consumes nothing and returns `null` (`Parser<void>`). Useful for nullable defaults.
 - `epsilonWith<R>(result)`: Consumes nothing and returns `result` (`Parser<R>`).
 - `failure({String message = 'unable to parse'})`: Consumes nothing and fails with `message`.
 
@@ -232,4 +238,4 @@ Parser<List<T>> commaSeparated<T>(Parser<T> element) =>
   - Intentionally omit `.end()` for prefix scanning, substring extraction, streaming tokens, or embedding sub-languages.
 - **No Nullable Repeaters**: Never wrap zero-width matchers (`optional()`, `star()`, `epsilon()`) inside `star()`, `plus()`, or `starSeparated()`.
 - **Avoid `&` and `|`**: Always use typed sequences (`seq2`..`seq9`) and `toChoiceParser()`.
-- **Avoid List Indexing**: Never unpack sequences with `values[0]` and runtime casts; use `map2`..`map9`.
+- **Avoid List Indexing**: Never unpack sequences with `values[0]` and runtime casts, or unpack records with `values.$0`; use `map2`..`map9`.

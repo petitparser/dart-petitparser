@@ -38,9 +38,9 @@ void main(List<String> arguments) {
   final parser = buildParser();
   final input = arguments.join(' ');
   switch (parser.parse(input)) {
-    case Success(value: final value):
+    case Success(:final value):
       stdout.writeln(' = $value');
-    case Failure(position: final position, message: final message):
+    case Failure(:final position, :final message):
       stderr.writeln(input);
       stderr.writeln('${' ' * (position - 1)}^-- $message');
       exit(1);
