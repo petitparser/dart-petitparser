@@ -14,7 +14,7 @@ description: Executes, evaluates, and integrates PetitParser combinators within 
 
 ## Primary Execution (`parse`)
 
-Execute a parser against an input string to obtain a `Result<T>`:
+Execute a parser against an input string to obtain a sealed `Result<T>` (`Success<T>` or `Failure`):
 
 ```dart
 final result = parser.parse(input);
@@ -27,23 +27,23 @@ switch (result) {
 }
 ```
 
-### Result Inspection Patterns
-
-Choose between exception-based error propagation and inline pattern matching:
+### Result Inspection & Error Reporting
 
 1. **Direct Value Access (`result.value`)**:
-   - Calling `result.value` throws a `ParserException` on `Failure`.
-   - Highly idiomatic for CLI entrypoints, unit test helpers, and APIs where parse failures are treated as exceptional conditions.
-   - `ParserException` includes full diagnostic metadata: `message`, `offset`, and human-readable context.
+   - Throws `ParserException` on `Failure`.
+   - Idiomatic for CLI entrypoints, unit tests, and APIs where parse failures are exceptional:
 
    ```dart
    T parseOrThrow<T>(Parser<T> parser, String input) => parser.parse(input).value;
    ```
 
 2. **Non-Throwing Pattern Matching**:
-   - Recommended when failures are expected as normal control flow (e.g. IDE diagnostics, user form validation).
+   - Preferred when failures are expected control flow (e.g. IDE diagnostics, user form validation).
    - Use Dart 3 switch expressions or `if (result case Success(:final value))`.
-   - Note: `Result` is a sealed class with subclasses `Success<T>` and `Failure<T>`.
+
+3. **User-Facing Error Formatting (Avoiding Minified Strings)**:
+   - Avoid printing `result.toString()` or exception `toString()` in web or client-facing UIs: compiled JavaScript or Wasm minifies class names (e.g. `minified:dH[6:1]: message expected`).
+   - Format user messages explicitly using `result.message` and `Token.lineAndColumnOf(input, result.position)`.
 
 ### Zero-Copy Slicing
 

@@ -113,6 +113,20 @@ Alternatively, use `ExpressionBuilder` for operator expressions (see `petitparse
 
 Rule `A` calls `B`, and `B` calls `A` without consuming input (`A -> B; B -> A`). Run the PetitParser linter (`linter(grammar.build())`) to statically detect indirect left-recursive cycles before execution.
 
+### Prefix Shadowing in Ordered Choice
+
+Because PEG choices (`[a, b].toChoiceParser()`) commit to the first successful match, shorter prefixes declared before longer compound symbols mask the longer symbol:
+
+```dart
+// BUG: '<' greedily matches '<=' and '<>', leaving '=' or '>' as unexpected trailing input:
+final comparison = [char('<'), string('<='), string('<>')].toChoiceParser();
+
+// FIXED: Declare longer, more specific multi-character tokens before shorter prefixes:
+final comparison = [string('<='), string('<>'), char('<')].toChoiceParser();
+```
+
+When unexpected parse failures occur immediately following a single-character operator or keyword prefix, trace the choice rule to verify compound tokens are not shadowed.
+
 ### Minimal Reproduction Workflow
 
 1. **Extract to Unit Test**: When a full file fails to parse, copy the failing snippet into a test case.

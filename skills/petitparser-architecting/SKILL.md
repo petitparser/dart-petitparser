@@ -38,7 +38,6 @@ Choose the architecture that matches the grammar's complexity:
 - Define `start()` returning the root entry rule of type `Parser<R>` (anchored with `.end()` for full-input validation).
 - Call `.build()` on the definition instance to resolve mutual references into a runnable parser.
 - Call `.buildFrom(ref0(production))` to compile any sub-rule in isolation for unit testing.
-- **Leaf / Terminal Rules in Fields**: Leaf, non-recursive terminal productions (e.g. `final identifierStart = [letter(), char('_')].toChoiceParser();`) may be stored in `final` instance fields directly rather than methods, as they do not participate in mutual recursion or redefinition.
 
 ```dart
 class SimpleGrammarDefinition extends GrammarDefinition<num> {
@@ -200,34 +199,70 @@ Parser<ExpressionNode> expression() {
 - Disambiguate overlapping symbols (e.g. prefix `-` vs binary `-`) by placing them in distinct method calls (`prefix` vs `left`).
 - To model implicit concatenation/juxtaposition (e.g. in regex or command expressions), use `epsilon()` as an infix operator in a group: `builder.group()..left(epsilon(), (left, _, right) => ConcatNode(left, right));`.
 
-### Stateful Parsing & Side Effects
+### Avoid Stateful Parsing
 
-When grammar rules depend on external context (e.g. Python indentation stacks, bracket nesting counters, local scope tables):
+Strongly prefer pure, functional parsers without side-effects:
 
-- Always use `hasSideEffects: true` when performing state mutations inside `.map()` or `.map2()`.
-- Encapsulate scoped transitions via combinators:
+- **Rely on Grammar Structure**: Model nesting (brackets, blocks, scopes) through recursive grammar rules rather than external counters or flags.
+- **Synthesize Values Downstream**: Transform and accumulate data via `.map()`, `.mapN()`, or fold combinators instead of mutating external variables during parsing.
+- **The `hasSideEffects` Flag**: `map()` and `mapN()` assume callbacks are pure functions without side effects. In fast-path parsing (`fastParseOn()`, used by `accept()` and lookaheads), callbacks are skipped to avoid allocations. If a callback mutates external state, pass `hasSideEffects: true` to prevent fast parsing from skipping it.
+- **The Backtracking State Pitfall**: Combinators backtrack by resetting `Context.position`; they cannot automatically roll back external mutable state mutated during a failed speculative choice branch.
+
+#### State Rollback Workaround (Learnings from `Indent`)
+
+If external state is strictly unavoidable (as in [`Indent`](package:petitparser/indent.dart)):
+
+1. **Never use naive symmetric sequences**: `seq3(before, body, after)` leaves state corrupted when `body` fails because `after` is never reached.
+2. **Encapsulate rollback in a choice**: Wrap `body` in a `ChoiceParser` with `failureJoiner: selectFirst` so the fallback alternative runs `after` and fails with the original error:
 
 ```dart
-class IndentState {
-  int bracketNesting = 0;
-
-  /// Temporarily increments bracket nesting so newlines are ignored inside delimiters.
-  Parser<R> ignore<R>(Parser<R> parser) => seq3(
-    epsilon().map((_) => bracketNesting++, hasSideEffects: true),
-    parser,
-    epsilon().map((_) => bracketNesting--, hasSideEffects: true),
-  ).map3((_, body, _) => body);
-}
+Parser<R> scoped<R>(Parser<void> before, Parser<R> body, Parser<void> after) =>
+    [body, failure<R>().skip(before: after)]
+        .toChoiceParser(failureJoiner: selectFirst)
+        .skip(before: before, after: after);
 ```
 
-### AST Construction & Type Models
+- **Success**: `body` matches; trailing `after` performs normal exit cleanup.
+- **Failure**: Choice executes `failure<R>().skip(before: after)`, restoring state via `after` while `selectFirst` preserves the original error position and message from `body`.
 
-Match the AST architecture to the language domain:
+In [`Indent`](package:petitparser/indent.dart), this pattern is built directly into [`Indent.during`]. Combine `indent.same` to verify line indentation and `indent.during` to scope indented blocks.
+
+### Direct Value Synthesis vs. AST Construction
+
+Choose the result model that directly matches your application goal:
+
+#### 1. Direct Value Synthesis (Transformations & Evaluators)
+
+When transforming input, evaluating calculations, or deserializing data, bypass intermediate AST trees:
+
+- **String Transformations**: Emit transformed strings or string buffers directly (e.g. Markdown to HTML, query rewriting).
+- **Computations & Evaluators**: Calculate primitive results (`num`, `bool`) during parsing using `.map()` (e.g. arithmetic calculators, boolean evaluators).
+- **Direct Deserialization**: Build native `List`, `Map`, or typed config models directly (e.g. JSON, CSV).
+- **Lightweight Records**: Group related outputs into Dart records (`(key: k, value: v)`) to preserve type safety without boilerplate node classes.
+
+Eliminates intermediate memory allocations and avoids a redundant post-parse tree-walking pass.
+
+#### 2. Abstract Syntax Tree (AST) Hierarchies (Tooling & Compilers)
+
+Construct formal AST hierarchies only when required by multi-pass pipelines or source tooling:
+
+- **Multi-Pass Pipelines**: Compilers and static analyzers requiring type checking, optimization, or code generation.
+- **Source Tooling**: Language servers, formatters, and linters that inspect syntax structure and need coordinate navigation.
+
+When ASTs are required, match the architecture to the language:
 
 1. **Sealed Class Hierarchies**: Recommended for formal languages and compilers with closed sets of grammar productions to allow exhaustive Dart 3 switch expressions.
 2. **Dynamic / S-Expression Models**: For homoiconic languages (like Lisp/Scheme), dynamic representation using `Cons`, `Name`, primitives, and lists is idiomatic and preferred over forced sealed hierarchies.
 3. **Independent Domain Classes**: For grammars producing relational or declarative structures (like Prolog `Database`, `Rule`, `Term`), separate domain classes without a shared root interface are completely appropriate.
 4. **Visitor-Based Open Hierarchies**: Ideal when downstream consumers need to extend AST processing with polymorphic visitors without modifying node classes.
+
+#### AST Source Position Tracking & Equality
+
+When AST nodes must track source coordinates for syntax highlighters, linters, or language servers:
+
+- Define optional `final int? start, stop;` (or `final Token? token;`) on the base AST node class.
+- Prefer `const` constructors on AST nodes where possible (`const Node({this.start, this.stop, ...})`).
+- **Exclude source positions from `operator ==` and `hashCode`**: Compare only semantic and structural payload fields in equality checks. This allows clean, deterministic test assertions (`expect(node, LiteralNode(42))`) without requiring exact token offset coordinates in test expectations.
 
 ### Handling Semantic Validation & Evaluation Errors
 
@@ -246,6 +281,6 @@ Depending on the application context, choose the appropriate error strategy:
 ## Critical Heuristics & Anti-Patterns
 
 - **Single-Tier Strongly-Typed Grammars**: Construct strongly typed ASTs directly in production methods; avoid untyped two-tier inheritance.
-- **Strictly Typed Sequences**: Use `seq2`..`seq9` with `map2`..`map9`. Avoid dynamic list index extraction (`values[0]`).
+- **Strictly Typed Sequences**: Use `seq2`..`seq9` with `map2`..`map9`; avoid dynamic list index extraction (`values[0]`).
 - **Anchoring Entrypoints**: Anchor top-level entrypoints with `.end()` when verifying complete input consumption. Omit `.end()` intentionally for prefix scanning or substring extraction.
 - **Isolated Sub-rule Testing**: Design rules so they can be individually built and tested with `buildFrom(ref0(rule))` before integrating into the full grammar.

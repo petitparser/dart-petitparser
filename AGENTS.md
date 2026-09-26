@@ -6,7 +6,7 @@
 - Systematically prefer using `const` constructors and literals whenever possible to optimize runtime performance.
 - Prefer using the Dart MCP tool instead of running commands manually.
 
-## Comments, Documentation and Examples
+## Comments, Documentation, and Examples
   
 - Use triple-slash (`///`) doc comments for all public members.
 - Use square brackets (`[Name]`) to link to other members within doc comments. Use markdown sparingly.
@@ -29,7 +29,7 @@
 ### Code Quality
 
 - The code must be auto-formatted (run `dart format .`).
-- The code must be free of linter warnings (run `dart analyze` and `dart fix --apply`).
+- The code must be free of linter warnings (run `analyze_files` or `dart analyze` / `dart fix --apply`).
 - Embrace strict null safety. Avoid using the non-null assertion operator (`!`) or `dynamic` types, if possible.
 
 ## Logic and Patterns
@@ -56,3 +56,4 @@
 - Structure the tests following the same folder structure as the code under test (e.g., `lib/src/foo/bar.dart` -> `test/foo/bar_test.dart`).
 - Use `expect` with literal values or matchers to assert the expected behavior (e.g., `expect(result, 'expected')`, `expect(list, isEmpty)`).
 - Group tests by functionality using `group('description', () { ... })`. Avoid declaring a single top-level group in a file.
+- All unit tests must pass, both with the VM and JavaScript (run `dart test --platform=vm,node`).

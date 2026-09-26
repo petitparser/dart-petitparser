@@ -24,8 +24,8 @@ void main() {
   final grammar = MyGrammarDefinition();
 
   // Compile individual rules in isolation, anchored with .end():
-  final identifier = grammar.buildFrom(grammar.identifier()).end();
-  final statement = grammar.buildFrom(grammar.statement()).end();
+  final identifier = grammar.buildFrom(ref0(grammar.identifier)).end();
+  final statement = grammar.buildFrom(ref0(grammar.statement)).end();
 
   group('identifier', () {
     test('valid identifiers', () {
@@ -41,7 +41,7 @@ void main() {
 }
 ```
 
-## Dual-Verification Strategy (`isSuccess` and `isFailure`)
+## Dual-Verification Strategy
 
 Every test suite must assert both valid input acceptance and invalid input rejection:
 
@@ -49,31 +49,21 @@ Every test suite must assert both valid input acceptance and invalid input rejec
 - **Failure Assertions**: Verify that malformed syntax produces a `Failure`, and optionally assert failure position and message.
 
 ```dart
-/// Convenient reusable test matchers
-TypeMatcher isSuccess(String input, {dynamic value = anything, int? position}) =>
-    isA<Parser>().having(
-      (parser) => parser.parse(input),
-      'parse',
-      isA<Success>()
-          .having((s) => s.value, 'value', value)
-          .having((s) => s.position, 'position', position ?? input.length),
-    );
+// Success: assert value and successful parsing
+expect(parser.parse('42').value, 42);
+expect(parser.accept('42'), isTrue);
 
-TypeMatcher isFailure(String input, {dynamic message = anything, int? position}) =>
-    isA<Parser>().having(
-      (parser) => parser.parse(input),
-      'parse',
-      isA<Failure>()
-          .having((f) => f.message, 'message', message)
-          .having((f) => f.position, 'position', position ?? anything),
-    );
-```
+// Failure: assert Failure type or rejection
+expect(parser.parse('abc'), isA<Failure>());
+expect(parser.accept('abc'), isFalse);
 
-Usage in tests:
-
-```dart
-expect(parser, isSuccess('42', value: 42));
-expect(parser, isFailure('abc'));
+// Detailed failure checks when needed:
+expect(
+  parser.parse('abc'),
+  isA<Failure>()
+      .having((f) => f.position, 'position', 0)
+      .having((f) => f.message, 'message', 'digit expected'),
+);
 ```
 
 ### Semantic AST Assertions
@@ -142,14 +132,7 @@ Always include tests covering:
 - **Unicode characters**: Multi-byte code points, emojis, non-ASCII identifier characters.
 - **Input boundary**: Ensure input following a valid token is either parsed or rejected (verifying `.end()`).
 
-### Minimal Reproducible Test Case Protocol
-
-When a large external test file or corpus file fails to parse:
-
-1. Copy the failing snippet into a new test case.
-2. Reduce the file line by line until the failure occurs on the smallest possible delta.
-3. Assert `isFailure` on the minimal failing input and `isSuccess` on the closest valid variation.
-4. Use `trace(parser)` from `package:petitparser/debug.dart` on that minimal test case to observe the divergence.
+When debugging complex test failures, isolate the failure into a minimal test pair and use `trace()` as described in `petitparser-debug`.
 
 ## Critical Heuristics & Anti-Patterns
 

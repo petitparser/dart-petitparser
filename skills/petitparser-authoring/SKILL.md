@@ -18,7 +18,10 @@ description: Translates formal specifications (EBNF, PEG, regex, or natural lang
 
 Import most common features with `import 'package:petitparser/petitparser.dart';`.
 
-Alternatively import the more specific packages `import 'package:petitparser/parser.dart';` for parser authoring, and `import 'package:petitparser/core.dart';` for parser use.
+Alternatively import the more specific packages:
+
+- `import 'package:petitparser/parser.dart';` for parser authoring.
+- `import 'package:petitparser/core.dart';` for parser execution and results.
 
 ## Terminal Matchers
 
@@ -161,8 +164,8 @@ final rawQuotedString = pattern('^"').starString().skip(before: char('"'), after
 ## Production Actions & Mapping
 
 - `seq2(p1, p2).map2((a, b) => ...)` through `map9`: Strongly-typed positional mapping for record sequences.
-- `parser.map((val) => ...)`: Transforms output value.
-- `parser.where((val) => condition, message: '...')`: Filters parsed values with optional failure message, turning invalid values into backtrackable parse failures.
+- `parser.map((val) => ..., {bool hasSideEffects = false})`: Transforms output value. If the callback mutates external state, set `hasSideEffects: true` so fast-path parsers (`accept()`, lookaheads) do not skip execution.
+- `parser.where((val) => condition, message: '...')`: Filters parsed values with an optional failure message, turning invalid values into backtrackable parse failures.
 
 ```dart
 final coordinate = seq3(
@@ -178,33 +181,21 @@ final coordinate = seq3(
 - `epsilonWith<R>(result)`: Consumes nothing and returns `result` (`Parser<R>`).
 - `failure({String message = 'unable to parse'})`: Consumes nothing and fails with `message`.
 
-## High-Performance Parsing Idioms
-
-- Use record sequences (`seq2`–`seq9`, `(p1, p2).toSequenceParser()`, `then`) with `map2`–`map9` to eliminate intermediate lists and type casts.
-- Use `[p1, p2].toSequenceParser()` only for homogeneous lists.
-- Use `[p1, p2].toChoiceParser()` instead of `|` to maintain type inference.
-- Use `charParser.starString()` and `charParser.plusString()` instead of `.star().flatten()` to avoid intermediate list allocations.
-- Pass `message:` to `flatten(message: '...')` to activate fast parse mode.
-- Avoid `cast<T>()` and `castList<T>()`; construct typed combinators directly.
-
 ## Diagnostics & Custom Failure Messages
 
-- Provide `message:` directly to terminals and combinators (`char(';', message: "';' expected")`, `string()`, `flatten()`, `not()`, `end()`).
-- Use `Token.lineAndColumnOf(input, failure.position)` to convert failure offsets to 1-based line and column coordinates.
+Attach descriptive error messages directly to terminals and combinators:
 
-```dart
-final result = parser.parse(source);
-if (result is Failure) {
-  final [line, column] = Token.lineAndColumnOf(source, result.position);
-  print('Error at line $line, column $column: ${result.message}');
-}
-```
+- `char(';', message: "';' expected")`
+- `string('class', message: "'class' keyword expected")`
+- `parser.flatten(message: 'identifier expected')` (enables fast parse mode)
+- `parser.not(message: 'unexpected token')`
+- `parser.end(message: 'end of input expected')`
 
-## Dynamic Recursion & Factory Helpers
+## Recursion & Factory Helpers
 
-### Dynamic Recursion with `undefined()`
+### Recursion with `undefined()`
 
-For local recursion outside `GrammarDefinition`, use `undefined<T>()` and `set()`:
+For localized recursion outside `GrammarDefinition`, use `undefined<T>()` and `set()`:
 
 ```dart
 final expression = undefined<num>();
@@ -225,17 +216,15 @@ Wrap recurring syntax patterns into reusable helper functions:
 ```dart
 Parser<T> parenthesized<T>(Parser open, Parser<T> body, Parser close) =>
     body.skip(before: open.trim(), after: close.trim());
-
-Parser<List<T>> commaSeparated<T>(Parser<T> element) =>
-    element.plusSeparated(char(',').trim()).map((sep) => sep.elements);
 ```
 
-## Critical Rules & Guidelines
+## Critical Guidelines & Performance Idioms
 
-- **PEG Choice Order**: More specific prefixes must precede general ones (`[string('=='), char('=')].toChoiceParser()`).
-- **Anchoring with `.end()`**:
-  - Append `.end()` when validating complete input files, documents, or data payloads.
-  - Intentionally omit `.end()` for prefix scanning, substring extraction, streaming tokens, or embedding sub-languages.
-- **No Nullable Repeaters**: Never wrap zero-width matchers (`optional()`, `star()`, `epsilon()`) inside `star()`, `plus()`, or `starSeparated()`.
-- **Avoid `&` and `|`**: Always use typed sequences (`seq2`..`seq9`) and `toChoiceParser()`.
-- **Avoid List Indexing**: Never unpack sequences with `values[0]` and runtime casts, or unpack records with `values.$0`; use `map2`..`map9`.
+- **PEG Choice Order**: Declare longer, more specific prefixes before shorter prefixes (`[string('=='), char('=')].toChoiceParser()`).
+- **Typed Sequences over Dynamic Sequences**: Use `seq2`..`seq9` (or `(p1, p2).toSequenceParser()`, `then`) with `map2`..`map9`. Avoid dynamic `&` / `seq()` which decay to `List<dynamic>`, and avoid manual list indexing (`values[0]`) or record indexing (`values.$1`).
+- **Typed Choices**: Use `[p1, p2].toChoiceParser()` instead of `|` or `or()` to preserve static typing.
+- **Zero-Allocation String Repetitions**: Prefer `charParser.starString()` and `plusString()` over `.star().flatten()` to eliminate intermediate `List<String>` allocations.
+- **Fast-Path Flattening**: Provide `message:` to `flatten(message: '...')` to activate fast parse mode.
+- **Anchoring with `.end()`**: Append `.end()` when validating complete inputs; omit intentionally for prefix scanning or token streaming.
+- **No Nullable Repeaters**: Never wrap zero-width matchers (`optional()`, `star()`, `epsilon()`, lookaheads) inside `star()`, `plus()`, or `repeat()`.
+- **Avoid Runtime Type Casts**: Avoid `cast<T>()` and `castList<T>()`; construct typed combinators directly.
