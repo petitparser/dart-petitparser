@@ -442,6 +442,13 @@ final comment = string('/*')
 print(comment.parse('/* note */').value); // ' note '
 ```
 
+### 📏 Indentation-Based Grammars
+
+Languages like Python or YAML use indentation rather than braces to define code blocks. The `package:petitparser/indent.dart` library provides `Indent` to coordinate indentation levels across nested structures:
+
+- `indent.same`: Matches and consumes the currently active indentation level.
+- `indent.during(body)`: Increases indentation before running `body`, verifies deeper indentation, and restores the parent indentation level afterwards (with automatic rollback if `body` fails).
+
 ### 🩺 Grammar Linter
 
 Grammars can contain subtle issues such as unreachable branches, infinite loops, or accidental left-recursions. PetitParser provides a built-in linter in `package:petitparser/reflection.dart` that you can run in your tests:

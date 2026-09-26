@@ -1,6 +1,7 @@
 import 'package:petitparser/core.dart';
 import 'package:petitparser/definition.dart';
 import 'package:petitparser/indent.dart';
+import 'package:petitparser/matcher.dart';
 import 'package:petitparser/parser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
@@ -13,15 +14,15 @@ class IndentList extends GrammarDefinition {
   @override
   Parser<List<dynamic>> start() => seq4(
     ref0(newlines).optional(),
-    ref0(things),
+    ref0(things).optional(),
     ref0(newlines).optional(),
     endOfInput(),
-  ).map4((_, things, _, _) => things);
+  ).map4((_, things, _, _) => things ?? const []);
 
   Parser<List<dynamic>> things() => seq2(
     indent.same,
     ref0(object) | ref0(line),
-  ).map2((_, value) => value).star();
+  ).map2((_, value) => value).plus();
 
   Parser<Map<String, dynamic>> object() => seq2(
     ref0(key),
@@ -243,6 +244,111 @@ void main() {
           ],
         ),
       );
+    });
+  });
+  group('during', () {
+    late Indent indent;
+
+    setUp(() {
+      indent = Indent();
+    });
+
+    test('success restores indentation', () {
+      final inner = seq2(
+        indent.same,
+        char('a'),
+      ).map2((indent, ch) => '$indent$ch');
+      final parser = indent.during(inner);
+
+      expect(parser, isParseSuccess(' a', result: ' a'));
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('failure rolls back indentation', () {
+      final inner = seq2(indent.same, char('a'));
+      final parser = indent.during(inner);
+
+      expect(
+        parser,
+        isParseFailure(' b', position: 1, message: '"a" expected'),
+      );
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('nested failure rolls back each level', () {
+      final inner = indent.during(seq2(indent.same, char('b')));
+      final outer = indent.during(seq2(indent.same, char('\n') & inner));
+
+      expect(
+        outer,
+        isParseFailure(' \n  c', position: 4, message: '"b" expected'),
+      );
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('choice rollback allows alternate path', () {
+      final inner1 = seq2(indent.same, char('a'));
+      final inner2 = seq2(indent.same, char('b'));
+      final parser = [
+        indent.during(inner1),
+        indent.during(inner2),
+      ].toChoiceParser();
+
+      expect(parser, isParseSuccess(' b', result: (' ', 'b')));
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('linter', () {
+      final parser = indent.during(seq2(indent.same, char('a')));
+      expect(linter(parser), isEmpty);
+    });
+
+    test('increase failure leaves state unchanged', () {
+      final inner = seq2(indent.same, char('a'));
+      final parser = indent.during(inner);
+
+      expect(
+        parser,
+        isParseFailure('a', position: 0, message: 'indented expected'),
+      );
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('restores non-empty parent indentation on success', () {
+      final block = indent.during(seq2(indent.same, char('b')));
+      final parser = indent.during(seq2(indent.same, char('a') & block));
+
+      expect(parser, isParseSuccess('  a   b'));
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('consecutive during blocks at the same level', () {
+      final block1 = indent.during(seq2(indent.same, char('a')));
+      final block2 = indent.during(seq2(indent.same, char('b')));
+      final parser = seq2(block1, block2);
+
+      expect(parser, isParseSuccess(' a b'));
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+    });
+
+    test('accept (fastParseOn) on success and failure', () {
+      final inner = seq2(indent.same, char('a'));
+      final parser = indent.during(inner);
+
+      expect(parser.accept(' a'), isTrue);
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
+
+      expect(parser.accept(' b'), isFalse);
+      expect(indent.current, '');
+      expect(indent.stack, isEmpty);
     });
   });
 }
