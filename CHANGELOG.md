@@ -5,10 +5,12 @@
 - Dart 3.13 requirement.
 - Add `.then` to fluently construct strongly typed sequences.
 - Add specialized `StringParser` and `StringIgnoreCaseParser`.
+- Stabilize and optimize indentation-based parsing support (`Indent` parser): add `Indent.during` helper with automatic state rollback on failure, deprecate `Indent.increase` and `Indent.decrease`, and remove `@experimental`.
 - Optimize character predicate selection and lookup bit-testing.
 - Fix character range merging with contained sub-ranges (thanks to [dylanpulver](https://github.com/dylanpulver)).
 - Fix character range optimization falsely returning `ConstantCharPredicate.any`.
 - Fix case-insensitive pattern parsing with inverted character ranges.
+- Expand and improve documentation and examples for sequence and choice parsers.
 - Rewrite and modernize README.md with approachable tutorials, typed Dart idioms, and practical examples.
 
 ## 7.0.2
