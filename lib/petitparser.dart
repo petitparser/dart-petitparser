@@ -1,5 +1,4 @@
-/// This package exports the core library of PetitParser, a dynamic parser
-/// combinator framework.
+/// Core library of PetitParser, a dynamic parser combinator framework.
 library;
 
 export 'core.dart';

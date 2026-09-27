@@ -59,6 +59,7 @@ void main() {
     expect(word().parse('_').value, '_');
     expect(whitespace().parse(' ').value, ' ');
     expect(pattern('0-9a-fA-F').parse('f').value, 'f');
+    expect(any().parse('!').value, '!');
   });
 
   test('combining parsers', () {
@@ -81,9 +82,15 @@ void main() {
 
     final exact = letter().times(3);
     expect(exact.parse('abc').value, ['a', 'b', 'c']);
+
+    final separated = digit().plusSeparated(char(','));
+    expect(separated.parse('1,2,3').value.elements, ['1', '2', '3']);
   });
 
   test('transformations', () {
+    final flattened = digit().plus().flatten();
+    expect(flattened.parse('123').value, '123');
+
     final number = digit().plus().flatten().map(int.parse);
     expect(number.parse('42').value, 42);
 

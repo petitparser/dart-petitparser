@@ -240,7 +240,7 @@ To extract all matching occurrences across a larger body of text, use `allMatche
 final words = letter().plus().flatten();
 final matches = words.allMatches('two words 123');
 
-print(matches); // ('two', 'words')
+print(matches); // (two, words)
 ```
 
 ## 🛠️ Practical Examples

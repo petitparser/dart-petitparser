@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 import 'sequence_3.dart';
 
-/// Creates a [Parser] that consumes the 2 parsers passed as argument in
+/// Creates a [Parser] that consumes the 2 parsers passed as arguments in
 /// sequence and returns a [Record] with the 2 positional parse results.
 ///
 /// For example,
@@ -21,7 +21,7 @@ import 'sequence_3.dart';
 Parser<(R1, R2)> seq2<R1, R2>(Parser<R1> parser1, Parser<R2> parser2) =>
     SequenceParser2<R1, R2>(parser1, parser2);
 
-/// Extensions on a [Record] with 2 positional [Parser]s.
+/// Extension on a [Record] with 2 positional [Parser]s.
 extension RecordOfParsersExtension2<R1, R2> on (Parser<R1>, Parser<R2>) {
   /// Converts a [Record] of 2 positional parsers to a [Parser] that runs the
   /// parsers in sequence and returns a [Record] with 2 positional parse results.
@@ -100,8 +100,9 @@ extension RecordOfValuesExtension2<T1, T2> on (T1, T2) {
 
 /// Extension on a [Parser] producing a [Record] of 2 positional values.
 extension RecordParserExtension2<T1, T2> on Parser<(T1, T2)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback], see
-  /// [MapParserExtension.map] for details.
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  ///
+  /// See [MapParserExtension.map] for details.
   @useResult
   Parser<R> map2<R>(
     R Function(T1, T2) callback, {

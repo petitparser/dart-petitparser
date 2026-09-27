@@ -5,16 +5,17 @@ import '../../core/parser.dart';
 import '../../core/result.dart';
 import '../combinator/delegate.dart';
 
+/// Extension on [Parser] to cast its result type.
 extension CastParserExtension<R> on Parser<R> {
   /// Returns a parser that casts itself to `Parser<R>`.
   ///
   /// For example, the parser `digit().map(int.parse).cast<num>()` returns the
-  /// integer value of the parsed digit as a `num`.
+  /// integer value of the parsed digit as a [num].
   @useResult
   Parser<S> cast<S>() => CastParser<R, S>(this);
 }
 
-/// A parser that casts a `Result` to a `Result<R>`.
+/// A parser that casts a [Result] to a `Result<R>`.
 class CastParser<R, S> extends DelegateParser<R, S> {
   new(super.delegate);
 

@@ -1,4 +1,4 @@
-/// This package contains helpers to simplify parsing and data extraction.
+/// Pattern matching and text extraction helpers for parsers.
 library;
 
 export 'src/matcher/accept.dart';

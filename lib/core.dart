@@ -1,4 +1,4 @@
-/// This package contains the core classes of the framework.
+/// Core classes of the PetitParser framework.
 ///
 /// {@canonicalFor parser.Parser}
 library;

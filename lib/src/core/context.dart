@@ -7,22 +7,27 @@ import 'token.dart';
 /// An immutable parse context.
 @immutable
 class Context {
+  /// Creates a [Context] at [position] in the [buffer].
   @preferInline
   const new(this.buffer, this.position);
 
-  /// The buffer we are working on.
+  /// The input buffer being parsed.
   final String buffer;
 
   /// The current position in the [buffer].
   final int position;
 
-  /// Returns a result indicating a parse success.
+  /// Creates a [Success] parse result with [result] at [position].
+  ///
+  /// If [position] is omitted, defaults to the current [position].
   @useResult
   @preferInline
   Success<R> success<R>(R result, [int? position]) =>
       Success<R>(buffer, position ?? this.position, result);
 
-  /// Returns a result indicating a parse failure.
+  /// Creates a [Failure] parse result with [message] at [position].
+  ///
+  /// If [position] is omitted, defaults to the current [position].
   @useResult
   @preferInline
   Failure failure(String message, [int? position]) =>

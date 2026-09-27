@@ -7,37 +7,37 @@ import 'result.dart';
 /// Abstract base class of all parsers that produce a parse result of type [R].
 @optionalTypeArgs
 abstract class Parser<R> {
+  /// Creates a [Parser].
   new();
 
-  /// Primitive method doing the actual parsing.
+  /// Parses the given [context].
   ///
-  /// The method is overridden in concrete subclasses to implement the
-  /// parser specific logic. The method takes a parse [context] and
-  /// returns the resulting context, which is either a [Success] or
-  /// [Failure] context.
+  /// Overridden in concrete subclasses to implement the parser-specific logic.
+  /// Takes a parse [context] and returns the resulting context, which is either
+  /// a [Success] or [Failure] context.
   Result<R> parseOn(Context context);
 
-  /// Primitive method doing the actual parsing.
+  /// Parses [buffer] starting at [position] without allocating a [Result].
   ///
-  /// This method is an optimized version of [Parser.parseOn] that is getting
-  /// its speed advantage by avoiding any unnecessary memory allocations.
+  /// An optimized version of [parseOn] that gains its speed advantage by
+  /// avoiding unnecessary memory allocations.
   ///
-  /// The method is overridden in most concrete subclasses to implement the
-  /// optimized logic. As an input the method takes a [buffer] and the current
-  /// [position] in that buffer. It returns a new (positive) position in case
-  /// of a successful parse, or `-1` in case of a failure.
+  /// Overridden in most concrete subclasses to implement the optimized logic.
+  /// Takes a [buffer] and the current [position] in that buffer. Returns a new
+  /// (positive) position in case of a successful parse, or `-1` in case of a
+  /// failure.
   ///
-  /// Subclasses don't necessarily have to override this method, since it is
-  /// emulated using its slower brother.
+  /// Subclasses do not necessarily have to override this method, since it is
+  /// emulated using [parseOn].
   int fastParseOn(String buffer, int position) {
     final result = parseOn(Context(buffer, position));
     return result is Failure ? -1 : result.position;
   }
 
-  /// Returns the parse result of the [input].
+  /// Parses the [input] and returns the parse result.
   ///
-  /// The implementation creates a default parse context on the input and calls
-  /// the internal parsing logic of the receiving parser.
+  /// Creates a default parse context on the [input] starting at [start] and
+  /// calls the internal parsing logic of this parser.
   ///
   /// For example, `letter().plus().parse('abc')` results in an instance of
   /// [Success], where [Context.position] is `3` and [Success.value] is
@@ -50,16 +50,16 @@ abstract class Parser<R> {
   Result<R> parse(String input, {int start = 0}) =>
       parseOn(Context(input, start));
 
-  /// Returns a shallow copy of the receiver.
+  /// Creates a shallow copy of this parser.
   ///
-  /// Override this method in all subclasses, return its own type.
+  /// Overridden in subclasses to return an instance of the specific parser type.
   Parser<R> copy();
 
-  /// Recursively tests for structural equality of two parsers.
+  /// Tests if this parser is structurally equal to [other].
   ///
-  /// The code automatically deals with recursive parsers and parsers that
-  /// refer to other parsers. Do not override this method, instead customize
-  /// [Parser.hasEqualProperties] and [Parser.children].
+  /// Automatically deals with recursive parsers and parsers that refer to other
+  /// parsers. Do not override this method; instead customize
+  /// [hasEqualProperties] and [children].
   @nonVirtual
   bool isEqualTo(Parser other, [Set<Parser>? seen]) {
     if (this == other) {
@@ -72,17 +72,17 @@ abstract class Parser<R> {
     return !seen.add(this) || hasEqualChildren(other, seen);
   }
 
-  /// Compare the properties of two parsers.
+  /// Compares the properties of this parser with [other].
   ///
-  /// Override this method in all subclasses that add new state.
+  /// Overridden in subclasses that add new state.
   @protected
   @mustCallSuper
   bool hasEqualProperties(covariant Parser other) => true;
 
-  /// Compare the children of two parsers.
+  /// Compares the children of this parser with [other].
   ///
-  /// Normally this method does not need to be overridden, as this method works
-  /// generically on the returned [Parser.children].
+  /// Normally does not need to be overridden, as it works generically on
+  /// [children].
   @protected
   @nonVirtual
   bool hasEqualChildren(covariant Parser other, Set<Parser> seen) {
@@ -98,7 +98,7 @@ abstract class Parser<R> {
     return true;
   }
 
-  /// Returns a list of directly referenced parsers.
+  /// The list of directly referenced parsers.
   ///
   /// For example, `letter().children` returns the empty collection `[]`,
   /// because the letter parser is a primitive or leaf parser that does not
@@ -107,18 +107,19 @@ abstract class Parser<R> {
   /// In contrast, `letter().or(digit()).children` returns a collection
   /// containing both the `letter()` and `digit()` parser.
   ///
-  /// Override this method and [Parser.replace] in all subclasses that
-  /// reference other parsers.
+  /// Override this getter and [replace] in all subclasses that reference other
+  /// parsers.
   List<Parser> get children => const [];
 
-  /// Changes the receiver by replacing [source] with [target]. Does nothing
-  /// if [source] does not exist in [Parser.children].
+  /// Replaces [source] with [target] in this parser.
+  ///
+  /// Does nothing if [source] does not exist in [children].
   ///
   /// The following example creates a letter parser and then defines a parser
   /// called `example` that accepts one or more letters. Eventually the parser
   /// `example` is modified by replacing the `letter` parser with a new
   /// parser that accepts a digit. The resulting `example` parser accepts one
-  /// or more digits.
+  /// or more digits:
   ///
   /// ```dart
   /// final letter = letter();
@@ -126,13 +127,16 @@ abstract class Parser<R> {
   /// example.replace(letter, digit());
   /// ```
   ///
-  /// Override this method and [Parser.children] in all subclasses that
-  /// reference other parsers.
+  /// Override this method and [children] in all subclasses that reference other
+  /// parsers.
   @mustCallSuper
   void replace(Parser source, Parser target) {}
 
-  /// Internal helper to capture the generic type [R] of the parse result. This
-  /// makes it possible to wrap the parser without losing type information.
+  /// Captures the generic parse result type [R].
+  ///
+  /// Passes this parser to [callback] with its generic result type [R] captured
+  /// as type parameter `S`. This makes it possible to wrap the parser without
+  /// losing type information.
   @internal
   @nonVirtual
   @preferInline

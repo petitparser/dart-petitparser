@@ -11,8 +11,9 @@ import '../utils/sequential.dart';
 extension TrimmingParserExtension<R> on Parser<R> {
   /// Returns a parser that consumes input before and after the receiver,
   /// discards the excess input and only returns the result of the receiver.
+  ///
   /// The optional arguments are parsers that consume the excess input. By
-  /// default `whitespace()` is used. Up to two arguments can be provided to
+  /// default [whitespace] is used. Up to two arguments can be provided to
   /// have different parsers on the [left] and [right] side.
   ///
   /// For example, the parser `letter().plus().trim()` returns `['a', 'b']`

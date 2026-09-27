@@ -1,6 +1,7 @@
 import 'package:petitparser/petitparser.dart';
 import 'package:test/test.dart';
 
+import '../example/calc.dart';
 import 'utils/matchers.dart';
 
 void main() {
@@ -128,5 +129,100 @@ void main() {
       multiLine,
       isParseSuccess(r'"""abc\"""def"""', result: r'abc\"""def'),
     );
+  });
+  group('calc', () {
+    final parser = buildParser();
+    group('parse', () {
+      test('integer', () {
+        expect(parser, isParseSuccess('42', result: 42));
+      });
+      test('float', () {
+        expect(parser, isParseSuccess('3.14', result: 3.14));
+      });
+      test('scientific notation', () {
+        expect(parser, isParseSuccess('1.5e3', result: 1500));
+        expect(parser, isParseSuccess('2.5E-2', result: 0.025));
+      });
+      test('negative number', () {
+        expect(parser, isParseSuccess('-5', result: -5));
+      });
+      test('prefix negation', () {
+        expect(parser, isParseSuccess('--5', result: 5));
+      });
+      test('parentheses', () {
+        expect(parser, isParseSuccess('(42)', result: 42));
+        expect(parser, isParseSuccess('((42))', result: 42));
+      });
+      test('addition', () {
+        expect(parser, isParseSuccess('1 + 2', result: 3));
+        expect(parser, isParseSuccess('1 + 2 + 3', result: 6));
+      });
+      test('subtraction', () {
+        expect(parser, isParseSuccess('5 - 2', result: 3));
+        expect(parser, isParseSuccess('10 - 3 - 2', result: 5));
+      });
+      test('multiplication', () {
+        expect(parser, isParseSuccess('3 * 4', result: 12));
+        expect(parser, isParseSuccess('2 * 3 * 4', result: 24));
+      });
+      test('division', () {
+        expect(parser, isParseSuccess('12 / 3', result: 4));
+        expect(parser, isParseSuccess('24 / 4 / 2', result: 3));
+      });
+      test('power', () {
+        expect(parser, isParseSuccess('2 ^ 3', result: 8));
+        expect(parser, isParseSuccess('2 ^ 2 ^ 3', result: 256));
+      });
+      test('precedence', () {
+        expect(parser, isParseSuccess('1 + 2 * 3', result: 7));
+        expect(parser, isParseSuccess('(1 + 2) * 3', result: 9));
+        expect(parser, isParseSuccess('2 * 3 ^ 2', result: 18));
+        expect(parser, isParseSuccess('-2 * (3 + 4)', result: -14));
+      });
+      test('whitespace', () {
+        expect(parser, isParseSuccess('  1   +   2  ', result: 3));
+      });
+    });
+    group('failure & caret position', () {
+      void expectFailureWithCaret(
+        String input,
+        int expectedPosition,
+        String expectedMessage,
+      ) {
+        expect(
+          parser,
+          isParseFailure(
+            input,
+            position: expectedPosition,
+            message: expectedMessage,
+          ),
+        );
+        final result = parser.parse(input);
+        expect(result, isA<Failure>());
+        final failure = result as Failure;
+        final caretLine = '${' ' * failure.position}^-- ${failure.message}';
+        expect(caretLine.indexOf('^'), expectedPosition);
+        expect(caretLine, '${' ' * expectedPosition}^-- $expectedMessage');
+      }
+
+      test('empty input', () {
+        expectFailureWithCaret('', 0, 'number expected');
+      });
+      test('invalid character at start', () {
+        expectFailureWithCaret('abc', 0, 'number expected');
+      });
+      test('leading space with invalid character', () {
+        expectFailureWithCaret('  x', 2, 'number expected');
+      });
+      test('missing operand after operator', () {
+        expectFailureWithCaret('1 + ', 2, 'end of input expected');
+      });
+      test('invalid trailing token', () {
+        expectFailureWithCaret('1 + 2 x', 6, 'end of input expected');
+      });
+      test('unclosed parenthesis', () {
+        expectFailureWithCaret('(1 + 2', 0, 'number expected');
+      });
+    });
   });
 }

@@ -7,8 +7,10 @@ import '../combinator/delegate.dart';
 
 extension PermuteParserExtension<R> on Parser<List<R>> {
   /// Returns a parser that transforms a successful parse result by returning
-  /// the permuted elements at [indexes] of a list. Negative indexes can be
-  /// used to access the elements from the back of the list.
+  /// the permuted elements at [indexes] of a list.
+  ///
+  /// Negative indexes can be used to access the elements from the back of the
+  /// list.
   ///
   /// For example, the parser `letter().star().permute([0, -1])` returns the
   /// first and last letter parsed. For the input `'abc'` it returns

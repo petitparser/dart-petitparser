@@ -18,8 +18,10 @@ class ExpressionGroup<T> {
   final Parser<T> _loopback;
 
   /// Defines a new wrapper using [left] and [right] parsers, that are typically
-  /// used for parentheses. Evaluates the [callback] with the parsed `left`
-  /// delimiter, the `value` and `right` delimiter.
+  /// used for parentheses.
+  ///
+  /// Evaluates the [callback] with the parsed [left] delimiter, the value, and
+  /// [right] delimiter.
   void wrapper<L, R>(
     Parser<L> left,
     Parser<R> right,
@@ -30,8 +32,9 @@ class ExpressionGroup<T> {
 
   final List<Parser<T>> _wrapper = [];
 
-  /// Adds a prefix operator [parser]. Evaluates the [callback] with the parsed
-  /// `operator` and `value`.
+  /// Adds a prefix operator [parser].
+  ///
+  /// Evaluates the [callback] with the parsed operator and value.
   void prefix<O>(Parser<O> parser, T Function(O operator, T value) callback) =>
       _prefix.add(
         parser.map(
@@ -48,8 +51,9 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultPrefix<T, void>>> _prefix = [];
 
-  /// Adds a postfix operator [parser]. Evaluates the [callback] with the parsed
-  /// `value` and `operator`.
+  /// Adds a postfix operator [parser].
+  ///
+  /// Evaluates the [callback] with the parsed value and operator.
   void postfix<O>(Parser<O> parser, T Function(T value, O operator) callback) =>
       _postfix.add(
         parser.map(
@@ -66,8 +70,10 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultPostfix<T, void>>> _postfix = [];
 
-  /// Adds a right-associative operator [parser]. Evaluates the [callback] with
-  /// the parsed `left` term, `operator`, and `right` term.
+  /// Adds a right-associative operator [parser].
+  ///
+  /// Evaluates the [callback] with the parsed left term, operator, and right
+  /// term.
   void right<O>(
     Parser<O> parser,
     T Function(T left, O operator, T right) callback,
@@ -87,8 +93,10 @@ class ExpressionGroup<T> {
 
   final List<Parser<ExpressionResultInfix<T, void>>> _right = [];
 
-  /// Adds a left-associative operator [parser]. Evaluates the [callback] with
-  /// the parsed `left` term, `operator`, and `right` term.
+  /// Adds a left-associative operator [parser].
+  ///
+  /// Evaluates the [callback] with the parsed left term, operator, and right
+  /// term.
   void left<O>(
     Parser<O> parser,
     T Function(T left, O operator, T right) callback,

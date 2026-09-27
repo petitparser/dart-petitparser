@@ -51,13 +51,13 @@ Parser<R> progress<R>(
 
 /// Encapsulates the data around a parser progress.
 abstract class ProgressFrame {
-  /// Returns the parser of this frame.
+  /// The parser of this frame.
   Parser get parser;
 
-  /// Returns the activation context of this frame.
+  /// The activation context of this frame.
   Context get context;
 
-  /// Returns the current position in the input.
+  /// The current position in the input.
   int get position => context.position;
 }
 

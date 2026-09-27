@@ -10,6 +10,8 @@ import 'character.dart';
 /// Parser class for an individual Unicode code-point (including possible
 /// surrogate pairs) satisfying a specified [CharacterPredicate].
 class UnicodeCharacterParser extends CharacterParser {
+  /// Constructs a parser for an individual Unicode code point satisfying
+  /// [predicate].
   factory(CharacterPredicate predicate, String message) =>
       ConstantCharPredicate.any.isEqualTo(predicate)
       ? AnyUnicodeCharacterParser.internal(predicate, message)

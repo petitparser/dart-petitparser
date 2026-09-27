@@ -10,7 +10,9 @@ import 'unbounded.dart';
 
 extension GreedyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
-  /// reaches a [limit]. This is a greedy non-blind implementation of the
+  /// reaches a [limit].
+  ///
+  /// This is a greedy non-blind implementation of the
   /// [PossessiveRepeatingParserExtension.star] operator. The [limit] is not
   /// consumed.
   ///
@@ -24,7 +26,9 @@ extension GreedyRepeatingParserExtension<R> on Parser<R> {
       repeatGreedy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
-  /// reaches [limit]. This is a greedy non-blind implementation of the
+  /// reaches [limit].
+  ///
+  /// This is a greedy non-blind implementation of the
   /// [PossessiveRepeatingParserExtension.plus] operator. The [limit] is not
   /// consumed.
   ///
@@ -38,9 +42,11 @@ extension GreedyRepeatingParserExtension<R> on Parser<R> {
       repeatGreedy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
-  /// times until it reaches a [limit]. This is a greedy non-blind
-  /// implementation of the [PossessiveRepeatingParserExtension.repeat]
-  /// operator. The [limit] is not consumed.
+  /// times until it reaches a [limit].
+  ///
+  /// This is a greedy non-blind implementation of the
+  /// [PossessiveRepeatingParserExtension.repeat] operator. The [limit] is not
+  /// consumed.
   ///
   /// This is the more generic variation of the [starGreedy] and [plusGreedy]
   /// combinators.
@@ -50,8 +56,10 @@ extension GreedyRepeatingParserExtension<R> on Parser<R> {
 }
 
 /// A greedy repeating parser, commonly seen in regular expression
-/// implementations. It aggressively consumes as much input as possible and then
-/// backtracks to meet the 'limit' condition.
+/// implementations.
+///
+/// It aggressively consumes as much input as possible and then backtracks to
+/// meet the 'limit' condition.
 class GreedyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   new(super.parser, super.limit, super.min, super.max);
 

@@ -8,10 +8,12 @@ import '../combinator/delegate.dart';
 
 extension WhereParserExtension<R> on Parser<R> {
   /// Returns a parser that evaluates the [predicate] with the successful
-  /// parse result. If the predicate returns `true` the parser proceeds with
-  /// the parse result, otherwise a parse failure is created using the
-  /// optionally specified [factory] callback, the provided [message], or
-  /// otherwise an automatically created error message.
+  /// parse result.
+  ///
+  /// If the predicate returns `true` the parser proceeds with the parse result,
+  /// otherwise a parse failure is created using the optionally specified
+  /// [factory] callback, the provided [message], or otherwise an automatically
+  /// created error message.
   ///
   /// The following example parses two characters, but only succeeds if they
   /// are equal:
@@ -38,6 +40,7 @@ typedef FailureFactory<R> = Result<R> Function(
   Success<R> success,
 );
 
+/// A parser that evaluates a predicate on the successful result of its delegate.
 class WhereParser<R> extends DelegateParser<R, R> {
   new(super.parser, this.predicate, this.factory);
 
@@ -63,6 +66,7 @@ class WhereParser<R> extends DelegateParser<R, R> {
       factory == other.factory;
 }
 
+/// Creates a default [FailureFactory] with an optional error [message].
 FailureFactory<R> defaultFactory_<R>(String? message) =>
     (context, success) =>
         context.failure(message ?? 'unexpected "${success.value}"');

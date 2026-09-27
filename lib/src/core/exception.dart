@@ -5,8 +5,10 @@ import 'result.dart';
 /// An exception raised in case of a parse error.
 @immutable
 class ParserException implements FormatException {
+  /// Creates a [ParserException] with the provided [failure].
   const new(this.failure);
 
+  /// The underlying parse failure.
   final Failure failure;
 
   @override

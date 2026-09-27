@@ -47,15 +47,15 @@ extension ChoiceParserExtension on Parser {
         _ => [this, other].toChoiceParser(failureJoiner: failureJoiner),
       };
 
-  /// Syntactic sugar for [or].
+  /// Combines this parser and [other] into a choice, equivalent to calling [or].
   ///
   /// Returns an ordered choice parser trying the receiver first, followed
   /// by [other].
   ///
   /// ```dart
   /// final parser = letter() | digit().map(int.parse);
-  /// parser.parse('a'); // Success: 'a'
-  /// parser.parse('1'); // Success: 1
+  /// parser.parse('a').value; // 'a'
+  /// parser.parse('1').value; // 1
   /// ```
   ///
   /// The result type is `dynamic`. For better type safety, prefer

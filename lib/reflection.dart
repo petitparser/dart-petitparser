@@ -1,4 +1,4 @@
-/// This package contains tools to reflect on and transform parsers.
+/// Tools to introspect, transform, and optimize parsers.
 library;
 
 export 'src/reflection/analyzer.dart';

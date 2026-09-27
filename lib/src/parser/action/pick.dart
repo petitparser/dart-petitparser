@@ -7,8 +7,10 @@ import '../combinator/delegate.dart';
 
 extension PickParserExtension<R> on Parser<List<R>> {
   /// Returns a parser that transforms a successful parse result by returning
-  /// the element at [index] of a list. A negative index can be used to access
-  /// the elements from the back of the list.
+  /// the element at [index] of a list.
+  ///
+  /// A negative index can be used to access the elements from the back of the
+  /// list.
   ///
   /// For example, the parser `letter().star().pick(-1)` returns the last
   /// letter parsed. For the input `'abc'` it returns `'c'`.

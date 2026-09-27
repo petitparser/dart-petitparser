@@ -4,10 +4,13 @@ import '../../core/parser.dart';
 import 'parser_match.dart';
 import 'pattern_iterable.dart';
 
+/// A [Pattern] implementation backed by a [Parser].
 @immutable
 class ParserPattern implements Pattern {
+  /// Creates a [Pattern] from a [parser].
   const new(this.parser);
 
+  /// The underlying parser.
   final Parser parser;
 
   /// Matches this parser against [string] repeatedly.
@@ -22,7 +25,7 @@ class ParserPattern implements Pattern {
   Iterable<ParserMatch> allMatches(String string, [int start = 0]) =>
       PatternIterable(this, string, start);
 
-  /// Match this pattern against the start of [string].
+  /// Matches this pattern against the start of [string].
   ///
   /// If [start] is provided, this parser is tested against the string at the
   /// [start] position. That is, a [Match] is returned if the pattern can match

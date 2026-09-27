@@ -26,7 +26,7 @@ extension SettableParserExtension<R> on Parser<R> {
 ///
 /// ```dart
 /// final p = undefined();
-/// p.set(char('a').seq(p).or(char('b')));
+/// p.set(char('a').then(p).or(char('b')));
 /// ```
 @useResult
 SettableParser<R> undefined<R>({String message = 'undefined parser'}) =>

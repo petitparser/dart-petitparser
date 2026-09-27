@@ -1,4 +1,4 @@
-/// This package simplifies the creation of expression parsers.
+/// Builder for expression grammars with operator precedence.
 library;
 
 export 'src/expression/builder.dart';

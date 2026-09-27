@@ -7,8 +7,9 @@ import 'repeating.dart';
 import 'unbounded.dart';
 
 extension PossessiveRepeatingParserExtension<R> on Parser<R> {
-  /// Returns a parser that accepts the receiver zero or more times. The
-  /// resulting parser returns a list of the parse results of the receiver.
+  /// Returns a parser that accepts the receiver zero or more times.
+  ///
+  /// The resulting parser returns a list of the parse results of the receiver.
   ///
   /// This is a greedy and blind implementation that tries to consume as much
   /// input as possible and that does not consider what comes afterwards.
@@ -19,8 +20,9 @@ extension PossessiveRepeatingParserExtension<R> on Parser<R> {
   @useResult
   Parser<List<R>> star() => repeat(0, unbounded);
 
-  /// Returns a parser that accepts the receiver one or more times. The
-  /// resulting parser returns a list of the parse results of the receiver.
+  /// Returns a parser that accepts the receiver one or more times.
+  ///
+  /// The resulting parser returns a list of the parse results of the receiver.
   ///
   /// This is a greedy and blind implementation that tries to consume as much
   /// input as possible and that does not consider what comes afterwards.
@@ -30,8 +32,9 @@ extension PossessiveRepeatingParserExtension<R> on Parser<R> {
   @useResult
   Parser<List<R>> plus() => repeat(1, unbounded);
 
-  /// Returns a parser that accepts the receiver exactly [count] times. The
-  /// resulting parser returns a list of the parse results of the receiver.
+  /// Returns a parser that accepts the receiver exactly [count] times.
+  ///
+  /// The resulting parser returns a list of the parse results of the receiver.
   ///
   /// This is a greedy and blind implementation that tries to consume as much
   /// input as possible and that does not consider what comes afterwards.
@@ -42,6 +45,7 @@ extension PossessiveRepeatingParserExtension<R> on Parser<R> {
   Parser<List<R>> times(int count) => repeat(count, count);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
+  ///
   /// The resulting parser returns a list of the parse results of the receiver.
   ///
   /// This is a greedy and blind implementation that tries to consume as much

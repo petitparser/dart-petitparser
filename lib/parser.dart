@@ -1,4 +1,4 @@
-/// This package contains the standard parser implementations.
+/// Standard parser implementations and combinators.
 library;
 
 export 'src/core/parser.dart';

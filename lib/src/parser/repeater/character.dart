@@ -11,8 +11,9 @@ import 'possessive.dart';
 import 'unbounded.dart';
 
 extension RepeatingCharacterParserExtension on Parser<String> {
-  /// Returns a parser that accepts the receiver zero or more times. The
-  /// resulting parser returns the consumed input string.
+  /// Returns a parser that accepts the receiver zero or more times.
+  ///
+  /// The resulting parser returns the consumed input string.
   ///
   /// This implementation is equivalent to [PossessiveRepeatingParserExtension.star],
   /// but particularly performant when used on character parsers. Instead of a
@@ -25,8 +26,9 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   Parser<String> starString({String? message}) =>
       repeatString(0, unbounded, message: message);
 
-  /// Returns a parser that accepts the receiver one or more times. The
-  /// resulting parser returns the consumed input string.
+  /// Returns a parser that accepts the receiver one or more times.
+  ///
+  /// The resulting parser returns the consumed input string.
   ///
   /// This implementation is equivalent to [PossessiveRepeatingParserExtension.plus],
   /// but particularly performant when used on character parsers. Instead of a
@@ -38,8 +40,9 @@ extension RepeatingCharacterParserExtension on Parser<String> {
   Parser<String> plusString({String? message}) =>
       repeatString(1, unbounded, message: message);
 
-  /// Returns a parser that accepts the receiver exactly [count] times. The
-  /// resulting parser returns the consumed input string.
+  /// Returns a parser that accepts the receiver exactly [count] times.
+  ///
+  /// The resulting parser returns the consumed input string.
   ///
   /// This implementation is equivalent to [PossessiveRepeatingParserExtension.times],
   /// but particularly performant when used on character parsers. Instead of a
@@ -52,6 +55,7 @@ extension RepeatingCharacterParserExtension on Parser<String> {
       repeatString(count, count, message: message);
 
   /// Returns a parser that accepts the receiver between [min] and [max] times.
+  ///
   /// The resulting parser returns the consumed input string.
   ///
   /// This implementation is equivalent to [PossessiveRepeatingParserExtension.repeat],

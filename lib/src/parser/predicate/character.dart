@@ -26,7 +26,7 @@ abstract class CharacterParser extends Parser<String> {
     true => UnicodeCharacterParser(predicate, message),
   };
 
-  /// Internal constructor
+  /// Constructs an internal character parser.
   @internal
   new internal(this.predicate, this.message);
 

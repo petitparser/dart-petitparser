@@ -4,21 +4,22 @@ import 'dart:io';
 const min = 2;
 const max = 9;
 
-/// Implementation file.
-File implementationFile(int i) =>
-    File('lib/src/parser/combinator/generated/sequence_$i.dart');
+/// Returns the implementation file for the given sequence [index].
+File implementationFile(int index) =>
+    File('lib/src/parser/combinator/generated/sequence_$index.dart');
 
 /// Test file.
 final testFile = File('test/generated/sequence_test.dart');
 
-/// Pretty prints and cleans up a dart file.
+/// Formats and cleans up a Dart file.
 Future<void> format(File file) async =>
-    Process.run('dart', ['format', file.absolute.path]);
+    Process.run(Platform.resolvedExecutable, ['format', file.absolute.path]);
 
-/// Generate the variable names.
-List<String> generateValues(String prefix, int i) =>
-    List.generate(i, (i) => '$prefix${i + 1}');
+/// Generates variable names with [prefix].
+List<String> generateValues(String prefix, int count) =>
+    List.generate(count, (index) => '$prefix${index + 1}');
 
+/// Writes the auto-generated code header to [out].
 void generateWarning(StringSink out) {
   out.writeln('// AUTO-GENERATED CODE: DO NOT EDIT');
   out.writeln();
@@ -54,7 +55,7 @@ Future<void> generateImplementation(int index) async {
   // Constructor function.
   out.writeln(
     '/// Creates a [Parser] that consumes the $index parsers passed '
-    'as argument in ',
+    'as arguments in ',
   );
   out.writeln(
     '/// sequence and returns a [Record] with the $index positional '
@@ -85,7 +86,7 @@ Future<void> generateImplementation(int index) async {
   out.writeln();
 
   // Converter extension.
-  out.writeln('/// Extensions on a [Record] with $index positional [Parser]s.');
+  out.writeln('/// Extension on a [Record] with $index positional [Parser]s.');
   out.writeln(
     'extension RecordOfParsersExtension$index'
     '<${resultTypes.join(', ')}> on '
@@ -259,9 +260,10 @@ Future<void> generateImplementation(int index) async {
   );
   out.writeln(
     '/// Maps a parsed [Record] to [R] using the provided '
-    '[callback], see ',
+    '[callback].',
   );
-  out.writeln('/// [MapParserExtension.map] for details.');
+  out.writeln('///');
+  out.writeln('/// See [MapParserExtension.map] for details.');
   out.writeln('@useResult');
   out.writeln(
     'Parser<R> map$index<R>('

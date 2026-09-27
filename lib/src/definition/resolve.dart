@@ -3,8 +3,9 @@ import '../parser/combinator/settable.dart';
 import '../parser/utils/resolvable.dart';
 import 'reference.dart';
 
-/// Resolves all parser references reachable through [parser]. Returns an
-/// optimized parser graph that inlines all references directly.
+/// Resolves all parser references reachable through [parser].
+///
+/// Returns an optimized parser graph that inlines all references directly.
 ///
 /// This code in-lines parsers that purely reference another one (subclasses
 /// of [ResolvableParser]). This includes, but is not limited to, parsers
@@ -31,9 +32,10 @@ Parser<R> resolve<R>(Parser<R> parser) {
   return parser;
 }
 
-/// Internal helper to dereference and resolve a chain of [ResolvableParser]
-/// instances to their resolved counterpart. Throws a [StateError] if there
-/// is a directly cyclic dependency on itself.
+/// Dereferences and resolves a chain of [ResolvableParser] instances to their
+/// resolved counterpart.
+///
+/// Throws a [StateError] if there is a directly cyclic dependency on itself.
 Parser<R> _dereference<R>(Parser<R> parser, Map<Parser, Parser> mapping) {
   final references = <ResolvableParser<R>>{};
   while (parser is ResolvableParser<R>) {

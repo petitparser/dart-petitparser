@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 import 'sequence_6.dart';
 
-/// Creates a [Parser] that consumes the 5 parsers passed as argument in
+/// Creates a [Parser] that consumes the 5 parsers passed as arguments in
 /// sequence and returns a [Record] with the 5 positional parse results.
 ///
 /// For example,
@@ -32,7 +32,7 @@ Parser<(R1, R2, R3, R4, R5)> seq5<R1, R2, R3, R4, R5>(
   parser5,
 );
 
-/// Extensions on a [Record] with 5 positional [Parser]s.
+/// Extension on a [Record] with 5 positional [Parser]s.
 extension RecordOfParsersExtension5<R1, R2, R3, R4, R5>
     on (Parser<R1>, Parser<R2>, Parser<R3>, Parser<R4>, Parser<R5>) {
   /// Converts a [Record] of 5 positional parsers to a [Parser] that runs the
@@ -153,8 +153,9 @@ extension RecordOfValuesExtension5<T1, T2, T3, T4, T5> on (T1, T2, T3, T4, T5) {
 /// Extension on a [Parser] producing a [Record] of 5 positional values.
 extension RecordParserExtension5<T1, T2, T3, T4, T5>
     on Parser<(T1, T2, T3, T4, T5)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback], see
-  /// [MapParserExtension.map] for details.
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  ///
+  /// See [MapParserExtension.map] for details.
   @useResult
   Parser<R> map5<R>(
     R Function(T1, T2, T3, T4, T5) callback, {

@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 import 'sequence_9.dart';
 
-/// Creates a [Parser] that consumes the 8 parsers passed as argument in
+/// Creates a [Parser] that consumes the 8 parsers passed as arguments in
 /// sequence and returns a [Record] with the 8 positional parse results.
 ///
 /// For example,
@@ -38,7 +38,7 @@ Parser<(R1, R2, R3, R4, R5, R6, R7, R8)> seq8<R1, R2, R3, R4, R5, R6, R7, R8>(
   parser8,
 );
 
-/// Extensions on a [Record] with 8 positional [Parser]s.
+/// Extension on a [Record] with 8 positional [Parser]s.
 extension RecordOfParsersExtension8<R1, R2, R3, R4, R5, R6, R7, R8>
     on
         (
@@ -226,8 +226,9 @@ extension RecordOfValuesExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
 /// Extension on a [Parser] producing a [Record] of 8 positional values.
 extension RecordParserExtension8<T1, T2, T3, T4, T5, T6, T7, T8>
     on Parser<(T1, T2, T3, T4, T5, T6, T7, T8)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback], see
-  /// [MapParserExtension.map] for details.
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  ///
+  /// See [MapParserExtension.map] for details.
   @useResult
   Parser<R> map8<R>(
     R Function(T1, T2, T3, T4, T5, T6, T7, T8) callback, {

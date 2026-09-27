@@ -11,7 +11,7 @@ import '../parser/misc/failure.dart';
 import '../parser/repeater/character.dart';
 import '../parser/utils/failure_joiner.dart';
 
-/// A stateful set of parsers to handle indentation-based grammars.
+/// Stateful set of parsers to handle indentation-based grammars.
 ///
 /// Typical use combines [same] to match the indentation of items at the current
 /// level and [during] to scope indented blocks:
@@ -24,25 +24,27 @@ import '../parser/utils/failure_joiner.dart';
 ///
 /// Based on https://stackoverflow.com/a/56926044/82303.
 class Indent {
+  /// Creates an indentation handler with an optional indentation [parser] and
+  /// error [message].
   new({Parser<String>? parser, String? message})
     : parser = parser ?? pattern(' \t'),
       message = message ?? 'indented expected';
 
-  /// The parser used read a single indentation step.
+  /// The parser used to read a single indentation step.
   final Parser<String> parser;
 
   /// The error message to use when an indentation is expected.
   final String message;
 
-  /// Internal field with the stack of indentations.
+  /// Stack of indentations.
   @internal
   final List<String> stack = [];
 
-  /// Internal field of the currently active indentation.
+  /// Currently active indentation.
   @internal
   String current = '';
 
-  /// A parser that increases the indentation.
+  /// Parser that increases the indentation.
   ///
   /// The parser performs the following actions in sequence:
   ///
@@ -67,12 +69,12 @@ class Indent {
       })
       .and();
 
-  /// A parser that consumes and matches the current indentation level.
+  /// Parser that consumes and matches the current indentation level.
   late final Parser<String> same = parser
       .starString(message: message)
       .where((value) => value == current);
 
-  /// A parser that decreases the indentation by one level.
+  /// Parser that decreases the indentation by one level.
   ///
   /// Prefer using [during] instead to properly track the indentation state and
   /// ensure rollback on parse failure.

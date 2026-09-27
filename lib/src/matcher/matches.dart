@@ -1,6 +1,7 @@
 import '../core/parser.dart';
 import 'matches/matches_iterable.dart';
 
+/// Extension on [Parser] providing match extraction.
 extension MatchesParserExtension<T> on Parser<T> {
   /// Returns a _lazy iterable_ over all non-overlapping successful parse
   /// results of type [T] over the provided [input].

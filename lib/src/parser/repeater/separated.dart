@@ -10,9 +10,10 @@ import 'unbounded.dart';
 
 extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that consumes the receiver zero or more times separated
-  /// by the [separator] parser. The resulting parser returns a [SeparatedList]
-  /// containing collections of both the elements of type [R] as well as the
-  /// separators of type [S].
+  /// by the [separator] parser.
+  ///
+  /// The resulting parser returns a [SeparatedList] containing collections of
+  /// both the elements of type [R] as well as the separators of type [S].
   ///
   /// For example, the parser `digit().starSeparated(anyOf(',;'))` returns a
   /// parser that consumes input like `'1,2;3'` and that returns a
@@ -23,9 +24,10 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
       repeatSeparated<S>(separator, 0, unbounded);
 
   /// Returns a parser that consumes the receiver one or more times separated
-  /// by the [separator] parser. The resulting parser returns a [SeparatedList]
-  /// containing collections of both the elements of type [R] as well as the
-  /// separators of type [S].
+  /// by the [separator] parser.
+  ///
+  /// The resulting parser returns a [SeparatedList] containing collections of
+  /// both the elements of type [R] as well as the separators of type [S].
   ///
   /// For example, the parser `digit().plusSeparated(char(','))` returns a
   /// parser that consumes input like `'1,2,3'` and that returns a
@@ -36,9 +38,10 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
       repeatSeparated<S>(separator, 1, unbounded);
 
   /// Returns a parser that consumes the receiver [count] times separated
-  /// by the [separator] parser. The resulting parser returns a [SeparatedList]
-  /// containing collections of both the elements of type [R] as well as the
-  /// separators of type [S].
+  /// by the [separator] parser.
+  ///
+  /// The resulting parser returns a [SeparatedList] containing collections of
+  /// both the elements of type [R] as well as the separators of type [S].
   ///
   /// For example, the parser `digit().timesSeparated(char(','), 3)` returns a
   /// parser that consumes input like `'1,2,3'` and that returns a
@@ -51,9 +54,10 @@ extension SeparatedRepeatingParserExtension<R> on Parser<R> {
   ) => repeatSeparated<S>(separator, count, count);
 
   /// Returns a parser that consumes the receiver between [min] and [max] times
-  /// separated by the [separator] parser. The resulting parser returns a
-  /// [SeparatedList] containing collections of both the elements of type [R] as
-  /// well as the separators of type [S].
+  /// separated by the [separator] parser.
+  ///
+  /// The resulting parser returns a [SeparatedList] containing collections of
+  /// both the elements of type [R] as well as the separators of type [S].
   ///
   /// For example, the parser `digit().repeatSeparated(char(','), 2, 3)`
   /// returns a parser that consumes input like `'1,2'` or `'1,2,3'` and that

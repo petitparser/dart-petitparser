@@ -1,5 +1,6 @@
 import '../core/parser.dart';
 
+/// Extension on [Parser] providing acceptance testing.
 extension AcceptParser<R> on Parser<R> {
   /// Tests if the [input] can be successfully parsed.
   ///

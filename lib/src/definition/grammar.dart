@@ -7,70 +7,84 @@ import 'resolve.dart';
 /// Helper to conveniently define and build complex, recursive grammars using
 /// plain Dart code.
 ///
-/// To create a new grammar definition subclass [GrammarDefinition]. For every
-/// production create a new method returning the primitive parser defining it.
-/// The method called [start] is supposed to return the start production of the
-/// grammar (that can be customized when building the parsers). To refer to
-/// another production use [ref0] with the function reference as the argument.
+/// To create a new grammar definition extend [GrammarDefinition] with the return
+/// type of the [start] production. For every production define a method returning
+/// a strongly typed [Parser]. The method [start] defines the entry production of
+/// the grammar. To refer to another production use [ref0] with the function
+/// reference as the argument.
 ///
-/// Consider the following example to parse a list of numbers:
+/// Consider the following example to parse a comma-separated list of numbers
+/// directly into a list of integers:
 ///
 /// ```dart
-/// class ListGrammarDefinition extends GrammarDefinition {
-///   Parser start()   => ref0(list).end();
-///   Parser list()    => ref0(element) & char(',') & ref0(list)
-///                     | ref0(element);
-///   Parser element() => digit().plus().flatten();
+/// class ListGrammarDefinition extends GrammarDefinition<List<int>> {
+///   @override
+///   // Refers to another production:
+///   Parser<List<int>> start() => ref0(list).end();
+///
+///   Parser<List<int>> list() => [
+///     // Recursively refers to element and list:
+///     seq3(ref0(element), char(','), ref0(list))
+///         .map3((first, _, rest) => [first, ...rest]),
+///     ref0(element).map((value) => [value]),
+///   ].toChoiceParser();
+///
+///   Parser<int> element() => digit().plus().flatten().map(int.parse);
 /// }
 /// ```
 ///
 /// Since this is plain Dart code, common refactorings such as renaming a
-/// production updates all references correctly. Also code navigation and code
-/// completion works as expected.
+/// production update all references correctly. Also code navigation and code
+/// completion work as expected.
 ///
-/// To attach custom production actions you might want to further subclass your
-/// grammar definition and override the necessary productions defined in the
-/// superclass:
+/// Productions can be parametrized. Define such productions with positional
+/// arguments, and refer to them using [ref1], [ref2], ... where the number
+/// corresponds to the argument count.
+///
+/// For example, to add a parametrized token production that trims whitespace,
+/// update the productions in `ListGrammarDefinition`:
 ///
 /// ```dart
-/// class ListParserDefinition extends ListGrammarDefinition {
-///   Parser element() => super.element().map((value) => int.parse(value));
-/// }
+///   Parser<List<int>> list() => [
+///     // Refers to a parametrized production:
+///     seq3(ref0(element), ref1(token, char(',')), ref0(list))
+///         .map3((first, _, rest) => [first, ...rest]),
+///     ref0(element).map((value) => [value]),
+///   ].toChoiceParser();
+///
+///   // Refers to a parametrized production:
+///   Parser<int> element() =>
+///       ref1(token, digit().plus().flatten()).map(int.parse);
+///
+///   // Defines a parametrized production:
+///   Parser<String> token(Parser<String> parser) => parser.trim();
 /// ```
 ///
-/// Note that productions can be parametrized. Define such productions with
-/// positional arguments, and refer to them using [ref1], [ref2], ... where
-/// the number corresponds to the argument count.
-///
-/// Consider extending the above grammar with a parametrized token production:
+/// To get a runnable parser call [build] on the definition. It resolves
+/// recursive references and returns an efficient parser that can be further
+/// composed:
 ///
 /// ```dart
-/// class TokenizedListGrammarDefinition extends GrammarDefinition {
-///   Parser start() => ref0(list).end();
-///   Parser list() => ref0(element) & ref1(token, char(',')) & ref0(list)
-///                  | ref0(element);
-///   Parser element() => ref1(token, digit().plus());
-///   Parser token(Parser parser)  => parser.token().trim();
-/// }
+/// final parser = ListGrammarDefinition().build();
+///
+/// parser.parse('1').value; // [1]
+/// parser.parse('1,2,3').value; // [1, 2, 3]
 /// ```
 ///
-/// To get a runnable parser call the [build] method on the definition. It
-/// resolves recursive references and returns an efficient parser that can be
-/// further composed. The optional `start` reference specifies a different
-/// starting production within the grammar. The optional `arguments`
-/// parametrize the start production.
+/// You can also build a parser starting from any specific production rule in
+/// the grammar using [buildFrom]:
 ///
 /// ```dart
-/// final parser = ListParserDefinition().build();
+/// final definition = ListGrammarDefinition();
+/// final elementParser = definition.buildFrom(ref0(definition.element));
 ///
-/// parser.parse('1');          // [1]
-/// parser.parse('1,2,3');      // [1, 2, 3]
+/// elementParser.parse('42').value; // 42
 /// ```
 @optionalTypeArgs
 abstract class GrammarDefinition<R> {
   const new();
 
-  /// The starting production of this definition.
+  /// Returns the starting production of this definition.
   Parser<R> start();
 
   /// Builds the default composite parser starting at [start].

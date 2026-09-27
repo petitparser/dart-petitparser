@@ -15,7 +15,7 @@ class Analyzer {
   /// The start parser of analysis.
   final Parser root;
 
-  /// Returns a set of all parsers reachable from [root].
+  /// The set of all parsers reachable from [root].
   Iterable<Parser> get parsers => _parsers;
 
   late final Set<Parser> _parsers = allParser(root).toSet();
@@ -108,7 +108,6 @@ class Analyzer {
     firstSets: _firstSets,
   );
 
-  /// A unique parser used as a marker in [firstSet] and [followSet]
-  /// computations.
+  /// Parser used as a marker in [firstSet] and [followSet] computations.
   static final sentinel = EpsilonParser<void>(null);
 }

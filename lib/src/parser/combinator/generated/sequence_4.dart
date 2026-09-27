@@ -10,7 +10,7 @@ import '../../action/map.dart';
 import '../../utils/sequential.dart';
 import 'sequence_5.dart';
 
-/// Creates a [Parser] that consumes the 4 parsers passed as argument in
+/// Creates a [Parser] that consumes the 4 parsers passed as arguments in
 /// sequence and returns a [Record] with the 4 positional parse results.
 ///
 /// For example,
@@ -25,7 +25,7 @@ Parser<(R1, R2, R3, R4)> seq4<R1, R2, R3, R4>(
   Parser<R4> parser4,
 ) => SequenceParser4<R1, R2, R3, R4>(parser1, parser2, parser3, parser4);
 
-/// Extensions on a [Record] with 4 positional [Parser]s.
+/// Extension on a [Record] with 4 positional [Parser]s.
 extension RecordOfParsersExtension4<R1, R2, R3, R4>
     on (Parser<R1>, Parser<R2>, Parser<R3>, Parser<R4>) {
   /// Converts a [Record] of 4 positional parsers to a [Parser] that runs the
@@ -130,8 +130,9 @@ extension RecordOfValuesExtension4<T1, T2, T3, T4> on (T1, T2, T3, T4) {
 
 /// Extension on a [Parser] producing a [Record] of 4 positional values.
 extension RecordParserExtension4<T1, T2, T3, T4> on Parser<(T1, T2, T3, T4)> {
-  /// Maps a parsed [Record] to [R] using the provided [callback], see
-  /// [MapParserExtension.map] for details.
+  /// Maps a parsed [Record] to [R] using the provided [callback].
+  ///
+  /// See [MapParserExtension.map] for details.
   @useResult
   Parser<R> map4<R>(
     R Function(T1, T2, T3, T4) callback, {

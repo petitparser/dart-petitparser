@@ -6,8 +6,9 @@ import '../../core/result.dart';
 import '../combinator/delegate.dart';
 
 extension CastListParserExtension<R> on Parser<R> {
-  /// Returns a parser that casts itself to `Parser<List<R>>`. Assumes this
-  /// parser to be of type `Parser<List>`.
+  /// Returns a parser that casts itself to `Parser<List<R>>`.
+  ///
+  /// Assumes this parser to be of type `Parser<List>`.
   ///
   /// For example, the parser `digit().star().castList<String>()` returns a
   /// list of strings.

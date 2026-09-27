@@ -6,7 +6,8 @@ import 'dart:math';
 
 import 'package:petitparser/petitparser.dart';
 
-Parser buildParser() {
+/// Builds a parser that evaluates arithmetic expressions.
+Parser<num> buildParser() {
   final builder = ExpressionBuilder<num>();
   builder.primitive(
     (pattern('+-').optional() &
@@ -42,7 +43,7 @@ void main(List<String> arguments) {
       stdout.writeln(' = $value');
     case Failure(:final position, :final message):
       stderr.writeln(input);
-      stderr.writeln('${' ' * (position - 1)}^-- $message');
+      stderr.writeln('${' ' * position}^-- $message');
       exit(1);
   }
 }

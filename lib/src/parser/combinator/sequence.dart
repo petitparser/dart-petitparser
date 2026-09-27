@@ -41,7 +41,7 @@ extension SequenceParserExtension<R1> on Parser<R1> {
     _ => [this, other].toSequenceParser(),
   };
 
-  /// Syntactic sugar for [seq].
+  /// Combines this parser and [other] into a sequence, equivalent to calling [seq].
   ///
   /// Combines the receiver and [other] into a sequential parser producing
   /// a `List<dynamic>`.

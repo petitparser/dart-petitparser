@@ -10,7 +10,9 @@ import 'unbounded.dart';
 
 extension LazyRepeatingParserExtension<R> on Parser<R> {
   /// Returns a parser that parses the receiver zero or more times until it
-  /// reaches a [limit]. This is a lazy non-blind implementation of the
+  /// reaches a [limit].
+  ///
+  /// This is a lazy non-blind implementation of the
   /// [PossessiveRepeatingParserExtension.star] operator. The [limit] is not
   /// consumed.
   ///
@@ -24,7 +26,9 @@ extension LazyRepeatingParserExtension<R> on Parser<R> {
       repeatLazy(limit, 0, unbounded);
 
   /// Returns a parser that parses the receiver one or more times until it
-  /// reaches a [limit]. This is a lazy non-blind implementation of the
+  /// reaches a [limit].
+  ///
+  /// This is a lazy non-blind implementation of the
   /// [PossessiveRepeatingParserExtension.plus] operator. The [limit] is not
   /// consumed.
   ///
@@ -38,9 +42,11 @@ extension LazyRepeatingParserExtension<R> on Parser<R> {
       repeatLazy(limit, 1, unbounded);
 
   /// Returns a parser that parses the receiver at least [min] and at most [max]
-  /// times until it reaches a [limit]. This is a lazy non-blind implementation
-  /// of the [PossessiveRepeatingParserExtension.repeat] operator. The [limit]
-  /// is not consumed.
+  /// times until it reaches a [limit].
+  ///
+  /// This is a lazy non-blind implementation of the
+  /// [PossessiveRepeatingParserExtension.repeat] operator. The [limit] is not
+  /// consumed.
   ///
   /// This is the more generic variation of the [starLazy] and [plusLazy]
   /// combinators.
@@ -50,8 +56,10 @@ extension LazyRepeatingParserExtension<R> on Parser<R> {
 }
 
 /// A lazy repeating parser, commonly seen in regular expression
-/// implementations. It limits its consumption to meet the 'limit' condition as
-/// early as possible.
+/// implementations.
+///
+/// It limits its consumption to meet the 'limit' condition as early as
+/// possible.
 class LazyRepeatingParser<R> extends LimitedRepeatingParser<R> {
   new(super.parser, super.limit, super.min, super.max);
 

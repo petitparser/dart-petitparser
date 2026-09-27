@@ -6,8 +6,10 @@ import '../../core/result.dart';
 import 'delegate.dart';
 
 extension OptionalParserExtension<R> on Parser<R> {
-  /// Returns new parser that accepts the receiver, if possible. The resulting
-  /// parser returns the result of the receiver, or `null` if not applicable.
+  /// Returns a new parser that accepts the receiver, if possible.
+  ///
+  /// The resulting parser returns the result of the receiver, or `null` if not
+  /// applicable.
   ///
   /// For example, the parser `letter().optional()` accepts a letter as input
   /// and returns that letter. When given something else the parser succeeds as
@@ -15,8 +17,10 @@ extension OptionalParserExtension<R> on Parser<R> {
   @useResult
   Parser<R?> optional() => OptionalParser<R?>(this, null);
 
-  /// Returns new parser that accepts the receiver, if possible. The resulting
-  /// parser returns the result of the receiver, or [value] if not applicable.
+  /// Returns a new parser that accepts the receiver, if possible.
+  ///
+  /// The resulting parser returns the result of the receiver, or [value] if not
+  /// applicable.
   ///
   /// For example, the parser `letter().optionalWith('!')` accepts a letter as
   /// input and returns that letter. When given something else the parser
@@ -25,7 +29,7 @@ extension OptionalParserExtension<R> on Parser<R> {
   Parser<R> optionalWith(R value) => OptionalParser<R>(this, value);
 }
 
-/// A parser that optionally parsers its delegate, or answers `null`.
+/// A parser that optionally parses its delegate, or answers `null`.
 class OptionalParser<R> extends DelegateParser<R, R> {
   new(super.delegate, this.otherwise);
 

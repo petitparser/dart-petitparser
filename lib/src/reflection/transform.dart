@@ -7,6 +7,7 @@ import 'iterable.dart';
 typedef TransformationHandler = Parser<R> Function<R>(Parser<R> parser);
 
 /// Transforms all parsers reachable from [parser] with the given [handler].
+///
 /// The identity function returns a copy of the incoming parser.
 ///
 /// The implementation first creates a copy of each parser reachable in the

@@ -33,9 +33,10 @@ class ParserPath {
   /// The number of parsers in this path.
   int get length => parsers.length;
 
-  /// The child-indexes that navigate from one parser to the next one. This
-  /// collection contains one element less than the number of parsers in the
-  /// path.
+  /// The child-indexes that navigate from one parser to the next one.
+  ///
+  /// This collection contains one element less than the number of parsers in
+  /// the path.
   final List<int> indexes;
 
   void _push(Parser parser, int index) {

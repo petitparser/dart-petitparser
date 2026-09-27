@@ -63,19 +63,19 @@ Parser<R> trace<R>(
 
 /// Encapsulates the entry and exit data around a parser trace.
 abstract class TraceEvent {
-  /// Returns the parent trace event.
+  /// The parent trace event.
   TraceEvent? get parent;
 
-  /// Returns the parser of this event.
+  /// The parser of this event.
   Parser get parser;
 
-  /// Returns the activation context of this event.
+  /// The activation context of this event.
   Context get context;
 
-  /// Returns the result if this is an exit event, otherwise `null`.
+  /// The result if this is an exit event, otherwise `null`.
   Result<dynamic>? get result;
 
-  /// Returns the nesting level of this event.
+  /// The nesting level of this event.
   int get level => parent != null ? parent!.level + 1 : 0;
 }
 

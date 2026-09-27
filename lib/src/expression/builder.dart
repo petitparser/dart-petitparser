@@ -23,7 +23,7 @@ import 'utils.dart';
 /// ```dart
 /// builder.primitive(digit()
 ///     .plus()
-///     .seq(char('.').seq(digit().plus()).optional())
+///     .then(char('.').then(digit().plus()).optional())
 ///     .flatten()
 ///     .trim()
 ///     .map(num.parse));
@@ -71,19 +71,20 @@ import 'utils.dart';
 /// evaluates expressions like:
 ///
 /// ```dart
-/// parser.parse('-8');      // -8
-/// parser.parse('1+2*3');   // 7
-/// parser.parse('1*2+3');   // 5
-/// parser.parse('8/4/2');   // 1
-/// parser.parse('2^2^3');   // 256
+/// parser.parse('-8').value;      // -8
+/// parser.parse('1+2*3').value;   // 7
+/// parser.parse('1*2+3').value;   // 5
+/// parser.parse('8/4/2').value;   // 1
+/// parser.parse('2^2^3').value;   // 256
 /// ```
 class ExpressionBuilder<T> {
   final List<Parser<T>> _primitives = [];
   final List<ExpressionGroup<T>> _groups = [];
   final SettableParser<T> _loopback = undefined();
 
-  /// The parser for this expression builder. Can be used to loop back to this
-  /// parser.
+  /// The parser for this expression builder.
+  ///
+  /// Can be used to loop back to this parser.
   Parser<T> get loopback => _loopback;
 
   /// Defines a new primitive, literal, or value [parser].

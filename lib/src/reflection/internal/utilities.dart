@@ -6,8 +6,9 @@ import '../../parser/repeater/character.dart';
 import '../../parser/repeater/repeating.dart';
 import '../../parser/utils/sequential.dart';
 
-/// Returns `true`, if [parser] is directly nullable. This means that the parser
-/// can succeed without involving any other parsers.
+/// Returns `true`, if [parser] is directly nullable.
+///
+/// This means that the parser can succeed without involving any other parsers.
 bool isNullable(Parser parser) =>
     parser is OptionalParser ||
     parser is EpsilonParser ||
@@ -15,8 +16,9 @@ bool isNullable(Parser parser) =>
     (parser is RepeatingParser && parser.min == 0) ||
     (parser is RepeatingCharacterParser && parser.min == 0);
 
-/// Returns `true`, if [parser] is a terminal or leaf parser. This means it
-/// does not delegate to any other parser.
+/// Returns `true`, if [parser] is a terminal or leaf parser.
+///
+/// This means it does not delegate to any other parser.
 bool isTerminal(Parser parser) => parser.children.isEmpty;
 
 /// Returns `true`, if [parser] consumes its children in the declared
@@ -24,7 +26,9 @@ bool isTerminal(Parser parser) => parser.children.isEmpty;
 bool isSequence(Parser parser) =>
     parser is SequentialParser && parser.children.length > 1;
 
-/// Adds all [elements] to [result]. Returns `true` if [result] was changed.
+/// Adds all [elements] to [result].
+///
+/// Returns `true` if [result] was changed.
 bool addAll<T>(Set<T> result, Iterable<T> elements) {
   var changed = false;
   for (final element in elements) {

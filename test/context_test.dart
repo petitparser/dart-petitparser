@@ -9,6 +9,7 @@ void main() {
   test('context', () {
     expect(context.buffer, buffer);
     expect(context.position, 0);
+    expect(context.toPositionString(), '1:1');
     expect(context.toString(), isToString(name: 'Context', rest: ['[1:1]']));
   });
   group('success', () {
@@ -93,6 +94,43 @@ void main() {
         failure.toString(),
         isToString(name: 'Failure', rest: ['[2:1]: error']),
       );
+    });
+  });
+  group('token', () {
+    const buffer = 'a\nb';
+    test('lineAndColumnOf', () {
+      expect(Token.lineAndColumnOf('', 0), [1, 1]);
+      expect(Token.lineAndColumnOf(buffer, 0), [1, 1]);
+      expect(Token.lineAndColumnOf(buffer, 1), [1, 2]);
+      expect(Token.lineAndColumnOf(buffer, 2), [2, 1]);
+      expect(Token.lineAndColumnOf(buffer, 3), [2, 2]);
+    });
+    test('lineAndColumnOf (newlines)', () {
+      const multiline = '1\r12\r\n123\n1234';
+      expect(Token.lineAndColumnOf(multiline, 0), [1, 1]);
+      expect(Token.lineAndColumnOf(multiline, 1), [1, 2]);
+      expect(Token.lineAndColumnOf(multiline, 2), [2, 1]);
+      expect(Token.lineAndColumnOf(multiline, 4), [2, 3]);
+      expect(Token.lineAndColumnOf(multiline, 5), [2, 4]);
+      expect(Token.lineAndColumnOf(multiline, 6), [3, 1]);
+      expect(Token.lineAndColumnOf(multiline, 9), [3, 4]);
+      expect(Token.lineAndColumnOf(multiline, 10), [4, 1]);
+      expect(Token.lineAndColumnOf(multiline, 14), [4, 5]);
+    });
+    test('positionString', () {
+      expect(Token.positionString('', 0), '1:1');
+      expect(Token.positionString(buffer, 0), '1:1');
+      expect(Token.positionString(buffer, 1), '1:2');
+      expect(Token.positionString(buffer, 2), '2:1');
+      expect(Token.positionString(buffer, 3), '2:2');
+    });
+    test('positionString (newlines)', () {
+      const multiline = '1\r12\r\n123\n1234';
+      expect(Token.positionString(multiline, 0), '1:1');
+      expect(Token.positionString(multiline, 2), '2:1');
+      expect(Token.positionString(multiline, 6), '3:1');
+      expect(Token.positionString(multiline, 10), '4:1');
+      expect(Token.positionString(multiline, 14), '4:5');
     });
   });
 }

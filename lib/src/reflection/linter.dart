@@ -19,8 +19,9 @@ abstract class LinterRule {
   /// Human readable title of this rule.
   final String title;
 
-  /// Executes this rule using the provided [analyzer] on a [parser]. Expected
-  /// to call [callback] zero or more times as issues are detected.
+  /// Executes this rule using the provided [analyzer] on a [parser].
+  ///
+  /// Expected to call [callback] zero or more times as issues are detected.
   void run(Analyzer analyzer, Parser parser, LinterCallback callback);
 
   @override
@@ -30,7 +31,7 @@ abstract class LinterRule {
 /// Encapsulates a single linter issue.
 @immutable
 class LinterIssue {
-  /// Constructs a new linter rule.
+  /// Constructs a new linter issue.
   const new(this.rule, this.parser, this.description);
 
   /// Rule that identified the issue.

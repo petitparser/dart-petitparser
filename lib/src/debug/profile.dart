@@ -60,13 +60,13 @@ Parser<R> profile<R>(
 
 /// Encapsulates the data around a parser profile.
 abstract class ProfileFrame {
-  /// Returns the parser of this frame.
+  /// The parser of this frame.
   Parser get parser;
 
-  /// Returns the number of times this parser was activated.
+  /// The number of times this parser was activated.
   int get count;
 
-  /// Returns the total elapsed time in this parser and its children.
+  /// The total elapsed time in this parser and its children.
   Duration get elapsed;
 }
 
