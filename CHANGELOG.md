@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.1.0 (unpublished)
+## 7.1.0
 
 - Dart 3.13 requirement.
 - Add `.then` to fluently construct strongly typed sequences.
