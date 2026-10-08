@@ -189,7 +189,7 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
       final result = parser.parseOn(Context(buffer, pos));
       if (result is Success<R>) {
         pos = _recordMatch(buffer, pos, result, items);
-      } else if (isLast || result.position < buffer.length) {
+      } else if (isLast) {
         _handleFailure(buffer, result as Failure);
         pos++;
       } else {
