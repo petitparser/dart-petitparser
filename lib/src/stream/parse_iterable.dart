@@ -190,9 +190,11 @@ class ParseIterator<R> implements Iterator<R> {
     while (_position <= input.length) {
       final candidate = searcher.find(input, _position);
       if (candidate == -1) break;
-      final result = parser.parseOn(Context(input, candidate));
-      if (result is Success<R>) {
-        return _handleSuccess(result, candidate);
+      if (parser.fastParseOn(input, candidate) >= 0) {
+        final result = parser.parseOn(Context(input, candidate));
+        if (result is Success<R>) {
+          return _handleSuccess(result, candidate);
+        }
       }
       _position = candidate + 1;
     }
@@ -245,11 +247,10 @@ class ParseIterator<R> implements Iterator<R> {
     }
   }
 
-  bool _close([int? position]) {
+  bool _close(int position) {
     _closed = true;
-    final pos = position ?? _position;
     onClose?.call(
-      position: pos > input.length ? input.length : pos,
+      position: position > input.length ? input.length : position,
       buffer: input,
     );
     return false;

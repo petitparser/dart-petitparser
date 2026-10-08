@@ -449,6 +449,17 @@ Languages like Python or YAML use indentation rather than braces to define code 
 - `indent.same`: Matches and consumes the currently active indentation level.
 - `indent.during(body)`: Increases indentation before running `body`, verifies deeper indentation, and restores the parent indentation level afterwards (with automatic rollback if `body` fails).
 
+### 🌊 Streaming and Iteration
+
+For incremental, lazy, and chunked processing across streams or large text inputs, import `package:petitparser/stream.dart`:
+
+- `parser.parseIterable(input)`: Lazily yields parsed tokens from a string as an `Iterable`.
+- `parser.parseStream(input)`: Emits parsed results as an asynchronous `Stream`.
+- `parser.parseStreamChunks(stream)`: Transforms a chunked `Stream<String>` (e.g. from network sockets or files) into parsed elements, carrying partial tokens across chunk boundaries.
+- `parser.toConverter()`: Produces a standard Dart `Converter<String, List<R>>` for chunked stream pipelines.
+
+Candidate selection can be accelerated with `delimiter:` to skip irrelevant input rapidly and recover from false alarms.
+
 ### 🩺 Grammar Linter
 
 Grammars can contain subtle issues such as unreachable branches, infinite loops, or accidental left-recursions. PetitParser provides a built-in linter in `package:petitparser/reflection.dart` that you can run in your tests:
