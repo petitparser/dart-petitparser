@@ -1,15 +1,10 @@
-import 'dart:collection';
-import 'dart:math' as math;
-
 import 'package:meta/meta.dart';
 
 import '../core/context.dart';
 import '../core/exception.dart';
 import '../core/parser.dart';
 import '../core/result.dart';
-import '../parser/character/predicate/char.dart';
-import '../parser/predicate/character.dart';
-import '../parser/predicate/string.dart';
+import 'delimiter.dart';
 
 /// An [Iterable] that parses results of type [R] from an input [String].
 ///
@@ -34,7 +29,7 @@ import '../parser/predicate/string.dart';
 /// print(iterable.toList()); // ['foo', 'bar', 'baz']
 /// ```
 @immutable
-class ParseIterable<R> extends IterableBase<R> {
+class ParseIterable<R> extends Iterable<R> {
   /// Creates a [ParseIterable] on [input] using [parser].
   ///
   /// If [delimiter] is provided, candidate match positions are located by
@@ -123,7 +118,9 @@ class ParseIterator<R> implements Iterator<R> {
     this.onMatch,
     this.onError,
     this.onClose,
-  });
+  }) : _delimiterSearcher = delimiter != null
+           ? DelimiterSearcher(delimiter)
+           : null;
 
   /// The parser used to produce elements of type [R].
   final Parser<R> parser;
@@ -145,6 +142,8 @@ class ParseIterator<R> implements Iterator<R> {
   /// - If [contiguous] is `false`, matching scans sequentially through the
   ///   input, advancing one character at a time until [parser] succeeds.
   final Parser<dynamic>? delimiter;
+
+  final DelimiterSearcher? _delimiterSearcher;
 
   /// Whether matches must be adjacent without unparsed input between them.
   ///
@@ -181,15 +180,15 @@ class ParseIterator<R> implements Iterator<R> {
   @override
   bool moveNext() {
     if (_closed) return false;
-    final delimiter = this.delimiter;
-    if (delimiter != null) return _moveNextDelimited(delimiter);
+    if (_delimiterSearcher != null) return _moveNextDelimited();
     if (contiguous) return _moveNextContiguous();
     return _moveNextScanned();
   }
 
-  bool _moveNextDelimited(Parser<dynamic> delimiter) {
+  bool _moveNextDelimited() {
+    final searcher = _delimiterSearcher!;
     while (_position <= input.length) {
-      final candidate = _findDelimiter(delimiter, _position);
+      final candidate = searcher.find(input, _position);
       if (candidate == -1) break;
       final result = parser.parseOn(Context(input, candidate));
       if (result is Success<R>) {
@@ -217,30 +216,15 @@ class ParseIterator<R> implements Iterator<R> {
 
   bool _moveNextScanned() {
     while (_position <= input.length) {
-      final result = parser.parseOn(Context(input, _position));
-      if (result is Success<R>) {
-        return _handleSuccess(result, _position);
+      if (parser.fastParseOn(input, _position) >= 0) {
+        final result = parser.parseOn(Context(input, _position));
+        if (result is Success<R>) {
+          return _handleSuccess(result, _position);
+        }
       }
       _position++;
     }
     return _close(input.length);
-  }
-
-  int _findDelimiter(Parser<dynamic> delimiter, int start) {
-    if (delimiter is StringParser && delimiter is! StringIgnoreCaseParser) {
-      return input.indexOf(delimiter.literal, start);
-    }
-    if (delimiter case CharacterParser(
-      predicate: SingleCharPredicate(:final charCode),
-    )) {
-      return input.indexOf(String.fromCharCode(charCode), start);
-    }
-    for (var i = start; i <= input.length; i++) {
-      if (delimiter.fastParseOn(input, i) >= 0) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   bool _handleSuccess(Success<R> success, int start) {
@@ -263,8 +247,9 @@ class ParseIterator<R> implements Iterator<R> {
 
   bool _close([int? position]) {
     _closed = true;
+    final pos = position ?? _position;
     onClose?.call(
-      position: math.min(position ?? _position, input.length),
+      position: pos > input.length ? input.length : pos,
       buffer: input,
     );
     return false;

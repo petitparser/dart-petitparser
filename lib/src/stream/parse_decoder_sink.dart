@@ -5,11 +5,7 @@ import '../core/context.dart';
 import '../core/exception.dart';
 import '../core/parser.dart';
 import '../core/result.dart';
-import '../parser/character/predicate/char.dart';
-import '../parser/combinator/choice.dart';
-import '../parser/combinator/sequence.dart';
-import '../parser/predicate/character.dart';
-import '../parser/predicate/string.dart';
+import 'delimiter.dart';
 
 /// A [StringConversionSinkBase] that converts chunks of [String] into [List] of [R].
 ///
@@ -53,7 +49,9 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
     this.onMatch,
     this.onError,
     this.onClose,
-  });
+  }) : _delimiterSearcher = delimiter != null
+           ? DelimiterSearcher(delimiter)
+           : null;
 
   /// The parser used to produce elements of type [R].
   final Parser<R> parser;
@@ -75,6 +73,8 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
   /// - If [contiguous] is `false`, matching scans sequentially through the
   ///   input, advancing one character at a time until [parser] succeeds.
   final Parser<dynamic>? delimiter;
+
+  final DelimiterSearcher? _delimiterSearcher;
 
   /// Whether matches must be adjacent without unparsed input between them.
   ///
@@ -118,9 +118,8 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
     _carry = '';
     final items = <R>[];
 
-    final delimiter = this.delimiter;
-    final carryStart = delimiter != null
-        ? _processDelimited(delimiter, buffer, items, isLast)
+    final carryStart = _delimiterSearcher != null
+        ? _processDelimited(buffer, items, isLast)
         : contiguous
         ? _processContiguous(buffer, items, isLast)
         : _processScanned(buffer, items, isLast);
@@ -136,16 +135,12 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
     }
   }
 
-  int _processDelimited(
-    Parser<dynamic> delimiter,
-    String buffer,
-    List<R> items,
-    bool isLast,
-  ) {
+  int _processDelimited(String buffer, List<R> items, bool isLast) {
+    final searcher = _delimiterSearcher!;
     var pos = 0;
     var carryStart = buffer.length;
     while (pos < buffer.length) {
-      final candidate = _findDelimiter(delimiter, buffer, pos);
+      final candidate = searcher.find(buffer, pos);
       if (candidate == -1) {
         carryStart = _carryDelimiterBoundary(buffer, pos, isLast);
         break;
@@ -154,7 +149,7 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
       if (result is Success<R>) {
         pos = _recordMatch(buffer, candidate, result, items);
       } else if (_isFalseAlarm(
-        delimiter,
+        searcher,
         buffer,
         candidate,
         result as Failure,
@@ -170,20 +165,20 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
   }
 
   bool _isFalseAlarm(
-    Parser<dynamic> delimiter,
+    DelimiterSearcher searcher,
     String buffer,
     int candidate,
     Failure failure,
     bool isLast,
   ) {
     if (isLast) return true;
-    final nextCandidate = _findDelimiter(delimiter, buffer, candidate + 1);
+    final nextCandidate = searcher.find(buffer, candidate + 1);
     return nextCandidate != -1 && failure.position <= nextCandidate;
   }
 
   int _carryDelimiterBoundary(String buffer, int pos, bool isLast) {
     if (isLast) return buffer.length;
-    final overlap = math.min(buffer.length - pos, _delimiterOverlap);
+    final overlap = math.min(buffer.length - pos, _delimiterSearcher!.overlap);
     return buffer.length - overlap;
   }
 
@@ -222,23 +217,6 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
     return carryStart;
   }
 
-  int _findDelimiter(Parser<dynamic> delimiter, String buffer, int start) {
-    if (delimiter is StringParser && delimiter is! StringIgnoreCaseParser) {
-      return buffer.indexOf(delimiter.literal, start);
-    }
-    if (delimiter case CharacterParser(
-      predicate: SingleCharPredicate(:final charCode),
-    )) {
-      return buffer.indexOf(String.fromCharCode(charCode), start);
-    }
-    for (var i = start; i <= buffer.length; i++) {
-      if (delimiter.fastParseOn(buffer, i) >= 0) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   int _recordMatch(
     String buffer,
     int start,
@@ -268,41 +246,6 @@ class ParseDecoderSink<R> extends StringConversionSinkBase {
     } else {
       throw ParserException(globalFailure);
     }
-  }
-
-  int get _delimiterOverlap => _parserOverlap(delimiter);
-
-  static int _parserOverlap(Parser? parser) {
-    if (parser == null) return 0;
-    if (parser is StringParser) {
-      return math.max(0, parser.literal.length - 1);
-    }
-    if (parser is CharacterParser) {
-      return 0;
-    }
-    if (parser is ChoiceParser) {
-      var max = 0;
-      for (final child in parser.children) {
-        max = math.max(max, _parserOverlap(child));
-      }
-      return max;
-    }
-    if (parser is SequenceParser) {
-      var total = 0;
-      for (final child in parser.children) {
-        final childLength = _parserLength(child);
-        if (childLength == 0) return 0;
-        total += childLength;
-      }
-      return math.max(0, total - 1);
-    }
-    return 0;
-  }
-
-  static int _parserLength(Parser parser) {
-    if (parser is StringParser) return parser.literal.length;
-    if (parser is CharacterParser) return 1;
-    return 0;
   }
 
   @override

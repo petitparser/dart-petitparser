@@ -6,6 +6,7 @@ import '../core/exception.dart';
 import '../core/parser.dart';
 import '../core/result.dart';
 import 'parse_decoder_sink.dart';
+import 'parse_iterable.dart';
 
 /// A [Converter] that decodes a [String] stream into batches of [List] of [R].
 ///
@@ -94,11 +95,19 @@ class ParseDecoder<R> extends Converter<String, List<R>> {
 
   @override
   List<R> convert(String input, [int start = 0, int? end]) {
-    final list = <R>[];
-    final sink = _ListConversionSink<R>(list);
-    startChunkedConversion(sink)
-        .addSlice(input, start, end ?? input.length, true);
-    return list;
+    end = RangeError.checkValidRange(start, end, input.length);
+    final target = (start == 0 && end == input.length)
+        ? input
+        : input.substring(start, end);
+    return ParseIterable<R>(
+      parser,
+      target,
+      delimiter: delimiter,
+      contiguous: contiguous,
+      onMatch: onMatch,
+      onError: onError,
+      onClose: onClose,
+    ).toList();
   }
 
   @override
@@ -112,16 +121,4 @@ class ParseDecoder<R> extends Converter<String, List<R>> {
         onError: onError,
         onClose: onClose,
       );
-}
-
-class _ListConversionSink<T> implements Sink<List<T>> {
-  const new(this.list);
-
-  final List<T> list;
-
-  @override
-  void add(List<T> data) => list.addAll(data);
-
-  @override
-  void close() {}
 }
