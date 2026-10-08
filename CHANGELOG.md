@@ -1,5 +1,13 @@
 # Changelog
 
+## 7.2.0 (Unpublished)
+
+- Add generic streaming and iteration infrastructure (`package:petitparser/stream.dart`):
+  - `parseIterable` on `Parser` for pull-based lazy sequence matching with contiguous, scanned, and delimiter-accelerated modes.
+  - `parseStream` and `parseStreamChunks` on `Parser` and `parseWith` on `Stream<String>` for progressive and chunked asynchronous parsing.
+  - Standard `Converter` support via `toConverter` (`ParseDecoder`) and `ParseDecoderSink` for chunked stream conversion with rolling carry buffers and delimiter lookahead disambiguation.
+  - Zero-allocation candidate fast parsing and SIMD-accelerated delimiter searching.
+
 ## 7.1.0
 
 - Dart 3.13 requirement.
