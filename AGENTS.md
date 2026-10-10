@@ -52,8 +52,10 @@
 
 ## Testing
 
-- All new code must be accompanied by unit tests in the `test/` folder.
+- All code must be accompanied by unit tests in the `test/` folder.
+- The goal is to have meaningful unit test coverage near 100%.
 - Structure the tests following the same folder structure as the code under test (e.g., `lib/src/foo/bar.dart` -> `test/foo/bar_test.dart`).
-- Use `expect` with literal values or matchers to assert the expected behavior (e.g., `expect(result, 'expected')`, `expect(list, isEmpty)`).
+- Use the Dart `checks` framework (`package:checks` and `package:test/scaffolding.dart`, avoid `package:test/expect.dart`) to assert expected behavior (e.g., `check(result).equals('expected')`, `check(list).isEmpty()`).
+- Create reusable domain specific checks where it makes sense.
 - Group tests by functionality using `group('description', () { ... })`. Avoid declaring a single top-level group in a file.
 - All unit tests must pass, both with the VM and JavaScript (run `dart test --platform=vm,node`).

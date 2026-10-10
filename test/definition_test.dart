@@ -1,9 +1,10 @@
 // ignore_for_file: unnecessary_lambdas
 
+import 'package:checks/checks.dart';
 import 'package:petitparser/petitparser.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 class ListGrammarDefinition extends GrammarDefinition {
   @override
@@ -191,33 +192,33 @@ void main() {
     test('reference without parameters', () {
       final firstReference = ref0(number);
       final secondReference = ref0(number);
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isTrue);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isTrue();
     });
     test('reference with different production', () {
       final firstReference = ref0(number);
       final secondReference = ref0(numberToken);
-      expect(firstReference, isNot(same(secondReference)));
+      check(identical(firstReference, secondReference)).isFalse();
       // ignore: unrelated_type_equality_checks
-      expect(firstReference == secondReference, isFalse);
+      check(firstReference == secondReference).isFalse();
     });
     test('reference with same parameters', () {
       final firstReference = ref1(numberList, ',');
       final secondReference = ref1(numberList, ',');
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isTrue);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isTrue();
     });
     test('reference with different parameters', () {
       final firstReference = ref1(numberList, ',');
       final secondReference = ref1(numberList, ';');
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isFalse);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isFalse();
     });
     test('reference unsupported methods', () {
       final reference = ref0(number);
-      expect(() => reference.copy(), throwsUnsupportedError);
-      expect(() => reference.parse('0'), throwsUnsupportedError);
-      expect(() => reference.fastParseOn('0', 0), throwsUnsupportedError);
+      check(() => reference.copy()).throws<UnsupportedError>();
+      check(() => reference.parse('0')).throws<UnsupportedError>();
+      check(() => reference.fastParseOn('0', 0)).throws<UnsupportedError>();
     });
     test('references typed', () {
       Parser<List<String>> f9(
@@ -272,10 +273,8 @@ void main() {
       Parser<List<String>> f1(int a1) => ref2(f2, a1, 2);
       Parser<List<String>> f0() => ref1(f1, 1);
       Parser<List<String>> start() => ref0(f0);
-      expect(
-        resolve(start()),
-        isParseSuccess('123456789', result: '123456789'.split('')),
-      );
+      check(resolve(start()))
+          .parseSuccess('123456789', result: '123456789'.split(''));
     });
     test('references untyped', () {
       Parser<List<String>> f9(
@@ -329,25 +328,20 @@ void main() {
       Parser<List<String>> f1(int a1) => ref(f2, a1, 2);
       Parser<List<String>> f0() => ref(f1, 1);
       Parser<List<String>> start() => ref(f0);
-      expect(
-        resolve(start()),
-        isParseSuccess('123456789', result: '123456789'.split('')),
-      );
+      check(resolve(start()))
+          .parseSuccess('123456789', result: '123456789'.split(''));
     });
     test('resolved parser', () {
-      expect(resolve(number()), isParseSuccess('1', result: 1));
-      expect(resolve(numberList()), isParseSuccess('1,2', result: [1, 2]));
+      check(resolve(number())).parseSuccess('1', result: 1);
+      check(resolve(numberList())).parseSuccess('1,2', result: [1, 2]);
     });
     test('resolved parser with arguments', () {
-      expect(resolve(numberList()), isParseSuccess('1,2', result: [1, 2]));
-      expect(
-        resolve(numberList(';')),
-        isParseSuccess('3;4;5', result: [3, 4, 5]),
-      );
+      check(resolve(numberList())).parseSuccess('1,2', result: [1, 2]);
+      check(resolve(numberList(';'))).parseSuccess('3;4;5', result: [3, 4, 5]);
     });
     test('direct recursion', () {
       Parser<String> create() => ref0(create);
-      expect(() => resolve(create()), throwsStateError);
+      check(() => resolve(create())).throws<StateError>();
     });
     test('reference', () {
       Parser<List<num>> list() => [
@@ -357,9 +351,9 @@ void main() {
         ref0(number).map((value) => [value]),
       ].toChoiceParser();
       final parser = resolve<List<num>>(list());
-      expect(parser, isParseSuccess('1', result: [1]));
-      expect(parser, isParseSuccess('1,2', result: [1, 2]));
-      expect(parser, isParseSuccess('1,2,2', result: [1, 2, 2]));
+      check(parser).parseSuccess('1', result: [1]);
+      check(parser).parseSuccess('1,2', result: [1, 2]);
+      check(parser).parseSuccess('1,2,2', result: [1, 2, 2]);
     });
   });
   group('definition', () {
@@ -375,164 +369,136 @@ void main() {
     test('reference without parameters', () {
       final firstReference = ref0(grammarDefinition.start);
       final secondReference = ref0(grammarDefinition.start);
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isTrue);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isTrue();
     });
     test('reference with different production', () {
       final firstReference = ref0(grammarDefinition.start);
       final secondReference = ref0(grammarDefinition.element);
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isFalse);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isFalse();
     });
     test('reference with same parameters', () {
       final firstReference = ref1(typedReferenceDefinition.f1, 42);
       final secondReference = ref1(typedReferenceDefinition.f1, 42);
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isTrue);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isTrue();
     });
     test('reference with different parameters', () {
       final firstReference = ref1(typedReferenceDefinition.f1, 42);
       final secondReference = ref1(typedReferenceDefinition.f1, 43);
-      expect(firstReference, isNot(same(secondReference)));
-      expect(firstReference == secondReference, isFalse);
+      check(firstReference).not((it) => it.identicalTo(secondReference));
+      check(firstReference == secondReference).isFalse();
     });
     test('reference with multiple arguments', () {
       final parser = typedReferenceDefinition.build();
-      expect(
-        parser,
-        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
-      );
+      check(parser).parseSuccess('12345', result: ['1', '2', '3', '4', '5']);
     });
     test('reference with multiple arguments (untyped)', () {
       final parser = untypedReferenceDefinition.build();
-      expect(
-        parser,
-        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
-      );
+      check(parser).parseSuccess('12345', result: ['1', '2', '3', '4', '5']);
     });
     test('reference with multiple arguments (untyped, deprecated)', () {
       final parser = deprecatedUntypedReferenceDefinition.build();
-      expect(
-        parser,
-        isParseSuccess('12345', result: ['1', '2', '3', '4', '5']),
-      );
+      check(parser).parseSuccess('12345', result: ['1', '2', '3', '4', '5']);
     });
     test('reference unsupported methods', () {
       final reference = ref0(grammarDefinition.start);
-      expect(() => reference.copy(), throwsUnsupportedError);
-      expect(() => reference.parse(''), throwsUnsupportedError);
+      check(() => reference.copy()).throws<UnsupportedError>();
+      check(() => reference.parse('')).throws<UnsupportedError>();
     });
     test('grammar', () {
       final parser = grammarDefinition.build();
-      expect(parser, isParseSuccess('1,2', result: ['1', ',', '2']));
-      expect(
-        parser,
-        isParseSuccess(
-          '1,2,3',
-          result: [
-            '1',
-            ',',
-            ['2', ',', '3'],
-          ],
-        ),
+      check(parser).parseSuccess('1,2', result: ['1', ',', '2']);
+      check(parser).parseSuccess(
+        '1,2,3',
+        result: [
+          '1',
+          ',',
+          ['2', ',', '3'],
+        ],
       );
     });
     test('parser', () {
       final parser = parserDefinition.build();
-      expect(parser, isParseSuccess('1,2', result: [1, ',', 2]));
-      expect(
-        parser,
-        isParseSuccess(
-          '1,2,3',
-          result: [
-            1,
-            ',',
-            [2, ',', 3],
-          ],
-        ),
+      check(parser).parseSuccess('1,2', result: [1, ',', 2]);
+      check(parser).parseSuccess(
+        '1,2,3',
+        result: [
+          1,
+          ',',
+          [2, ',', 3],
+        ],
       );
     });
     test('token', () {
       final parser = tokenDefinition.build();
-      expect(parser, isParseSuccess('1, 2', result: ['1', ',', '2']));
-      expect(
-        parser,
-        isParseSuccess(
-          '1, 2, 3',
-          result: [
-            '1',
-            ',',
-            ['2', ',', '3'],
-          ],
-        ),
+      check(parser).parseSuccess('1, 2', result: ['1', ',', '2']);
+      check(parser).parseSuccess(
+        '1, 2, 3',
+        result: [
+          '1',
+          ',',
+          ['2', ',', '3'],
+        ],
       );
     });
     test('direct recursion', () {
-      expect(
+      check(
         () => buggedDefinition.buildFrom(buggedDefinition.directRecursion1()),
-        throwsStateError,
-      );
+      ).throws<StateError>();
     });
     test('indirect recursion', () {
-      expect(
+      check(
         () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion1()),
-        throwsStateError,
-      );
-      expect(
+      ).throws<StateError>();
+      check(
         () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion2()),
-        throwsStateError,
-      );
-      expect(
+      ).throws<StateError>();
+      check(
         () => buggedDefinition.buildFrom(buggedDefinition.indirectRecursion3()),
-        throwsStateError,
-      );
+      ).throws<StateError>();
     });
     test('delegation', () {
-      expect(
-        buggedDefinition.buildFrom(buggedDefinition.delegation1()),
-        isA<EpsilonParser<void>>(),
-      );
-      expect(
-        buggedDefinition.buildFrom(buggedDefinition.delegation2()),
-        isA<EpsilonParser<void>>(),
-      );
-      expect(
-        buggedDefinition.buildFrom(buggedDefinition.delegation3()),
-        isA<EpsilonParser<void>>(),
-      );
+      check(buggedDefinition.buildFrom(buggedDefinition.delegation1()))
+          .isA<EpsilonParser<void>>();
+      check(buggedDefinition.buildFrom(buggedDefinition.delegation2()))
+          .isA<EpsilonParser<void>>();
+      check(buggedDefinition.buildFrom(buggedDefinition.delegation3()))
+          .isA<EpsilonParser<void>>();
     });
     test('lambda example', () {
       final definition = LambdaGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('x', result: isNotNull));
-      expect(parser, isParseSuccess('xy', result: isNotNull));
-      expect(parser, isParseSuccess('x12', result: isNotNull));
-      expect(parser, isParseSuccess('\\x.y', result: isNotNull));
-      expect(parser, isParseSuccess('\\x.\\y.z', result: isNotNull));
-      expect(parser, isParseSuccess('(x x)', result: isNotNull));
-      expect(parser, isParseSuccess('(x y)', result: isNotNull));
-      expect(parser, isParseSuccess('(x (y z))', result: isNotNull));
-      expect(parser, isParseSuccess('((x y) z)', result: isNotNull));
+      check(parser).parseSuccess('x');
+      check(parser).parseSuccess('xy');
+      check(parser).parseSuccess('x12');
+      check(parser).parseSuccess('\\x.y');
+      check(parser).parseSuccess('\\x.\\y.z');
+      check(parser).parseSuccess('(x x)');
+      check(parser).parseSuccess('(x y)');
+      check(parser).parseSuccess('(x (y z))');
+      check(parser).parseSuccess('((x y) z)');
     });
     test('expression example', () {
       final definition = ExpressionGrammarDefinition();
       final parser = definition.build();
-      expect(parser, isParseSuccess('1', result: isNotNull));
-      expect(parser, isParseSuccess('12', result: isNotNull));
-      expect(parser, isParseSuccess('1.23', result: isNotNull));
-      expect(parser, isParseSuccess('-12.3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 + 2 + 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 - 2 - 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 * 2 * 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 / 2 / 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2', result: isNotNull));
-      expect(parser, isParseSuccess('1 ^ 2 ^ 3', result: isNotNull));
-      expect(parser, isParseSuccess('1 + (2 * 3)', result: isNotNull));
-      expect(parser, isParseSuccess('(1 + 2) * 3', result: isNotNull));
+      check(parser).parseSuccess('1');
+      check(parser).parseSuccess('12');
+      check(parser).parseSuccess('1.23');
+      check(parser).parseSuccess('-12.3');
+      check(parser).parseSuccess('1 + 2');
+      check(parser).parseSuccess('1 + 2 + 3');
+      check(parser).parseSuccess('1 - 2');
+      check(parser).parseSuccess('1 - 2 - 3');
+      check(parser).parseSuccess('1 * 2');
+      check(parser).parseSuccess('1 * 2 * 3');
+      check(parser).parseSuccess('1 / 2');
+      check(parser).parseSuccess('1 / 2 / 3');
+      check(parser).parseSuccess('1 ^ 2');
+      check(parser).parseSuccess('1 ^ 2 ^ 3');
+      check(parser).parseSuccess('1 + (2 * 3)');
+      check(parser).parseSuccess('(1 + 2) * 3');
     });
   });
 }

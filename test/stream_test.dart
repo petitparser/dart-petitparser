@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:checks/checks.dart';
 import 'package:petitparser/core.dart';
 import 'package:petitparser/parser.dart';
 import 'package:petitparser/stream.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
 void main() {
   group('parseIterable', () {
@@ -26,23 +27,23 @@ void main() {
         },
         onClose: ({required position, required buffer}) {
           closed = true;
-          expect(position, 6);
-          expect(buffer, 'foobar');
+          check(position).equals(6);
+          check(buffer).equals('foobar');
         },
       );
 
       // 'foobar' as single word
-      expect(iterable.toList(), ['foobar']);
-      expect(matches, ['foobar']);
-      expect(starts, [0]);
-      expect(stops, [6]);
-      expect(closed, isTrue);
+      check(iterable.toList()).deepEquals(['foobar']);
+      check(matches).deepEquals(['foobar']);
+      check(starts).deepEquals([0]);
+      check(stops).deepEquals([6]);
+      check(closed).isTrue();
     });
 
     test('contiguous multiple tokens', () {
       final token = char('<').seq(letter().plus()).seq(char('>')).flatten();
       final iterable = token.parseIterable('<foo><bar><baz>');
-      expect(iterable.toList(), ['<foo>', '<bar>', '<baz>']);
+      check(iterable.toList()).deepEquals(['<foo>', '<bar>', '<baz>']);
     });
 
     test('contiguous empty input', () {
@@ -52,20 +53,20 @@ void main() {
         '',
         onClose: ({required position, required buffer}) {
           closed = true;
-          expect(position, 0);
-          expect(buffer, '');
+          check(position).equals(0);
+          check(buffer).equals('');
         },
       );
-      expect(iterable.toList(), isEmpty);
-      expect(closed, isTrue);
+      check(iterable.toList()).isEmpty();
+      check(closed).isTrue();
     });
 
     test('contiguous error without onError throws ParserException', () {
       final parser = char('a');
       final iterator = parser.parseIterable('ab').iterator;
-      expect(iterator.moveNext(), isTrue);
-      expect(iterator.current, 'a');
-      expect(iterator.moveNext, throwsA(isA<ParserException>()));
+      check(iterator.moveNext()).isTrue();
+      check(iterator.current).equals('a');
+      check(iterator.moveNext).throws<ParserException>();
     });
 
     test('contiguous error resumption with try-catch', () {
@@ -74,43 +75,43 @@ void main() {
       final results = <String>[];
 
       // 1st: 'a'
-      expect(iterator.moveNext(), isTrue);
+      check(iterator.moveNext()).isTrue();
       results.add(iterator.current);
 
       // 2nd: '!' fails, throws ParserException
-      expect(iterator.moveNext, throwsA(isA<ParserException>()));
+      check(iterator.moveNext).throws<ParserException>();
 
       // 3rd: 'a' resumes at index 2
-      expect(iterator.moveNext(), isTrue);
+      check(iterator.moveNext()).isTrue();
       results.add(iterator.current);
 
       // 4th: '?' fails, throws ParserException
-      expect(iterator.moveNext, throwsA(isA<ParserException>()));
+      check(iterator.moveNext).throws<ParserException>();
 
       // 5th: 'a' resumes at index 4
-      expect(iterator.moveNext(), isTrue);
+      check(iterator.moveNext()).isTrue();
       results.add(iterator.current);
 
       // End
-      expect(iterator.moveNext(), isFalse);
-      expect(results, ['a', 'a', 'a']);
+      check(iterator.moveNext()).isFalse();
+      check(results).deepEquals(['a', 'a', 'a']);
     });
 
     test('contiguous error resumption with onError callback', () {
       final parser = char('a');
       final errors = <Failure>[];
       final iterable = parser.parseIterable('a!a?a', onError: errors.add);
-      expect(iterable.toList(), ['a', 'a', 'a']);
-      expect(errors.length, 2);
-      expect(errors[0].position, 1);
-      expect(errors[1].position, 3);
+      check(iterable.toList()).deepEquals(['a', 'a', 'a']);
+      check(errors.length).equals(2);
+      check(errors[0].position).equals(1);
+      check(errors[1].position).equals(3);
     });
 
     test('zero-width match does not infinite loop', () {
       final parser = char('a').optional();
       final iterable = parser.parseIterable('a');
       // pos 0: 'a', pos 1: EOF matches null with zero width
-      expect(iterable.toList(), ['a', null]);
+      check(iterable.toList()).deepEquals(['a', null]);
     });
 
     test('zero-width match at EOF reports position <= input.length', () {
@@ -123,14 +124,14 @@ void main() {
         },
       );
       iterable.toList();
-      expect(closePos, 1);
+      check(closePos).equals(1);
     });
 
     test('zero-width epsilon match', () {
       final parser = epsilon();
       final iterable = parser.parseIterable('ab');
       // Matches at 0, 1, 2
-      expect(iterable.toList(), [null, null, null]);
+      check(iterable.toList()).deepEquals([null, null, null]);
     });
   });
 
@@ -146,14 +147,14 @@ void main() {
     test('accelerated skipping of non-entry content', () {
       const input = 'some junk @foo{1} random text @bar{2} trailing';
       final iterable = entry.parseIterable(input, delimiter: char('@'));
-      expect(iterable.toList(), ['@foo{1}', '@bar{2}']);
+      check(iterable.toList()).deepEquals(['@foo{1}', '@bar{2}']);
     });
 
     test('false-alarm recovery', () {
       // @invalid (missing braces), @user@email.com, then valid @valid{123}
       const input = 'contact @user@domain.com or @invalid or @valid{123}';
       final iterable = entry.parseIterable(input, delimiter: char('@'));
-      expect(iterable.toList(), ['@valid{123}']);
+      check(iterable.toList()).deepEquals(['@valid{123}']);
     });
 
     test('multi-character delimiter', () {
@@ -169,7 +170,7 @@ void main() {
         input,
         delimiter: string('---'),
       );
-      expect(iterable.toList(), ['---a:1---', '---b:2---']);
+      check(iterable.toList()).deepEquals(['---a:1---', '---b:2---']);
     });
 
     test('arbitrary composite parser delimiter', () {
@@ -179,14 +180,14 @@ void main() {
         input,
         delimiter: char('#') | char('\$'),
       );
-      expect(iterable.toList(), ['#123', '\$456']);
+      check(iterable.toList()).deepEquals(['#123', '\$456']);
     });
 
     test('scanned mode (contiguous: false, delimiter: null)', () {
       final parser = digit().plus().flatten();
       const input = 'abc 123 def 456 ghi';
       final iterable = parser.parseIterable(input, contiguous: false);
-      expect(iterable.toList(), ['123', '456']);
+      check(iterable.toList()).deepEquals(['123', '456']);
     });
   });
 
@@ -209,7 +210,8 @@ void main() {
       final results = await entry
           .parseStreamChunks(chunks, delimiter: char('@'))
           .toList();
-      expect(results, ['@article{key, title = "Value"}', '@book{key2}']);
+      check(results)
+          .deepEquals(['@article{key, title = "Value"}', '@book{key2}']);
     });
 
     test('multi-character delimiter split across chunk boundaries', () async {
@@ -226,7 +228,7 @@ void main() {
       final results = await sectionParser
           .parseStreamChunks(chunks, delimiter: string('###'))
           .toList();
-      expect(results, ['###secOne###', '###secTwo###']);
+      check(results).deepEquals(['###secOne###', '###secTwo###']);
     });
 
     test('false alarm disambiguation at chunk boundary', () async {
@@ -239,7 +241,7 @@ void main() {
       final results = await entry
           .parseStreamChunks(chunks, delimiter: char('@'))
           .toList();
-      expect(results, ['@entry{val}']);
+      check(results).deepEquals(['@entry{val}']);
     });
 
     test(
@@ -249,7 +251,7 @@ void main() {
         final results = await entry
             .parseStreamChunks(chunks, delimiter: char('@'))
             .toList();
-        expect(results, ['@entry{part1, part2}']);
+        check(results).deepEquals(['@entry{part1, part2}']);
       },
     );
 
@@ -259,16 +261,16 @@ void main() {
       final results = await token
           .parseStreamChunks(chunks, contiguous: true)
           .toList();
-      expect(results, ['<foo>', '<bar>', '<baz>']);
+      check(results).deepEquals(['<foo>', '<bar>', '<baz>']);
     });
 
     test('contiguous chunked stream throws on invalid syntax at EOF', () async {
       final token = char('<').seq(letter().plus()).seq(char('>')).flatten();
       final chunks = Stream.fromIterable(['<foo>', '<broken']);
-      expect(
-        () => token.parseStreamChunks(chunks, contiguous: true).toList(),
-        throwsA(isA<ParserException>().having((e) => e.offset, 'offset', 12)),
-      );
+      await check(token.parseStreamChunks(chunks, contiguous: true).toList())
+          .throws<ParserException>(
+            (it) => it.has((e) => e.offset, 'offset').equals(12),
+          );
     });
 
     test('global offset tracking', () async {
@@ -293,9 +295,9 @@ void main() {
           )
           .toList();
 
-      expect(results, ['<first>', '<second>', '<third>']);
-      expect(starts, [0, 7, 15]);
-      expect(stops, [7, 15, 22]);
+      check(results).deepEquals(['<first>', '<second>', '<third>']);
+      check(starts).deepEquals([0, 7, 15]);
+      check(stops).deepEquals([7, 15, 22]);
     });
 
     test('scanned chunked stream', () async {
@@ -304,7 +306,7 @@ void main() {
       final results = await token
           .parseStreamChunks(chunks, contiguous: false)
           .toList();
-      expect(results, ['[12]', '[345]']);
+      check(results).deepEquals(['[12]', '[345]']);
     });
 
     test(
@@ -319,7 +321,7 @@ void main() {
         final results = await parser
             .parseStreamChunks(chunks, delimiter: char('@'))
             .toList();
-        expect(results, ['@article{key}']);
+        check(results).deepEquals(['@article{key}']);
       },
     );
 
@@ -333,9 +335,9 @@ void main() {
               as StringConversionSink;
       sink.addSlice('<foo', 0, 4, false);
       sink.addSlice('>junk', 0, 1, false);
-      expect(items, ['<foo>']);
+      check(items).deepEquals(['<foo>']);
       sink.close();
-      expect(items, ['<foo>']);
+      check(items).deepEquals(['<foo>']);
     });
 
     test(
@@ -349,8 +351,8 @@ void main() {
                     .startChunkedConversion(_TestSink(items.addAll))
                 as StringConversionSink;
         sink.addSlice('<foo', 0, 4, false);
-        expect(items, isEmpty);
-        expect(sink.close, throwsA(isA<ParserException>()));
+        check(items).isEmpty();
+        check(sink.close).throws<ParserException>();
       },
     );
 
@@ -369,7 +371,7 @@ void main() {
         final results = await parser
             .parseStreamChunks(chunks, delimiter: string('##') | string(r'$$'))
             .toList();
-        expect(results, ['##foo##', r'$$bar$$']);
+        check(results).deepEquals(['##foo##', r'$$bar$$']);
       },
     );
 
@@ -383,7 +385,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim)
           .toList();
-      expect(results, ['<-foo->']);
+      check(results).deepEquals(['<-foo->']);
     });
 
     test('false alarm across chunk boundary before next valid entry', () async {
@@ -402,29 +404,26 @@ void main() {
             },
           )
           .toList();
-      expect(results, ['@entry{valid}']);
-      expect(starts, [79]);
+      check(results).deepEquals(['@entry{valid}']);
+      check(starts).deepEquals([79]);
     });
 
     test('empty chunked streams', () async {
-      expect(
+      check(
         await entry
             .parseStreamChunks(const Stream.empty(), delimiter: char('@'))
             .toList(),
-        isEmpty,
-      );
-      expect(
+      ).isEmpty();
+      check(
         await entry
             .parseStreamChunks(const Stream.empty(), contiguous: false)
             .toList(),
-        isEmpty,
-      );
-      expect(
+      ).isEmpty();
+      check(
         await entry
             .parseStreamChunks(const Stream.empty(), contiguous: true)
             .toList(),
-        isEmpty,
-      );
+      ).isEmpty();
     });
 
     test('only false alarms in stream ends cleanly', () async {
@@ -432,7 +431,7 @@ void main() {
       final results = await entry
           .parseStreamChunks(chunks, delimiter: char('@'))
           .toList();
-      expect(results, isEmpty);
+      check(results).isEmpty();
     });
 
     test('contiguous chunked stream with onError callback', () async {
@@ -442,8 +441,8 @@ void main() {
       final results = await token
           .parseStreamChunks(chunks, contiguous: true, onError: errors.add)
           .toList();
-      expect(results, ['<foo>', '<bar>']);
-      expect(errors, isNotEmpty);
+      check(results).deepEquals(['<foo>', '<bar>']);
+      check(errors).isNotEmpty();
     });
 
     test('contiguous chunked stream with failure within chunk preserves subsequent tokens', () async {
@@ -453,18 +452,16 @@ void main() {
       final results = await token
           .parseStreamChunks(chunks, contiguous: true, onError: errors.add)
           .toList();
-      expect(results, ['<foo>', '<bar>', '<baz>']);
-      expect(errors.length, 1);
-      expect(errors.first.position, 5);
+      check(results).deepEquals(['<foo>', '<bar>', '<baz>']);
+      check(errors.length).equals(1);
+      check(errors.first.position).equals(5);
     });
 
     test('contiguous chunked stream with failure within chunk throws ParserException', () async {
       final token = char('<').seq(letter().plus()).seq(char('>')).flatten();
       final chunks = Stream.fromIterable(['<foo>!<bar>', '<baz>']);
-      expect(
-        () => token.parseStreamChunks(chunks, contiguous: true).toList(),
-        throwsA(isA<ParserException>()),
-      );
+      await check(token.parseStreamChunks(chunks, contiguous: true).toList())
+          .throws<ParserException>();
     });
 
     test('delimited chunked stream false alarm without next delimiter in chunk does not leak carry', () async {
@@ -476,7 +473,7 @@ void main() {
       final results = await entry
           .parseStreamChunks(chunks, delimiter: char('@'))
           .toList();
-      expect(results, ['@entry{valid}']);
+      check(results).deepEquals(['@entry{valid}']);
     });
 
     test('onClose callback on chunked stream', () async {
@@ -491,7 +488,7 @@ void main() {
             },
           )
           .toList();
-      expect(closePos, 11);
+      check(closePos).equals(11);
     });
   });
 
@@ -529,7 +526,7 @@ void main() {
         final results = await entry
             .parseStreamChunks(stream, delimiter: char('@'))
             .toList();
-        expect(results, expectedEntries);
+        check(results).deepEquals(expectedEntries);
       });
     }
   });
@@ -539,13 +536,13 @@ void main() {
 
     test('parseStream', () async {
       final stream = parser.parseStream('hello world', contiguous: false);
-      expect(await stream.toList(), ['hello', 'world']);
+      check(await stream.toList()).deepEquals(['hello', 'world']);
     });
 
     test('toConverter and StringConversionSink', () {
       final converter = parser.toConverter(contiguous: false);
       final list = converter.convert('one two three');
-      expect(list, ['one', 'two', 'three']);
+      check(list).deepEquals(['one', 'two', 'three']);
     });
 
     test('parseWith extension on Stream<String>', () async {
@@ -553,7 +550,7 @@ void main() {
       final results = await stream
           .parseWith(parser, contiguous: false)
           .toList();
-      expect(results, ['alpha', 'beta', 'gamma']);
+      check(results).deepEquals(['alpha', 'beta', 'gamma']);
     });
 
     test('parseStream with empty input and onClose', () async {
@@ -562,11 +559,11 @@ void main() {
         '',
         onClose: ({required position, required buffer}) {
           closed = true;
-          expect(position, 0);
+          check(position).equals(0);
         },
       );
-      expect(await stream.toList(), isEmpty);
-      expect(closed, isTrue);
+      check(await stream.toList()).isEmpty();
+      check(closed).isTrue();
     });
 
     test('parseWith in contiguous and delimited modes', () async {
@@ -577,7 +574,7 @@ void main() {
             contiguous: true,
           )
           .toList();
-      expect(r1, ['<foo>', '<bar>']);
+      check(r1).deepEquals(['<foo>', '<bar>']);
 
       final stream2 = Stream.fromIterable(['ignore @val{1} ignore @val{2}']);
       final entry = char('@')
@@ -587,7 +584,7 @@ void main() {
           .seq(char('}'))
           .flatten();
       final r2 = await stream2.parseWith(entry, delimiter: char('@')).toList();
-      expect(r2, ['@val{1}', '@val{2}']);
+      check(r2).deepEquals(['@val{1}', '@val{2}']);
     });
   });
 
@@ -596,22 +593,22 @@ void main() {
 
     test('convert with slice start and end', () {
       final decoder = ParseDecoder(parser, contiguous: false);
-      expect(decoder.convert('foo 123 bar 456', 8, 11), ['bar']);
+      check(decoder.convert('foo 123 bar 456', 8, 11)).deepEquals(['bar']);
     });
 
     test('convert with slice start only', () {
       final decoder = ParseDecoder(parser, contiguous: false);
-      expect(decoder.convert('foo 123 bar', 8), ['bar']);
+      check(decoder.convert('foo 123 bar', 8)).deepEquals(['bar']);
     });
 
     test('convert with start == end returns empty list', () {
       final decoder = ParseDecoder(parser, contiguous: false);
-      expect(decoder.convert('foo 123 bar', 5, 5), isEmpty);
+      check(decoder.convert('foo 123 bar', 5, 5)).isEmpty();
     });
 
     test('convert with invalid range throws RangeError', () {
       final decoder = ParseDecoder(parser, contiguous: false);
-      expect(() => decoder.convert('foo', 3, 1), throwsA(isA<RangeError>()));
+      check(() => decoder.convert('foo', 3, 1)).throws<RangeError>();
     });
 
     test('convert invokes callbacks', () {
@@ -628,16 +625,16 @@ void main() {
         },
       );
       final list = decoder.convert('foo bar');
-      expect(list, ['foo', 'bar']);
-      expect(matches, ['foo', 'bar']);
-      expect(closed, isTrue);
+      check(list).deepEquals(['foo', 'bar']);
+      check(matches).deepEquals(['foo', 'bar']);
+      check(closed).isTrue();
     });
 
     test(
       'convert contiguous failure without onError throws ParserException',
       () {
         final decoder = ParseDecoder(char('a'), contiguous: true);
-        expect(() => decoder.convert('ab'), throwsA(isA<ParserException>()));
+        check(() => decoder.convert('ab')).throws<ParserException>();
       },
     );
 
@@ -649,9 +646,9 @@ void main() {
         onError: errors.add,
       );
       final list = decoder.convert('a!a');
-      expect(list, ['a', 'a']);
-      expect(errors.length, 1);
-      expect(errors.single.position, 1);
+      check(list).deepEquals(['a', 'a']);
+      check(errors.length).equals(1);
+      check(errors.single.position).equals(1);
     });
   });
 
@@ -666,12 +663,12 @@ void main() {
         contiguous: false,
       );
       sink.close();
-      expect(items, isEmpty);
+      check(items).isEmpty();
 
       // Subsequent addSlice and close should be no-ops
       sink.addSlice('hello', 0, 5, false);
       sink.close();
-      expect(items, isEmpty);
+      check(items).isEmpty();
     });
 
     test('addSlice with start == end and isLast == false is no-op', () {
@@ -682,9 +679,9 @@ void main() {
         contiguous: false,
       );
       sink.addSlice('abc', 1, 1, false);
-      expect(items, isEmpty);
+      check(items).isEmpty();
       sink.addSlice('foo', 0, 3, true);
-      expect(items, ['foo']);
+      check(items).deepEquals(['foo']);
     });
 
     test('addSlice with start == end and isLast == true closes sink', () {
@@ -699,7 +696,7 @@ void main() {
         },
       );
       sink.addSlice('abc', 1, 1, true);
-      expect(closed, isTrue);
+      check(closed).isTrue();
     });
 
     test(
@@ -711,7 +708,7 @@ void main() {
         final results = await fourLetter
             .parseStreamChunks(chunks, contiguous: false)
             .toList();
-        expect(results, ['abcd']);
+        check(results).deepEquals(['abcd']);
       },
     );
 
@@ -721,7 +718,7 @@ void main() {
       final results = await opt
           .parseStreamChunks(chunks, contiguous: true)
           .toList();
-      expect(results, ['a', null]);
+      check(results).deepEquals(['a', null]);
     });
 
     test('onMatch callback called in scanned chunked mode', () async {
@@ -739,9 +736,9 @@ void main() {
             },
           )
           .toList();
-      expect(results, ['12', '34']);
-      expect(starts, [2, 7]);
-      expect(stops, [4, 9]);
+      check(results).deepEquals(['12', '34']);
+      check(starts).deepEquals([2, 7]);
+      check(stops).deepEquals([4, 9]);
     });
   });
 
@@ -749,10 +746,10 @@ void main() {
     test('moveNext after iteration is finished returns false', () {
       final parser = char('a');
       final iterator = parser.parseIterable('a').iterator;
-      expect(iterator.moveNext(), isTrue);
-      expect(iterator.current, 'a');
-      expect(iterator.moveNext(), isFalse);
-      expect(iterator.moveNext(), isFalse);
+      check(iterator.moveNext()).isTrue();
+      check(iterator.current).equals('a');
+      check(iterator.moveNext()).isFalse();
+      check(iterator.moveNext()).isFalse();
     });
 
     test('moveNext on empty string in scanned mode returns false', () {
@@ -764,13 +761,13 @@ void main() {
             contiguous: false,
             onClose: ({required position, required buffer}) {
               closed = true;
-              expect(position, 0);
+              check(position).equals(0);
             },
           )
           .iterator;
-      expect(iterator.moveNext(), isFalse);
-      expect(closed, isTrue);
-      expect(iterator.moveNext(), isFalse);
+      check(iterator.moveNext()).isFalse();
+      check(closed).isTrue();
+      check(iterator.moveNext()).isFalse();
     });
 
     test('moveNext on empty string in delimited mode returns false', () {
@@ -782,18 +779,18 @@ void main() {
             delimiter: char('@'),
             onClose: ({required position, required buffer}) {
               closed = true;
-              expect(position, 0);
+              check(position).equals(0);
             },
           )
           .iterator;
-      expect(iterator.moveNext(), isFalse);
-      expect(closed, isTrue);
+      check(iterator.moveNext()).isFalse();
+      check(closed).isTrue();
     });
 
     test('delimited mode with false alarm at end of string', () {
       final parser = char('@').seq(letter()).flatten();
       final iterator = parser.parseIterable('@', delimiter: char('@')).iterator;
-      expect(iterator.moveNext(), isFalse);
+      check(iterator.moveNext()).isFalse();
     });
 
     test('scanned mode with onMatch and onClose callbacks', () {
@@ -812,16 +809,16 @@ void main() {
           closedPos = position;
         },
       );
-      expect(iterable.toList(), ['12', '34']);
-      expect(matches, ['12', '34']);
-      expect(starts, [2, 7]);
-      expect(closedPos, 11);
+      check(iterable.toList()).deepEquals(['12', '34']);
+      check(matches).deepEquals(['12', '34']);
+      check(starts).deepEquals([2, 7]);
+      check(closedPos).equals(11);
     });
 
     test('zero-width match in scanned mode does not infinite loop', () {
       final parser = char('a').optional();
       final iterable = parser.parseIterable('a', contiguous: false);
-      expect(iterable.toList(), ['a', null]);
+      check(iterable.toList()).deepEquals(['a', null]);
     });
   });
 
@@ -840,7 +837,7 @@ void main() {
         'junk end123 noise EnD456 tail',
         delimiter: delim,
       );
-      expect(iterable.toList(), ['end123', 'EnD456']);
+      check(iterable.toList()).deepEquals(['end123', 'EnD456']);
     });
 
     test('general predicate delimiter fallback to fastParseOn', () {
@@ -850,7 +847,7 @@ void main() {
         'noise 1abc noise 2def tail',
         delimiter: delim,
       );
-      expect(iterable.toList(), ['1abc', '2def']);
+      check(iterable.toList()).deepEquals(['1abc', '2def']);
     });
 
     test('wrapped delimiter with flatten()', () async {
@@ -860,7 +857,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim)
           .toList();
-      expect(results, ['---a---']);
+      check(results).deepEquals(['---a---']);
     });
 
     test('wrapped delimiter with trim()', () async {
@@ -870,7 +867,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim.trim())
           .toList();
-      expect(results, ['===b===']);
+      check(results).deepEquals(['===b===']);
     });
 
     test('sequence delimiter with wrapped children', () async {
@@ -880,7 +877,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim)
           .toList();
-      expect(results, ['<!--->x<!--->']);
+      check(results).deepEquals(['<!--->x<!--->']);
     });
 
     test('nested sequence delimiter', () async {
@@ -890,7 +887,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim)
           .toList();
-      expect(results, ['<-->z<-->']);
+      check(results).deepEquals(['<-->z<-->']);
     });
 
     test(
@@ -902,7 +899,7 @@ void main() {
           'noise <tag>1 noise <x>2',
           delimiter: delim,
         );
-        expect(iterable.toList(), ['<tag>1', '<x>2']);
+        check(iterable.toList()).deepEquals(['<tag>1', '<x>2']);
       },
     );
 
@@ -917,7 +914,7 @@ void main() {
       final results = await parser
           .parseStreamChunks(chunks, delimiter: delim)
           .toList();
-      expect(results, ['##a', r'$$b']);
+      check(results).deepEquals(['##a', r'$$b']);
     });
 
     test('character parser delimiter in chunked stream', () async {
@@ -925,7 +922,7 @@ void main() {
       final results = await entry
           .parseStreamChunks(chunks, delimiter: char('@'))
           .toList();
-      expect(results, ['@foo{1}']);
+      check(results).deepEquals(['@foo{1}']);
     });
 
     test(
@@ -937,7 +934,7 @@ void main() {
         final results = await p
             .parseStreamChunks(chunks, delimiter: delim)
             .toList();
-        expect(results, ['a1', 'b2']);
+        check(results).deepEquals(['a1', 'b2']);
       },
     );
   });

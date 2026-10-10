@@ -282,11 +282,12 @@ Future<void> generateTest() async {
   final file = testFile;
   final out = file.openWrite();
   generateWarning(out);
+  out.writeln('import \'package:checks/checks.dart\';');
   out.writeln('import \'package:petitparser/petitparser.dart\';');
-  out.writeln('import \'package:test/test.dart\';');
+  out.writeln('import \'package:test/scaffolding.dart\';');
   out.writeln();
   out.writeln('import \'../utils/assertions.dart\';');
-  out.writeln('import \'../utils/matchers.dart\';');
+  out.writeln('import \'../utils/checks.dart\';');
   out.writeln();
   out.writeln('void main() {');
   for (var i = min; i <= max; i++) {
@@ -307,28 +308,24 @@ Future<void> generateTest() async {
     );
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
+    out.writeln('check(parser).parseSuccess(\'$string\', result: record);');
     out.writeln(
-      'expect(parser, '
-      'isParseSuccess(\'$string\', result: record));',
-    );
-    out.writeln(
-      'expect(parser, '
-      'isParseSuccess(\'$string*\', result: record, position: $i));',
+      'check(parser).parseSuccess(\'$string*\', result: record, position: $i);',
     );
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
       out.writeln(
-        'expect(parser, isParseFailure(\''
+        'check(parser).parseFailure(\''
         '${string.substring(0, j)}\', '
         'message: \'"${chars[j]}" expected\', '
-        'position: $j));',
+        'position: $j);',
       );
       out.writeln(
-        'expect(parser, isParseFailure(\''
+        'check(parser).parseFailure(\''
         '${string.substring(0, j)}*\', '
         'message: \'"${chars[j]}" expected\', '
-        'position: $j));',
+        'position: $j);',
       );
       out.writeln('});');
     }
@@ -337,14 +334,14 @@ Future<void> generateTest() async {
       'final alternate = ('
       '${chars.map((each) => 'char(\'$each\')').join(', ')}).toSequenceParser();',
     );
-    out.writeln('expect(alternate, isParserDeepEqual(parser));');
+    out.writeln('check(alternate).isDeepEqualTo(parser);');
     out.writeln('});');
     out.writeln('test(\'then()\', () {');
     out.writeln(
       'final alternate = '
       '${chars.map((each) => 'char(\'$each\')').reduce((a, b) => '$a.then($b)')};',
     );
-    out.writeln('expect(alternate, isParserDeepEqual(parser));');
+    out.writeln('check(alternate).isDeepEqualTo(parser);');
     out.writeln('});');
     out.writeln('});');
 
@@ -358,27 +355,25 @@ Future<void> generateTest() async {
     out.writeln('expectParserInvariants(parser);');
     out.writeln('test(\'success\', () {');
     out.writeln(
-      'expect(parser, '
-      'isParseSuccess(\'$string\', result: \'$string\'));',
+      'check(parser).parseSuccess(\'$string\', result: \'$string\');',
     );
     out.writeln(
-      'expect(parser, '
-      'isParseSuccess(\'$string*\', result: \'$string\', position: $i));',
+      'check(parser).parseSuccess(\'$string*\', result: \'$string\', position: $i);',
     );
     out.writeln('});');
     for (var j = 0; j < i; j++) {
       out.writeln('test(\'failure at $j\', () {');
       out.writeln(
-        'expect(parser, isParseFailure(\''
+        'check(parser).parseFailure(\''
         '${string.substring(0, j)}\', '
         'message: \'"${chars[j]}" expected\', '
-        'position: $j));',
+        'position: $j);',
       );
       out.writeln(
-        'expect(parser, isParseFailure(\''
+        'check(parser).parseFailure(\''
         '${string.substring(0, j)}*\', '
         'message: \'"${chars[j]}" expected\', '
-        'position: $j));',
+        'position: $j);',
       );
       out.writeln('});');
     }
@@ -395,37 +390,39 @@ Future<void> generateTest() async {
     );
     out.writeln('test(\'accessors\', () {');
     for (var j = 0; j < i; j++) {
-      out.writeln('expect(record.\$${j + 1}, \'${chars[j]}\');');
+      out.writeln('check(record.\$${j + 1}).equals(\'${chars[j]}\');');
     }
     out.writeln('});');
     out.writeln('test(\'map\', () {');
-    out.writeln('expect(record.map((${chars.join(', ')}) {');
+    out.writeln('check(record.map((${chars.join(', ')}) {');
     for (var j = 0; j < i; j++) {
-      out.writeln('expect(${chars[j]}, \'${chars[j]}\');');
+      out.writeln('check(${chars[j]}).equals(\'${chars[j]}\');');
     }
     out.writeln('return 42;');
-    out.writeln('}), 42);');
+    out.writeln('})).equals(42);');
     out.writeln('});');
     out.writeln('test(\'equals\', () {');
-    out.writeln('expect(record, record);');
-    out.writeln('expect(record, isNot(other));');
-    out.writeln('expect(other, isNot(record));');
-    out.writeln('expect(other, other);');
+    out.writeln('check(record).equals(record);');
+    out.writeln('check(record).not((it) => it.equals(other));');
+    out.writeln('check(other).not((it) => it.equals(record));');
+    out.writeln('check(other).equals(other);');
     out.writeln('});');
     out.writeln('test(\'hashCode\', () {');
-    out.writeln('expect(record.hashCode, record.hashCode);');
-    out.writeln('expect(record.hashCode, isNot(other.hashCode));');
-    out.writeln('expect(other.hashCode, isNot(record.hashCode));');
-    out.writeln('expect(other.hashCode, other.hashCode);');
+    out.writeln('check(record.hashCode).equals(record.hashCode);');
+    out.writeln(
+      'check(record.hashCode).not((it) => it.equals(other.hashCode));',
+    );
+    out.writeln(
+      'check(other.hashCode).not((it) => it.equals(record.hashCode));',
+    );
+    out.writeln('check(other.hashCode).equals(other.hashCode);');
     out.writeln('});');
     out.writeln('test(\'toString\', () {');
     out.writeln(
-      'expect(record.toString(), '
-      'endsWith(\'(${chars.join(', ')})\'));',
+      'check(record.toString()).endsWith(\'(${chars.join(', ')})\');',
     );
     out.writeln(
-      'expect(other.toString(), '
-      'endsWith(\'(${chars.reversed.join(', ')})\'));',
+      'check(other.toString()).endsWith(\'(${chars.reversed.join(', ')})\');',
     );
     out.writeln('});');
     out.writeln('});');

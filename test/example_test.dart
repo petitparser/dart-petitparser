@@ -1,8 +1,9 @@
+import 'package:checks/checks.dart';
 import 'package:petitparser/petitparser.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
 import '../example/calc.dart';
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 void main() {
   final identifier = letter().seq(word().star()).flatten();
@@ -25,162 +26,146 @@ void main() {
       .seq(string('"""'))
       .pick(1);
   test('valid identifier', () {
-    expect(identifier, isParseSuccess('a', result: 'a'));
-    expect(identifier, isParseSuccess('a1', result: 'a1'));
-    expect(identifier, isParseSuccess('a12', result: 'a12'));
-    expect(identifier, isParseSuccess('ab', result: 'ab'));
-    expect(identifier, isParseSuccess('a1b', result: 'a1b'));
+    check(identifier).parseSuccess('a', result: 'a');
+    check(identifier).parseSuccess('a1', result: 'a1');
+    check(identifier).parseSuccess('a12', result: 'a12');
+    check(identifier).parseSuccess('ab', result: 'ab');
+    check(identifier).parseSuccess('a1b', result: 'a1b');
   });
   test('incomplete identifier', () {
-    expect(identifier, isParseSuccess('a=', result: 'a', position: 1));
-    expect(identifier, isParseSuccess('a1-', result: 'a1', position: 2));
-    expect(identifier, isParseSuccess('a12+', result: 'a12', position: 3));
-    expect(identifier, isParseSuccess('ab ', result: 'ab', position: 2));
+    check(identifier).parseSuccess('a=', result: 'a', position: 1);
+    check(identifier).parseSuccess('a1-', result: 'a1', position: 2);
+    check(identifier).parseSuccess('a12+', result: 'a12', position: 3);
+    check(identifier).parseSuccess('ab ', result: 'ab', position: 2);
   });
   test('invalid identifier', () {
-    expect(identifier, isParseFailure('', message: 'letter expected'));
-    expect(identifier, isParseFailure('1', message: 'letter expected'));
-    expect(identifier, isParseFailure('1a', message: 'letter expected'));
+    check(identifier).parseFailure('', message: 'letter expected');
+    check(identifier).parseFailure('1', message: 'letter expected');
+    check(identifier).parseFailure('1a', message: 'letter expected');
   });
   test('positive number', () {
-    expect(number, isParseSuccess('1', result: '1'));
-    expect(number, isParseSuccess('12', result: '12'));
-    expect(number, isParseSuccess('12.3', result: '12.3'));
-    expect(number, isParseSuccess('12.34', result: '12.34'));
+    check(number).parseSuccess('1', result: '1');
+    check(number).parseSuccess('12', result: '12');
+    check(number).parseSuccess('12.3', result: '12.3');
+    check(number).parseSuccess('12.34', result: '12.34');
   });
   test('negative number', () {
-    expect(number, isParseSuccess('-1', result: '-1'));
-    expect(number, isParseSuccess('-12', result: '-12'));
-    expect(number, isParseSuccess('-12.3', result: '-12.3'));
-    expect(number, isParseSuccess('-12.34', result: '-12.34'));
+    check(number).parseSuccess('-1', result: '-1');
+    check(number).parseSuccess('-12', result: '-12');
+    check(number).parseSuccess('-12.3', result: '-12.3');
+    check(number).parseSuccess('-12.34', result: '-12.34');
   });
   test('incomplete number', () {
-    expect(number, isParseSuccess('1..', result: '1', position: 1));
-    expect(number, isParseSuccess('12-', result: '12', position: 2));
-    expect(number, isParseSuccess('12.3.', result: '12.3', position: 4));
-    expect(number, isParseSuccess('12.34.', result: '12.34', position: 5));
+    check(number).parseSuccess('1..', result: '1', position: 1);
+    check(number).parseSuccess('12-', result: '12', position: 2);
+    check(number).parseSuccess('12.3.', result: '12.3', position: 4);
+    check(number).parseSuccess('12.34.', result: '12.34', position: 5);
   });
   test('invalid number', () {
-    expect(number, isParseFailure('', position: 0, message: 'digit expected'));
-    expect(number, isParseFailure('-', position: 1, message: 'digit expected'));
-    expect(
-      number,
-      isParseFailure('-x', position: 1, message: 'digit expected'),
-    );
-    expect(number, isParseFailure('.', message: 'digit expected'));
-    expect(number, isParseFailure('.1', message: 'digit expected'));
+    check(number).parseFailure('', position: 0, message: 'digit expected');
+    check(number).parseFailure('-', position: 1, message: 'digit expected');
+    check(number).parseFailure('-x', position: 1, message: 'digit expected');
+    check(number).parseFailure('.', message: 'digit expected');
+    check(number).parseFailure('.1', message: 'digit expected');
   });
   test('valid string', () {
-    expect(quoted, isParseSuccess('""', result: '""'));
-    expect(quoted, isParseSuccess('"a"', result: '"a"'));
-    expect(quoted, isParseSuccess('"ab"', result: '"ab"'));
-    expect(quoted, isParseSuccess('"abc"', result: '"abc"'));
+    check(quoted).parseSuccess('""', result: '""');
+    check(quoted).parseSuccess('"a"', result: '"a"');
+    check(quoted).parseSuccess('"ab"', result: '"ab"');
+    check(quoted).parseSuccess('"abc"', result: '"abc"');
   });
   test('incomplete string', () {
-    expect(quoted, isParseSuccess('""x', result: '""', position: 2));
-    expect(quoted, isParseSuccess('"a"x', result: '"a"', position: 3));
-    expect(quoted, isParseSuccess('"ab"x', result: '"ab"', position: 4));
-    expect(quoted, isParseSuccess('"abc"x', result: '"abc"', position: 5));
+    check(quoted).parseSuccess('""x', result: '""', position: 2);
+    check(quoted).parseSuccess('"a"x', result: '"a"', position: 3);
+    check(quoted).parseSuccess('"ab"x', result: '"ab"', position: 4);
+    check(quoted).parseSuccess('"abc"x', result: '"abc"', position: 5);
   });
   test('invalid string', () {
-    expect(quoted, isParseFailure('"', position: 1, message: '"\\"" expected'));
-    expect(
-      quoted,
-      isParseFailure('"a', position: 2, message: '"\\"" expected'),
-    );
-    expect(
-      quoted,
-      isParseFailure('"ab', position: 3, message: '"\\"" expected'),
-    );
-    expect(quoted, isParseFailure('a"', message: '"\\"" expected'));
-    expect(quoted, isParseFailure('ab"', message: '"\\"" expected'));
+    check(quoted).parseFailure('"', position: 1, message: '"\\"" expected');
+    check(quoted).parseFailure('"a', position: 2, message: '"\\"" expected');
+    check(quoted).parseFailure('"ab', position: 3, message: '"\\"" expected');
+    check(quoted).parseFailure('a"', message: '"\\"" expected');
+    check(quoted).parseFailure('ab"', message: '"\\"" expected');
   });
   test('return statement', () {
-    expect(keyword, isParseSuccess('return f', result: 'f'));
-    expect(keyword, isParseSuccess('return  f', result: 'f'));
-    expect(keyword, isParseSuccess('return foo', result: 'foo'));
-    expect(keyword, isParseSuccess('return    foo', result: 'foo'));
-    expect(keyword, isParseSuccess('return 1', result: '1'));
-    expect(keyword, isParseSuccess('return  1', result: '1'));
-    expect(keyword, isParseSuccess('return -2.3', result: '-2.3'));
-    expect(keyword, isParseSuccess('return    -2.3', result: '-2.3'));
-    expect(keyword, isParseSuccess('return "a"', result: '"a"'));
-    expect(keyword, isParseSuccess('return  "a"', result: '"a"'));
+    check(keyword).parseSuccess('return f', result: 'f');
+    check(keyword).parseSuccess('return  f', result: 'f');
+    check(keyword).parseSuccess('return foo', result: 'foo');
+    check(keyword).parseSuccess('return    foo', result: 'foo');
+    check(keyword).parseSuccess('return 1', result: '1');
+    check(keyword).parseSuccess('return  1', result: '1');
+    check(keyword).parseSuccess('return -2.3', result: '-2.3');
+    check(keyword).parseSuccess('return    -2.3', result: '-2.3');
+    check(keyword).parseSuccess('return "a"', result: '"a"');
+    check(keyword).parseSuccess('return  "a"', result: '"a"');
   });
   test('invalid statement', () {
-    expect(keyword, isParseFailure('retur f', message: '"return" expected'));
-    expect(
-      keyword,
-      isParseFailure('return1', position: 6, message: 'whitespace expected'),
-    );
-    expect(
-      keyword,
-      isParseFailure('return  _', position: 8, message: '"\\"" expected'),
-    );
+    check(keyword).parseFailure('retur f', message: '"return" expected');
+    check(keyword)
+        .parseFailure('return1', position: 6, message: 'whitespace expected');
+    check(keyword)
+        .parseFailure('return  _', position: 8, message: '"\\"" expected');
   });
   test('javadoc', () {
-    expect(javadoc, isParseSuccess('/** foo */', result: '/** foo */'));
-    expect(javadoc, isParseSuccess('/** * * */', result: '/** * * */'));
+    check(javadoc).parseSuccess('/** foo */', result: '/** foo */');
+    check(javadoc).parseSuccess('/** * * */', result: '/** * * */');
   });
   test('multiline', () {
-    expect(multiLine, isParseSuccess(r'"""abc"""', result: r'abc'));
-    expect(multiLine, isParseSuccess(r'"""abc\n"""', result: r'abc\n'));
-    expect(
-      multiLine,
-      isParseSuccess(r'"""abc\"""def"""', result: r'abc\"""def'),
-    );
+    check(multiLine).parseSuccess(r'"""abc"""', result: r'abc');
+    check(multiLine).parseSuccess(r'"""abc\n"""', result: r'abc\n');
+    check(multiLine).parseSuccess(r'"""abc\"""def"""', result: r'abc\"""def');
   });
   group('calc', () {
     final parser = buildParser();
     group('parse', () {
       test('integer', () {
-        expect(parser, isParseSuccess('42', result: 42));
+        check(parser).parseSuccess('42', result: 42);
       });
       test('float', () {
-        expect(parser, isParseSuccess('3.14', result: 3.14));
+        check(parser).parseSuccess('3.14', result: 3.14);
       });
       test('scientific notation', () {
-        expect(parser, isParseSuccess('1.5e3', result: 1500));
-        expect(parser, isParseSuccess('2.5E-2', result: 0.025));
+        check(parser).parseSuccess('1.5e3', result: 1500);
+        check(parser).parseSuccess('2.5E-2', result: 0.025);
       });
       test('negative number', () {
-        expect(parser, isParseSuccess('-5', result: -5));
+        check(parser).parseSuccess('-5', result: -5);
       });
       test('prefix negation', () {
-        expect(parser, isParseSuccess('--5', result: 5));
+        check(parser).parseSuccess('--5', result: 5);
       });
       test('parentheses', () {
-        expect(parser, isParseSuccess('(42)', result: 42));
-        expect(parser, isParseSuccess('((42))', result: 42));
+        check(parser).parseSuccess('(42)', result: 42);
+        check(parser).parseSuccess('((42))', result: 42);
       });
       test('addition', () {
-        expect(parser, isParseSuccess('1 + 2', result: 3));
-        expect(parser, isParseSuccess('1 + 2 + 3', result: 6));
+        check(parser).parseSuccess('1 + 2', result: 3);
+        check(parser).parseSuccess('1 + 2 + 3', result: 6);
       });
       test('subtraction', () {
-        expect(parser, isParseSuccess('5 - 2', result: 3));
-        expect(parser, isParseSuccess('10 - 3 - 2', result: 5));
+        check(parser).parseSuccess('5 - 2', result: 3);
+        check(parser).parseSuccess('10 - 3 - 2', result: 5);
       });
       test('multiplication', () {
-        expect(parser, isParseSuccess('3 * 4', result: 12));
-        expect(parser, isParseSuccess('2 * 3 * 4', result: 24));
+        check(parser).parseSuccess('3 * 4', result: 12);
+        check(parser).parseSuccess('2 * 3 * 4', result: 24);
       });
       test('division', () {
-        expect(parser, isParseSuccess('12 / 3', result: 4));
-        expect(parser, isParseSuccess('24 / 4 / 2', result: 3));
+        check(parser).parseSuccess('12 / 3', result: 4);
+        check(parser).parseSuccess('24 / 4 / 2', result: 3);
       });
       test('power', () {
-        expect(parser, isParseSuccess('2 ^ 3', result: 8));
-        expect(parser, isParseSuccess('2 ^ 2 ^ 3', result: 256));
+        check(parser).parseSuccess('2 ^ 3', result: 8);
+        check(parser).parseSuccess('2 ^ 2 ^ 3', result: 256);
       });
       test('precedence', () {
-        expect(parser, isParseSuccess('1 + 2 * 3', result: 7));
-        expect(parser, isParseSuccess('(1 + 2) * 3', result: 9));
-        expect(parser, isParseSuccess('2 * 3 ^ 2', result: 18));
-        expect(parser, isParseSuccess('-2 * (3 + 4)', result: -14));
+        check(parser).parseSuccess('1 + 2 * 3', result: 7);
+        check(parser).parseSuccess('(1 + 2) * 3', result: 9);
+        check(parser).parseSuccess('2 * 3 ^ 2', result: 18);
+        check(parser).parseSuccess('-2 * (3 + 4)', result: -14);
       });
       test('whitespace', () {
-        expect(parser, isParseSuccess('  1   +   2  ', result: 3));
+        check(parser).parseSuccess('  1   +   2  ', result: 3);
       });
     });
     group('failure & caret position', () {
@@ -189,20 +174,18 @@ void main() {
         int expectedPosition,
         String expectedMessage,
       ) {
-        expect(
-          parser,
-          isParseFailure(
-            input,
-            position: expectedPosition,
-            message: expectedMessage,
-          ),
+        check(parser).parseFailure(
+          input,
+          position: expectedPosition,
+          message: expectedMessage,
         );
         final result = parser.parse(input);
-        expect(result, isA<Failure>());
+        check(result).isA<Failure>();
         final failure = result as Failure;
         final caretLine = '${' ' * failure.position}^-- ${failure.message}';
-        expect(caretLine.indexOf('^'), expectedPosition);
-        expect(caretLine, '${' ' * expectedPosition}^-- $expectedMessage');
+        check(caretLine.indexOf('^')).equals(expectedPosition);
+        check(caretLine)
+            .equals('${' ' * expectedPosition}^-- $expectedMessage');
       }
 
       test('empty input', () {

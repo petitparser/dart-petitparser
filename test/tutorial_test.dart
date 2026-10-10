@@ -1,11 +1,12 @@
 import 'dart:math' as math;
 
+import 'package:checks/checks.dart';
 import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 class ExpressionGrammarDefinition extends GrammarDefinition<num> {
   @override
@@ -48,65 +49,65 @@ void main() {
     final parser = entry.map2((k, v) => (key: k, value: v));
     final result = parser.parse('port = 8080');
 
-    expect(result.value, (key: 'port', value: 8080));
+    check(result.value).equals((key: 'port', value: 8080));
   });
 
   test('primitive parsers', () {
-    expect(char('a').parse('a').value, 'a');
-    expect(string('dart').parse('dart').value, 'dart');
-    expect(digit().parse('7').value, '7');
-    expect(letter().parse('x').value, 'x');
-    expect(word().parse('_').value, '_');
-    expect(whitespace().parse(' ').value, ' ');
-    expect(pattern('0-9a-fA-F').parse('f').value, 'f');
-    expect(any().parse('!').value, '!');
+    check(char('a').parse('a').value).equals('a');
+    check(string('dart').parse('dart').value).equals('dart');
+    check(digit().parse('7').value).equals('7');
+    check(letter().parse('x').value).equals('x');
+    check(word().parse('_').value).equals('_');
+    check(whitespace().parse(' ').value).equals(' ');
+    check(pattern('0-9a-fA-F').parse('f').value).equals('f');
+    check(any().parse('!').value).equals('!');
   });
 
   test('combining parsers', () {
     final pair = letter().then(digit());
-    expect(pair.parse('a1').value, ('a', '1'));
+    check(pair.parse('a1').value).equals(('a', '1'));
 
     final id = [letter(), digit()].toChoiceParser();
-    expect(id.parse('a').value, 'a');
-    expect(id.parse('1').value, '1');
+    check(id.parse('a').value).equals('a');
+    check(id.parse('1').value).equals('1');
 
     final stars = letter().star();
-    expect(stars.parse('abc').value, ['a', 'b', 'c']);
+    check(stars.parse('abc').value).deepEquals(['a', 'b', 'c']);
 
     final pluses = digit().plus();
-    expect(pluses.parse('123').value, ['1', '2', '3']);
+    check(pluses.parse('123').value).deepEquals(['1', '2', '3']);
 
     final opt = char('-').optional();
-    expect(opt.parse('-').value, '-');
-    expect(opt.parse('+').value, isNull);
+    check(opt.parse('-').value).equals('-');
+    check(opt.parse('+').value).isNull();
 
     final exact = letter().times(3);
-    expect(exact.parse('abc').value, ['a', 'b', 'c']);
+    check(exact.parse('abc').value).deepEquals(['a', 'b', 'c']);
 
     final separated = digit().plusSeparated(char(','));
-    expect(separated.parse('1,2,3').value.elements, ['1', '2', '3']);
+    check(separated.parse('1,2,3').value.elements).deepEquals(['1', '2', '3']);
   });
 
   test('transformations', () {
     final flattened = digit().plus().flatten();
-    expect(flattened.parse('123').value, '123');
+    check(flattened.parse('123').value).equals('123');
 
     final number = digit().plus().flatten().map(int.parse);
-    expect(number.parse('42').value, 42);
+    check(number.parse('42').value).equals(42);
 
     final trimmed = string('true').trim();
-    expect(trimmed.parse('  true  ').value, 'true');
+    check(trimmed.parse('  true  ').value).equals('true');
 
     final pair = letter().then(digit());
     final mapped = pair.map2((l, d) => '$l:$d');
-    expect(mapped.parse('x9').value, 'x:9');
+    check(mapped.parse('x9').value).equals('x:9');
 
     final triple = (
       letter(),
       char(':'),
       digit(),
     ).toSequenceParser().map3((l, sep, d) => '$l$sep$d');
-    expect(triple.parse('a:1').value, 'a:1');
+    check(triple.parse('a:1').value).equals('a:1');
   });
 
   test('handling results', () {
@@ -124,13 +125,13 @@ void main() {
 
     handleResult(parser.parse('123'));
     handleResult(parser.parse('abc'));
-    expect(output, ['Parsed 123', 'Error at 0: digit expected']);
+    check(output).deepEquals(['Parsed 123', 'Error at 0: digit expected']);
 
-    expect(parser.accept('123'), isTrue);
-    expect(parser.accept('abc'), isFalse);
+    check(parser.accept('123')).isTrue();
+    check(parser.accept('abc')).isFalse();
 
     final words = letter().plus().flatten();
-    expect(words.allMatches('two words 123'), ['two', 'words']);
+    check(words.allMatches('two words 123')).deepEquals(['two', 'words']);
   });
 
   test('delimited lists', () {
@@ -140,7 +141,7 @@ void main() {
         .map((list) => list.elements);
 
     final result = numbers.parse('1, 2, 3');
-    expect(result.value, [1, 2, 3]);
+    check(result.value).deepEquals([1, 2, 3]);
   });
 
   test('expression builder', () {
@@ -178,10 +179,10 @@ void main() {
 
     final parser = builder.build().end();
 
-    expect(parser.parse('1 + 2 * 3').value, 7);
-    expect(parser.parse('(1 + 2) * 3').value, 9);
-    expect(parser.parse('2 ^ 2 ^ 3').value, 256);
-    expect(parser.parse('-8 + 2').value, -6);
+    check(parser.parse('1 + 2 * 3').value).equals(7);
+    check(parser.parse('(1 + 2) * 3').value).equals(9);
+    check(parser.parse('2 ^ 2 ^ 3').value).equals(256);
+    check(parser.parse('-8 + 2').value).equals(-6);
   });
 
   test('recursive structures', () {
@@ -199,28 +200,30 @@ void main() {
 
     final parser = value.end();
 
-    expect(parser.parse('[1, [2, 3], 4]').value, [
-      1,
-      [2, 3],
-      4,
-    ]);
+    check(parser.parse('[1, [2, 3], 4]').value)
+        .isA<List<dynamic>>()
+        .deepEquals([
+          1,
+          [2, 3],
+          4,
+        ]);
   });
 
   test('large grammars', () {
     final definition = ExpressionGrammarDefinition();
     final parser = definition.build();
-    expect(parser.parse('1 + 2 * 3').value, 7);
-    expect(parser.parse('(1 + 2) * 3').value, 9);
+    check(parser.parse('1 + 2 * 3').value).equals(7);
+    check(parser.parse('(1 + 2) * 3').value).equals(9);
 
     final numberParser = definition.buildFrom(ref0(definition.number));
-    expect(numberParser.parse('42').value, 42);
+    check(numberParser.parse('42').value).equals(42);
   });
 
   test('debugging parser', () {
     final output = <TraceEvent>[];
     final parser = letter().then(digit());
     trace(parser, output: output.add).parse('a1');
-    expect(output.map((each) => each.toString()), [
+    check(output.map((each) => each.toString())).deepEquals([
       'SequenceParser2<String, String>',
       '  SingleCharacterParser[letter expected]',
       '  Success<String>[1:2]: a',
@@ -233,17 +236,17 @@ void main() {
   test('tokens and positions', () {
     final id = letter().plus().flatten().token();
     final token = id.parse('hello').value;
-    expect(token.value, 'hello');
-    expect(token.start, 0);
-    expect(token.stop, 5);
-    expect(token.line, 1);
-    expect(token.column, 1);
+    check(token.value).equals('hello');
+    check(token.start).equals(0);
+    check(token.stop).equals(5);
+    check(token.line).equals(1);
+    check(token.column).equals(1);
   });
 
   test('lookahead', () {
     final keyword = string('let').skip(after: word().not());
-    expect(keyword.parse('let').value, 'let');
-    expect(keyword.accept('letter'), isFalse);
+    check(keyword.parse('let').value).equals('let');
+    check(keyword.accept('letter')).isFalse();
   });
 
   test('lazy repetition', () {
@@ -251,11 +254,11 @@ void main() {
         .then(any().starLazy(string('*/')).flatten())
         .then(string('*/'))
         .map3((start, body, end) => body);
-    expect(comment.parse('/* note */').value, ' note ');
+    check(comment.parse('/* note */').value).equals(' note ');
   });
 
   test('linter', () {
     final parser = letter().plus();
-    expect(linter(parser), isEmpty);
+    check(linter(parser)).isEmpty();
   });
 }

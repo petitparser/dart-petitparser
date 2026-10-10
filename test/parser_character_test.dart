@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:checks/checks.dart';
 import 'package:meta/meta.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/src/parser/character/predicate/char.dart';
@@ -16,10 +17,10 @@ import 'package:petitparser/src/parser/character/predicate/uppercase.dart';
 import 'package:petitparser/src/parser/character/predicate/whitespace.dart';
 import 'package:petitparser/src/parser/character/predicate/word.dart';
 import 'package:petitparser/src/parser/character/utils/optimize.dart';
-import 'package:test/test.dart' hide anyOf;
+import 'package:test/scaffolding.dart';
 
 import 'utils/assertions.dart';
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 @isTestGroup
 void variation<P extends CharacterParser>(
@@ -27,33 +28,48 @@ void variation<P extends CharacterParser>(
   Parser<String> parser, {
   Iterable<String> accept = const [],
   Iterable<String> reject = const [],
-  dynamic message = anything,
-  dynamic predicate = anything,
+  String? message,
+  CharacterPredicate? predicate,
+  Condition<CharacterPredicate>? whichPredicate,
 }) {
   group(label, () {
     expectParserInvariants(parser);
     if (accept.isNotEmpty) {
       test('accept', () {
         for (final char in accept) {
-          expect(parser, isParseSuccess(char, result: char));
+          check(parser).parseSuccess(char, result: char);
         }
       });
     }
     if (reject.isNotEmpty) {
       test('reject', () {
         for (final char in reject) {
-          expect(parser, isParseFailure(char, message: message));
+          if (message != null) {
+            check(parser).parseFailure(char, message: message);
+          } else {
+            check(parser).parseFailure(char);
+          }
         }
       });
     }
     test('empty', () {
-      expect(parser, isParseFailure('', message: message));
+      if (message != null) {
+        check(parser).parseFailure('', message: message);
+      } else {
+        check(parser).parseFailure('');
+      }
     });
     test('state', () {
-      expect(
-        parser,
-        isCharacterParser<P>(message: message, predicate: predicate),
-      );
+      final parserSubject = check(parser).isA<P>();
+      if (message != null) {
+        parserSubject.message.equals(message);
+      }
+      if (predicate != null) {
+        parserSubject.predicate.isEqualToPredicate(predicate);
+      }
+      if (whichPredicate != null) {
+        whichPredicate(parserSubject.predicate);
+      }
     });
   });
 }
@@ -117,7 +133,7 @@ void main() {
       accept: ['a', 'b', 'c', '🤔', '🤐'],
       reject: ['0', 'd', '🙄'],
       message: 'any of "abc🤔🤐" expected',
-      predicate: isA<RangesCharPredicate>(),
+      whichPredicate: (it) => it.isA<RangesCharPredicate>(),
     );
   });
   group('char', () {
@@ -154,8 +170,8 @@ void main() {
       predicate: const SingleCharPredicate(128580),
     );
     test('invalid character', () {
-      expect(() => char('ab'), throwsA(isAssertionError));
-      expect(() => char('🙄'), throwsA(isAssertionError));
+      check(() => char('ab')).throwsAssertionError();
+      check(() => char('🙄')).throwsAssertionError();
     }, skip: !hasAssertionsEnabled());
   });
   group('digit', () {
@@ -315,7 +331,7 @@ void main() {
         accept: ['y', '😃', '💕'],
         reject: ['x', 'z', '💞'],
         message: '[y😃💕] expected',
-        predicate: isA<RangesCharPredicate>(),
+        whichPredicate: (it) => it.isA<RangesCharPredicate>(),
       );
       variation<SingleCharacterParser>(
         'negated',
@@ -419,7 +435,7 @@ void main() {
         accept: ['b', 'c', 'd', 'B', 'C', 'D'],
         reject: ['a', 'A', 'e', 'E', '1'],
         message: '[b-d] (case-insensitive) expected',
-        predicate: isA<LookupCharPredicate>(),
+        whichPredicate: (it) => it.isA<LookupCharPredicate>(),
       );
       variation<SingleCharacterParser>(
         'boundary crossing, ignore-case',
@@ -427,7 +443,7 @@ void main() {
         accept: ['[', r'\', ']', '^', '_', '`', 'a', 'b', 'A', 'B'],
         reject: ['Z', 'c', 'C', '0'],
         message: '[[-b] (case-insensitive) expected',
-        predicate: isA<LookupCharPredicate>(),
+        whichPredicate: (it) => it.isA<LookupCharPredicate>(),
       );
       variation<SingleCharacterParser>(
         'spanning letters, ignore-case',
@@ -443,7 +459,7 @@ void main() {
         accept: ['а', 'б', 'в', 'А', 'Б', 'В'],
         reject: ['г', 'Г', 'a', 'A'],
         message: '[а-в] (case-insensitive) expected',
-        predicate: isA<LookupCharPredicate>(),
+        whichPredicate: (it) => it.isA<LookupCharPredicate>(),
       );
     });
     group('everything', () {
@@ -537,11 +553,11 @@ void main() {
       accept: ['∉', '⟃', '⦻'],
       reject: ['a', '9', '*'],
       message: '[\u2200-\u22ff\u27c0-\u27ef\u2980-\u29ff] expected',
-      predicate: isA<LookupCharPredicate>(),
+      whichPredicate: (it) => it.isA<LookupCharPredicate>(),
     );
     // errors
     test('invalid range', () {
-      expect(() => pattern('c-a'), throwsA(isAssertionError));
+      check(() => pattern('c-a')).throwsAssertionError();
     }, skip: !hasAssertionsEnabled());
   });
   group('range', () {
@@ -570,10 +586,10 @@ void main() {
       predicate: const RangeCharPredicate(128513, 128516),
     );
     test('invalid range', () {
-      expect(() => range('o', 'e'), throwsA(isAssertionError));
+      check(() => range('o', 'e')).throwsAssertionError();
     }, skip: !hasAssertionsEnabled());
     test('invalid character', () {
-      expect(() => range('😃', '😍'), throwsA(isAssertionError));
+      check(() => range('😃', '😍')).throwsAssertionError();
     }, skip: !hasAssertionsEnabled());
   });
   group('uppercase', () {
@@ -666,7 +682,7 @@ void main() {
         }
         final predicate = factory(ranges);
         for (var i = 0; i <= size; i++) {
-          expect(predicate.test(i), included[i]);
+          check(predicate.test(i)).equals(included[i]);
         }
       }
     }
@@ -679,39 +695,39 @@ void main() {
       final predicate = optimizedRanges([
         const RangeCharPredicate(1, 65536),
       ], unicode: false);
-      expect(predicate.test(0), isFalse);
-      expect(predicate.test(1), isTrue);
-      expect(predicate.test(65536), isTrue);
-      expect(predicate, isNot(ConstantCharPredicate.any));
+      check(predicate.test(0)).isFalse();
+      check(predicate.test(1)).isTrue();
+      check(predicate.test(65536)).isTrue();
+      check(predicate).not((it) => it.equals(ConstantCharPredicate.any));
     });
     test('disjoint ranges summing to full count', () {
       final predicate = optimizedRanges([
         const RangeCharPredicate(1, 32768),
         const RangeCharPredicate(32770, 65537),
       ], unicode: false);
-      expect(predicate.test(0), isFalse);
-      expect(predicate.test(32769), isFalse);
-      expect(predicate, isNot(ConstantCharPredicate.any));
+      check(predicate.test(0)).isFalse();
+      check(predicate.test(32769)).isFalse();
+      check(predicate).not((it) => it.equals(ConstantCharPredicate.any));
     });
     test('unicode full range without zero', () {
       final predicate = optimizedRanges([
         const RangeCharPredicate(1, 0x10ffff + 1),
       ], unicode: true);
-      expect(predicate.test(0), isFalse);
-      expect(predicate.test(1), isTrue);
-      expect(predicate, isNot(ConstantCharPredicate.any));
+      check(predicate.test(0)).isFalse();
+      check(predicate.test(1)).isTrue();
+      check(predicate).not((it) => it.equals(ConstantCharPredicate.any));
     });
     test('covers everything', () {
       final predicate = optimizedRanges([
         const RangeCharPredicate(0, 0xffff),
       ], unicode: false);
-      expect(predicate, ConstantCharPredicate.any);
+      check(predicate).equals(ConstantCharPredicate.any);
     });
     test('covers everything (unicode)', () {
       final predicate = optimizedRanges([
         const RangeCharPredicate(0, 0x10ffff),
       ], unicode: true);
-      expect(predicate, ConstantCharPredicate.any);
+      check(predicate).equals(ConstantCharPredicate.any);
     });
     test('selects lookup for dense ranges', () {
       final predicate = optimizedRanges([
@@ -719,22 +735,22 @@ void main() {
         const RangeCharPredicate(65, 90),
         const RangeCharPredicate(97, 122),
       ], unicode: false);
-      expect(predicate, isA<LookupCharPredicate>());
-      expect(predicate.test('a'.codeUnitAt(0)), isTrue);
-      expect(predicate.test('Z'.codeUnitAt(0)), isTrue);
-      expect(predicate.test('0'.codeUnitAt(0)), isTrue);
-      expect(predicate.test('?'.codeUnitAt(0)), isFalse);
+      check(predicate).isA<LookupCharPredicate>();
+      check(predicate.test('a'.codeUnitAt(0))).isTrue();
+      check(predicate.test('Z'.codeUnitAt(0))).isTrue();
+      check(predicate.test('0'.codeUnitAt(0))).isTrue();
+      check(predicate.test('?'.codeUnitAt(0))).isFalse();
     });
     test('selects ranges for sparse ranges with large span', () {
       final predicate = optimizedRanges([
         const RangeCharPredicate(97, 97),
         const RangeCharPredicate(0x10000, 0x10000),
       ], unicode: true);
-      expect(predicate, isA<RangesCharPredicate>());
-      expect(predicate.test(97), isTrue);
-      expect(predicate.test(0x10000), isTrue);
-      expect(predicate.test(98), isFalse);
-      expect(predicate.test(0), isFalse);
+      check(predicate).isA<RangesCharPredicate>();
+      check(predicate.test(97)).isTrue();
+      check(predicate.test(0x10000)).isTrue();
+      check(predicate.test(98)).isFalse();
+      check(predicate.test(0)).isFalse();
     });
   });
 }

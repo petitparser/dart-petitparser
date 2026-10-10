@@ -1,8 +1,9 @@
+import 'package:checks/checks.dart';
 import 'package:petitparser/debug.dart';
 import 'package:petitparser/petitparser.dart' hide anyOf;
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 final identifier = letter() & word().star();
 final labeledIdentifier =
@@ -13,25 +14,16 @@ void main() {
     test('success', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
-      expect(parser.parse('ab123') is Success, isTrue);
-      expect(
-        frames,
-        orderedEquals([
-          isProfileFrame(parser: isParserShallowEqual(identifier), count: 1),
-          isProfileFrame(
-            parser: isParserShallowEqual(identifier.children[0]),
-            count: 1,
-          ),
-          isProfileFrame(
-            parser: isParserShallowEqual(identifier.children[1]),
-            count: 1,
-          ),
-          isProfileFrame(
-            parser: isParserShallowEqual(identifier.children[1].children[0]),
-            count: 5,
-          ),
-        ]),
-      );
+      check(parser.parse('ab123')).isA<Success<dynamic>>();
+      check(frames).matchesInOrder([
+        (f) => f.isProfileFrame(parser: identifier, count: 1),
+        (f) => f.isProfileFrame(parser: identifier.children[0], count: 1),
+        (f) => f.isProfileFrame(parser: identifier.children[1], count: 1),
+        (f) => f.isProfileFrame(
+          parser: identifier.children[1].children[0],
+          count: 5,
+        ),
+      ]);
     });
     test('labeled', () {
       final frames = <ProfileFrame>[];
@@ -40,88 +32,77 @@ void main() {
         output: frames.add,
         predicate: (parser) => parser is LabeledParser,
       );
-      expect(parser.parse('ab123') is Success, isTrue);
-      expect(
-        frames,
-        orderedEquals([
-          isProfileFrame(
-            parser: isParserShallowEqual(labeledIdentifier.children[0]),
-            toString: contains('first'),
-            count: 1,
-          ),
-          isProfileFrame(
-            parser: isParserShallowEqual(labeledIdentifier.children[1]),
-            toString: contains('remaining'),
-            count: 1,
-          ),
-        ]),
-      );
+      check(parser.parse('ab123')).isA<Success<dynamic>>();
+      check(frames).matchesInOrder([
+        (f) => f.isProfileFrame(
+          parser: labeledIdentifier.children[0],
+          toString: (it) => it.contains('first'),
+          count: 1,
+        ),
+        (f) => f.isProfileFrame(
+          parser: labeledIdentifier.children[1],
+          toString: (it) => it.contains('remaining'),
+          count: 1,
+        ),
+      ]);
     });
     test('failure', () {
       final frames = <ProfileFrame>[];
       final parser = profile(identifier, output: frames.add);
-      expect(parser.parse('1') is Failure, isTrue);
-      expect(
-        frames,
-        orderedEquals([
-          isProfileFrame(parser: isParserShallowEqual(identifier), count: 1),
-          isProfileFrame(
-            parser: isParserShallowEqual(identifier.children[0]),
-            count: 1,
-          ),
-          isProfileFrame(parser: isParserShallowEqual(identifier.children[1])),
-          isProfileFrame(
-            parser: isParserShallowEqual(identifier.children[1].children[0]),
-          ),
-        ]),
-      );
+      check(parser.parse('1')).isA<Failure>();
+      check(frames).matchesInOrder([
+        (f) => f.isProfileFrame(parser: identifier, count: 1),
+        (f) => f.isProfileFrame(parser: identifier.children[0], count: 1),
+        (f) => f.isProfileFrame(parser: identifier.children[1]),
+        (f) => f.isProfileFrame(parser: identifier.children[1].children[0]),
+      ]);
     });
   });
   group('progress', () {
     test('success', () {
       final frames = <ProgressFrame>[];
       final parser = progress(identifier, output: frames.add);
-      expect(parser.parse('ab123') is Success, isTrue);
-      expect(frames, [
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier),
+      check(parser.parse('ab123')).isA<Success<dynamic>>();
+      check(frames).matchesInOrder([
+        (f) => f.isProgressFrame(
+          parser: identifier,
           position: 0,
-          toString: startsWith('* '),
+          toString: (it) => it.startsWith('* '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[0],
           position: 0,
-          toString: startsWith('* '),
+          toString: (it) => it.startsWith('* '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1],
           position: 1,
-          toString: startsWith('** '),
+          toString: (it) => it.startsWith('** '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1].children[0],
           position: 1,
-          toString: startsWith('** '),
+          toString: (it) => it.startsWith('** '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1].children[0],
           position: 2,
-          toString: startsWith('*** '),
+          toString: (it) => it.startsWith('*** '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1].children[0],
           position: 3,
-          toString: startsWith('**** '),
+          toString: (it) => it.startsWith('**** '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1].children[0],
           position: 4,
-          toString: startsWith('***** '),
+          toString: (it) => it.startsWith('***** '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[1].children[0],
           position: 5,
-          toString: startsWith('****** '),
+          toString: (it) => it.startsWith('****** '),
         ),
       ]);
     });
@@ -132,16 +113,20 @@ void main() {
         output: frames.add,
         predicate: (parser) => parser is LabeledParser,
       );
-      expect(parser.parse('ab123') is Success, isTrue);
-      expect(frames, [
-        isProgressFrame(
-          parser: isParserShallowEqual(labeledIdentifier.children[0]),
-          toString: allOf(startsWith('* '), contains('first')),
+      check(parser.parse('ab123')).isA<Success<dynamic>>();
+      check(frames).matchesInOrder([
+        (f) => f.isProgressFrame(
+          parser: labeledIdentifier.children[0],
+          toString: (it) => it
+            ..startsWith('* ')
+            ..contains('first'),
           position: 0,
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(labeledIdentifier.children[1]),
-          toString: allOf(startsWith('** '), contains('remaining')),
+        (f) => f.isProgressFrame(
+          parser: labeledIdentifier.children[1],
+          toString: (it) => it
+            ..startsWith('** ')
+            ..contains('remaining'),
           position: 1,
         ),
       ]);
@@ -149,17 +134,17 @@ void main() {
     test('failure', () {
       final frames = <ProgressFrame>[];
       final parser = progress(identifier, output: frames.add);
-      expect(parser.parse('1') is Failure, isTrue);
-      expect(frames, [
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier),
+      check(parser.parse('1')).isA<Failure>();
+      check(frames).matchesInOrder([
+        (f) => f.isProgressFrame(
+          parser: identifier,
           position: 0,
-          toString: startsWith('* '),
+          toString: (it) => it.startsWith('* '),
         ),
-        isProgressFrame(
-          parser: isParserShallowEqual(identifier.children[0]),
+        (f) => f.isProgressFrame(
+          parser: identifier.children[0],
           position: 0,
-          toString: startsWith('* '),
+          toString: (it) => it.startsWith('* '),
         ),
       ]);
     });
@@ -168,46 +153,43 @@ void main() {
     test('success', () {
       final events = <TraceEvent>[];
       final parser = trace(identifier, output: events.add);
-      expect(parser.parse('a') is Success, isTrue);
-      expect(events, [
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier),
-          result: isNull,
-          level: 0,
-        ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[0]),
-          result: isNull,
+      check(parser.parse('a')).isA<Success<dynamic>>();
+      check(events).matchesInOrder([
+        (e) => e.isTraceEvent(parser: identifier, result: null, level: 0),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[0],
+          result: null,
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[0]),
-          result: isSuccess(value: 'a'),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[0],
+          whichResult: (it) => it.isSuccess(value: 'a'),
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[1]),
-          result: isNull,
+        (e) => e.isTraceEvent(
+          parser: identifier.children[1],
+          result: null,
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
-          result: isNull,
+        (e) => e.isTraceEvent(
+          parser: identifier.children[1].children[0],
+          result: null,
           level: 2,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[1].children[0]),
-          result: isFailure(message: 'letter or digit expected'),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[1].children[0],
+          whichResult: (it) =>
+              it.isFailure(message: 'letter or digit expected'),
           level: 2,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[1]),
-          result: isSuccess(value: isEmpty),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[1],
+          whichResult: (it) => it.isSuccess(value: []),
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier),
-          result: isSuccess(),
+        (e) => e.isTraceEvent(
+          parser: identifier,
+          whichResult: (it) => it.isSuccess(),
           level: 0,
         ),
       ]);
@@ -219,26 +201,26 @@ void main() {
         output: events.add,
         predicate: (parser) => parser is LabeledParser,
       );
-      expect(parser.parse('ab123') is Success, isTrue);
-      expect(events, [
-        isTraceEvent(
-          parser: isParserShallowEqual(labeledIdentifier.children[0]),
-          result: isNull,
+      check(parser.parse('ab123')).isA<Success<dynamic>>();
+      check(events).matchesInOrder([
+        (e) => e.isTraceEvent(
+          parser: labeledIdentifier.children[0],
+          result: null,
           level: 0,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(labeledIdentifier.children[0]),
-          result: isSuccess(value: 'a'),
+        (e) => e.isTraceEvent(
+          parser: labeledIdentifier.children[0],
+          whichResult: (it) => it.isSuccess(value: 'a'),
           level: 0,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(labeledIdentifier.children[1]),
-          result: isNull,
+        (e) => e.isTraceEvent(
+          parser: labeledIdentifier.children[1],
+          result: null,
           level: 0,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(labeledIdentifier.children[1]),
-          result: isSuccess(value: 'b123'.split('')),
+        (e) => e.isTraceEvent(
+          parser: labeledIdentifier.children[1],
+          whichResult: (it) => it.isSuccess(value: 'b123'.split('')),
           level: 0,
         ),
       ]);
@@ -246,26 +228,22 @@ void main() {
     test('failure', () {
       final events = <TraceEvent>[];
       final parser = trace(identifier, output: events.add);
-      expect(parser.parse('1') is Failure, isTrue);
-      expect(events, [
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier),
-          result: isNull,
-          level: 0,
-        ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[0]),
-          result: isNull,
+      check(parser.parse('1')).isA<Failure>();
+      check(events).matchesInOrder([
+        (e) => e.isTraceEvent(parser: identifier, result: null, level: 0),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[0],
+          result: null,
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier.children[0]),
-          result: isFailure(message: 'letter expected'),
+        (e) => e.isTraceEvent(
+          parser: identifier.children[0],
+          whichResult: (it) => it.isFailure(message: 'letter expected'),
           level: 1,
         ),
-        isTraceEvent(
-          parser: isParserShallowEqual(identifier),
-          result: isFailure(message: 'letter expected'),
+        (e) => e.isTraceEvent(
+          parser: identifier,
+          whichResult: (it) => it.isFailure(message: 'letter expected'),
           level: 0,
         ),
       ]);

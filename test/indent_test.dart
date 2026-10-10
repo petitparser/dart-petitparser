@@ -1,12 +1,13 @@
+import 'package:checks/checks.dart';
 import 'package:petitparser/core.dart';
 import 'package:petitparser/definition.dart';
 import 'package:petitparser/indent.dart';
 import 'package:petitparser/matcher.dart';
 import 'package:petitparser/parser.dart';
 import 'package:petitparser/reflection.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 class IndentList extends GrammarDefinition {
   final indent = Indent();
@@ -61,188 +62,155 @@ void main() {
     final parser = definition.build();
 
     tearDown(() {
-      expect(definition.indent.stack, isEmpty);
-      expect(definition.indent.current, '');
+      check(definition.indent.stack).isEmpty();
+      check(definition.indent.current).equals('');
     });
     test('linter', () {
-      expect(linter(parser), isEmpty);
+      check(linter(parser)).isEmpty();
     });
     test('empty', () {
-      expect(parser, isParseSuccess('', result: isEmpty));
+      check(parser).parseSuccess('', result: []);
 
-      expect(parser, isParseSuccess('\n', result: isEmpty));
-      expect(parser, isParseSuccess('\n\r', result: isEmpty));
-      expect(parser, isParseSuccess('\r', result: isEmpty));
+      check(parser).parseSuccess('\n', result: []);
+      check(parser).parseSuccess('\n\r', result: []);
+      check(parser).parseSuccess('\r', result: []);
 
-      expect(parser, isParseSuccess('\n\n', result: isEmpty));
-      expect(parser, isParseSuccess('\n\r\n\r', result: isEmpty));
-      expect(parser, isParseSuccess('\r\r', result: isEmpty));
+      check(parser).parseSuccess('\n\n', result: []);
+      check(parser).parseSuccess('\n\r\n\r', result: []);
+      check(parser).parseSuccess('\r\r', result: []);
     });
     test('newline before', () {
-      expect(parser, isParseSuccess('\na', result: ['a']));
-      expect(parser, isParseSuccess('\n\ra', result: ['a']));
-      expect(parser, isParseSuccess('\ra', result: ['a']));
+      check(parser).parseSuccess('\na', result: ['a']);
+      check(parser).parseSuccess('\n\ra', result: ['a']);
+      check(parser).parseSuccess('\ra', result: ['a']);
 
-      expect(parser, isParseSuccess('\n\na', result: ['a']));
-      expect(parser, isParseSuccess('\n\r\n\ra', result: ['a']));
-      expect(parser, isParseSuccess('\r\ra', result: ['a']));
+      check(parser).parseSuccess('\n\na', result: ['a']);
+      check(parser).parseSuccess('\n\r\n\ra', result: ['a']);
+      check(parser).parseSuccess('\r\ra', result: ['a']);
     });
     test('newline after', () {
-      expect(parser, isParseSuccess('a\n', result: ['a']));
-      expect(parser, isParseSuccess('a\n\r', result: ['a']));
-      expect(parser, isParseSuccess('a\r', result: ['a']));
+      check(parser).parseSuccess('a\n', result: ['a']);
+      check(parser).parseSuccess('a\n\r', result: ['a']);
+      check(parser).parseSuccess('a\r', result: ['a']);
 
-      expect(parser, isParseSuccess('a\n\n', result: ['a']));
-      expect(parser, isParseSuccess('a\n\r\n\r', result: ['a']));
-      expect(parser, isParseSuccess('a\r\r', result: ['a']));
+      check(parser).parseSuccess('a\n\n', result: ['a']);
+      check(parser).parseSuccess('a\n\r\n\r', result: ['a']);
+      check(parser).parseSuccess('a\r\r', result: ['a']);
     });
     test('single indent', () {
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n b',
-          result: [
-            {
-              'a': ['b'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n b',
+        result: [
+          {
+            'a': ['b'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n\tb',
-          result: [
-            {
-              'a': ['b'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n\tb',
+        result: [
+          {
+            'a': ['b'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n \tb',
-          result: [
-            {
-              'a': ['b'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n \tb',
+        result: [
+          {
+            'a': ['b'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n\t b',
-          result: [
-            {
-              'a': ['b'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n\t b',
+        result: [
+          {
+            'a': ['b'],
+          },
+        ],
       );
     });
     test('same indent', () {
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n b\n c',
-          result: [
-            {
-              'a': ['b', 'c'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n b\n c',
+        result: [
+          {
+            'a': ['b', 'c'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n\tb\n\tc',
-          result: [
-            {
-              'a': ['b', 'c'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n\tb\n\tc',
+        result: [
+          {
+            'a': ['b', 'c'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n \tb\n \tc',
-          result: [
-            {
-              'a': ['b', 'c'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n \tb\n \tc',
+        result: [
+          {
+            'a': ['b', 'c'],
+          },
+        ],
       );
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n\t b\n\t c',
-          result: [
-            {
-              'a': ['b', 'c'],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n\t b\n\t c',
+        result: [
+          {
+            'a': ['b', 'c'],
+          },
+        ],
       );
     });
     test('different indent', () {
-      expect(parser, isParseFailure('a:\n b\n\tc', position: 6));
-      expect(parser, isParseFailure('a:\n\tb\n c', position: 6));
+      check(parser).parseFailure('a:\n b\n\tc', position: 6);
+      check(parser).parseFailure('a:\n\tb\n c', position: 6);
     });
     test('missing indent', () {
-      expect(parser, isParseSuccess('a:\nb', result: ['a:', 'b']));
+      check(parser).parseSuccess('a:\nb', result: ['a:', 'b']);
     });
     test('unexpected indent', () {
-      expect(parser, isParseFailure('a\n b', position: 2));
+      check(parser).parseFailure('a\n b', position: 2);
     });
     test('same level', () {
-      expect(parser, isParseSuccess('a\nb\nc', result: ['a', 'b', 'c']));
+      check(parser).parseSuccess('a\nb\nc', result: ['a', 'b', 'c']);
     });
     test('inlined values', () {
-      expect(
-        parser,
-        isParseSuccess(
-          'a:1\nb: 2\nc :3',
-          result: [
-            {'a': '1'},
-            {'b': '2'},
-            {'c': '3'},
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:1\nb: 2\nc :3',
+        result: [
+          {'a': '1'},
+          {'b': '2'},
+          {'c': '3'},
+        ],
       );
     });
     test('increasing', () {
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n  b:\n    c',
-          result: [
-            {
-              'a': [
-                {
-                  'b': ['c'],
-                },
-              ],
-            },
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n  b:\n    c',
+        result: [
+          {
+            'a': [
+              {
+                'b': ['c'],
+              },
+            ],
+          },
+        ],
       );
     });
     test('decreasing', () {
-      expect(
-        parser,
-        isParseSuccess(
-          'a:\n\tb\nc',
-          result: [
-            {
-              'a': ['b'],
-            },
-            'c',
-          ],
-        ),
+      check(parser).parseSuccess(
+        'a:\n\tb\nc',
+        result: [
+          {
+            'a': ['b'],
+          },
+          'c',
+        ],
       );
     });
   });
@@ -260,33 +228,27 @@ void main() {
       ).map2((indent, ch) => '$indent$ch');
       final parser = indent.during(inner);
 
-      expect(parser, isParseSuccess(' a', result: ' a'));
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser).parseSuccess(' a', result: ' a');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('failure rolls back indentation', () {
       final inner = seq2(indent.same, char('a'));
       final parser = indent.during(inner);
 
-      expect(
-        parser,
-        isParseFailure(' b', position: 1, message: '"a" expected'),
-      );
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser).parseFailure(' b', position: 1, message: '"a" expected');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('nested failure rolls back each level', () {
       final inner = indent.during(seq2(indent.same, char('b')));
       final outer = indent.during(seq2(indent.same, char('\n') & inner));
 
-      expect(
-        outer,
-        isParseFailure(' \n  c', position: 4, message: '"b" expected'),
-      );
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(outer).parseFailure(' \n  c', position: 4, message: '"b" expected');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('choice rollback allows alternate path', () {
@@ -297,35 +259,33 @@ void main() {
         indent.during(inner2),
       ].toChoiceParser();
 
-      expect(parser, isParseSuccess(' b', result: (' ', 'b')));
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser).parseSuccess(' b', result: (' ', 'b'));
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('linter', () {
       final parser = indent.during(seq2(indent.same, char('a')));
-      expect(linter(parser), isEmpty);
+      check(linter(parser)).isEmpty();
     });
 
     test('increase failure leaves state unchanged', () {
       final inner = seq2(indent.same, char('a'));
       final parser = indent.during(inner);
 
-      expect(
-        parser,
-        isParseFailure('a', position: 0, message: 'indented expected'),
-      );
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser)
+          .parseFailure('a', position: 0, message: 'indented expected');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('restores non-empty parent indentation on success', () {
       final block = indent.during(seq2(indent.same, char('b')));
       final parser = indent.during(seq2(indent.same, char('a') & block));
 
-      expect(parser, isParseSuccess('  a   b'));
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser).parseSuccess('  a   b');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('consecutive during blocks at the same level', () {
@@ -333,22 +293,22 @@ void main() {
       final block2 = indent.during(seq2(indent.same, char('b')));
       final parser = seq2(block1, block2);
 
-      expect(parser, isParseSuccess(' a b'));
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser).parseSuccess(' a b');
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
 
     test('accept (fastParseOn) on success and failure', () {
       final inner = seq2(indent.same, char('a'));
       final parser = indent.during(inner);
 
-      expect(parser.accept(' a'), isTrue);
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser.accept(' a')).isTrue();
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
 
-      expect(parser.accept(' b'), isFalse);
-      expect(indent.current, '');
-      expect(indent.stack, isEmpty);
+      check(parser.accept(' b')).isFalse();
+      check(indent.current).equals('');
+      check(indent.stack).isEmpty();
     });
   });
 }

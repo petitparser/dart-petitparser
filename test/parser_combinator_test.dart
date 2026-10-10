@@ -1,74 +1,75 @@
+import 'package:checks/checks.dart';
 import 'package:petitparser/petitparser.dart';
-import 'package:test/test.dart' hide anyOf;
+import 'package:test/scaffolding.dart';
 
 import 'generated/sequence_test.dart' as sequence_test;
 import 'utils/assertions.dart';
-import 'utils/matchers.dart';
+import 'utils/checks.dart';
 
 void main() {
   group('and', () {
     expectParserInvariants(any().and());
     test('default', () {
       final parser = char('a').and();
-      expect(parser, isParseSuccess('a', result: 'a', position: 0));
-      expect(parser, isParseFailure('b', message: '"a" expected'));
-      expect(parser, isParseFailure('', message: '"a" expected'));
+      check(parser).parseSuccess('a', result: 'a', position: 0);
+      check(parser).parseFailure('b', message: '"a" expected');
+      check(parser).parseFailure('', message: '"a" expected');
     });
   });
   group('choice', () {
     expectParserInvariants(any().or(word()));
     test('operator', () {
       final parser = char('a') | char('b');
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: 'b'));
-      expect(parser, isParseFailure('c', message: '"b" expected'));
-      expect(parser, isParseFailure('', message: '"b" expected'));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: 'b');
+      check(parser).parseFailure('c', message: '"b" expected');
+      check(parser).parseFailure('', message: '"b" expected');
     });
     test('converter', () {
       final parser = [char('a'), char('b')].toChoiceParser();
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: 'b'));
-      expect(parser, isParseFailure('c', message: '"b" expected'));
-      expect(parser, isParseFailure('', message: '"b" expected'));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: 'b');
+      check(parser).parseFailure('c', message: '"b" expected');
+      check(parser).parseFailure('', message: '"b" expected');
     });
     test('two', () {
       final parser = char('a').or(char('b'));
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: 'b'));
-      expect(parser, isParseFailure('c', message: '"b" expected'));
-      expect(parser, isParseFailure('', message: '"b" expected'));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: 'b');
+      check(parser).parseFailure('c', message: '"b" expected');
+      check(parser).parseFailure('', message: '"b" expected');
     });
     test('three', () {
       final parser = char('a').or(char('b')).or(char('c'));
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: 'b'));
-      expect(parser, isParseSuccess('c', result: 'c'));
-      expect(parser, isParseFailure('d', message: '"c" expected'));
-      expect(parser, isParseFailure('', message: '"c" expected'));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: 'b');
+      check(parser).parseSuccess('c', result: 'c');
+      check(parser).parseFailure('d', message: '"c" expected');
+      check(parser).parseFailure('', message: '"c" expected');
     });
     test('empty', () {
-      expect(() => <Parser>[].toChoiceParser(), throwsA(isAssertionError));
+      check(() => <Parser>[].toChoiceParser()).throwsAssertionError();
     }, skip: !hasAssertionsEnabled());
     group('types', () {
       test('same', () {
         final first = any();
         final second = any();
-        expect(first, isA<Parser<String>>());
-        expect(second, isA<Parser<String>>());
-        expect([first, second].toChoiceParser(), isA<Parser<String>>());
+        check(first).isA<Parser<String>>();
+        check(second).isA<Parser<String>>();
+        check([first, second].toChoiceParser()).isA<Parser<String>>();
         // TODO(renggli): https://github.com/dart-lang/language/issues/1557
-        // expect(first | second, isA<Parser<String>>());
-        // expect(first.or(second), isA<Parser<String>>());
+        // check(first | second).isA<Parser<String>>();
+        // check(first.or(second)).isA<Parser<String>>();
       });
       test('different', () {
         final first = any().map(int.parse);
         final second = any().map(double.parse);
-        expect(first, isA<Parser<int>>());
-        expect(second, isA<Parser<double>>());
-        expect([first, second].toChoiceParser(), isA<Parser<num>>());
+        check(first).isA<Parser<int>>();
+        check(second).isA<Parser<double>>();
+        check([first, second].toChoiceParser()).isA<Parser<num>>();
         // TODO(renggli): https://github.com/dart-lang/language/issues/1557
-        // expect(first | second, isA<Parser<num>>());
-        // expect(first.or(second), isA<Parser<num>>());
+        // check(first | second).isA<Parser<num>>();
+        // check(first.or(second)).isA<Parser<num>>();
       });
     });
     group('failure joining', () {
@@ -83,137 +84,106 @@ void main() {
       ].map((parser) => parser.flatten());
       test('construction', () {
         final defaultTwo = any().or(any());
-        expect(defaultTwo.failureJoiner(failureA1, failureA0), failureA0);
+        check(defaultTwo.failureJoiner(failureA1, failureA0)).equals(failureA0);
         final customTwo = any().or(any(), failureJoiner: selectFarthest);
-        expect(customTwo.failureJoiner(failureA1, failureA0), failureA1);
+        check(customTwo.failureJoiner(failureA1, failureA0)).equals(failureA1);
         final customCopy = customTwo.copy();
-        expect(customCopy.failureJoiner(failureA1, failureA0), failureA1);
+        check(customCopy.failureJoiner(failureA1, failureA0)).equals(failureA1);
         final customThree = any()
             .or(any(), failureJoiner: selectFarthest)
             .or(any());
-        expect(customThree.failureJoiner(failureA1, failureA0), failureA1);
+        check(customThree.failureJoiner(failureA1, failureA0))
+            .equals(failureA1);
       });
       test('select first', () {
         final parser = parsers.toChoiceParser(failureJoiner: selectFirst);
-        expect(selectFirst(failureA0, failureB0), failureA0);
-        expect(selectFirst(failureB0, failureA0), failureB0);
-        expect(parser, isParseSuccess('ab12', result: 'ab12'));
-        expect(parser, isParseSuccess('ac13', result: 'ac13'));
-        expect(parser, isParseSuccess('ad14', result: 'ad14'));
-        expect(parser, isParseFailure('', message: 'any of "ab" expected'));
-        expect(
-          parser,
-          isParseFailure('a', position: 1, message: 'any of "12" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ab', position: 2, message: 'any of "12" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ac', position: 1, message: 'any of "12" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ad', position: 1, message: 'any of "12" expected'),
-        );
+        check(selectFirst(failureA0, failureB0)).equals(failureA0);
+        check(selectFirst(failureB0, failureA0)).equals(failureB0);
+        check(parser).parseSuccess('ab12', result: 'ab12');
+        check(parser).parseSuccess('ac13', result: 'ac13');
+        check(parser).parseSuccess('ad14', result: 'ad14');
+        check(parser).parseFailure('', message: 'any of "ab" expected');
+        check(parser)
+            .parseFailure('a', position: 1, message: 'any of "12" expected');
+        check(parser)
+            .parseFailure('ab', position: 2, message: 'any of "12" expected');
+        check(parser)
+            .parseFailure('ac', position: 1, message: 'any of "12" expected');
+        check(parser)
+            .parseFailure('ad', position: 1, message: 'any of "12" expected');
       });
       test('select last', () {
         final parser = parsers.toChoiceParser(failureJoiner: selectLast);
-        expect(selectLast(failureA0, failureB0), failureB0);
-        expect(selectLast(failureB0, failureA0), failureA0);
-        expect(parser, isParseSuccess('ab12', result: 'ab12'));
-        expect(parser, isParseSuccess('ac13', result: 'ac13'));
-        expect(parser, isParseSuccess('ad14', result: 'ad14'));
-        expect(parser, isParseFailure('', message: 'any of "ad" expected'));
-        expect(
-          parser,
-          isParseFailure('a', position: 1, message: 'any of "14" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ab', position: 1, message: 'any of "14" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ac', position: 1, message: 'any of "14" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ad', position: 2, message: 'any of "14" expected'),
-        );
+        check(selectLast(failureA0, failureB0)).equals(failureB0);
+        check(selectLast(failureB0, failureA0)).equals(failureA0);
+        check(parser).parseSuccess('ab12', result: 'ab12');
+        check(parser).parseSuccess('ac13', result: 'ac13');
+        check(parser).parseSuccess('ad14', result: 'ad14');
+        check(parser).parseFailure('', message: 'any of "ad" expected');
+        check(parser)
+            .parseFailure('a', position: 1, message: 'any of "14" expected');
+        check(parser)
+            .parseFailure('ab', position: 1, message: 'any of "14" expected');
+        check(parser)
+            .parseFailure('ac', position: 1, message: 'any of "14" expected');
+        check(parser)
+            .parseFailure('ad', position: 2, message: 'any of "14" expected');
       });
       test('farthest failure', () {
         final parser = parsers.toChoiceParser(failureJoiner: selectFarthest);
-        expect(selectFarthest(failureA0, failureB0), failureB0);
-        expect(selectFarthest(failureA0, failureB1), failureB1);
-        expect(selectFarthest(failureB0, failureA0), failureA0);
-        expect(selectFarthest(failureB1, failureA0), failureB1);
-        expect(parser, isParseSuccess('ab12', result: 'ab12'));
-        expect(parser, isParseSuccess('ac13', result: 'ac13'));
-        expect(parser, isParseSuccess('ad14', result: 'ad14'));
-        expect(parser, isParseFailure('', message: 'any of "ad" expected'));
-        expect(
-          parser,
-          isParseFailure('a', position: 1, message: 'any of "14" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ab', position: 2, message: 'any of "12" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ac', position: 2, message: 'any of "13" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ad', position: 2, message: 'any of "14" expected'),
-        );
+        check(selectFarthest(failureA0, failureB0)).equals(failureB0);
+        check(selectFarthest(failureA0, failureB1)).equals(failureB1);
+        check(selectFarthest(failureB0, failureA0)).equals(failureA0);
+        check(selectFarthest(failureB1, failureA0)).equals(failureB1);
+        check(parser).parseSuccess('ab12', result: 'ab12');
+        check(parser).parseSuccess('ac13', result: 'ac13');
+        check(parser).parseSuccess('ad14', result: 'ad14');
+        check(parser).parseFailure('', message: 'any of "ad" expected');
+        check(parser)
+            .parseFailure('a', position: 1, message: 'any of "14" expected');
+        check(parser)
+            .parseFailure('ab', position: 2, message: 'any of "12" expected');
+        check(parser)
+            .parseFailure('ac', position: 2, message: 'any of "13" expected');
+        check(parser)
+            .parseFailure('ad', position: 2, message: 'any of "14" expected');
       });
       test('farthest failure and joined', () {
         final parser = parsers.toChoiceParser(
           failureJoiner: selectFarthestJoined,
         );
-        expect(selectFarthestJoined(failureA0, failureB1), failureB1);
-        expect(selectFarthestJoined(failureB1, failureA0), failureB1);
-        expect(selectFarthestJoined(failureA0, failureB0).message, 'A0 OR B0');
-        expect(selectFarthestJoined(failureB0, failureA0).message, 'B0 OR A0');
-        expect(selectFarthestJoined(failureA1, failureB1).message, 'A1 OR B1');
-        expect(selectFarthestJoined(failureB1, failureA1).message, 'B1 OR A1');
-        expect(parser, isParseSuccess('ab12', result: 'ab12'));
-        expect(parser, isParseSuccess('ac13', result: 'ac13'));
-        expect(parser, isParseSuccess('ad14', result: 'ad14'));
-        expect(
-          parser,
-          isParseFailure(
-            '',
-            message:
-                'any of "ab" expected OR '
-                'any of "ac" expected OR any of "ad" expected',
-          ),
+        check(selectFarthestJoined(failureA0, failureB1)).equals(failureB1);
+        check(selectFarthestJoined(failureB1, failureA0)).equals(failureB1);
+        check(selectFarthestJoined(failureA0, failureB0).message)
+            .equals('A0 OR B0');
+        check(selectFarthestJoined(failureB0, failureA0).message)
+            .equals('B0 OR A0');
+        check(selectFarthestJoined(failureA1, failureB1).message)
+            .equals('A1 OR B1');
+        check(selectFarthestJoined(failureB1, failureA1).message)
+            .equals('B1 OR A1');
+        check(parser).parseSuccess('ab12', result: 'ab12');
+        check(parser).parseSuccess('ac13', result: 'ac13');
+        check(parser).parseSuccess('ad14', result: 'ad14');
+        check(parser).parseFailure(
+          '',
+          message:
+              'any of "ab" expected OR '
+              'any of "ac" expected OR any of "ad" expected',
         );
-        expect(
-          parser,
-          isParseFailure(
-            'a',
-            position: 1,
-            message:
-                'any of "12" expected OR '
-                'any of "13" expected OR any of "14" expected',
-          ),
+        check(parser).parseFailure(
+          'a',
+          position: 1,
+          message:
+              'any of "12" expected OR '
+              'any of "13" expected OR any of "14" expected',
         );
-        expect(
-          parser,
-          isParseFailure('ab', position: 2, message: 'any of "12" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ac', position: 2, message: 'any of "13" expected'),
-        );
-        expect(
-          parser,
-          isParseFailure('ad', position: 2, message: 'any of "14" expected'),
-        );
+        check(parser)
+            .parseFailure('ab', position: 2, message: 'any of "12" expected');
+        check(parser)
+            .parseFailure('ac', position: 2, message: 'any of "13" expected');
+        check(parser)
+            .parseFailure('ad', position: 2, message: 'any of "14" expected');
       });
     });
   });
@@ -221,83 +191,79 @@ void main() {
     expectParserInvariants(any().not());
     test('default', () {
       final parser = char('a').not(message: 'not "a" expected');
-      expect(parser, isParseFailure('a', message: 'not "a" expected'));
-      expect(
-        parser,
-        isParseSuccess(
-          'b',
-          result: isFailure(position: 0, message: '"a" expected'),
-          position: 0,
-        ),
+      check(parser).parseFailure('a', message: 'not "a" expected');
+      check(parser).parseSuccess(
+        'b',
+        result: (Subject<dynamic> it) =>
+            it.isA<Failure>().isFailure(position: 0, message: '"a" expected'),
+        position: 0,
       );
-      expect(
-        parser,
-        isParseSuccess(
-          '',
-          result: isFailure(position: 0, message: '"a" expected'),
-          position: 0,
-        ),
+      check(parser).parseSuccess(
+        '',
+        result: (Subject<dynamic> it) =>
+            it.isA<Failure>().isFailure(position: 0, message: '"a" expected'),
+        position: 0,
       );
     });
     test('neg', () {
       final parser = digit().neg(message: 'no digit expected');
-      expect(parser, isParseFailure('1', message: 'no digit expected'));
-      expect(parser, isParseFailure('9', message: 'no digit expected'));
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess(' ', result: ' '));
-      expect(parser, isParseFailure('', message: 'input expected'));
+      check(parser).parseFailure('1', message: 'no digit expected');
+      check(parser).parseFailure('9', message: 'no digit expected');
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess(' ', result: ' ');
+      check(parser).parseFailure('', message: 'input expected');
     });
   });
   group('optional', () {
     expectParserInvariants(any().optional());
     test('without default', () {
       final parser = char('a').optional();
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: isNull, position: 0));
-      expect(parser, isParseSuccess('', result: isNull));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: null, position: 0);
+      check(parser).parseSuccess('', result: null);
     });
     test('with default', () {
       final parser = char('a').optionalWith('0');
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseSuccess('b', result: '0', position: 0));
-      expect(parser, isParseSuccess('', result: '0'));
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseSuccess('b', result: '0', position: 0);
+      check(parser).parseSuccess('', result: '0');
     });
   });
   group('sequence', () {
     expectParserInvariants(any().seq(word()));
     test('operator', () {
       final parser = char('a') & char('b');
-      expect(parser, isParseSuccess('ab', result: ['a', 'b']));
-      expect(parser, isParseFailure(''));
-      expect(parser, isParseFailure('x'));
-      expect(parser, isParseFailure('a', position: 1));
-      expect(parser, isParseFailure('ax', position: 1));
+      check(parser).parseSuccess('ab', result: ['a', 'b']);
+      check(parser).parseFailure('');
+      check(parser).parseFailure('x');
+      check(parser).parseFailure('a', position: 1);
+      check(parser).parseFailure('ax', position: 1);
     });
     test('converter', () {
       final parser = [char('a'), char('b')].toSequenceParser();
-      expect(parser, isParseSuccess('ab', result: ['a', 'b']));
-      expect(parser, isParseFailure(''));
-      expect(parser, isParseFailure('x'));
-      expect(parser, isParseFailure('a', position: 1));
-      expect(parser, isParseFailure('ax', position: 1));
+      check(parser).parseSuccess('ab', result: ['a', 'b']);
+      check(parser).parseFailure('');
+      check(parser).parseFailure('x');
+      check(parser).parseFailure('a', position: 1);
+      check(parser).parseFailure('ax', position: 1);
     });
     test('two', () {
       final parser = char('a').seq(char('b'));
-      expect(parser, isParseSuccess('ab', result: ['a', 'b']));
-      expect(parser, isParseFailure(''));
-      expect(parser, isParseFailure('x'));
-      expect(parser, isParseFailure('a', position: 1));
-      expect(parser, isParseFailure('ax', position: 1));
+      check(parser).parseSuccess('ab', result: ['a', 'b']);
+      check(parser).parseFailure('');
+      check(parser).parseFailure('x');
+      check(parser).parseFailure('a', position: 1);
+      check(parser).parseFailure('ax', position: 1);
     });
     test('three', () {
       final parser = char('a').seq(char('b')).seq(char('c'));
-      expect(parser, isParseSuccess('abc', result: ['a', 'b', 'c']));
-      expect(parser, isParseFailure(''));
-      expect(parser, isParseFailure('x'));
-      expect(parser, isParseFailure('a', position: 1));
-      expect(parser, isParseFailure('ax', position: 1));
-      expect(parser, isParseFailure('ab', position: 2));
-      expect(parser, isParseFailure('abx', position: 2));
+      check(parser).parseSuccess('abc', result: ['a', 'b', 'c']);
+      check(parser).parseFailure('');
+      check(parser).parseFailure('x');
+      check(parser).parseFailure('a', position: 1);
+      check(parser).parseFailure('ax', position: 1);
+      check(parser).parseFailure('ab', position: 2);
+      check(parser).parseFailure('abx', position: 2);
     });
   });
   group('sequence (typed)', sequence_test.main);
@@ -306,17 +272,17 @@ void main() {
     test('default', () {
       final inner = char('a');
       final parser = inner.settable();
-      expect(parser.resolve(), inner);
-      expect(parser, isParseSuccess('a', result: 'a'));
-      expect(parser, isParseFailure('b', message: '"a" expected'));
-      expect(parser, isParseFailure(''));
+      check(parser.resolve()).equals(inner);
+      check(parser).parseSuccess('a', result: 'a');
+      check(parser).parseFailure('b', message: '"a" expected');
+      check(parser).parseFailure('');
     });
     test('undefined', () {
       final parser = undefined<String>();
-      expect(parser, isParseFailure('', message: 'undefined parser'));
-      expect(parser, isParseFailure('a', message: 'undefined parser'));
+      check(parser).parseFailure('', message: 'undefined parser');
+      check(parser).parseFailure('a', message: 'undefined parser');
       parser.set(char('a'));
-      expect(parser, isParseSuccess('a', result: 'a'));
+      check(parser).parseSuccess('a', result: 'a');
     });
   });
   group('skip', () {
@@ -327,78 +293,66 @@ void main() {
       final parser = inner.skip();
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser.children, [
-          isA<EpsilonParser<void>>(),
-          inner,
-          isA<EpsilonParser<void>>(),
+        check(parser.children).matchesInOrder([
+          (it) => it.isA<EpsilonParser<void>>(),
+          (it) => it.equals(inner),
+          (it) => it.isA<EpsilonParser<void>>(),
         ]);
-        expect(parser, isParseSuccess('1', result: '1'));
-        expect(parser, isParseSuccess('2', result: '2'));
-        expect(parser, isParseFailure('', message: 'digit expected'));
+        check(parser).parseSuccess('1', result: '1');
+        check(parser).parseSuccess('2', result: '2');
+        check(parser).parseFailure('', message: 'digit expected');
       });
     });
     group('before', () {
       final parser = inner.skip(before: before);
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser.children, [before, inner, isA<EpsilonParser<void>>()]);
-        expect(parser, isParseSuccess('<1', result: '1'));
-        expect(parser, isParseSuccess('<2', result: '2'));
-        expect(parser, isParseFailure('', message: '"<" expected'));
-        expect(parser, isParseFailure('1', message: '"<" expected'));
-        expect(
-          parser,
-          isParseFailure('<', message: 'digit expected', position: 1),
-        );
-        expect(
-          parser,
-          isParseFailure('<a', message: 'digit expected', position: 1),
-        );
+        check(parser.children).matchesInOrder([
+          (it) => it.equals(before),
+          (it) => it.equals(inner),
+          (it) => it.isA<EpsilonParser<void>>(),
+        ]);
+        check(parser).parseSuccess('<1', result: '1');
+        check(parser).parseSuccess('<2', result: '2');
+        check(parser).parseFailure('', message: '"<" expected');
+        check(parser).parseFailure('1', message: '"<" expected');
+        check(parser).parseFailure('<', message: 'digit expected', position: 1);
+        check(parser)
+            .parseFailure('<a', message: 'digit expected', position: 1);
       });
     });
     group('after', () {
       final parser = inner.skip(after: after);
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser.children, [isA<EpsilonParser<void>>(), inner, after]);
-        expect(parser, isParseSuccess('1>', result: '1'));
-        expect(parser, isParseSuccess('2>', result: '2'));
-        expect(parser, isParseFailure('', message: 'digit expected'));
-        expect(
-          parser,
-          isParseFailure('1', message: '">" expected', position: 1),
-        );
-        expect(
-          parser,
-          isParseFailure('1!', message: '">" expected', position: 1),
-        );
-        expect(parser, isParseFailure('>', message: 'digit expected'));
-        expect(parser, isParseFailure('a>', message: 'digit expected'));
+        check(parser.children).matchesInOrder([
+          (it) => it.isA<EpsilonParser<void>>(),
+          (it) => it.equals(inner),
+          (it) => it.equals(after),
+        ]);
+        check(parser).parseSuccess('1>', result: '1');
+        check(parser).parseSuccess('2>', result: '2');
+        check(parser).parseFailure('', message: 'digit expected');
+        check(parser).parseFailure('1', message: '">" expected', position: 1);
+        check(parser).parseFailure('1!', message: '">" expected', position: 1);
+        check(parser).parseFailure('>', message: 'digit expected');
+        check(parser).parseFailure('a>', message: 'digit expected');
       });
     });
     group('before & after', () {
       final parser = inner.skip(before: before, after: after);
       expectParserInvariants(parser);
       test('default', () {
-        expect(parser.children, [before, inner, after]);
-        expect(parser, isParseSuccess('<1>', result: '1'));
-        expect(parser, isParseSuccess('<2>', result: '2'));
-        expect(parser, isParseFailure('', message: '"<" expected'));
-        expect(parser, isParseFailure('1', message: '"<" expected'));
-        expect(parser, isParseFailure('1>', message: '"<" expected'));
-        expect(parser, isParseFailure('1!', message: '"<" expected'));
-        expect(
-          parser,
-          isParseFailure('<', message: 'digit expected', position: 1),
-        );
-        expect(
-          parser,
-          isParseFailure('<1', message: '">" expected', position: 2),
-        );
-        expect(
-          parser,
-          isParseFailure('<1!', message: '">" expected', position: 2),
-        );
+        check(parser.children).deepEquals([before, inner, after]);
+        check(parser).parseSuccess('<1>', result: '1');
+        check(parser).parseSuccess('<2>', result: '2');
+        check(parser).parseFailure('', message: '"<" expected');
+        check(parser).parseFailure('1', message: '"<" expected');
+        check(parser).parseFailure('1>', message: '"<" expected');
+        check(parser).parseFailure('1!', message: '"<" expected');
+        check(parser).parseFailure('<', message: 'digit expected', position: 1);
+        check(parser).parseFailure('<1', message: '">" expected', position: 2);
+        check(parser).parseFailure('<1!', message: '">" expected', position: 2);
       });
     });
   });

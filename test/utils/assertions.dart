@@ -1,43 +1,50 @@
+import 'package:checks/checks.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:petitparser/reflection.dart';
-import 'package:test/test.dart';
+import 'package:test/scaffolding.dart';
 
-import 'matchers.dart';
+import 'checks.dart';
 
 /// Shared invariants for all parsers.
 void expectParserInvariants<T>(Parser<T> parser) {
   test('copy', () {
     final copy = parser.copy();
-    expect(copy, isNot(same(parser)));
-    expect(copy.toString(), parser.toString());
-    expect(copy.runtimeType, parser.runtimeType);
-    expect(
-      copy.children,
-      pairwiseCompare(parser.children, identical, 'same children'),
+    check(copy).not((it) => it.identicalTo(parser));
+    check(copy.toString()).equals(parser.toString());
+    check(copy.runtimeType).equals(parser.runtimeType);
+    check(copy.children).pairwiseMatches(
+      parser.children,
+      (expected) =>
+          (child) => child.identicalTo(expected),
+      'identical children',
     );
-    expect(copy, isParserDeepEqual(parser));
+    check(copy).isDeepEqualTo(parser);
   });
   test('transform', () {
     final copy = transformParser(parser, <P>(parser) => parser);
-    expect(copy, isNot(same(parser)));
-    expect(copy.toString(), parser.toString());
-    expect(copy.runtimeType, parser.runtimeType);
-    expect(
-      copy.children,
-      pairwiseCompare(parser.children, (parser, copy) {
-        expect(copy, isNot(same(parser)));
-        expect(copy.toString(), parser.toString());
-        expect(copy.runtimeType, parser.runtimeType);
-        return true;
-      }, 'same children'),
+    check(copy).not((it) => it.identicalTo(parser));
+    check(copy.toString()).equals(parser.toString());
+    check(copy.runtimeType).equals(parser.runtimeType);
+    check(copy.children).pairwiseMatches(
+      parser.children,
+      (expected) => (child) {
+        child.not((it) => it.identicalTo(expected));
+        child
+            .has((p) => p.toString(), 'toString()')
+            .equals(expected.toString());
+        child
+            .has((p) => p.runtimeType, 'runtimeType')
+            .equals(expected.runtimeType);
+      },
+      'transformed children',
     );
-    expect(copy, isParserDeepEqual(parser));
+    check(copy).isDeepEqualTo(parser);
   });
   test('isEqualTo', () {
     final copy = parser.copy();
-    expect(copy, isParserDeepEqual(parser));
-    expect(copy, isParserDeepEqual(copy));
-    expect(parser, isParserDeepEqual(copy));
+    check(copy).isDeepEqualTo(parser);
+    check(copy).isDeepEqualTo(copy);
+    check(parser).isDeepEqualTo(copy);
   });
   test('replace', () {
     final copy = parser.copy();
@@ -45,23 +52,24 @@ void expectParserInvariants<T>(Parser<T> parser) {
     for (var i = 0; i < copy.children.length; i++) {
       final source = copy.children[i];
       final target = source.copy();
-      expect(source, isNot(same(target)));
+      check(source).not((it) => it.identicalTo(target));
       copy.replace(source, target);
-      expect(copy.children[i], same(target));
+      check(copy.children[i]).identicalTo(target);
       replaced.add(target);
     }
-    expect(
-      copy.children,
-      pairwiseCompare(replaced, identical, 'replaced children'),
+    check(copy.children).pairwiseMatches(
+      replaced,
+      (expected) =>
+          (child) => child.identicalTo(expected),
+      'replaced children',
     );
   });
   test('toString', () {
-    expect(parser.toString(), isToString(name: parser.runtimeType.toString()));
+    check(parser.toString())
+        .isCustomToString(name: parser.runtimeType.toString());
     if (parser case CharacterParser(predicate: final predicate)) {
-      expect(
-        predicate.toString(),
-        isToString(name: predicate.runtimeType.toString()),
-      );
+      check(predicate.toString())
+          .isCustomToString(name: predicate.runtimeType.toString());
     }
   });
 }
