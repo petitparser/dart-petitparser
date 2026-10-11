@@ -27,11 +27,11 @@ Parser buildParser() {
       char(')').trim(),
       (left, value, right) => [left, value, right],
     );
-  builder.group().prefix(char('-').trim(), (op, a) => [op, a]);
   builder.group()
     ..postfix(string('++').trim(), (a, op) => [a, op])
     ..postfix(string('--').trim(), (a, op) => [a, op]);
   builder.group().right(char('^').trim(), (a, op, b) => [a, op, b]);
+  builder.group().prefix(char('-').trim(), (op, a) => [op, a]);
   builder.group()
     ..left(char('*').trim(), (a, op, b) => [a, op, b])
     ..left(char('/').trim(), (a, op, b) => [a, op, b]);
@@ -58,11 +58,11 @@ Parser<num> buildEvaluator() {
       char(')').trim(),
       (left, value, right) => math.sqrt(value),
     );
-  builder.group().prefix(char('-').trim(), (op, a) => -a);
   builder.group()
     ..postfix(string('++').trim(), (a, op) => ++a)
     ..postfix(string('--').trim(), (a, op) => --a);
   builder.group().right(char('^').trim(), (a, op, b) => math.pow(a, b));
+  builder.group().prefix(char('-').trim(), (op, a) => -a);
   builder.group()
     ..left(char('*').trim(), (a, op, b) => a * b)
     ..left(char('/').trim(), (a, op, b) => a / b);
@@ -224,12 +224,36 @@ void main() {
           ['2', '^', '3'],
         ],
       );
+      check(parser).parseSuccess(
+        '-1 ^ 2',
+        result: [
+          '-',
+          ['1', '^', '2'],
+        ],
+      );
+      check(parser).parseSuccess(
+        '(-1) ^ 2',
+        result: [
+          [
+            '(',
+            ['-', '1'],
+            ')',
+          ],
+          '^',
+          '2',
+        ],
+      );
     });
     test('evaluator', () {
       check(evaluator).parseSuccess('2 ^ 3', result: closeTo(8, epsilon));
+      check(evaluator).parseSuccess('-2 ^ 2', result: closeTo(-4, epsilon));
+      check(evaluator).parseSuccess('(-2) ^ 2', result: closeTo(4, epsilon));
       check(evaluator).parseSuccess('-2 ^ 3', result: closeTo(-8, epsilon));
+      check(evaluator).parseSuccess('(-2) ^ 3', result: closeTo(-8, epsilon));
       check(evaluator)
-          .parseSuccess('-2 ^ -3', result: closeTo(-0.125, epsilon));
+          .parseSuccess('-2 ^ (-3)', result: closeTo(-0.125, epsilon));
+      check(evaluator)
+          .parseSuccess('(-2) ^ (-3)', result: closeTo(-0.125, epsilon));
     });
     test('evaluator many', () {
       check(evaluator).parseSuccess('4 ^ 3', result: closeTo(64, epsilon));
@@ -246,6 +270,12 @@ void main() {
       check(
         evaluator,
       ).parseFailure('1 ^ 2 ^', message: 'end of input expected', position: 6);
+      check(
+        evaluator,
+      ).parseFailure('2 ^ -3', message: 'end of input expected', position: 2);
+      check(
+        evaluator,
+      ).parseFailure('-2 ^ -3', message: 'end of input expected', position: 3);
     });
   });
   group('parens', () {
@@ -610,12 +640,33 @@ void main() {
           ['3', '*', '4'],
         ],
       );
+      check(parser).parseSuccess(
+        '-2 ^ 2',
+        result: [
+          '-',
+          ['2', '^', '2'],
+        ],
+      );
+      check(parser).parseSuccess(
+        '(-2) ^ 2',
+        result: [
+          [
+            '(',
+            ['-', '2'],
+            ')',
+          ],
+          '^',
+          '2',
+        ],
+      );
     });
     test('evaluator', () {
       check(evaluator).parseSuccess('2 * 3 + 4', result: closeTo(10, epsilon));
       check(evaluator).parseSuccess('2 + 3 * 4', result: closeTo(14, epsilon));
       check(evaluator).parseSuccess('6 / 3 + 4', result: closeTo(6, epsilon));
       check(evaluator).parseSuccess('2 + 6 / 2', result: closeTo(5, epsilon));
+      check(evaluator).parseSuccess('-2 ^ 2', result: closeTo(-4, epsilon));
+      check(evaluator).parseSuccess('(-2) ^ 2', result: closeTo(4, epsilon));
     });
   });
   group('builder', () {

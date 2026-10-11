@@ -45,11 +45,11 @@ import 'utils.dart';
 /// appear in the parsed input:
 ///
 /// ```dart
-/// // Negation is a prefix operator.
-/// builder.group().prefix(char('-').trim(), (operator, value) => -value);
-///
 /// // Power is right-associative.
 /// builder.group().right(char('^').trim(), (left, operator, right) => math.pow(left, right));
+///
+/// // Negation is a prefix operator.
+/// builder.group().prefix(char('-').trim(), (operator, value) => -value);
 ///
 /// // Multiplication and addition are left-associative, multiplication has
 /// // higher priority than addition.
@@ -76,6 +76,7 @@ import 'utils.dart';
 /// parser.parse('1*2+3').value;   // 5
 /// parser.parse('8/4/2').value;   // 1
 /// parser.parse('2^2^3').value;   // 256
+/// parser.parse('-2^2').value;    // -4
 /// ```
 class ExpressionBuilder<T> {
   final List<Parser<T>> _primitives = [];

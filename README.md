@@ -288,14 +288,14 @@ builder.group().wrapper(
   (left, value, right) => value,
 );
 
-// Add prefix operators:
-builder.group().prefix(char('-').trim(), (op, value) => -value);
-
 // Add right-associative power operator:
 builder.group().right(
   char('^').trim(),
   (left, op, right) => math.pow(left, right),
 );
+
+// Add prefix operators:
+builder.group().prefix(char('-').trim(), (op, value) => -value);
 
 // Add left-associative multiplication and division:
 builder.group()
@@ -312,6 +312,7 @@ final parser = builder.build().end();
 print(parser.parse('1 + 2 * 3').value);   // 7
 print(parser.parse('(1 + 2) * 3').value); // 9
 print(parser.parse('2 ^ 2 ^ 3').value);   // 256
+print(parser.parse('-2 ^ 2').value);      // -4
 print(parser.parse('-8 + 2').value);      // -6
 ```
 

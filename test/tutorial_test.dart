@@ -162,12 +162,12 @@ void main() {
       (left, value, right) => value,
     );
 
-    builder.group().prefix(char('-').trim(), (op, value) => -value);
-
     builder.group().right(
       char('^').trim(),
       (left, op, right) => math.pow(left, right),
     );
+
+    builder.group().prefix(char('-').trim(), (op, value) => -value);
 
     builder.group()
       ..left(char('*').trim(), (left, op, right) => left * right)
@@ -182,6 +182,8 @@ void main() {
     check(parser.parse('1 + 2 * 3').value).equals(7);
     check(parser.parse('(1 + 2) * 3').value).equals(9);
     check(parser.parse('2 ^ 2 ^ 3').value).equals(256);
+    check(parser.parse('-2 ^ 2').value).equals(-4);
+    check(parser.parse('(-2) ^ 2').value).equals(4);
     check(parser.parse('-8 + 2').value).equals(-6);
   });
 

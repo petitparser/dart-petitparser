@@ -162,6 +162,8 @@ void main() {
         check(parser).parseSuccess('1 + 2 * 3', result: 7);
         check(parser).parseSuccess('(1 + 2) * 3', result: 9);
         check(parser).parseSuccess('2 * 3 ^ 2', result: 18);
+        check(parser).parseSuccess('-2 ^ 2', result: -4);
+        check(parser).parseSuccess('(-2) ^ 2', result: 4);
         check(parser).parseSuccess('-2 * (3 + 4)', result: -14);
       });
       test('whitespace', () {

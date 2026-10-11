@@ -221,17 +221,17 @@ void main() {
         ),
       );
     builder.group().wrapper(char('(').trim(), char(')').trim(), (_, a, _) => a);
-    // negation is a prefix operator
-    builder.group().prefix(
-      char('-').trim(),
-      (_, a) =>
-          (num value) => -a(value),
-    );
     // power is right-associative
     builder.group().right(
       char('^').trim(),
       (a, _, b) =>
           (num value) => pow(a(value), b(value)),
+    );
+    // negation is a prefix operator
+    builder.group().prefix(
+      char('-').trim(),
+      (_, a) =>
+          (num value) => -a(value),
     );
     // multiplication and addition are left-associative
     builder.group()
@@ -264,6 +264,11 @@ void main() {
     check(expression(0)).equals(-2);
     check(expression(1)).equals(3);
     check(expression(2)).equals(38);
+
+    final negatePower = parser.parse('-x ^ 2').value;
+    check(negatePower(3)).equals(-9);
+    final parenNegatePower = parser.parse('(-x) ^ 2').value;
+    check(parenNegatePower(3)).equals(9);
   });
   test('stackoverflow.com/q/67617000/82303', () {
     check(nestedParser).parseSuccess('()', result: '()');
